@@ -88,6 +88,58 @@ define(function(require, exports, module) {
     };
 
     /**
+     * 对一个object进行深度拷贝
+     * 
+     * @param {Object} source 需要进行拷贝的对象
+     * @return {Object} 拷贝后的新对象
+     */
+    lib.clone = function (source) {
+        // by Tangram 1.x: baidu.object.clone
+        var result = source, i, len;
+        if (!source
+            || source instanceof Number
+            || source instanceof String
+            || source instanceof Boolean) {
+            return result;
+        }
+        else if (baidu.lang.isArray(source)) {
+            result = [];
+            var resultLen = 0;
+            for (i = 0, len = source.length; i < len; i++) {
+                result[resultLen++] = baidu.object.clone(source[i]);
+            }
+        }
+        else if (baidu.object.isPlain(source)) {
+            result = {};
+            for (i in source) {
+                if (source.hasOwnProperty(i)) {
+                    result[i] = baidu.object.clone(source[i]);
+                }
+            }
+        }
+        return result;
+    };
+
+    /** 
+     * 为对象绑定方法和作用域
+     * 
+     * @param {Function|String} handler 要绑定的函数，或者一个在作用域下可用的函数名
+     * @param {Object} obj 执行运行时this，如果不传入则运行时this为函数本身
+     * @param {...args=} args 函数执行时附加到执行时函数前面的参数
+     *
+     * @return {Function} 封装后的函数
+     */
+    lib.bind = function(func, scope) {
+        // by Tangram 1.x: baidu.fn.bind
+        var xargs = arguments.length > 2 ? [].slice.call(arguments, 2) : null;
+        return function () {
+            var fn = _isString(func) ? scope[func] : func,
+                args = (xargs) ? xargs.concat([].slice.call(arguments, 0)) : arguments;
+            return fn.apply(scope || fn, args);
+        };
+    };
+
+    /**
      * 从文档中获取指定的DOM元素
      * 
      * @param {string|HTMLElement} id 元素的id或DOM元素
@@ -143,6 +195,41 @@ define(function(require, exports, module) {
         
         return source;
     }
+
+    /**
+     * 对目标字符串进行html解码
+     * 
+     * @param {string} source 目标字符串
+     * @return {string} html解码后的字符串
+     */
+    lib.decodeHTML = function (source) {
+        // by Tangram 1.x: baidu.string.decodeHTML
+        var str = String(source)
+                    .replace(/&quot;/g,'"')
+                    .replace(/&lt;/g,'<')
+                    .replace(/&gt;/g,'>')
+                    .replace(/&amp;/g, "&");
+        //处理转义的中文和实体字符
+        return str.replace(/&#([\d]+);/g, function(_0, _1){
+            return String.fromCharCode(parseInt(_1, 10));
+        });
+    };
+
+    /**
+     * 对目标字符串进行html编码
+     * 
+     * @param {string} source 目标字符串
+     * @return {string} html编码后的字符串
+     */
+    lib.encodeHTML = function (source) {
+        // by Tangram 1.x: baidu.string.encodeHTML
+        return String(source)
+                    .replace(/&/g,'&amp;')
+                    .replace(/</g,'&lt;')
+                    .replace(/>/g,'&gt;')
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+    };
 
     /**
      * 判断元素是否拥有指定的className
@@ -216,7 +303,7 @@ define(function(require, exports, module) {
         var newClasses = className.split(/\s+/);
         var lenDel = newClasses.length;
 
-        //考虑到同时删除多个className的应用场景概率较低,故放弃进一步性能优化 
+        // 考虑到同时删除多个className的应用场景概率较低,故放弃进一步性能优化 
         // by rocy @1.3.4
         for (var i = 0; i < lenDel; ++i) {
             for(var j = 0, lenOld = oldClasses.length; j < lenOld; ++j) {
