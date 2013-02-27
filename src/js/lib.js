@@ -8,6 +8,8 @@
 define(function(require, exports, module) {
 
     /**
+     * lib命名空间
+     * 
      * @namespace
      */
     var lib = {};
@@ -358,6 +360,44 @@ define(function(require, exports, module) {
         }
 
         return newElement;
+    };
+
+
+    /**
+     * page命名空间
+     * 
+     * @namespace
+     */
+    lib.page = {};
+
+    /**
+     * 获取页面宽度
+     * 
+     * @return {number} 页面宽度
+     */
+    lib.page.getWidth = function() {
+        // by Tangram 1.x: baidu.page.getWidth
+        var doc = document,
+            body = doc.body,
+            html = doc.documentElement,
+            client = doc.compatMode == 'BackCompat' ? body : doc.documentElement;
+
+        return Math.max(html.scrollWidth, body.scrollWidth, client.clientWidth);
+    };
+
+    /**
+     * 获取页面高度
+     * 
+     * @return {number} 页面高度
+     */
+    lib.page.getHeight = function() {
+        // by Tangram 1.x: baidu.page.getHeight
+        var doc = document,
+            body = doc.body,
+            html = doc.documentElement,
+            client = doc.compatMode == 'BackCompat' ? body : doc.documentElement;
+
+        return Math.max(html.scrollHeight, body.scrollHeight, client.clientHeight);
     };
 
     return lib;
