@@ -3,10 +3,9 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file UI基础库适配层
- * @author firede(firede@firede.us)
+ * @author otakustay, firede(firede@firede.us)
  */
 define(function() {
-
     /**
      * lib命名空间
      * 
@@ -14,8 +13,8 @@ define(function() {
      */
     var lib = {};
 
-    var trimer = new RegExp(
-        '(^[\\s\\t\\xa0\\u3000]+)|([\\u3000\\xa0\\s\\t]+\x24)', 'g');
+    var whitespace = /(^[\s\t\xa0\u3000]+)|([\u3000\xa0\s\t]+$)/g;
+
     /**
      * 删除目标字符串两端的空白字符
      * 
@@ -24,7 +23,7 @@ define(function() {
      */
     lib.trim = function(source) {
         // by Tangram 1.x: baidu.string.trim
-        return String(source).replace(trimer, '');
+        return String(source).replace(whitespace, '');
     };
 
     /**
@@ -32,33 +31,20 @@ define(function() {
      * 
      * @param {function} subClass 子类构造器
      * @param {function} superClass 父类构造器
-     * @param {string} type 类名标识
      */
-    lib.inherits = function(subClass, superClass, type) {
+    lib.inherits = function(subClass, superClass) {
         // by Tangram 1.x: baidu.lang.inherits
         var Empty = function() {};
 
         Empty.prototype = superClass.prototype;
         var proto = subClass.prototype = new Empty();
 
-        var selfProps = subClass.prototype;
-        for (var key in selfProps) {
-            proto[key] = selfProps[key];
+        var selfPrototype = subClass.prototype;
+        for (var key in selfPrototype) {
+            proto[key] = selfPrototype[key];
         }
         subClass.prototype.constructor = subClass;
         subClass.superClass = superClass.prototype;
-
-        // 类名标识，兼容Class的toString，基本没用
-        if (typeof type === 'string') {
-            proto.__type = type;
-        }
-
-        subClass.extend = function(json) {
-            for (var i in json) {
-                proto[i] = json[i];
-            }
-            return subClass;
-        };
 
         return subClass;
     };
@@ -85,7 +71,7 @@ define(function() {
             }
             return result;
         }
-        else if (baidu.object.isPlain(source)) {
+        else {
             var result = {};
             for (var key in source) {
                 if (source.hasOwnProperty(key)) {
@@ -141,43 +127,27 @@ define(function() {
     /**
      * 字符串格式化
      * 
-     * @param {string} source 原字符串
-     * @param {Object.<string>|...string} options 参数
+     * @param {string} template 原字符串
+     * @param {Object.<string, *>} data 参数
      * 
      * @return {string}
      */
-    lib.format = function(source, options) {
-        // by ER 2.x: util.format
-        source = String(source);
-        
-        if (typeof options === 'undefined') {
-            if ('[object Object]' === Object.prototype.toString.call(options)) {
-                return source.replace(
-                    /\$\{(.+?)\}/g,
-                    function (match, key) {
-                        var replacer = options[key];
-                        if (typeof replacer === 'function') {
-                            replacer = replacer(key);
-                        }
-
-                        return typeof replacer === 'undefined' ? '' : replacer;
-                    }
-                );
-            }
-            else {
-                var data = [].slice.call(arguments, 1);
-
-                return source.replace(
-                    /\{(\d+)\}/g,
-                    function (match, index) {
-                        index = parseInt(index, 10);
-                        return index >= data.length ? match : data[index];
-                    }
-                );
-            }
+    lib.format = function(template, data) {
+        if (data == null) {
+            return template;
         }
         
-        return source;
+        return template.replace(
+            /\$\{(.+?)\}/g,
+            function (match, key) {
+                var replacer = data[key];
+                if (typeof replacer === 'function') {
+                    replacer = replacer(key);
+                }
+
+                return typeof replacer === 'undefined' ? '' : replacer;
+            }
+        );
     };
 
     /**
@@ -196,8 +166,8 @@ define(function() {
         //处理转义的中文和实体字符
         return str.replace(
             /&#([\d]+);/g, 
-            function(match, entity){
-                return String.fromCharCode(parseInt(entity, 10));
+            function(match, code){
+                return String.fromCharCode(parseInt(code, 10));
             }
         );
     };
@@ -223,58 +193,42 @@ define(function() {
      * 对于参数className，支持空格分隔的多个className
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id
-     * @param {string} className 要判断的className，
-     * 可以是用空格拼接的多个className
+     * @param {string} className 要判断的className
      * 
-     * @return {Boolean} 是否拥有指定的className，
-    * 如果要查询的className有一个或多个不在元素的className中，返回false
+     * @return {Boolean} 是否拥有指定的className
      */
-    lib.hasClass = function (element, className) {
-        // by Tangram 1.x: baidu.dom.hasClass
+    lib.containsClass = function (element, className) {
         element = lib.g(element);
-
-        // 对于 textNode 节点来说没有 className
-        if(!element || !element.className) {
-            return false;
-        }
-
-        var classArray = lib.trim(className).split(/\s+/);
-
-        className = element.className.split(/\s+/).join(' ');
-
-        var i = classArray.length;
-        while (i--) {
-            var tester = new RegExp('(^| )' + classArray[i] + '( |\x24)');
-            if(!tester.test(className)) {
-                return false;
+        var classes = element.className.split(/s+/);
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i] === className) {
+                return true;
             }
         }
-        return true;
+
+        return false;
     };
 
     /**
      * 为目标元素添加className
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id
-     * @param {string} className 要添加的className，
-     * 允许同时添加多个class，中间使用空白符分隔
+     * @param {string} className 要添加的className
      * 
      * @return {HTMLElement} 目标元素
      */
     lib.addClass = function (element, className) {
-        // by Tangram 1.x: baidu.dom.addClass
         element = lib.g(element);
-        var classArray = className.split(/\s+/);
-        var result = element.className;
-        var classMatch = ' ' + result + ' ';
-
-        for (var i = 0; i < classArray.length; i++) {
-             if (classMatch.indexOf(' ' + classArray[i] + ' ') < 0) {
-                 result += (result ? ' ' : '') + classArray[i];
-             }
+        var classes = element.className.split(/s+/);
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i] === className) {
+                return element;
+            }
         }
 
-        element.className = result;
+        classes.push(className);
+        element.className = classes.join(' ');
+
         return element;
     };
 
@@ -282,29 +236,49 @@ define(function() {
      * 移除目标元素的className
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id
-     * @param {string} className 要移除的className，
-     * 允许同时移除多个class，中间使用空白符分隔
+     * @param {string} className 要移除的className
      * 
      * @return {HTMLElement} 目标元素
      */
     lib.removeClass = function (element, className) {
-        // by Tangram 1.x: baidu.dom.removeClass
         element = lib.g(element);
-
-        var oldClasses = element.className.split(/\s+/);
-        var newClasses = className.split(/\s+/);
-
-        // 考虑到同时删除多个className的应用场景概率较低,故放弃进一步性能优化 
-        // by rocy @1.3.4
-        for (var i = 0; i < newClasses.length; i++) {
-            for(var j = 0; j < oldClasses.length; j++) {
-                if(oldClasses[j] === newClasses[i]) {
-                    oldClasses.splice(j, 1);
-                    break;
-                }
+        var classes = element.className.split(/s+/);
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i] === className) {
+                classes.splice(i, 1);
+                i--;
             }
         }
-        element.className = oldClasses.join(' ');
+        element.className = classes.join(' ');
+
+        return element;
+    };
+
+    /**
+     * 切换目标元素的className
+     * 
+     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {string} className 要切换的className
+     * 
+     * @return {HTMLElement} 目标元素
+     */
+    lib.toggleClass = function (element, className) {
+        element = lib.g(element);
+        var classes = element.className.split(/s+/);
+        var containsClass = false;
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i] === className) {
+                classes.splice(i, 1);
+                containsClass = true;
+                i--;
+            }
+        }
+
+        if (!containsClass) {
+            classes.push(className);
+        }
+        element.className = classes.join(' ');
+
         return element;
     };
 
@@ -356,10 +330,9 @@ define(function() {
      */
     lib.page = {};
 
-    var doc = document;
-    var body = doc.body;
-    var html = doc.documentElement;
-    var root = document.compatMode === 'BackCompat' ? body : html;
+    var documentElement = document.documentElement;
+    var body = document.body;
+    var viewRoot = document.compatMode === 'BackCompat' ? body : html;
 
     /**
      * 获取页面宽度
@@ -369,9 +342,9 @@ define(function() {
     lib.page.getWidth = function() {
         // by Tangram 1.x: baidu.page.getWidth
         return Math.max(
-            html.scrollWidth, 
+            documentElement.scrollWidth, 
             body.scrollWidth, 
-            root.clientWidth
+            viewRoot.clientWidth
         );
     };
 
@@ -383,9 +356,9 @@ define(function() {
     lib.page.getHeight = function() {
         // by Tangram 1.x: baidu.page.getHeight
         return Math.max(
-            html.scrollHeight, 
+            documentElement.scrollHeight, 
             body.scrollHeight, 
-            root.clientHeight
+            viewRoot.clientHeight
         );
     };
 
