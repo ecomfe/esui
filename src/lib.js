@@ -3,7 +3,7 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file UI基础库适配层
- * @author otakustay, firede(firede@firede.us)
+ * @author otakustay, firede(firede@firede.us), erik
  */
 define(function() {
     /**
