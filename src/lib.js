@@ -190,12 +190,11 @@ define(function() {
 
     /**
      * 判断元素是否拥有指定的className
-     * 对于参数className，支持空格分隔的多个className
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id
      * @param {string} className 要判断的className
      * 
-     * @return {Boolean} 是否拥有指定的className
+     * @return {boolean} 是否拥有指定的className
      */
     lib.hasClass = function (element, className) {
         element = lib.g(element);
