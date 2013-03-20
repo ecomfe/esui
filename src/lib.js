@@ -322,6 +322,15 @@ define(function() {
         return newElement;
     };
 
+    /**
+     * 将字符串转换成pascal格式
+     * 
+     * @param {string} source 源字符串
+     * @return {string}
+     */
+    lib.toPascalCase = function (source) {
+        return source.charAt(0).toUpperCase() + source.slice(1)
+    };
 
     /**
      * page命名空间
