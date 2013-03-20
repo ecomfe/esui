@@ -197,7 +197,7 @@ define(function() {
      * 
      * @return {Boolean} 是否拥有指定的className
      */
-    lib.containsClass = function (element, className) {
+    lib.hasClass = function (element, className) {
         element = lib.g(element);
         var classes = element.className.split(/s+/);
         for (var i = 0; i < classes.length; i++) {
