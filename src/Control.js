@@ -11,6 +11,12 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
 
+        /**
+         * 控件基类
+         * 
+         * @constructor
+         * @param {Object} options 初始化参数
+         */
         function Control(options) {
             helper.init(this, options);
             this.fire('init');
