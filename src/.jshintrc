@@ -62,11 +62,5 @@
     "nomen": false,
     "onevar": false,
     "passfail": false,
-    "white": false,
-
-    "predef": [
-        "er",
-        "tangram",
-        "$"
-    ]
+    "white": false
 }
