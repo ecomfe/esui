@@ -3,7 +3,7 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file UI基础库适配层
- * @author otakustay, firede(firede@firede.us)
+ * @author otakustay, firede(firede@firede.us), erik
  */
 define(function() {
     /**
@@ -190,14 +190,13 @@ define(function() {
 
     /**
      * 判断元素是否拥有指定的className
-     * 对于参数className，支持空格分隔的多个className
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id
      * @param {string} className 要判断的className
      * 
-     * @return {Boolean} 是否拥有指定的className
+     * @return {boolean} 是否拥有指定的className
      */
-    lib.containsClass = function (element, className) {
+    lib.hasClass = function (element, className) {
         element = lib.g(element);
         var classes = element.className.split(/s+/);
         for (var i = 0; i < classes.length; i++) {
@@ -322,6 +321,15 @@ define(function() {
         return newElement;
     };
 
+    /**
+     * 将字符串转换成pascal格式
+     * 
+     * @param {string} source 源字符串
+     * @return {string}
+     */
+    lib.toPascalCase = function (source) {
+        return source.charAt(0).toUpperCase() + source.slice(1)
+    };
 
     /**
      * page命名空间
