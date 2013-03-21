@@ -19,7 +19,7 @@ define(
          */
         function Control(options) {
             helper.init(this, options);
-            this.fire('init');
+            helper.afterInit(this);
         }
 
         /**
@@ -105,9 +105,9 @@ define(
              * 销毁释放控件
              */
             dispose: function () {
-                this.fire('beforedispose');
+                helper.beforeDispose(this);
                 helper.dispose(this);
-                this.fire('afterdispose');
+                helper.afterDispose(this);
             },
 
             /**
