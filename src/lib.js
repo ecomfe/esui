@@ -49,6 +49,24 @@ define(function() {
     };
 
     /**
+     * 将源对象属性拷贝到目标对象
+     * 
+     * @param {Object} subClass 目标对象
+     * @param {Object} source 源对象
+     */
+    lib.extend = function (target, source) {
+        for (var i = 1, len = arguments.length; i < len; i++) {
+            source = arguments[i];
+
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    target[key] = source[key];
+                }
+            }
+        }
+    };
+
+    /**
      * 对一个object进行深度拷贝
      * 
      * @param {Object} source 需要进行拷贝的对象
@@ -217,7 +235,7 @@ define(function() {
      */
     lib.addClass = function (element, className) {
         element = lib.g(element);
-        var classes = element.className.split(/s+/);
+        var classes = element.className.split(/\s+/);
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
                 return element;
@@ -240,7 +258,7 @@ define(function() {
      */
     lib.removeClass = function (element, className) {
         element = lib.g(element);
-        var classes = element.className.split(/s+/);
+        var classes = element.className.split(/\s+/);
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
                 classes.splice(i, 1);
