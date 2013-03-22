@@ -288,6 +288,70 @@ define(
             control.fire('afterdispose');
         };
 
+        /**
+         * 验证输入控件合法性
+         * 
+         * @param {InputControl} control 输入控件实例
+         * @param {boolean} justCheck 是否仅验证，不显示错误信息
+         * @return {boolean}
+         */
+        helper.validate = function (control, justCheck) {
+            var validity = new require('./validate/Validity')();
+            var eventArg = {
+                validity: validity
+            };
+            control.fire('beforevalidate', eventArg);
+
+            // 验证合法性
+            var rules = ui.createRulesByControl(control);
+            for (var i = 0, len = rules.length; i < len; i++) {
+                var rule = rules[i];
+                validity.addState( 
+                    rule.getName(), 
+                    rule.check(control.getValue(), control)
+                );
+            }
+
+            // 触发invalid和aftervalidate事件
+            // 这两个事件中用户可能会对validity进行修改操作
+            // 所以validity.isValid()结果不能缓存
+            if (!validity.isValid()) {
+                control.fire('invalid', eventArg);
+            }
+            control.fire('aftervalidate', eventArg);
+
+            // 提示验证错误信息
+            if (!justCheck) {
+                helper.showValidity(control, validity);
+            }
+
+            return validity.isValid();
+        };
+
+        /**
+         * 显示控件错误信息
+         * 
+         * @param {InputControl} control 输入控件实例
+         * @param {validate/Validity} validity 验证信息实例
+         */
+        helper.showValidity = function (control, validity) {
+            // TODO: 简单实现了个alert版本，需要重新实现
+            // 如果是展现到页面中的dom元素，需要考虑：
+            //    当验证合法时，清除或隐藏该dom
+            if (!validity.isValid()) {
+                var message = [];
+                var states = validity.getStates();
+                for (var i = 0, len = states.length; i < len; i++) {
+                    var state = states[i];
+                    if (!state.getState()) {
+                        message.push(state.getMessage());
+                    }
+                }
+
+                alert(message.join('\n'));
+            }
+        };
+
         return helper;
     }
 );
