@@ -125,7 +125,9 @@ define(
          * @param {string} id 控件id
          * @return {Control}
          */
-        main.get = defaultViewContext.get;
+        main.get = function (id) {
+            return defaultViewContext.get(id);
+        };
 
         /**
          * 从容器DOM元素批量初始化内部的控件渲染
