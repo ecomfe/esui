@@ -223,6 +223,13 @@ define(
             },
 
             /**
+             * 切换控件可见状态
+             */
+            toggle: function () {
+                this[this.isHidden() ? 'show' : 'hide']();
+            },
+
+            /**
              * 判断控件是否不可见
              * 
              * @return {boolean}
