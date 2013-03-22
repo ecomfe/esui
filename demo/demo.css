@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+}
+
+header {
+    background: #252525;
+    color: #fff;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size:22px;
+}
+
+.container {
+    padding: 10px;
+}
