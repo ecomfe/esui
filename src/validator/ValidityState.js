@@ -79,5 +79,6 @@ define(
         };
 
         return ValidityState;
+
     }
 );

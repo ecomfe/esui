@@ -36,6 +36,7 @@ define(
              * @type {boolean} 
              */
             this.state = true;
+
         }
 
         /**
@@ -134,5 +135,6 @@ define(
         };
 
         return Validity;
+
     }
 );
