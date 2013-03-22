@@ -156,7 +156,7 @@ define(
              */
             function parseAttribute(source) {
                 var value = {};
-                var items = attrStr.split(/;\s*/);
+                var items = source.split(/;\s*/);
                 var len = items.length;
 
                 while ( len-- ) {
@@ -398,6 +398,23 @@ define(
          */
         main.registerRule = function (ruleClass) {
             registerClass(ruleClass, ruleClasses);
+        };
+
+        /**
+         * 创建验证规则
+         * 
+         * @param {Control} control 控件实例
+         * @return {Array.<validate/Rule>}
+         */
+        main.createRulesByControl = function (control) {
+            var rules = [];
+            for (var type in ruleClasses) {
+                if (control.get(type)) {
+                    rules.push(new ruleClasses[type]());
+                }
+            }
+
+            return rules;
         };
 
         return main;
