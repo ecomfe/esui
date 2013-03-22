@@ -1,0 +1,17 @@
+{
+    "name": "esui",
+    "version": "3.0",
+    "maintainers": [
+        {
+            "name": "otakustay",
+            "email": "otakustay@live.com"
+        }, 
+        {
+          "name": "erik",
+          "email": "errorrik@gmail.com"
+        }
+    ],
+    "main": "main",
+    "description": "ESUI是一个轻巧灵活的高性能UI组件库。",
+    "homepage": "https://github.com/ecomfe/esui"
+}
