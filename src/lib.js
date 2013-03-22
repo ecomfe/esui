@@ -387,5 +387,32 @@ define(function() {
         );
     };
 
+    if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {
+        /**
+         * IE浏览器版本号
+         * 
+         * @type {number}
+         */
+        lib.ie =  doument.documentMode || + RegExp.$1;
+    }
+
+    lib.on = function (element, type, listener) {
+        if (element.addEventListener) {
+            element.addEventListener(type, listener, false);
+        }
+        else if (element.attachEvent) {
+            element.attachEvent('on' + type, listener);
+        }
+    };
+
+    lib.un = function (element, type, listener) {
+        if (element.addEventListener) {
+            element.removeEventListener(type, listener, false);
+        }
+        else if (element.attachEvent) {
+            element.detachEvent('on' + type, listener);
+        }
+    };
+
     return lib;
 });
