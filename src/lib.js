@@ -34,12 +34,11 @@ define(function() {
      */
     lib.inherits = function(subClass, superClass) {
         // by Tangram 1.x: baidu.lang.inherits
-        var Empty = function() {};
-
+        var Empty = new Function();
         Empty.prototype = superClass.prototype;
-        var proto = subClass.prototype = new Empty();
-
         var selfPrototype = subClass.prototype;
+        var proto = subClass.prototype = new Empty();
+        
         for (var key in selfPrototype) {
             proto[key] = selfPrototype[key];
         }
@@ -340,7 +339,7 @@ define(function() {
 
     var documentElement = document.documentElement;
     var body = document.body;
-    var viewRoot = document.compatMode === 'BackCompat' ? body : html;
+    var viewRoot = document.compatMode == 'BackCompat' ? body : documentElement;
 
     /**
      * 获取页面宽度
