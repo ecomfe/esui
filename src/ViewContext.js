@@ -17,7 +17,7 @@
              * 视图环境控件集合
              * @type {Object} 
              */
-            this.controlMap = {};
+            this.controls = {};
         }
 
 
@@ -28,7 +28,7 @@
          * @public
          */
         ViewContext.prototype.add = function (control) {
-            var exists = this.control[control.id];
+            var exists = this.controls[control.id];
 
             // id已存在
             if (exists) {
@@ -41,7 +41,7 @@
                 exists.setViewContext(null);
             }
 
-            this.controlMap[control.id] = control;
+            this.controls[control.id] = control;
             control.setViewContext(this);
 
         };
@@ -54,7 +54,7 @@
          */
         ViewContext.prototype.remove = function (control) {
 
-            this.controlMap[control.id] = null;
+            this.controls[control.id] = null;
             control.setViewContext(null);
 
         };
@@ -68,7 +68,7 @@
          */
         ViewContext.prototype.get = function (id) {
 
-            return this.controlMap[id];
+            return this.controls[id];
 
         };
 
@@ -77,9 +77,9 @@
          *
          */
         ViewContext.prototype.clean = function () {
-            for (var id in this.controlMap) {
-                if (this.controlMap.hasOwnProperty(id)) {
-                    var control = this.controlMap[id];
+            for (var id in this.controls) {
+                if (this.controls.hasOwnProperty(id)) {
+                    var control = this.controls[id];
                     this.remove(control);
                     control.dispose();
                 }
