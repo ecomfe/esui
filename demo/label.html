@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Label - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+
+    </head>
+    <body>
+        <strong data-ui-type="Label">Hello Label!</strong>
+        <br />
+        <button id="op-show">show</button>
+        <button id="op-hide">hide</button>
+        <button id="op-toggle">toggle</button>
+        <script>
+        require(
+            [
+                'esui', 
+                'esui/Label',
+                'css!esui/css/main.css'
+            ],
+            function (ui) {
+                var label = ui.init()[0];
+                document.getElementById('op-show').onclick = function () {
+                    label.show();
+                };
+                document.getElementById('op-hide').onclick = function () {
+                    label.hide();
+                };
+                document.getElementById('op-toggle').onclick = function () {
+                    label.toggle();
+                };
+            }
+        )
+        </script>
+    </body>
+</html>
