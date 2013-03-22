@@ -1,4 +1,4 @@
-想·/**
+/**
  * ESUI (Enterprise UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
