@@ -1,0 +1,52 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 单行、文本框样式
+ * @author erik, zhaolei
+ */
+
+.ui-textbox{
+    color: #333;
+    padding: 2px 4px;
+    font-size: 14px;
+    background: #FFF;
+    border: 1px solid #a8adb6;
+    height: 22px;
+    *height: 16px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    background-image: -webkit-gradient(linear, 0 0, 0 2, from(#ececec), to(#fff));
+    background-image: -moz-linear-gradient(top, #ececec, #fff 2px, #fff);
+}
+
+.ui-textbox-textarea {
+    height: 200px;
+    overflow: auto;
+    resize: none;
+}
+
+.ui-textbox:focus {
+    outline: 0;
+}
+
+
+.ui-textbox-hover,
+.ui-textbox-hover {
+    border: 1px solid #6e8ab8;
+}
+
+
+.ui-textbox-disabled,
+.ui-textbox-disabled,
+.ui-textbox-readonly {
+    border: 1px solid #7E9DB9;
+    background: #f6f6f6;
+    color: #999;
+}
+
+.ui-textbox-placing {
+    color: #999;
+}
