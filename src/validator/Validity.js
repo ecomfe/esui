@@ -66,7 +66,6 @@
             this.stateList.push(state);
             this.stateMap[name] = state;
 
-
         }
 
         /**

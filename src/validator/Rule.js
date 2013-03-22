@@ -54,6 +54,7 @@
             
             var lib = require('./lib');
             return lib.format(this.errorMessage, control);
+
         }
 
         /**
