@@ -59,7 +59,7 @@ define(
              */
             render: function () {
                 helper.beforeRender(this);
-                helper.initMain(this);
+                helper.renderMain(this);
                 helper.afterRender(this);
             },
 
@@ -146,7 +146,7 @@ define(
             /**
              * 批量设置控件的属性值
              * 
-             * @param {Object} properties 属性值集合，name:value的对象
+             * @param {Object} properties 属性值集合
              */
             setProperties: function (properties) {
                 for (var name in properties) {
@@ -186,9 +186,17 @@ define(
             },
 
             /**
+             * 设置控件禁用状态
+             */
+            setDisabled: function (disabled) {
+                this[disabled ? 'disable' : 'enable']();
+            },
+
+            /**
              * 设置控件状态为禁用
              */
             disable: function () {
+                this.disabled = true;
                 this.addState('disabled');
             },
 
@@ -196,6 +204,7 @@ define(
              * 设置控件状态为启用
              */
             enable: function () {
+                this.disabled = false;
                 this.removeState('disabled');
             },
 
@@ -246,7 +255,7 @@ define(
             addState: function (state) {
                 if (!this.hasState(state)) {
                     this.states[state] = 1;
-                    helper.addClass(this.main, this, state);
+                    helper.addClass(this, this.main, state);
                 }
             },
 
@@ -258,7 +267,7 @@ define(
             removeState: function (state) {
                 if (this.hasState(state)) {
                     delete this.states[state];
-                    helper.removeClass(this.main, this, state);
+                    helper.removeClass(this, this.main, state);
                 }
             },
 
