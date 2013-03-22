@@ -44,15 +44,17 @@ define(
          * 
          * @param {Control} control 控件实例
          * @param {Object} options 初始化参数
+         * @param {Object} defaultOptions 默认参数
          */
-        helper.init = function (control, options) {
+        helper.init = function (control, options, defaultOptions) {
             control.children = [];
             control.childrenIndex = {};
             control.states = {};
             control.events = {};
             
-            options = options || {};
-            control.setProperties(options);
+            var realOptions = {};
+            lib.extend(realOptions, defaultOptions, options);
+            control.setProperties(realOptions);
 
             // 自创建id
             if (!control.id) {
@@ -137,22 +139,22 @@ define(
         /**
          * 为控件相关dom元素添加class
          * 
-         * @param {HTMLElement} element dom元素
          * @param {Control} control 控件实例
+         * @param {HTMLElement} element dom元素
          * @param {string=} part 部件名称
          */
-        helper.addClass = function (element, control, part) {
+        helper.addClass = function (control, element, part) {
             processClass('add', element, control, part);
         };
 
         /**
          * 为控件相关dom元素移除class
          * 
-         * @param {HTMLElement} element dom元素
          * @param {Control} control 控件实例
+         * @param {HTMLElement} element dom元素
          * @param {string=} part 部件名称
          */
-        helper.removeClass = function (element, control, part) {
+        helper.removeClass = function (control, element, part) {
             processClass('remove', element, control, part);
         };
 
@@ -170,7 +172,7 @@ define(
             var uiPrefix = ui.getConfig('uiClassPrefix');
             var skinPrefix = ui.getConfig('skinClassPrefix');
 
-            var type = control.type;
+            var type = control.type.toLowerCase();
             var classes = [ uiPrefix + '-' + type + part ];
             part && classes.push(uiPrefix + part);
 
@@ -205,20 +207,104 @@ define(
         };
 
         /**
+         * 判断控件是否处于rendered生命周期
+         * 
+         * @param {Control} control 控件实例
+         * @return {boolean}
+         */
+        helper.isRendered = function (control) {
+            return control.lifeCycle == getLifeCycle().RENDERED;
+        };
+
+        /**
          * 初始化控件主元素
          * 
          * @param {Control} control 控件实例
          */
-        helper.initMain = function (control) {
+        helper.renderMain = function (control) {
             var main = control.main;
             if (main && helper.isInited(control)) {
                 if (!main.id) {
                     main.id = helper.getId(control);
                 }
 
-                helper.addClass(main, control);
+                helper.addClass(control, main);
+            }
+
+            control.setDisabled(control.disabled);
+        };
+
+        /**
+         * 初始化输入控件的主元素
+         * 
+         * @param {Control} control 控件实例
+         */
+        helper.renderInputMain = function (control) {
+            helper.initName(control);
+            helper.renderMain(control);
+            control.setRawValue(control.rawValue);
+            control.setReadOnly(control.readOnly);
+        };
+
+        /**
+         * 初始化hover状态的行为
+         * 
+         * @param {Control} control 控件实例
+         */
+        helper.initMouseBehavior = function (control) {
+            var main = control.main;
+            if (main) {
+                main.onmouseover = lib.bind(mainOverHandler, control);
+                main.onmouseout = lib.bind(mainOutHandler, control);
+                main.onmousedown = lib.bind(mainDownHandler, control);
+                main.onmouseup = lib.bind(mainUpHandler, control);
             }
         };
+
+        /**
+         * 控件主元素鼠标移入事件处理函数
+         * 
+         * @inner
+         */
+        function mainOverHandler() {
+            if (!this.isDisabled()) {
+                this.addState('hover');
+            }
+        }
+
+        /**
+         * 控件主元素鼠标移出事件处理函数
+         * 
+         * @inner
+         */
+        function mainOutHandler() {
+            if (!this.isDisabled()) {
+                this.removeState('hover');
+                this.removeState('press');
+            }
+        }
+
+        /**
+         * 控件主元素鼠标点击按下事件处理函数
+         * 
+         * @inner
+         */
+        function mainDownHandler() {
+            if (!this.isDisabled()) {
+                this.addState('press');
+            }
+        }
+
+        /**
+         * 控件主元素鼠标点击释放事件处理函数
+         * 
+         * @inner
+         */
+        function mainUpHandler() {
+            if (!this.isDisabled()) {
+                this.removeState('press');
+            }
+        }
 
         /**
          * 执行控件渲染前动作
@@ -263,7 +349,14 @@ define(
             control.childrenIndex = null;
 
             // 移除自身行为
+            var main = control.main;
             control.main = null;
+            if (main) {
+                main.onmouseup = null;
+                main.onmousedown = null;
+                main.onmouseout = null;
+                main.onmouseover = null;
+            }
 
             // 从视图环境移除
             control.viewContext.remove(control);
@@ -296,7 +389,7 @@ define(
          * @return {boolean}
          */
         helper.validate = function (control, justCheck) {
-            var validity = new require('./validate/Validity')();
+            var validity = new require('./validator/Validity')();
             var eventArg = {
                 validity: validity
             };
@@ -336,8 +429,7 @@ define(
          */
         helper.showValidity = function (control, validity) {
             // TODO: 简单实现了个alert版本，需要重新实现
-            // 如果是展现到页面中的dom元素，需要考虑：
-            //    当验证合法时，清除或隐藏该dom
+            // 如果是展现到页面中的dom元素，需要考虑：当验证合法时，清除或隐藏该dom
             if (!validity.isValid()) {
                 var message = [];
                 var states = validity.getStates();
@@ -350,6 +442,48 @@ define(
 
                 alert(message.join('\n'));
             }
+        };
+
+        /**
+         * 初始化输入控件的name属性
+         * 
+         * @param {InputControl} control 输入控件实例
+         */
+        helper.initName = function (control) {
+            if (!control.name && control.main) {
+                control.name = control.main.getAttribute('name');
+            }
+        };
+
+        /**
+         * 为输入控件创建input元素
+         * 
+         * @param {Object} options 创建参数
+         * @param {string} options.type 输入控件类型
+         */
+        helper.createInput = function (options) {
+            var tagName = 'input';
+            var type = options.type;
+            if (type == 'textarea') {
+                tagName = type;
+                type = null;
+            }
+
+            var name = options.name;
+            var creater = name 
+                ? tagName
+                : '<' + tagName + ' name="' + name + '">';
+
+            var input = document.createElement(creater); 
+
+            // 非IE浏览器不认createElement( '<input name=...' )
+            if (!input) {
+                input = document.createElement(tagName);
+                name && (input.name = name);
+            }
+
+            type && (input.type = type);
+            return input;
         };
 
         return helper;
