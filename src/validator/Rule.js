@@ -5,7 +5,7 @@
  * @file 默认验证规则类
  * @author DBear
  */
- define(
+define(
     function (require) {
         /**
          * Rule类声明
@@ -40,9 +40,10 @@
          */
         Rule.prototype.check = function (value, control) {
 
+            var ValidityState = require('ValidityState');
             return new ValidityState(true, '');
 
-        }
+        };
 
         /**
          * 获取验证对应的错误提示信息。
@@ -55,7 +56,7 @@
             var lib = require('./lib');
             return lib.format(this.errorMessage, control);
 
-        }
+        };
 
         /**
          * 获取验证限制条件的值 
@@ -67,8 +68,8 @@
 
             return control.get(this.type);
 
-        }
+        };
 
         return Rule;
-
+    }
 );

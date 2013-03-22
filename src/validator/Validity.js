@@ -5,7 +5,7 @@
  * @file 验证信息类
  * @author DBear
  */
- define(
+define(
     function () {
         /**
          * Validity类声明
@@ -66,7 +66,7 @@
             this.stateList.push(state);
             this.stateMap[name] = state;
 
-        }
+        };
 
         /**
          * 获取验证状态
@@ -78,7 +78,7 @@
 
             return this.statesMap[name];
 
-        }
+        };
 
         /**
          * 获取验证状态集合
@@ -89,7 +89,7 @@
 
             return this.stateList.slice();
 
-        }
+        };
 
         /**
          * 获取自定义验证信息
@@ -100,7 +100,7 @@
 
             return this.customMessage;
 
-        }
+        };
 
 
         /**
@@ -111,7 +111,7 @@
 
             this.customMessage = message;
 
-        }
+        };
 
 
         /**
@@ -131,8 +131,8 @@
 
             return true;
 
-        }
+        };
 
         return Validity;
-
+    }
 );

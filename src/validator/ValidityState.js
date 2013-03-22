@@ -5,7 +5,7 @@
  * @file 规则验证状态类
  * @author DBear
  */
- define(
+define(
     function () {
         /**
          * ValidityState类声明
@@ -37,9 +37,9 @@
          */
         ValidityState.prototype.getMessage = function () {
 
-        	return this.message;
+            return this.message;
 
-        }
+        };
 
 
         /**
@@ -49,9 +49,9 @@
          */
         ValidityState.prototype.getState = function () {
 
-        	return this.state;
+            return this.state;
 
-        }
+        };
 
 
 
@@ -62,8 +62,9 @@
          */
         ValidityState.prototype.setMessage = function (message) {
 
-        	this.message = message;
-        }
+            this.message = message;
+
+        };
 
 
         /**
@@ -75,7 +76,7 @@
 
             this.state = state;
 
-        }
+        };
 
         return ValidityState;
     }
