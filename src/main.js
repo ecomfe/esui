@@ -83,6 +83,7 @@ define(
         function createInstance(type, options, container) {
             var Constructor = container[type];
             if (Constructor) {
+                delete options.type;
                 return new Constructor(options);
             }
 
@@ -244,7 +245,7 @@ define(
                 var extensionOptions = {};
 
                 // 解析attribute中的参数
-                for (var j = 0, attrLen = attributes.length; j < attrLen, j++) {
+                for (var j = 0, attrLen = attributes.length; j < attrLen; j++) {
                     var attribute = attributes[j];
                     var name = attribute.name;
                     var value = attribute.value;
@@ -356,6 +357,27 @@ define(
          */
         main.attachExtension = function(type, options) {
             globalExtensionOptions[type] = options;
+        };
+
+        /**
+         * 创建全局扩展对象
+         * 
+         * @return {Array.<Extension>}
+         */
+        main.createGlobalExtensions = function () {
+            var options = globalExtensionOptions;
+            var extensions = [];
+            for (var i = 0, len = options.length; i < len; i++ ) {
+                var option = options[i];
+                var type = option.type;
+
+                if (type) {
+                    var extension = main.create(type, option);
+                }
+                extension && extensions.push(extension);
+            }
+
+            return extensions
         };
 
         /**
