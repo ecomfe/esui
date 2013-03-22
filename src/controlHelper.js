@@ -18,8 +18,8 @@ define(
          * @inner
          * @return {Object} 
          */
-        function getLiftCycle() {
-            return require('./Control').LiftCycle;
+        function getLifeCycle() {
+            return require('./Control').LifeCycle;
         }
 
         /**
@@ -63,7 +63,7 @@ define(
             helper.initViewContext(control);
 
             // 初始化扩展
-            helper.initExtension(control);
+            helper.initExtensions(control);
         };
 
         /**
@@ -72,7 +72,7 @@ define(
          * @param {Control} control 控件实例
          */
         helper.afterInit = function (control) {
-            control.lifeCycle = getLiftCycle().INITED;
+            control.lifeCycle = getLifeCycle().INITED;
             control.fire('init');
         };
 
@@ -172,6 +172,7 @@ define(
 
             var type = control.type;
             var classes = [ uiPrefix + '-' + type + part ];
+            part && classes.push(uiPrefix + part);
 
             var skin = control.skin;
             if (skin) {
@@ -200,7 +201,7 @@ define(
          * @return {boolean}
          */
         helper.isInited = function (control) {
-            return control.lifeCycle == getLiftCycle().INITED;
+            return control.lifeCycle == getLifeCycle().INITED;
         };
 
         /**
@@ -215,7 +216,7 @@ define(
                     main.id = helper.getId(control);
                 }
 
-                helper.addClass(main, helper.getClass(control));
+                helper.addClass(main, control);
             }
         };
 
@@ -283,7 +284,7 @@ define(
          * @param {Control} control 控件实例
          */
         helper.afterRender = function (control) {
-            control.lifeCycle = getLiftCycle().DISPOSED;
+            control.lifeCycle = getLifeCycle().DISPOSED;
             control.fire('afterdispose');
         };
 
