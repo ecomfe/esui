@@ -422,10 +422,6 @@ define(
                     handler.call(me, eventArg);
                 }
 
-                // 调用listeners
-                callListeners(me[type]);
-                callListeners(me['*']);
-
                 /**
                  * 调用listeners
                  * 
@@ -442,6 +438,10 @@ define(
                         }
                     }
                 }
+
+                // 调用listeners
+                callListeners(me[type]);
+                callListeners(me['*']);
             }
         };
 

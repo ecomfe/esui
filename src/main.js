@@ -170,7 +170,7 @@ define(
                 }
 
                 return value;
-            };
+            }
 
             /**
              * 将字符串数组join成驼峰形式
@@ -372,14 +372,15 @@ define(
             for (var i = 0, len = options.length; i < len; i++ ) {
                 var option = options[i];
                 var type = option.type;
+                var extension;
 
                 if (type) {
-                    var extension = main.create(type, option);
+                    extension = main.create(type, option);
                 }
                 extension && extensions.push(extension);
             }
 
-            return extensions
+            return extensions;
         };
 
         /**

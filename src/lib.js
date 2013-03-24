@@ -345,7 +345,7 @@ define(function() {
      * @return {string}
      */
     lib.toPascalCase = function (source) {
-        return source.charAt(0).toUpperCase() + source.slice(1)
+        return source.charAt(0).toUpperCase() + source.slice(1);
     };
 
     /**

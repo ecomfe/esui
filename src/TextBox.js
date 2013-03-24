@@ -56,6 +56,67 @@ define(
             helper.afterInit(this);
         }
 
+        /**
+         * 鼠标按下事件处理函数
+         * 
+         * @inner
+         * @param {HTMLEvent} e 事件参数
+         */
+        function keypressHandler(e) {
+            e = e || window.event;
+            var keyCode = e.keyCode || e.which;
+            
+            if ( keyCode == 13 ) {
+                this.fire('enter');
+            }
+        }
+
+        /**
+         * 输入框获得焦点事件处理函数
+         * 
+         * @inner
+         */
+        function focusHandler() {
+            var main = this.main;
+            
+            helper.removeClass(this, main, 'placing');
+            if (this.placing) {
+                main.value = '';
+            }
+
+            if (this.autoSelect) {
+                main.select();
+            }
+
+            this.fire('focus');
+        }
+
+        /**
+         * 输入框失去焦点事件处理函数
+         * 
+         * @inner
+         */
+        function blurHandler() {
+            this.setRawValue(this.main.value);
+            this.fire('blur');
+        }
+
+        /**
+         * 输入框用户输入事件处理函数
+         * 
+         * @inner
+         */
+        function inputHandler() {
+            if (lib.ie) {
+                if (window.event.propertyName == 'value') {
+                    this.fire('change');
+                }
+            } 
+            else {
+                this.fire('change');
+            } 
+        }
+        
         TextBox.prototype = {
             /**
              * 控件类型
@@ -80,7 +141,6 @@ define(
                             name: this.name,
                             type: mode
                         });
-                        break;
                 }
 
                 return null;
@@ -250,67 +310,6 @@ define(
                 helper.afterDispose(this);
             }
         };
-
-        /**
-         * 鼠标按下事件处理函数
-         * 
-         * @inner
-         * @param {HTMLEvent} e 事件参数
-         */
-        function keypressHandler(e) {
-            e = e || window.event;
-            var keyCode = e.keyCode || e.which;
-            
-            if ( keyCode == 13 ) {
-                this.fire('enter');
-            }
-        }
-
-        /**
-         * 输入框获得焦点事件处理函数
-         * 
-         * @inner
-         */
-        function focusHandler() {
-            var main = this.main;
-            
-            helper.removeClass(this, main, 'placing');
-            if (this.placing) {
-                main.value = '';
-            }
-
-            if (this.autoSelect) {
-                main.select();
-            }
-
-            this.fire('focus');
-        }
-
-        /**
-         * 输入框失去焦点事件处理函数
-         * 
-         * @inner
-         */
-        function blurHandler() {
-            this.setRawValue(this.main.value);
-            this.fire('blur');
-        }
-
-        /**
-         * 输入框用户输入事件处理函数
-         * 
-         * @inner
-         */
-        function inputHandler() {
-            if (lib.ie) {
-                if (window.event.propertyName == 'value') {
-                    this.fire('change');
-                }
-            } 
-            else {
-                this.fire('change');
-            } 
-        }
 
         require('./lib').inherits(TextBox, InputControl);
         require('./main').register(TextBox);

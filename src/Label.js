@@ -13,7 +13,7 @@ define(
             Control.call(this, options);
         }
 
-        Label.prototype.type = "Label";
+        Label.prototype.type = 'Label';
 
         require('./lib').inherits(Label, Control);
         require('./main').register(Label);

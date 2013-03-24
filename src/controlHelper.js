@@ -10,7 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var ui = require('./main');
-        var now = (new Date).getTime();
+        var now = (new Date()).getTime();
 
         /**
          * 获取LifeCycle枚举
@@ -247,21 +247,6 @@ define(
         };
 
         /**
-         * 初始化hover状态的行为
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.initMouseBehavior = function (control) {
-            var main = control.main;
-            if (main) {
-                main.onmouseover = lib.bind(mainOverHandler, control);
-                main.onmouseout = lib.bind(mainOutHandler, control);
-                main.onmousedown = lib.bind(mainDownHandler, control);
-                main.onmouseup = lib.bind(mainUpHandler, control);
-            }
-        };
-
-        /**
          * 控件主元素鼠标移入事件处理函数
          * 
          * @inner
@@ -305,6 +290,21 @@ define(
                 this.removeState('press');
             }
         }
+
+        /**
+         * 初始化hover状态的行为
+         * 
+         * @param {Control} control 控件实例
+         */
+        helper.initMouseBehavior = function (control) {
+            var main = control.main;
+            if (main) {
+                main.onmouseover = lib.bind(mainOverHandler, control);
+                main.onmouseout = lib.bind(mainOutHandler, control);
+                main.onmousedown = lib.bind(mainDownHandler, control);
+                main.onmouseup = lib.bind(mainUpHandler, control);
+            }
+        };
 
         /**
          * 执行控件渲染前动作
@@ -389,7 +389,8 @@ define(
          * @return {boolean}
          */
         helper.validate = function (control, justCheck) {
-            var validity = new require('./validator/Validity')();
+            var Validity = require('./validator/Validity');
+            var validity = new Validity();
             var eventArg = {
                 validity: validity
             };
