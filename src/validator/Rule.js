@@ -39,6 +39,8 @@ define(
          * @return {validator/ValidityState}
          */
         Rule.prototype.check = function (value, control) {
+            // 基类接口，参数没用但需要记录文档
+            /* jshint unused:false */
 
             var ValidityState = require('ValidityState');
             return new ValidityState(true, '');
