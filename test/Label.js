@@ -20,7 +20,7 @@ define(function() {
         describe('created via HTML', function () {
             var label;
             beforeEach(function() {
-                var html = '<h1 data-ui="type:Label;id:test;">Hello World</h1>';
+                var html = '<h1 data-ui="type: Label;id: test;">Hello World</h1>';
                 container.innerHTML = html;
                 esui.init(container);
                 label = esui.getViewContext().get('test');
