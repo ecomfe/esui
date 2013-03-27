@@ -17,26 +17,20 @@ define(
              * 状态集合List
              * @type {Array} 
              */
-            this.stateList = [];
+            this.states = [];
 
             /**
              * 状态集合Map
              * @type {Object} 
              */
-            this.stateMap = {};
+            this.stateIndex = {};
 
             /**
              * 自定义验证信息
              * @type {string} 
              */
             this.customMessage = '';
-
-            /**
-             * 验证状态
-             * @type {boolean} 
-             */
-            this.state = true;
-
+            
         }
 
         /**
@@ -48,24 +42,24 @@ define(
         Validity.prototype.addState = function (name, state) {
 
             //如果状态名已存在
-            if (this.stateMap[name]) {
+            if (this.stateIndex[name]) {
                 // 同样的状态对象，不处理
                 if (this.statesMap[name] === state) {
                     return;
                 }
 
                 // 不一样，删除原list中元素
-                for (var i = 0; i < this.stateList.length; i++) {
-                    if (this.stateList[i] === this.stateMap[name]) {
-                        this.stateList.splice(i, 1);
+                for (var i = 0; i < this.states.length; i++) {
+                    if (this.states[i] === this.stateIndex[name]) {
+                        this.states.splice(i, 1);
                         break;
                     }
                 }
             }
 
             // 更新数据
-            this.stateList.push(state);
-            this.stateMap[name] = state;
+            this.states.push(state);
+            this.stateIndex[name] = state;
 
         };
 
@@ -86,9 +80,9 @@ define(
          *
          * @return {Array}
          */
-        Validity.prototype.getStateList = function () {
+        Validity.prototype.getstates = function () {
 
-            return this.stateList.slice();
+            return this.states.slice();
 
         };
 
@@ -122,10 +116,10 @@ define(
          */
         Validity.prototype.isValid = function () {
 
-            var stateList = this.getStateList();
+            var states = this.getstates();
 
-            for (var i = 0; i < stateList.length; i ++) {
-                if (!stateList[i].getState()) {
+            for (var i = 0; i < states.length; i ++) {
+                if (!states[i].getState()) {
                     return false;
                 }
             }
