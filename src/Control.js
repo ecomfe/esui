@@ -346,7 +346,7 @@ define(
                 }
                 this.children = [];
                 this.childrenIndex = {};
-            }
+            },
 
             /**
              * 获取子控件

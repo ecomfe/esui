@@ -15,25 +15,25 @@ define(
          * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Label(options) {
+        function Panel(options) {
             Control.call(this, options);
         }
 
-        Label.prototype.type = 'Panel';
+        Panel.prototype.type = 'Panel';
 
         /**
          * 设置内容
          *
          * @param {string} html 内容HTML
          */
-        Label.prototype.setContent = function (html) {
+        Panel.prototype.setContent = function (html) {
             this.disposeChildren();
             this.main.innerHTML = html;
             this.initChildren(this.main);
         };
 
-        require('./lib').inherits(Label, Control);
-        require('./main').register(Label);
-        return Label;
+        require('./lib').inherits(Panel, Control);
+        require('./main').register(Panel);
+        return Panel;
     }
 );
