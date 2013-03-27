@@ -9,17 +9,44 @@
 define(
     function (require) {
         var Control = require('./Control');
+        var helper = require('./controlHelper');
+
         /**
-         * Label控件
+         * Panel的默认选项
+         *
+         * @type {Object}
+         * @inner
+         * @const
+         */
+        var DEFAULT_OPTION = {
+            tagName: 'div'
+        };
+
+        /**
+         * Panel控件
          *
          * @param {Object=} options 初始化参数
          * @constructor
          */
         function Panel(options) {
-            Control.call(this, options);
+            helper.init(this, options, DEFAULT_OPTION);
+            if (this.main) {
+                this.tagName = this.main.nodeName.toLowerCase();
+            }
+            helper.afterInit(this);
         }
 
         Panel.prototype.type = 'Panel';
+
+        /**
+         * 创建控件主元素
+         *
+         * @override
+         * @return {HTMLElement}
+         */
+        Panel.prototype.createMain = function () {
+            return document.createElement(this.tagName);
+        };
 
         /**
          * 设置内容
