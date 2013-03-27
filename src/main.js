@@ -156,7 +156,7 @@ define(
              */
             function parseAttribute(source) {
                 var value = {};
-                var items = source.split(/;\s*/);
+                var items = source.split(/\s*;\s*/);
                 var len = items.length;
 
                 while ( len-- ) {
@@ -165,7 +165,7 @@ define(
                         continue;
                     }
 
-                    var segment = item.split(/\s*:/);
+                    var segment = item.split(/\s*:\s*/);
                     value[segment[0]] = valueReplacer(segment[1]);
                 }
 
