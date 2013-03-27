@@ -368,7 +368,7 @@ define(
          * 
          * @param {Control} control 控件实例
          */
-        helper.afterRender = function (control) {
+        helper.afterDispose = function (control) {
             control.lifeCycle = getLifeCycle().DISPOSED;
             control.fire('afterdispose');
         };
