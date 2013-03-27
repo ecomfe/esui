@@ -351,7 +351,9 @@ define(
             }
 
             // 从视图环境移除
-            control.viewContext.remove(control);
+            if (control.viewContext) {
+                control.viewContext.remove(control);
+            }
         };
 
         /**

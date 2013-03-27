@@ -53,8 +53,7 @@ define(
          * @public
          */
         ViewContext.prototype.remove = function (control) {
-
-            this.controls[control.id] = null;
+            delete this.controls[control.id];
             control.setViewContext(null);
 
         };
