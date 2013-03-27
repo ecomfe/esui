@@ -451,8 +451,10 @@ define(
                 }
 
                 // 调用listeners
-                callListeners(me[type]);
-                callListeners(me['*']);
+                var events = me.events;
+                
+                callListeners(events[type]);
+                callListeners(events['*']);
             }
         };
 
