@@ -5,7 +5,7 @@
  * @file UI基础库适配层
  * @author otakustay, firede(firede@firede.us), erik
  */
-define(function() {
+define(function () {
     /**
      * lib命名空间
      * 
@@ -21,7 +21,7 @@ define(function() {
      * @param {string} source 目标字符串
      * @return {string} 删除两端空白字符后的字符串
      */
-    lib.trim = function(source) {
+    lib.trim = function (source) {
         // by Tangram 1.x: baidu.string.trim
         return String(source).replace(whitespace, '');
     };
@@ -32,9 +32,9 @@ define(function() {
      * @param {function} subClass 子类构造器
      * @param {function} superClass 父类构造器
      */
-    lib.inherits = function(subClass, superClass) {
+    lib.inherits = function (subClass, superClass) {
         // by Tangram 1.x: baidu.lang.inherits
-        var Empty = new Function();
+        var Empty = function () {};
         Empty.prototype = superClass.prototype;
         var selfPrototype = subClass.prototype;
         var proto = subClass.prototype = new Empty();
@@ -109,7 +109,7 @@ define(function() {
      *
      * @return {function} 封装后的函数
      */
-    lib.bind = function(func, scope) {
+    lib.bind = function (func, scope) {
         // by Tangram 1.x: baidu.fn.bind
         var xargs = arguments.length > 2 ? [].slice.call(arguments, 2) : null;
         return function () {
@@ -126,7 +126,7 @@ define(function() {
      * @param {string|HTMLElement} id 元素的id或DOM元素
      * @return {HTMLElement|null} 获取的元素，查找不到时返回null
      */
-    lib.g = function(id) {
+    lib.g = function (id) {
         // by Tangram 1.x: baidu.dom.g
         if (!id) {
             return null;
@@ -149,7 +149,7 @@ define(function() {
      * 
      * @return {string}
      */
-    lib.format = function(template, data) {
+    lib.format = function (template, data) {
         if (data == null) {
             return template;
         }
@@ -176,14 +176,14 @@ define(function() {
     lib.decodeHTML = function (source) {
         // by Tangram 1.x: baidu.string.decodeHTML
         var str = String(source)
-            .replace(/&quot;/g,'"')
-            .replace(/&lt;/g,'<')
-            .replace(/&gt;/g,'>')
+            .replace(/&quot;/g, '"')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
             .replace(/&amp;/g, '&');
         //处理转义的中文和实体字符
         return str.replace(
             /&#([\d]+);/g, 
-            function(match, code){
+            function (match, code) {
                 return String.fromCharCode(parseInt(code, 10));
             }
         );
@@ -364,7 +364,7 @@ define(function() {
      * 
      * @return {number} 页面宽度
      */
-    lib.page.getWidth = function() {
+    lib.page.getWidth = function () {
         // by Tangram 1.x: baidu.page.getWidth
         return Math.max(
             documentElement.scrollWidth, 
@@ -378,7 +378,7 @@ define(function() {
      * 
      * @return {number} 页面高度
      */
-    lib.page.getHeight = function() {
+    lib.page.getHeight = function () {
         // by Tangram 1.x: baidu.page.getHeight
         return Math.max(
             documentElement.scrollHeight, 

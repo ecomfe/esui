@@ -66,7 +66,7 @@ define(
             e = e || window.event;
             var keyCode = e.keyCode || e.which;
             
-            if ( keyCode == 13 ) {
+            if (keyCode == 13) {
                 this.fire('enter');
             }
         }
@@ -254,7 +254,7 @@ define(
                 var handler = this.inputHandler;
                 var main = this.main;
 
-                if ( lib.ie ) {
+                if (lib.ie) {
                     main.onpropertychange = null;
                 } 
                 else {
@@ -267,7 +267,7 @@ define(
              *
              * @param {number} height 高度
              */
-            setHeight: function ( height ) {
+            setHeight: function (height) {
                 this.height = height;
                 height && (this.main.style.height = height + 'px');
             },
@@ -277,7 +277,7 @@ define(
              *
              * @param {number} width 宽度
              */
-            setWidth: function ( width ) {
+            setWidth: function (width) {
                 this.width = width;
                 width && (this.main.style.width = width + 'px');
             },

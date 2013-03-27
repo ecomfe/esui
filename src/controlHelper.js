@@ -94,7 +94,7 @@ define(
          * 
          * @param {Control} control 控件实例
          */
-        helper.initExtensions = function(control) {
+        helper.initExtensions = function (control) {
             // 附加全局扩展
             var extensions = control.extensions;
             if (!(extensions instanceof Array)) {

@@ -139,7 +139,7 @@ define(
          * @param {Object=} options.valueReplacer 属性值替换函数
          * @return {Array} 初始化的控件对象集合
          */
-        main.init = function(wrap, options) {
+        main.init = function (wrap, options) {
             wrap = wrap || document.body;
             options = options || {};
             
@@ -159,7 +159,7 @@ define(
                 var items = source.split(/;\s*/);
                 var len = items.length;
 
-                while ( len-- ) {
+                while (len--) {
                     var item = items[len];
                     if (!item) {
                         continue;
@@ -339,7 +339,7 @@ define(
          * @param {Object} options 初始化参数
          * @return {Extension}
          */
-        main.createExtension = function(type, options) {
+        main.createExtension = function (type, options) {
             return createInstance(type, options, extensionClasses);
         };
 
@@ -357,7 +357,7 @@ define(
          * @param {string} type 扩展类型
          * @param {Object} options 扩展初始化参数
          */
-        main.attachExtension = function(type, options) {
+        main.attachExtension = function (type, options) {
             globalExtensionOptions[type] = options;
         };
 
@@ -369,7 +369,7 @@ define(
         main.createGlobalExtensions = function () {
             var options = globalExtensionOptions;
             var extensions = [];
-            for (var i = 0, len = options.length; i < len; i++ ) {
+            for (var i = 0, len = options.length; i < len; i++) {
                 var option = options[i];
                 var type = option.type;
                 var extension;

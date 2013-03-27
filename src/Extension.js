@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
     var lib = require('./lib');
 
     /**
@@ -33,7 +33,7 @@ define(function() {
      * @return {boolean} 如果处于激活状态则返回true
      * @public
      */
-    Extension.prototype.isActive = function() {
+    Extension.prototype.isActive = function () {
         return this.active;
     };
 
@@ -42,7 +42,7 @@ define(function() {
      *
      * @public
      */
-    Extension.prototype.activate = function() {
+    Extension.prototype.activate = function () {
         this.active = true;
     };
 
@@ -51,11 +51,11 @@ define(function() {
      *
      * @public
      */
-    Extension.prototype.inactivate = function() {
+    Extension.prototype.inactivate = function () {
         this.active = false;
     };
 
-    Extension.prototype.attachTo = function(target) {
+    Extension.prototype.attachTo = function (target) {
         // 事实上我们不希望一个扩展实例被多效附加到控件上，
         // 所以虽然你看到了这段代码，但最好别这么乱来，
         // 我们无法保证所有的扩展`inactivate()`能清理干净东西
@@ -78,7 +78,7 @@ define(function() {
      *
      * @public
      */
-    Extension.prototype.dispose = function() {
+    Extension.prototype.dispose = function () {
         if (this.active) {
             this.inactivate();
         }
