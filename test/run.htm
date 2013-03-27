@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Jasmine Spec Runner</title>
+
+    <link rel="stylesheet" href="asset/css/jasmine.css">
+    <script src="asset/js/jasmine.js"></script>
+    <script src="asset/js/jasmine-html.js"></script>
+    <script src="matchers.js"></script>
+    <script src="asset/js/esl.js"></script>
+
+    <div id="container"></div>
+
+    <script>
+        require.config({
+            packages: [
+                {
+                    name: 'esui',
+                    location: '../src',
+                    main: 'main'
+                }
+            ]
+        });
+    </script>
+    <script>
+        var container = document.getElementById('container');
+        var suits = [
+            'esui', 'Label'
+        ];
+        require(
+            suits,
+            function(esui) {
+                beforeEach(function () {
+                    esui.getViewContext().clean();
+                    container.innerHTML = '';
+                });
+
+                var jasmineEnv = jasmine.getEnv();
+                jasmineEnv.updateInterval = 1000;
+
+                var htmlReporter = new jasmine.HtmlReporter();
+
+                jasmineEnv.addReporter(htmlReporter);
+
+                jasmineEnv.specFilter = function(spec) {
+                    return htmlReporter.specFilter(spec);
+                };
+
+                var currentWindowOnload = window.onload;
+
+                window.onload = function() {
+                    if (currentWindowOnload) {
+                        currentWindowOnload();
+                    }
+                    execJasmine();
+                };
+
+                function execJasmine() {
+                    jasmineEnv.execute();
+                }
+            }
+        );
+    </script>
+
+</head>
+
+<body>
+</body>
+</html>
