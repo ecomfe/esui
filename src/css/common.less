@@ -1,0 +1,42 @@
+@import "variable.less";
+@import "normalize.less";
+@import "mixin.less";
+
+html {
+    background: #FFF;
+    color: @default-font-color;
+    font-family: @default-font-family;
+    font-size: @default-font-size;
+}
+
+a {
+    color: #0033CC;
+    text-decoration: none;
+    cursor:pointer;
+
+    &:focus {
+        outline: thin dotted;
+    }
+    
+    &:active,
+    &:hover {
+        outline: 0;
+        text-decoration: underline;
+    }
+
+}
+
+caption,
+th {
+    text-align: left;
+}
+
+li {
+    list-style: none;
+}
+
+em,
+i {
+    font-style:normal;
+}
+

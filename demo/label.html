@@ -15,6 +15,8 @@
             <button id="op-show">show</button>
             <button id="op-hide">hide</button>
             <button id="op-toggle">toggle</button>
+            <button id="op-set-text">set text</button>
+            <button id="op-set-content">set content</button>
         </div>
         <script>
         require(
@@ -33,6 +35,12 @@
                 };
                 document.getElementById('op-toggle').onclick = function () {
                     label.toggle();
+                };
+                document.getElementById('op-set-text').onclick = function () {
+                    label.setText('<a href="###">prevent hijack</a>');
+                };
+                document.getElementById('op-set-content').onclick = function () {
+                    label.setContent('<a href="###">prevent hijack</a>');
                 };
             }
         )

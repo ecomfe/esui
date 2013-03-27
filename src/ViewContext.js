@@ -5,8 +5,8 @@
  * @file 视图环境类 用于对控件视图的管理
  * @author DBear
  */
- define(
-    function() {
+define(
+    function () {
         /**
          * ViewContext类声明
          *
