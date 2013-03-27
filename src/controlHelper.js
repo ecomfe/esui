@@ -86,7 +86,6 @@ define(
         helper.initViewContext = function (control) {
             var viewContext = control.viewContext || ui.getViewContext();
 
-            delete control.viewContext;
             control.setViewContext(viewContext);
         };
 
@@ -107,15 +106,13 @@ define(
             );
 
             // 同类型扩展去重
-            var extensionTypes = {};
+            var registeredExtensions = {};
             for (var i = 0, len = extensions.length; i < len; i++) {
-                var type = extensions[i].type;
-                if (extensionTypes[type]) {
-                    extensions.splice(i, 1);
-                    i--;
+                var extension = extensions[i];
+                if (!registeredExtensions[extension.type]) {
+                    extension.attachTo(control);
+                    registeredExtensions[extension.type] = true;
                 }
-
-                extensionTypes[type] = 1;
             }
         };
 
@@ -193,7 +190,7 @@ define(
          */
         helper.getId = function (control, part) {
             part = part ? '-' + part : '';
-            return 'ctrl--' + control.id + part;
+            return 'ctrl-' + control.id + part;
         };
 
         /**
@@ -299,6 +296,7 @@ define(
         helper.initMouseBehavior = function (control) {
             var main = control.main;
             if (main) {
+                // TODO: 能搞成用addEventListener吗（需要一个DOM事件模块？）
                 main.onmouseover = lib.bind(mainOverHandler, control);
                 main.onmouseout = lib.bind(mainOutHandler, control);
                 main.onmousedown = lib.bind(mainDownHandler, control);
@@ -338,13 +336,7 @@ define(
          */
         helper.dispose = function (control) {
             // 清理子控件
-            var children = control.children;
-            for (var i = 0, len = children.length; i < len; i++) {
-                var child = children[i];
-                if (child) {
-                    child.dispose();
-                }
-            }
+            control.disposeChildren();
             control.children = null;
             control.childrenIndex = null;
 
@@ -430,7 +422,8 @@ define(
          */
         helper.showValidity = function (control, validity) {
             // TODO: 简单实现了个alert版本，需要重新实现
-            // 如果是展现到页面中的dom元素，需要考虑：当验证合法时，清除或隐藏该dom
+            // 如果是展现到页面中的dom元素，
+            // 需要考虑：当验证合法时，清除或隐藏该dom
             if (!validity.isValid()) {
                 var message = [];
                 var states = validity.getStates();
