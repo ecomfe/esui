@@ -3,7 +3,7 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file Label控件
- * @author erik
+ * @author erik, otakustay
  */
 
 define(
@@ -27,9 +27,9 @@ define(
          * @param {string} text 文本内容
          */
         Label.prototype.setText = function (text) {
+            this.disposeChildren();
             this.main.innerHTML = require('./lib').encodeHTML(text);
         };
-
 
         /**
          * 设置内容
@@ -37,7 +37,9 @@ define(
          * @param {string} html 内容HTML
          */
         Label.prototype.setContent = function (html) {
+            this.disposeChildren();
             this.main.innerHTML = html;
+            this.initChildren(this.main);
         };
 
         require('./lib').inherits(Label, Control);

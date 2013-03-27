@@ -338,6 +338,17 @@ define(
             },
 
             /**
+             * 移除全部子控件
+             */
+            disposeChildren: function () {
+                for (var i = 0; i < this.children.length; i++) {
+                    this.children[i].dispose();
+                }
+                this.children = [];
+                this.childrenIndex = {};
+            }
+
+            /**
              * 获取子控件
              * 
              * @param {string} childName 子控件名
