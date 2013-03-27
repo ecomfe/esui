@@ -31,7 +31,7 @@
         require(
             suits,
             function(esui) {
-                beforeEach(function () {
+                afterEach(function () {
                     esui.getViewContext().clean();
                     container.innerHTML = '';
                 });
