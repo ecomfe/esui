@@ -414,5 +414,31 @@ define(function () {
         }
     };
 
+    lib.getText = function (element) {
+        // by Tangram 1.x: baidu.dom.getText
+        var ret = '';
+        var childs;
+        var i = 0;
+        var l;
+
+        element = typeof element == 'string' 
+            ? document.getElementById(element) : element;
+
+        //  text 和 CDATA 节点，取nodeValue
+        if (element.nodeType === 3 || element.nodeType === 4) {
+
+            ret += element.nodeValue;
+        } 
+        else if (element.nodeType !== 8) {// 8 是 comment Node
+            childs = element.childNodes;
+
+            for (l = childs.length; i < l; i++) {
+                ret += lib.getText(childs[i]);
+            }
+        }
+
+        return ret;
+    };
+
     return lib;
 });
