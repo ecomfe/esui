@@ -13,7 +13,7 @@ define(
         var helper  = require('./controlHelper');
 
         /**
-         * Label的默认选项
+         * Link的默认选项
          *
          * @type {Object}
          * @inner
