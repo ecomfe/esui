@@ -86,6 +86,9 @@ define(
         helper.initViewContext = function (control) {
             var viewContext = control.viewContext || ui.getViewContext();
 
+            // 因为`setViewContext`里有判断传入的`viewContext`和自身的是否相等，
+            // 这里必须制造出**不相等**的情况，再调用`setViewContext`
+            control.viewContext = null;
             control.setViewContext(viewContext);
         };
 
