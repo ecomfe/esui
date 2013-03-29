@@ -440,5 +440,36 @@ define(function () {
         return ret;
     };
 
+    /**
+     * 将"name:value[;name:value]"的属性值解析成Object
+     * 
+     * @param {string} source 属性值源字符串
+     * @param {function=} 替换值的处理函数
+     * @return {Object}
+     */
+    lib.parseAttribute = function (source, valueReplacer) {
+        if (!source) {
+            return {};
+        }
+        
+        var value = {};
+        var items = source.split(/\s*;\s*/);
+        var len = items.length;
+
+        while (len--) {
+            var item = items[len];
+            if (!item) {
+                continue;
+            }
+
+            var segment = item.split(/\s*:\s*/);
+            value[segment[0]] = valueReplacer ?
+                valueReplacer(segment[1])
+                : segment[1];
+        }
+
+        return value;
+    }
+
     return lib;
 });
