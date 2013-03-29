@@ -8,7 +8,7 @@ define(function (require) {
      * @param {Object=} options 初始化的参数
      */
     function Extension(options) {
-        lib.mix(this, options);
+        lib.extend(this, options);
     }
 
     /**
