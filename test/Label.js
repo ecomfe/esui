@@ -1,8 +1,8 @@
-define(function() {
+define(function (require) {
     var Label = require('esui/Label');
     var esui = require('esui');
 
-    describe('Label', function() {
+    describe('Label', function () {
         describe('created via script', function () {
             it('should create a `<span>` element if `tagName` is not specified', function () {
                 var label = new Label();
@@ -19,7 +19,7 @@ define(function() {
 
         describe('created via HTML', function () {
             var label;
-            beforeEach(function() {
+            beforeEach(function () {
                 var html = '<h1 data-ui="type: Label;id: test;">Hello World</h1>';
                 container.innerHTML = html;
                 esui.init(container);

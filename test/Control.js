@@ -1,8 +1,8 @@
-define(function() {
+define(function (require) {
     var Control = require('esui/Control');
     var esui = require('esui');
 
-    describe('Control', function() {
+    describe('Control', function () {
         var control = new Control();
 
         it('should be instantiatable', function () {
@@ -42,7 +42,7 @@ define(function() {
             
             it('should be able to add an event handler', function () {
                 var control = new Control();
-                expect(function() { control.on('name', function() {}) }).not.toThrow();
+                expect(function () { control.on('name', function () {}) }).not.toThrow();
             });
 
             describe('when event is fired', function () {
@@ -81,15 +81,15 @@ define(function() {
             
                 it('should be able to remove an event handler', function () {
                     var control = new Control();
-                    expect(function() { control.un('name', function() {}) }).not.toThrow();
+                    expect(function() { control.un('name', function () {}) }).not.toThrow();
                 });
 
                 it('should call handlers by order', function () {
                     var queue = [];
                     var control = new Control();
-                    control.on('name', function() { queue.push('a'); });
-                    control.on('name', function() { queue.push('b'); });
-                    control.on('name', function() { queue.push('c'); });
+                    control.on('name', function () { queue.push('a'); });
+                    control.on('name', function () { queue.push('b'); });
+                    control.on('name', function () { queue.push('c'); });
                     control.fire('name');
                     expect(queue.join('')).toBe('abc');
                 });

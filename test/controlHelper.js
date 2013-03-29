@@ -1,4 +1,4 @@
-define(function() {
+define(function (require) {
     var helper = require('esui/controlHelper');
 
     function dispatchEvent(element, type) {
@@ -93,13 +93,13 @@ define(function() {
                     var control = {};
                     var element = document.createElement('div');
                     var handler = jasmine.createSpy();
-                    expect(function() { helper.removeDOMEvent(control, element, 'click', handler) }).not.toThrow();
+                    expect(function () { helper.removeDOMEvent(control, element, 'click', handler) }).not.toThrow();
                 });
 
                 it('should be ok to remove an certain type of event if no event listeners are attached', function () {
                     var control = {};
                     var element = document.createElement('div');
-                    expect(function() { helper.removeDOMEvent(control, element, 'click') }).not.toThrow();
+                    expect(function () { helper.removeDOMEvent(control, element, 'click') }).not.toThrow();
                 });
             });
 
