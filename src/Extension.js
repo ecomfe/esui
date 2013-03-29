@@ -1,4 +1,4 @@
-define(function () {
+define(function (require) {
     var lib = require('./lib');
 
     /**
@@ -84,4 +84,6 @@ define(function () {
         }
         this.target = null;
     };
+
+    return Extension;
 });
