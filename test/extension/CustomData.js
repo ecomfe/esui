@@ -26,6 +26,19 @@ define(function (require) {
             expect(control.getData('y')).toBe('2');
         });
 
+        it('should use `data` property directly if it is already an object', function () {
+            var control = {
+                data: {
+                    x: 1,
+                    y: 2
+                }
+            };
+            var customData = new CustomData();
+            customData.attachTo(control);
+            expect(control.getData('x')).toBe(1);
+            expect(control.getData('y')).toBe(2);
+        });
+
         it('should include `data*` property as its stored data', function () {
             expect(control.getData('z')).toBe('3');
         });

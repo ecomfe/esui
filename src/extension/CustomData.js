@@ -9,7 +9,10 @@ define(
         var dataProperty = /^data[A-Z0-9]/;
         CustomData.prototype.activate = function () {
             Extension.prototype.activate.apply(this, arguments);
-            var data = require('../lib').parseAttribute(this.target.data);
+            var data = this.target.data;
+            if (typeof data !== 'object') {
+                data = require('../lib').parseAttribute(this.target.data);
+            }
             for (var key in this.target) {
                 if (this.target.hasOwnProperty(key) && dataProperty.test(key)) {
                     var dataKey = key.charAt(4).toLowerCase() + key.slice(5);
