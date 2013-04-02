@@ -527,7 +527,7 @@ define(
                 }
             }
             delete control.domEvents[guid];
-        }
+        };
 
         return helper;
     }

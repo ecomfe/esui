@@ -183,8 +183,16 @@ define(
                     return method.call(this, value);
                 }
 
-                this[name] = value;
-                this.repaint();
+                var oldValue = this[name];
+                if (oldValue !== value) {
+                    this[name] = value;
+                    var record = {
+                        name: name,
+                        oldValue: oldValue,
+                        newValue: value
+                    };
+                    this.repaint([record]);
+                }
             },
 
             /**

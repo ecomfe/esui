@@ -476,7 +476,7 @@ define(function () {
         }
 
         return value;
-    }
+    };
 
     return lib;
 });
