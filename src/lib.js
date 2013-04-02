@@ -387,6 +387,20 @@ define(function () {
         );
     };
 
+
+    /**
+     * 获取页面视觉区域宽度
+     *
+     * @returns {number} 页面视觉区域宽度
+     */
+    lib.page.getViewWidth = function () {
+        // by Tangram 1.x: baidu.page.getViewWidth
+        var doc = document,
+        client = doc.compatMode == 'BackCompat' ? doc.body : doc.documentElement;
+
+        return client.clientWidth;
+    };
+
     if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {
         /**
          * IE浏览器版本号
