@@ -427,7 +427,7 @@ define(
 
             var guid = element[domEventsKey];
             if (!guid) {
-                guid = element[domEventsKey] = getGUID();
+                guid = element[domEventsKey] = helper.getGUID();
             }
 
             var events = control.domEvents[guid];
