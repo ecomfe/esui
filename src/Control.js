@@ -18,21 +18,33 @@ define(
          * @param {Object} options 初始化参数
          */
         function Control(options) {
-            helper.init(this, options);
-            helper.afterInit(this);
-        }
+            this.children = [];
+            this.childrenIndex = {};
+            this.states = {};
+            this.events = {};
+            this.domEvents = {};
 
-        /**
-         * 控件生命周期枚举
-         * 
-         * @inner
-         * @type {Object}
-         */
-        var LifeCycle = {
-            INITED   : 1,
-            RENDERED : 2,
-            DISPOSED : 4
-        };
+            this.initOptions(options);
+
+            if (!this.main) {
+                this.main = this.createMain();
+            }
+
+            // 自创建id
+            if (!this.id) {
+                this.id = helper.getGUID();
+            }
+
+            // 初始化视图环境
+            helper.initViewContext(this);
+
+            // 初始化扩展
+            helper.initExtensions(this);
+
+            this.lifeCycle = Control.LifeCycle.INITED;
+
+            this.fire('init');
+        }
 
         /**
          * 控件生命周期枚举
@@ -40,15 +52,31 @@ define(
          * @static
          * @type {Object}
          */
-        Control.LifeCycle = LifeCycle;
+        Control.LifeCycle = {
+            INITED   : 1,
+            RENDERED : 2,
+            DISPOSED : 4
+        };
 
         Control.prototype = {
             constructor: Control,
 
             /**
+             * 初始化控件需要使用的选项
+             *
+             * @param {Object=} options 构造函数传入的选项
+             * @protected
+             */
+            initOptions: function (options) {
+                options = options || {};
+                this.setProperties(options);
+            },
+
+            /**
              * 创建控件主元素
              * 
              * @return {HTMLElement}
+             * @protected
              */
             createMain: function () {
                 return document.createElement('div');
@@ -56,53 +84,67 @@ define(
 
             /**
              * 渲染控件
+             *
+             * @public
              */
             render: function () {
-                helper.beforeRender(this);
-                helper.renderMain(this);
-                helper.afterRender(this);
+                if (this.lifeCycle === Control.LifeCycle.INITED) {
+                    this.fire('beforerender');
+
+                    // 通用的渲染逻辑
+                    if (!this.main.id) {
+                        this.main.id = helper.getId(this);
+                    }
+
+                    helper.addClass(this, this.main);
+                    this.setDisabled(this.disabled);
+                }
+
+                this.lifeCycle = Control.LifeCycle.RENDERED;
+
+                // 由子控件实现
+                this.repaint();
+
+                if (this.lifeCycle === Control.LifeCycle.INITED) {
+                    this.fire('afterrender');
+                }
             },
 
             /**
              * 重新渲染视图
              * 仅当生命周期处于RENDER时，该方法才重新渲染
-             * 
+             *
+             * @param {Array=} 变更过的属性的集合
              * @protected
              */
-            repaint: function () {
-                if (this.lifeCycle == LifeCycle.RENDERED) {
-                    this.render();
-                }
+            repaint: function (changes) {
             },
 
             /**
              * 将控件添加到页面的某个元素中
              * 
              * @param {HTMLElement} wrap 控件要添加到的目标元素
+             * @public
              */
             appendTo: function (wrap) {
-                if (!this.main) {
-                    this.main = this.createMain();
-                    wrap.appendChild(this.main);
-                    this.render();
-                }
+                wrap.appendChild(this.main);
+                this.render();
             },
 
             /**
              * 将控件添加到页面的某个元素之前
              * 
              * @param {HTMLElement} reference 控件要添加到之前的目标元素
+             * @public
              */
             insertBefore: function (reference) {
-                if (!this.main) {
-                    this.main = this.createMain();
-                    reference.parentNode.appendChild(this.main, reference);
-                    this.render();
-                }
+                reference.parentNode.appendChild(this.main, reference);
+                this.render();
             },
 
             /**
              * 销毁释放控件
+             * @public
              */
             dispose: function () {
                 helper.beforeDispose(this);
@@ -115,6 +157,7 @@ define(
              * 
              * @param {string} name 属性名
              * @return {*}
+             * @public
              */
             get: function (name) {
                 var method = this['get' + lib.toPascalCase(name)];
@@ -131,6 +174,7 @@ define(
              * 
              * @param {string} name 属性名
              * @param {*} value 属性值
+             * @public
              */
             set: function (name, value) {
                 var method = this['set' + lib.toPascalCase(name)];
@@ -139,8 +183,16 @@ define(
                     return method.call(this, value);
                 }
 
-                this[name] = value;
-                this.repaint();
+                var oldValue = this[name];
+                if (oldValue !== value) {
+                    this[name] = value;
+                    var record = {
+                        name: name,
+                        oldValue: oldValue,
+                        newValue: value
+                    };
+                    this.repaint([record]);
+                }
             },
 
             /**
@@ -149,11 +201,28 @@ define(
              * @param {Object} properties 属性值集合
              */
             setProperties: function (properties) {
-                for (var name in properties) {
-                    this[name] = properties[name];
+                var changes = [];
+                for (var key in properties) {
+                    if (properties.hasOwnProperty(key)) {
+                        var oldValue = this[key];
+                        var newValue = properties[key];
+                        if (oldValue !== newValue) {
+                            this[key] = newValue;
+                            var record = {
+                                name: key,
+                                oldValue: oldValue,
+                                newValue: newValue
+                            };
+                            changes.push(record);
+                        }
+                    }
                 }
 
-                this.repaint();
+                if (changes.length 
+                    && this.lifeCycle === Control.LifeCycle.RENDERED
+                ) {
+                    this.repaint(changes);
+                }
             },
 
             /**
@@ -451,8 +520,10 @@ define(
                 }
 
                 // 调用listeners
-                callListeners(me[type]);
-                callListeners(me['*']);
+                var events = me.events;
+                
+                callListeners(events[type]);
+                callListeners(events['*']);
             }
         };
 

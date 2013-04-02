@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Link - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Link</header>
+        <div class="container">
+            <a data-ui-type="Link" href="http://www.baidu.com" target="_blank">www.baidu.com</a>
+            <br />
+            <hr />
+            <a data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">www.baidu.com</a>
+            <br />
+            <button id="op-get-href">getHref</button>
+            <button id="op-get-text">getText</button>
+            <button id="op-get-content">getContent</button>
+            <button id="op-get-target">getTarget</button>
+            <br />
+            <button id="op-set-href">set href</button>
+            <button id="op-set-target">set target(_self)</button>
+            <button id="op-set-text">set text</button>
+            <button id="op-set-content">set content</button>
+            <br />
+            <span data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">tagName not A</span>
+        </div>
+        <script>
+        require(
+            [
+                'esui', 
+                'esui/Link',
+                'css!esui/css/main.css'
+            ],
+            function (ui) {
+                var link = ui.init()[1];
+                document.getElementById('op-get-href').onclick = function () {
+                    alert(link.getHref());
+                };
+                document.getElementById('op-get-target').onclick = function () {
+                    alert(link.getTarget());
+                };
+                document.getElementById('op-get-text').onclick = function () {
+                    alert(link.getText());
+                };
+                document.getElementById('op-get-content').onclick = function () {
+                    alert(link.getContent());
+                };
+                document.getElementById('op-set-href').onclick = function () {
+                    link.setHref('https://github.com');
+                };
+                document.getElementById('op-set-target').onclick = function () {
+                    link.setTarget('_self');
+                };
+                document.getElementById('op-set-text').onclick = function () {
+                    link.setText('<i></i>');
+                };
+                document.getElementById('op-set-content').onclick = function () {
+                    link.setContent('<i>∏∏∏∏∏∏∏∏∏balabala</i>');
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

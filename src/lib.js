@@ -51,12 +51,17 @@ define(function () {
     /**
      * 将源对象属性拷贝到目标对象
      * 
-     * @param {Object} subClass 目标对象
+     * @param {Object} target 目标对象
      * @param {Object} source 源对象
+     * @return {Object} `target`对象
      */
     lib.extend = function (target, source) {
         for (var i = 1, len = arguments.length; i < len; i++) {
             source = arguments[i];
+
+            if (!source) {
+                continue;
+            }
 
             for (var key in source) {
                 if (source.hasOwnProperty(key)) {
@@ -64,6 +69,8 @@ define(function () {
                 }
             }
         }
+
+        return target;
     };
 
     /**
@@ -426,6 +433,63 @@ define(function () {
         else if (element.attachEvent) {
             element.detachEvent('on' + type, listener);
         }
+    };
+
+    lib.getText = function (element) {
+        // by Tangram 1.x: baidu.dom.getText
+        var ret = '';
+        var childs;
+        var i = 0;
+        var l;
+
+        element = typeof element == 'string' 
+            ? document.getElementById(element) : element;
+
+        //  text 和 CDATA 节点，取nodeValue
+        if (element.nodeType === 3 || element.nodeType === 4) {
+
+            ret += element.nodeValue;
+        } 
+        else if (element.nodeType !== 8) {// 8 是 comment Node
+            childs = element.childNodes;
+
+            for (l = childs.length; i < l; i++) {
+                ret += lib.getText(childs[i]);
+            }
+        }
+
+        return ret;
+    };
+
+    /**
+     * 将"name:value[;name:value]"的属性值解析成Object
+     * 
+     * @param {string} source 属性值源字符串
+     * @param {function=} 替换值的处理函数
+     * @return {Object}
+     */
+    lib.parseAttribute = function (source, valueReplacer) {
+        if (!source) {
+            return {};
+        }
+        
+        var value = {};
+        var items = source.split(/\s*;\s*/);
+        var len = items.length;
+
+        while (len--) {
+            var item = items[len];
+            if (!item) {
+                continue;
+            }
+
+            var segment = item.split(/\s*:\s*/);
+            value[segment[0]] = valueReplacer ?
+                valueReplacer(segment[1])
+                : segment[1];
+        }
+
+        return value;
     };
 
     return lib;

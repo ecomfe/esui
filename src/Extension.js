@@ -1,4 +1,4 @@
-define(function () {
+define(function (require) {
     var lib = require('./lib');
 
     /**
@@ -8,7 +8,7 @@ define(function () {
      * @param {Object=} options 初始化的参数
      */
     function Extension(options) {
-        lib.mix(this, options);
+        lib.extend(this, options);
     }
 
     /**
@@ -84,4 +84,6 @@ define(function () {
         }
         this.target = null;
     };
+
+    return Extension;
 });
