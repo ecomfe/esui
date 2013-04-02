@@ -1,8 +1,8 @@
-define(function() {
+define(function (require) {
     var Panel = require('esui/Panel');
     var esui = require('esui');
 
-    describe('Panel', function() {
+    describe('Panel', function () {
         describe('created via script', function () {
             it('should create a `<div>` element if `tagName` is not specified', function () {
                 var panel = new Panel();
@@ -19,7 +19,7 @@ define(function() {
 
         describe('created via HTML', function () {
             var panel;
-            beforeEach(function() {
+            beforeEach(function () {
                 var html = '<section data-ui="type: Panel;id: test;">Hello World</section>';
                 container.innerHTML = html;
                 esui.init(container);
