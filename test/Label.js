@@ -54,11 +54,11 @@ define(function() {
                 expect(label.getText()).toBe('<>"&');
             });
 
-            it('should not encode html when calling `setContent`', function () {
+            it('should encode HTML when setting `title` property', function () {
                 var label = new Label();
                 label.appendTo(container);
-                label.setContent('<span>Hello World</span>');
-                expect(label.getText()).toBe('Hello World');
+                label.setTitle('<>"&');
+                expect(label.getTitle()).toBe('<>"&');
             });
         });
     });

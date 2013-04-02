@@ -23,16 +23,6 @@ define(
         }
 
         /**
-         * 获取唯一id
-         * 
-         * @inner
-         * @return {string}
-         */
-        function getGUID() {
-            return 'esui' + now++;
-        }
-
-        /**
          * 控件类常用的helper方法模块
          * 
          * @type {Object}
@@ -40,42 +30,13 @@ define(
         var helper = {};
 
         /**
-         * 初始化控件
+         * 获取唯一id
          * 
-         * @param {Control} control 控件实例
-         * @param {Object} options 初始化参数
-         * @param {Object} defaultOptions 默认参数
+         * @inner
+         * @return {string}
          */
-        helper.init = function (control, options, defaultOptions) {
-            control.children = [];
-            control.childrenIndex = {};
-            control.states = {};
-            control.events = {};
-            
-            var realOptions = {};
-            lib.extend(realOptions, defaultOptions, options);
-            control.setProperties(realOptions);
-
-            // 自创建id
-            if (!control.id) {
-                control.id = getGUID();
-            }
-
-            // 初始化视图环境
-            helper.initViewContext(control);
-
-            // 初始化扩展
-            helper.initExtensions(control);
-        };
-
-        /**
-         * 执行控件初始化后动作
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.afterInit = function (control) {
-            control.lifeCycle = getLifeCycle().INITED;
-            control.fire('init');
+        helper.getGUID = function () {
+            return 'esui' + now++;
         };
 
         /**
@@ -217,24 +178,6 @@ define(
         };
 
         /**
-         * 初始化控件主元素
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.renderMain = function (control) {
-            var main = control.main;
-            if (main && helper.isInited(control)) {
-                if (!main.id) {
-                    main.id = helper.getId(control);
-                }
-
-                helper.addClass(control, main);
-            }
-
-            control.setDisabled(control.disabled);
-        };
-
-        /**
          * 初始化输入控件的主元素
          * 
          * @param {Control} control 控件实例
@@ -305,31 +248,6 @@ define(
                 main.onmousedown = lib.bind(mainDownHandler, control);
                 main.onmouseup = lib.bind(mainUpHandler, control);
             }
-        };
-
-        /**
-         * 执行控件渲染前动作
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.beforeRender = function (control) {
-            if (helper.isInited(control)) {
-                control.fire('beforerender');
-            }
-        };
-
-        /**
-         * 执行控件渲染后动作
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.afterRender = function (control) {
-            var LifeCycle = require('./Control').LifeCycle;
-            if (helper.isInited(control)) {
-                control.fire('afterrender');
-            }
-
-            control.lifeCycle = LifeCycle.RENDERED;
         };
 
         /**

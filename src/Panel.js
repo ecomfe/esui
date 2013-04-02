@@ -9,18 +9,6 @@
 define(
     function (require) {
         var Control = require('./Control');
-        var helper = require('./controlHelper');
-
-        /**
-         * Panel的默认选项
-         *
-         * @type {Object}
-         * @inner
-         * @const
-         */
-        var DEFAULT_OPTION = {
-            tagName: 'div'
-        };
 
         /**
          * Panel控件
@@ -29,23 +17,57 @@ define(
          * @constructor
          */
         function Panel(options) {
-            helper.init(this, options, DEFAULT_OPTION);
-            if (this.main) {
-                this.tagName = this.main.nodeName.toLowerCase();
-            }
-            helper.afterInit(this);
+            Control.apply(this, arguments);
         }
 
         Panel.prototype.type = 'Panel';
 
         /**
+         * 初始化参数
+         *
+         * @param {Object=} options 构造函数传入的参数
+         * @override
+         * @protected
+         */
+        Panel.prototype.initOptions = function (options) {
+            var defaults = {
+                tagName: 'div'
+            };
+            var lib = require('./lib');
+            options = lib.extend(defaults, options);
+            if (options.main) {
+                options.tagName = options.main.nodeName.toLowerCase();
+                if (options.content == null) {
+                    options.content = options.main.innerHTML;
+                }
+            }
+            this.setProperties(options);
+        };
+
+        /**
          * 创建控件主元素
          *
-         * @override
          * @return {HTMLElement}
+         * @override
+         * @protected
          */
         Panel.prototype.createMain = function () {
             return document.createElement(this.tagName);
+        };
+
+        /**
+         * 渲染自身
+         *
+         * @param {Array=} 变更过的属性的集合
+         * @override
+         * @protected
+         */
+        Panel.prototype.repaint = function (changes) {
+            // Panel也只有`content`是可以设置的，
+            // 如果设置其它属性导致这里出错不负责任了
+            if (changes && changes.length) {
+                this.main.innerHTML = this.content;
+            }
         };
 
         /**
@@ -54,9 +76,7 @@ define(
          * @param {string} html 内容HTML
          */
         Panel.prototype.setContent = function (html) {
-            this.disposeChildren();
-            this.main.innerHTML = html;
-            this.initChildren(this.main);
+            this.setProperties({ content: html });
         };
 
         require('./lib').inherits(Panel, Control);

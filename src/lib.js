@@ -51,12 +51,17 @@ define(function () {
     /**
      * 将源对象属性拷贝到目标对象
      * 
-     * @param {Object} subClass 目标对象
+     * @param {Object} target 目标对象
      * @param {Object} source 源对象
+     * @return {Object} `target`对象
      */
     lib.extend = function (target, source) {
         for (var i = 1, len = arguments.length; i < len; i++) {
             source = arguments[i];
+
+            if (!source) {
+                continue;
+            }
 
             for (var key in source) {
                 if (source.hasOwnProperty(key)) {
@@ -64,6 +69,8 @@ define(function () {
                 }
             }
         }
+
+        return target;
     };
 
     /**
