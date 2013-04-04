@@ -394,7 +394,7 @@ define(
         var domEventsKey = '_esuiDOMEvent';
 
         function triggerDOMEvent(e) {
-            var queue = this.domEvents[e.target[domEventsKey]][e.type];
+            var queue = this.domEvents[e.currentTarget[domEventsKey]][e.type];
             for (var i = 0; i < queue.length; i++) {
                 queue[i].call(this, e);
             }
