@@ -18,7 +18,7 @@ define(
          * @param {Object} options 初始化参数
          */
         function InputControl(options) {
-            Control.call(this, options);
+            Control.apply(this, arguments);
         }
 
         InputControl.prototype = {
@@ -29,10 +29,14 @@ define(
              * 
              * @override
              */
-            render: function () {
-                helper.beforeRender(this);
-                helper.renderInputMain(this);
-                helper.afterRender(this);
+            initStructure: function () {
+                helper.initName(control);
+            },
+
+            repaint: function () {
+                // TODO: 修改为painter实现
+                this.setRawValue(this.rawValue);
+                this.setReadOnly(this.readOnly);
             },
 
             /**

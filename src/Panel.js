@@ -23,6 +23,18 @@ define(
         Panel.prototype.type = 'Panel';
 
         /**
+         * 创建控件主元素
+         *
+         * @param {Object} 构造函数传入的参数
+         * @return {HTMLElement}
+         * @override
+         * @protected
+         */
+        Panel.prototype.createMain = function (options) {
+            return document.createElement(options.tagName || 'div');
+        };
+
+        /**
          * 初始化参数
          *
          * @param {Object=} options 构造函数传入的参数
@@ -30,29 +42,14 @@ define(
          * @protected
          */
         Panel.prototype.initOptions = function (options) {
-            var defaults = {
-                tagName: 'div'
-            };
+            var properties = {};
             var lib = require('./lib');
-            options = lib.extend(defaults, options);
-            if (options.main) {
-                options.tagName = options.main.nodeName.toLowerCase();
-                if (options.content == null) {
-                    options.content = options.main.innerHTML;
-                }
+            lib.extend(properties, options);
+            properties.tagName = this.main.nodeName.toLowerCase();
+            if (options.content == null) {
+                properties.content = this.main.innerHTML;
             }
-            this.setProperties(options);
-        };
-
-        /**
-         * 创建控件主元素
-         *
-         * @return {HTMLElement}
-         * @override
-         * @protected
-         */
-        Panel.prototype.createMain = function () {
-            return document.createElement(this.tagName);
+            lib.extend(this, properties);
         };
 
         /**

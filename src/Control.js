@@ -23,12 +23,11 @@ define(
             this.states = {};
             this.events = {};
             this.domEvents = {};
+            options = options || {};
+
+            this.main = options.main ? options.main : this.createMain(options);
 
             this.initOptions(options);
-
-            if (!this.main) {
-                this.main = this.createMain();
-            }
 
             // 自创建id
             if (!this.id) {
@@ -83,6 +82,12 @@ define(
             },
 
             /**
+             * 初始化DOM结构，仅在第一次渲染时调用
+             */
+            initStructure: function () {
+            },
+
+            /**
              * 渲染控件
              *
              * @public
@@ -95,6 +100,8 @@ define(
                     if (!this.main.id) {
                         this.main.id = helper.getId(this);
                     }
+
+                    this.initStructure();
 
                     helper.addClass(this, this.main);
                     this.setDisabled(this.disabled);

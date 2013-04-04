@@ -178,18 +178,6 @@ define(
         };
 
         /**
-         * 初始化输入控件的主元素
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.renderInputMain = function (control) {
-            helper.initName(control);
-            helper.renderMain(control);
-            control.setRawValue(control.rawValue);
-            control.setReadOnly(control.readOnly);
-        };
-
-        /**
          * 控件主元素鼠标移入事件处理函数
          * 
          * @inner
