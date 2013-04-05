@@ -378,7 +378,13 @@ define(
              */
             addChild: function (control, childName) {
                 childName = childName || control.childName;
+
+                if (control.parent) {
+                    control.parent.removeChild(control);
+                }
+
                 this.children.push(control);
+                control.parent = this;
 
                 if (childName) {
                     control.childName = childName;
@@ -411,6 +417,8 @@ define(
                 if (childName) {
                     this.childrenIndex[childName] = null;
                 }
+
+                control.parent = null;
             },
 
             /**

@@ -259,6 +259,11 @@ define(
                 main.onmouseover = null;
             }
 
+            // 从控件树中移除
+            if (control.parent) {
+                control.parent.removeChild(control);
+            }
+
             // 从视图环境移除
             if (control.viewContext) {
                 control.viewContext.remove(control);
