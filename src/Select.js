@@ -38,42 +38,41 @@ define(
                 && context.value == null
                 && context.rawValue == null
             ) {
-                // 可能更换过`datasource`导致`selectedIndex`无法同步，
-                // 则如果`selectedIndex`超出范围，要修正回来
-                if (context.selectedIndex >= context.datasource.length) {
-                    context.selectedIndex = 0;
-                }
                 var selectedItem = context.datasource[context.selectedIndex];
                 context.rawValue = selectedItem ? selectedItem.value : null;
-                return;
             }
-
-            // 如果给了`value`，则需要从其产生`rawValue`的值：
-            // 
-            // - 如果同时给了`rawValue`，以`rawValue`为准
-            // - 否则使用`value`作为`rawValue`
-            if (context.value != null) {
-                if (context.rawValue == null) {
-                    context.rawValue = context.value; 
+            else {
+                // 如果给了`value`，则需要从其产生`rawValue`的值：
+                // 
+                // - 如果同时给了`rawValue`，以`rawValue`为准
+                // - 否则使用`value`作为`rawValue`
+                if (context.value != null) {
+                    if (context.rawValue == null) {
+                        context.rawValue = context.value; 
+                    }
+                    delete context.value;
                 }
-                delete context.value;
-            }
 
-            // 当以`value`或`rawValue`为基准时，要同步一次`selectedIndex`
-            for (var i = 0; i < context.datasource.length; i++) {
-                if (context.datasource[i].value === context.rawValue) {
-                    context.selectedIndex = i;
-                    return;
+                // 当以`value`或`rawValue`为基准时，要同步一次`selectedIndex`
+                context.selectedIndex = -1;
+                for (var i = 0; i < context.datasource.length; i++) {
+                    if (context.datasource[i].value === context.rawValue) {
+                        context.selectedIndex = i;
+                    }
                 }
             }
 
-            // 如果上面的`for`循环没有退出，
-            // 说明在`datasource`没有找到任何一个对应的项，
-            // 这可能是修改了`datasource`导致的值不一致，需要修正
-            context.selectedIndex = 0;
-            context.rawValue = context.datasource[0]
-                ? context.datasource[0].value
-                : null;
+            // 有可能更换过`datasource`，或者给了一个不存在的`value`，
+            // 则会导致`selectedIndex`无法同步，
+            // 因此如果`selectedIndex`在数组范围外或为初始值-1，要修正回来
+            if (context.selectedIndex < 0 
+                || context.selectedIndex >= context.datasource.length
+            ) {
+                context.selectedIndex = 0;
+                context.rawValue = context.datasource[0]
+                    ? context.datasource[0].value
+                    : '';
+            }
         }
 
         /**
@@ -194,7 +193,7 @@ define(
             }
             if (target) {
                 var value = target.getAttribute('data-value');
-                select.setValue(value);
+                select.setRawValue(value);
             }
             select.selectionLayer.style.display = 'none';
         }
@@ -333,18 +332,19 @@ define(
                     if (record.name === 'width' || record.name === 'height') {
                         this.main.style[record.name] = this[record.name] + 'px';
                     }
+                    else if (record.name === 'datasource'
+                        && this.selectionLayer
+                    ) {
+                        // 如果`datasource`更新，则下拉框的内容要重绘
+                        this.selectionLayer.innerHTML = getLayerHTML(this);
+                    }
                     else {
                         shouldUpdateValue = true;
-                        // 如果`datasource`更新，则下拉框的内容要重绘
-                        if (record.name === 'datasource' 
-                            && this.selectionLayer
-                        ) {
-                            this.selectionLayer.innerHTML = getLayerHTML(this);
-                        }
                     }
                 }
                 if (shouldUpdateValue) {
                     updateValue(this);
+                    this.fire('change');
                 }
             }
         };
@@ -356,6 +356,17 @@ define(
          * @public
          */
         Select.prototype.setProperties = function (properties) {
+            // 为了`adjustValueProperties`正常工作，需要加上一点东西，
+            // 由于在`setProperties`有相等判断，所以额外加相同的东西不影响逻辑
+            if (properties.datasource == null) {
+                properties.datasource = this.datasource;
+            }
+            if (properties.value == null
+                && properties.rawValue == null
+                && properties.selectedIndex == null
+            ) {
+                properties.rawValue = this.rawValue;
+            }
             adjustValueProperties(properties);
             InputControl.prototype.setProperties.apply(this, arguments);
         };
