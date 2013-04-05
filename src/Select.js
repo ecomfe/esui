@@ -314,19 +314,36 @@ define(
          */
         Select.prototype.repaint = function (changes) {
             if (!changes) {
+                if (this.width) {
+                    this.main.style.width = this.width + 'px';
+                }
+                if (this.height) {
+                    this.main.style.height = this.height + 'px';
+                }
                 updateValue(this);
             }
             else {
+                var shouldUpdateValue = false;
                 for (var i = 0; i < changes.length; i++) {
                     var record = changes[i];
-                    // 如果`datasource`更新，则下拉框的内容要重绘
-                    if (record.name === 'datasource' && this.selectionLayer) {
-                        this.selectionLayer.innerHTML = getLayerHTML(this);
+                    if (record.name === 'width' || record.name === 'height') {
+                        this.main.style[record.name] = this[record.name] + 'px';
+                    }
+                    else {
+                        shouldUpdateValue = true;
+                        // 如果`datasource`更新，则下拉框的内容要重绘
+                        if (record.name === 'datasource' 
+                            && this.selectionLayer
+                        ) {
+                            this.selectionLayer.innerHTML = getLayerHTML(this);
+                        }
                     }
                 }
-                // 在`setProperties`有控制，不会`value`和`selectedIndex`，
-                // 剩下的`rawValue`和`emptyText`都需要整体的重绘
-                updateValue(this);
+                if (shouldUpdateValue) {
+                    // 在`setProperties`有控制，不会`value`和`selectedIndex`，
+                    // 剩下的`rawValue`和`emptyText`都需要整体的重绘
+                    updateValue(this);
+                }
             }
         };
 
