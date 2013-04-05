@@ -38,8 +38,13 @@ define(
                 && context.value == null
                 && context.rawValue == null
             ) {
-                context.rawValue = 
-                    context.datasource[context.selectedIndex].value;
+                // 可能更换过`datasource`导致`selectedIndex`无法同步，
+                // 则如果`selectedIndex`超出范围，要修正回来
+                if (context.selectedIndex >= context.datasource.length) {
+                    context.selectedIndex = 0;
+                }
+                var selectedItem = context.datasource[context.selectedIndex];
+                context.rawValue = selectedItem ? selectedItem.value : null;
                 return;
             }
 
@@ -58,8 +63,17 @@ define(
             for (var i = 0; i < context.datasource.length; i++) {
                 if (context.datasource[i].value === context.rawValue) {
                     context.selectedIndex = i;
+                    return;
                 }
             }
+
+            // 如果上面的`for`循环没有退出，
+            // 说明在`datasource`没有找到任何一个对应的项，
+            // 这可能是修改了`datasource`导致的值不一致，需要修正
+            context.selectedIndex = 0;
+            context.rawValue = context.datasource[0]
+                ? context.datasource[0].value
+                : null;
         }
 
         /**
@@ -70,7 +84,6 @@ define(
          */
         Select.prototype.initOptions = function (options) {
             var defaults = {
-                emptyText: '',
                 datasource: []
             };
 
@@ -89,15 +102,7 @@ define(
                     var item = elements[0];
                     var dataItem = { text: item.text, value: item.value };
 
-                    // 没有值的那个`<option>`作为`emptyText`使用
-                    if (!item.value) {
-                        properties.emptyText = item.text;
-                        // 且要放在最前面
-                        properties.datasource.unshift(dataItem);
-                    }
-                    else {
-                        properties.datasource.push(dataItem);
-                    }
+                    properties.datasource.push(dataItem);
 
                     // 已经选择的那个会作为值，
                     // 但如果构造函数中有传入和值相关的选项，则跳过这段逻辑
@@ -299,9 +304,8 @@ define(
             hidden.value = select.rawValue;
 
             // 同步显示的文字
-            var displayText = select.rawValue == null
-                ? select.emptyText
-                : select.datasource[select.selectedIndex].text;
+            var selectedItem = select.datasource[select.selectedIndex];
+            var displayText = selectedItem ? selectedItem.text : '';
             var textHolder = select.main.getElementsByTagName('span')[0];
             textHolder.innerHTML = require('./lib').encodeHTML(displayText);
         }
@@ -340,8 +344,6 @@ define(
                     }
                 }
                 if (shouldUpdateValue) {
-                    // 在`setProperties`有控制，不会`value`和`selectedIndex`，
-                    // 剩下的`rawValue`和`emptyText`都需要整体的重绘
                     updateValue(this);
                 }
             }
