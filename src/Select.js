@@ -2,16 +2,35 @@ define(
     function (require) {
         var InputControl = require('./InputControl');
 
+        /**
+         * 下拉选择控件
+         *
+         * @param {Object=} options 构造控件的选项
+         * @constructor
+         */
         function Select(options) {
             InputControl.apply(this, arguments);
         }
 
         Select.prototype.type = 'Select';
 
+        /**
+         * 创建主元素
+         *
+         * @param {Object} options 构造函数传入的参数
+         * @return {HTMLElement} 主元素
+         * @protected
+         */
         Select.prototype.createMain = function (options) {
             return document.createElement('div');
         };
 
+        /**
+         * 根据`selectedIndex` < `value` < `rawValue`的顺序调整三个参数的值
+         *
+         * @param {Object} context 有可能包含以上3个参数的参数对象
+         * @inner
+         */
         function adjustValueProperties(context) {
             // 如果给了`selectedIndex`，且没有`value`和`rawValue`来覆盖，
             // 则以`selectedIndex`为准设定`rawValue`
@@ -43,6 +62,12 @@ define(
             }
         }
 
+        /**
+         * 初始化参数
+         *
+         * @param {Object} options 构造函数传入的参数
+         * @protected
+         */
         Select.prototype.initOptions = function (options) {
             var defaults = {
                 emptyText: '',
@@ -93,6 +118,12 @@ define(
             lib.extend(this, properties);
         };
 
+        /**
+         * 获取下拉弹层的HTML
+         *
+         * @param {Select} select Select控件实例
+         * @inner
+         */
         function getLayerHTML(select) {
             // 拼接HTML需要缩进，去掉`white`配置
             /* jshint white: false */
@@ -118,6 +149,13 @@ define(
             return html;
         }
 
+        /**
+         * 关闭下拉弹层
+         *
+         * @param {Select} select Select控件实例
+         * @param {Event} 触发事件的事件对象
+         * @inner
+         */
         function closeLayer(select, e) {
             var target = e.target;
             var layer = select.selectionLayer;
@@ -136,6 +174,13 @@ define(
             }
         }
 
+        /**
+         * 根据下拉弹层的`click`事件设置值
+         *
+         * @param {Select} select Select控件实例
+         * @param {Event} 触发事件的事件对象
+         * @inner
+         */
         function selectValue(select, e) {
             e = e || window.event;
             var target = e.target || e.srcElement;
@@ -149,6 +194,13 @@ define(
             select.selectionLayer.style.display = 'none';
         }
 
+
+        /**
+         * 打开下拉弹层
+         *
+         * @param {Select} select Select控件实例
+         * @inner
+         */
         function openLayer(select) {
             var layer = select.selectionLayer;
             var lib = require('./lib');
@@ -189,6 +241,13 @@ define(
             }
         }
 
+        /**
+         * 根据下拉弹层当前状态打开或关闭之
+         *
+         * @param {Select} select Select控件实例
+         * @param {Event} 触发事件的事件对象
+         * @inner
+         */
         function toggleLayer(select, e) {
             if (!select.selectionLayer) {
                 openLayer(select);
@@ -204,6 +263,11 @@ define(
             }
         }
 
+        /**
+         * 初始化DOM结构
+         *
+         * @protected
+         */
         Select.prototype.initStructure = function () {
             var html = [
                 '<span></span>',
@@ -220,6 +284,12 @@ define(
                 this, this.main, 'click', lib.bind(toggleLayer, null, this));
         };
 
+        /**
+         * 根据控件的值更新其视图
+         *
+         * @param {Select} select Select控件实例
+         * @inner
+         */
         function updateValue(select) {
             // 同步`value`
             var hidden = select.main.getElementsByTagName('input')[0];
@@ -233,6 +303,12 @@ define(
             textHolder.innerHTML = require('./lib').encodeHTML(displayText);
         }
 
+        /**
+         * 重绘
+         *
+         * @param {Array=} 更新过的属性集合
+         * @protected
+         */
         Select.prototype.repaint = function (changes) {
             if (!changes) {
                 updateValue(this);
@@ -251,6 +327,12 @@ define(
             }
         };
 
+        /**
+         * 批量更新属性并重绘
+         *
+         * @param {Object} 需更新的属性
+         * @public
+         */
         Select.prototype.setProperties = function (properties) {
             adjustValueProperties(properties);
             InputControl.prototype.setProperties.apply(this, arguments);
