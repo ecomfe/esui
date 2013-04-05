@@ -345,6 +345,35 @@ define(function () {
         return newElement;
     };
 
+    lib.getOffset = function (element) {
+        element = lib.g(element);
+        var rect = element.getBoundingClientRect();
+        var offset = {
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom,
+            left: rect.left,
+            width: rect.right - rect.left,
+            height: rect.bottom - rect.top
+        };
+        var clientTop = document.documentElement.clientTop
+            || document.body.clientTop
+            || 0;
+        var clientLeft = document.documentElement.clientLeft
+            || document.body.clientLeft
+            || 0;
+        var scrollTop = window.pageYOffset
+            || document.documentElement.scrollTop;
+        var scrollLeft = window.pageXOffset
+            || document.documentElement.scrollLeft;
+        offset.top = offset.top + scrollTop - clientTop;
+        offset.bottom = offset.bottom + scrollTop - clientTop;
+        offset.left = offset.left + scrollLeft - clientLeft;
+        offset.right = offset.right + scrollLeft - clientLeft;
+
+        return offset;
+    };
+
     /**
      * 将字符串转换成pascal格式
      * 
