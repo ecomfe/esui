@@ -229,10 +229,13 @@ define(
             }
 
             layer.style.display = 'block';
-            // TODO: 修正位置和大小
+            var offset = lib.getOffset(select.main);
+            layer.style.top = offset.bottom + 'px';
+            layer.style.left = offset.left + 'px';
+            layer.style.width = offset.width + 'px';
 
             // 同步选择状态
-            var items = layer.getElementsByTagName('span');
+            var items = layer.getElementsByTagName('li');
             for (var i = items.length - 1; i >= 0; i--) {
                 var item = items[i];
                 if (item.getAttribute('data-value') === select.rawValue) {
