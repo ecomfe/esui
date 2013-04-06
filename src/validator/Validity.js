@@ -80,7 +80,7 @@ define(
          *
          * @return {Array}
          */
-        Validity.prototype.getstates = function () {
+        Validity.prototype.getStates = function () {
 
             return this.states.slice();
 
