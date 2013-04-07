@@ -3,7 +3,7 @@ define(function (require) {
 
     function dispatchEvent(element, type) {
         var event = document.createEvent('Event');
-        event.initEvent(type);
+        event.initEvent(type, true, false);
         element.dispatchEvent(event);
     }
 
