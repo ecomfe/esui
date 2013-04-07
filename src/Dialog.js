@@ -13,6 +13,8 @@ define(
         var Control = require('./Control');
         var Main = require('./main');
 
+        var maskIdPrefix = 'ctrlMask';
+
         /**
          * 默认Dialog选项配置
          * 
@@ -27,8 +29,6 @@ define(
             mask: true,           // 是否具有遮挡层。或者指定带有level和type属性的object，自定义遮挡层
             width: 600,           // 对话框的宽度
             height: 0,            // 对话框的高度
-            top: 0,
-            left: 0,
             title: '我是标题',    // 标题的显示文字
             content: '<p>我是内容</p>',   // 内容区域的显示内容
             foot: '' 
@@ -44,24 +44,17 @@ define(
          * @param {Object} options 初始化参数
          */
         function Dialog(options) {
-            helper.init(this, options, DEFAULT_OPTION);
-
-            if (!this.main) {
-                this.main = document.createElement('div');
-            }
-            else {
-                parseMain(this);
-            }
-
-            helper.afterInit(this);
+            Control.apply(this, arguments);
         }
+
+
         
         /**
          * 渲染控件前重绘控件
          * 
          */
-        function parseMain() {
-            var main = this.main;
+        function parseMain(options) {
+            var main = options.main;
             var els = main.getElementsByTagName('*');
             var len = els.length;
             var roleName;
@@ -78,17 +71,17 @@ define(
                 }
             }
 
-            this.title = roles['title'] || this.title;
-            this.content = roles['content'] || this.content;
+            options.title = roles['title'] || options.title;
+            options.content = roles['content'] || options.content;
 
-            if (this.needFoot) {
-                this.foot = roles['foot'] || this.foot;
+            if (options.needFoot) {
+                options.foot = roles['foot'] || options.foot;
             }
             else {
-                this.foot = null;
+                options.foot = null;
             }
 
-        },
+        };
 
 
         /**
@@ -102,7 +95,7 @@ define(
             var title = 'title';
             var close = 'closeIcon';
 
-            var closeTpl = '<div class="{clsClass}" id="{clsId}">&nbsp;</div>';
+            var closeTpl = '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
             var closeIcon = '';
 
             if (me.closeButton) {
@@ -116,11 +109,11 @@ define(
             }
 
             var headTpl = ''
-                + '<div id="{headId}" class="{headClass}">'
-                +   '<div id="{titleId}" class="{titleClass}">'
-                +   '{title}'
+                + '<div id="${headId}" class="${headClass}">'
+                +   '<div id="${titleId}" class="${titleClass}">'
+                +   '${title}'
                 +   '</div>'
-                +   '{closeIcon}'
+                +   '${closeIcon}'
                 + '</div>';
 
             var headData = {
@@ -151,11 +144,11 @@ define(
          */
         function getBFHtml(control, type) {
             var me = control;
-            var tpl = '<div class="{class}" id="{id}">{content}</div>';
+            var tpl = '<div class="${class}" id="${id}">${content}</div>';
             var data = {
                 'class': helper.getClasses(me, type),
                 'id': helper.getId(me, type),
-                'content': type == 'body' ? me.content || me.foot
+                'content': type == 'body' ? me.content : me.foot
             };
 
             var innerHtml = lib.format(tpl, data);
@@ -193,13 +186,12 @@ define(
          *
          * @inner
          */
-        function resizeHandler(control) {
+        function resizeHandler(control, level) {
             var me = control;
             var page = lib.page;
             var main = me.main;
             var left = me.left;
             var top = me.top; 
-
             if (!left) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
@@ -212,8 +204,76 @@ define(
             main.style.top = page.getScrollTop() + me.top + 'px';
         };
 
+        /**
+         * 页面大小发生变化的事件处理器
+         *
+         * @inner
+         */
+        function getMaskResizeHandler(level) {
+            return function () {
+                repaintMask(getMask(level));
+            };
+        }
+
+        /**
+         * 遮盖层初始化
+         *
+         * @inner
+         */
+        function initMask(level) {
+            var id = maskIdPrefix + level,
+                el = document.createElement('div');
+            
+            el.id = id;
+            document.body.appendChild(el);
+        };
+
+
+        /**
+         * 重新绘制遮盖层的位置
+         *
+         * @inner
+         * @param {HTMLElement} mask 遮盖层元素.
+         */
+        function repaintMask(mask) {
+            var width = Math.max(
+                            document.documentElement.clientWidth,
+                            Math.max(
+                                document.body.scrollWidth,
+                                document.documentElement.scrollWidth)),
+                height = Math.max(
+                            document.documentElement.clientHeight,
+                            Math.max(
+                                document.body.scrollHeight,
+                                document.documentElement.scrollHeight));
+
+            mask.style.width = width + 'px';
+            mask.style.height = height + 'px';
+        };
+
+        /**
+         * 获取遮盖层dom元素
+         *
+         * @inner
+         * @return {HTMLElement} 获取到的Mask元素节点.
+         */
+        function getMask(level) {
+            var id = maskIdPrefix + level;
+            var mask = lib.g(id);
+
+            if (!mask) {
+                initMask(level);
+            }
+
+            return lib.g(id);
+        };
+
+
         Dialog.OK_TEXT = '确定';
         Dialog.CANCEL_TEXT = '取消';
+
+        //各层遮挡resize处理函数
+        var maskResizeHandlerMap = {};
 
         /**
          * 自增函数
@@ -236,12 +296,38 @@ define(
             type: 'Dialog',
 
             /**
-             * 渲染控件
-             * 
-             * @param {object} refreshParam 更新属性集合
+             * 初始化参数
+             *
+             * @param {Object=} options 构造函数传入的参数
+             * @override
+             * @protected
+             */
+            initOptions: function(options) {
+                options = lib.extend(DEFAULT_OPTION, options);
+                if (options.main) {
+                    parseMain(options);
+                }
+                this.setProperties(options);
+            },
+
+            /**
+             * 创建控件主元素
+             *
+             * @return {HTMLElement}
              * @override
              */
-            repaint: function (refreshParam) {
+            createMain: function () {
+                this.main = document.createElement('div');
+            },
+
+            /**
+             * 重新渲染视图
+             * 仅当生命周期处于RENDER时，该方法才重新渲染
+             *
+             * @param {Array=} 变更过的属性的集合
+             * @override
+             */
+            repaint: function (changes) {
                 var main = this.main;
 
                 // 设置样式
@@ -255,7 +341,7 @@ define(
                 var footClass = helper.getClasses(this, 'foot');
 
                 // 第一次渲染或全集渲染
-                if (typeof refreshParam == 'undefined' ) {
+                if (typeof changes == 'undefined' ) {
                     main.innerHTML = ''
                         + getHeadHtml(this)
                         + getBFHtml(this, 'body')
@@ -266,36 +352,36 @@ define(
                 else {
                     // 如果需要更新content
                     // 高度
-                    if(refreshParam.hasOwnProperty('height')) {
-                        this.main.style.height = height + 'px';
+                    if(changes.height) {
+                        this.main.style.height = changes.height + 'px';
                         if (this.isShow) {
                             resizeHandler(this);
                         }
                     }
                     // 宽度
-                    if(refreshParam.hasOwnProperty('width')) {
-                        this.main.style.width = width + 'px';
+                    if(changes.width) {
+                        this.main.style.width = changes.width + 'px';
                         if (this.isShow) {
                             resizeHandler(this);
                         }
                     }
                     // 标题栏
-                    if(refreshParam.hasOwnProperty('title')) {
-                        lib.g(titleId).innerHTML = refreshParam.title;
+                    if(changes.title) {
+                        lib.g(titleId).innerHTML = changes.title;
                     }
                     // 主体内容
-                    if(refreshParam.hasOwnProperty('content')) {
+                    if(changes.content) {
                         // 获取body panel
                         var body = this.getBody();
                         var bodyWrapper = lib.g(bodyId);
-                        bodyWrapper.innerHTML = refreshParam.content;
+                        bodyWrapper.innerHTML = changes.content;
                         // 需要重新init
                         body.initChildren(bodyWrapper);
                     }
                     // 腿部内容
-                    if(typeof refreshParam.foot !== 'undefined') {
+                    if(typeof changes.foot !== 'undefined') {
                         // 取消了foot
-                        if (refreshParam.foot == null) {
+                        if (changes.foot == null) {
                             this.needFoot = false;
                             var foot = this.getFoot();
                             this.removeChild(foot);
@@ -304,16 +390,16 @@ define(
                             this.needFoot = true;
                             var foot = this.getFoot();
                             var footWrapper = lib.g(footId);
-                            footWrapper.innerHTML = refreshParam.foot;
+                            footWrapper.innerHTML = changes.foot;
                             foot.initChildren(footWrapper);
                         }
                     }
                 }
 
                 // 初始化控件主元素上的行为
-                if (me.closeButton !== false) {
-                    var close = me.getClose();
-                    close.onclick = lib.bind(closeClickHandler, me);
+                if (this.closeButton !== false) {
+                    var close = this.getClose();
+                    close.onclick = lib.bind(closeClickHandler, this);
                 }
 
             },
@@ -386,38 +472,57 @@ define(
                 var main = this.main;
                 var mask = this.mask;
 
-                if (!main) {
+                if (this.lifeCycle !== Control.LifeCycle.RENDERED) {
                     this.render();
                 }
-
-                this.setWidth(this.width);
 
                 // 浮动层自动定位功能初始化
                 if (this.autoPosition) {
                     lib.on(window, 'resize', resizeHandler);
                 }
-
+                this.setWidth(this.width);
                 resizeHandler(this);
 
                 // 拖拽功能初始化
                 if (this.dragable) {
-                    //拖拽的库函数还未实现
-                    //baidu.dom.draggable(main, {handler:this.getHead()});
+                    // 拖拽的库函数还未实现
+                    // baidu.dom.draggable(main, {handler:this.getHead()});
                 }
-
-                if (this.onshow) {
-                    this.onshow();
-                }        
 
                 if (mask) {
-                    //依赖mask控件
-                    //ui.Mask.show(mask.level, mask.type);
+                    this.showMask(mask.level, mask.type);
                 }
 
+                this.fire('show');
                 this.isShow = true;
 
-            };
+            },
 
+            /**
+             * 显示遮盖层
+             */
+            showMask: function(level, type) {
+                level = level || '0';
+                var mask = getMask(level);
+                var clazz = [];
+                var maskClass = helper.getClasses(this, 'mask');
+
+                clazz.push(maskClass);
+                clazz.push(maskClass + '-level-' + level);
+
+                if (type) {
+                    clazz.push(maskClass + '-' + type);
+                }
+                
+                repaintMask(mask);
+
+                mask.className = clazz.join(' ');
+                mask.style.display = 'block';
+
+                var resizeHandler = getMaskResizeHandler(level);
+                maskResizeHandlerMap[level] = resizeHandler;
+                lib.on(window, 'resize', resizeHandler);            
+            },
 
             /**
              * 隐藏对话框
@@ -430,17 +535,31 @@ define(
                         lib.un(window, 'resize', resizeHandler);
                     }
                     var main = this.main;
+                    var mask = this.mask;
+
                     main.style.left = main.style.top = '-10000px';
+
                     if (mask) {
-                        //依赖mask控件
-                        //ui.Mask.hide(mask.level, mask.type);
+                        this.hideMask(mask.level, mask.type);
                     }
                 }
-                if (this.onhide) {
-                    this.onhide();
-                }
-                
+
+                this.fire('hide');
                 this.isShow = false;
+            },
+
+            /**
+             * 隐藏遮盖层
+             */
+            hideMask: function (level) {
+                level = level || '0';
+                var mask = getMask(level);
+                if ('undefined' != typeof mask) {
+                    mask.style.display = 'none';
+
+                    var resizeHandler = maskResizeHandlerMap[level];
+                    lib.un(window, 'resize', resizeHandler);
+                }
             },
 
             /**
@@ -450,7 +569,7 @@ define(
              */
             setTitle: function (html) {
                 this.title = html;
-                if ( this.lifeCycle == LifeCycle.RENDERED) {
+                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'title': html});
                 }
             },
@@ -462,8 +581,20 @@ define(
              */
             setContent: function (content) {
                 this.content = content;
-                if ( this.lifeCycle == LifeCycle.RENDERED) {
+                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'content': content});
+                }
+            },
+
+            /**
+             * 设置腿部内容
+             *
+             * @param {string} foot 要设置的内容，支持html.
+             */
+            setFoot: function (foot) {
+                this.foot = foot;
+                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                    this.repaint({'foot': foot});
                 }
             },
 
@@ -474,6 +605,9 @@ define(
              */
             setHeight: function (height) {
                 this.height = height;
+                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                    this.repaint({'height': height});
+                }
             },
 
             /**
@@ -482,7 +616,10 @@ define(
              * @param {number} width 对话框的宽度.
              */
             setWidth: function (width) {
-                this.width = width;
+                this.height = width;
+                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                    this.repaint({'width': width});
+                }
             },
 
             /**
@@ -507,9 +644,9 @@ define(
 
 
         Dialog.confirm = function(args) {
-            var dialogPrefix    = '__DialogConfirm';
-            var okPrefix        = '__DialogConfirmOk';
-            var cancelPrefix    = '__DialogConfirmCancel';
+            var dialogPrefix    = 'DialogConfirm';
+            var okPrefix        = 'DialogConfirmOk';
+            var cancelPrefix    = 'DialogConfirmCancel';
 
             var controlMain = require('./main');
 
@@ -548,8 +685,8 @@ define(
             var oncancel = args.oncancel;
             var width   = args.width || 300; 
             var tpl = [
-                '<div class="ui-dialog-icon ui-dialog-icon-{type}"></div>',
-                '<div class="ui-dialog-text">{content}</div>'
+                '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
+                '<div class="ui-dialog-text">${content}</div>'
             ].join('');
 
             var dialog = require('./main').create(
@@ -594,8 +731,8 @@ define(
 
 
         Dialog.alert = function(args) {
-            var dialogPrefix    = '__DialogAlert';
-            var okPrefix        = '__DialogAlertOk';
+            var dialogPrefix    = 'DialogAlert';
+            var okPrefix        = 'DialogAlertOk';
 
             var controlMain = require('./main');
 
@@ -631,11 +768,14 @@ define(
             var onok = args.onok;
             var width   = args.width || 300; 
             var tpl = [
-                '<div class="ui-dialog-icon ui-dialog-icon-{type}"></div>',
-                '<div class="ui-dialog-text">{content}</div>'
+                '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
+                '<div class="ui-dialog-text">${content}</div>'
             ].join('');
 
 
+            //创建main
+            var main = document.createElement('div');
+            document.body.appendChild(main);
             var dialog = require('./main').create(
                 'Dialog', 
                 {
@@ -643,8 +783,8 @@ define(
                     closeButton: false,
                     title: '',
                     width: width,
-                    mask: {level: args.level || 3}
-
+                    mask: {level: args.level || 3},
+                    main: main
                 }
             );
 
@@ -652,11 +792,11 @@ define(
                 'Button', 
                 {
                     id: okPrefix + index,
-                    content: Dialog.OK_TEXT
+                    content: Dialog.OK_TEXT,
+                    skin: 'green'
                 }
             );
-        
-            dialog.show();
+
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(
@@ -667,19 +807,24 @@ define(
                     }
                 )
             );
+            var okId = helper.getId(dialog, okPrefix + index);
             dialog.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:' + okPrefix + index + '">'
                 + Dialog.OK_TEXT
                 + '</div>'
             );
-
-            var okBtn = dialog.getFoot().getChild('okBtn');
+            
+            dialog.show();
+            var okBtn = dialog.getChild('okBtn');
             okBtn.onclick = getBtnClickHandler(onok, index);
+
+
 
         }; 
 
         require('./lib').inherits(Dialog, Control);
-            .register(Dialog);
+        require('./main').register(Dialog);
+
         return Dialog;
     }
 );

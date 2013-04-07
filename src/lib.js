@@ -408,6 +408,21 @@ define(function () {
         return client.clientWidth;
     };
 
+    /**
+     * 获取纵向滚动量
+     * @name baidu.page.getScrollTop
+     * @function
+     * @grammar baidu.page.getScrollTop()
+     * @see baidu.page.getScrollLeft
+     * @meta standard
+     * @returns {number} 纵向滚动量
+     */
+    lib.page.getScrollTop = function () {
+        // by Tangram 1.x: baidu.page.getScrollTop
+        var d = document;
+        return window.pageYOffset || d.documentElement.scrollTop || d.body.scrollTop;
+    };
+
     if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {
         /**
          * IE浏览器版本号

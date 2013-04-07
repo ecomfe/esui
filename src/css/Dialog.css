@@ -1,0 +1,111 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 对话框样式
+ * @author dbear
+ */
+
+.ui-dialog {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 2px solid #394459;
+    border-radius: 3px 3px 3px 3px;
+    position:absolute;
+    width:660px;
+    font-size:12px;
+    z-index:200;
+}
+
+.ui-dialog-head {
+    background: none repeat scroll 0 0 #394459;
+    color: #FFFFFF;
+    font-weight: bold;
+    height: 26px;
+}
+
+.ui-dialog-title {
+    padding-left:12px;
+    line-height:28px;
+    font-size: 15px;
+    line-height: 26px;
+    background: url(../img/ui-dialog-head-bg.png);
+}
+
+.ui-dialog .ui-dialog-close {
+    background:url(../img/ui-dialog-head-close.png) no-repeat;
+    height: 13px;
+    width: 13px;
+}
+
+.ui-dialog-body {
+    padding:10px 8px 8px;
+    overflow: hidden;
+    zoom: 1;
+}
+
+
+.ui-dialog-foot {
+    margin:0px 8px 3px;
+    padding: 15px 0 20px 25px;
+    border-top:1px solid #F0F0F0;
+}
+
+.ui-dialog-foot .ui-button {margin-right:6px;}
+
+.ui-dialog-icon {display:none;}
+
+/** 警告框，确认框 */
+.ui-dialog-icon-warning {
+    background: url("../img/dialog-notice.png") no-repeat scroll 0 0 transparent;
+    display: block;
+    float: left;
+    height: 22px;
+    margin: 22px 10px 8px 40px;
+    width: 33px;
+}
+
+.ui-dialog-icon-confirm {
+    width:33px;
+    height:32px;
+    background:url(../img/dialog-question.png) no-repeat;
+    margin-right:10px;
+    display:block;
+    float:left;
+    margin-bottom:8px;
+}
+
+.ui-dialog-text-warning,
+.ui-dialog-text-confirm {
+    float: left;
+    margin-right: 40px;
+}
+
+.ui-dialog-mask {
+    position:absolute;
+    top:0;
+    left:0;
+    background:#333;
+    opacity: .2;
+    filter:alpha(opacity=20);
+    z-index:50;
+}
+
+.ui-dialog-mask-white {
+    background:#fff;
+}
+
+.ui-dialog-mask-level-0 {
+    z-index:100;
+}
+
+.ui-dialog-mask-level-1 {
+    z-index:101;
+}
+
+.ui-dialog-mask-level-2 {
+    z-index:102;
+}
+
+.ui-dialog-mask-level-3 {
+    z-index:103
+}
