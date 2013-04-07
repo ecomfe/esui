@@ -444,7 +444,9 @@ define(function () {
     lib.page.getViewWidth = function () {
         // by Tangram 1.x: baidu.page.getViewWidth
         var doc = document,
-        client = doc.compatMode == 'BackCompat' ? doc.body : doc.documentElement;
+        client = doc.compatMode == 'BackCompat' 
+            ? doc.body 
+            : doc.documentElement;
 
         return client.clientWidth;
     };
@@ -461,7 +463,9 @@ define(function () {
     lib.page.getScrollTop = function () {
         // by Tangram 1.x: baidu.page.getScrollTop
         var d = document;
-        return window.pageYOffset || d.documentElement.scrollTop || d.body.scrollTop;
+        return window.pageYOffset 
+            || d.documentElement.scrollTop 
+            || d.body.scrollTop;
     };
 
     if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {

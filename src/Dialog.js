@@ -11,7 +11,6 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
-        var Main = require('./main');
 
         var maskIdPrefix = 'ctrlMask';
 
@@ -32,8 +31,12 @@ define(
             title: '我是标题',    // 标题的显示文字
             content: '<p>我是内容</p>',   // 内容区域的显示内容
             foot: ''
-                + '<div data-ui-type="Button" data-ui-id="btnFootOk" >确定</div>'
-                + '<div><a data-ui-type="Link" data-ui-id="btnFootCancel">取消</a></div>',
+                + '<div data-ui-type="Button" data-ui-id="btnFootOk">确定</div>'
+                + '<div>'
+                +     '<a data-ui-type="Link" data-ui-id="btnFootCancel">'
+                +         '取消'
+                +     '</a>'
+                + '</div>',
             needFoot: true
         };
 
@@ -93,7 +96,8 @@ define(
             var title = 'title';
             var close = 'closeIcon';
 
-            var closeTpl = '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
+            var closeTpl = 
+                '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
             var closeIcon = '';
 
             if (me.closeButton) {
@@ -121,7 +125,7 @@ define(
                 'titleClass':  helper.getClasses(me, title),
                 'title': me.title,
                 'closeIcon': closeIcon
-            }
+            };
 
             var headHtml = lib.format(headTpl, headData);
 
@@ -189,7 +193,6 @@ define(
             var page = lib.page;
             var main = me.main;
             var left = me.left;
-            var top = me.top; 
             if (!left) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
@@ -278,12 +281,12 @@ define(
          *
          * @inner
          */
-        Dialog.increment = function () {
+        Dialog.increment = (function () {
             var i = 0;
             return function () {
                 return i++;
             };
-        }();
+        }());
 
         Dialog.prototype = {
             /**
@@ -300,7 +303,7 @@ define(
              * @override
              * @protected
              */
-            initOptions: function(options) {
+            initOptions: function (options) {
                 options = lib.extend(DEFAULT_OPTION, options);
                 if (options.main) {
                     parseMain(options);
@@ -368,28 +371,28 @@ define(
                 var footClass = helper.getClasses(this, 'foot');
 
                 // 局部渲染
-                if (typeof changes != 'undefined' ) {
+                if (typeof changes != 'undefined') {
                     // 如果需要更新content
                     // 高度
-                    if(changes.height) {
+                    if (changes.height) {
                         this.main.style.height = changes.height + 'px';
                         if (this.isShow) {
                             resizeHandler(this);
                         }
                     }
                     // 宽度
-                    if(changes.width) {
+                    if (changes.width) {
                         this.main.style.width = changes.width + 'px';
                         if (this.isShow) {
                             resizeHandler(this);
                         }
                     }
                     // 标题栏
-                    if(changes.title) {
+                    if (changes.title) {
                         lib.g(titleId).innerHTML = changes.title;
                     }
                     // 主体内容
-                    if(changes.content) {
+                    if (changes.content) {
                         // 获取body panel
                         var body = this.getBody();
                         var bodyWrapper = lib.g(bodyId);
@@ -398,7 +401,7 @@ define(
                         body.initChildren(bodyWrapper);
                     }
                     // 腿部内容
-                    if(typeof changes.foot !== 'undefined') {
+                    if (typeof changes.foot !== 'undefined') {
                         // 取消了foot
                         if (changes.foot == null) {
                             this.needFoot = false;
@@ -498,7 +501,7 @@ define(
 
                 // 拖拽功能初始化
                 if (this.dragable) {
-                    // 拖拽的库函数还未实现
+                    // TODO: 拖拽的库函数还未实现
                     // baidu.dom.draggable(main, {handler:this.getHead()});
                 }
 
@@ -514,7 +517,7 @@ define(
             /**
              * 显示遮盖层
              */
-            showMask: function(level, type) {
+            showMask: function (level, type) {
                 level = level || '0';
                 var mask = getMask(level);
                 var clazz = [];
@@ -542,9 +545,8 @@ define(
              * 
              */
             hide: function () {
-                var me = this;
                 if (this.isShow) {
-                    if ( this.autoPosition ) {
+                    if (this.autoPosition) {
                         lib.un(window, 'resize', resizeHandler);
                     }
                     var main = this.main;
@@ -582,7 +584,7 @@ define(
              */
             setTitle: function (html) {
                 this.title = html;
-                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'title': html});
                 }
             },
@@ -594,7 +596,7 @@ define(
              */
             setContent: function (content) {
                 this.content = content;
-                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'content': content});
                 }
             },
@@ -606,7 +608,7 @@ define(
              */
             setFoot: function (foot) {
                 this.foot = foot;
-                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'foot': foot});
                 }
             },
@@ -618,7 +620,7 @@ define(
              */
             setHeight: function (height) {
                 this.height = height;
-                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'height': height});
                 }
             },
@@ -630,7 +632,7 @@ define(
              */
             setWidth: function (width) {
                 this.height = width;
-                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
+                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
                     this.repaint({'width': width});
                 }
             },
@@ -656,7 +658,7 @@ define(
         };
 
 
-        Dialog.confirm = function(args) {
+        Dialog.confirm = function (args) {
             var dialogPrefix    = 'DialogConfirm';
             var okPrefix        = 'DialogConfirmOk';
             var cancelPrefix    = 'DialogConfirmCancel';
@@ -671,7 +673,7 @@ define(
              * @return {Functioin}
              */
             function getBtnClickHandler(eventHandler, id) {
-                return function(){
+                return function () {
                     var dialog = controlMain.get(dialogPrefix + id);
                     var domId = helper.getId(dialog);
                     var okBtn = controlMain.get(okPrefix + id);
@@ -688,8 +690,8 @@ define(
                     }
                 
                     dialog = null;
-                }
-            };
+                };
+            }
 
             var index = Dialog.increment();
 
@@ -718,19 +720,15 @@ define(
             dialog.show();
             dialog.setTitle(title);
             dialog.setContent(
-                lib.format(
-                    tpl, 
-                    {
-                        'type': type,
-                        'content': content
-                    }
-                )
+                lib.format(tpl, { type: type, content: content })
             );
             dialog.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:' + okPrefix + index + '">'
+                + '<div data-ui="type:Button;childName:okBtn;id:' 
+                + okPrefix + index + '">'
                 + Dialog.OK_TEXT
                 + '</div>'
-                + '<div data-ui="type:Button;childName:cancelBtn;id:' + cancelPrefix + index + '">'
+                + '<div data-ui="type:Button;childName:cancelBtn;id:' 
+                + cancelPrefix + index + '">'
                 + Dialog.CANCEL_TEXT
                 + '</div>'
             );
@@ -745,9 +743,9 @@ define(
         };
 
 
-        Dialog.alert = function(args) {
-            var dialogPrefix    = 'DialogAlert';
-            var okPrefix        = 'DialogAlertOk';
+        Dialog.alert = function (args) {
+            var dialogPrefix = 'DialogAlert';
+            var okPrefix = 'DialogAlertOk';
 
             var controlMain = require('./main');
 
@@ -759,7 +757,7 @@ define(
              * @return {Functioin}
              */
             function getBtnClickHandler(eventHandler, id) {
-                return function(){
+                return function () {
                     var dialog = controlMain.get(dialogPrefix + id);
                     var okBtn = controlMain.get(okPrefix + id);
                     var domId = helper.getId(dialog);
@@ -775,8 +773,8 @@ define(
                     }
                 
                     dialog = null;
-                }
-            };
+                };
+            }
 
             var index = Dialog.increment();
 
@@ -817,17 +815,12 @@ define(
 
             dialog.setTitle(title);
             dialog.setContent(
-                lib.format(
-                    tpl, 
-                    {
-                        'type': type,
-                        'content': content
-                    }
-                )
+                lib.format(tpl, { type: type, content: content })
             );
             var okId = helper.getId(dialog, okPrefix + index);
             dialog.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:' + okPrefix + index + '">'
+                + '<div data-ui="type:Button;childName:okBtn;id:' 
+                + okPrefix + index + '">'
                 + Dialog.OK_TEXT
                 + '</div>'
             );

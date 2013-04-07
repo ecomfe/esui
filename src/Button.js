@@ -33,29 +33,7 @@ define(
          */
         function Button(options) {
             Control.apply(this, arguments);
-        };
-
-        /**
-         * 构建main的主内容
-         *
-         * @param {string} type foot | body 
-         * @inner
-         */
-        function getMainHtml(control, type) {
-            var me = control;
-            var data = {
-                lfIconId: helper.getId(me, 'lf-icon'),
-                lfIconClass: helper.getClasses(me, 'lf-icon').join(' '),
-                labelId: helper.getId(me, 'label'),
-                labelClass: helper.getClasses(me, 'label').join(' '),
-                btnLabel: me.content || '&nbsp;',
-                rtIconId: helper.getId(me, 'rt-icon'),
-                rtIconClass: helper.getClasses(me, 'rt-icon').join(' ')
-            };
-            var innerHtml = lib.format(tplButton, data);
-            return innerHtml;
-
-        };
+        }
 
         Button.prototype = {
             /**
@@ -72,7 +50,7 @@ define(
              * @override
              * @protected
              */
-            initOptions: function(options) {
+            initOptions: function (options) {
                 options = lib.extend(options, DEFAULT_OPTION);
                 if (options.main) {
                     options.tagName = options.main.nodeName.toLowerCase();
@@ -131,8 +109,8 @@ define(
              */
             setContent: function (content) {
                 this.content = content;
-                if ( this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({'content': content});
+                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
+                    this.repaint({ 'content': content });
                 }
             },
 
