@@ -135,7 +135,7 @@ define(
 
             var type = control.type.toLowerCase();
             var classes = [ uiPrefix + '-' + type + part ];
-            part && classes.push(uiPrefix + part);
+            //part && classes.push(uiPrefix + part);
 
             var skin = control.skin;
             if (skin) {

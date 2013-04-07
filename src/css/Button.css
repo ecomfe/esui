@@ -1,0 +1,137 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 按钮样式
+  * @author dbear
+  */
+
+/**
+ * 基础按钮样式
+ */
+.ui-button, .ui-button-label {
+    overflow:hidden;
+    cursor:pointer;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.ui-button {
+    background:url("../img/dn-ui-btn-normal-bg.png") repeat-x;
+    border:1px solid #CCC;
+    cursor:pointer;
+    /* Hack: 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
+     * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
+     * 为兼容Mac下显示效果，前面增加STHeiti */
+    font-family:STHeiti, SimSun;
+    font-size:12px;
+    text-align:center;
+    color:#333;
+    height:23px;
+    display:inline-block;
+    *display:inline;
+    *margin-bottom:8px;
+    zoom:1;
+    border-radius:2px;
+    -webkit-border-radius:2px;
+    -o-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+}
+
+.ui-button-label {
+    display:block;
+    float:left;
+    padding:0 10px;
+    line-height:23px;
+    -webkit-border-radius:1px;
+    -o-border-radius:1px;
+    -moz-border-radius:1px;
+    -ms-border-radius:1px;
+}
+
+/**
+ * 基础按钮样式状态
+ */
+.ui-button-hover,
+.ui-button-press, 
+.ui-button-active {
+    border:1px solid #888f9b;
+}
+
+
+.ui-button-press .ui-button-label,
+.ui-button-active .ui-button-label {
+    border:1px solid #BEBEBE;
+    height:23px;
+    background:url("../img/dn-ui-btn-normal-bg-press.png") repeat-x;
+}
+
+.ui-button-disabled {
+    background:#f6f6f6;
+    border-color:#cfcfcf;
+    color:#999;
+}
+
+.ui-button-lf-icon {
+    float: left;
+}
+
+.ui-button-rt-icon {
+    float: right;
+}
+
+/** 春天系列 */
+.skin-button-spring,
+.skin-button-spring-add {
+    background:url(../img/dn-ui-button-bg.png) repeat-x;
+    border:1px solid #519D30;
+    height:26px;
+}
+
+.skin-button-spring .skin-button-spring-label,
+.skin-button-spring-add .skin-button-spring-add-label{
+    font-weight:bold;
+    color: #FFF;
+    line-height: 26px;
+    padding: 0 25px;
+}
+
+
+.skin-button-spring-press,
+.skin-button-spring-add-press {
+    border:1px solid #509c2f;
+    height:26px;
+    background:url(../img/dn-tab-bg-press.png) repeat-x;
+}
+
+.skin-button-spring-hover,
+.skin-button-spring-add-hover {
+    border:1px solid #157106;
+}
+
+/** 春天系列之添加按钮 */
+.skin-button-spring-add .skin-button-spring-add-lf-icon {
+    background:url(../img/dn-ui-button-plus.gif) no-repeat;
+    width:12px;
+    height:12px;
+    float:left;
+    margin:7px 12px 7px 16px;
+}
+
+.skin-button-spring-add .skin-button-spring-add-label {
+    padding-left: 0;
+}
+
+/** 下载系列 */
+.skin-button-download .skin-button-download-rt-icon {
+    background:url(../img/download.png) no-repeat;
+    float:left;
+    height: 16px;
+    margin: 3px 10px;
+    width: 16px;
+}
+.skin-button-download .skin-button-download-label {
+    line-height: 23px;
+    padding: 0 0 0 15px;
+}
