@@ -18,7 +18,7 @@ define(
          * @param {Object} options 初始化参数
          */
         function InputControl(options) {
-            Control.call(this, options);
+            Control.apply(this, arguments);
         }
 
         InputControl.prototype = {
@@ -29,10 +29,14 @@ define(
              * 
              * @override
              */
-            render: function () {
-                helper.beforeRender(this);
-                helper.renderInputMain(this);
-                helper.afterRender(this);
+            initStructure: function () {
+                helper.initName(control);
+            },
+
+            repaint: function () {
+                // TODO: 修改为painter实现
+                this.setRawValue(this.rawValue);
+                this.setReadOnly(this.readOnly);
             },
 
             /**
@@ -50,8 +54,8 @@ define(
              * @param {string} value 输入控件的值
              */
             setValue: function (value) {
-                this.rawValue = this.parseValue(value);
-                this.repaint();
+                var rawValue = this.parseValue(value);
+                this.setRawValue(rawValue);
             },
 
             /**
@@ -69,8 +73,16 @@ define(
              * @param {string} rawValue 输入控件的原始值
              */
             setRawValue: function (rawValue) {
+                if (this.rawValue === rawValue) {
+                    return;
+                }
+                var record = {
+                    name: 'rawValue',
+                    oldValue: this.rawValue,
+                    newValue: rawValue
+                };
                 this.rawValue = rawValue;
-                this.repaint();
+                this.repaint([record]);
             },
 
             /**
@@ -84,7 +96,7 @@ define(
                 // 否则，将value解析成rawValue
                 var value = properties.value;
                 delete properties.value;
-                if (value && !properties.rawValue) {
+                if (value != null && properties.rawValue == null) {
                     properties.rawValue = this.parseValue(value);
                 }
 

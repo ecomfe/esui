@@ -178,18 +178,6 @@ define(
         };
 
         /**
-         * 初始化输入控件的主元素
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.renderInputMain = function (control) {
-            helper.initName(control);
-            helper.renderMain(control);
-            control.setRawValue(control.rawValue);
-            control.setReadOnly(control.readOnly);
-        };
-
-        /**
          * 控件主元素鼠标移入事件处理函数
          * 
          * @inner
@@ -269,6 +257,11 @@ define(
                 main.onmousedown = null;
                 main.onmouseout = null;
                 main.onmouseover = null;
+            }
+
+            // 从控件树中移除
+            if (control.parent) {
+                control.parent.removeChild(control);
             }
 
             // 从视图环境移除
@@ -406,7 +399,7 @@ define(
         var domEventsKey = '_esuiDOMEvent';
 
         function triggerDOMEvent(e) {
-            var queue = this.domEvents[e.target[domEventsKey]][e.type];
+            var queue = this.domEvents[e.currentTarget[domEventsKey]][e.type];
             for (var i = 0; i < queue.length; i++) {
                 queue[i].call(this, e);
             }
