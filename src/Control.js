@@ -256,8 +256,10 @@ define(
 
                 // 切换子控件的视图环境
                 var children = this.children;
-                for (var i = 0, len = children.length; i < len; i++) {
-                    children[i].setViewContext(viewContext);
+                if (children) {
+                    for (var i = 0, len = children.length; i < len; i++) {
+                        children[i].setViewContext(viewContext);
+                    }
                 }
             },
 
