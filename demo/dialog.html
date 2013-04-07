@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Dialog - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Dialog</header>
+        <div class="container">
+            <button id="trigger-alert">点我电你哦！</button>
+            <button id="trigger-confirm">点我没事！</button>
+        </div>
+        <script>
+        require(
+            [
+                'esui', 
+                'esui/Panel',
+                'esui/Button',
+                'esui/Dialog',
+                'css!esui/css/main.css',
+                'css!esui/css/Button.css',
+                'css!esui/css/Dialog.css'
+            ],
+            function (ui) {
+                var Dialog = require('esui/Dialog');
+                document.getElementById('trigger-alert').onclick = function () {
+                    Dialog.alert({
+                        title: '电你',
+                        content: '<h1>请不要随便点我！</h1>',
+                        onok: function(dialog) {
+                            alert('关了！');
+                        },
+                        width: 400
+                    });
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

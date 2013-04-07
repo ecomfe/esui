@@ -13,12 +13,6 @@ define(
         var Control = require('./Control');
         var ui = require('./main');
 
-        /** button模板 */
-        var tplButton = ''
-            + '<div id="${lfIconId}" class="${lfIconClass}"></div>'
-            + '<div id="${labelId}" class="${labelClass}">${btnLabel}</div>'
-            + '<div id="${rtIconId}" class="${rtIconClass}"></div>';
-
         /**
          * 默认选项配置
          * 
@@ -85,12 +79,6 @@ define(
                     if (options.text == null) {
                         options.text = lib.getText(options.main);
                     }
-                    if (options.tagName != 'DIV') {
-                        var tempInnerHtml = options.main.innerHTML;
-                        options.main = document.createElement('div');
-                        options.main.innerHTML = tempInnerHtml;
-                        options.tagName = 'DIV';
-                    }
                     var innerDiv = options.main.firstChild;
                     if (!options.content 
                         && innerDiv 
@@ -105,11 +93,11 @@ define(
             /**
              * 创建控件主元素
              *
-             * @return {HTMLElement}
+             * @param {Object=} options 构造函数传入的参数
              * @override
              */
-            createMain: function () {
-                this.main = document.createElement('div');
+            createMain: function (options) {
+                this.main = document.createElement('button');
             },
 
             /**
@@ -121,7 +109,7 @@ define(
              */
             repaint: function (changes) {
                 var main = this.main;
-                main.innerHTML = getMainHtml(this);
+                main.innerHTML = this.content;
 
                 // 初始化状态事件
                 main.onclick = lib.bind(this.clickHandler, this);

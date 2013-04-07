@@ -256,6 +256,18 @@ define(function () {
     };
 
     /**
+     * 移除目标元素
+     * 
+     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * 
+     */
+    lib.removeNode = function (element) {
+        element = lib.g(element);
+        var parent = element.parentNode;
+        parent.removeChild(element);
+    };
+
+    /**
      * 移除目标元素的className
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id
@@ -458,7 +470,7 @@ define(function () {
          * 
          * @type {number}
          */
-        lib.ie =  doument.documentMode || + RegExp.$1;
+        lib.ie =  document.documentMode || + RegExp.$1;
     }
 
     lib.on = function (element, type, listener) {

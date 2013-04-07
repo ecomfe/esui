@@ -31,7 +31,7 @@ define(
             height: 0,            // 对话框的高度
             title: '我是标题',    // 标题的显示文字
             content: '<p>我是内容</p>',   // 内容区域的显示内容
-            foot: '' 
+            foot: ''
                 + '<div data-ui-type="Button" data-ui-id="btnFootOk" >确定</div>'
                 + '<div><a data-ui-type="Link" data-ui-id="btnFootCancel">取消</a></div>',
             needFoot: true
@@ -47,8 +47,6 @@ define(
             Control.apply(this, arguments);
         }
 
-
-        
         /**
          * 渲染控件前重绘控件
          * 
@@ -71,17 +69,17 @@ define(
                 }
             }
 
-            options.title = roles['title'] || options.title;
-            options.content = roles['content'] || options.content;
+            options.title = roles.title || options.title;
+            options.content = roles.content || options.content;
 
             if (options.needFoot) {
-                options.foot = roles['foot'] || options.foot;
+                options.foot = roles.foot || options.foot;
             }
             else {
                 options.foot = null;
             }
 
-        };
+        }
 
 
         /**
@@ -103,7 +101,7 @@ define(
                     closeTpl,
                     {
                         'clsId': helper.getId(me, close),
-                        'clsClass': helper.getClasses(me, close),
+                        'clsClass': helper.getClasses(me, close)
                     }
                 );
             }
@@ -134,7 +132,7 @@ define(
 
             return headPanelHtml;
 
-        };
+        }
 
         /**
          * 构建对话框主内容和底部内容
@@ -159,7 +157,7 @@ define(
 
             return panelHtml;
 
-        };
+        }
 
         /**
          * 获取指定部分dom元素
@@ -170,7 +168,7 @@ define(
         function getPartHtml(type) {
             var domId = lib.getId(this, type);
             return lib.g(domId);
-        };
+        }
 
         /**
          * 点击头部关闭按钮时事件处理函数
@@ -179,7 +177,7 @@ define(
          */
         function closeClickHandler() {
             this.hide();
-        };
+        }
 
         /**
          * 页面resize时事件的处理函数
@@ -202,7 +200,7 @@ define(
 
             main.style.left = left + 'px';
             main.style.top = page.getScrollTop() + me.top + 'px';
-        };
+        }
 
         /**
          * 页面大小发生变化的事件处理器
@@ -226,7 +224,7 @@ define(
             
             el.id = id;
             document.body.appendChild(el);
-        };
+        }
 
 
         /**
@@ -249,7 +247,7 @@ define(
 
             mask.style.width = width + 'px';
             mask.style.height = height + 'px';
-        };
+        }
 
         /**
          * 获取遮盖层dom元素
@@ -266,7 +264,7 @@ define(
             }
 
             return lib.g(id);
-        };
+        }
 
 
         Dialog.OK_TEXT = '确定';
@@ -313,11 +311,40 @@ define(
             /**
              * 创建控件主元素
              *
-             * @return {HTMLElement}
+             * @param {Object=} options 构造函数传入的参数
              * @override
              */
-            createMain: function () {
+            createMain: function (options) {
                 this.main = document.createElement('div');
+            },
+
+            /**
+             * 初始化DOM结构，仅在第一次渲染时调用
+             */
+            initStructure: function () {
+                var main = this.main;
+
+                // 设置样式
+                main.style.left = '-10000px';
+
+                var mainClass = helper.getClasses(this, 'main');
+                var titleId = helper.getId(this, 'title');
+                var bodyId = helper.getId(this, 'body');
+                var bodyClass = helper.getClasses(this, 'body');
+                var footId = helper.getId(this, 'foot');
+                var footClass = helper.getClasses(this, 'foot');
+
+                main.innerHTML = ''
+                    + getHeadHtml(this)
+                    + getBFHtml(this, 'body')
+                    + getBFHtml(this, 'foot');
+                this.initChildren(main);
+
+                // 初始化控件主元素上的行为
+                if (this.closeButton !== false) {
+                    var close = this.getClose();
+                    close.onclick = lib.bind(closeClickHandler, this);
+                }
             },
 
             /**
@@ -340,16 +367,8 @@ define(
                 var footId = helper.getId(this, 'foot');
                 var footClass = helper.getClasses(this, 'foot');
 
-                // 第一次渲染或全集渲染
-                if (typeof changes == 'undefined' ) {
-                    main.innerHTML = ''
-                        + getHeadHtml(this)
-                        + getBFHtml(this, 'body')
-                        + getBFHtml(this, 'foot');
-                    this.initChildren(main);
-                }
                 // 局部渲染
-                else {
+                if (typeof changes != 'undefined' ) {
                     // 如果需要更新content
                     // 高度
                     if(changes.height) {
@@ -394,12 +413,6 @@ define(
                             foot.initChildren(footWrapper);
                         }
                     }
-                }
-
-                // 初始化控件主元素上的行为
-                if (this.closeButton !== false) {
-                    var close = this.getClose();
-                    close.onclick = lib.bind(closeClickHandler, this);
                 }
 
             },
@@ -660,9 +673,9 @@ define(
             function getBtnClickHandler(eventHandler, id) {
                 return function(){
                     var dialog = controlMain.get(dialogPrefix + id);
+                    var domId = helper.getId(dialog);
                     var okBtn = controlMain.get(okPrefix + id);
                     var cancelBtn = controlMain.get(cancelPrefix + id);
-
                     var isFunc = (typeof eventHandler == 'function');
 
                     if ((isFunc && eventHandler(dialog) !== false) || !isFunc) {
@@ -670,6 +683,8 @@ define(
                         okBtn.dispose();
                         cancelBtn.dispose();
                         dialog.dispose();
+                        //移除dom
+                        lib.removeNode(domId);
                     }
                 
                     dialog = null;
@@ -747,6 +762,7 @@ define(
                 return function(){
                     var dialog = controlMain.get(dialogPrefix + id);
                     var okBtn = controlMain.get(okPrefix + id);
+                    var domId = helper.getId(dialog);
 
                     var isFunc = (typeof eventHandler == 'function');
 
@@ -754,6 +770,8 @@ define(
                         dialog.hide();
                         okBtn.dispose();
                         dialog.dispose();
+                        //移除dom
+                        lib.removeNode(domId);
                     }
                 
                     dialog = null;
