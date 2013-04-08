@@ -15,32 +15,6 @@ define(
         var maskIdPrefix = 'ctrlMask';
 
         /**
-         * 默认Dialog选项配置
-         * 
-         * @const
-         * @inner
-         * @type {Object}
-         */
-        var DEFAULT_OPTION = {
-            autoPosition: false,  // 是否自动定位居中
-            closeButton: true,    // 是否具有关闭按钮
-            draggable: false,     // 是否可拖拽
-            mask: true,           // 是否具有遮挡层。或者指定带有level和type属性的object，自定义遮挡层
-            width: 600,           // 对话框的宽度
-            height: 0,            // 对话框的高度
-            title: '我是标题',    // 标题的显示文字
-            content: '<p>我是内容</p>',   // 内容区域的显示内容
-            foot: ''
-                + '<div data-ui-type="Button" data-ui-id="btnFootOk">确定</div>'
-                + '<div>'
-                +     '<a data-ui-type="Link" data-ui-id="btnFootCancel">'
-                +         '取消'
-                +     '</a>'
-                + '</div>',
-            needFoot: true
-        };
-
-        /**
          * 弹出框控件类
          * 
          * @constructor
@@ -56,6 +30,10 @@ define(
          */
         function parseMain(options) {
             var main = options.main;
+            // 如果main未定义，则不作解析
+            if (!main) {
+                return;
+            }
             var els = main.getElementsByTagName('*');
             var len = els.length;
             var roleName;
@@ -186,9 +164,10 @@ define(
         /**
          * 页面resize时事件的处理函数
          *
+         * @param {ui.Dialog} 控件对象
          * @inner
          */
-        function resizeHandler(control, level) {
+        function resizeHandler(control) {
             var me = control;
             var page = lib.page;
             var main = me.main;
@@ -208,24 +187,24 @@ define(
         /**
          * 页面大小发生变化的事件处理器
          *
+         * @param {ui.Dialog} 控件对象
          * @inner
          */
-        function getMaskResizeHandler(level) {
+        function getMaskResizeHandler(control) {
             return function () {
-                repaintMask(getMask(level));
+                repaintMask(getMask(control));
             };
         }
 
         /**
          * 遮盖层初始化
-         *
+         * 
+         * @param {string} maskId 遮盖层domId
          * @inner
          */
-        function initMask(level) {
-            var id = maskIdPrefix + level,
-                el = document.createElement('div');
-            
-            el.id = id;
+        function initMask(maskId) {
+            var el = document.createElement('div');
+            el.id = maskId;
             document.body.appendChild(el);
         }
 
@@ -255,15 +234,17 @@ define(
         /**
          * 获取遮盖层dom元素
          *
+         * @param {ui.Dialog} 控件对象
          * @inner
          * @return {HTMLElement} 获取到的Mask元素节点.
          */
-        function getMask(level) {
-            var id = maskIdPrefix + level;
+        function getMask(control) {
+            var dialogId = helper.getId(control);
+            var id = maskIdPrefix + '-' + dialogId;
             var mask = lib.g(id);
 
             if (!mask) {
-                initMask(level);
+                initMask(id);
             }
 
             return lib.g(id);
@@ -273,8 +254,6 @@ define(
         Dialog.OK_TEXT = '确定';
         Dialog.CANCEL_TEXT = '取消';
 
-        //各层遮挡resize处理函数
-        var maskResizeHandlerMap = {};
 
         /**
          * 自增函数
@@ -304,21 +283,31 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                options = lib.extend(DEFAULT_OPTION, options);
-                if (options.main) {
-                    parseMain(options);
-                }
-                this.setProperties(options);
-            },
-
-            /**
-             * 创建控件主元素
-             *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
-             */
-            createMain: function (options) {
-                this.main = document.createElement('div');
+                //由main解析
+                parseMain(options);
+                /**
+                 * 默认Dialog选项配置
+                 */
+                var properties = {
+                    autoPosition: false,  // 是否自动定位居中
+                    closeButton: true,    // 是否具有关闭按钮
+                    draggable: false,     // 是否可拖拽
+                    mask: true,           // 是否具有遮挡层。或者指定带有level和type属性的object，自定义遮挡层
+                    width: 600,           // 对话框的宽度
+                    height: 0,            // 对话框的高度
+                    title: '我是标题',    // 标题的显示文字
+                    content: '<p>我是内容</p>',   // 内容区域的显示内容
+                    foot: ''
+                        + '<div data-ui-type="Button" data-ui-id="btnFootOk">确定</div>'
+                        + '<div>'
+                        +     '<a data-ui-type="Link" data-ui-id="btnFootCancel">'
+                        +         '取消'
+                        +     '</a>'
+                        + '</div>',
+                    needFoot: true
+                };
+                lib.extend(properties, options);
+                lib.extend(this, properties);
             },
 
             /**
@@ -330,13 +319,6 @@ define(
                 // 设置样式
                 main.style.left = '-10000px';
 
-                var mainClass = helper.getClasses(this, 'main');
-                var titleId = helper.getId(this, 'title');
-                var bodyId = helper.getId(this, 'body');
-                var bodyClass = helper.getClasses(this, 'body');
-                var footId = helper.getId(this, 'foot');
-                var footClass = helper.getClasses(this, 'foot');
-
                 main.innerHTML = ''
                     + getHeadHtml(this)
                     + getBFHtml(this, 'body')
@@ -345,8 +327,8 @@ define(
 
                 // 初始化控件主元素上的行为
                 if (this.closeButton !== false) {
-                    var close = this.getClose();
-                    close.onclick = lib.bind(closeClickHandler, this);
+                    var close = lib.g(helper.getId(this, 'closeIcon'));
+                    helper.addDOMEvent(this, close, 'click', closeClickHandler);
                 }
             },
 
@@ -371,49 +353,46 @@ define(
                 var footClass = helper.getClasses(this, 'foot');
 
                 // 局部渲染
-                if (typeof changes != 'undefined') {
-                    // 如果需要更新content
-                    // 高度
-                    if (changes.height) {
-                        this.main.style.height = changes.height + 'px';
-                        if (this.isShow) {
-                            resizeHandler(this);
+                if (changes && changes.length) {
+                    for (var i = 0; i < changes.length; i++) {
+                        var record  = changes[i];
+                        if (record.name == 'height') {
+                            this.main.style.height = record.newValue + 'px';
+                            if (this.isShow) {
+                                resizeHandler(this);
+                            }
                         }
-                    }
-                    // 宽度
-                    if (changes.width) {
-                        this.main.style.width = changes.width + 'px';
-                        if (this.isShow) {
-                            resizeHandler(this);
+                        else if (record.name == 'height') {
+                            this.main.style.height = record.newValue + 'px';
+                            if (this.isShow) {
+                                resizeHandler(this);
+                            }
                         }
-                    }
-                    // 标题栏
-                    if (changes.title) {
-                        lib.g(titleId).innerHTML = changes.title;
-                    }
-                    // 主体内容
-                    if (changes.content) {
-                        // 获取body panel
-                        var body = this.getBody();
-                        var bodyWrapper = lib.g(bodyId);
-                        bodyWrapper.innerHTML = changes.content;
-                        // 需要重新init
-                        body.initChildren(bodyWrapper);
-                    }
-                    // 腿部内容
-                    if (typeof changes.foot !== 'undefined') {
-                        // 取消了foot
-                        if (changes.foot == null) {
-                            this.needFoot = false;
-                            var foot = this.getFoot();
-                            this.removeChild(foot);
+                        else if (record.name == 'title') {
+                            lib.g(titleId).innerHTML = record.newValue;
                         }
-                        else {
-                            this.needFoot = true;
-                            var foot = this.getFoot();
-                            var footWrapper = lib.g(footId);
-                            footWrapper.innerHTML = changes.foot;
-                            foot.initChildren(footWrapper);
+                        else if (record.name == 'content') {
+                            // 获取body panel
+                            var body = this.getBody();
+                            var bodyWrapper = lib.g(bodyId);
+                            bodyWrapper.innerHTML = record.newValue;
+                            // 需要重新init
+                            body.initChildren(bodyWrapper);
+                        }
+                        else if (record.name == 'foot') {
+                            // 取消了foot
+                            if (record.newValue == null) {
+                                this.needFoot = false;
+                                var foot = this.getFoot();
+                                this.removeChild(foot);
+                            }
+                            else {
+                                this.needFoot = true;
+                                var foot = this.getFoot();
+                                var footWrapper = lib.g(footId);
+                                footWrapper.innerHTML = record.newValue;
+                                foot.initChildren(footWrapper);
+                            }
                         }
                     }
                 }
@@ -436,7 +415,7 @@ define(
              * 
              * @return {HTMLElement} 
              */
-            getBodyDom: function () {
+            getBodyDOM: function () {
                 return getPartHtml(this, 'head');
             },
 
@@ -456,7 +435,7 @@ define(
              * 
              * @return {HTMLElement} 
              */
-            getHeadDom: function () {
+            getHeadDOM: function () {
                 return getPartHtml(this, 'head');
             },
 
@@ -476,7 +455,7 @@ define(
              * 
              * @return {HTMLElement} 
              */
-            getFootDom: function () {
+            getFootDOM: function () {
                 return getPartHtml(this, 'foot');
             },
 
@@ -500,13 +479,13 @@ define(
                 resizeHandler(this);
 
                 // 拖拽功能初始化
-                if (this.dragable) {
+                if (this.draggable) {
                     // TODO: 拖拽的库函数还未实现
                     // baidu.dom.draggable(main, {handler:this.getHead()});
                 }
 
                 if (mask) {
-                    this.showMask(mask.level, mask.type);
+                    this.showMask();
                 }
 
                 this.fire('show');
@@ -516,27 +495,20 @@ define(
 
             /**
              * 显示遮盖层
+             * 
              */
-            showMask: function (level, type) {
-                level = level || '0';
-                var mask = getMask(level);
+            showMask: function () {
+                var mask = getMask(this);
                 var clazz = [];
                 var maskClass = helper.getClasses(this, 'mask');
 
                 clazz.push(maskClass);
-                clazz.push(maskClass + '-level-' + level);
-
-                if (type) {
-                    clazz.push(maskClass + '-' + type);
-                }
-                
                 repaintMask(mask);
 
                 mask.className = clazz.join(' ');
                 mask.style.display = 'block';
 
-                var resizeHandler = getMaskResizeHandler(level);
-                maskResizeHandlerMap[level] = resizeHandler;
+                var resizeHandler = getMaskResizeHandler();
                 lib.on(window, 'resize', resizeHandler);            
             },
 
@@ -555,7 +527,7 @@ define(
                     main.style.left = main.style.top = '-10000px';
 
                     if (mask) {
-                        this.hideMask(mask.level, mask.type);
+                        this.hideMask();
                     }
                 }
 
@@ -566,13 +538,13 @@ define(
             /**
              * 隐藏遮盖层
              */
-            hideMask: function (level) {
-                level = level || '0';
-                var mask = getMask(level);
+            hideMask: function () {
+                var mask = getMask(this);
                 if ('undefined' != typeof mask) {
-                    mask.style.display = 'none';
-
-                    var resizeHandler = maskResizeHandlerMap[level];
+                    lib.removeNode(mask);
+                    var resizeHandler = getMaskResizeHandler();
+                    // @FIXME 此处有一坑：如果同时弹出几个对话框，
+                    // 第一个对话框关闭以后，window针对mask的resize事件就都解绑了
                     lib.un(window, 'resize', resizeHandler);
                 }
             },
@@ -583,10 +555,7 @@ define(
              * @param {string} html 要设置的文字，支持html
              */
             setTitle: function (html) {
-                this.title = html;
-                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({'title': html});
-                }
+                this.setProperties({'title': html});
             },
 
             /**
@@ -595,10 +564,7 @@ define(
              * @param {string} content 要设置的内容，支持html.
              */
             setContent: function (content) {
-                this.content = content;
-                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({'content': content});
-                }
+                this.setProperties({'content': content});
             },
 
             /**
@@ -607,10 +573,7 @@ define(
              * @param {string} foot 要设置的内容，支持html.
              */
             setFoot: function (foot) {
-                this.foot = foot;
-                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({'foot': foot});
-                }
+                this.setProperties({'foot': foot});
             },
 
             /**
@@ -619,10 +582,7 @@ define(
              * @param {number} height 对话框的高度.
              */
             setHeight: function (height) {
-                this.height = height;
-                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({'height': height});
-                }
+                this.setProperties({'height': height});
             },
 
             /**
@@ -631,33 +591,15 @@ define(
              * @param {number} width 对话框的宽度.
              */
             setWidth: function (width) {
-                this.height = width;
-                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({'width': width});
-                }
-            },
-
-            /**
-             * 销毁释放控件
-             * 
-             * @override
-             */
-            dispose: function () {
-                helper.beforeDispose(this);
-
-                var main = this.main;
-                if (main) {
-                    main.onclick = null;
-                    this.onshow = null;
-                    this.onhide = null;
-                }
-
-                helper.dispose(this);
-                helper.afterDispose(this);
+                this.setProperties({'width': width});
             }
         };
 
 
+        /**
+         * 确认提示框
+         *
+         */
         Dialog.confirm = function (args) {
             var dialogPrefix    = 'DialogConfirm';
             var okPrefix        = 'DialogConfirmOk';
@@ -713,7 +655,7 @@ define(
                     closeButton: false,
                     title: '',
                     width: width,
-                    mask: {level: args.level || 3}
+                    mask: true
                 }
             );
         
@@ -799,7 +741,7 @@ define(
                     closeButton: false,
                     title: '',
                     width: width,
-                    mask: {level: args.level || 3},
+                    mask: true,
                     main: main
                 }
             );
