@@ -24,7 +24,7 @@
     position: relative;
 }
 
-.ui-dialog-head .ui-dialog-closeIcon {
+.ui-dialog-head .ui-dialog-close-icon {
     background:url(../img/ui-dialog-head-close.png) no-repeat;
     height: 13px;
     width: 13px;
@@ -40,12 +40,6 @@
     font-size: 15px;
     line-height: 26px;
     background: url(../img/ui-dialog-head-bg.png);
-}
-
-.ui-dialog .ui-dialog-close {
-    background:url(../img/ui-dialog-head-close.png) no-repeat;
-    height: 13px;
-    width: 13px;
 }
 
 .ui-dialog-body {
@@ -95,7 +89,8 @@
 }
 
 .ui-dialog-mask {
-    position:absolute;
+    position:fixed;
+    *position:absolute;
     top:0;
     left:0;
     background:#333;

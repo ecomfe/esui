@@ -74,7 +74,7 @@ define(
             var me = control;
             var head = 'head';
             var title = 'title';
-            var close = 'closeIcon';
+            var close = 'close-icon';
 
             var closeTpl = 
                 '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
@@ -198,10 +198,8 @@ define(
          * @param {ui.Dialog} 控件对象
          * @inner
          */
-        function getMaskResizeHandler(control) {
-            return function () {
-                repaintMask(getMask(control));
-            };
+        function maskResizeHandler(control) {
+            repaintMask(getMask(control));
         }
 
         /**
@@ -229,11 +227,7 @@ define(
                             Math.max(
                                 document.body.scrollWidth,
                                 document.documentElement.scrollWidth)),
-                height = Math.max(
-                            document.documentElement.clientHeight,
-                            Math.max(
-                                document.body.scrollHeight,
-                                document.documentElement.scrollHeight));
+                height = document.documentElement.clientHeight;
 
             mask.style.width = width + 'px';
             mask.style.height = height + 'px';
@@ -303,6 +297,8 @@ define(
                     mask: true,           // 是否具有遮挡层。或者指定带有level和type属性的object，自定义遮挡层
                     width: 600,           // 对话框的宽度
                     height: 0,            // 对话框的高度
+                    top: 100,             // 对话框的垂直位置
+                    left: 0,              // 对话框的水平位置
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     foot: ''
@@ -332,7 +328,7 @@ define(
 
                 // 初始化控件主元素上的行为
                 if (this.closeButton !== false) {
-                    var close = lib.g(helper.getId(this, 'closeIcon'));
+                    var close = lib.g(helper.getId(this, 'close-icon'));
                     helper.addDOMEvent(this, close, 'click', closeClickHandler);
                 }
             },
@@ -512,9 +508,8 @@ define(
 
                 mask.className = clazz.join(' ');
                 mask.style.display = 'block';
-
-                var resizeHandler = getMaskResizeHandler(this);
-                lib.on(window, 'resize', resizeHandler);            
+                this.curMaskListener = lib.curry(maskResizeHandler, this);
+                lib.on(window, 'resize', this.curMaskListener);            
             },
 
             /**
@@ -547,10 +542,8 @@ define(
                 var mask = getMask(this);
                 if ('undefined' != typeof mask) {
                     lib.removeNode(mask);
-                    var resizeHandler = getMaskResizeHandler();
-                    // @FIXME 此处有一坑：如果同时弹出几个对话框，
-                    // 第一个对话框关闭以后，window针对mask的resize事件就都解绑了
-                    lib.un(window, 'resize', resizeHandler);
+                    lib.un(window, 'resize', this.curMaskListener); 
+                    this.curMaskListener = null;
                 }
             },
 
