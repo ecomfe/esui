@@ -238,7 +238,7 @@ define(function () {
      */
     lib.hasClass = function (element, className) {
         element = lib.g(element);
-        var classes = element.className.split(/s+/);
+        var classes = element.className.split(/\s+/);
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
                 return true;
