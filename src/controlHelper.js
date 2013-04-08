@@ -417,7 +417,8 @@ define(
                     e.cancelBubble = true;
                 };
             }
-            var queue = control.domEvents[e.currentTarget[domEventsKey]][e.type];
+            var queue = 
+                control.domEvents[e.currentTarget[domEventsKey]][e.type];
             for (var i = 0; i < queue.length; i++) {
                 queue[i].call(control, e);
             }

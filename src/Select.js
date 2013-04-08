@@ -92,9 +92,7 @@ define(
 
             // 如果主元素是个`<select>`元素，则需要从元素中抽取数据源，
             // 这种情况下构造函数中传入的`datasource`无效
-            if (properties.main
-                && properties.main.nodeName.toLowerCase() === 'select'
-            ) {
+            if (this.main.nodeName.toLowerCase() === 'select') {
                 properties.datasource = [];
                 var elements = properties.main.getElementsByTagName('option');
                 for (var i = 0, length = elements.length; i < length; i++) {

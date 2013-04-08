@@ -1,13 +1,12 @@
 define(function (require) {
     var Select = require('esui/Select');
-    var container = document.getElementById('container');
     var datasource = [
         { text: 'a', value: '1' },
         { text: 'b', value: '2' },
         { text: 'c', value: '3' },
         { text: 'd', value: '4' },
         { text: 'e', value: '5' },
-        { text: 'f', value: '6' },
+        { text: 'f', value: '6' }
     ];
 
     describe('Select', function () {

@@ -1,6 +1,6 @@
 define(function (require) {
     var helper = require('esui/controlHelper');
-
+        
     function dispatchEvent(element, type) {
         if (typeof document.createEvent === 'function') {
             var event = document.createEvent('Event');

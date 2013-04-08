@@ -151,7 +151,7 @@ define(function (require) {
                     tabs: [
                         { title: 'tab1', panel: 'a' },
                         { title: 'tab2', panel: 'b' },
-                        { title: 'tab3' },
+                        { title: 'tab3' }
                     ], 
                     activeIndex: 2
                 });
