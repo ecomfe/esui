@@ -45,13 +45,15 @@ define(
             // 控件会自动生成正确的`navigator`格式并放在`main`的最前面
             // 
             // 而如果有子元素且没有`[data-role="navigator"]`元素，
+            // 同时构造控件的时候没给`tabs`选项，
             // 则认为每个子元素是一个标签页，从`title`属性中找出对应的`title`
             if (this.main.children.length) {
-                properties.tabs = [];
+                var tabs = [];
                 for (var i = 0; i < this.main.children.length; i++) {
                     var element = this.main.children[i];
                     if (element.getAttribute('data-role') === 'navigator') {
-                        // 找到了`[data-role="navigator"]`的元素，抛弃其它配置
+                        // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
+                        // 且这个配置会覆盖用户传入的`tabs`选项
                         properties.tabs = [];
                         element.parentNode.removeChild(element);
                         for (var i = 0; i < element.children.length; i++) {
@@ -72,8 +74,15 @@ define(
                             title: element.getAttribute('title'),
                             panel: element.id
                         };
-                        properties.tabs.push(config);
+                        tabs.push(config);
                     }
+                }
+
+                // 只有用户没给`tabs`（默认为空数组）的时候，才覆盖之，
+                // 如果找到了`[data-role="navigator"]`元素，
+                // 会直接操纵`properties.tabs`，这里不会出现空数组的情况
+                if (!properties.tabs.length) {
+                    properties.tabs = tabs;
                 }
             }
             lib.extend(this, properties);

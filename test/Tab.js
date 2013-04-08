@@ -65,23 +65,20 @@ define(function (require) {
                     '</ul>'
                 ];
                 main.innerHTML = html.join('\n');
-                var tab = new Tab({ main: main, tabs: [] });
+                var tab = new Tab({ main: main, tabs: tabs });
                 var tabs = [
                     { title: 'tab1', panel: 'a' }
                 ];
                 expect(tab.get('tabs')).toEqual(tabs);
             });
 
-            it('should override `tabs` option given from constructor if the main element has tab page children', function () {
+            it('should not override `tabs` option if it is given from constructor even main element has tab page children', function () {
                 var main = document.createElement('div');
                 var html = [
                     '<div title="tab1" id="a"></div>'
                 ];
                 main.innerHTML = html.join('\n');
-                var tab = new Tab({ main: main, tabs: [] });
-                var tabs = [
-                    { title: 'tab1', panel: 'a' }
-                ];
+                var tab = new Tab({ main: main, tabs: tabs });
                 expect(tab.get('tabs')).toEqual(tabs);
             });
         });
