@@ -23,7 +23,7 @@ define(function (require) {
 
             it('should make the `<form>` element\'s `method` attribute "POST"', function () {
                 var form = new Form();
-                expect(form.main.getAttribute('method')).toBe('POST');
+                expect(form.main.getAttribute('method').toUpperCase()).toBe('POST');
             });
         });
 

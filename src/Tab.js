@@ -120,7 +120,8 @@ define(
             this.navigator = document.createElement('ul');
 
             var lib = require('./lib');
-            this.main.insertBefore(this.navigator, this.main.firstChild);
+            this.main.insertBefore(
+                this.navigator, this.main.firstChild || null);
 
             require('./controlHelper').addDOMEvent(
                 this, this.navigator, 'click', lib.bind(selectTab, null, this));
@@ -291,7 +292,7 @@ define(
             var lib = require('./lib');
             tabElement.innerHTML = lib.encodeHTML(config.title);
             this.navigator.insertBefore(
-                tabElement, this.navigator.children[index]);
+                tabElement, this.navigator.children[index] || null);
 
             // 如果在当前激活的标签前插入一个，则`activeIndex`需要变化，
             // 但视图是不用刷新的

@@ -2,9 +2,15 @@ define(function (require) {
     var helper = require('esui/controlHelper');
 
     function dispatchEvent(element, type) {
-        var event = document.createEvent('Event');
-        event.initEvent(type, true, false);
-        element.dispatchEvent(event);
+        if (typeof document.createEvent === 'function') {
+            var event = document.createEvent('Event');
+            event.initEvent(type, true, false);
+            element.dispatchEvent(event);
+        }
+        else {
+            var event = document.createEventObject();
+            element.fireEvent('on' + type, event);
+        }
     }
 
     describe('controlHelper', function () {
@@ -29,6 +35,7 @@ define(function (require) {
                 it('should add an event to DOM element', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var handler = jasmine.createSpy();
 
                     helper.addDOMEvent(control, element, 'click', handler);
@@ -39,6 +46,7 @@ define(function (require) {
                 it('should call all event listeners when dom event is fired', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var handlerA = jasmine.createSpy();
                     var handlerB = jasmine.createSpy();
 
@@ -52,6 +60,7 @@ define(function (require) {
                 it('should call event listeners with attach order', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var queue = [];
                     function handlerA() { queue.push('a'); }
                     function handlerB() { queue.push('b'); }
@@ -67,6 +76,7 @@ define(function (require) {
                 it('should remove an attached event listener', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var handler = jasmine.createSpy();
 
                     helper.addDOMEvent(control, element, 'click', handler);
@@ -78,6 +88,7 @@ define(function (require) {
                 it('should remove all event listeners if `handler` argument is omitted', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var handlerA = jasmine.createSpy();
                     var handlerB = jasmine.createSpy();
 
@@ -92,6 +103,7 @@ define(function (require) {
                 it('should be ok if removing event handler is not already attached', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var handler = jasmine.createSpy();
                     expect(function () { helper.removeDOMEvent(control, element, 'click', handler) }).not.toThrow();
                 });
@@ -99,6 +111,7 @@ define(function (require) {
                 it('should be ok to remove an certain type of event if no event listeners are attached', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     expect(function () { helper.removeDOMEvent(control, element, 'click') }).not.toThrow();
                 });
             });
@@ -107,6 +120,7 @@ define(function (require) {
                 it('should remove all events from a given element', function () {
                     var control = {};
                     var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
                     var handlerA = jasmine.createSpy();
                     var handlerB = jasmine.createSpy();
                     var handlerC = jasmine.createSpy();
@@ -125,6 +139,8 @@ define(function (require) {
                     var control = {};
                     var elementA = document.createElement('div');
                     var elementB = document.createElement('div');
+                    document.getElementById('container').appendChild(elementA);
+                    document.getElementById('container').appendChild(elementB);
                     var handlerA = jasmine.createSpy();
                     var handlerB = jasmine.createSpy();
                     helper.addDOMEvent(control, elementA, 'click', handlerA);
