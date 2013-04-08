@@ -24,6 +24,56 @@
     background-color: @b-color;
 }
 
+/* 
+ * 线性渐变背景
+ * @direction 渐变方向
+ * @from-color 起始颜色
+ * @to-color 终止颜色
+ * @image-url 背景前的第二背景图
+ * @repeat-type 重叠方式 
+ * @s-x x轴偏移
+ * @s-y y轴偏移 
+ * @b-color 背景色
+ */
+.linear-gradient-background (
+    @direction:top, @from-color, @to-color,
+    @image-url:"", 
+    @repeat-type:no-repeat, 
+    @s-x:0, @s-y:0, 
+    @b-color:transparent) {
+    @top: 0% 0%, 0% 100%;
+    @left: 0% 0%, 100% 0%;
+    @bottom: 0% 100%, 0% 0%;
+    @right: 100% 0%, 0% 0%;
+    background: 
+        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y @b-color;
+
+    /* Safari 4-5, Chrome 1-9 */
+    background: 
+        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
+        -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
+  
+    /* Safari 5.1, Chrome 10+ */
+    background:
+        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
+        -webkit-linear-gradient(@direction, @from-color, @to-color);
+  
+    /* Firefox 3.6+ */
+    background:
+        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
+        -moz-linear-gradient(@direction, @from-color, @to-color);
+  
+    /* IE 10 */
+    background:
+        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
+        -ms-linear-gradient(@direction, @from-color, @to-color);
+  
+    /* Opera 11.10+ */
+    background:
+        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
+        -o-linear-gradient(@direction, @from-color, @to-color);
+}
+
 /** CSS3 相关 */
 
 /* 
