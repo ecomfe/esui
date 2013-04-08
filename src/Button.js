@@ -14,18 +14,6 @@ define(
         var ui = require('./main');
 
         /**
-         * 默认选项配置
-         * 
-         * @const
-         * @inner
-         * @type {Object}
-         */
-        var DEFAULT_OPTION = {
-            content: '',         // 按钮的显示文字
-            disabled: false     // 控件是否禁用
-        };
-
-        /**
          * 按钮控件类
          * 
          * @constructor
@@ -51,31 +39,37 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                options = lib.extend(options, DEFAULT_OPTION);
-                if (options.main) {
-                    options.tagName = options.main.nodeName.toLowerCase();
-                    if (options.text == null) {
-                        options.text = lib.getText(options.main);
-                    }
-                    var innerDiv = options.main.firstChild;
-                    if (!options.content 
-                        && innerDiv 
-                        && innerDiv.tagName != 'DIV'
-                    ) {
-                        options.content = options.main.innerHTML;
-                    }
+                /**
+                 * 默认选项配置
+                 */
+                var properties = {
+                    content: '',         // 按钮的显示文字
+                    disabled: false     // 控件是否禁用
+                };
+                lib.extend(properties, options);
+                properties.tagName = this.main.nodeName.toLowerCase();
+                if (properties.text == null) {
+                    properties.text = lib.getText(this.main);
                 }
-                this.setProperties(options);
+                var innerDiv = this.main.firstChild;
+                if (!properties.content 
+                    && innerDiv 
+                    && innerDiv.tagName != 'DIV'
+                ) {
+                    properties.content = this.main.innerHTML;
+                }
+                lib.extend(this, properties);
             },
 
             /**
              * 创建控件主元素
              *
              * @param {Object=} options 构造函数传入的参数
+             * @return {HTMLElement}
              * @override
              */
             createMain: function (options) {
-                this.main = document.createElement('button');
+                return document.createElement('BUTTON');
             },
 
             /**
@@ -90,7 +84,7 @@ define(
                 main.innerHTML = this.content;
 
                 // 初始化状态事件
-                main.onclick = lib.bind(this.clickHandler, this);
+                helper.addDOMEvent(this, main, 'click', this.clickHandler);
                 helper.initMouseBehavior(this);
 
             },
@@ -108,27 +102,7 @@ define(
              * @param {string} content 要设置的内容.
              */
             setContent: function (content) {
-                this.content = content;
-                if (this.lifeCycle == Control.LifeCycle.RENDERED) {
-                    this.repaint({ 'content': content });
-                }
-            },
-
-            /**
-             * 销毁释放控件
-             * 
-             * @override
-             */
-            dispose: function () {
-                helper.beforeDispose(this);
-
-                var main = this.main;
-                if (main) {
-                    main.onclick = null;
-                }
-
-                helper.dispose(this);
-                helper.afterDispose(this);
+                this.setProperties({ 'content': content });
             }
         };
 
