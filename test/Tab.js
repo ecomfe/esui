@@ -270,6 +270,13 @@ define(function (require) {
                 expect(tab.get('activeIndex')).toBe(1);
                 expect(container.getElementsByTagName('li')[1].className).toMatch(/ui-tab-active/);
             });
+
+            it('should set `activeIndex` to -1 if the last tab is removed', function () {
+                var tab = new Tab({ tabs: tabs.slice(0, 1), activeIndex: 0 });
+                tab.appendTo(container);
+                tab.removeAt(0);
+                expect(tab.get('activeIndex')).toBe(-1);
+            });
         });
     });
 });

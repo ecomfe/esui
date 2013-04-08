@@ -196,7 +196,6 @@ define(
             select.selectionLayer.style.display = 'none';
         }
 
-
         /**
          * 打开下拉弹层
          *
@@ -282,6 +281,7 @@ define(
                 this.main.parentNode.removeChild(this.main);
                 this.main = main;
             }
+            
             var html = [
                 '<span></span>',
                 '<input type="hidden" name="${name}" />'
