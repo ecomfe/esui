@@ -7,6 +7,17 @@ define(function (require) {
         { title: 'tab3', panel: 'c' }
     ];
 
+    function findCloseElement(tabElement) {
+        for (var i = 0; i < tabElement.children.length; i++) {
+            var child = tabElement.children[i];
+            if (/ui-tab-close/.test(child.className)) {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
     describe('Tab', function () {
         it('should be a constructor', function () {
             expect(Tab).toBeOfType('function');
@@ -90,9 +101,9 @@ define(function (require) {
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator).toBeDefined();
                 expect(navigator.children.length).toBe(3);
-                expect(navigator.children[0].innerHTML).toBe('tab1');
-                expect(navigator.children[1].innerHTML).toBe('tab2');
-                expect(navigator.children[2].innerHTML).toBe('tab3');
+                expect(navigator.children[0].innerText).toBe('tab1');
+                expect(navigator.children[1].innerText).toBe('tab2');
+                expect(navigator.children[2].innerText).toBe('tab3');
             });
 
             it('should rerender navigator `<ul>` element if `tabs` is changed via `setProperties`', function () {
@@ -106,7 +117,7 @@ define(function (require) {
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator).toBeDefined();
                 expect(navigator.children.length).toBe(1);
-                expect(navigator.children[0].innerHTML).toBe('tab4');
+                expect(navigator.children[0].innerText).toBe('tab4');
             });
 
             it('should reset `activeIndex` to 0 if `tabs` is changed via `setProperties` and current `activeIndex` is out of range', function () {
@@ -200,7 +211,7 @@ define(function (require) {
                 expect(tab.get('tabs')[3]).toEqual(newTab);
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
-                expect(navigator.children[3].innerHTML).toBe('tab4');
+                expect(navigator.children[3].innerText).toBe('tab4');
             });
 
             it('should add a tab config & element at the given position when `insert` is called', function () {
@@ -211,7 +222,7 @@ define(function (require) {
                 expect(tab.get('tabs')[2]).toEqual(newTab);
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
-                expect(navigator.children[2].innerHTML).toBe('tab4');
+                expect(navigator.children[2].innerText).toBe('tab4');
             });
 
             it('should change `activeIndex` correctly when a tab is inserted', function () {
@@ -238,8 +249,8 @@ define(function (require) {
                 expect(tab.get('tabs')[1]).toEqual({ title: 'tab3', panel: 'c' });
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(2);
-                expect(navigator.children[0].innerHTML).toBe('tab1');
-                expect(navigator.children[1].innerHTML).toBe('tab3');
+                expect(navigator.children[0].innerText).toBe('tab1');
+                expect(navigator.children[1].innerText).toBe('tab3');
             });
 
             it('should remove a tab config & element when `removeAt` is called', function () {
@@ -251,8 +262,8 @@ define(function (require) {
                 expect(tab.get('tabs')[1]).toEqual({ title: 'tab3', panel: 'c' });
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(2);
-                expect(navigator.children[0].innerHTML).toBe('tab1');
-                expect(navigator.children[1].innerHTML).toBe('tab3');
+                expect(navigator.children[0].innerText).toBe('tab1');
+                expect(navigator.children[1].innerText).toBe('tab3');
             });
 
             it('should reset `activeIndex` to the next one if the active tab is removed', function () {
@@ -276,6 +287,59 @@ define(function (require) {
                 tab.appendTo(container);
                 tab.removeAt(0);
                 expect(tab.get('activeIndex')).toBe(-1);
+            });
+
+            it('should set the newly added tab active if it is the only one', function () {
+                container.innerHTML = '<div id="a"></div>';
+                var tab = new Tab();
+                tab.appendTo(container);
+                tab.add(tabs.slice(0, 1));
+                expect(tab.get('activeIndex')).toBe(0);
+                expect(document.getElementById('a').style.display).toBe('');
+            })
+
+            it('should add an element with className `ui-tab-close` to each tab if `allowClose` is set to true', function () {
+                var tab = new Tab({ tabs: tabs, allowClose: true });
+                tab.appendTo(container);
+                var navigator = container.getElementsByTagName('ul')[0];
+                for (var i = 0; i < navigator.children.length; i++) {
+                    var tab = navigator.children[i];
+                    var close = findCloseElement(tab);
+                    expect(close).toBeDefined();
+                }
+            });
+
+            it('should add an close element for each tab if `allowClose` is changed to true after rendered', function () {
+                var tab = new Tab({ tabs: tabs });
+                tab.appendTo(container);
+                tab.set('allowClose', true);
+                var navigator = container.getElementsByTagName('ul')[0];
+                for (var i = 0; i < navigator.children.length; i++) {
+                    var tab = navigator.children[i];
+                    var close = findCloseElement(tab);
+                    expect(close).toBeDefined();
+                }
+            });
+
+            it('should remove the close element for each tab if `allowClose` is changed to false after rendered', function () {
+                var tab = new Tab({ tabs: tabs, allowClose: true });
+                tab.appendTo(container);
+                tab.setProperties({ allowClose: false });
+                var navigator = container.getElementsByTagName('ul')[0];
+                for (var i = 0; i < navigator.children.length; i++) {
+                    var tab = navigator.children[i];
+                    var close = findCloseElement(tab);
+                    expect(close).toBe(null);
+                }
+            });
+
+            it('should remove the tab when close element is clicked', function () {
+                var tab = new Tab({ tabs: tabs.slice(), allowClose: true });
+                tab.appendTo(container);
+                var navigator = container.getElementsByTagName('ul')[0];
+                var close = findCloseElement(navigator.children[2]);
+                dispatchEvent(close, 'click');
+                expect(tab.get('tabs')).toEqual(tabs.slice(0, 2));
             });
 
             describe('`activate` event', function () {
@@ -341,7 +405,7 @@ define(function (require) {
                     expect(event.type).toBe('activate');
                     expect(event.activeIndex).toBe(1);
                     expect(event.tab).toEqual(tabs[1]);
-                })
+                });
             });
         });
     });

@@ -94,19 +94,27 @@ define(
          * @param {Tab} tab Tab控件实例
          * @param {Event} e 触发事件的事件对象
          */
-        function selectTab(tab, e) {
+        function clickTab(tab, e) {
             var target = e.target;
-            while (target.nodeName.toLowerCase() !== 'li') {
-                target = target.parentNode;
+            var tabElement = target;
+            while (tabElement.nodeName.toLowerCase() !== 'li') {
+                tabElement = tabElement.parentNode;
             }
 
-            if (target.nodeName.toLowerCase() === 'li') {
-                var parent = target.parentNode;
+            if (tabElement.nodeName.toLowerCase() === 'li') {
+                var parent = tabElement.parentNode;
                 for (var i = 0; i < parent.children.length; i++) {
-                    if (parent.children[i] === target) {
-                        tab.activateAt(i);
+                    if (parent.children[i] === tabElement) {
+                        // 如果点在关闭区域上，则移除这个元素，
+                        // 其它情况为激活该元素
+                        if (require('./lib').hasClass(target, 'ui-tab-close')) {
+                            tab.removeAt(i);
+                        }
+                        else {
+                            tab.activateAt(i);
+                        }
+                        return;
                     }
-                    return;
                 }
             }
         }
@@ -124,29 +132,57 @@ define(
                 this.navigator, this.main.firstChild || null);
 
             require('./controlHelper').addDOMEvent(
-                this, this.navigator, 'click', lib.bind(selectTab, null, this));
+                this, this.navigator, 'click', lib.bind(clickTab, null, this));
         };
+
+        /**
+         * 创建一个标签元素
+         *
+         * @param {Object} config 标签页的配置
+         * @param {string} config.title 标签页的标题
+         * @param {boolean} isActive 是否自激活状态
+         * @param {boolean} allowClose 是否允许关闭
+         */
+        function createTabElement(config, isActive, allowClose) {
+            var tab = document.createElement('li');
+            var lib = require('./lib');
+
+            if (isActive) {
+                lib.addClass(tab, 'ui-tab-active');
+            }
+
+            tab.innerHTML += lib.encodeHTML(config.title);
+
+            if (allowClose) {
+                tab.innerHTML += '<span class="ui-tab-close">关闭</span>';
+            }
+
+            return tab;
+        } 
 
         /**
          * 获取导航条的HTML
          *
-         * @param {Array} tabs 标签页配置项
+         * @param {Tab} tab Tab控件实例
          * @inner
          */
-        function getNavigatorHTML(tabs) {
-            var itemTemplate = '<li data-for="${panel}">${title}</li>';
-            var html = '';
+        function fillNavigator(tab) {
+            var navigator = tab.navigator;
+            var parentNode = navigator.parentNode;
+            var placeholder = navigator.nextSibling;
+            navigator.innerHTML = '';
+            navigator.parentNode.removeChild(navigator);
+
             var lib = require('./lib');
-            for (var i = 0; i < tabs.length; i++) {
-                var config = tabs[i];
-                var data = {
-                    panel: lib.encodeHTML(config.panel),
-                    title: lib.encodeHTML(config.title)
-                };
-                html += lib.format(itemTemplate, data);
+            for (var i = 0; i < tab.tabs.length; i++) {
+                var config = tab.tabs[i];
+                var isActive = tab.activeIndex === i;
+                var tabElement = 
+                    createTabElement(config, isActive, tab.allowClose);
+                navigator.appendChild(tabElement);
             }
 
-            return html;
+            parentNode.insertBefore(navigator, placeholder);
         }
 
         /**
@@ -232,7 +268,7 @@ define(
             for (var i = 0; i < changes.length; i++) {
                 var record = changes[i];
                 if (record.name === 'tabs') {
-                    this.navigator.innerHTML = getNavigatorHTML(this.tabs);
+                    fillNavigator(this);
                     // `tabs`变化导致`navigator`重新渲染，
                     // 同时`activeIndex`的变化会被`setProperties`吞掉，
                     // 因此要同步一次
@@ -242,7 +278,7 @@ define(
                     activateTab(this, this.activeIndex);
                 }
                 else if (record.name === 'allowClose') {
-                    // TODO: 实现allowClose
+                    fillNavigator(this);
                 }
             }
         };
@@ -291,26 +327,30 @@ define(
          */
         Tab.prototype.insert = function (config, index) {
             this.tabs.splice(index, 0, config);
-            // 因为可以从已有的HTML中找出`navigator`，
-            // 所以鬼知道用户用的是`ul`还是`div`，
-            // 为了避免破坏内容模型，这里进行一下容器元素的判断
-            var tabElement = document.createElement('li');
+            // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
+            var tabElement = createTabElement(config, false, this.allowClose);
             var lib = require('./lib');
-            tabElement.innerHTML = lib.encodeHTML(config.title);
             this.navigator.insertBefore(
                 tabElement, this.navigator.children[index] || null);
 
-            // 如果在当前激活的标签前插入一个，则`activeIndex`需要变化，
-            // 但视图是不用刷新的
-            if (index <= this.activeIndex) {
-                this.activeIndex++;
+            // 如果原来是没有标签页的，则新加的这个默认激活
+            if (this.tabs.length === 1) {
+                this.activeIndex = 0;
+                activateTab(this, 0);
             }
+            else {
+                // 如果在当前激活的标签前面插入一个，则`activeIndex`需要变化，
+                // 但视图是不用刷新的
+                if (index <= this.activeIndex) {
+                    this.activeIndex++;
+                }
 
-            // 新加入的标签默认要隐藏起来
-            if (config.panel) {
-                var panel = lib.g(config.panel);
-                if (panel) {
-                    panel.style.display = 'none';
+                // 新加入的标签默认要隐藏起来
+                if (config.panel) {
+                    var panel = lib.g(config.panel);
+                    if (panel) {
+                        panel.style.display = 'none';
+                    }
                 }
             }
         };

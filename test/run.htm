@@ -25,6 +25,18 @@
         });
     </script>
     <script>
+        function dispatchEvent(element, type) {
+            if (typeof document.createEvent === 'function') {
+                var event = document.createEvent('Event');
+                event.initEvent(type, true, false);
+                element.dispatchEvent(event);
+            }
+            else {
+                var event = document.createEventObject();
+                element.fireEvent('on' + type, event);
+            }
+        }
+        
         var suits = [
             'esui', 'controlHelper', 'Control', 'Label', 'Panel',
             'Select', 'Form', 'Tab',

@@ -1,17 +1,5 @@
 define(function (require) {
     var helper = require('esui/controlHelper');
-        
-    function dispatchEvent(element, type) {
-        if (typeof document.createEvent === 'function') {
-            var event = document.createEvent('Event');
-            event.initEvent(type, true, false);
-            element.dispatchEvent(event);
-        }
-        else {
-            var event = document.createEventObject();
-            element.fireEvent('on' + type, event);
-        }
-    }
 
     describe('controlHelper', function () {
         it('should be an object', function () {
