@@ -258,6 +258,7 @@ define(
                 main.onmouseout = null;
                 main.onmouseover = null;
             }
+            helper.clearDOMEvents(control);
 
             // 从控件树中移除
             if (control.parent) {
