@@ -207,6 +207,12 @@ define(
                 var methodName = i === index ? 'addClass' : 'removeClass';
                 lib[methodName](tabElement, 'ui-tab-active');
             }
+
+            var event = {
+                activeIndex: index,
+                tab: tab.tabs[index]
+            };
+            tab.fire('activate', event);
         }
 
         // 默认情况下只要处理了`tabs`就啥都处理完了

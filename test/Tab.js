@@ -277,6 +277,72 @@ define(function (require) {
                 tab.removeAt(0);
                 expect(tab.get('activeIndex')).toBe(-1);
             });
+
+            describe('`activate` event', function () {
+                var tab;
+                var handler;
+
+                beforeEach(function () {
+                    tab = new Tab({ tabs: tabs.slice(), activeIndex: 0 });
+                    tab.appendTo(container);
+                    handler = jasmine.createSpy();
+                    tab.on('activate', handler);
+                });
+
+                it('should fire when `activeIndex` is changed', function () {
+                    tab.set('activeIndex', 1);
+                    expect(handler).toHaveBeenCalled();
+                });
+
+                it('should fire when `activate` is called with a tab different from the active one', function () {
+                    tab.activate(tab.get('tabs')[1]);
+                    expect(handler).toHaveBeenCalled();
+                });
+
+                it('should fire when `activateAt` is called with a different `activeIndex`', function () {
+                    tab.activateAt(1);
+                    expect(handler).toHaveBeenCalled();
+                });
+
+                it('should fire when currently active tab is removed', function () {
+                    tab.remove(tab.get('tabs')[0]);
+                    expect(handler).toHaveBeenCalled();
+                });
+
+                it('should not fire when `activeIndex` is set but its value is not changed', function () {
+                    tab.set('activeIndex', 0);
+                    expect(handler).not.toHaveBeenCalled();
+                });
+
+                it('should not fire when `activate` is called with the same active tab', function () {
+                    tab.activate(tab.get('tabs')[0]);
+                    expect(handler).not.toHaveBeenCalled();
+                });
+
+                it('should not fire when `activateAt` is called with the same `activeIndex`', function () {
+                    tab.activateAt(0);
+                    expect(handler).not.toHaveBeenCalled();
+                });
+
+                it('should not fire when a none-activated tab is removed', function () {
+                    tab.removeAt(1);
+                    expect(handler).not.toHaveBeenCalled();
+                });
+
+                it('should not fire when an insertion causes `activeIndex` to be changed', function () {
+                    tab.insert({ title: 'tab4', panel: 'd' }, 0);
+                    expect(handler).not.toHaveBeenCalled();
+                });
+
+                it('should give a correct event object when fired', function () {
+                    tab.activateAt(1);
+                    var event = handler.mostRecentCall.args[0];
+                    expect(event).toBeOfType('object');
+                    expect(event.type).toBe('activate');
+                    expect(event.activeIndex).toBe(1);
+                    expect(event.tab).toEqual(tabs[1]);
+                })
+            });
         });
     });
 });
