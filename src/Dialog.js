@@ -53,10 +53,12 @@ define(
             options.title = roles.title || options.title;
             options.content = roles.content || options.content;
 
-            if (options.needFoot) {
-                options.foot = roles.foot || options.foot;
+            if (options.needFoot == true) {
+                if (roles.foot) {
+                    options.foot = roles.foot;
+                }
             }
-            else {
+            else if (options.needFoot == false){
                 options.foot = null;
             }
 
@@ -124,20 +126,20 @@ define(
          */
         function getBFHtml(control, type) {
             var me = control;
-            var tpl = '<div class="${class}" id="${id}">${content}</div>';
+            var tpl = ''
+                + '<div class="${panelClass}" data-ui="type:Panel;childName:${type}">'
+                +   '<div class="${class}" id="${id}">${content}</div>'
+                + '</div>';
+
             var data = {
+                'panelClass': helper.getClasses(control, type + '-panel'),
+                'childName': type,
                 'class': helper.getClasses(me, type),
                 'id': helper.getId(me, type),
                 'content': type == 'body' ? me.content : me.foot
             };
 
-            var innerHtml = lib.format(tpl, data);
-            var panelHtml = ''
-                + '<div data-ui="type:Panel;childName:' + type + '">'
-                + innerHtml
-                + '</div>';
-
-            return panelHtml;
+            return lib.format(tpl, data);
 
         }
 
@@ -172,6 +174,7 @@ define(
             var page = lib.page;
             var main = me.main;
             var left = me.left;
+            var top = me.top;
             if (!left) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
@@ -180,8 +183,13 @@ define(
                 left = 0;
             }
 
+
+            if (!top) {
+                top = 100;
+            }
+
             main.style.left = left + 'px';
-            main.style.top = page.getScrollTop() + me.top + 'px';
+            main.style.top = page.getScrollTop() + top + 'px';
         }
 
         /**
@@ -298,12 +306,10 @@ define(
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     foot: ''
-                        + '<div data-ui-type="Button" data-ui-id="btnFootOk">确定</div>'
-                        + '<div>'
-                        +     '<a data-ui-type="Link" data-ui-id="btnFootCancel">'
-                        +         '取消'
-                        +     '</a>'
-                        + '</div>',
+                        + '<div data-ui="type:Button;id:btnFootOk;childName:btnOk;'
+                        + 'skin:spring;height:26;width:50;">确定</div>'
+                        + '<div data-ui="type:Button;id:btnFootCancel;childName:btnCancel;'
+                        + 'height:26;">取消</div>',
                     needFoot: true
                 };
                 lib.extend(properties, options);
@@ -318,7 +324,6 @@ define(
 
                 // 设置样式
                 main.style.left = '-10000px';
-
                 main.innerHTML = ''
                     + getHeadHtml(this)
                     + getBFHtml(this, 'body')
@@ -508,7 +513,7 @@ define(
                 mask.className = clazz.join(' ');
                 mask.style.display = 'block';
 
-                var resizeHandler = getMaskResizeHandler();
+                var resizeHandler = getMaskResizeHandler(this);
                 lib.on(window, 'resize', resizeHandler);            
             },
 
@@ -605,7 +610,7 @@ define(
             var okPrefix        = 'DialogConfirmOk';
             var cancelPrefix    = 'DialogConfirmCancel';
 
-            var controlMain = require('./main');
+            var ui = require('./main');
 
             /**
              * 获取按钮点击的处理函数
@@ -616,16 +621,12 @@ define(
              */
             function getBtnClickHandler(eventHandler, id) {
                 return function () {
-                    var dialog = controlMain.get(dialogPrefix + id);
+                    var dialog = ui.get(dialogPrefix + id);
                     var domId = helper.getId(dialog);
-                    var okBtn = controlMain.get(okPrefix + id);
-                    var cancelBtn = controlMain.get(cancelPrefix + id);
                     var isFunc = (typeof eventHandler == 'function');
 
                     if ((isFunc && eventHandler(dialog) !== false) || !isFunc) {
                         dialog.hide();
-                        okBtn.dispose();
-                        cancelBtn.dispose();
                         dialog.dispose();
                         //移除dom
                         lib.removeNode(domId);
@@ -648,38 +649,33 @@ define(
                 '<div class="ui-dialog-text">${content}</div>'
             ].join('');
 
-            var dialog = require('./main').create(
+
+            //创建main
+            var main = document.createElement('div');
+            document.body.appendChild(main);
+            var dialog = ui.create(
                 'Dialog', 
                 {
                     id: dialogPrefix + index,
                     closeButton: false,
                     title: '',
                     width: width,
-                    mask: true
+                    mask: true,
+                    main: main
                 }
             );
-        
-            dialog.show();
+
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })
             );
-            dialog.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:' 
-                + okPrefix + index + '">'
-                + Dialog.OK_TEXT
-                + '</div>'
-                + '<div data-ui="type:Button;childName:cancelBtn;id:' 
-                + cancelPrefix + index + '">'
-                + Dialog.CANCEL_TEXT
-                + '</div>'
-            );
-
-            var okBtn = dialog.getFoot().getChild('okBtn');
+            dialog.show();
+            //使用默认foot，改变显示文字
+            var okBtn = dialog.getChild('btnOk');
+            var cancelBtn = dialog.getChild('btnCancel');
+            okBtn.setContent(Dialog.OK_TEXT);
+            cancelBtn.setContent(Dialog.CANCEL_TEXT);
             okBtn.onclick = getBtnClickHandler(onok, index);
-
-
-            var cancelBtn = dialog.getFoot().getChild('cancelBtn');
             cancelBtn.onclick = getBtnClickHandler(oncancel, index);
 
         };
@@ -689,7 +685,7 @@ define(
             var dialogPrefix = 'DialogAlert';
             var okPrefix = 'DialogAlertOk';
 
-            var controlMain = require('./main');
+            var ui = require('./main');
 
             /**
              * 获取按钮点击的处理函数
@@ -700,8 +696,8 @@ define(
              */
             function getBtnClickHandler(eventHandler, id) {
                 return function () {
-                    var dialog = controlMain.get(dialogPrefix + id);
-                    var okBtn = controlMain.get(okPrefix + id);
+                    var dialog = ui.get(dialogPrefix + id);
+                    var okBtn = ui.get(okPrefix + id);
                     var domId = helper.getId(dialog);
 
                     var isFunc = (typeof eventHandler == 'function');
@@ -734,7 +730,7 @@ define(
             //创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
-            var dialog = require('./main').create(
+            var dialog = ui.create(
                 'Dialog', 
                 {
                     id: dialogPrefix + index,
@@ -746,15 +742,6 @@ define(
                 }
             );
 
-            var okBtn = require('./main').create(
-                'Button', 
-                {
-                    id: okPrefix + index,
-                    content: Dialog.OK_TEXT,
-                    skin: 'green'
-                }
-            );
-
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })
@@ -762,7 +749,7 @@ define(
             var okId = helper.getId(dialog, okPrefix + index);
             dialog.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:' 
-                + okPrefix + index + '">'
+                + okPrefix + index + '; skin:spring;width:50;">'
                 + Dialog.OK_TEXT
                 + '</div>'
             );

@@ -12,6 +12,15 @@
         <div class="container">
             <button id="trigger-alert">点我电你哦！</button>
             <button id="trigger-confirm">点我没事！</button>
+            <button id="trigger-static">点我点我！</button>
+
+            <div data-ui="type:Dialog;width:400;mask:true;id:staticDg">
+                <h1 data-role="title">我来自静态html</h1>
+                <div data-role="content">
+                  <p>第一行</p>
+                  <span data-ui="type:Button;id:springBtn;skin:spring">显示文字</span>
+                </div>
+            </div>
         </div>
         <script>
         require(
@@ -25,6 +34,8 @@
                 'css!esui/css/Dialog.css'
             ],
             function (ui) {
+                var controls = ui.init();
+                var staticDg = controls[0];
                 var Dialog = require('esui/Dialog');
                 document.getElementById('trigger-alert').onclick = function () {
                     Dialog.alert({
@@ -35,6 +46,25 @@
                         },
                         width: 400
                     });
+                };
+
+
+                document.getElementById('trigger-confirm').onclick = function () {
+                    Dialog.confirm({
+                        title: '给你机会选择',
+                        content: '<h1>确定要点我吗？</h1>',
+                        onok: function(dialog) {
+                            alert('你死定了！');
+                        },
+                        oncancel: function(dialog) {
+                            alert('算你识相！');
+                        },
+                        width: 400
+                    });
+                };
+
+                document.getElementById('trigger-static').onclick = function () {
+                    staticDg.show();
                 };
             }
         )

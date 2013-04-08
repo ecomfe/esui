@@ -82,6 +82,13 @@ define(
             repaint: function (changes) {
                 var main = this.main;
                 main.innerHTML = this.content;
+                if (this.height) {
+                    main.style.height = this.height + 'px';
+                    main.style.lineHeight = this.height + 'px';
+                }
+                if (this.width) {
+                    main.style.width = this.width + 'px';
+                }
 
                 // 初始化状态事件
                 helper.addDOMEvent(this, main, 'click', this.clickHandler);

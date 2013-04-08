@@ -21,6 +21,17 @@
     color: #FFFFFF;
     font-weight: bold;
     height: 26px;
+    position: relative;
+}
+
+.ui-dialog-head .ui-dialog-closeIcon {
+    background:url(../img/ui-dialog-head-close.png) no-repeat;
+    height: 13px;
+    width: 13px;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
 }
 
 .ui-dialog-title {
@@ -43,14 +54,18 @@
     zoom: 1;
 }
 
-
-.ui-dialog-foot {
+.ui-dialog-foot-panel {
     margin:0px 8px 3px;
     padding: 15px 0 20px 25px;
     border-top:1px solid #F0F0F0;
+    overflow: hidden;
+    zoom: 1;
+}
+.ui-dialog-foot-panel .ui-dialog-foot {
+    float: right;
 }
 
-.ui-dialog-foot .ui-button {margin-right:6px;}
+.ui-dialog-foot-panel .ui-dialog-foot .ui-button {margin-right:6px;}
 
 .ui-dialog-icon {display:none;}
 
@@ -65,13 +80,12 @@
 }
 
 .ui-dialog-icon-confirm {
-    width:33px;
-    height:32px;
     background:url(../img/dialog-question.png) no-repeat;
-    margin-right:10px;
     display:block;
     float:left;
-    margin-bottom:8px;
+    height: 34px;
+    margin: 15px 10px 8px 40px;
+    width: 34px;
 }
 
 .ui-dialog-text-warning,
