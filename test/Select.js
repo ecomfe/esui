@@ -18,11 +18,39 @@ define(function (require) {
             expect(new Select()).toBeOfType('object');
         });
 
-        describe('create via script', function () {
+        describe('created via script', function () {
             it('should create a `<div>` element as its main element', function () {
                 var select = new Select();
                 select.appendTo(container);
                 expect(container.getElementsByTagName('div').length).toBeGreaterThan(0);
+            });
+        });
+
+        describe('created via HTML', function () {
+            it('should extract datasource from child `<option>` elements if main element is a `<select>`', function () {
+                var html = [
+                    '<select data-ui-type="Select" data-ui-id="test">',
+                        '<option value="1">a</option>',
+                        '<option value="2">b</option>',
+                        '<option value="3" selected="selected">c</option>',
+                        '<option value="4">d</option>',
+                        '<option value="5">e</option>',
+                        '<option value="6">f</option>',
+                    '</select>'
+                ];
+                container.innerHTML = html;
+                require('esui/main').init(container);
+                var select = require('esui/main').get('test');
+                expect(select.get('datasource')).toEqual(datasource);
+                expect(select.getValue()).toBe('3');
+            });
+
+            it('should remove the old `<select>` main element and create a `<div>` instead', function () {
+                container.innerHTML = '<select data-ui="type: Select; id: test;"></select>';
+                require('esui/main').init(container);
+                var select = require('esui/main').get('test');
+                expect(container.getElementsByTagName('select').length).toBe(0);
+                expect(select.get('main').nodeName.toLowerCase()).toBe('div');
             });
         });
 

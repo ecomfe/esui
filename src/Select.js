@@ -94,9 +94,9 @@ define(
             // 这种情况下构造函数中传入的`datasource`无效
             if (this.main.nodeName.toLowerCase() === 'select') {
                 properties.datasource = [];
-                var elements = properties.main.getElementsByTagName('option');
+                var elements = this.main.getElementsByTagName('option');
                 for (var i = 0, length = elements.length; i < length; i++) {
-                    var item = elements[0];
+                    var item = elements[i];
                     var dataItem = { text: item.text, value: item.value };
 
                     properties.datasource.push(dataItem);
@@ -274,11 +274,18 @@ define(
          * @protected
          */
         Select.prototype.initStructure = function () {
+            var lib = require('./lib');
+            // 如果主元素是`<select>`，删之替换成`<div>`
+            if (this.main.nodeName.toLowerCase() === 'select') {
+                var main = this.createMain();
+                lib.insertBefore(main, this.main);
+                this.main.parentNode.removeChild(this.main);
+                this.main = main;
+            }
             var html = [
                 '<span></span>',
                 '<input type="hidden" name="${name}" />'
             ];
-            var lib = require('./lib');
             this.main.innerHTML = lib.format(
                 html.join('\n'),
                 { name: this.name }
