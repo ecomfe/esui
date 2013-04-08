@@ -127,6 +127,22 @@ define(function () {
         };
     };
 
+    /** 
+     * 为函数添加额外参数
+     * 
+     * @param {function} handler 要绑定的函数
+     * @param {...args=} args 函数执行时附加到执行时函数前面的参数
+     *
+     * @return {function} 封装后的函数
+     */
+    lib.curry = function (func) {
+        var xargs = [].slice.call(arguments, 1);
+        return function () {
+            var args = xargs.concat([].slice.call(arguments));
+            return func.apply(this, args);
+        };
+    };
+
     /**
      * 从文档中获取指定的DOM元素
      * 

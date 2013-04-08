@@ -43,6 +43,35 @@ define(function (require) {
                     expect(handler).toHaveBeenCalled();
                 });
 
+                it('should call event listener with a full w3c-compatible Event object', function () {
+                    var control = {};
+                    var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
+                    var handler = jasmine.createSpy();
+
+                    helper.addDOMEvent(control, element, 'click', handler);
+                    dispatchEvent(element, 'click');
+                    var event = handler.mostRecentCall.args[0];
+                    expect(event).toBeDefined();
+                    expect(event.type).toBe('click');
+                    expect(event.target).toBe(element);
+                    expect(event.stopPropagation).toBeOfType('function');
+                    expect(event.preventDefault).toBeOfType('function');
+                });
+
+                it('should call event listeners attached to a parent element if child element fires the event', function () {
+                    var control = {};
+                    var parent = document.createElement('div');
+                    var child = document.createElement('div');
+                    parent.appendChild(child);
+                    document.getElementById('container').appendChild(parent);
+                    var handler = jasmine.createSpy();
+
+                    helper.addDOMEvent(control, parent, 'click', handler);
+                    dispatchEvent(child, 'click');
+                    expect(handler).toHaveBeenCalled();
+                })
+
                 it('should call all event listeners when dom event is fired', function () {
                     var control = {};
                     var element = document.createElement('div');
@@ -56,6 +85,7 @@ define(function (require) {
                     expect(handlerA).toHaveBeenCalled();
                     expect(handlerB).toHaveBeenCalled();
                 });
+
 
                 it('should call event listeners with attach order', function () {
                     var control = {};

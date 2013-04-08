@@ -24,7 +24,6 @@
         });
     </script>
     <script>
-        var container = document.getElementById('container');
         var suits = [
             'esui', 'controlHelper', 'Control', 'Label', 'Panel',
             'Select', 'Form', 'Tab',
@@ -34,6 +33,7 @@
             suits,
             function(esui) {
                 afterEach(function () {
+                    var container = document.getElementById('container');
                     esui.getViewContext().clean();
                     container.innerHTML = '';
                 });

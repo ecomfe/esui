@@ -399,10 +399,27 @@ define(
 
         var domEventsKey = '_esuiDOMEvent';
 
-        function triggerDOMEvent(e) {
-            var queue = this.domEvents[e.currentTarget[domEventsKey]][e.type];
+        function triggerDOMEvent(control, element, e) {
+            e = e || window.event;
+            if (!e.target) {
+                e.target = e.srcElement;
+            }
+            if (!e.currentTarget) {
+                e.currentTarget = element;
+            }
+            if (!e.preventDefault) {
+                e.preventDefault = function () {
+                    e.returnValue = false;
+                };
+            }
+            if (!e.stopPropagation) {
+                e.stopPropagation = function () {
+                    e.cancelBubble = true;
+                };
+            }
+            var queue = control.domEvents[e.currentTarget[domEventsKey]][e.type];
             for (var i = 0; i < queue.length; i++) {
-                queue[i].call(this, e);
+                queue[i].call(control, e);
             }
         }
 
@@ -434,7 +451,7 @@ define(
             var queue = events[type];
             if (!queue) {
                 queue = events[type] = [];
-                queue.handler = lib.bind(triggerDOMEvent, control);
+                queue.handler = lib.curry(triggerDOMEvent, control, element);
                 if (element.addEventListener) {
                     element.addEventListener(type, queue.handler, false);
                 }
