@@ -373,8 +373,13 @@ define(function () {
         return newElement;
     };
 
+    /**
+     * 获取元素在页面中的位置和尺寸信息
+     *
+     * @param {HTMLElement} 目标元素
+     * @return {Object} 元素的尺寸和位置信息
+     */
     lib.getOffset = function (element) {
-        element = lib.g(element);
         var rect = element.getBoundingClientRect();
         var offset = {
             top: rect.top,
@@ -455,33 +460,22 @@ define(function () {
     /**
      * 获取页面视觉区域宽度
      *
-     * @returns {number} 页面视觉区域宽度
+     * @return {number} 页面视觉区域宽度
      */
     lib.page.getViewWidth = function () {
-        // by Tangram 1.x: baidu.page.getViewWidth
-        var doc = document,
-        client = doc.compatMode == 'BackCompat' 
-            ? doc.body 
-            : doc.documentElement;
-
-        return client.clientWidth;
+        return viewRoot.clientWidth;
     };
 
     /**
      * 获取纵向滚动量
-     * @name baidu.page.getScrollTop
-     * @function
-     * @grammar baidu.page.getScrollTop()
-     * @see baidu.page.getScrollLeft
-     * @meta standard
-     * @returns {number} 纵向滚动量
+     *
+     * @return {number} 纵向滚动量
      */
     lib.page.getScrollTop = function () {
-        // by Tangram 1.x: baidu.page.getScrollTop
         var d = document;
         return window.pageYOffset 
-            || d.documentElement.scrollTop 
-            || d.body.scrollTop;
+            || document.documentElement.scrollTop 
+            || document.body.scrollTop;
     };
 
     if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {
