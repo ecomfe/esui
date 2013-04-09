@@ -53,12 +53,12 @@ define(
             options.title = roles.title || options.title;
             options.content = roles.content || options.content;
 
-            if (options.needFoot == true) {
+            if (options.needFoot === true) {
                 if (roles.foot) {
                     options.foot = roles.foot;
                 }
             }
-            else if (options.needFoot == false){
+            else if (options.needFoot === false) {
                 options.foot = null;
             }
 
@@ -85,7 +85,7 @@ define(
                     closeTpl,
                     {
                         'clsId': helper.getId(me, close),
-                        'clsClass': helper.getClasses(me, close)
+                        'clsClass': helper.getClasses(me, close).join(' ')
                     }
                 );
             }
@@ -100,9 +100,9 @@ define(
 
             var headData = {
                 'headId':  helper.getId(me, head),
-                'headClass':  helper.getClasses(me, head),
+                'headClass':  helper.getClasses(me, head).join(' '),
                 'titleId':  helper.getId(me, title),
-                'titleClass':  helper.getClasses(me, title),
+                'titleClass':  helper.getClasses(me, title).join(' '),
                 'title': me.title,
                 'closeIcon': closeIcon
             };
@@ -125,18 +125,15 @@ define(
          * @inner
          */
         function getBFHtml(control, type) {
-            var me = control;
             var tpl = ''
-                + '<div class="${panelClass}" data-ui="type:Panel;childName:${type}">'
-                +   '<div class="${class}" id="${id}">${content}</div>'
+                + '<div class="${panelClass}" '
+                + 'data-ui="type:Panel;childName:${childName}">'
                 + '</div>';
 
             var data = {
-                'panelClass': helper.getClasses(control, type + '-panel'),
-                'childName': type,
-                'class': helper.getClasses(me, type),
-                'id': helper.getId(me, type),
-                'content': type == 'body' ? me.content : me.foot
+                'panelClass':
+                    helper.getClasses(control, type + '-panel').join(' '),
+                'childName': type
             };
 
             return lib.format(tpl, data);
@@ -294,17 +291,19 @@ define(
                     autoPosition: false,  // 是否自动定位居中
                     closeButton: true,    // 是否具有关闭按钮
                     draggable: false,     // 是否可拖拽
-                    mask: true,           // 是否具有遮挡层。或者指定带有level和type属性的object，自定义遮挡层
+                    mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
-                    height: 0,            // 对话框的高度
+                    height: 175,            // 对话框的高度
                     top: 100,             // 对话框的垂直位置
                     left: 0,              // 对话框的水平位置
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     foot: ''
-                        + '<div data-ui="type:Button;id:btnFootOk;childName:btnOk;'
+                        + '<div data-ui="type:Button;id:btnFootOk;'
+                        + 'childName:btnOk;'
                         + 'skin:spring;height:26;width:50;">确定</div>'
-                        + '<div data-ui="type:Button;id:btnFootCancel;childName:btnCancel;'
+                        + '<div data-ui="type:Button;'
+                        + 'id:btnFootCancel;childName:btnCancel;'
                         + 'height:26;">取消</div>',
                     needFoot: true
                 };
@@ -342,47 +341,71 @@ define(
              */
             repaint: function (changes) {
                 var main = this.main;
-
                 // 设置样式
                 main.style.left = '-10000px';
-
-                var mainClass = helper.getClasses(this, 'main');
                 var titleId = helper.getId(this, 'title');
                 var bodyId = helper.getId(this, 'body');
-                var bodyClass = helper.getClasses(this, 'body');
                 var footId = helper.getId(this, 'foot');
                 var footClass = helper.getClasses(this, 'foot');
+                var bodyClass = helper.getClasses(this, 'body');
 
+                var bfTpl = ''
+                    + '<div class="${class}" id="${id}">${content}</div>';
+
+                var allProperities = {
+                    height: false,
+                    width: false,
+                    content: false,
+                    foot: false
+                };
+
+                if (!changes) {
+                    for (var property in allProperities) {
+                        if (allProperities.hasOwnProperty(property)) {
+                            allProperities[property] = true;
+                        }
+                    }
+                }
                 // 局部渲染
-                if (changes && changes.length) {
+                else {
                     for (var i = 0; i < changes.length; i++) {
                         var record  = changes[i];
-                        if (record.name == 'height') {
-                            this.main.style.height = record.newValue + 'px';
+                        allProperities[record.name] = true;
+                    } 
+                }
+
+                for (var property in allProperities) {
+                    if (allProperities.hasOwnProperty(property)) {
+                        if (property == 'height') {
+                            this.main.style.height = this.height + 'px';
                             if (this.isShow) {
                                 resizeHandler(this);
                             }
                         }
-                        else if (record.name == 'height') {
-                            this.main.style.height = record.newValue + 'px';
+                        else if (property == 'width') {
+                            this.main.style.width = this.width + 'px';
                             if (this.isShow) {
                                 resizeHandler(this);
                             }
                         }
-                        else if (record.name == 'title') {
-                            lib.g(titleId).innerHTML = record.newValue;
+                        else if (property == 'title') {
+                            lib.g(titleId).innerHTML = this.title;
                         }
-                        else if (record.name == 'content') {
+                        else if (property == 'content') {
                             // 获取body panel
                             var body = this.getBody();
-                            var bodyWrapper = lib.g(bodyId);
-                            bodyWrapper.innerHTML = record.newValue;
-                            // 需要重新init
-                            body.initChildren(bodyWrapper);
+                            var data = {
+                                'class': bodyClass.join(' '),
+                                'id': bodyId,
+                                'content': this.content 
+                            };
+                            body.setContent(
+                                lib.format(bfTpl, data)
+                            );
                         }
-                        else if (record.name == 'foot') {
+                        else if (property == 'foot') {
                             // 取消了foot
-                            if (record.newValue == null) {
+                            if (this.foot == null) {
                                 this.needFoot = false;
                                 var foot = this.getFoot();
                                 this.removeChild(foot);
@@ -390,9 +413,14 @@ define(
                             else {
                                 this.needFoot = true;
                                 var foot = this.getFoot();
-                                var footWrapper = lib.g(footId);
-                                footWrapper.innerHTML = record.newValue;
-                                foot.initChildren(footWrapper);
+                                var data = {
+                                    'class': footClass.join(' '),
+                                    'id': footId,
+                                    'content': this.foot 
+                                };
+                                foot.setContent(
+                                    lib.format(bfTpl, data)
+                                );
                             }
                         }
                     }
@@ -465,7 +493,6 @@ define(
              * 
              */
             show: function () {
-                var main = this.main;
                 var mask = this.mask;
 
                 if (this.lifeCycle !== Control.LifeCycle.RENDERED) {
@@ -501,7 +528,7 @@ define(
             showMask: function () {
                 var mask = getMask(this);
                 var clazz = [];
-                var maskClass = helper.getClasses(this, 'mask');
+                var maskClass = helper.getClasses(this, 'mask').join(' ');
 
                 clazz.push(maskClass);
                 repaintMask(mask);
@@ -600,9 +627,6 @@ define(
          */
         Dialog.confirm = function (args) {
             var dialogPrefix    = 'DialogConfirm';
-            var okPrefix        = 'DialogConfirmOk';
-            var cancelPrefix    = 'DialogConfirmCancel';
-
             var ui = require('./main');
 
             /**
@@ -664,8 +688,8 @@ define(
             );
             dialog.show();
             //使用默认foot，改变显示文字
-            var okBtn = dialog.getChild('btnOk');
-            var cancelBtn = dialog.getChild('btnCancel');
+            var okBtn = dialog.getFoot().getChild('btnOk');
+            var cancelBtn = dialog.getFoot().getChild('btnCancel');
             okBtn.setContent(Dialog.OK_TEXT);
             cancelBtn.setContent(Dialog.CANCEL_TEXT);
             okBtn.onclick = getBtnClickHandler(onok, index);
@@ -739,7 +763,7 @@ define(
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })
             );
-            var okId = helper.getId(dialog, okPrefix + index);
+
             dialog.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:' 
                 + okPrefix + index + '; skin:spring;width:50;">'
@@ -748,11 +772,8 @@ define(
             );
             
             dialog.show();
-            var okBtn = dialog.getChild('okBtn');
+            var okBtn = dialog.getFoot().getChild('okBtn');
             okBtn.onclick = getBtnClickHandler(onok, index);
-
-
-
         }; 
 
         require('./lib').inherits(Dialog, Control);
