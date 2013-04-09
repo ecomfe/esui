@@ -156,7 +156,7 @@ define(
             var type = control.type.replace(
                 /[A-Z]/g,
                 function (alpha) {
-                    return '-' + alpha.toLowerCase()
+                    return '-' + alpha.toLowerCase();
                 }
             );
             if (type.charAt(0) === '-') {
@@ -166,7 +166,7 @@ define(
                 'ui-' + type + '-' + part,
                 'skin-' + control.skin + '-' + type + '-' + part
             ];
-        }
+        };
 
         /**
          * 获取用于控件dom元素的id
