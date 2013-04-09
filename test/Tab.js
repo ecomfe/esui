@@ -444,6 +444,7 @@ define(function (require) {
                     var event = spy.mostRecentCall.args[0];
                     expect(event).toBeOfType('object');
                     expect(event.type).toBe('add');
+                    expect(event.index).toBe(0);
                     expect(event.tab).toEqual(tabs[0]);
                 });
             });
@@ -487,6 +488,7 @@ define(function (require) {
                     var event = spy.mostRecentCall.args[0];
                     expect(event).toBeOfType('object');
                     expect(event.type).toBe('remove');
+                    expect(event.index).toBe(0);
                     expect(event.tab).toEqual(tabs[0]);
                 });
             });

@@ -353,7 +353,7 @@ define(
                 }
             }
 
-            this.fire('add', { tab: config });
+            this.fire('add', { tab: config, index: index });
         };
 
         /**
@@ -397,7 +397,7 @@ define(
                     );
                     activateTab(this, this.activeIndex);
                 }
-                this.fire('remove', { tab: removed[0] });
+                this.fire('remove', { tab: removed[0], index: index });
             }
         };
 
