@@ -24,6 +24,9 @@ define(
             this.events = {};
             this.domEvents = {};
             options = options || {};
+            if (!options.skin) {
+                options.skin = 'default';
+            }
 
             this.main = options.main ? options.main : this.createMain(options);
 
