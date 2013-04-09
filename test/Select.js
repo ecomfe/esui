@@ -210,6 +210,7 @@ define(function (require) {
                 dispatchEvent(select.main, 'click');
                 var layer = findLayer();
                 expect(layer).toBeDefined();
+                expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
             });
 
             it('should add a className `ui-select-layer-selected` to the selected option in layer', function () {

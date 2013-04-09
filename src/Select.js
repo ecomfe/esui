@@ -195,7 +195,29 @@ define(
                 var value = target.getAttribute('data-value');
                 select.setRawValue(value);
             }
-            select.selectionLayer.style.display = 'none';
+            hideLayer(select);
+        }
+
+        /**
+         * 显示下拉弹层
+         *
+         * @param {Select} Select控件实例
+         */
+        function showLayer(select) {
+            var helper = require('./controlHelper');
+            var classes = helper.getPartClasses(select, 'layer-hidden');
+            require('./lib').removeClasses(select.selectionLayer, classes);
+        }
+
+        /**
+         * 隐藏下拉弹层
+         *
+         * @param {Select} Select控件实例
+         */
+        function hideLayer(select) {
+            var helper = require('./controlHelper');
+            var classes = helper.getPartClasses(select, 'layer-hidden');
+            require('./lib').addClasses(select.selectionLayer, classes);
         }
 
         /**
@@ -232,12 +254,11 @@ define(
                 );
             }
 
-            var classes = helper.getPartClasses(select, 'layer-hidden');
-            lib.addClasses(layer, classes);
             var offset = lib.getOffset(select.main);
             layer.style.top = offset.bottom + 'px';
             layer.style.left = offset.left + 'px';
             layer.style.width = offset.width + 'px';
+            showLayer(select);
 
             // 同步选择状态
             var items = layer.getElementsByTagName('li');
@@ -266,11 +287,13 @@ define(
             }
             else {
                 var layer = select.selectionLayer;
-                if (layer.style.display === 'none') {
-                    openLayer(select);
+                var helper = require('./controlHelper');
+                var classes = helper.getPartClasses(select, 'layer-hidden');
+                if (require('./lib').hasClass(layer, classes[0])) {
+                    hideLayer(select);
                 }
                 else {
-                    select.selectionLayer.style.display = 'none';
+                    showLayer(select);
                 }
             }
         }

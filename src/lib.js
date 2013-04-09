@@ -312,6 +312,7 @@ define(function () {
      * @return {HTMLElement} 目标元素
      */
     lib.removeClasses = function (element, classes) {
+        var map = {};
         for (var i = 0; i < classes.length; i++) {
             map[classes[i]] = true;
         }
