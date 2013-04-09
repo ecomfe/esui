@@ -146,6 +146,29 @@ define(
         };
 
         /**
+         * 获取控件组件的class数组
+         *
+         * @param {Control} control 控件实例
+         * @param {string} part 组件名称
+         * @return {Array.<string>}
+         */
+        helper.getPartClasses = function (control, part) {
+            var type = control.type.replace(
+                /[A-Z]/g,
+                function (alpha) {
+                    return '-' + alpha.toLowerCase()
+                }
+            );
+            if (type.charAt(0) === '-') {
+                type = type.substring(1);
+            }
+            return [
+                'ui-' + type + '-' + part,
+                'skin-' + control.skin + '-' + type + '-' + part
+            ];
+        }
+
+        /**
          * 获取用于控件dom元素的id
          * 
          * @param {Control} control 控件实例
