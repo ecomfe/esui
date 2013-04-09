@@ -206,13 +206,14 @@ define(
             var layer = select.selectionLayer;
             var lib = require('./lib');
             if (!layer) {
+                var helper = require('./controlHelper');
                 var layer = document.createElement('ol');
-                layer.className = 'ui-select-layer';
+                layer.className = 
+                    helper.getPartClasses(select, 'layer').join(' ');
                 layer.innerHTML = getLayerHTML(select);
                 document.body.appendChild(layer);
                 select.selectionLayer = layer;
 
-                var helper = require('./controlHelper');
                 helper.addDOMEvent(
                     select, 
                     layer, 
@@ -374,6 +375,19 @@ define(
             }
             adjustValueProperties(properties);
             InputControl.prototype.setProperties.apply(this, arguments);
+        };
+
+        /**
+         * 销毁控件
+         *
+         * @public
+         */
+        Select.prototype.dispose = function () {
+            if (this.selectionLayer) {
+                this.selectionLayer.parentNode.removeChild(this.selectionLayer);
+            }
+
+            InputControl.prototype.dispose.apply(this, arguments);
         };
 
         require('./lib').inherits(Select, InputControl);

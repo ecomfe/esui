@@ -9,6 +9,16 @@ define(function (require) {
         { text: 'f', value: '6' }
     ];
 
+    function findLayer() {
+        for (var i = document.body.children.length - 1; i >= 0; i--) {
+            var element = document.body.children[i];
+            if (/ui-select-layer/.test(element.className)) {
+                return element;
+            }
+        }
+        return null;
+    }
+
     describe('Select', function () {
         it('should be a constructor', function () {
             expect(Select).toBeOfType('function');
@@ -186,59 +196,78 @@ define(function (require) {
                 expect(select.getRawValue()).toBe('3');
             });
 
-            it('should fire a `change` event if `value` is changed', function () {
+            it('should open a layer with className `ui-select-layer` under `body` when clicked', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
                 select.appendTo(container);
-                select.setProperties({ value: '3' });
-                expect(spy).toHaveBeenCalled();
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer).toBeDefined();
             });
 
-            it('should fire a `change` event if `rawValue` is changed', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
+            it('should destroy the layer when disposed', function () {
+                var select = new Select({ datasource: datasource });
                 select.appendTo(container);
-                select.setProperties({ rawValue: '3' });
-                expect(spy).toHaveBeenCalled();
+                dispatchEvent(select.main, 'click');
+                select.dispose();
+                var layer = findLayer();
+                expect(layer).toBe(null);
             });
 
-            it('should fire a `change` event if `selectedIndex` is changed', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
-                select.appendTo(container);
-                select.setProperties({ selectedIndex: 2 });
-                expect(spy).toHaveBeenCalled();
-            });
+            describe('`change` event', function () {
 
-            it('should not fire a `change` event if `value` is given the same as previous', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
-                select.appendTo(container);
-                select.setProperties({ value: '2' });
-                expect(spy).not.toHaveBeenCalled();
-            });
+                it('should fire if `value` is changed', function () {
+                    var select = new Select({ datasource: datasource, value: '2' });
+                    var spy = jasmine.createSpy();
+                    select.on('change', spy);
+                    select.appendTo(container);
+                    select.setProperties({ value: '3' });
+                    expect(spy).toHaveBeenCalled();
+                });
 
-            it('should not fire a `change` event if `rawValue` is given the same as previous', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
-                select.appendTo(container);
-                select.setProperties({ rawValue: '2' });
-                expect(spy).not.toHaveBeenCalled();
-            });
+                it('should fire if `rawValue` is changed', function () {
+                    var select = new Select({ datasource: datasource, value: '2' });
+                    var spy = jasmine.createSpy();
+                    select.on('change', spy);
+                    select.appendTo(container);
+                    select.setProperties({ rawValue: '3' });
+                    expect(spy).toHaveBeenCalled();
+                });
 
+                it('should fire if `selectedIndex` is changed', function () {
+                    var select = new Select({ datasource: datasource, value: '2' });
+                    var spy = jasmine.createSpy();
+                    select.on('change', spy);
+                    select.appendTo(container);
+                    select.setProperties({ selectedIndex: 2 });
+                    expect(spy).toHaveBeenCalled();
+                });
 
-            it('should not fire a `change` event if `selectedIndex` is given the same as previous', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
-                select.appendTo(container);
-                select.setProperties({ selectedIndex: 1 });
-                expect(spy).not.toHaveBeenCalled();
+                it('should not fire if `value` is given the same as previous', function () {
+                    var select = new Select({ datasource: datasource, value: '2' });
+                    var spy = jasmine.createSpy();
+                    select.on('change', spy);
+                    select.appendTo(container);
+                    select.setProperties({ value: '2' });
+                    expect(spy).not.toHaveBeenCalled();
+                });
+
+                it('should not fire if `rawValue` is given the same as previous', function () {
+                    var select = new Select({ datasource: datasource, value: '2' });
+                    var spy = jasmine.createSpy();
+                    select.on('change', spy);
+                    select.appendTo(container);
+                    select.setProperties({ rawValue: '2' });
+                    expect(spy).not.toHaveBeenCalled();
+                });
+
+                it('should not fire if `selectedIndex` is given the same as previous', function () {
+                    var select = new Select({ datasource: datasource, value: '2' });
+                    var spy = jasmine.createSpy();
+                    select.on('change', spy);
+                    select.appendTo(container);
+                    select.setProperties({ selectedIndex: 1 });
+                    expect(spy).not.toHaveBeenCalled();
+                });
             });
         });
     });
