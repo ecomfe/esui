@@ -173,7 +173,6 @@ define(
             navigator.innerHTML = '';
             navigator.parentNode.removeChild(navigator);
 
-            var lib = require('./lib');
             for (var i = 0; i < tab.tabs.length; i++) {
                 var config = tab.tabs[i];
                 var isActive = tab.activeIndex === i;
@@ -353,6 +352,8 @@ define(
                     }
                 }
             }
+
+            this.fire('add', { tab: config });
         };
 
         /**

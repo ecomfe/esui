@@ -472,7 +472,6 @@ define(function () {
      * @return {number} 纵向滚动量
      */
     lib.page.getScrollTop = function () {
-        var d = document;
         return window.pageYOffset 
             || document.documentElement.scrollTop 
             || document.body.scrollTop;

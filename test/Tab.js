@@ -203,6 +203,14 @@ define(function (require) {
                 expect(document.getElementById('c').style.display).toBe('');
             });
 
+            it('should activate the tab when it is clicked', function () {
+                var tab = new Tab({ tabs: tabs, activeIndex: 1 });
+                tab.appendTo(container);
+                var navigator = container.getElementsByTagName('ul')[0];
+                dispatchEvent(navigator.children[0], 'click');
+                expect(tab.get('activeIndex')).toBe(0);
+            });
+
             it('should add a tab config & element at the tail when `add` is called', function () {
                 var tab = new Tab({ tabs: tabs.slice() });
                 tab.appendTo(container);
@@ -405,6 +413,38 @@ define(function (require) {
                     expect(event.type).toBe('activate');
                     expect(event.activeIndex).toBe(1);
                     expect(event.tab).toEqual(tabs[1]);
+                });
+            });
+
+            describe('`add` event', function () {
+                it('should fire when a tab is added', function () {
+                    var tab = new Tab();
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('add', spy);
+                    tab.add(tabs.slice(0, 1));
+                    expect(spy).toHaveBeenCalled();
+                });
+
+                it('should fire when a tab is inserted', function () {
+                    var tab = new Tab();
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('add', spy);
+                    tab.add(tabs.slice(0, 1), 0);
+                    expect(spy).toHaveBeenCalled();
+                });
+
+                it('should give a correct even object when fired', function () {
+                    var tab = new Tab();
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('add', spy);
+                    tab.add(tabs.slice(0, 1));
+                    var event = spy.mostRecentCall.args[0];
+                    expect(event).toBeOfType('object');
+                    expect(event.type).toBe('add');
+                    expect(event.tab).toEqual(tabs.slice(0, 1));
                 });
             });
         });
