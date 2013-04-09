@@ -272,6 +272,68 @@ define(function () {
     };
 
     /**
+     * 批量添加className
+     *
+     * @param {HTMLElement} element 目标元素
+     * @param {Array.<string>} 需添加的className
+     *
+     * @return {HTMLElement} 目标元素
+     */
+    lib.addClasses = function (element, classes) {
+        var originalClasses = 
+            element.className ? element.className.split(/\s+/) : [];
+        var map = {};
+        for (var i = 0; i < originalClasses.length; i++) {
+            map[originalClasses[i]] = true;
+        }
+
+        var changed = false;
+        for (var i = 0; i < classes.length; i++) {
+            var className = classes[i];
+            if (!map.hasOwnProperty(className)) {
+                originalClasses.push(className);
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            element.className = originalClasses.join(' ');
+        }
+
+        return element;
+    };
+
+    /**
+     * 批量移除className
+     *
+     * @param {HTMLElement} element 目标元素
+     * @param {Array.<string>} 需移除的className
+     *
+     * @return {HTMLElement} 目标元素
+     */
+    lib.removeClasses = function (element, classes) {
+        for (var i = 0; i < classes.length; i++) {
+            map[classes[i]] = true;
+        }
+
+        var originalClasses = 
+            element.className ? element.className.split(/\s+/) : [];
+        var finalClasses = [];
+        for (var i = 0; i < originalClasses.length; i++) {
+            var className = originalClasses[i];
+            if (!map.hasOwnProperty(className)) {
+                finalClasses.push(className);
+            }
+        }
+
+        if (finalClasses.length !== originalClasses.length) {
+            element.className = finalClasses.join(' ');
+        }
+
+        return element;
+    };
+
+    /**
      * 移除目标元素
      * 
      * @param {HTMLElement|string} element 目标元素或目标元素的id

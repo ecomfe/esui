@@ -172,7 +172,9 @@ define(
             }
 
             if (target !== layer && target !== main) {
-                layer.style.display = 'none';
+                var helper = require('./controlHelper');
+                var classes = helper.getPartClasses(select, 'layer-hidden');
+                require('./lib').addClasses(layer, classes);
             }
         }
 
@@ -205,8 +207,8 @@ define(
         function openLayer(select) {
             var layer = select.selectionLayer;
             var lib = require('./lib');
+            var helper = require('./controlHelper');
             if (!layer) {
-                var helper = require('./controlHelper');
                 var layer = document.createElement('ol');
                 layer.className = 
                     helper.getPartClasses(select, 'layer').join(' ');
@@ -230,7 +232,8 @@ define(
                 );
             }
 
-            layer.style.display = 'block';
+            var classes = helper.getPartClasses(select, 'layer-hidden');
+            lib.addClasses(layer, classes);
             var offset = lib.getOffset(select.main);
             layer.style.top = offset.bottom + 'px';
             layer.style.left = offset.left + 'px';
@@ -240,8 +243,12 @@ define(
             var items = layer.getElementsByTagName('li');
             for (var i = items.length - 1; i >= 0; i--) {
                 var item = items[i];
+                var classes = helper.getPartClasses(select, 'layer-selected');
                 if (item.getAttribute('data-value') === select.rawValue) {
-                    lib.addClass(item, 'selected');
+                    lib.addClasses(item, classes);
+                }
+                else {
+                    lib.removeClass(item, classes);
                 }
             }
         }

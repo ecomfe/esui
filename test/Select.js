@@ -196,12 +196,55 @@ define(function (require) {
                 expect(select.getRawValue()).toBe('3');
             });
 
+            it('should sync `selectedIndex` after `value` is changed', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                select.appendTo(container);
+                select.setProperties({ value: '3' });
+                expect(select.get('selectedIndex')).toBe(2);
+                expect(select.getRawValue()).toBe('3');
+            });
+
             it('should open a layer with className `ui-select-layer` under `body` when clicked', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);
                 dispatchEvent(select.main, 'click');
                 var layer = findLayer();
                 expect(layer).toBeDefined();
+            });
+
+            it('should add a className `ui-select-layer-selected` to the selected option in layer', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer.children[0].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[1].className).toMatch(/ui-select-layer-selected/);
+                expect(layer.children[2].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[3].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[4].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[5].className).not.toMatch(/ui-select-layer-selected/);
+            });
+
+            it('should select the correct item if an option element in layer is clicked', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                var option = layer.children[2];
+                dispatchEvent(option, 'click');
+                expect(select.get('selectedIndex')).toBe(2);
+                expect(select.getValue()).toBe('3');
+                expect(select.getRawValue()).toBe('3');
+            });
+
+            it('should hide the layer when item is clicked', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                var option = layer.children[2];
+                dispatchEvent(option, 'click');
+                expect(layer.className).toMatch(/ui-select-layer-hidden/);
             });
 
             it('should destroy the layer when disposed', function () {
@@ -214,7 +257,6 @@ define(function (require) {
             });
 
             describe('`change` event', function () {
-
                 it('should fire if `value` is changed', function () {
                     var select = new Select({ datasource: datasource, value: '2' });
                     var spy = jasmine.createSpy();

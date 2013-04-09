@@ -35,8 +35,8 @@ define(
 
             repaint: function () {
                 // TODO: 修改为painter实现
-                this.setRawValue(this.rawValue);
-                this.setReadOnly(this.readOnly);
+                // this.setRawValue(this.rawValue);
+                // this.setReadOnly(this.readOnly);
             },
 
             /**
@@ -73,16 +73,7 @@ define(
              * @param {string} rawValue 输入控件的原始值
              */
             setRawValue: function (rawValue) {
-                if (this.rawValue === rawValue) {
-                    return;
-                }
-                var record = {
-                    name: 'rawValue',
-                    oldValue: this.rawValue,
-                    newValue: rawValue
-                };
-                this.rawValue = rawValue;
-                this.repaint([record]);
+                this.setProperties({ rawValue: rawValue });
             },
 
             /**
