@@ -431,7 +431,7 @@ define(function (require) {
                     tab.appendTo(container);
                     var spy = jasmine.createSpy();
                     tab.on('add', spy);
-                    tab.add(tabs.slice(0, 1), 0);
+                    tab.add(tabs[0], 0);
                     expect(spy).toHaveBeenCalled();
                 });
 
@@ -440,11 +440,54 @@ define(function (require) {
                     tab.appendTo(container);
                     var spy = jasmine.createSpy();
                     tab.on('add', spy);
-                    tab.add(tabs.slice(0, 1));
+                    tab.add(tabs[0]);
                     var event = spy.mostRecentCall.args[0];
                     expect(event).toBeOfType('object');
                     expect(event.type).toBe('add');
-                    expect(event.tab).toEqual(tabs.slice(0, 1));
+                    expect(event.tab).toEqual(tabs[0]);
+                });
+            });
+
+            describe('`remove` event', function () {
+                it('should fire when a tab is removed', function () {
+                    var tab = new Tab({ tabs: tabs.slice() });
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('remove', spy);
+                    tab.remove(tab.get('tabs')[0]);
+                    expect(spy).toHaveBeenCalled();
+                });
+
+                it('should fire when a tab is removed via `removeAt`', function () {
+                    var tab = new Tab({ tabs: tabs.slice() });
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('remove', spy);
+                    tab.removeAt(1);
+                    expect(spy).toHaveBeenCalled();
+                });
+
+                it('should fire when a `allowClose` tab is closed by clicking the close element', function () {
+                    var tab = new Tab({ tabs: tabs.slice(), allowClose: true });
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('remove', spy);
+                    var navigator = container.getElementsByTagName('ul')[0];
+                    var close = findCloseElement(navigator.children[0]);
+                    dispatchEvent(close, 'click');
+                    expect(spy).toHaveBeenCalled();
+                });
+
+                it('should give a correct even object when fired', function () {
+                    var tab = new Tab({ tabs: tabs.slice() });
+                    tab.appendTo(container);
+                    var spy = jasmine.createSpy();
+                    tab.on('remove', spy);
+                    tab.removeAt(0);
+                    var event = spy.mostRecentCall.args[0];
+                    expect(event).toBeOfType('object');
+                    expect(event.type).toBe('remove');
+                    expect(event.tab).toEqual(tabs[0]);
                 });
             });
         });

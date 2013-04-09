@@ -397,6 +397,7 @@ define(
                     );
                     activateTab(this, this.activeIndex);
                 }
+                this.fire('remove', { tab: removed[0] });
             }
         };
 
