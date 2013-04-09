@@ -55,6 +55,37 @@ define(
         };
 
         /**
+         * 将"name:value[;name:value]"的属性值解析成Object
+         * 
+         * @param {string} source 属性值源字符串
+         * @param {function=} 替换值的处理函数
+         * @return {Object}
+         */
+        main.parseAttribute = function (source, valueReplacer) {
+            if (!source) {
+                return {};
+            }
+            
+            var value = {};
+            var items = source.split(/\s*;\s*/);
+            var len = items.length;
+
+            while (len--) {
+                var item = items[len];
+                if (!item) {
+                    continue;
+                }
+
+                var segment = item.split(/\s*:\s*/);
+                value[segment[0]] = valueReplacer ?
+                    valueReplacer(segment[1])
+                    : segment[1];
+            }
+
+            return value;
+        };
+
+        /**
          * 注册类。用于控件类、规则类或扩展类注册
          * 
          * @inner
@@ -193,7 +224,7 @@ define(
                 if (terms.length === 0) {
                     noOverrideExtend(
                         optionObject, 
-                        lib.parseAttribute(value, valueReplacer)
+                        main.parseAttribute(value, valueReplacer)
                     );
                 }
                 else {

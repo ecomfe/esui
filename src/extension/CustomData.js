@@ -11,7 +11,7 @@ define(
             Extension.prototype.activate.apply(this, arguments);
             var data = this.target.data;
             if (typeof data !== 'object') {
-                data = require('../lib').parseAttribute(this.target.data);
+                data = require('../main').parseAttribute(this.target.data);
             }
             for (var key in this.target) {
                 if (this.target.hasOwnProperty(key) && dataProperty.test(key)) {
