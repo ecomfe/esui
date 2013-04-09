@@ -63,7 +63,9 @@ define(
             // Panel也只有`content`是可以设置的，
             // 如果设置其它属性导致这里出错不负责任了
             if (changes && changes.length) {
+                this.disposeChildren();
                 this.main.innerHTML = this.content;
+                this.initChildren(this.main);
             }
         };
 
