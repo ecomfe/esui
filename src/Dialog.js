@@ -53,12 +53,12 @@ define(
             options.title = roles.title || options.title;
             options.content = roles.content || options.content;
 
-            if (options.needFoot == true) {
+            if (options.needFoot === true) {
                 if (roles.foot) {
                     options.foot = roles.foot;
                 }
             }
-            else if (options.needFoot == false){
+            else if (options.needFoot === false) {
                 options.foot = null;
             }
 
@@ -127,8 +127,10 @@ define(
         function getBFHtml(control, type) {
             var me = control;
             var tpl = ''
-                + '<div class="${panelClass}" data-ui="type:Panel;childName:${type}">'
-                +   '<div class="${class}" id="${id}">${content}</div>'
+                + '<div class="${panelClass}" '
+                + 'data-ui="type:Panel;childName:${type}">'
+                +   '<div class="${class}" id="${id}">'
+                +   '${content}</div>'
                 + '</div>';
 
             var data = {
@@ -294,7 +296,7 @@ define(
                     autoPosition: false,  // 是否自动定位居中
                     closeButton: true,    // 是否具有关闭按钮
                     draggable: false,     // 是否可拖拽
-                    mask: true,           // 是否具有遮挡层。或者指定带有level和type属性的object，自定义遮挡层
+                    mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
                     height: 0,            // 对话框的高度
                     top: 100,             // 对话框的垂直位置
@@ -302,9 +304,11 @@ define(
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     foot: ''
-                        + '<div data-ui="type:Button;id:btnFootOk;childName:btnOk;'
+                        + '<div data-ui="type:Button;id:btnFootOk;'
+                        + 'childName:btnOk;'
                         + 'skin:spring;height:26;width:50;">确定</div>'
-                        + '<div data-ui="type:Button;id:btnFootCancel;childName:btnCancel;'
+                        + '<div data-ui="type:Button;'
+                        + 'id:btnFootCancel;childName:btnCancel;'
                         + 'height:26;">取消</div>',
                     needFoot: true
                 };
@@ -345,13 +349,9 @@ define(
 
                 // 设置样式
                 main.style.left = '-10000px';
-
-                var mainClass = helper.getClasses(this, 'main');
                 var titleId = helper.getId(this, 'title');
                 var bodyId = helper.getId(this, 'body');
-                var bodyClass = helper.getClasses(this, 'body');
                 var footId = helper.getId(this, 'foot');
-                var footClass = helper.getClasses(this, 'foot');
 
                 // 局部渲染
                 if (changes && changes.length) {
@@ -465,7 +465,6 @@ define(
              * 
              */
             show: function () {
-                var main = this.main;
                 var mask = this.mask;
 
                 if (this.lifeCycle !== Control.LifeCycle.RENDERED) {
@@ -600,9 +599,6 @@ define(
          */
         Dialog.confirm = function (args) {
             var dialogPrefix    = 'DialogConfirm';
-            var okPrefix        = 'DialogConfirmOk';
-            var cancelPrefix    = 'DialogConfirmCancel';
-
             var ui = require('./main');
 
             /**
@@ -739,7 +735,7 @@ define(
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })
             );
-            var okId = helper.getId(dialog, okPrefix + index);
+
             dialog.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:' 
                 + okPrefix + index + '; skin:spring;width:50;">'
@@ -750,9 +746,6 @@ define(
             dialog.show();
             var okBtn = dialog.getChild('okBtn');
             okBtn.onclick = getBtnClickHandler(onok, index);
-
-
-
         }; 
 
         require('./lib').inherits(Dialog, Control);
