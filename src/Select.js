@@ -172,9 +172,7 @@ define(
             }
 
             if (target !== layer && target !== main) {
-                var helper = require('./controlHelper');
-                var classes = helper.getPartClasses(select, 'layer-hidden');
-                require('./lib').addClasses(layer, classes);
+                hideLayer(select);
             }
         }
 
