@@ -22,27 +22,35 @@ define(
             };
         };
 
-        painters.html = function (name, member) {
+        painters.html = function (name, member, generate) {
             return {
                 name: name,
                 member: member || 'main',
+                generate: generate,
                 paint: function (control, value) {
                     var element = control[this.member];
+                    var html = typeof this.generate === 'function'
+                        ? this.generate(control, value)
+                        : value;
                     if (element) {
-                        element.innerHTML = value;
+                        element.innerHTML = html;
                     }
                 }
             };
         };
 
-        painters.text = function (name, member) {
+        painters.text = function (name, member, generate) {
             return {
                 name: name,
                 member: member || 'main',
+                generate: generate,
                 paint: function (control, value) {
                     var element = control[this.member];
+                    var html = typeof this.generate === 'function'
+                        ? this.generate(control, value)
+                        : value;
                     if (element) {
-                        element.innerHTML = require('./lib').encodeHTML(value);
+                        element.innerHTML = require('./lib').encodeHTML(html);
                     }
                 }
             };

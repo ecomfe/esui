@@ -345,45 +345,25 @@ define(
             textHolder.innerHTML = require('./lib').encodeHTML(displayText);
         }
 
+        var paint = require('./painters');
+        var painters = [
+            paint.style('width'),
+            paint.style('height'),
+            paint.html('datasource', 'selectionLayer', getLayerHTML),
+            {
+                name: 'rawValue',
+                paint: updateValue
+            }
+        ];
+
         /**
          * 重绘
          *
          * @param {Array=} 更新过的属性集合
          * @protected
          */
-        Select.prototype.repaint = function (changes) {
-            if (!changes) {
-                if (this.width) {
-                    this.main.style.width = this.width + 'px';
-                }
-                if (this.height) {
-                    this.main.style.height = this.height + 'px';
-                }
-                updateValue(this);
-            }
-            else {
-                var shouldUpdateValue = false;
-                for (var i = 0; i < changes.length; i++) {
-                    var record = changes[i];
-                    if (record.name === 'width' || record.name === 'height') {
-                        this.main.style[record.name] = this[record.name] + 'px';
-                    }
-                    else if (record.name === 'datasource'
-                        && this.selectionLayer
-                    ) {
-                        // 如果`datasource`更新，则下拉框的内容要重绘
-                        this.selectionLayer.innerHTML = getLayerHTML(this);
-                    }
-                    else {
-                        shouldUpdateValue = true;
-                    }
-                }
-                if (shouldUpdateValue) {
-                    updateValue(this);
-                    this.fire('change');
-                }
-            }
-        };
+        Select.prototype.repaint = 
+            require('./controlHelper').createRepaint(painters);
 
         /**
          * 批量更新属性并重绘
@@ -403,8 +383,16 @@ define(
             ) {
                 properties.rawValue = this.rawValue;
             }
+
             adjustValueProperties(properties);
-            InputControl.prototype.setProperties.apply(this, arguments);
+            var changes = 
+                InputControl.prototype.setProperties.apply(this, arguments);
+
+            if (changes.hasOwnProperty('rawValue')) {
+                this.fire('change');
+            }
+
+            return changes;
         };
 
         /**

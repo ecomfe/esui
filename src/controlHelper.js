@@ -583,7 +583,7 @@ define(
                     for (var i = 0; i < changes.length; i++) {
                         var record = changes[i];
                         var painter = map[record.name];
-                        if (typeof painter.paint === 'function') {
+                        if (painter && typeof painter.paint === 'function') {
                             painter.paint(this, record.newValue);
                         }
                         else {

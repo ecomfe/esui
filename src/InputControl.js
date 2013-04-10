@@ -33,11 +33,11 @@ define(
                 helper.initName(control);
             },
 
-            repaint: function () {
+            // repaint: function () {
                 // TODO: 修改为painter实现
                 // this.setRawValue(this.rawValue);
                 // this.setReadOnly(this.readOnly);
-            },
+            // },
 
             /**
              * 获取输入控件的值
@@ -91,7 +91,7 @@ define(
                     properties.rawValue = this.parseValue(value);
                 }
 
-                Control.prototype.setProperties.call(this, properties);
+                return Control.prototype.setProperties.call(this, properties);
             },
 
             /**

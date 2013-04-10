@@ -125,9 +125,10 @@ define(
              * 仅当生命周期处于RENDER时，该方法才重新渲染
              *
              * @param {Array=} 变更过的属性的集合
+             * @param {Object=} 变更过的属性的索引
              * @protected
              */
-            repaint: function (changes) {
+            repaint: function (changes, changesIndex) {
             },
 
             /**
@@ -212,6 +213,7 @@ define(
              */
             setProperties: function (properties) {
                 var changes = [];
+                var changesIndex = {};
                 for (var key in properties) {
                     if (properties.hasOwnProperty(key)) {
                         var oldValue = this[key];
@@ -224,6 +226,7 @@ define(
                                 newValue: newValue
                             };
                             changes.push(record);
+                            changesIndex[key] = record;
                         }
                     }
                 }
@@ -231,8 +234,10 @@ define(
                 if (changes.length 
                     && this.lifeCycle === Control.LifeCycle.RENDERED
                 ) {
-                    this.repaint(changes);
+                    this.repaint(changes, changesIndex);
                 }
+
+                return changesIndex;
             },
 
             /**
