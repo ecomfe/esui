@@ -257,6 +257,16 @@ define(function (require) {
                 expect(layer).toBe(null);
             });
 
+            it('should hide the layer when itself is set to hidden even if the layer is previously shown', function () {
+                    var select = new Select({ datasource: datasource });
+                    select.appendTo(container);
+                    dispatchEvent(select.main, 'click');
+                    var layer = findLayer();
+                    expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
+                    select.hide();
+                    expect(layer.className).toMatch(/ui-select-layer-hidden/);
+            });
+
             describe('when disabled', function () {
                 it('should not open the layer when clicked', function () {
                     var select = new Select({ datasource: datasource, disabled: true });

@@ -406,6 +406,16 @@ define(
         };
 
         /**
+         * 隐藏控件
+         */
+        Select.prototype.hide = function () {
+            InputControl.prototype.hide.apply(this, arguments);
+            if (this.selectionLayer) {
+                hideLayer(this);
+            }
+        };
+
+        /**
          * 销毁控件
          *
          * @public
