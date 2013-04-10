@@ -564,6 +564,37 @@ define(
             delete control.domEvents[guid];
         };
 
+        helper.createRepaint = function (painters) {
+            var map = {};
+            for (var i = 0; i < painters.length; i++) {
+                map[painters[i].name] = painters[i];
+            }
+
+            return function (changes) {
+                if (!changes) {
+                    for (var i = 0; i < painters.length; i++) {
+                        var painter = painters[i];
+                        painter.paint(this, this[painter.name]);
+                    }
+                    return [];
+                }
+                else {
+                    var unpainted = [];
+                    for (var i = 0; i < changes.length; i++) {
+                        var record = changes[i];
+                        var painter = map[record.name];
+                        if (typeof painter.paint === 'function') {
+                            painter.paint(this, record.newValue);
+                        }
+                        else {
+                            unpainted.push(record);
+                        }
+                    }
+                    return unpainted;
+                }
+            };
+        };
+
         return helper;
     }
 );

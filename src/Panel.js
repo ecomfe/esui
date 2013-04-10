@@ -52,8 +52,9 @@ define(
             lib.extend(this, properties);
         };
 
-        var allProperties = [
-            { name: 'content' }
+        var paint = require('./painters');
+        var painters = [
+            paint.html('content')
         ];
 
         /**
@@ -63,15 +64,8 @@ define(
          * @override
          * @protected
          */
-        Panel.prototype.repaint = function (changes) {
-            changes = changes || allProperties;
-            for (var i = 0; i < changes.length; i++) {
-                var record = changes[i];
-                if (record.name === 'content') {
-                    this.main.innerHTML = this.content;
-                }
-            }
-        };
+        Panel.prototype.repaint = 
+            require('./controlHelper').createRepaint(painters);
 
         /**
          * 设置内容
