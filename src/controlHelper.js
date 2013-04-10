@@ -564,6 +564,12 @@ define(
             delete control.domEvents[guid];
         };
 
+        /**
+         * 通过`painter`对象创建`repaint`方法
+         *
+         * @param {...Object} `painter`对象
+         * @return {function} `repaint`方法的实现
+         */
         helper.createRepaint = function () {
             var painters = [].concat.apply([], arguments);
             var map = {};
