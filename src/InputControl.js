@@ -126,7 +126,13 @@ define(
              * @override
              */
             disable: function () {
-                this.main.disabled = true;
+                var nodeName = this.main.nodeName.toLowerCase();
+                if (nodeName === 'input'
+                    || nodeName === 'select'
+                    || nodeName === 'textarea'
+                ) {
+                    this.main.disabled = true;
+                }
                 Control.prototype.disable.call(this);
             },
 
@@ -136,7 +142,13 @@ define(
              * @override
              */
             enable: function () {
-                this.main.disabled = false;
+                var nodeName = this.main.nodeName.toLowerCase();
+                if (nodeName === 'input'
+                    || nodeName === 'select'
+                    || nodeName === 'textarea'
+                ) {
+                    this.main.disabled = false;
+                }
                 Control.prototype.enable.call(this);
             },
 
