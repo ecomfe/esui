@@ -282,6 +282,10 @@ define(
          * @inner
          */
         function toggleLayer(select, e) {
+            if (select.disabled) {
+                return;
+            }
+
             if (!select.selectionLayer) {
                 openLayer(select);
             }
@@ -357,6 +361,14 @@ define(
             paint.style('width'),
             paint.style('height'),
             paint.html('datasource', 'selectionLayer', getLayerHTML),
+            {
+                name: 'disabled',
+                paint: function (select, value) {
+                    if (value && select.selectionLayer) {
+                        hideLayer(select);
+                    }
+                }
+            },
             {
                 name: 'rawValue',
                 paint: updateValue

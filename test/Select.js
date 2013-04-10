@@ -257,6 +257,28 @@ define(function (require) {
                 expect(layer).toBe(null);
             });
 
+            describe('when disabled', function () {
+                it('should not open the layer when clicked', function () {
+                    var select = new Select({ datasource: datasource, disabled: true });
+                    select.appendTo(container);
+                    dispatchEvent(select.main, 'click');
+                    var layer = findLayer();
+                    if (layer) {
+                        expect(layer.className).toMatch(/ui-select-layer-hidden/);
+                    }
+                });
+
+                it('must hide the layer even if the layer is previous set to visible', function () {
+                    var select = new Select({ datasource: datasource });
+                    select.appendTo(container);
+                    dispatchEvent(select.main, 'click');
+                    var layer = findLayer();
+                    expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
+                    select.disable();
+                    expect(layer.className).toMatch(/ui-select-layer-hidden/);
+                });
+            });
+
             describe('`change` event', function () {
                 it('should fire if `value` is changed', function () {
                     var select = new Select({ datasource: datasource, value: '2' });

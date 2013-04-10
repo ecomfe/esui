@@ -275,23 +275,22 @@ define(
              * 设置控件禁用状态
              */
             setDisabled: function (disabled) {
-                this[disabled ? 'disable' : 'enable']();
+                this[disabled ? 'addState' : 'removeState']('disabled');
+                this.setProperties({ disabled: disabled });
             },
 
             /**
              * 设置控件状态为禁用
              */
             disable: function () {
-                this.disabled = true;
-                this.addState('disabled');
+                this.setDisabled(true);
             },
 
             /**
              * 设置控件状态为启用
              */
             enable: function () {
-                this.disabled = false;
-                this.removeState('disabled');
+                this.setDisabled(false);
             },
 
             /**
