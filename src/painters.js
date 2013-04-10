@@ -8,6 +8,12 @@ define(
             'opacity', 'zIndex', 'zoom'
         ];
 
+        /**
+         * 修改`main`元素的样式
+         *
+         * @param {string} name 指定负责的属性名
+         * @param {string=} property 对应的样式属性名，默认与`name`相同
+         */
         painters.style = function (name, property) {
             return {
                 name: name,
@@ -22,6 +28,13 @@ define(
             };
         };
 
+        /**
+         * 修改指定成员的`innerHTML`
+         *
+         * @param {string} name 指定负责的属性名
+         * @param {string=} member 指定成员，默认为`main`
+         * @param {function=} generate 指定生成HTML的函数
+         */
         painters.html = function (name, member, generate) {
             return {
                 name: name,
@@ -39,6 +52,14 @@ define(
             };
         };
 
+        /**
+         * 修改指定成员的`innerText`
+         *
+         * @param {string} name 指定负责的属性名
+         * @param {string=} member 指定成员，默认为`main`
+         * @param {function=} generate 指定生成HTML的函数，
+         * 该函数只返回HTML，不需要转义
+         */
         painters.text = function (name, member, generate) {
             return {
                 name: name,
@@ -56,6 +77,14 @@ define(
             };
         };
 
+
+        /**
+         * 将修改代理到指定成员的指定方法上
+         *
+         * @param {string} name 指定负责的属性名
+         * @param {string} member 指定成员名
+         * @param {string} method 指定调用的方法名称
+         */
         painters.delegate = function (name, member, method) {
             return {
                 name: name,
