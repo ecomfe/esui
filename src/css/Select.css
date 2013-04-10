@@ -1,14 +1,14 @@
 .ui-select {
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -6px #f3f3f3;
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -6px #f3f3f3;
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -6px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -6px,
         -webkit-gradient(linear,0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -6px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -6px,
         -o-linear-gradient(top, #ffffff 0%, #f6f6f6 0%);
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -6px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -6px,
         -moz-linear-gradient(top,#ffffff,#f6f6f6);
     border: 1px solid #D8D8D8;
     border-radius: 3px 3px 3px 3px;
@@ -20,31 +20,31 @@
     width: 100px;
 }
 
-.ui-select-hover {
+.ui-select:hover {
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -36px #f3f3f3;
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -36px #f3f3f3;
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -36px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -36px,
         -webkit-gradient(linear,0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -36px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -36px,
         -o-linear-gradient(top, #ffffff 0%, #f6f6f6 0%);
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -36px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -36px,
         -moz-linear-gradient(top,#ffffff,#f6f6f6);
 }
 
-.ui-select-active {
+.ui-select:focus {
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -69px #f3f3f3;
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -69px #f3f3f3;
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -69px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -69px,
         -webkit-gradient(linear,0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -69px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -69px,
         -o-linear-gradient(top, #ffffff 0%, #f6f6f6 0%);
     background:
-        url(../img/dn-combo-arrow.png) no-repeat scroll 72px -69px,
+        url(../img/dn-combo-arrow.png) no-repeat scroll right -69px,
         -moz-linear-gradient(top,#ffffff,#f6f6f6);
 }
 
