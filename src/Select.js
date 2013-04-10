@@ -346,15 +346,6 @@ define(
         }
 
         var paint = require('./painters');
-        var painters = [
-            paint.style('width'),
-            paint.style('height'),
-            paint.html('datasource', 'selectionLayer', getLayerHTML),
-            {
-                name: 'rawValue',
-                paint: updateValue
-            }
-        ];
 
         /**
          * 重绘
@@ -362,8 +353,15 @@ define(
          * @param {Array=} 更新过的属性集合
          * @protected
          */
-        Select.prototype.repaint = 
-            require('./controlHelper').createRepaint(painters);
+        Select.prototype.repaint = require('./controlHelper').createRepaint(
+            paint.style('width'),
+            paint.style('height'),
+            paint.html('datasource', 'selectionLayer', getLayerHTML),
+            {
+                name: 'rawValue',
+                paint: updateValue
+            }
+        );
 
         /**
          * 批量更新属性并重绘

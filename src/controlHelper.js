@@ -564,7 +564,8 @@ define(
             delete control.domEvents[guid];
         };
 
-        helper.createRepaint = function (painters) {
+        helper.createRepaint = function () {
+            var painters = [].concat.apply([], arguments);
             var map = {};
             for (var i = 0; i < painters.length; i++) {
                 map[painters[i].name] = painters[i];

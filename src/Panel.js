@@ -53,10 +53,7 @@ define(
         };
 
         var paint = require('./painters');
-        var painters = [
-            paint.html('content')
-        ];
-
+        
         /**
          * 渲染自身
          *
@@ -64,8 +61,9 @@ define(
          * @override
          * @protected
          */
-        Panel.prototype.repaint = 
-            require('./controlHelper').createRepaint(painters);
+        Panel.prototype.repaint = require('./controlHelper').createRepaint(
+            paint.html('content')
+        );
 
         /**
          * 设置内容
