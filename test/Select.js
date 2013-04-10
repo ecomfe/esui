@@ -277,6 +277,24 @@ define(function (require) {
                     select.disable();
                     expect(layer.className).toMatch(/ui-select-layer-hidden/);
                 });
+
+                it('should repaint as normal when properties changed', function () {
+                    var select = new Select({ datasource: datasource, disable: true });
+                    select.appendTo(container);
+                    select.setProperties({ value: '3' });
+                    expect(select.getValue()).toBe('3');
+                    expect(container.getElementsByTagName('span')[0].innerHTML).toBe('c');
+                });
+
+                it('should return to normal after enabled again', function () {
+                    var select = new Select({ datasource: datasource, disable: true });
+                    select.appendTo(container);
+                    select.enable();
+                    dispatchEvent(select.main, 'click');
+                    var layer = findLayer();
+                    expect(layer).toBeDefined();
+                });
+
             });
 
             describe('`change` event', function () {
