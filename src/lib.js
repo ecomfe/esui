@@ -27,6 +27,28 @@ define(function () {
     };
 
     /**
+     * 判断值不为空(null|undefined)
+     * 
+     * @public
+     * @param {Any} value
+     * @param {boolean}
+     */
+    lib.hasValue = function ( value ) {
+        return typeof value != 'undefined' && value !== null;
+    };
+
+    /**
+     * 判断值是否为Array类型
+     * 
+     * @public
+     * @param {object} source
+     * @param {boolean}
+     */
+    lib.isArray = function( source ){
+        return '[object Array]' == Object.prototype.toString.call(source);
+    };
+
+    /**
      * 为类型构造器建立继承关系
      * 
      * @param {function} subClass 子类构造器
@@ -73,6 +95,36 @@ define(function () {
         return target;
     };
 
+    lib.isPlain  = function(obj){
+        var hasOwnProperty = Object.prototype.hasOwnProperty,
+            key;
+        if ( !obj ||
+             //一般的情况，直接用toString判断
+             Object.prototype.toString.call(obj) !== "[object Object]" ||
+             //IE下，window/document/document.body/HTMLElement/HTMLCollection/NodeList等DOM对象上一个语句为true
+             //isPrototypeOf挂在Object.prototype上的，因此所有的字面量都应该会有这个属性
+             //对于在window上挂了isPrototypeOf属性的情况，直接忽略不考虑
+             !('isPrototypeOf' in obj)
+           ) {
+            return false;
+        }
+
+        //判断new fun()自定义对象的情况
+        //constructor不是继承自原型链的
+        //并且原型中有isPrototypeOf方法才是Object
+        if ( obj.constructor &&
+            !hasOwnProperty.call(obj, "constructor") &&
+            !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+            return false;
+        }
+        //判断有继承的情况
+        //如果有一项是继承过来的，那么一定不是字面量Object
+        //OwnProperty会首先被遍历，为了加速遍历过程，直接看最后一项
+        for ( key in obj ) {}
+        return key === undefined || hasOwnProperty.call( obj, key );
+    };
+
+
     /**
      * 对一个object进行深度拷贝
      * 
@@ -80,31 +132,27 @@ define(function () {
      * @return {Object} 拷贝后的新对象
      */
     lib.clone = function (source) {
-        // by Tangram 1.x: baidu.object.clone
+        var result = source, i, len;
         if (!source
             || source instanceof Number
             || source instanceof String
-            || source instanceof Boolean
-        ) {
-            return source;
-        }
-        else if (source instanceof Array) {
-            var result = [];
-            for (var i = 0; i < source.length; i++) {
-                result.push(lib.clone(source[i]));
-            }
+            || source instanceof Boolean) {
             return result;
-        }
-        else {
-            var result = {};
-            for (var key in source) {
-                if (source.hasOwnProperty(key)) {
-                    result[key] = lib.clone(source[key]);
+        } else if ( lib.isArray(source) ) {
+            result = [];
+            var resultLen = 0;
+            for (i = 0, len = source.length; i < len; i++) {
+                result[resultLen++] = lib.clone(source[i]);
+            }
+        } else if (lib.isPlain(source)) {
+            result = {};
+            for (i in source) {
+                if (source.hasOwnProperty(i)) {
+                    result[i] = lib.clone(source[i]);
                 }
             }
-            return result;
         }
-        return source;
+        return result;
     };
 
     /** 
@@ -436,6 +484,20 @@ define(function () {
         return newElement;
     };
 
+
+    lib.getComputedStyle = function(element, key){
+        element = lib.g(element);
+        var doc = element.nodeType == 9 ? element : element.ownerDocument || element.document;
+        var styles;
+        if (doc.defaultView && doc.defaultView.getComputedStyle) {
+            styles = doc.defaultView.getComputedStyle(element, null);
+            if (styles) {
+                return styles[key] || styles.getPropertyValue(key);
+            }
+        }
+        return ''; 
+    };
+
     /**
      * 获取元素在页面中的位置和尺寸信息
      *
@@ -530,6 +592,15 @@ define(function () {
     };
 
     /**
+     * 获取页面视觉区域高度
+     *
+     * @return {number} 页面视觉区域高度
+     */
+    lib.page.getViewHeight = function () {
+        return viewRoot.clientHeight;
+    };
+
+    /**
      * 获取纵向滚动量
      *
      * @return {number} 纵向滚动量
@@ -538,6 +609,56 @@ define(function () {
         return window.pageYOffset 
             || document.documentElement.scrollTop 
             || document.body.scrollTop;
+    };
+
+    /**
+     * 获取横向滚动量
+     *
+     * @return {number} 横向滚动量
+     */
+    lib.page.getScrollLeft = function(){
+        return window.pageXOffset 
+            || document.documentElement.scrollLeft || document.body.scrollLeft;
+    };
+
+
+
+    lib.event = {};
+
+    /**
+     * 组织事件默认行为
+     * @param event 事件对象
+     * @return void
+     */
+    lib.event.preventDefault  = function( event ){
+        if (event.preventDefault) {
+           event.preventDefault();
+        } else {
+           event.returnValue = false;
+        }
+    };
+
+    /**
+     * 组织事件冒泡
+     * @param event 事件对象
+     * @return void
+     */
+    lib.event.stopPropagation = function (event) {
+       if (event.stopPropagation) {
+           event.stopPropagation();
+       } else {
+           event.cancelBubble = true;
+       }
+    };
+
+    /**
+     * 组织事件冒泡
+     * @param e 事件对象
+     * @return {object} 获取事件目标对象
+     */
+    lib.event.getTarget = function (e) {
+        e = e || window.event;
+        return e.target || e.srcElement;
     };
 
     if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {
@@ -593,5 +714,52 @@ define(function () {
         return ret;
     };
 
+    /**
+     * 将Object解析成Dom元素属性字符串
+     * (如将 {click:'action'} 解析为 data-command-click ='action')
+     *
+     * @param {string} source 属性值源对象
+     * 
+     * @return {string}
+     */
+    lib.getCommandStr = function( source ){
+        var dataCommandPrefix   = 'data-command-';
+        var result = [];
+
+        for ( var i in source ) {
+            if( source.hasOwnProperty(i) ){
+                var item = source[i];
+                result.push( dataCommandPrefix + i + '="' + source[i] + '"')
+            }
+        };
+        return result.join(' ');
+    };
+
+    /**
+     * 将Object转换为带data-command的对象，
+     * 如果传入dom元素则将为该元素添加对应的Attribute
+     *
+     * @param {object} source 属性值源对象
+     * @param {object} element dom元素对象（可选）
+     * @return {object}
+     */
+    lib.getCommandAttr = function( source, element ){
+        var dataCommandPrefix   = 'data-command-';
+        var result = {};
+
+        for ( var i in source ){
+            if( source.hasOwnProperty(i) ){
+                var attrName  = dataCommandPrefix + i;
+                var attrValue = source[i];
+
+                result[ attrName ] = attrValue ;
+                
+                if( element ){
+                    element.setAttribute( attrName, attrValue );
+                }
+            }
+        };
+        return result;
+    };  
     return lib;
 });
