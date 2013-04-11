@@ -38,6 +38,12 @@ define(
             if (style.right) {
                 properties.right = parseInt(style.right, 10);
             }
+            if (style.width) {
+                properties.width = parseInt(style.width, 10);
+            }
+            if (style.height) {
+                properties.height = parseInt(style.height, 10);
+            }
 
             this.setProperties(properties);
         };
@@ -84,7 +90,8 @@ define(
             paint.style('top'),
             paint.style('right'),
             paint.style('bottom'),
-            paint.style('left')
+            paint.style('left'),
+            paint.style('zIndex')
         );
 
         /**
@@ -111,6 +118,17 @@ define(
 
             changes = Panel.prototype.repaint.apply(this, arguments);
             return repaint.apply(this, arguments);
+        };
+
+        var zIndexStack = 1000;
+
+        /**
+         * 将当前层移到最前
+         *
+         * @public
+         */
+        Layer.prototype.moveToTop = function () {
+            this.set('zIndex', ++zIndexStack);
         };
 
         /**
