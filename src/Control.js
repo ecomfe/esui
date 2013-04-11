@@ -110,14 +110,14 @@ define(
                     this.setDisabled(this.disabled);
                 }
 
-                this.lifeCycle = Control.LifeCycle.RENDERED;
-
                 // 由子控件实现
                 this.repaint();
 
                 if (this.lifeCycle === Control.LifeCycle.INITED) {
                     this.fire('afterrender');
                 }
+
+                this.lifeCycle = Control.LifeCycle.RENDERED;
             },
 
             /**
