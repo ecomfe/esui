@@ -292,10 +292,10 @@ define(
                 var helper = require('./controlHelper');
                 var classes = helper.getPartClasses(select, 'layer-hidden');
                 if (require('./lib').hasClass(layer, classes[0])) {
-                    hideLayer(select);
+                    showLayer(select);
                 }
                 else {
-                    showLayer(select);
+                    hideLayer(select);
                 }
             }
         }
@@ -314,6 +314,8 @@ define(
                 this.main.parentNode.removeChild(this.main);
                 this.main = main;
             }
+
+            this.main.tabIndex = 0;
             
             var html = [
                 '<span></span>',
