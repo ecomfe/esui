@@ -530,6 +530,15 @@ define(function () {
     };
 
     /**
+     * 获取页面视觉区域高度
+     *
+     * @return {number} 页面视觉区域宽度
+     */
+    lib.page.getViewHeight = function () {
+        return viewRoot.clientHeight;
+    };
+
+    /**
      * 获取纵向滚动量
      *
      * @return {number} 纵向滚动量
