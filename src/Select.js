@@ -202,9 +202,11 @@ define(
          * @param {Select} Select控件实例
          */
         function showLayer(select) {
+            var layer = select.selectionLayer;
             var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
-            require('./lib').removeClasses(select.selectionLayer, classes);
+            var lib = require('./lib');
+            lib.removeClasses(select.selectionLayer, classes);
             var offset = lib.getOffset(select.main);
             layer.style.top = offset.bottom + 'px';
             layer.style.left = offset.left + 'px';
@@ -265,7 +267,7 @@ define(
             for (var i = items.length - 1; i >= 0; i--) {
                 var item = items[i];
                 var classes = helper.getPartClasses(select, 'layer-selected');
-                if (item.getAttribute('data-value') === select.rawValue) {
+                if (item.getAttribute('data-value') == select.rawValue) {
                     lib.addClasses(item, classes);
                 }
                 else {
