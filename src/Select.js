@@ -205,12 +205,12 @@ define(
             var layer = select.selectionLayer;
             var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
-            var lib = require('./lib');
-            lib.removeClasses(select.selectionLayer, classes);
-            var offset = lib.getOffset(select.main);
-            layer.style.top = offset.bottom + 'px';
-            layer.style.left = offset.left + 'px';
-            layer.style.width = offset.width + 'px';
+            helper.layer.attachTo(
+                layer, 
+                select.main, 
+                { top: 'bottom', left: 'left', right: 'right' }
+            );
+            require('./lib').removeClasses(select.selectionLayer, classes);
             select.addState('active');
         }
 
@@ -237,7 +237,7 @@ define(
             var lib = require('./lib');
             var helper = require('./controlHelper');
             if (!layer) {
-                var layer = document.createElement('ol');
+                var layer = helper.layer.create('ol');
                 layer.className = 
                     helper.getPartClasses(select, 'layer').join(' ');
                 layer.innerHTML = getLayerHTML(select);
