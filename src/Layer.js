@@ -14,6 +14,8 @@ define(
 
         Layer.prototype.type = 'Layer';
 
+        var zIndexStack = 1000;
+
         /**
          * 初始化参数
          *
@@ -44,6 +46,11 @@ define(
             if (style.height) {
                 properties.height = parseInt(style.height, 10);
             }
+            if (style.zIndex) {
+                properties.zIndex = +style.zIndex;
+            }
+
+            properties.zIndex = properties.zIndex || zIndexStack;
 
             this.setProperties(properties);
         };
@@ -119,8 +126,6 @@ define(
             changes = Panel.prototype.repaint.apply(this, arguments);
             return repaint.apply(this, arguments);
         };
-
-        var zIndexStack = 1000;
 
         /**
          * 将当前层移到最前
