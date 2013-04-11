@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Table - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Table</header>
+        <div class="container">
+            <h3>普通</h3>
+            <div data-ui="type:Table;id:myTable;"></div>
+        </div>
+        <script>
+        var data = [
+            {id:1, name: 'erik', sex: 1},
+            {id:2, name: '庞飞帅', sex: 0},
+            {id:3, name: '曹特磊', sex: 1},
+            {id:4, name: '欧阳先伟', sex: 1},
+            {id:5, name: '樊总', sex: 1},
+            {id:6, name: '铮哥', sex: 1}
+        ];
+
+        require(
+            [
+                'esui', 
+                'esui/Table',
+                'css!esui/css/main.css',
+                'css!esui/css/Table.css'
+            ],
+            function (ui) {
+                var lib = require('esui/lib');
+                ui.init(document.body,{
+                    properties : {
+                        myTable: {
+                            datasource: data,
+                            sortable: true,
+                            columnResizable: true,
+                            subrow:true,
+                            select:'multi',
+                            subrowMutex: 0,
+                            followHead:true,
+                            //selectMode :'line',
+                            fields: [
+                                {
+                                    title: '编号',
+                                    field: 'id' ,
+                                    sortable: true,
+                                    comparer : function( a,b ){
+                                        return a.id - b.id;
+                                    },
+                                    resizable: true,
+                                    subEntry: 1,
+                                    width: 50,
+                                    content: function (item) {
+                                        return item.id;
+                                    }
+                                },
+                                {
+                                    title: '姓名',
+                                    field: 'name' ,
+                                    comparer : function( a,b ){
+                                        return a.name.localeCompare( b.name );
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 300,
+                                    content: function (item) {
+                                        return item.name;
+                                    }
+                                },
+                                {
+                                    title: '性别',
+                                    field: 'sex' ,
+                                    comparer : function( a,b ){
+                                        return a.sex - b.sex;
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 300,
+                                    content: function (item) {
+                                        return item.sex ? '男' : '女';
+                                    }
+                                },
+                                {
+                                    title: '操作',
+                                    field: 'sex' ,
+                                    resizable : true,
+                                    width: 100,
+                                    content: function (item) {
+                                        return '<a ' + lib.getCommandStr({ click :'first', args : 'name:' + item.name })+' href="#">自己的事件</a>';
+                                    }
+                                }
+                            ]
+                        }
+                    }   
+                });
+
+                ui.get( 'myTable' ).onsubrowopen = function ( index, dataItem ) {
+                    this.getSubrow( index ).innerHTML = '<span style="line-height:30px;">Hello ' + dataItem.name + '</span>';
+                };
+
+                ui.get( 'myTable' ).onsubrowclose = function ( index, dataItem ) {
+                    this.getSubrow( index ).innerHTML = '';
+                };
+
+                ui.get( 'myTable' ).oncommand = function( args, e ){
+                    alert(args.commandName + ':' + args.commandType + ':' + args.commandArgs.name );
+                };
+
+                ui.get( 'myTable' ).onsort = function ( field, order ) {
+                    var orderBy = field.field;
+                    var lib = require('esui/lib');
+                    var listData = lib.clone( data );
+                    if (order) {
+                        listData.sort( function (a, b) {
+                            var compareResult;
+                            
+                            switch ( orderBy ) {
+                            case 'name':
+                                compareResult = a.name.localeCompare( b.name );
+                                break;
+
+                            case 'sex':
+                                compareResult = a.sex > b.sex ;
+                                break;
+                            }
+                            
+                            if ( order == 'desc' ) {
+                                compareResult = -compareResult;
+                            }
+                            
+                            return compareResult;
+                        } );    
+                    }
+                };
+            }
+        );
+        </script>
+    </body>
+</html>
