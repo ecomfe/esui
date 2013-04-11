@@ -2,11 +2,44 @@ define(
     function (require) {
         var Extension = require('../Extension');
 
+        /**
+         * 供控件声明和获取自定义数据的扩展
+         *
+         * 该扩展会收集控件上以**data**开头且后面跟大写字符或数字的属性，
+         * 并为控件加上`getData`和`setData`来读写数据
+         * 
+         * 使用该扩展后，可在HTML中声明一些自定义属性，
+         * 并在后续通过javascript从控件的实例上获取
+         *
+         * @example
+         * <div data-ui-type="Button" 
+         *     data-ui-id="submitButton"
+         *     data-ui-data-auth="admin"
+         *     data-ui-extension-data="type: CustomData;">提交</div>
+         * <script>
+         *     var esui = require('esui');
+         *     esui.init(document.body);
+         *     var button = esui.get('submitButton');
+         *     if (button.getData('auth') !== currentUser.role) {
+         *         button.hide();
+         *     }
+         * </script>
+         *
+         * @constructor
+         */
         function CustomData() {
             Extension.apply(this, arguments);
         }
 
+        CustomData.prototype.type = 'CustomData';
+
         var dataProperty = /^data[A-Z0-9]/;
+
+        /**
+         * 激活扩展
+         *
+         * @public
+         */
         CustomData.prototype.activate = function () {
             Extension.prototype.activate.apply(this, arguments);
             var data = this.target.data;
@@ -29,6 +62,11 @@ define(
             };
         };
 
+        /**
+         * 取消扩展的激活状态
+         *
+         * @public
+         */
         CustomData.prototype.inactivate = function () {
             Extension.prototype.inactivate.apply(this, arguments);
 
@@ -37,6 +75,7 @@ define(
         };
 
         require('../lib').inherits(CustomData, Extension);
+        require('../main').registerExtension(CustomData);
 
         return CustomData;
     }
