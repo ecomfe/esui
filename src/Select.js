@@ -205,6 +205,10 @@ define(
             var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
             require('./lib').removeClasses(select.selectionLayer, classes);
+            var offset = lib.getOffset(select.main);
+            layer.style.top = offset.bottom + 'px';
+            layer.style.left = offset.left + 'px';
+            layer.style.width = offset.width + 'px';
             select.addState('active');
         }
 
@@ -254,10 +258,6 @@ define(
                 );
             }
 
-            var offset = lib.getOffset(select.main);
-            layer.style.top = offset.bottom + 'px';
-            layer.style.left = offset.left + 'px';
-            layer.style.width = offset.width + 'px';
             showLayer(select);
 
             // 同步选择状态
