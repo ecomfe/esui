@@ -113,6 +113,7 @@ define(
             var map = config;
             var lib = require('../lib');
             if (lib.isArray(config)) {
+                map = {};
                 for (var i = 0; i < config.length; i++) {
                     var item = config[i];
                     var name = item.triggerType
@@ -151,7 +152,7 @@ define(
                     handler = this[method];
                 }
                 if (typeof handler !== 'function') {
-                    handler = map['*:' + e.triggerType];
+                    handler = map[e.triggerType + ':*'];
                 }
                 if (!handler) {
                     handler = map['*'];

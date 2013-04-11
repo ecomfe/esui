@@ -32,6 +32,7 @@ define(function (require) {
             });
 
             var event = { type: 'command', triggerType: 'click', name: 'test', args: '' };
+
             describe('when given an object (higher priority is more important)', function () {
                 it('should dispatch to given `handler` with name `*` and no `triggerType` with priority 1', function () {
                     var config = {
@@ -44,18 +45,18 @@ define(function (require) {
 
                 it('should dispatch to given `handler` with name `*` and a matched `triggerType` with priority 2', function () {
                     var config = {
-                        '*:click': jasmine.createSpy(),
+                        'click:*': jasmine.createSpy(),
                         '*': jasmine.createSpy()
                     };
                     var dispatch = createDispatcher(config);
                     dispatch(event);
-                    expect(config['*:click']).toHaveBeenCalled();
+                    expect(config['click:*']).toHaveBeenCalled();
                     expect(config['*']).not.toHaveBeenCalled();
                 });
 
                 it('should dispatch to a `execute${name} method on control instance with priority 3', function () {
                     var config = {
-                        '*:click': jasmine.createSpy()
+                        'click:*': jasmine.createSpy()
                     };
                     var control = {
                         executeTest: jasmine.createSpy()
@@ -63,7 +64,7 @@ define(function (require) {
                     var dispatch = createDispatcher(config);
                     dispatch.call(control, event);
                     expect(control.executeTest).toHaveBeenCalled();
-                    expect(config['*:click']).not.toHaveBeenCalled();
+                    expect(config['click:*']).not.toHaveBeenCalled();
                 });
 
                 it('should dispatch to a `execute${name}${triggerType}` method on control instance with priority 4', function () {
@@ -99,6 +100,76 @@ define(function (require) {
                     dispatch(event);
                     expect(config['click:test']).toHaveBeenCalled();
                     expect(config['test']).not.toHaveBeenCalled();
+                });
+            });
+
+            describe('when given an array (higher priority is more important)', function () {
+                it('should dispatch to given `handler` with name `*` and no `triggerType` with priority 1', function () {
+                    var config = [
+                        { name: '*', handler: jasmine.createSpy() }
+                    ];
+                    var dispatch = createDispatcher(config);
+                    dispatch(event);
+                    expect(config[0].handler).toHaveBeenCalled();
+                });
+
+                it('should dispatch to given `handler` with name `*` and a matched `triggerType` with priority 2', function () {
+                    var config = [
+                        { name: '*', triggerType: 'click', handler: jasmine.createSpy() },
+                        { name: '*', handler: jasmine.createSpy() }
+                    ];
+                    var dispatch = createDispatcher(config);
+                    dispatch(event);
+                    expect(config[0].handler).toHaveBeenCalled();
+                    expect(config[1].handler).not.toHaveBeenCalled();
+                });
+
+                it('should dispatch to a `execute${name} method on control instance with priority 3', function () {
+                    var config = [
+                        { name: '*', triggerType: 'click', handler: jasmine.createSpy() }
+                    ];
+                    var control = {
+                        executeTest: jasmine.createSpy()
+                    };
+                    var dispatch = createDispatcher(config);
+                    dispatch.call(control, event);
+                    expect(control.executeTest).toHaveBeenCalled();
+                    expect(config[0].handler).not.toHaveBeenCalled();
+                });
+
+                it('should dispatch to a `execute${name}${triggerType}` method on control instance with priority 4', function () {
+                    var control = {
+                        executeTestClick: jasmine.createSpy(),
+                        executeTest: jasmine.createSpy()
+                    };
+                    var dispatch = createDispatcher({});
+                    dispatch.call(control, event);
+                    expect(control.executeTestClick).toHaveBeenCalled();
+                    expect(control.executeTest).not.toHaveBeenCalled();
+                });
+
+                it('should dispatch to given `handler` when `name` is matched and `triggerType` is not given with priority 5', function () {
+                    var config = [
+                        { name: 'test', handler: jasmine.createSpy() }
+                    ];
+                    var control = {
+                        executeTestClick: jasmine.createSpy()
+                    };
+                    var dispatch = createDispatcher(config);
+                    dispatch(event);
+                    expect(config[0].handler).toHaveBeenCalled();
+                    expect(control.executeTestClick).not.toHaveBeenCalled();
+                });
+
+                it('should dispatch to given `handler` when `triggerType` and `name` are all matched with priority 6', function () {
+                    var config = [
+                        { name: 'test', triggerType: 'click', handler: jasmine.createSpy() },
+                        { name: 'test', handler: jasmine.createSpy() }
+                    ];
+                    var dispatch = createDispatcher(config);
+                    dispatch(event);
+                    expect(config[0].handler).toHaveBeenCalled();
+                    expect(config[1].handler).not.toHaveBeenCalled();
                 });
             });
         });
