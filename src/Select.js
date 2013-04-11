@@ -205,6 +205,7 @@ define(
             var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
             require('./lib').removeClasses(select.selectionLayer, classes);
+            select.addState('active');
         }
 
         /**
@@ -216,6 +217,7 @@ define(
             var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
             require('./lib').addClasses(select.selectionLayer, classes);
+            select.removeState('active');
         }
 
         /**

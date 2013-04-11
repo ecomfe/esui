@@ -1,6 +1,9 @@
+@import "mixin.less";
+@import "variable.less";
+
 .ui-select {
     .linear-gradient-background (
-        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -6, #f3f3f3);
+        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -6px, #f3f3f3);
     border: 1px solid #D8D8D8;
     border-radius: 3px 3px 3px 3px;
     cursor: pointer;
@@ -11,14 +14,22 @@
     width: 100px;
 }
 
-.ui-select:hover {
-    .linear-gradient-background (
-        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -36, #f3f3f3);
-}
-
+.ui-select:hover,
 .ui-select:focus {
     .linear-gradient-background (
-        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -69, #f3f3f3);
+        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -36px, #f3f3f3);
+}
+
+.ui-select:active {
+    .linear-gradient-background (
+        top, #f6f6f6, #ffffff, "dn-combo-arrow.png", right, -36px, #f3f3f3);
+}
+
+.ui-select-active,
+.ui-select-active:hover,
+.ui-select-active:focus {
+    .linear-gradient-background (
+        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -69px, #f3f3f3);
 }
 
 .ui-select-layer {
