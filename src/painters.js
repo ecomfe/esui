@@ -3,10 +3,30 @@ define(
         var painters = {};
 
         // 这些属性不用加`px`
-        var numberProperties = [
-            'fontWeight', 'lineHeight',
-            'opacity', 'zIndex', 'zoom'
-        ];
+        var unitProperties = {
+            width: true,
+            height: true,
+            top: true,
+            right: true,
+            bottom: true,
+            left: true,
+            fontSize: true,
+            padding: true,
+            paddingTop: true, 
+            paddingRight: true,
+            paddingBottom: true,
+            paddingTop: true,
+            margin: true,
+            marginTop: true,
+            marginRight: true,
+            marginBottom: true,
+            marginTop: true,
+            borderWidth: true,
+            borderTopWidth: true,
+            borderRightWidth: true,
+            borderBottomWidth: true,
+            borderLeftWidth: true,
+        };
 
         /**
          * 修改`main`元素的样式
@@ -19,9 +39,8 @@ define(
                 name: name,
                 property: property || name,
                 paint: function (control, value) {
-                    if (typeof value === 'number'
-                        && !numberProperties.hasOwnProperty(this.property)) {
-                        value = value + 'px';
+                    if (unitProperties.hasOwnProperty(this.property)) {
+                        value = value === 0 ? '0' : value + 'px';
                     }
                     control.main.style[this.property] = value;
                 }
