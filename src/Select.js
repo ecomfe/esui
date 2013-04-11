@@ -56,7 +56,7 @@ define(
                 // 当以`value`或`rawValue`为基准时，要同步一次`selectedIndex`
                 context.selectedIndex = -1;
                 for (var i = 0; i < context.datasource.length; i++) {
-                    if (context.datasource[i].value === context.rawValue) {
+                    if (context.datasource[i].value == context.rawValue) {
                         context.selectedIndex = i;
                     }
                 }
@@ -139,7 +139,7 @@ define(
             var lib = require('./lib');
             for (var i = 0; i < select.datasource.length; i++) {
                 var item = select.datasource[i];
-                if (item.value === select.value) {
+                if (item.value == select.value) {
                     select.selectedIndex = i;
                 }
                 var data = {
