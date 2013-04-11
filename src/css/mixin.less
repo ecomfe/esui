@@ -4,7 +4,7 @@
 }
 
 /** 清除浮动 */
-.clear-float {
+.clear-float () {
     display: block;
     &:after {
         content: ".";
@@ -157,4 +157,30 @@
     line-height: @height;
     width: @width;
     .box-sizing(content-box);
+}
+
+/*
+ * 提供inline-block的兼容显示效果
+ */
+.inline-block () {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+}
+
+/*
+ * 隐藏元素内文字，使用背景图片替换
+ */
+.iconize (@url) {
+    text-indent: -500%;
+    background-image: url(@{base-url}@{image-url});
+}
+
+/*
+ * 重设列表的样式
+ */
+.reset-list () {
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
