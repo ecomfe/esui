@@ -19,11 +19,13 @@
                 'esui/Select',
                 'esui/Calendar',
                 'css!esui/css/main.css',
-                'css!esui/css/Select.css'
+                'css!esui/css/Button.css',
+                'css!esui/css/Select.css',
+                'css!esui/css/Calendar.css'
             ],
             function (ui) {
                 var calendar = ui.init()[0];
-                calendar.setRawValue = new Date(2013, 2, 19);
+                calendar.setRawValue(new Date(2013, 3, 19));
             }
         )
         </script>

@@ -1,0 +1,120 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 按钮样式
+  * @author dbear
+  */
+
+@import "mixin.less";
+@import "variable.less";
+
+/**
+ * 基础按钮样式
+ */
+.ui-button {
+    overflow:hidden;
+    cursor:pointer;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.ui-button {
+    .linear-gradient-background (top, #ffffff, #f6f6f6, "", 0, 0, #ffffff);
+    border:1px solid #CCC;
+    cursor:pointer;
+    /* Hack: 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
+     * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
+     * 为兼容Mac下显示效果，前面增加STHeiti */
+    font-family:STHeiti, SimSun;
+    font-size:12px;
+    text-align:center;
+    color:#333;
+    height:23px;
+    line-height:23px;
+    padding: 0 10px;
+    vertical-align: top;
+    display:inline-block;
+    *display:inline;
+    *margin-bottom:8px;
+    zoom:1;
+    .border-radius(2px, 2px, 2px, 2px);
+    .box-sizing(content-box);
+}
+
+/**
+ * 基础按钮样式状态
+ */
+.ui-button-hover,
+.ui-button-press, 
+.ui-button-active {
+    border:1px solid #888f9b;
+}
+
+
+.ui-button-press,
+.ui-button-active {
+    border:1px solid #BEBEBE;
+    height:23px;
+    .linear-gradient-background (top, #f6f6f6, #ffffff, "", 0, 0, #f6f6f6);
+}
+
+.ui-button-disabled {
+    background:#f6f6f6;
+    border-color:#cfcfcf;
+    color:#999;
+}
+
+.ui-button-lf-icon {
+    float: left;
+}
+
+.ui-button-rt-icon {
+    float: right;
+}
+
+/** 春天系列 */
+.skin-button-spring,
+.skin-button-spring-add {
+    border:1px solid #519D30;
+    height:26px;
+    line-height: 26px;
+    color: white;
+    font-weight: bold;
+}
+.skin-button-spring {
+    .linear-gradient-background (top, #6cbb4c, #519c30, "", 0, 0, #65b445);
+    padding: 0 10px;
+}
+.skin-button-spring-add {
+    .linear-gradient-background (
+        top, #6cbb4c, #519c30, "dn-ui-button-plus.gif", 9px, 7px, #65b445);
+    width: 40px;
+    padding: 0 13px 0 27px;
+}
+
+.skin-button-spring-press,
+.skin-button-spring-add-press {
+    border:1px solid #509c2f;
+    height:26px;
+    .linear-gradient-background (
+        top, #519c30, #6cbb4c, "dn-ui-button-plus.gif", 9px, 7px, #65b445);
+}
+
+.skin-button-spring-hover,
+.skin-button-spring-add-hover {
+    border:1px solid #157106;
+}
+
+
+/** 下载系列 */
+.skin-button-download {
+    .linear-gradient-background (
+        top, #FFF, #f6f6f6, "download.png", 40px, center, #65b445);
+    height: 23px;
+    line-height: 24px;
+    margin: 3px 10px;
+    padding-left: 12px;
+    padding-right: 25px;
+    width: 25px;
+}
