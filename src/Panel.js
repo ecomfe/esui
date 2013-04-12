@@ -65,10 +65,11 @@ define(
             {
                 name: 'content',
                 paint: function (control, value) {
-                    this.disposeChildren();
-                    this.main.innerHTML = value;
-                    this.initChildren();
+                    control.disposeChildren();
+                    control.main.innerHTML = value;
+                    control.initChildren(control.main);
                 }
+            }
         );
 
         /**
