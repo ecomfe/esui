@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Select - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Select</header>
+        <div class="container">
+            <select data-ui-type="Select" data-ui-id="test">
+                <option value="1">a</option>
+                <option value="2">b</option>
+                <option value="3" selected="selected">c</option>
+                <option value="4">d</option>
+                <option value="5">e</option>
+                <option value="6">f</option>
+            </select>
+        </div>
+        <script>
+        require(
+            [
+                'esui', 
+                'esui/Select',
+                'css!esui/css/main.css',
+                'css!esui/css/Select.css'
+            ],
+            function (ui) {
+                var select = ui.init()[0];
+            }
+        )
+        </script>
+    </body>
+</html>
