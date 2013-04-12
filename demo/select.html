@@ -2,30 +2,33 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Calendar - ESUI Demo</title>
+        <title>Select - ESUI Demo</title>
         <script src="loader/esl.js"></script>
         <script src="loader/config.js"></script>
         <link rel="stylesheet" href="demo.css" />
     </head>
     <body>
-        <header>Calendar</header>
+        <header>Select</header>
         <div class="container">
-            <div data-ui="type:Calendar;id:test;"/>
+            <select data-ui-type="Select" data-ui-id="test">
+                <option value="1">a</option>
+                <option value="2">b</option>
+                <option value="3" selected="selected">c</option>
+                <option value="4">d</option>
+                <option value="5">e</option>
+                <option value="6">f</option>
+            </select>
         </div>
         <script>
         require(
             [
                 'esui', 
                 'esui/Select',
-                'esui/Calendar',
                 'css!esui/css/main.css',
-                'css!esui/css/Button.css',
-                'css!esui/css/Select.css',
-                'css!esui/css/Calendar.css'
+                'css!esui/css/Select.css'
             ],
             function (ui) {
-                var calendar = ui.init()[0];
-                calendar.setRawValue(new Date(2013, 3, 19));
+                var select = ui.init()[0];
             }
         )
         </script>

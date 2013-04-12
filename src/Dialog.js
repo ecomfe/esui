@@ -339,94 +339,83 @@ define(
              * @param {Array=} 变更过的属性的集合
              * @override
              */
-            repaint: function (changes) {
-                var main = this.main;
-                // 设置样式
-                main.style.left = '-10000px';
-                var titleId = helper.getId(this, 'title');
-                var bodyId = helper.getId(this, 'body');
-                var footId = helper.getId(this, 'foot');
-                var footClass = helper.getClasses(this, 'foot');
-                var bodyClass = helper.getClasses(this, 'body');
-
-                var bfTpl = ''
-                    + '<div class="${class}" id="${id}">${content}</div>';
-
-                var allProperities = {
-                    height: false,
-                    width: false,
-                    content: false,
-                    foot: false
-                };
-
-                if (!changes) {
-                    for (var property in allProperities) {
-                        if (allProperities.hasOwnProperty(property)) {
-                            allProperities[property] = true;
+            repaint: helper.createRepaint(
+                {
+                    name: 'height',
+                    paint: function (calendar, value) {
+                        calendar.main.style.height = value + 'px';
+                        if (calendar.isShow) {
+                            resizeHandler(calendar);
                         }
                     }
-                }
-                // 局部渲染
-                else {
-                    for (var i = 0; i < changes.length; i++) {
-                        var record  = changes[i];
-                        allProperities[record.name] = true;
-                    } 
-                }
-
-                for (var property in allProperities) {
-                    if (allProperities.hasOwnProperty(property)) {
-                        if (property == 'height') {
-                            this.main.style.height = this.height + 'px';
-                            if (this.isShow) {
-                                resizeHandler(this);
-                            }
+                },
+                {
+                    name: 'width',
+                    paint: function (calendar, value) {
+                        calendar.main.style.width = value + 'px';
+                        if (calendar.isShow) {
+                            resizeHandler(calendar);
                         }
-                        else if (property == 'width') {
-                            this.main.style.width = this.width + 'px';
-                            if (this.isShow) {
-                                resizeHandler(this);
-                            }
+                    }
+                },
+                {
+                    name: 'title',
+                    paint: function (calendar, value) {
+                        var titleId = helper.getId(calendar, 'title');
+                        lib.g(titleId).innerHTML = value;
+                    }
+                },
+                {
+                    name: 'content',
+                    paint: function (calendar, value) {
+                        var bfTpl = ''
+                            + '<div class="${class}" id="${id}">'
+                            + '${content}'
+                            + '</div>';
+                        // 获取body panel
+                        var body = calendar.getBody();
+                        var bodyId = helper.getId(calendar, 'body');
+                        var bodyClass = helper.getClasses(calendar, 'body');
+                        var data = {
+                            'class': bodyClass.join(' '),
+                            'id': bodyId,
+                            'content': value 
+                        };
+                        body.setContent(
+                            lib.format(bfTpl, data)
+                        );
+                    }
+                },
+                {
+                    name: 'foot',
+                    paint: function (calendar, value) { 
+                        var bfTpl = ''
+                            + '<div class="${class}" id="${id}">'
+                            + '${content}'
+                            + '</div>';
+                        var footId = helper.getId(calendar, 'foot');
+                        var footClass = helper.getClasses(calendar, 'foot');
+                        // 取消了foot
+                        if (value == null) {
+                            calendar.needFoot = false;
+                            var foot = calendar.getFoot();
+                            calendar.removeChild(foot);
                         }
-                        else if (property == 'title') {
-                            lib.g(titleId).innerHTML = this.title;
-                        }
-                        else if (property == 'content') {
-                            // 获取body panel
-                            var body = this.getBody();
+                        else {
+                            calendar.needFoot = true;
+                            var foot = calendar.getFoot();
                             var data = {
-                                'class': bodyClass.join(' '),
-                                'id': bodyId,
-                                'content': this.content 
+                                'class': footClass.join(' '),
+                                'id': footId,
+                                'content': value 
                             };
-                            body.setContent(
+                            foot.setContent(
                                 lib.format(bfTpl, data)
                             );
                         }
-                        else if (property == 'foot') {
-                            // 取消了foot
-                            if (this.foot == null) {
-                                this.needFoot = false;
-                                var foot = this.getFoot();
-                                this.removeChild(foot);
-                            }
-                            else {
-                                this.needFoot = true;
-                                var foot = this.getFoot();
-                                var data = {
-                                    'class': footClass.join(' '),
-                                    'id': footId,
-                                    'content': this.foot 
-                                };
-                                foot.setContent(
-                                    lib.format(bfTpl, data)
-                                );
-                            }
-                        }
                     }
                 }
-
-            },
+            ),
 
             /**
              * 获取对话框主体的控件对象
