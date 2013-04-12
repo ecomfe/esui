@@ -62,7 +62,13 @@ define(
          * @protected
          */
         Panel.prototype.repaint = require('./controlHelper').createRepaint(
-            paint.html('content')
+            {
+                name: 'content',
+                paint: function (control, value) {
+                    this.disposeChildren();
+                    this.main.innerHTML = value;
+                    this.initChildren();
+                }
         );
 
         /**
