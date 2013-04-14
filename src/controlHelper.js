@@ -202,7 +202,7 @@ define(
                 var skinPrefix = getConf('skinClassPrefix');
                 classes.push(
                     joinByStrike(skinPrefix, skin, state),
-                    joinByStrike(skinPrefix, skin, type, state),
+                    joinByStrike(skinPrefix, skin, type, state)
                 );
             }
             
