@@ -71,7 +71,7 @@ define(
                 if (main && main.tagName == 'A') {
 
                     // 初始化控件主元素上的行为
-                    if (helper.isInited(this)) {
+                    if (helper.isInStage(this, 'INITED')) {
                         // 设置各种属性
                         this.href    && this.setHref(this.href);
                         this.content && this.setContent(this.content);

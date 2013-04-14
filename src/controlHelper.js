@@ -320,23 +320,34 @@ define(
         };
 
         /**
-         * 判断控件是否处于inited生命周期
+         * 判断控件是否处于相应的生命周期阶段
          * 
          * @param {Control} control 控件实例
+         * @param {string} stage 生命周期阶段
          * @return {boolean}
          */
-        helper.isInited = function (control) {
-            return control.lifeCycle == getLifeCycle().INITED;
+        helper.isInStage = function (control, stage) {
+            var LifeCycle = getLifeCycle();
+            if (!LifeCycle[stage]) {
+                throw new Error('Invalid life cycle stage: ' + stage);
+            }
+
+            return control.stage == LifeCycle[stage];
         };
 
         /**
-         * 判断控件是否处于rendered生命周期
+         * 改变控件的生命周期阶段
          * 
          * @param {Control} control 控件实例
-         * @return {boolean}
+         * @param {string} stage 生命周期阶段
          */
-        helper.isRendered = function (control) {
-            return control.lifeCycle == getLifeCycle().RENDERED;
+        helper.changeStage = function (control, stage) {
+            var LifeCycle = getLifeCycle();
+            if (!LifeCycle[stage]) {
+                throw new Error('Invalid life cycle stage: ' + stage);
+            }
+
+            control.stage = LifeCycle[stage];
         };
 
         /**
@@ -448,7 +459,7 @@ define(
          * @param {Control} control 控件实例
          */
         helper.afterDispose = function (control) {
-            control.lifeCycle = getLifeCycle().DISPOSED;
+            helper.changeStage(control, 'DISPOSED');
             control.fire('afterdispose');
         };
 

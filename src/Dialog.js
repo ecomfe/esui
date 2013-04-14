@@ -484,7 +484,7 @@ define(
             show: function () {
                 var mask = this.mask;
 
-                if (this.lifeCycle !== Control.LifeCycle.RENDERED) {
+                if (helper.isInStage(this, 'RENDERED')) {
                     this.render();
                 }
 

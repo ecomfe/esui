@@ -43,7 +43,8 @@ define(
             // 初始化扩展
             helper.initExtensions(this);
 
-            this.lifeCycle = Control.LifeCycle.INITED;
+            // 切换控件所属生命周期阶段
+            helper.changeStage(this, 'INITED');
 
             this.fire('init');
         }
@@ -96,7 +97,7 @@ define(
              * @public
              */
             render: function () {
-                if (this.lifeCycle === Control.LifeCycle.INITED) {
+                if (helper.isInStage(this, 'INITED')) {
                     this.fire('beforerender');
 
                     // 通用的渲染逻辑
@@ -113,11 +114,12 @@ define(
                 // 由子控件实现
                 this.repaint();
 
-                if (this.lifeCycle === Control.LifeCycle.INITED) {
+                if (helper.isInStage(this, 'INITED')) {
                     this.fire('afterrender');
                 }
 
-                this.lifeCycle = Control.LifeCycle.RENDERED;
+                // 切换控件所属生命周期阶段
+                helper.changeStage(this, 'RENDERED');
             },
 
             /**
@@ -224,9 +226,7 @@ define(
                     }
                 }
 
-                if (changes.length 
-                    && this.lifeCycle === Control.LifeCycle.RENDERED
-                ) {
+                if (changes.length && helper.isInStage(this, 'RENDERED')) {
                     this.repaint(changes, changesIndex);
                 }
 

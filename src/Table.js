@@ -2046,7 +2046,7 @@ define(
                 renderFoot( me );   // 绘制表格尾       
 
                 // 如果未绘制过，初始化resize处理
-                if ( !helper.isRendered(me) ) {
+                if ( !helper.isInStage(me, 'RENDERED') ) {
                     initEventHandler( me );
                     caching( me );
                     initResizeHandler( me );

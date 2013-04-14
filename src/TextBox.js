@@ -159,7 +159,7 @@ define(
                 var main = this.main;
                 if (main) {
                     // 初始化控件主元素上的行为
-                    if (helper.isInited(this)) {
+                    if (helper.isInStage(this, 'INITED')) {
                         main.onfocus = lib.bind(focusHandler, this);
                         main.onblur = lib.bind(blurHandler, this);
                         main.onkeypress = lib.bind(keypressHandler, this);
