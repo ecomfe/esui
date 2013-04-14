@@ -107,7 +107,7 @@ define(
 
                     this.initStructure();
 
-                    helper.addClass(this, this.main);
+                    helper.addPartClasses(this);
                     this.setDisabled(this.disabled);
                 }
 
@@ -334,7 +334,7 @@ define(
             addState: function (state) {
                 if (!this.hasState(state)) {
                     this.states[state] = 1;
-                    helper.addClass(this, this.main, state);
+                    helper.addStateClasses(this, state);
                 }
             },
 
@@ -346,7 +346,7 @@ define(
             removeState: function (state) {
                 if (this.hasState(state)) {
                     delete this.states[state];
-                    helper.removeClass(this, this.main, state);
+                    helper.removeStateClasses(this, state);
                 }
             },
 

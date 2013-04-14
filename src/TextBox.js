@@ -79,7 +79,7 @@ define(
         function focusHandler() {
             var main = this.main;
             
-            helper.removeClass(this, main, 'placing');
+            helper.removeStateClasses(this, 'placing');
             if (this.placing) {
                 main.value = '';
             }
@@ -164,7 +164,7 @@ define(
                         main.onblur = lib.bind(blurHandler, this);
                         main.onkeypress = lib.bind(keypressHandler, this);
                         this.addInputListener();
-                        helper.addClass(this, main, this.mode);
+                        helper.addPartClasses(this, this.mode);
                     }
 
                     this.setWidth(this.width);
@@ -212,12 +212,12 @@ define(
                 main.value = rawValue;
                 if (rawValue) {
                     this.placing = 0;
-                    helper.removeClass(this, main, 'placing');
+                    helper.removeStateClasses(this, 'placing');
                 }
                 else if (placeholder) {
                     this.placing = 1;
                     main.value = placeholder;
-                    helper.addClass(this, main, 'placing');
+                    helper.addStateClasses(this, 'placing');
                 }
 
                 // 重新挂载输入事件的处理
