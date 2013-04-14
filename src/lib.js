@@ -222,7 +222,7 @@ define(function () {
                     replacer = replacer(key);
                 }
 
-                return typeof replacer === 'undefined' ? '' : replacer;
+                return replacer == null ? '' : replacer;
             }
         );
     };
