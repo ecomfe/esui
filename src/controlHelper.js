@@ -97,6 +97,7 @@ define(
             }
         }
 
+
         /**
          * 为控件相关dom元素添加class
          * 
@@ -118,6 +119,28 @@ define(
         helper.removeClass = function (control, element, part) {
             processClass('remove', element, control, part);
         };
+
+        /**
+         * 获取控件用于生成css class的类型
+         * 
+         * @inner
+         * @param {Control} control 控件实例
+         * @return {string}
+         */
+        function getControlClassType(control) {
+            return control.type.toLowerCase();
+        }
+
+        /**
+         * 将参数用`-`连接成字符串
+         * 
+         * @inner
+         * @param {string} ...arg 
+         * @return {string}
+         */
+        function joinByStrike() {
+            return [].slice.call(arguments, 0).join('-');
+        }
 
         /**
          * 获取用于控件dom元素的class
@@ -146,26 +169,142 @@ define(
         };
 
         /**
-         * 获取控件组件的class数组
+         * 获取控件部件相关的class数组
          *
          * @param {Control} control 控件实例
-         * @param {string} part 组件名称
+         * @param {string=} part 部件名称
          * @return {Array.<string>}
          */
         helper.getPartClasses = function (control, part) {
-            var type = control.type.replace(
-                /[A-Z]/g,
-                function (alpha) {
-                    return '-' + alpha.toLowerCase();
+            // main:
+            //   ui-{type}
+            //   skin-{skinname}
+            //   skin-{skinname}-{type}
+            // part:
+            //   ui-{type}-{part}
+            //   skin-{skinname}-{type}-{part}
+
+            var type = getControlClassType(control);
+            var skin = control.skin;
+            var prefix = ui.getConfig('uiClassPrefix');
+            var skinPrefix = ui.getConfig('skinClassPrefix');
+            var classes = [];
+
+            if (part) {
+                classes.push(joinByStrike(prefix, type, part));
+                if (skin) {
+                    classes.push(joinByStrike(skinPrefix, skin, type, part));
                 }
-            );
-            if (type.charAt(0) === '-') {
-                type = type.substring(1);
             }
-            return [
-                'ui-' + type + '-' + part,
-                'skin-' + control.skin + '-' + type + '-' + part
+            else {
+                classes.push(joinByStrike(prefix, type));
+                if (skin) {
+                    classes.push(
+                        joinByStrike(skinPrefix, skin),
+                        joinByStrike(skinPrefix, skin, type)
+                    );
+                }
+            }
+
+            return classes;
+        };
+
+        /**
+         * 添加控件部件相关的class
+         *
+         * @param {Control} control 控件实例
+         * @param {string=} part 部件名称
+         * @param {HTMLElement=} element 部件元素
+         */
+        helper.addPartClasses = function (control, part, element) {
+            element = element || control.main;
+            if (element) {
+                lib.addClasses(
+                    element,
+                    helper.getPartClasses(control, part)
+                );
+            }
+        };
+
+        /**
+         * 移除控件部件相关的class
+         *
+         * @param {Control} control 控件实例
+         * @param {string=} part 部件名称
+         * @param {HTMLElement=} element 部件元素
+         */
+        helper.removePartClasses = function (control, part, element) {
+            element = element || control.main;
+            if (element) {
+                lib.removeClasses(
+                    element,
+                    helper.getPartClasses(control, part)
+                );
+            }
+        };
+
+        /**
+         * 获取控件状态相关的class数组
+         *
+         * @param {Control} control 控件实例
+         * @param {string} state 状态名称
+         * @return {Array.<string>}
+         */
+        helper.getStateClasses = function (control, state) {
+            // ui-{type}-{statename}
+            // state-{statename}
+            // skin-{skinname}-{statename}
+            // skin-{skinname}-{type}-{statename}
+            
+            var type = getControlClassType(control);
+            var getConf = ui.getConfig;
+            var classes = [
+                joinByStrike(getConf('uiClassPrefix'), type, state),
+                joinByStrike(getConf('stateClassPrefix'), state)
             ];
+
+            var skin = control.skin;
+            if (skin) {
+                var skinPrefix = getConf('skinClassPrefix');
+                classes.push(
+                    joinByStrike(skinPrefix, skin, state),
+                    joinByStrike(skinPrefix, skin, type, state),
+                );
+            }
+            
+            return classes;
+        };
+
+        /**
+         * 添加控件状态相关的class
+         *
+         * @param {Control} control 控件实例
+         * @param {string} state 状态名称
+         */
+        helper.addStateClasses = function (control, state) {
+            var element = control.main;
+            if (element) {
+                lib.addClasses(
+                    element, 
+                    helper.getStateClasses(control, state)
+                );
+            }
+        };
+
+        /**
+         * 移除控件状态相关的class
+         *
+         * @param {Control} control 控件实例
+         * @param {string} state 状态名称
+         */
+        helper.removeStateClasses = function (control, state) {
+            var element = control.main;
+            if (element) {
+                lib.removeClasses(
+                    element, 
+                    helper.getStateClasses(control, state)
+                );
+            }
         };
 
         /**
