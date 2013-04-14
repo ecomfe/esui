@@ -279,13 +279,12 @@ define(function () {
     /**
      * 判断元素是否拥有指定的className
      * 
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {HTMLElement} element 目标元素或目标元素的id
      * @param {string} className 要判断的className
      * 
      * @return {boolean} 是否拥有指定的className
      */
     lib.hasClass = function (element, className) {
-        element = lib.g(element);
         var classes = element.className.split(/\s+/);
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -299,13 +298,12 @@ define(function () {
     /**
      * 为目标元素添加className
      * 
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {HTMLElement} element 目标元素或目标元素的id
      * @param {string} className 要添加的className
      * 
      * @return {HTMLElement} 目标元素
      */
     lib.addClass = function (element, className) {
-        element = lib.g(element);
         var classes = element.className ? element.className.split(/\s+/) : [];
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -385,11 +383,10 @@ define(function () {
     /**
      * 移除目标元素
      * 
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {HTMLElement} element 目标元素或目标元素的id
      * 
      */
     lib.removeNode = function (element) {
-        element = lib.g(element);
         var parent = element.parentNode;
         parent.removeChild(element);
     };
@@ -397,13 +394,12 @@ define(function () {
     /**
      * 移除目标元素的className
      * 
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {HTMLElement} element 目标元素或目标元素的id
      * @param {string} className 要移除的className
      * 
      * @return {HTMLElement} 目标元素
      */
     lib.removeClass = function (element, className) {
-        element = lib.g(element);
         var classes = element.className ? element.className.split(/\s+/) : [];
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -419,13 +415,12 @@ define(function () {
     /**
      * 切换目标元素的className
      * 
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {HTMLElement} element 目标元素或目标元素的id
      * @param {string} className 要切换的className
      * 
      * @return {HTMLElement} 目标元素
      */
     lib.toggleClass = function (element, className) {
-        element = lib.g(element);
         var classes = element.className ? element.className.split(/\s+/) : [];
         var containsClass = false;
         for (var i = 0; i < classes.length; i++) {
@@ -447,15 +442,13 @@ define(function () {
     /**
      * 将目标元素添加到基准元素之后
      * 
-     * @param {HTMLElement|string} newElement 被添加的目标元素
-     * @param {HTMLElement|string} existElement 基准元素
+     * @param {HTMLElement} newElement 被添加的目标元素
+     * @param {HTMLElement} existElement 基准元素
      * 
      * @return {HTMLElement} 被添加的目标元素
      */
     lib.insertAfter = function (newElement, existElement) {
         // by Tangram 1.x: baidu.dom.insertAfter
-        newElement = lib.g(newElement);
-        existElement = lib.g(existElement);
         var existParent = existElement.parentNode;
         
         if (existParent) {
@@ -466,15 +459,13 @@ define(function () {
 
     /**
      * 将目标元素添加到基准元素之前
-     * @param {HTMLElement|string} newElement 被添加的目标元素
-     * @param {HTMLElement|string} existElement 基准元素
+     * @param {HTMLElement} newElement 被添加的目标元素
+     * @param {HTMLElement} existElement 基准元素
      * 
      * @return {HTMLElement} 被添加的目标元素
      */
     lib.insertBefore = function (newElement, existElement) {
         // by Tangram 1.x: baidu.dom.insertBefore
-        newElement = lib.g(newElement);
-        existElement = lib.g(existElement);
         var existParent = existElement.parentNode;
 
         if (existParent) {
@@ -486,7 +477,6 @@ define(function () {
 
 
     lib.getComputedStyle = function(element, key){
-        element = lib.g(element);
         var doc = element.nodeType == 9 ? element : element.ownerDocument || element.document;
         var styles;
         if (doc.defaultView && doc.defaultView.getComputedStyle) {
@@ -694,9 +684,6 @@ define(function () {
         var childs;
         var i = 0;
         var l;
-
-        element = typeof element == 'string' 
-            ? document.getElementById(element) : element;
 
         //  text 和 CDATA 节点，取nodeValue
         if (element.nodeType === 3 || element.nodeType === 4) {
