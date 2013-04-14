@@ -27,17 +27,6 @@ define(function () {
     };
 
     /**
-     * 判断值不为空(null|undefined)
-     * 
-     * @public
-     * @param {Any} value
-     * @param {boolean}
-     */
-    lib.hasValue = function ( value ) {
-        return typeof value != 'undefined' && value !== null;
-    };
-
-    /**
      * 判断值是否为Array类型
      * 
      * @public
