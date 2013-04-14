@@ -81,46 +81,6 @@ define(
         };
 
         /**
-         * 处理控件相关dom元素的class操作
-         * 
-         * @inner
-         * @param {string} type 操作类型，add|remove
-         * @param {HTMLElement} element dom元素
-         * @param {Control} control 控件实例
-         * @param {string=} part 部件名称
-         */
-        function processClass(type, element, control, part) {
-            var classes = helper.getClasses(control, part);
-
-            for (var i = 0; i < classes.length; i++) {
-                lib[type + 'Class'](element, classes[i]);
-            }
-        }
-
-
-        /**
-         * 为控件相关dom元素添加class
-         * 
-         * @param {Control} control 控件实例
-         * @param {HTMLElement} element dom元素
-         * @param {string=} part 部件名称
-         */
-        helper.addClass = function (control, element, part) {
-            processClass('add', element, control, part);
-        };
-
-        /**
-         * 为控件相关dom元素移除class
-         * 
-         * @param {Control} control 控件实例
-         * @param {HTMLElement} element dom元素
-         * @param {string=} part 部件名称
-         */
-        helper.removeClass = function (control, element, part) {
-            processClass('remove', element, control, part);
-        };
-
-        /**
          * 获取控件用于生成css class的类型
          * 
          * @inner
@@ -141,32 +101,6 @@ define(
         function joinByStrike() {
             return [].slice.call(arguments, 0).join('-');
         }
-
-        /**
-         * 获取用于控件dom元素的class
-         * 如果控件设置了skin则返回数组中包含皮肤className
-         * 
-         * @param {Control} control 控件实例
-         * @param {string=} part 部件名称
-         * @return {Array} 
-         */
-        helper.getClasses = function (control, part) {
-            part = part ? '-' + part : '';
-
-            var uiPrefix = ui.getConfig('uiClassPrefix');
-            var skinPrefix = ui.getConfig('skinClassPrefix');
-
-            var type = control.type.toLowerCase();
-            var classes = [ uiPrefix + '-' + type + part ];
-            //part && classes.push(uiPrefix + part);
-
-            var skin = control.skin;
-            if (skin) {
-                classes.push(skinPrefix + '-' + type + '-' + skin + part);
-            }
-
-            return classes;
-        };
 
         /**
          * 获取控件部件相关的class数组
