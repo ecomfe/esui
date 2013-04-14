@@ -523,13 +523,28 @@ define(function () {
     };
 
     /**
+     * 将字符串转换成camel格式
+     * 
+     * @param {string} source 源字符串
+     * @return {string}
+     */
+    lib.camelize = function (source) {
+        return source.replace( 
+            /-([a-z])/g, 
+            function ( alpha ) {
+                return alpha.toUpperCase();
+            }
+        );
+    };
+
+    /**
      * 将字符串转换成pascal格式
      * 
      * @param {string} source 源字符串
      * @return {string}
      */
-    lib.toPascalCase = function (source) {
-        return source.charAt(0).toUpperCase() + source.slice(1);
+    lib.pascalize = function (source) {
+        return source.charAt(0).toUpperCase() + lib.camelize(source.slice(1));
     };
 
     /**

@@ -142,13 +142,13 @@ define(
                 }
                 if (!handler) {
                     var method = 'execute' 
-                        + lib.toPascalCase(e.name)
-                        + lib.toPascalCase(e.triggerType);
+                        + lib.pascalize(e.name)
+                        + lib.pascalize(e.triggerType);
                     handler = this[method];
                 }
                 if (typeof handler !== 'function') {
                     var method = 'execute' 
-                        + lib.toPascalCase(e.name);
+                        + lib.pascalize(e.name);
                     handler = this[method];
                 }
                 if (typeof handler !== 'function') {

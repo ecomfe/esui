@@ -171,7 +171,7 @@ define(
              * @public
              */
             get: function (name) {
-                var method = this['get' + lib.toPascalCase(name)];
+                var method = this['get' + lib.pascalize(name)];
 
                 if (typeof method == 'function') {
                     return method.call(this);
@@ -188,7 +188,7 @@ define(
              * @public
              */
             set: function (name, value) {
-                var method = this['set' + lib.toPascalCase(name)];
+                var method = this['set' + lib.pascalize(name)];
 
                 if (typeof method == 'function') {
                     return method.call(this, value);
