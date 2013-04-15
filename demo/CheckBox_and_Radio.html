@@ -61,7 +61,7 @@
                 };
 
                 ui.get('cb1').onclick = function(e){
-                    alert(e.target.tagName);
+                    alert(e.type);
                 }
 
                 ui.get('currRadio').onclick = function () {
@@ -72,8 +72,8 @@
                 };
 
                 ui.get('xRender').onclick = function() {
-                  ui.get('x1').render();
-                  ui.get('x3').render();
+                  ui.get('x1').repaint();
+                  ui.get('x3').repaint();
                 }
             }
         );

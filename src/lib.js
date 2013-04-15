@@ -38,6 +38,25 @@ define(function () {
     };
 
     /**
+     * 判断一个数组中是否包含给定元素
+     * @name baidu.array.contains
+     * @function
+     * @grammar baidu.array.contains(source, obj)
+     * @param {Array} source 需要判断的数组.
+     * @param {Any} obj 要查找的元素.
+     * @return {boolean} 判断结果.
+     * @author berg
+     */
+    lib.inArray = function(source, obj) {
+        for ( var i = 0 , len = source.length ; i < len; i++) {
+            if(i in source && source[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
      * 为类型构造器建立继承关系
      * 
      * @param {function} subClass 子类构造器
@@ -797,7 +816,7 @@ define(function () {
         }
         return result.join(' ');
     };
-    
+
     /**
      * 将Object转换为带data-command的对象，
      * 如果传入dom元素则将为该元素添加对应的Attribute

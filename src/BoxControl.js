@@ -16,9 +16,9 @@ define(
          * @param {Object} options 参数
          */
         function BoxGroup( options ) {
-            this.name     = options.name;
-            this.type     = options.type;
-            this.control  = options.control;
+            this.name = options.name;
+            this.type = options.type;
+            this.control = options.control;
         };
 
         BoxGroup.prototype = {
@@ -29,13 +29,12 @@ define(
              * @return {string}
              */
             getValue: function() {
-                var me      = this;
-                var boxs    = me.getBoxList();
-                var len     = boxs.length;
-                var re      = [];
+                var boxes = this.getBoxList();
+                var len = boxes.length;
+                var re = [];
                 
                 for ( var i = 0 ; i < len; i++ ) {
-                    var box = boxs[ i ];
+                    var box = boxes[ i ];
                     if ( box.isChecked() ) {
                         re.push( box.getValue() );
                     }
@@ -56,10 +55,10 @@ define(
                     return;
                 }
 
-                var boxs    = this.getBoxList();
+                var boxes = this.getBoxList();
                 
-                for (var i = 0 , len = boxs.length ; i < len; i++ ) {
-                    boxs[i].setChecked( true );
+                for (var i = 0 , len = boxes.length ; i < len; i++ ) {
+                    boxes[i].setChecked( true );
                 }
             },
             
@@ -70,15 +69,15 @@ define(
              * @param {Array} values
              */
             selectByValues: function(values) {
-                var boxes   = this.getBoxList();
-                var len     = boxes.length;
-                var vLen    = values.length;
+                var boxes = this.getBoxList();
+                var len = boxes.length;
+                var vLen = values.length;
                 
                 for ( var i = 0 ; i < len; i++ ) {
                     var box = boxes[i];
                     box.setChecked(false);
                     var value = box.getValue();
-                    for ( v = 0 ; v < vLen; v++) {
+                    for ( var v = 0 ; v < vLen; v++ ) {
                         if (value == values[v]) {
                             box.setChecked(true);
                             break;
@@ -99,11 +98,11 @@ define(
                     return;
                 }
 
-                var boxs    = this.getBoxList();
-                var len     = boxs.length;
+                var boxes = this.getBoxList();
+                var len  = boxes.length;
 
                 for ( var i = 0; i < len; i++ ) {
-                    var box = boxs[ i ];
+                    var box = boxes[ i ];
                     box.setChecked( !box.isChecked() );
                 }
             },
@@ -115,15 +114,15 @@ define(
              * @return {Array}
              */
             getBoxList: function() {
-                var me      = this;
-                var name    = me.name;
-                var type    = me.type;
-                var result  = [];
-                var parent  = me.control.main;
+                var me = this;
+                var name = me.name;
+                var type = me.type;
+                var result = [];
+                var parent = me.control.main;
                 
                 while ( parent 
-                        && parent.tagName != 'FORM' 
-                        && parent != document.body 
+                     && parent.nodeName != 'FORM' 
+                     && parent != document.body 
                 ) {
                     parent = parent.parentNode;
                 }
@@ -135,9 +134,9 @@ define(
                     var control = ui.getControlByDom( el );
                    
                     if (control 
-                        && control instanceof BoxControl
-                        && control.type == type 
-                        && control.name == name
+                     && control instanceof BoxControl
+                     && control.type == type 
+                     && control.name == name
                     ) {
                         result.push( control );
                     }
@@ -155,7 +154,7 @@ define(
          */
         function clickHandler( box, e ) {
             if ( !box.isDisabled() ) {
-                box.onclick( e );
+                box.fire( 'click', e );
             }
         }
 
@@ -170,7 +169,7 @@ define(
 
                 default:
                     if ( datasource instanceof Array ) {
-                        box.setChecked( lib.InArray( datasource, value ) );
+                        box.setChecked( lib.inArray( datasource, value ) );
                     }
                     break;
             }
@@ -192,8 +191,6 @@ define(
         }
 
         BoxControl.prototype = {
-            onclick: new Function(),
-            
             /**
              * 创建控件主元素
              *
@@ -223,7 +220,7 @@ define(
              * @public
              * @return {boolean}
              */
-            isChecked: function() {
+            isChecked: function() { 
                 return this.main.checked;
             },
             
@@ -247,9 +244,9 @@ define(
              * @public
              */
             initStructure : function(){
-                var me   = this;
+                var me = this;
                 var main = me.main;
-                var label = me._label;
+                var label = me.label;
 
                 // 插入点击相关的label元素
                 if ( !label ) {
@@ -294,7 +291,7 @@ define(
              * @protected
              */
             dispose: function () {
-                this._label = null;
+                this.label = null;
 
                 InputControl.prototype.dispose.apply(this, arguments);
             }

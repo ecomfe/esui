@@ -737,7 +737,7 @@ define(
                 if( field.sortable && me.datasource ){
                     renderHead( me );
 
-                    me.onsort( field , order );
+                    me.fire( 'sort', order );
                 }
             }
         }
@@ -1400,7 +1400,7 @@ define(
             
             if ( !el.getAttribute( 'data-subrowopened' ) ) {
                 dataItem = datasource[ index ];
-                if ( me.onsubrowopen( index, dataItem ) !== false ) {
+                if ( me.fire( 'subrowopen', { index:index, item: dataItem } ) !== false ) {
                     openSubrow( me, index, el );
                 }
             } else {
@@ -1420,7 +1420,7 @@ define(
             var me          = table;  
             var entry       = element;
             
-            if ( me.onsubrowclose( index, me.datasource[ index ] ) !== false ) {
+            if ( me.fire( 'subrowclose', { index:index, item: me.datasource[ index ] }) !== false ) {
                 entryOut( me, entry );
                 me.subrowIndex = null;
                 
@@ -1849,7 +1849,7 @@ define(
 
             me.selectedIndex = selected;
 
-            me.onselectChange( selected );
+            me.fire( 'selectChange', selected );
 
             if ( !updateAll ) {
                 var row = getRow( me, index );
@@ -1910,7 +1910,7 @@ define(
             }
 
             me.selectedIndex = selected;
-            me.onselectChange( selected );
+            me.fire( 'selectChange', selected );
         }
         
 
@@ -1927,7 +1927,7 @@ define(
         function selectSingle( table, index ) {
             var selectedIndex = table.selectedIndex;
 
-            table.onselectChange( index );
+            table.fire( 'selectChange', index );
 
            if ( selectedIndex && selectedIndex.length ) {
                 helper.removePartClassess( table, 'row-selected', getRow( table, selectedIndex[0] ) );
@@ -2078,7 +2078,7 @@ define(
                     // 重绘时触发onselectChange事件
                     switch ( me.select ) {
                     case 'multi':
-                        me.onselectChange( [] );
+                        me.fire( 'selectChange', [] );
                         break;
                     }
                 }
@@ -2090,12 +2090,6 @@ define(
                 }
 
             },
-
-
-            onselectChange: new Function (),
-            onsort: new Function(),
-            onsubrowopen: new Function(),
-            onsubrowclose: new Function(),
 
              /**
              * 获取表格子行的元素
