@@ -710,6 +710,75 @@ define(function () {
     };
 
     /**
+     * 提供给setAttribute与getAttribute方法作名称转换使用
+     * ie6,7下class要转换成className
+     * @meta standard
+     */
+    lib.NAME_ATTRS = (function () {
+        var result = {
+            'cellpadding': 'cellPadding',
+            'cellspacing': 'cellSpacing',
+            'colspan': 'colSpan',
+            'rowspan': 'rowSpan',
+            'valign': 'vAlign',
+            'usemap': 'useMap',
+            'frameborder': 'frameBorder'
+        };
+        
+        if (lib.ie < 8) {
+            result['for'] = 'htmlFor';
+            result['class'] = 'className';
+        } else {
+            result['htmlFor'] = 'for';
+            result['className'] = 'class';
+        }
+        
+        return result;
+    })();
+
+
+    /**
+     * 设置元素属性，会对某些值做转换            
+     * @returns {HTMLElement} 目标元素
+     */
+    lib.setAttribute = function (element, key, value) {
+        element = lib.g(element);
+
+        if ('style' == key){
+            element.style.cssText = value;
+        } else {
+            key = lib.NAME_ATTRS[key] || key;
+            element.setAttribute(key, value);
+        }
+
+        return element;
+    };
+
+    /**
+     * 获取目标元素的属性值
+     * @name baidu.dom.getAttr
+     * @function
+     * @grammar baidu.dom.getAttr(element, key)
+     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {string} key 要获取的attribute键名
+     * @shortcut getAttr
+     * @meta standard
+     * @see baidu.dom.setAttr,baidu.dom.setAttrs
+     *             
+     * @returns {string|null} 目标元素的attribute值，获取不到时返回null
+     */
+    lib.getAttribute = function (element, key) {
+        element = lib.g(element);
+
+        if ('style' == key){
+            return element.style.cssText;
+        }
+
+        key = lib.NAME_ATTRS[key] || key;
+        return element.getAttribute(key);
+    };
+
+    /**
      * 将Object解析成Dom元素属性字符串
      * (如将 {click:'action'} 解析为 data-command-click ='action')
      *

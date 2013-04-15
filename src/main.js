@@ -14,7 +14,7 @@ define(
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext();
 
-        /**
+        /**D
          * 获取默认的控件视图环境
          * 
          * @return {ViewContext}
@@ -83,6 +83,30 @@ define(
             }
 
             return value;
+        };
+
+        /**
+         * 寻找dom元素所对应的控件
+         * 
+         * @public
+         * @param {HTMLElement} dom dom元素
+         * @return {esui.Control}
+         */
+        main.getControlByDom = function ( dom ) {
+            if ( !dom ) {
+                return;
+            }
+            var controlId;
+            if ( ( controlId = dom.getAttribute( 'data-control' ) ) ) {
+                return this.get( controlId );
+            }else{
+                var controlIdStart = dom.id.indexOf( 'ctrl-' );
+                if( controlIdStart == 0 ){
+                    var idParts = dom.id.split('-');
+                    return idParts.length > 1 ?  this.get( idParts[1] ) : null ;
+                }
+            }
+            return null;
         };
 
         /**
