@@ -90,7 +90,7 @@
                                     resizable : true,
                                     width: 100,
                                     content: function (item) {
-                                        return '<a ' + lib.getCommandStr({ click :'first', args : 'name:' + item.name })+' href="#">自己的事件</a>';
+                                        return '';
                                     }
                                 }
                             ]
@@ -104,10 +104,6 @@
 
                 ui.get( 'myTable' ).onsubrowclose = function ( index, dataItem ) {
                     this.getSubrow( index ).innerHTML = '';
-                };
-
-                ui.get( 'myTable' ).oncommand = function( args, e ){
-                    alert(args.commandName + ':' + args.commandType + ':' + args.commandArgs.name );
                 };
 
                 ui.get( 'myTable' ).onsort = function ( field, order ) {

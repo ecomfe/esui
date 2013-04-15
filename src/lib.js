@@ -789,15 +789,15 @@ define(function () {
     lib.getCommandStr = function (source) {
         var dataCommandPrefix = 'data-command-';
         var result = [];
-
-        for (var i in source) {
-            if (source.hasOwnProperty(i)) {
-                result.push(dataCommandPrefix + i + '="' + source[i] + '"');
+        if( source.name ){
+            result.push( 'data-command="' + source.name + '"');
+            if( source.args ){
+                result.push( 'data-command-args="' + source.args + '"');
             }
         }
         return result.join(' ');
     };
-
+    
     /**
      * 将Object转换为带data-command的对象，
      * 如果传入dom元素则将为该元素添加对应的Attribute
@@ -806,20 +806,19 @@ define(function () {
      * @param {object} element dom元素对象（可选）
      * @return {object}
      */
-    lib.getCommandAttr = function (source, element) {
+    lib.commandAttr = function (source, element) {
         var dataCommandPrefix = 'data-command-';
         var result = {};
-
-        for (var i in source) {
-            if (source.hasOwnProperty(i)) {
-                var attrName  = dataCommandPrefix + i;
-                var attrValue = source[i];
-
-                result[attrName] = attrValue;
-                
+        if( source.name ){
+            result['data-command']= source.name;
+            if( source.args ){
+                result['data-command-args'] = source.args;
                 if (element) {
-                    element.setAttribute(attrName, attrValue);
+                    element.setAttribute('data-command-args', result['data-command-args']);
                 }
+            }
+            if (element) {
+                element.setAttribute('data-command', result['data-command']);
             }
         }
         return result;
