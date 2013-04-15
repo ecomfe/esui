@@ -30,28 +30,22 @@ define(
          *
          * @param {Event} e 事件对象
          */
-        function handleCommand( element ) {
-            return  function(e){
-                var e = e || window.event;
-                var cur = e.target || e.srcElement;
-                while(true){
-                    if ( cur.nodeType === 1 && ( cur.disabled !== true || e.type !== "click" ) ) {
-                        var commandName = cur.getAttribute( 'data-command' );
-                        if( commandName ){
-                            var args = cur.getAttribute( 'data-command-args' );
-                            this.fire(
-                                'command', 
-                                { name: commandName, triggerType: e.type, args: args, element: cur, e : e }
-                            );
-                        }
+        function handleCommand(e) {
+            var e = e || window.event;
+            var cur = e.target || e.srcElement;
+            while(cur){
+                if ( cur.nodeType === 1 && ( cur.disabled !== true || e.type !== "click" ) ) {
+                    var commandName = cur.getAttribute( 'data-command' );
+                    if( commandName ){
+                        var args = cur.getAttribute( 'data-command-args' );
+                        this.fire(
+                            'command', 
+                            { name: commandName, triggerType: e.type, args: args, element: cur, e : e }
+                        );
                     }
-
-                    if( cur == element ){
-                        break;
-                    }
-                    cur = cur.parentNode || element ;   
                 }
-            };
+                cur = cur.parentNode ;   
+            }
         }
 
         /**
@@ -60,7 +54,7 @@ define(
          * @public
          */
         Command.prototype.activate = function () {
-            this.handler = handleCommand( this.target.main );
+            this.handler = handleCommand ;
 
             var helper = require('../controlHelper');
             for (var i = 0; i < this.events.length; i++) {
