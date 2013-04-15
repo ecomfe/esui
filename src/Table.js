@@ -163,7 +163,7 @@ define(
                 }
             }
             table.realFields = realFields;
-            if ( !table.select || table.disabled ) {
+            if ( !table.select ) {
                 return;
             }
             switch ( table.select.toLowerCase() ) {
@@ -1717,15 +1717,16 @@ define(
          * @private
          */
         function getMultiSelectTpl( table ){
-            return{
+            return{ 
                 width       : 36,
                 stable      : true,
                 select      : true,
                 title       : function ( item, index ) {
-                    return lib.format(  '<input type="checkbox" id="${id}" class="${className}" ${dataCommand} />',
+                    return lib.format(  '<input type="checkbox" id="${id}" class="${className}" ${dataCommand} ${disabled}/>',
                                         {
                                             id : getId( table, 'selectAll' ),
                                             className : getClass( table, 'selectAll' ),
+                                            disabled : table.disabled ? 'disabled="disabled"' : '',
                                             dataCommand : lib.getCommandStr( {
                                                 name : 'selectAll'
                                             })
@@ -1735,10 +1736,11 @@ define(
                 },
                 
                 content: function ( item, index ) {
-                    return lib.format('<input type="checkbox" id="${id}" class="${className}" ${dataCommand}/>',
+                    return lib.format('<input type="checkbox" id="${id}" class="${className}" ${dataCommand} ${disabled}/>',
                                         {
                                             id : getId( table, 'multiSelect' ) + index,
                                             className : getClass( table, 'multiSelect' ),
+                                            disabled : table.disabled ? 'disabled="disabled"' : '',
                                             dataCommand : lib.getCommandStr( {
                                                 name : 'rowCheckbox' ,
                                                 args : 'index:' + index
@@ -1988,7 +1990,7 @@ define(
                 me.main.style.width = me.realWidth + 'px';   
                 me.subrowIndex = null;
 
-                initCols( me );
+                initResizeHandler( me );
             },
 
             /**

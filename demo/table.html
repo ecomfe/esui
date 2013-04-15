@@ -11,6 +11,7 @@
         <header>Table</header>
         <div class="container">
             <h3>普通</h3>
+            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">setDisable</button>
             <div data-ui="type:Table;id:myTable;"></div>
         </div>
         <script>
@@ -27,6 +28,7 @@
             [
                 'esui', 
                 'esui/Table',
+                'esui/Button',
                 'css!esui/css/main.css',
                 'css!esui/css/Table.css'
             ],
@@ -105,6 +107,11 @@
                 ui.get( 'myTable' ).onsubrowclose = function ( index, dataItem ) {
                     this.getSubrow( index ).innerHTML = '';
                 };
+
+                ui.get('disabledBtn').onclick = function(){
+                    ui.get( 'myTable' ).set( 'disabled', true );
+                    ui.get( 'myTable' ).repaint();
+                }
 
                 ui.get( 'myTable' ).onsort = function ( field, order ) {
                     var orderBy = field.field;
