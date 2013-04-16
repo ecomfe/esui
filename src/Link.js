@@ -13,27 +13,20 @@ define(
         var helper  = require('./controlHelper');
 
         /**
-         * Link的默认选项
-         *
-         * @type {Object}
-         * @inner
-         * @const
-         */
-        var DEFAULT_OPTION = {
-        };
-
-        /**
          * Link控件
          *
          * @param {Object=} options 初始化参数
          * @constructor
          */
         function Link(options) {
-            helper.init(this, options, DEFAULT_OPTION);
-
-            helper.afterInit(this);
+            Control.apply(this, arguments);
         }
 
+        var allProperties = [
+            { name: 'href' },
+            { name: 'target' }, 
+            { name: 'content' }
+        ];
 
         Link.prototype = {
 
@@ -57,32 +50,91 @@ define(
             },
 
             /**
-             * 渲染控件
-             * 
+             * 初始化参数
+             *
+             * @param {Object=} options 构造函数传入的参数
              * @override
+             * @protected
              */
-            render: function () {
-                helper.beforeRender(this);
-                helper.renderMain(this);
+            initOptions: function (options) {
+                var properties = {};
 
-                var main   = this.main;
+                lib.extend(properties, options);
 
-                //如果main主元素不是A,则放弃渲染
-                if (main && main.tagName == 'A') {
-
-                    // 初始化控件主元素上的行为
-                    if (helper.isInStage(this, 'INITED')) {
-                        // 设置各种属性
-                        this.href    && this.setHref(this.href);
-                        this.content && this.setContent(this.content);
-                        this.target  && this.setTarget(this.target);
-
-                        main.onclick = lib.bind(this.clickHandler, this);
-                    }
-
+                if (options.href == null) {
+                
+                    properties.href = this.main.href;
                 }
 
-                helper.afterRender(this);
+                if (options.target == null) {
+
+                    properties.target = this.main.target;
+                }
+
+                //此处暂时放弃使用text,只是用content, 关于text, 控件使用者自己处理
+                if (options.content == null) {
+                
+                    properties.content = this.main.innerHTML;
+                }
+
+                lib.extend(this, properties);
+            },
+
+            /**
+             * 初始化DOM结构
+             *
+             * @protected
+             */
+            initStructure: function () {
+
+                helper.addDOMEvent(
+                    this, this.main, 'click',
+                    lib.bind(this.clickHandler, null, this)
+                );
+            },
+
+            /**
+             * 渲染控件
+             */
+            render: function () {
+                var main = this.main;
+
+                //如果控件主元素不为A,则不执行渲染操作
+                //目前处理是让其一直处于init状态下
+                if (main && main.tagName == 'A') {
+
+                    Control.prototype.render.apply(this, arguments);
+                }
+            },
+
+            /**
+             * 渲染自身
+             *
+             * @override
+             * @protected
+             */
+            repaint: function (changes) {
+                changes = changes || allProperties;
+
+                for (var i = 0; i < changes.length; i++) {
+                    var record = changes[i];
+
+                    switch (record.name) {
+                        case 'href':
+                            this.main.href = this.href;
+                            break;
+
+                        case 'target':
+                            this.main.target = this.target;
+                            break;
+
+                        case 'content':
+                            this.disposeChildren();
+                            this.main.innerHTML = this.content;
+                            this.initChildren(this.main);
+                            break;
+                    }
+                }
             },
 
             /**
@@ -93,7 +145,7 @@ define(
              */
             setHref: function (href) {
 
-                this.main.href = href || '';
+                this.setProperties({ href: href });
             },
 
             /**
@@ -104,31 +156,17 @@ define(
              */
             setTarget: function (target) {
 
-                this.main.target = target || '';
-            },
-
-            /**
-             * 设置链接显示文本。经过html encode
-             *
-             * @public
-             * @param {string} text 链接显示文本
-             */
-            setText: function (text) {
-
-                this.disposeChildren();
-                this.main.innerHTML = require('./lib').encodeHTML(text);
+                this.setProperties({ target: target });
             },
 
             /**
              * 设置链接显示内容。 不经过html encode
              *
-             * @param {[type]} html 链接显示内容
+             * @param {[type]} content 链接显示内容
              */
-            setContent: function (html) {
+            setContent: function (content) {
 
-                this.disposeChildren();
-                this.main.innerHTML = html;
-                this.initChildren(this.main);
+                this.setProperties({ content: content });
             },
 
             /**
@@ -137,7 +175,7 @@ define(
              */
             getHref: function () {
 
-                return this.main ? this.main.href : '';
+                return this.href;
             },
 
             /**
@@ -146,16 +184,7 @@ define(
              */
             getTarget: function () {
 
-                return this.main ? this.main.target : '';
-            },
-
-            /**
-             * 获取链接显示文本
-             * @return {string} 显示文本
-             */
-            getText: function () {
-
-                return this.main ? lib.getText(this.main) : '';
+                return this.target;
             },
 
             /**
@@ -164,28 +193,15 @@ define(
              */
             getContent: function () {
 
-                return this.main ? this.main.innerHTML : '';
+                return this.content;
             },
 
             /**
              * 鼠标点击事件处理函数
              */
-            clickHandler: function () {
-                this.fire('click');
-            },
+            clickHandler: function (link) {
 
-            /**
-             * 销毁释放控件
-             * 
-             * @override
-             */
-            dispose: function () {
-                helper.beforeDispose(this);
-
-                this.main && (this.main.onclick = null);
-
-                helper.dispose(this);
-                helper.afterDispose(this);
+                link.fire('click');
             }
 
         };

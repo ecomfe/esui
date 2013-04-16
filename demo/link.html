@@ -16,14 +16,18 @@
             <a data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">www.baidu.com</a>
             <br />
             <button id="op-get-href">getHref</button>
-            <button id="op-get-text">getText</button>
             <button id="op-get-content">getContent</button>
             <button id="op-get-target">getTarget</button>
             <br />
             <button id="op-set-href">set href</button>
             <button id="op-set-target">set target(_self)</button>
-            <button id="op-set-text">set text</button>
             <button id="op-set-content">set content</button>
+            <br />
+            <br />
+            设置content为Label ui(&lt;span data-ui-type=&quot;Label&quot; data-ui-text=&quot;www.google.com&quot;&gt;&lt;/span&gt; ):
+            <br />
+            <button id="op-set-ui-content">set ui content</button>
+            <br />
             <br />
             <span data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">tagName not A</span>
         </div>
@@ -31,19 +35,20 @@
         require(
             [
                 'esui', 
+                'esui/Label',
                 'esui/Link',
                 'css!esui/css/main.css'
             ],
             function (ui) {
                 var link = ui.init()[1];
+                link.onclick = function() {
+                    alert('dont click me ok?');
+                }
                 document.getElementById('op-get-href').onclick = function () {
                     alert(link.getHref());
                 };
                 document.getElementById('op-get-target').onclick = function () {
                     alert(link.getTarget());
-                };
-                document.getElementById('op-get-text').onclick = function () {
-                    alert(link.getText());
                 };
                 document.getElementById('op-get-content').onclick = function () {
                     alert(link.getContent());
@@ -54,11 +59,11 @@
                 document.getElementById('op-set-target').onclick = function () {
                     link.setTarget('_self');
                 };
-                document.getElementById('op-set-text').onclick = function () {
-                    link.setText('<i></i>');
-                };
                 document.getElementById('op-set-content').onclick = function () {
                     link.setContent('<i>∏∏∏∏∏∏∏∏∏balabala</i>');
+                };
+                document.getElementById('op-set-ui-content').onclick = function () {
+                    link.setContent('<span data-ui-type="Label" data-ui-text="www.google.com"></span>');
                 };
             }
         )
