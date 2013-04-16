@@ -11,8 +11,8 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
-        var main = require('./main')
-        var dataCommand = require('./extension/DataCommand')
+        var main = require('./main');
+        var command = require('./extension/Command');
 
         /**
          * 表格控件类
@@ -43,8 +43,9 @@ define(
                 followWidthArr     : [] 
             };
 
-            options.extensions = [ new dataCommand() ];
-            Control.call( this, lib.extend( {} , DEFAULT_OPTION , options ) );
+            options.extensions = [ new command({ events : 'click,mousemove,mouseover,mouseout,mousedown' } ) ];
+
+            Control.call( this, lib.extend( DEFAULT_OPTION , options ) );
         }
 
          /**
@@ -64,7 +65,7 @@ define(
          * @return {string}
          */
         function getClass( table, name ) {
-            return helper.getClasses( table, name ).join(' ');
+            return helper.getPartClasses( table, name ).join(' ');
         }
 
          /**
@@ -162,7 +163,7 @@ define(
                 }
             }
             table.realFields = realFields;
-            if ( !table.select || table.disabled ) {
+            if ( !table.select ) {
                 return;
             }
             switch ( table.select.toLowerCase() ) {
@@ -255,55 +256,6 @@ define(
            initFields( table );
            initMinColsWidth( table );
            initColsWidth( table );
-        }
-
-
-        var commandEventSet = { 
-            titleOverHandler : titleOverHandler,
-            titleOutHandler : titleOutHandler,
-            titleClickHandler : titleClickHandler,
-            rowOverHandler : rowOverHandler,
-            rowOutHandler : rowOutHandler,
-            rowClickHandler : rowClickHandler,
-            entryOverHandler : entryOverHandler,
-            entryOutHandler : entryOutHandler,
-            fireSubrow : fireSubrow,
-            toggleSelectAll : toggleSelectAll,
-            rowCheckboxClick : rowCheckboxClick,
-            selectSingleHandler : selectSingleHandler,
-            headMoveHandler : headMoveHandler,
-            dragStartHandler : dragStartHandler
-        };
-        /**
-         * Command事件转换
-         *
-         * @private
-         */
-        function dataCommandTransfer( args, e ){
-            var table = args.control;
-            if( commandEventSet && args.commandArgs && args.commandArgs.__esuiIsControlInner ){
-                commandEventSet[args.commandName] && commandEventSet[args.commandName]( args, e );
-            }else{
-                table.oncommand.apply( table, arguments );
-            }
-        }
-
-        /**
-         * 初始化事件
-         *
-         * @private
-         */
-        function initEventHandler( table ){
-
-            table.addDataCommand( table.main, 'click' , dataCommandTransfer );
-            table.addDataCommand( table.main, 'mouseover' , dataCommandTransfer );
-            table.addDataCommand( table.main, 'mouseout' , dataCommandTransfer );
-
-            if( !table.noHead ){
-                var head = getHead( table );
-                table.addDataCommand( head, 'mousemove' , dataCommandTransfer );
-                table.addDataCommand( head, 'mousedown' , dataCommandTransfer );
-            }
         }
 
         /**
@@ -515,11 +467,8 @@ define(
 
             }
 
-            var commandAtrs = lib.getCommandAttr(
-                {   mousemove : me.columnResizable ? 'headMoveHandler' : '' ,
-                    mousedown : me.columnResizable ? 'dragStartHandler' : '',
-                    args :'__esuiIsControlInner:1'
-                },
+            var commandAtrs = lib.commandAttr(
+                { name : me.columnResizable ? 'head' : ''},
                 head
             );
 
@@ -647,10 +596,8 @@ define(
                 return lib.format(  ' ${dataCommand} sortable="1" index="${index}" ',
                                     {
                                         dataCommand : lib.getCommandStr( {
-                                            mouseover : 'titleOverHandler' ,
-                                            mouseout : 'titleOutHandler' ,
-                                            click : 'titleClickHandler' ,
-                                            args : '__esuiIsControlInner:1;index:' + index 
+                                            name : 'title',
+                                            args : 'index:' + index 
                                         }),
                                         index : index
                                     }
@@ -691,8 +638,8 @@ define(
          * @private
          * @param {HTMLElement} cell 移出的单元格
          */
-        function titleOverHandler( args, e ) {
-           titleOver( args.control, args.element );
+        function titleOverHandler( arg ) {
+           titleOver( this, arg.element );
         }
 
         function titleOver( table, element ){
@@ -701,7 +648,7 @@ define(
             }
             
             table.sortReady = 1;
-            helper.addClass( table, element, 'hcell-hover' );
+            helper.addPartClasses( table, 'hcell-hover', element );
         }
         
         /**
@@ -710,13 +657,13 @@ define(
          * @private
          * @param {HTMLElement} cell 移出的单元格
          */
-        function titleOutHandler( args, e ) {
-           titleOut( args.control, args.element );
+        function titleOutHandler( arg ) {
+           titleOut( this, arg.element );
         }
 
         function titleOut( table, element ){
             table.sortReady = 0;
-            helper.removeClass( table, element, 'hcell-hover' );
+            helper.removePartClasses( table, 'hcell-hover', element );
         }
 
         /**
@@ -770,13 +717,13 @@ define(
          * @private
          * @param {HTMLElement} cell 点击的单元格
          */
-        function titleClickHandler( args, e ) {
-            var me = args.control;
+        function titleClickHandler( arg ) {
+            var me = this;
             if ( me.sortReady ) { // 避免拖拽触发排序行为
-                var me      = args.control,
-                    field   = me.realFields[ args.commandArgs.index ],
-                    orderBy = me.orderBy,
-                    order   = me.order;
+                var commandArgs = main.parseAttribute( arg.args );
+                var field   = me.realFields[ commandArgs.index ];
+                var orderBy = me.orderBy;
+                var order   = me.order;
                 
                 if ( orderBy == field.field ) {
                     order = (!order || order == 'asc') ? 'desc' : 'asc';
@@ -790,12 +737,7 @@ define(
                 if( field.sortable && me.datasource ){
                     renderHead( me );
 
-                    //如果有comparer，则进行dom排序
-                    /*if( field.comparer ){
-                        sortRows( me, field, order );
-                    }*/
-
-                    me.onsort( field , order );
+                    me.fire( 'sort', order );
                 }
             }
         }
@@ -806,11 +748,11 @@ define(
          * @private
          * @return {Function}
          */
-        function headMoveHandler( args, e ) {
-            var me          = args.control;
+        function headMoveHandler( arg ) {
+            var me          = this;
             var dragClass   = 'startdrag';
             var range       = 8; // 可拖拽的单元格边界范围
-                
+            var e           = arg.e;
             if ( me.isDraging ) {
                 return;
             }
@@ -822,7 +764,7 @@ define(
                 return;
             }
             
-            var el      = args.element;
+            var el      = arg.element;
             var pageX   = e.pageX || e.clientX + lib.page.getScrollLeft();
 
             // 获取位置与序号
@@ -835,18 +777,18 @@ define(
                  && pageX - pos.left < range
             ) {
                 sortable && ( titleOut( me, tar ) ); // 清除可排序列的over样式
-                helper.addClass( me, el, dragClass );
+                helper.addPartClasses( me, dragClass, el );
                 me.dragPoint = 'left';
                 me.dragReady = 1;
             } else if (tar.getAttribute( 'dragright' ) 
                        && pos.left + tar.offsetWidth - pageX < range
             ) {
                 sortable && ( titleOut( me, tar ) ); // 清除可排序列的over样式
-                helper.addClass( me, el, dragClass );
+                helper.addPartClasses( me, dragClass, el );
                 me.dragPoint = 'right';
                 me.dragReady = 1;
             } else {
-                helper.removeClass( me, el, dragClass );
+                helper.removePartClasses( me, dragClass, el );
                 sortable && ( titleOver( me, tar ) ); // 附加可排序列的over样式
                 me.dragPoint = '';
                 me.dragReady = 0;
@@ -877,8 +819,9 @@ define(
          * @private
          * @return {Function}
          */
-        function dragStartHandler( args, e ) {
-            var me = args.control;
+        function dragStartHandler( arg ) {
+            var me = this;
+            var e  = arg.e;
             var dragClass = getClass( me, 'startdrag' );
 
             var tar = e.target || e.srcElement;
@@ -1093,30 +1036,42 @@ define(
          * @private
          */
         function renderBody( table ) {
-            var me      = table;
-            var tBody   = getBody( me );
+            var tBody   = getBody( table );
 
-            if ( !tBody ) {
+            if( !tBody ){
                 var type    = 'body';
-                var id      = getId( me, type );
+                var id      = getId( table, type );
+
                 tBody = document.createElement( 'div' );
                 tBody.id = id;
-                tBody.className = getClass( me, type );
-                
-                // 如果设置了表格体高度
-                // 表格需要出现横向滚动条
-                if ( me.bodyHeight ) {
-                    var style = tBody.style;
-                    style.height = me.bodyHeight + 'px';
-                    style.overflowX = 'hidden';
-                    style.overflowY = 'auto';
-                }
-                me.main.appendChild( tBody );
+                tBody.className = getClass( table, type );
+                table.main.appendChild( tBody );
             }
 
-            tBody.style.width = me.realWidth + 'px';
-            tBody.innerHTML   = getBodyHtml( me );
+            tBody.style.width = table.realWidth + 'px';
+            tBody.innerHTML   = getBodyHtml( table );
 
+        }
+
+         /**
+         * 更新表格指定高度
+         * 
+         * @private
+         */
+        function updateBodyHeight( table, tBody ){
+            var style = tBody.style;
+
+            // 如果设置了表格体高度
+            // 表格需要出现横向滚动条
+            if ( table.bodyHeight ) {
+                style.height = me.bodyHeight + 'px';
+                style.overflowX = 'hidden';
+                style.overflowY = 'auto';
+            }else{
+                style.height = 'auto';
+                style.overflowX = 'visible';
+                style.overflowY = 'visible';
+            }
         }
         
         /**
@@ -1180,10 +1135,8 @@ define(
                                 className : getClass( me, 'row' ) + ' ' 
                                           + getClass( me, 'row-' + ((index % 2) ? 'odd' : 'even') ),
                                 dataCommand : lib.getCommandStr( {
-                                    mouseover : 'rowOverHandler' ,
-                                    mouseout : 'rowOutHandler' ,
-                                    click : 'rowClickHandler' ,
-                                    args : '__esuiIsControlInner:1;index:' + index 
+                                    name : 'row',
+                                    args : 'index:' + index 
                                 })
                             }
                 ),
@@ -1273,11 +1226,11 @@ define(
          * @private
          * @param {number} index 表格行序号
          */
-        function rowOverHandler( args , el ) {
-            if ( args.control.isDraging ) {
+        function rowOverHandler( arg ) {
+            if ( this.isDraging ) {
                 return;
             }
-            helper.addClass( args.control, args.element, 'row-hover' );
+            helper.addPartClasses( this, 'row-hover', arg.element );
         }
         
         /**
@@ -1286,8 +1239,8 @@ define(
          * @private
          * @param {number} index 表格行序号
          */
-        function rowOutHandler( args , el ) {
-            helper.removeClass( args.control, args.element, 'row-hover' );
+        function rowOutHandler( arg ) {
+            helper.removePartClasses( this, 'row-hover', arg.element );
         }
         
         /**
@@ -1296,22 +1249,22 @@ define(
          * @private
          * @param {number} index 表格行序号
          */
-        function rowClickHandler( args , e ) {
-            var me = args.control;
+        function rowClickHandler( args ) {
+            var me = this;
             if ( me.selectMode == 'line' && !me.disabled ) {
                 if ( me.dontSelectLine ) {
                     me.dontSelectLine = false;
                     return;
                 }
-                
-                var index = args.commandArgs.index;
+                var commandArgs = main.parseAttribute( arg.args );
+                var index = commandArgs.index;
                 var input;
                 
                 switch ( me.select ) {
                     case 'multi':
                         input = lib.g( getId( me, 'multiSelect' ) + index );
                         // 如果点击的是checkbox，则不做checkbox反向处理
-                        if ( !lib.hasValue( me.preSelectIndex ) ) {
+                        if ( me.preSelectIndex == 'undefined' || me.preSelectIndex === null) {
                             input.checked = !input.checked;
                         }
                         selectMulti( me, index );
@@ -1349,10 +1302,8 @@ define(
                     id :  getSubentryId( me, index ),
                     title :  me.subEntryOpenTip,
                     dataCommand : lib.getCommandStr( {
-                        mouseover : 'entryOverHandler' ,
-                        mouseout : 'entryOutHandler' ,
-                        click : 'fireSubrow' ,
-                        args : '__esuiIsControlInner:1;index:' + index 
+                        'name' : 'entry' ,
+                        args : 'index:' + index 
                     })
                 }
             );
@@ -1393,8 +1344,8 @@ define(
         }
         
 
-        function entryOverHandler( args, e ){
-            entryOver( args.control, args.element );
+        function entryOverHandler( arg ){
+            entryOver( this, arg.element );
         }
 
         /**
@@ -1411,11 +1362,11 @@ define(
                 classBase = 'subentry-opened-hover';
             }    
             
-            helper.addClass( table, element, classBase );
+            helper.addPartClasses( table, classBase, element );
         }
         
-        function entryOutHandler( args, e ){
-            entryOut( args.control, args.element );
+        function entryOutHandler( arg ){
+            entryOut( this, arg.element );
         }
         /**
          * 处理子行入口元素鼠标移出的行为
@@ -1424,8 +1375,8 @@ define(
          * @param {number} index 入口元素的序号
          */
         function entryOut( table, element ) {
-            helper.removeClass( table, element, 'subentry-hover' );
-            helper.removeClass( table, element, 'subentry-opened-hover' );
+            helper.removePartClasses( table, 'subentry-hover', element );
+            helper.removePartClasses( table, 'subentry-opened-hover', element );
         }
         
         /**
@@ -1434,10 +1385,11 @@ define(
          * @public
          * @param {number} index 入口元素的序号
          */
-        function fireSubrow( args, e ) {
-            var me              = args.control;
-            var el              = args.element;
-            var index           = args.commandArgs.index;
+        function fireSubrow( arg ) {
+            var me              = this;
+            var el              = arg.element;
+            var commandArgs     = main.parseAttribute( arg.args );
+            var index           = commandArgs.index;
             var datasource      = me.datasource;
             var dataLen         = (datasource instanceof Array && datasource.length);
             var dataItem;
@@ -1448,7 +1400,7 @@ define(
             
             if ( !el.getAttribute( 'data-subrowopened' ) ) {
                 dataItem = datasource[ index ];
-                if ( me.onsubrowopen( index, dataItem ) !== false ) {
+                if ( me.fire( 'subrowopen', { index:index, item: dataItem } ) !== false ) {
                     openSubrow( me, index, el );
                 }
             } else {
@@ -1468,12 +1420,12 @@ define(
             var me          = table;  
             var entry       = element;
             
-            if ( me.onsubrowclose( index, me.datasource[ index ] ) !== false ) {
+            if ( me.fire( 'subrowclose', { index:index, item: me.datasource[ index ] }) !== false ) {
                 entryOut( me, entry );
                 me.subrowIndex = null;
                 
-                helper.removeClass( me, entry, 'subentry-opened' );
-                helper.removeClass( me, getRow( me, index ), 'row-unfolded' );
+                helper.removePartClasses( me, 'subentry-opened', entry );
+                helper.removePartClasses( me, 'row-unfolded', getRow( me, index ) );
                 
                 entry.setAttribute( 'title', me.subEntryOpenTip );
                 entry.setAttribute( 'data-subrowopened', '' );
@@ -1499,7 +1451,7 @@ define(
             var entry        = element;
             var closeSuccess = 1;
             
-            if ( lib.hasValue( currentIndex ) ) {
+            if ( currentIndex != 'undefined' && currentIndex !== null ) {
                 closeSuccess = closeSubrow( me, currentIndex, lib.g( getSubentryId( me, currentIndex ) ) );
             }
             
@@ -1507,8 +1459,8 @@ define(
                 return;
             }
 
-            helper.addClass( me, entry, 'subentry-opened' );
-            helper.addClass( me, getRow( me, index ), 'row-unfolded' );
+            helper.addPartClasses( me, 'subentry-opened', entry );
+            helper.addPartClasses( me, 'row-unfolded', getRow( me, index ) );
 
             entry.setAttribute( 'title', me.subEntryCloseTip );
             entry.setAttribute( 'data-subrowopened', '1' );
@@ -1528,7 +1480,7 @@ define(
             me.viewWidth  = lib.page.getViewWidth();
             me.viewHeight = lib.page.getViewHeight();
             
-            me.resizeHandler = function () {
+            var resizeHandler = function () {
                 var viewWidth  = lib.page.getViewWidth(),
                     viewHeight = lib.page.getViewHeight();
                     
@@ -1545,7 +1497,13 @@ define(
             };
 
             // 在dispose的时候会释放的哈
-            lib.on( window, 'resize', me.resizeHandler );
+            lib.on( window, 'resize', resizeHandler );
+            me.on(
+                'afterdispose',
+                function () {
+                    lib.un(window, 'resize', resizeHandler );
+                }
+            );
         }
         
         /**
@@ -1759,18 +1717,18 @@ define(
          * @private
          */
         function getMultiSelectTpl( table ){
-            return{
+            return{ 
                 width       : 36,
                 stable      : true,
                 select      : true,
                 title       : function ( item, index ) {
-                    return lib.format(  '<input type="checkbox" id="${id}" class="${className}" ${dataCommand} />',
+                    return lib.format(  '<input type="checkbox" id="${id}" class="${className}" ${dataCommand} ${disabled}/>',
                                         {
                                             id : getId( table, 'selectAll' ),
                                             className : getClass( table, 'selectAll' ),
+                                            disabled : table.disabled ? 'disabled="disabled"' : '',
                                             dataCommand : lib.getCommandStr( {
-                                                click : 'toggleSelectAll',
-                                                args : '__esuiIsControlInner:1'
+                                                name : 'selectAll'
                                             })
                                         }
                     );
@@ -1778,13 +1736,14 @@ define(
                 },
                 
                 content: function ( item, index ) {
-                    return lib.format('<input type="checkbox" id="${id}" class="${className}" ${dataCommand}/>',
+                    return lib.format('<input type="checkbox" id="${id}" class="${className}" ${dataCommand} ${disabled}/>',
                                         {
                                             id : getId( table, 'multiSelect' ) + index,
                                             className : getClass( table, 'multiSelect' ),
+                                            disabled : table.disabled ? 'disabled="disabled"' : '',
                                             dataCommand : lib.getCommandStr( {
-                                                click : 'rowCheckboxClick' ,
-                                                args : '__esuiIsControlInner:1;index:' + index
+                                                name : 'rowCheckbox' ,
+                                                args : 'index:' + index
                                             })
                                         }
                     );
@@ -1811,8 +1770,8 @@ define(
                                             name : id ,
                                             className : getClass( table, 'singleSelect' ),
                                             dataCommand : lib.getCommandStr( {
-                                                click : 'selectSingleHandler' ,
-                                                args : '__esuiIsControlInner:1;index:' + index
+                                                name : 'selectSingle' ,
+                                                args : 'index:' + index
                                             }) 
                                         }
                     );
@@ -1825,13 +1784,13 @@ define(
          * 
          * @private
          */
-        function rowCheckboxClick( args, e ) {
-            var index = args.commandArgs.index;
-            var table = args.control;
-            if ( table.selectMode != 'line' ) {
-                selectMulti( table, index );
+        function rowCheckboxClick( arg ) {
+            var commandArgs = main.parseAttribute( arg.args );
+            var index = commandArgs.index;
+            if ( this.selectMode != 'line' ) {
+                selectMulti( this, index );
             } else {
-                table.preSelectIndex = index;
+                this.preSelectIndex = index;
             }
         }
         
@@ -1849,7 +1808,7 @@ define(
             var len             = inputs.length;
             var selected        = [];
             var cbIdPrefix      = getId( me, 'multiSelect' );
-            var updateAll       = !lib.hasValue( index );
+            var updateAll       = index == 'undefined' || index === null;
             var selectedClass   = 'row-selected';
             var currentIndex    = 0;
 
@@ -1877,11 +1836,11 @@ define(
                     if ( !input.checked ) {
                         allChecked = false;
                         // faster
-                        updateAll && helper.removeClass( me, row, selectedClass ); 
+                        updateAll && helper.removePartClasses( me, selectedClass, row ); 
                     } else {
                         selected.push( currentIndex );
                         // faster
-                        updateAll && helper.addClass( me, row, selectedClass );
+                        updateAll && helper.addPartClasses( me, selectedClass, row );
                     }
                     currentIndex++;
                 }
@@ -1890,15 +1849,15 @@ define(
 
             me.selectedIndex = selected;
 
-            me.onselectChange( selected );
+            me.fire( 'selectChange', selected );
 
             if ( !updateAll ) {
                 var row = getRow( me, index );
                 var input = lib.g( cbIdPrefix + index );
                 if ( input.checked ) {
-                    helper.addClass( me, row, selectedClass );
+                    helper.addPartClasses( me, selectedClass, row );
                 } else {
-                    helper.removeClass( me, row, selectedClass );
+                    helper.removePartClasses( me, selectedClass, row );
                 }
             }
 
@@ -1910,8 +1869,8 @@ define(
          * 
          * @private
          */
-        function toggleSelectAll( args, e ) {
-            selectAll( args.control, getHeadCheckbox( args.control ).checked );
+        function toggleSelectAll( arg ) {
+            selectAll( this, getHeadCheckbox( this ).checked );
         }
         
         /**
@@ -1941,9 +1900,9 @@ define(
                     
                     if ( checked ) {
                         selected.push( index );
-                        helper.addClass( me, getRow( me, index ), 'row-selected' );
+                        helper.addPartClasses( me, 'row-selected', getRow( me, index ) );
                     } else {
-                        helper.removeClass( me, getRow( me, index ), 'row-selected' );
+                        helper.removePartClasses( me, 'row-selected', getRow( me, index ) );
                     }
                     
                     index ++;
@@ -1951,12 +1910,12 @@ define(
             }
 
             me.selectedIndex = selected;
-            me.onselectChange( selected );
+            me.fire( 'selectChange', selected );
         }
         
 
-        function selectSingleHandler( args, e ){
-            selectSingle( args.control, args.commandArgs.index );
+        function selectSingleHandler( arg ){
+            selectSingle( this, main.parseAttribute( arg.args ).index );
         }
 
         /**
@@ -1968,15 +1927,15 @@ define(
         function selectSingle( table, index ) {
             var selectedIndex = table.selectedIndex;
 
-            table.onselectChange( index );
+            table.fire( 'selectChange', index );
 
            if ( selectedIndex && selectedIndex.length ) {
-                helper.removeClass( table, getRow( table, selectedIndex[0] ), 'row-selected' );
+                helper.removePartClassess( table, 'row-selected', getRow( table, selectedIndex[0] ) );
             }
 
             table.selectedIndex = [ index ];
 
-            helper.addClass( table, getRow( table, index ), 'row-selected' );
+            helper.addPartClasses( table, 'row-selected', getRow( table, index ) );
         }
         
         /**
@@ -1990,7 +1949,7 @@ define(
                 
             while ( len-- ) {
                 var th = ths[ len ];
-                lib.removeClass( th.firstChild, getClass( table, 'thcell_sort' ) );
+                helper.removePartClasses( table, 'thcell_sort' , th.firstChild );
             }    
         }
 
@@ -2003,13 +1962,35 @@ define(
              */
             type: 'Table',
 
+            /**
+             * Command处理函数
+             *
+             * @private
+             */
+            oncommand: command.createDispatcher([
+                { type: 'mouseover', name: 'title', handler: titleOverHandler },
+                { type: 'mouseout', name: 'title', handler: titleOutHandler },
+                { type: 'click', name: 'title', handler: titleClickHandler },
+                { type: 'mouseover', name: 'row', handler: rowOverHandler },
+                { type: 'mouseout', name: 'row', handler: rowOutHandler },
+                { type: 'click', name: 'row', handler: rowClickHandler },
+                { type: 'mouseover', name: 'entry', handler: entryOverHandler }, 
+                { type: 'mouseout', name: 'entry', handler: entryOutHandler },
+                { type: 'click', name: 'entry', handler: fireSubrow },
+                { type: 'click', name: 'selectAll', handler: toggleSelectAll },
+                { type: 'click', name: 'rowCheckbox', handler: rowCheckboxClick },
+                { type: 'click', name: 'selectSingle', handler: selectSingleHandler },
+                { type: 'mousemove', name: 'head', handler: headMoveHandler },
+                { type: 'mousedown', name: 'head', handler: dragStartHandler }
+            ]),
+
             initStructure : function() {
                 var me = this;
                 me.realWidth = getWidth( me );
                 me.main.style.width = me.realWidth + 'px';   
                 me.subrowIndex = null;
 
-                initCols( me );
+                initResizeHandler( me );
             },
 
             /**
@@ -2021,68 +2002,93 @@ define(
                  // 初始化控件主元素上的行为
                 var me   = this;
                 var main = me.main;
-                
-                if( changes && changes.length ){
-                    for ( var i = 0; i < changes.length; i++ ) {
-                        var record = changes[i];
-                        var recordName = record.name;
-                        if( recordName == 'fields' 
-                         || recordName == 'columnResizable'
-                            ){
-                            me.initCols();
-                        }
-                        if( recordName == 'datasource' ){
-                            me.selectedIndex = [];
+    
+                var allProperities = {
+                    bodyHeight: false,
+                    breakLine: false,
+                    datasource: false,
+                    disabled: false,
+                    columnResizable: false,
+                    fields: false,
+                    followHead: false,
+                    noDataHtml: false,
+                    noHead: false,
+                    select: false,
+                    selectMode: false,
+                    sortable:false,
+                    foot: false
+                };
+
+                if (!changes) {
+                    for (var property in allProperities) {
+                        if (allProperities.hasOwnProperty(property)) {
+                            allProperities[property] = true;
                         }
                     }
                 }
-
-                if ( !me.realFields ) {
-                    return;
+                // 局部渲染
+                else {
+                    for (var i = 0; i < changes.length; i++) {
+                        var record  = changes[i];
+                        allProperities[record.name] = true;
+                    } 
                 }
 
-                renderHead( me );   // 绘制表格头
-                renderBody( me );   // 绘制列表
-                renderFoot( me );   // 绘制表格尾       
+                var fieldsChanged = false;
+                var colsWidthChanged = false;
+
+                if( allProperities['fields']
+                ||  allProperities['disabled']
+                    ){
+                    initFields( me );
+                    fieldsChanged = true;
+                }
+                if( fieldsChanged
+                ||  allProperities['noHead']
+                ||  allProperities['breakLine']
+                ||  allProperities['columnResizable']
+                    ){
+                    initMinColsWidth( me );
+                    initColsWidth( me );
+                    renderHead( me );
+                    colsWidthChanged = true;
+                }
+                if( allProperities['followHead'] ){
+                    caching( me );
+                    initTopResetHandler( me );
+                }
+                if( fieldsChanged
+                ||  colsWidthChanged
+                ||  allProperities['noDataHtml']
+                ||  allProperities['datasource']
+                    ){
+                    renderBody( me );
+                }
+                if( allProperities['bodyHeight'] ){
+                    updateBodyHeight( me, getBody( me ) );
+                }
+                if( fieldsChanged
+                ||  colsWidthChanged
+                ||  allProperities['foot']){
+                    renderFoot( me );
+                }
 
                 // 如果未绘制过，初始化resize处理
-                if ( !helper.isInStage(me, 'RENDERED') ) {
-                    initEventHandler( me );
-                    caching( me );
-                    initResizeHandler( me );
-                    initTopResetHandler( me );
-
-                } else {
+                if ( helper.isInStage(me, 'RENDERED')){
                     // 重绘时触发onselectChange事件
                     switch ( me.select ) {
                     case 'multi':
-                        me.onselectChange( [] );
+                        me.fire( 'selectChange', [] );
                         break;
                     }
                 }
                 
                 // 如果表格的绘制导致浏览器出现纵向滚动条
                 // 需要重新计算各列宽度
-                // 妈的，又多一次reflow
                 if ( me.realWidth != getWidth( me ) ) {
                     handleResize( me );
                 }
 
-            },
-
-
-            onselectChange: new Function (),
-            oncommand : new Function(),
-            onsort: new Function(),
-            onsubrowopen: new Function(),
-            onsubrowclose: new Function(),
-            /**
-             * 更新视图
-             *
-             * @public
-             */
-            refreshView: function () {
-                handleResize( this );
             },
 
              /**
@@ -2106,8 +2112,8 @@ define(
 
                 var main = this.main;
                 if (main) {
-                    var head = lib.g( getId( this, 'head') ),
-                        mark = lib.g( getId( this, 'dragMark') );
+                    var head = lib.g( getId( this, 'head') );
+                    var mark = lib.g( getId( this, 'dragMark') );
 
                     // 释放表头跟随的元素引用
                     this.followDoms = null;
@@ -2115,12 +2121,6 @@ define(
                     // 移除拖拽基准线
                     if ( mark ) {
                         document.body.removeChild( mark );
-                    }
-                    
-                    // remove resize事件listener
-                    if ( this.resizeHandler ) {
-                        lib.un( window, 'resize', this.resizeHandler );
-                        this.resizeHandler = null;
                     }
 
                     // remove scroll事件listener

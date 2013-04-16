@@ -11,6 +11,7 @@
         <header>Table</header>
         <div class="container">
             <h3>普通</h3>
+            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">setDisable</button>
             <div data-ui="type:Table;id:myTable;"></div>
         </div>
         <script>
@@ -27,6 +28,7 @@
             [
                 'esui', 
                 'esui/Table',
+                'esui/Button',
                 'css!esui/css/main.css',
                 'css!esui/css/Table.css'
             ],
@@ -90,7 +92,7 @@
                                     resizable : true,
                                     width: 100,
                                     content: function (item) {
-                                        return '<a ' + lib.getCommandStr({ click :'first', args : 'name:' + item.name })+' href="#">自己的事件</a>';
+                                        return '';
                                     }
                                 }
                             ]
@@ -98,17 +100,18 @@
                     }   
                 });
 
-                ui.get( 'myTable' ).onsubrowopen = function ( index, dataItem ) {
-                    this.getSubrow( index ).innerHTML = '<span style="line-height:30px;">Hello ' + dataItem.name + '</span>';
+                ui.get( 'myTable' ).onsubrowopen = function ( arg ) {
+                    this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
                 };
 
-                ui.get( 'myTable' ).onsubrowclose = function ( index, dataItem ) {
-                    this.getSubrow( index ).innerHTML = '';
+                ui.get( 'myTable' ).onsubrowclose = function ( arg ) {
+                    this.getSubrow( arg.index ).innerHTML = '';
                 };
 
-                ui.get( 'myTable' ).oncommand = function( args, e ){
-                    alert(args.commandName + ':' + args.commandType + ':' + args.commandArgs.name );
-                };
+                ui.get('disabledBtn').onclick = function(){
+                    ui.get( 'myTable' ).set( 'disabled', true );
+                    ui.get( 'myTable' ).repaint();
+                }
 
                 ui.get( 'myTable' ).onsort = function ( field, order ) {
                     var orderBy = field.field;

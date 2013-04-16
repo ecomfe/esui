@@ -85,7 +85,7 @@ define(
                     closeTpl,
                     {
                         'clsId': helper.getId(me, close),
-                        'clsClass': helper.getClasses(me, close).join(' ')
+                        'clsClass': helper.getPartClasses(me, close).join(' ')
                     }
                 );
             }
@@ -100,9 +100,9 @@ define(
 
             var headData = {
                 'headId':  helper.getId(me, head),
-                'headClass':  helper.getClasses(me, head).join(' '),
+                'headClass':  helper.getPartClasses(me, head).join(' '),
                 'titleId':  helper.getId(me, title),
-                'titleClass':  helper.getClasses(me, title).join(' '),
+                'titleClass':  helper.getPartClasses(me, title).join(' '),
                 'title': me.title,
                 'closeIcon': closeIcon
             };
@@ -132,7 +132,7 @@ define(
 
             var data = {
                 'panelClass':
-                    helper.getClasses(control, type + '-panel').join(' '),
+                    helper.getPartClasses(control, type + '-panel').join(' '),
                 'childName': type
             };
 
@@ -375,7 +375,7 @@ define(
                         // 获取body panel
                         var body = calendar.getBody();
                         var bodyId = helper.getId(calendar, 'body');
-                        var bodyClass = helper.getClasses(calendar, 'body');
+                        var bodyClass = helper.getPartClasses(calendar, 'body');
                         var data = {
                             'class': bodyClass.join(' '),
                             'id': bodyId,
@@ -394,7 +394,7 @@ define(
                             + '${content}'
                             + '</div>';
                         var footId = helper.getId(calendar, 'foot');
-                        var footClass = helper.getClasses(calendar, 'foot');
+                        var footClass = helper.getPartClasses(calendar, 'foot');
                         // 取消了foot
                         if (value == null) {
                             calendar.needFoot = false;
@@ -517,7 +517,7 @@ define(
             showMask: function () {
                 var mask = getMask(this);
                 var clazz = [];
-                var maskClass = helper.getClasses(this, 'mask').join(' ');
+                var maskClass = helper.getPartClasses(this, 'mask').join(' ');
 
                 clazz.push(maskClass);
                 repaintMask(mask);

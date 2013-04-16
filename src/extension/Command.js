@@ -31,19 +31,20 @@ define(
          * @param {Event} e 事件对象
          */
         function handleCommand(e) {
-            var target = e.target;
-            while (target && !target.hasAttribute('data-command')) {
-                target = target.parentNode;
-            }
-
-            if (target) {
-                var command = target.getAttribute('data-command');
-                var args = target.getAttribute('data-command-args');
-
-                this.fire(
-                    'command', 
-                    { name: command, triggerType: e.type, args: args }
-                );
+            var e = e || window.event;
+            var cur = e.target || e.srcElement;
+            while(cur){
+                if ( cur.nodeType === 1 && ( cur.disabled !== true || e.type !== "click" ) ) {
+                    var commandName = cur.getAttribute( 'data-command' );
+                    if( commandName ){
+                        var args = cur.getAttribute( 'data-command-args' );
+                        this.fire(
+                            'command', 
+                            { name: commandName, triggerType: e.type, args: args, element: cur, e : e }
+                        );
+                    }
+                }
+                cur = cur.parentNode ;   
             }
         }
 
@@ -53,7 +54,7 @@ define(
          * @public
          */
         Command.prototype.activate = function () {
-            this.handler = require('../lib').bind(handleCommand, this);
+            this.handler = handleCommand ;
 
             var helper = require('../controlHelper');
             for (var i = 0; i < this.events.length; i++) {
@@ -116,8 +117,8 @@ define(
                 map = {};
                 for (var i = 0; i < config.length; i++) {
                     var item = config[i];
-                    var name = item.triggerType
-                        ? item.triggerType + ':' + item.name
+                    var name = item.type
+                        ? item.type + ':' + item.name
                         : item.name;
                     map[name] = item.handler;
                 }

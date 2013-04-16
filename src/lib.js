@@ -38,6 +38,25 @@ define(function () {
     };
 
     /**
+     * 判断一个数组中是否包含给定元素
+     * @name baidu.array.contains
+     * @function
+     * @grammar baidu.array.contains(source, obj)
+     * @param {Array} source 需要判断的数组.
+     * @param {Any} obj 要查找的元素.
+     * @return {boolean} 判断结果.
+     * @author berg
+     */
+    lib.inArray = function(source, obj) {
+        for ( var i = 0 , len = source.length ; i < len; i++) {
+            if(i in source && source[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
      * 为类型构造器建立继承关系
      * 
      * @param {function} subClass 子类构造器
@@ -787,10 +806,10 @@ define(function () {
     lib.getCommandStr = function (source) {
         var dataCommandPrefix = 'data-command-';
         var result = [];
-
-        for (var i in source) {
-            if (source.hasOwnProperty(i)) {
-                result.push(dataCommandPrefix + i + '="' + source[i] + '"');
+        if( source.name ){
+            result.push( 'data-command="' + source.name + '"');
+            if( source.args ){
+                result.push( 'data-command-args="' + source.args + '"');
             }
         }
         return result.join(' ');
@@ -804,20 +823,19 @@ define(function () {
      * @param {object} element dom元素对象（可选）
      * @return {object}
      */
-    lib.getCommandAttr = function (source, element) {
+    lib.commandAttr = function (source, element) {
         var dataCommandPrefix = 'data-command-';
         var result = {};
-
-        for (var i in source) {
-            if (source.hasOwnProperty(i)) {
-                var attrName  = dataCommandPrefix + i;
-                var attrValue = source[i];
-
-                result[attrName] = attrValue;
-                
+        if( source.name ){
+            result['data-command']= source.name;
+            if( source.args ){
+                result['data-command-args'] = source.args;
                 if (element) {
-                    element.setAttribute(attrName, attrValue);
+                    element.setAttribute('data-command-args', result['data-command-args']);
                 }
+            }
+            if (element) {
+                element.setAttribute('data-command', result['data-command']);
             }
         }
         return result;
