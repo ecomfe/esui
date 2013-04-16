@@ -1,0 +1,127 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file sidebar样式
+ * @author miaojian
+ */
+@import "mixin.less";
+@import "variable.less";
+
+.ui-sidebar {
+    width:202px;
+    border:1px solid #ccc;
+    background:#fff;
+    position:absolute;
+    left:10px;
+    z-index:100;
+    border-radius:5px;
+    -webkit-border-radius:5px;
+    -o-border-radius:5px;
+    -moz-border-radius:5px;
+    -ms-border-radius:5px;
+}
+
+.ui-sidebar-neighbor {  
+    margin-left:220px;
+}
+
+.ui-sidebar-neighbor-hide {
+    margin-left:30px;
+}
+
+.ui-sidebar-mat {
+    position:absolute;
+    width:218px;
+    z-index:50;
+    background:#fff;
+    border-right:1px solid #ddd;
+}
+.ui-sidebar-minibar {
+    position:absolute;
+    font-size:12px;
+    background:#eaeaea;
+    border:1px solid #d1d1d1;
+    border-left:0;
+    width:19px;
+    padding-left:6px;
+    cursor:pointer;
+    border-radius:0 5px 5px 0;
+    -webkit-border-radius:0 5px 5px 0;
+    -o-border-radius:0 5px 5px 0;
+    -moz-border-radius:0 5px 5px 0;
+    -ms-border-radius:0 5px 5px 0;
+}
+
+.ui-sidebar-minibar-text {
+    padding:8px 0;
+    width:12px;
+}
+
+.ui-sidebar-minibar-arrow {
+    width:5px;
+    height:9px;
+    font-size:1px;
+    background:url(img/esui.png) -54px -88px;
+    position:absolute;
+    top:50%;
+    left:50%;
+}
+.ui-sidebar-minibar-hover .ui-sidebar-minibar-arrow {
+    background:url(img/esui.png) -64px -88px;
+}
+.ui-sidebar-minibar-hover .ui-sidebar-minibar-text{color:#03c;}
+.ui-sidebar-head {
+    height:36px;
+    border-bottom:1px solid #ccc;
+    background:url(img/esui.png) 0 -260px;
+    font-size:12px;
+    line-height:34px;
+    padding-left:8px;
+    border-radius:5px 5px 0 0;
+    -webkit-border-radius:5px 5px 0 0;
+    -o-border-radius:5px 5px 0 0;
+    -moz-border-radius:5px 5px 0 0;
+    -ms-border-radius:5px 5px 0 0;
+}
+
+.ui-sidebar-body {
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+.skin-button-autohide {
+    height:13px;
+    width:14px;
+    background:url(img/esui.png) -59px -167px;
+    font-size:1px;
+    border:1px solid #aeaeae;
+    position:absolute;
+    top:10px;
+    right:10px;
+}
+
+.skin-button-autohide-label {
+    display:none;
+}
+.skin-button-autohide-hover {
+    border:1px solid #777;
+}
+
+
+.skin-button-fixed {
+    height:13px;
+    width:14px;
+    background:url(img/esui.png) -45px -167px;
+    font-size:1px;
+    border:1px solid #aeaeae;
+    position:absolute;
+    top:10px;
+    right:10px;
+}
+
+.skin-button-fixed-label {
+    display:none;
+}
+.skin-button-fixed-hover {
+    border:1px solid #777;
+}
