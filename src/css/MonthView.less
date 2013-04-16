@@ -1,0 +1,86 @@
+@import "mixin.less";
+@import "variable.less";
+@import "common.less";
+.ui-monthview {
+    background:#fff;
+    width:210px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.ui-monthview-head {
+    background: none repeat scroll 0 0 #CCCED4;
+    height: 27px;
+    padding: 2px 5px;
+}
+.ui-monthview-head table {width:200px;}
+
+.ui-monthview-month {
+    border:1px solid #ccced4;
+    font-size:13px;
+}
+
+.ui-monthview-month-title {
+    width:29px;
+    height:21px;
+    line-height:21px;
+    background:#f1f1f1;
+    color:#666;
+    text-align:center;
+}
+
+.ui-monthview-month-item {
+    width:30px;
+    height:21px;
+    line-height:21px;
+    cursor:pointer;
+    color:#03c;
+    text-align:center;
+    border-bottom:1px solid #f1f1f1;
+}
+
+.ui-monthview-month-item:hover {
+    background:#e4eaf9;
+}
+
+.ui-monthview-month-item-selected {
+    background:#fff6bd;
+    color:#333;
+    font-weight:bold;
+}
+
+.ui-monthview-month-item-virtual,
+.ui-monthview-month-item-out {
+    color:#888;
+    cursor:default;
+    background:#fff;
+    &:hover {
+        background:#fff;
+    }
+}
+
+.ui-monthview-month-item-disabled {
+    background: #ddd;
+    cursor:default;
+    &:hover {
+        background:#ddd;
+    }
+}
+
+/** 先前向后按钮 */
+.ui-monthview-month-forward,
+.ui-monthview-month-back {
+    background: url("../img/esui.png") repeat scroll -20px -200px transparent;
+    font-size: 1px;
+    height: 20px;
+    width: 20px;
+    padding: 0;
+}
+
+
+.ui-monthview-month-back {
+    background-position: 0px -200px;
+}
+
+
+

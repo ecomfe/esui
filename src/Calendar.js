@@ -25,232 +25,6 @@ define(
             InputControl.apply(this, arguments);
         }
 
-        /**
-         * 获取可选择的年列表
-         *
-         * @param {Calendar} calendar Calendar控件实例
-         * @inner
-         * @return {Array}
-         */
-        function getYearOptions(calendar) {
-            var range = calendar.range;
-            var ds = [];
-            var end = range.end.getFullYear();
-
-            for (var i = range.begin.getFullYear(); i <= end; i++) {
-                ds.push({text: i, value: i});
-            }
-
-            return ds;
-        }
-
-        /**
-         * 获取可选择的月列表
-         *
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {number} year 选中的年
-         * @inner
-         * @return {Array}
-         */
-        function getMonthOptions(calendar, year) {
-            var range = calendar.range;
-            var ds = [];
-            var len = 11;
-
-            if (year == range.begin.getFullYear()) {
-                i = range.begin.getMonth();
-            } else if (year == range.end.getFullYear()) {
-                len = range.end.getMonth();
-            }
-
-            for (var i = 0; i <= len; i++) {
-                ds.push({text: (i + 1), value: i});
-            }
-
-            return ds;
-        }
-
-        /**
-         * 获取日历弹出层的HTML
-         *
-         * @param {Calendar} calendar Calendar控件实例
-         * @inner
-         */
-        function getLayerHTML(calendar) {
-            var tplLayer = [
-                '<div class="${headClass}"><table><tr>',
-                    '<td width="40" align="left">',
-                        '<div data-ui="type:Button;childName:monthBack;',
-                        'id:${monthBackId};"></div>',
-                    '</td>',
-                    '<td>',
-                        '<div data-ui="type:Select;childName:yearSel;',
-                        'id:${yearSelId};width:45;"></div>',
-                    '</td>',
-                    '<td>',
-                        '<div data-ui="type:Select;childName:monthSel;',
-                        'id:${monthSelId};width:35;"></div>',
-                    '</td>',
-                    '<td width="40" align="right">',
-                        '<div data-ui="type:Button;childName:monthForward;',
-                        'id:${monthForwardId};"></div>',
-                    '</td>',
-                '</tr></table></div>',
-                '<div data-ui="type:Panel;childName:monthView;',
-                'id:${monthViewId}"></div>'
-            ];
-
-            tplLayer = tplLayer.join('');
-
-            return lib.format(
-                tplLayer,
-                {
-                    headClass:
-                        helper.getClasses(calendar, 'layer-head').join(' '),
-                    monthBackId: helper.getId(calendar, 'monthBack'),
-                    monthForwardId: helper.getId(calendar, 'monthForward'),
-                    yearSelId: helper.getId(calendar, 'yearSel'),
-                    monthSelId: helper.getId(calendar, 'monthSel'),
-                    monthViewId: helper.getId(calendar, 'monthView')
-                }
-            );
-        }
-
-        /**
-         * 日历月份显示单元的HTML
-         *
-         * @param {Calendar} calendar Calendar控件实例
-         * @inner
-         */
-        function getMonthViewHTML(calendar) {
-
-            /** 绘制表头 */
-            // 标题显示配置
-            var titles = ['一', '二', '三', '四', '五', '六', '日'];
-
-            // 日期表格头的模板
-            var tplHead = ''
-                + '<table border="0" cellpadding="0" cellspacing="0" '
-                + 'class="${className}"><thead><tr>';
-
-            var html = [];
-            html.push(
-                lib.format(
-                    tplHead,
-                    { 
-                        className:
-                            helper.getClasses(calendar, 'month-main').join(' ')
-                    }
-                )
-            );
-
-            // 日期表格头单元的模板
-            var tplHeadItem = '<td class="${className}">${text}</td>';
-
-            var tLen = titles.length;
-            for (var tIndex = 0; tIndex < tLen; tIndex++) {
-                html.push(
-                    lib.format(
-                        tplHeadItem,
-                        {
-                            className:
-                                helper.getClasses(
-                                    calendar,
-                                    'month-title'
-                                ).join(' '),
-                            text: titles[tIndex]
-                        }
-                    )
-                );
-            }
-            html.push('</tr></thead><tbody><tr>');
-
-            /** 绘制表体 */
-            // 日期单元的模板
-            var tplItem = ''
-                + '<td year="${year}" month="${month}" '
-                + 'date="${date}" class="${className}" '
-                + 'id="${id}">${date}</td>';
-
-            var index = 0;
-            var year = calendar.year;
-            var month = calendar.month;
-            var repeater = new Date(year, month, 1);
-            var nextMonth = new Date(year, month + 1, 1);
-            var begin = 1 - (repeater.getDay() + 6) % 7;
-            repeater.setDate(begin);
-
-            var itemClass = helper.getClasses(calendar, 'month-item').join(' ');
-            var virClass =
-                helper.getClasses(calendar, 'month-item-virtual').join(' ');
-            var disabledClass =
-                helper.getClasses(calendar, 'month-item-disabled').join(' ');
-            var range = calendar.range;
-
-            while (nextMonth - repeater > 0 || index % 7 !== 0) {
-                if (begin > 0 && index % 7 === 0) {
-                    html.push('</tr><tr>');
-                }
-
-                // 不属于当月的日期
-                var virtual = (repeater.getMonth() != month);
-
-                // 不可选的日期
-                var disabled = false;
-
-                //range定义的begin之前的日期不可选
-                if (repeater < range.begin) {
-                    disabled = true;
-                }
-                else if (repeater > range.end) {
-                    disabled = true;
-                }
-
-                // 构建date的css class
-                var currentClass = itemClass;
-                virtual && (currentClass += ' ' + virClass);
-                disabled && (currentClass += ' ' + disabledClass);
-
-                + '<td year="${year}" month="${month}" '
-                + 'date="${date}" class="${className}" '
-                + 'id="${id}">${date}</td>';
-                html.push(
-                    lib.format(
-                        tplItem,
-                        {
-                            year: repeater.getFullYear(),
-                            month: repeater.getMonth(),
-                            date: repeater.getDate(),
-                            className: currentClass,
-                            id: getItemId(calendar, repeater)
-                        }
-                    )
-                );
-
-                repeater = new Date(year, month, ++begin);
-                index++;
-            }
-
-            html.push('</tr></tbody></table>');
-            return html.join('');            
-        }
-
-        /**
-         * 获取日期对应的dom元素item的id
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Date} date 日期.
-         * @return {string}
-         */
-        function getItemId(calendar, date) {
-            return helper.getId(
-                calendar,
-                date.getFullYear()
-                    + '-' + date.getMonth()
-                    + '-' + date.getDate()
-            );
-        }
                
         /**
          * 显示下拉弹层
@@ -258,7 +32,13 @@ define(
          * @param {Calendar} calendar Calendar控件实例
          */
         function showLayer(calendar) {
-            var classes = helper.getClasses(calendar, 'layer-hidden');
+            var layer = calendar.layer;
+            var classes = helper.getPartClasses(calendar, 'layer-hidden');
+            helper.layer.attachTo(
+                layer, 
+                calendar.main, 
+                { top: 'bottom', left: 'left', right: 'right' }
+            );
             lib.removeClasses(calendar.layer, classes);
             calendar.addState('active');
         }
@@ -269,17 +49,18 @@ define(
          * @param {Calendar} calendar Calendar控件实例
          */
         function hideLayer(calendar) {
-            var classes = helper.getClasses(calendar, 'layer-hidden');
+            var classes = helper.getPartClasses(calendar, 'layer-hidden');
             lib.addClasses(calendar.layer, classes);
             calendar.removeState('active');
 
         }
 
         /**
-         * 获取点击自动隐藏的处理handler
+         * 点击自动隐藏的处理
          *
-         * @private
-         * @return {Function}
+         * @inner
+         * @param {Calendar} calendar Calendar控件实例
+         * @param {Event} 触发事件的事件对象
          */
         function closeLayer(calendar, e) {
             if (calendar.isHidePrevent) {
@@ -290,9 +71,6 @@ define(
             while (tar && tar != document.body) {
                 if (tar == calendar.layer) {
                     return;
-                }
-                else if (tar == calendar.layer) {
-
                 }
                 tar = tar.parentNode;
             }
@@ -310,91 +88,44 @@ define(
         function openLayer(calendar) {
             var layer = calendar.layer;
             if (!layer) {
-                layer = document.createElement('div');
+                layer = helper.layer.create('div');
                 layer.className = 
-                    helper.getClasses(calendar, 'layer').join(' ');
-                layer.innerHTML = getLayerHTML(calendar);
+                    helper.getPartClasses(calendar, 'layer').join(' ');
+                layer.innerHTML = ''
+                    + '<div data-ui="type:MonthView;childName:monthView;"/>';
+
                 document.body.appendChild(layer);
                 calendar.layer = layer;
 
                 // 创建控件树
                 calendar.initChildren(layer);
 
-                //向后按钮
-                var monthBack = calendar.getChild('monthBack');
-                lib.addClasses(
-                    monthBack.main,
-                    helper.getClasses(calendar, 'month-back')
-                );
-                monthBack.onclick = lib.bind(goToPrevMonth, null, calendar);
-
-
-                //向前按钮
-                var monthForward = calendar.getChild('monthForward');
-                lib.addClasses(
-                    monthForward.main,
-                    helper.getClasses(calendar, 'month-forward')
-                );
-                monthForward.onclick = lib.bind(goToNextMonth, null, calendar);
-
-                // 填充年份
-                var yearSel = calendar.getChild('yearSel');
-                yearSel.setProperties({
-                    datasource: getYearOptions(calendar),
-                    value: calendar.year
-                });
-                yearSel.on(
-                    'change',
-                    lib.bind(changeYear, null, calendar, yearSel)
-                );
-
-                // 填充月份
-                var monthSel = calendar.getChild('monthSel');
-                monthSel.setProperties({
-                    datasource: getMonthOptions(calendar, calendar.year),
-                    value: calendar.month
-                });
-                monthSel.on(
-                    'change',
-                    lib.bind(changeMonth, null, calendar, monthSel)
-                );
-
-                //填充日历主体
                 var monthView = calendar.getChild('monthView');
-                lib.addClasses(
-                    monthView.main,
-                    helper.getClasses(calendar, 'month')
-                );
-                monthView.setContent(getMonthViewHTML(calendar));
-
-                //为日期绑定点击事件
-                helper.addDOMEvent(
-                    monthView, monthView.main, 'click',
-                    lib.bind(monthViewClick, null, calendar)
+                monthView.setRawValue(calendar.rawValue);
+                monthView.on(
+                    'change',
+                    lib.bind(updateDisplay, null, calendar, monthView)
                 );
 
-                var close = lib.bind(closeLayer, null, calendar);
-                lib.on(document, 'click', close);
-                calendar.on(
-                    'afterdispose',
-                    function () {
-                        lib.un(document, 'mousedown', close);
-                    }
+                monthView.on(
+                    'monthChange',
+                    lib.bind(preventHide, null, calendar)
+                );
+                monthView.on(
+                    'yearChange',
+                    lib.bind(preventHide, null, calendar)
                 );
 
-                //选择日期 
-                selectDate(calendar, calendar.rawValue);
             }
-
-            var mainOffset = lib.getOffset(calendar.main);
-            
-            layer.style.position = 'absolute';
-            layer.style.zIndex = '1001';
-            layer.style.top = mainOffset.bottom + 'px';
-            layer.style.left = mainOffset.left + 'px';
-            layer.style.width = '200px';
-
             showLayer(calendar);
+        }
+
+        /**
+         * 阻止日历弹出层关闭
+         * @param {Calendar} calendar Calendar控件实例
+         */
+        function preventHide(calendar) {
+            calendar.isHidePrevent = 1;
         }
 
         /**
@@ -411,59 +142,21 @@ define(
             }
         }
 
+
         /**
-         * 日历元素点击事件
+         * 更新显示
          *
          * @inner
          * @param {Calendar} calendar Calendar控件实例
-         * @param {Event} 触发事件的事件对象
+         * @param {MonthView} monthView MonthView控件实例
          */
-        function monthViewClick(calendar, e) {
-            var tar = e.target || e.srcElement;
-            var classes = helper.getClasses(calendar, 'month-item');
-
-            var virClasses = helper.getClasses(calendar, 'month-item-virtual');
-            var disabledClasses =
-                helper.getClasses(calendar, 'month-item-disabled');
-            while (tar && tar != document.body) {
-                if (lib.hasClass(tar, classes[0])
-                    && !lib.hasClass(tar, virClasses[0])
-                    && !lib.hasClass(tar, disabledClasses[0])) {
-                    selectByItem(calendar, tar);
-                    return;
-                }
-                tar = tar.parentNode;
-            }
-        }
-
-        /**
-         * 通过item的dom元素选择日期
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Element} item dom元素td.
-         */
-        function selectByItem(calendar, item) {
-            var date = item.getAttribute('date');
-            var month = item.getAttribute('month');
-            var year = item.getAttribute('year');
-            change(calendar, new Date(year, month, date));
-        }
-
-        /**
-         * 选择当前日期
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Date} date 当前日期.
-         */
-        function change(calendar, date) {
+        function updateDisplay(calendar, monthView) {
+            var date = monthView.getRawValue();
             if (!date) {
                 return;
             }
-
             if (calendar.fire('change') !== false) {
-                selectDate(calendar, date);
+                calendar.rawValue = date;
                 updateMain(calendar, date);
             }
         }
@@ -507,163 +200,6 @@ define(
                 }
             }
         }
-        /**
-         * 绘制浮动层内的日历部件
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {number} opt_year 年.
-         * @param {number} opt_month 月.
-         */
-        function repaintMonthView(calendar, optYear, optMonth) {
-            var year = calendar.year;
-            var month = calendar.month;
-
-            if (lib.hasValue(optYear)) {
-                year = optYear;
-            }
-            if (lib.hasValue(optMonth)) {
-                month = optMonth;
-            }
-
-            var me = calendar;
-            var range = me.range;
-            var view = new Date(year, month, 1);
-            var rangeBegin = range.begin.getFullYear() * 12
-                + range.begin.getMonth();
-            var rangeEnd = range.end.getFullYear() * 12 + range.end.getMonth();
-            var viewMonth = year * 12 + month;
-
-            month = view.getMonth();
-
-            if (rangeBegin - viewMonth > 0) {
-                month += (rangeBegin - viewMonth);
-            }
-            else if (viewMonth - rangeEnd > 0) {
-                month -= (viewMonth - rangeEnd);
-            }
-            view.setMonth(month);
-            me.month = view.getMonth();
-            me.year = view.getFullYear();
-
-            var monthSelect = me.getChild('monthSel');
-            monthSelect.setProperties({
-                datasource: getMonthOptions(me, me.year),
-                value: me.month
-            });
-
-            var yearSelect = me.getChild('yearSel');
-            yearSelect.setProperties({
-                value: me.year
-            });
-
-            // 绘制日历部件
-            var monthView = me.getChild('monthView');
-            monthView.setContent(getMonthViewHTML(me));
-
-            //选择日期 
-            selectDate(me, me.rawValue);
-        }
-
-        /**
-         * 选择日期
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Date} date 要选择的日期.
-         */
-        function selectDate(calendar, date) {
-            if (date instanceof Date) {
-                var me = calendar;
-                resetSelected(me);
-                calendar.rawValue = date;
-                paintSelected(me);
-            }
-        }
-
-        /**
-         * 清空选中的日期
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         */
-        function resetSelected(calendar) {
-            var me = calendar;
-            if (me.rawValue) {
-                var item = lib.g(getItemId(me, me.rawValue));
-                item && lib.removeClasses(
-                    item,
-                    helper.getClasses(me, 'month-item-selected')
-                );
-                me.value = null;
-            }
-        }
-
-        /**
-         * 绘制选中的日期
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         */
-        function paintSelected(calendar) {
-            var me = calendar;
-            if (me.rawValue) {
-                var item = lib.g(getItemId(me, me.rawValue));
-                item && lib.addClasses(
-                    item,
-                    helper.getClasses(me, 'month-item-selected')
-                );
-            }
-        }
-
-        /**
-         * “下一个月”按钮点击的handler
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         */
-        function goToNextMonth(calendar) {
-            repaintMonthView(calendar, calendar.year, calendar.month + 1);
-        }
-
-        /**
-         * 获取“上一个月”按钮点击的handler
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         */
-        function goToPrevMonth(calendar) {
-            repaintMonthView(calendar, calendar.year, calendar.month - 1);
-        }
-
-        /**
-         * 年份切换
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Select} yearSel Select控件实例
-         */
-        function changeYear(calendar, yearSel) {
-            var year = parseInt(yearSel.getValue(), 10);
-            calendar.year = year;
-            repaintMonthView(calendar, year, calendar.month);
-            calendar.isHidePrevent = 1;
-
-        }
-
-        /**
-         * 月份切换
-         *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Select} monthSel Select控件实例
-         */
-        function changeMonth(calendar, monthSel) {
-            var month = parseInt(monthSel.getValue(), 10);
-            calendar.month = month;
-            repaintMonthView(calendar, calendar.year, month);
-            calendar.isHidePrevent = 1;
-
-        }
 
         Calendar.prototype = {
             /**
@@ -692,7 +228,8 @@ define(
                     },
                     dateFormat: 'yyyy-MM-dd',
                     paramFormat: 'yyyy-MM-dd',
-                    rawValue: new Date()
+                    rawValue: new Date(),
+                    calType: 'sel' // 日历类型，另外还支持‘input’ ‘label'
                 };
                 lib.extend(properties, options);
                 lib.extend(this, properties);
@@ -728,10 +265,11 @@ define(
                 this.main.innerHTML = lib.format(
                     tpl.join('\n'),
                     {
-                        className: helper.getClasses(this, 'text').join(' '),
+                        className:
+                            helper.getPartClasses(this, 'text').join(' '),
                         id: helper.getId(this, 'text'),
                         value: lib.date.format(date, this.dateFormat),
-                        arrow: helper.getClasses(this, 'arrow').join(' '),
+                        arrow: helper.getPartClasses(this, 'arrow').join(' '),
                         name: this.name
                     }
                 );
@@ -740,6 +278,16 @@ define(
                     this, this.main, 'click',
                     lib.bind(mainClick, null, this)
                 );
+
+                var close = lib.bind(closeLayer, null, this);
+                lib.on(document, 'click', close);
+                this.on(
+                    'afterdispose',
+                    function () {
+                        lib.un(document, 'click', close);
+                    }
+                );
+
             },
 
             /**
@@ -750,6 +298,10 @@ define(
              * @override
              */
             createMain: function (options) {
+                var calType = options.calType;
+                if (calType == 'label') {
+                    return document.createElement('DIV');
+                }
                 return document.createElement('DIV');
             },
 
@@ -770,10 +322,8 @@ define(
                         calendar.year = calendar.rawValue.getFullYear();
                         if (calendar.layer) {
                             // 更新日历
-                            selectDate(calendar, value);
-                            repaintMonthView(
-                                calendar, value.getFullYear(), value.getMonth()
-                            );
+                            var monthView = calendar.getChild('monthView');
+                            monthView.setRawValue(value);
                         }
 
                     }
