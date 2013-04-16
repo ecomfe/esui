@@ -617,8 +617,6 @@ define(function () {
             || document.body.scrollLeft;
     };
 
-
-
     lib.event = {};
 
     /**
@@ -980,6 +978,79 @@ define(function () {
         }
 
         return (negative ?  '-' : '') + pre + string;
+    };
+
+    /**
+     * @namespace lib.dom 操作dom的方法。
+     */
+    lib.dom = lib.dom || {};
+
+    /**
+     * 获取目标元素的第一个元素节点
+     * @name lib.dom.first
+     * @function
+     * @grammar lib.dom.first(element)
+     * @param {HTMLElement|String} element 目标元素或目标元素的id
+     * @meta standard
+     * @returns {HTMLElement|null} 目标元素的第一个元素节点，查找不到时返回null
+     */
+    lib.dom.first = function (element) {
+        element = lib.g(element);
+
+        var node = element['firstChild'];
+        for (; node; node = node['nextSibling']) {
+            if (node.nodeType == 1) {
+                return node;
+            }
+        }
+
+        return null;
+    };
+
+    /**
+     * 获取目标元素的下一个兄弟元素节点
+     * @name lib.dom.next
+     * @function
+     * @grammar lib.dom.next(element)
+     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @meta standard
+     * @returns {HTMLElement|null} 目标元素的下一个兄弟元素节点，查找不到时返回null
+     */
+    lib.dom.next = function (element) {
+        element = lib.g(element);
+        
+        var node = element['nextSibling'];
+        for (; node; node = node['nextSibling']) {
+            if (node.nodeType == 1) {
+                return node;
+            }
+        }
+
+        return null;
+    };
+
+    /**
+     * 判断一个元素是否包含另一个元素
+     * @name lib.dom.contains
+     * @function
+     * @grammar lib.dom.contains(container, contained)
+     * @param {HTMLElement|string} container 包含元素或元素的id
+     * @param {HTMLElement|string} contained 被包含元素或元素的id
+     * @meta standard
+     * @see baidu.dom.intersect
+     *             
+     * @returns {boolean} contained元素是否被包含于container元素的DOM节点上
+     */
+    lib.dom.contains = function (container, contained) {
+
+        var g = lib.g;
+        container = g(container);
+        contained = g(contained);
+
+        //fixme: 无法处理文本节点的情况(IE)
+        return container.contains
+            ? container != contained && container.contains(contained)
+            : !!(container.compareDocumentPosition(contained) & 16);
     };
 
     return lib;
