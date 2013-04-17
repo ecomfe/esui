@@ -192,8 +192,8 @@ define(
             if (target) {
                 var value = target.getAttribute('data-value');
                 select.setRawValue(value);
-                e.preventDefault();
             }
+            e.stopPropagation();
             hideLayer(select);
         }
 
