@@ -52,8 +52,6 @@ define(
             lib.extend(this, properties);
         };
 
-        var paint = require('./painters');
-        
         /**
          * 渲染自身
          *

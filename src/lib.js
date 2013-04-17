@@ -806,7 +806,6 @@ define(function () {
      * @return {string}
      */
     lib.getCommandStr = function (source) {
-        var dataCommandPrefix = 'data-command-';
         var result = [];
         if( source.name ){
             result.push( 'data-command="' + source.name + '"');
@@ -826,14 +825,16 @@ define(function () {
      * @return {object}
      */
     lib.commandAttr = function (source, element) {
-        var dataCommandPrefix = 'data-command-';
         var result = {};
         if( source.name ){
             result['data-command']= source.name;
             if( source.args ){
                 result['data-command-args'] = source.args;
                 if (element) {
-                    element.setAttribute('data-command-args', result['data-command-args']);
+                    element.setAttribute(
+                        'data-command-args', 
+                        result['data-command-args']
+                    );
                 }
             }
             if (element) {
