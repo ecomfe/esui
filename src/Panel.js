@@ -13,10 +13,9 @@ define(
         /**
          * Panel控件
          *
-         * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Panel(options) {
+        function Panel() {
             Control.apply(this, arguments);
         }
 
@@ -34,13 +33,6 @@ define(
             return document.createElement(options.tagName || 'div');
         };
 
-        /**
-         * 初始化参数
-         *
-         * @param {Object=} options 构造函数传入的参数
-         * @override
-         * @protected
-         */
         Panel.prototype.initOptions = function (options) {
             var properties = {};
             var lib = require('./lib');
