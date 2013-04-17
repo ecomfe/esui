@@ -117,8 +117,8 @@ define(
                 map = {};
                 for (var i = 0; i < config.length; i++) {
                     var item = config[i];
-                    var name = item.type
-                        ? item.type + ':' + item.name
+                    var name = item.triggerType
+                        ? item.triggerType + ':' + item.name
                         : item.name;
                     map[name] = item.handler;
                 }
