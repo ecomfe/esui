@@ -39,6 +39,9 @@ define(
                 name: name,
                 property: property || name,
                 paint: function (control, value) {
+                    if (value == null) {
+                        return;
+                    }
                     if (unitProperties.hasOwnProperty(this.property)) {
                         value = value === 0 ? '0' : value + 'px';
                     }
@@ -65,7 +68,7 @@ define(
                         ? this.generate(control, value)
                         : value;
                     if (element) {
-                        element.innerHTML = html;
+                        element.innerHTML = html || '';
                     }
                 }
             };
@@ -90,7 +93,8 @@ define(
                         ? this.generate(control, value)
                         : value;
                     if (element) {
-                        element.innerHTML = require('./lib').encodeHTML(html);
+                        element.innerHTML = 
+                            require('./lib').encodeHTML(html || '');
                     }
                 }
             };
