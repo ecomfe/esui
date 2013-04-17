@@ -193,7 +193,6 @@ define(
                 var value = target.getAttribute('data-value');
                 select.setRawValue(value);
             }
-            e.stopPropagation();
             hideLayer(select);
         }
 
@@ -258,6 +257,18 @@ define(
                     function () {
                         lib.un(document, 'mousedown', close);
                     }
+                );
+
+                // 当`Select`作为别的控件的子控件时，
+                // 别的控件也可能注册`document`上的`mousedown`关掉自己的弹层，
+                // 这种情况下，如果`Select`把`mousedown`冒泡上去，
+                // 则会因为选择一个子控件的内容导致父控件的弹层消失，
+                // 因此这里要取消掉`mousedown`的冒泡来避免这问题的出现
+                helper.addDOMEvent(
+                    this, 
+                    layer,
+                    'mousedown',
+                    function (e) { e.stopPropagation(); }
                 );
             }
 
