@@ -92,8 +92,6 @@ define(
 
                 // 初始化状态事件
                 helper.addDOMEvent(this, main, 'click', this.clickHandler);
-                helper.initMouseBehavior(this);
-
             },
 
             /**

@@ -394,6 +394,9 @@ define(function () {
      * 
      */
     lib.removeNode = function (element) {
+        if ( typeof element === 'string') {
+            element = lib.g(element);
+        }
         var parent = element.parentNode;
         parent.removeChild(element);
     };
