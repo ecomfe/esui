@@ -774,7 +774,7 @@ define(
             {
                 name: '昨天',
                 value: 0,
-                getValue: function() {
+                getValue: function () {
                     var yesterday = new Date(this.now.getTime());
                     yesterday.setDate(yesterday.getDate() - 1);
                     return {
@@ -786,7 +786,7 @@ define(
             {
                 name: '最近7天',
                 value: 1,
-                getValue: function() {
+                getValue: function () {
                     var begin = new Date(this.now.getTime());
                     var end = new Date(this.now.getTime());
 
@@ -802,7 +802,7 @@ define(
             {
                 name: '上周',
                 value: 2,
-                getValue: function() {
+                getValue: function () {
                     var now = this.now;
                     var begin = new Date(now.getTime());
                     var end = new Date(now.getTime());
@@ -834,7 +834,7 @@ define(
             {
                 name: '本月',
                 value: 3,
-                getValue: function() {
+                getValue: function () {
                     var now = this.now;
                     var begin = new Date(now.getTime());
                     var end = new Date(now.getTime());
@@ -848,7 +848,7 @@ define(
             {
                 name: '上个月',
                 value: 4,
-                getValue: function() {
+                getValue: function () {
                     var now = this.now;
                     var begin = new Date(
                         now.getFullYear(),
@@ -870,7 +870,7 @@ define(
             {
                 name: '上个季度',
                 value: 5,
-                getValue: function() {
+                getValue: function () {
                     var now = this.now;
                     var begin = new Date(
                         now.getFullYear(),
