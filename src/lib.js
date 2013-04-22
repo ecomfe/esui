@@ -1093,7 +1093,7 @@ define(function () {
 
     /**
      * 判断一个元素是否包含另一个元素
-     * @name lib.dom.contains
+     * @name  lib.dom.contains
      * @function
      * @grammar lib.dom.contains(container, contained)
      * @param {HTMLElement|string} container 包含元素或元素的id
