@@ -166,7 +166,7 @@ define(
             else {
                 repaint.apply(this, arguments);
             }
-        }
+        };
 
         Wizard.prototype.setProperties = function (properties) {
             if (properties.hasOwnProperty('steps')) {
