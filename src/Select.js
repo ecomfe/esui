@@ -1,5 +1,7 @@
 define(
     function (require) {
+        var lib = require('./lib');
+        var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
         /**
@@ -152,6 +154,17 @@ define(
         }
 
         /**
+         * 获取弹出层的DOM元素
+         *
+         * @param {Select} select Select控件实例
+         * @return {HTMLElement}
+         * @innter
+         */
+        function getSelectionLayer(select) {
+            return lib.g(helper.getId(select, 'layer'));
+        }
+
+        /**
          * 关闭下拉弹层
          *
          * @param {Select} select Select控件实例
@@ -160,7 +173,7 @@ define(
          */
         function closeLayer(select, e) {
             var target = e.target;
-            var layer = select.selectionLayer;
+            var layer = getSelectionLayer(select);
             var main = select.main;
 
             if (!layer) {
@@ -202,7 +215,7 @@ define(
          * @param {Select} Select控件实例
          */
         function showLayer(select) {
-            var layer = select.selectionLayer;
+            var layer = getSelectionLayer(select);
             var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
             helper.layer.attachTo(
@@ -210,7 +223,7 @@ define(
                 select.main, 
                 { top: 'bottom', left: 'left', right: 'right' }
             );
-            require('./lib').removeClasses(select.selectionLayer, classes);
+            require('./lib').removeClasses(layer, classes);
             select.addState('active');
         }
 
@@ -220,10 +233,13 @@ define(
          * @param {Select} Select控件实例
          */
         function hideLayer(select) {
-            var helper = require('./controlHelper');
-            var classes = helper.getPartClasses(select, 'layer-hidden');
-            require('./lib').addClasses(select.selectionLayer, classes);
-            select.removeState('active');
+            var layer = getSelectionLayer(select);
+            if (layer) {
+                var helper = require('./controlHelper');
+                var classes = helper.getPartClasses(select, 'layer-hidden');
+                require('./lib').addClasses(layer, classes);
+                select.removeState('active');
+            }
         }
 
         /**
@@ -233,17 +249,16 @@ define(
          * @inner
          */
         function openLayer(select) {
-            var layer = select.selectionLayer;
+            var layer = getSelectionLayer(select);
             var lib = require('./lib');
             var helper = require('./controlHelper');
             if (!layer) {
                 var layer = helper.layer.create('ol');
-                layer.id = helper.getId(this, 'layer');
+                layer.id = helper.getId(select, 'layer');
                 layer.className = 
                     helper.getPartClasses(select, 'layer').join(' ');
                 layer.innerHTML = getLayerHTML(select);
                 document.body.appendChild(layer);
-                select.selectionLayer = layer;
 
                 helper.addDOMEvent(
                     select, 
@@ -287,6 +302,8 @@ define(
                     lib.removeClass(item, classes);
                 }
             }
+
+            return layer;
         }
 
         /**
@@ -301,11 +318,11 @@ define(
                 return;
             }
 
-            if (!select.selectionLayer) {
-                openLayer(select);
+            var layer = getSelectionLayer(select);
+            if (!layer) {
+                layer = openLayer(select);
             }
             else {
-                var layer = select.selectionLayer;
                 var helper = require('./controlHelper');
                 var classes = helper.getPartClasses(select, 'layer-hidden');
                 if (require('./lib').hasClass(layer, classes[0])) {
@@ -381,7 +398,7 @@ define(
             {
                 name: 'disabled',
                 paint: function (select, value) {
-                    if (value && select.selectionLayer) {
+                    if (value) {
                         hideLayer(select);
                     }
                 }
@@ -427,9 +444,7 @@ define(
          */
         Select.prototype.hide = function () {
             InputControl.prototype.hide.apply(this, arguments);
-            if (this.selectionLayer) {
-                hideLayer(this);
-            }
+            hideLayer(this);
         };
 
         /**
@@ -438,8 +453,9 @@ define(
          * @public
          */
         Select.prototype.dispose = function () {
-            if (this.selectionLayer) {
-                this.selectionLayer.parentNode.removeChild(this.selectionLayer);
+            var layer = getSelectionLayer(this);
+            if (layer) {
+                layer.parentNode.removeChild(layer);
             }
 
             InputControl.prototype.dispose.apply(this, arguments);
