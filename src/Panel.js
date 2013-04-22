@@ -8,15 +8,16 @@
 
 define(
     function (require) {
+        var lib = require('./lib');
+        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
          * Panel控件
          *
-         * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Panel(options) {
+        function Panel() {
             Control.apply(this, arguments);
         }
 
@@ -34,16 +35,8 @@ define(
             return document.createElement(options.tagName || 'div');
         };
 
-        /**
-         * 初始化参数
-         *
-         * @param {Object=} options 构造函数传入的参数
-         * @override
-         * @protected
-         */
         Panel.prototype.initOptions = function (options) {
             var properties = {};
-            var lib = require('./lib');
             lib.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             if (options.content == null) {
@@ -52,8 +45,6 @@ define(
             lib.extend(this, properties);
         };
 
-        var paint = require('./painters');
-        
         /**
          * 渲染自身
          *
@@ -61,7 +52,7 @@ define(
          * @override
          * @protected
          */
-        Panel.prototype.repaint = require('./controlHelper').createRepaint(
+        Panel.prototype.repaint = helper.createRepaint(
             {
                 name: 'content',
                 paint: function (control, value) {
@@ -81,7 +72,7 @@ define(
             this.setProperties({ content: html });
         };
 
-        require('./lib').inherits(Panel, Control);
+        lib.inherits(Panel, Control);
         require('./main').register(Panel);
         return Panel;
     }

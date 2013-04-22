@@ -33,13 +33,12 @@ define(
          */
         function showLayer(calendar) {
             var layer = calendar.layer;
-            var classes = helper.getPartClasses(calendar, 'layer-hidden');
             helper.layer.attachTo(
                 layer, 
                 calendar.main, 
                 { top: 'bottom', left: 'left', right: 'right' }
             );
-            lib.removeClasses(calendar.layer, classes);
+            helper.removePartClasses(calendar, 'layer-hidden', layer);
             calendar.addState('active');
         }
 
@@ -49,9 +48,11 @@ define(
          * @param {Calendar} calendar Calendar控件实例
          */
         function hideLayer(calendar) {
-            var classes = helper.getPartClasses(calendar, 'layer-hidden');
-            lib.addClasses(calendar.layer, classes);
-            calendar.removeState('active');
+            if (calendar.layer) {
+                helper.addPartClasses(calendar, 'layer-hidden', calendar.layer);
+                calendar.removeState('active');
+                calendar.fire('hide');
+            }
 
         }
 
@@ -74,7 +75,6 @@ define(
                 }
                 tar = tar.parentNode;
             }
-            calendar.fire('hide');
             hideLayer(calendar);
         }
 
@@ -106,26 +106,8 @@ define(
                     'change',
                     lib.bind(updateDisplay, null, calendar, monthView)
                 );
-
-                monthView.on(
-                    'monthChange',
-                    lib.bind(preventHide, null, calendar)
-                );
-                monthView.on(
-                    'yearChange',
-                    lib.bind(preventHide, null, calendar)
-                );
-
             }
             showLayer(calendar);
-        }
-
-        /**
-         * 阻止日历弹出层关闭
-         * @param {Calendar} calendar Calendar控件实例
-         */
-        function preventHide(calendar) {
-            calendar.isHidePrevent = 1;
         }
 
         /**
@@ -155,10 +137,9 @@ define(
             if (!date) {
                 return;
             }
-            if (calendar.fire('change') !== false) {
-                calendar.rawValue = date;
-                updateMain(calendar, date);
-            }
+            calendar.rawValue = date;
+            updateMain(calendar);
+            calendar.fire('change');
         }
 
         /**
@@ -166,9 +147,9 @@ define(
          *
          * @inner
          * @param {Calendar} calendar Calendar控件实例
-         * @param {Date} date 当前日期.
          */
-        function updateMain(calendar, date) {
+        function updateMain(calendar) {
+            var date = calendar.rawValue;
             var textId = helper.getId(calendar, 'text');
             lib.g(textId).innerHTML =
                 lib.date.format(date, calendar.dateFormat);
@@ -229,15 +210,10 @@ define(
                     dateFormat: 'yyyy-MM-dd',
                     paramFormat: 'yyyy-MM-dd',
                     rawValue: new Date(),
-                    calType: 'sel' // 日历类型，另外还支持‘input’ ‘label'
+                    calType: 'sel' // 日历类型，另外还支持'input' 'label'
                 };
                 lib.extend(properties, options);
                 lib.extend(this, properties);
-
-                this.month = parseInt(this.month, 10)
-                    || this.rawValue.getMonth();
-                this.year = parseInt(this.year, 10)
-                    || this.rawValue.getFullYear();
             },
 
 
@@ -275,16 +251,16 @@ define(
                 );
 
                 helper.addDOMEvent(
-                    this, this.main, 'click',
+                    this, this.main, 'mousedown',
                     lib.bind(mainClick, null, this)
                 );
 
                 var close = lib.bind(closeLayer, null, this);
-                lib.on(document, 'click', close);
+                lib.on(document, 'mousedown', close);
                 this.on(
                     'afterdispose',
                     function () {
-                        lib.un(document, 'click', close);
+                        lib.un(document, 'mousedown', close);
                     }
                 );
 
@@ -300,9 +276,9 @@ define(
             createMain: function (options) {
                 var calType = options.calType;
                 if (calType == 'label') {
-                    return document.createElement('DIV');
+                    return document.createElement('div');
                 }
-                return document.createElement('DIV');
+                return document.createElement('div');
             },
 
             /**
@@ -317,9 +293,7 @@ define(
                     name: 'rawValue',
                     paint: function (calendar, value) {
                         // 更新主显示
-                        updateMain(calendar, value);
-                        calendar.month = calendar.rawValue.getMonth();
-                        calendar.year = calendar.rawValue.getFullYear();
+                        updateMain(calendar);
                         if (calendar.layer) {
                             // 更新日历
                             var monthView = calendar.getChild('monthView');
@@ -356,12 +330,13 @@ define(
             },
 
             /**
-             * 获取日期字符串
+             * 将value从原始格式转换成string
              * 
-             * @return {string} 
+             * @param {*} rawValue 原始值
+             * @return {string}
              */
-            getValue: function () {
-                return lib.date.format(this.rawValue, this.paramFormat) || null;
+            stringifyValue: function (rawValue) {
+                return lib.date.format(rawValue, this.paramFormat) || null;
             }
         };
 

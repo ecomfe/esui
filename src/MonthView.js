@@ -12,7 +12,7 @@ define(
         require('./Panel');
         var lib = require('./lib');
         var helper = require('./controlHelper');
-        var InputControl = require('./InputControl');
+        var Control = require('./Control');
         var ui = require('./main');
 
         /**
@@ -22,7 +22,7 @@ define(
          * @param {Object} options 初始化参数
          */
         function MonthView(options) {
-            InputControl.apply(this, arguments);
+            Control.apply(this, arguments);
         }
 
         /**
@@ -80,8 +80,8 @@ define(
             var tpl = [
                 '<div class="${headClass}"><table><tr>',
                     '<td width="40" align="left">',
-                        '<div data-ui="type:Button;childName:monthBack;',
-                        'id:${monthBackId};"></div>',
+                        '<div class="${monthBackClass}" data-ui="type:Button;',
+                        'childName:monthBack;id:${monthBackId};"></div>',
                     '</td>',
                     '<td>',
                         '<div data-ui="type:Select;childName:yearSel;',
@@ -92,8 +92,8 @@ define(
                         'id:${monthSelId};width:35;"></div>',
                     '</td>',
                     '<td width="40" align="right">',
-                        '<div data-ui="type:Button;childName:monthForward;',
-                        'id:${monthForwardId};"></div>',
+                        '<div class="${monthForClass}" data-ui="type:Button;',
+                        'childName:monthForward;id:${monthForwardId};"></div>',
                     '</td>',
                 '</tr></table></div>',
                 '<div id="${monthMainId}" class="${monthMainClass}"></div>'
@@ -111,7 +111,15 @@ define(
                     monthSelId: helper.getId(monthView, 'monthSel'),
                     monthMainId: helper.getId(monthView, 'monthMain'),
                     monthMainClass:
-                        helper.getPartClasses(monthView, 'month').join(' ')
+                        helper.getPartClasses(monthView, 'month').join(' '),
+                    monthBackClass:
+                        helper.getPartClasses(
+                            monthView, 'month-back'
+                        ).join(' '),
+                    monthForClass:
+                        helper.getPartClasses(
+                            monthView, 'month-forward'
+                        ).join(' ')
                 }
             );
         }
@@ -170,8 +178,8 @@ define(
             /** 绘制表体 */
             // 日期单元的模板
             var tplItem = ''
-                + '<td year="${year}" month="${month}" '
-                + 'date="${date}" class="${className}" '
+                + '<td data-year="${year}" data-month="${month}" '
+                + 'data-date="${date}" class="${className}" '
                 + 'id="${id}">${date}</td>';
 
             var index = 0;
@@ -218,9 +226,6 @@ define(
                 virtual && (currentClass += ' ' + virClass);
                 disabled && (currentClass += ' ' + disabledClass);
 
-                + '<td year="${year}" month="${month}" '
-                + 'date="${date}" class="${className}" '
-                + 'id="${id}">${date}</td>';
                 html.push(
                     lib.format(
                         tplItem,
@@ -294,9 +299,9 @@ define(
          * @param {Element} item dom元素td.
          */
         function selectByItem(monthView, item) {
-            var date = item.getAttribute('date');
-            var month = item.getAttribute('month');
-            var year = item.getAttribute('year');
+            var date = item.getAttribute('data-date');
+            var month = item.getAttribute('data-month');
+            var year = item.getAttribute('data-year');
             change(monthView, new Date(year, month, date));
         }
 
@@ -321,18 +326,16 @@ define(
          * 绘制浮动层内的日历部件
          * @inner
          * @param {MonthView} monthView MonthView控件实例
-         * @param {number} opt_year 年.
-         * @param {number} opt_month 月.
+         * @param {number} year 年.
+         * @param {number} month 月.
          */
-        function repaintMonthView(monthView, optYear, optMonth) {
-            var year = monthView.year;
-            var month = monthView.month;
-
-            if (optYear != null) {
-                year = optYear;
+        function repaintMonthView(monthView, year, month) {
+            if (year == null) {
+                year = monthView.year;
             }
-            if (optMonth != null) {
-                month = optMonth;
+
+            if (month == null) {
+                month = monthView.month;
             }
 
             var me = monthView;
@@ -384,7 +387,7 @@ define(
          */
         function updateSelectState(monthView, oldValue) {
             var me = monthView;
-            if (oldValue && oldValue instanceof Date) {
+            if (oldValue) {
                 resetSelected(me, oldValue);
             }
             paintSelected(me);
@@ -418,9 +421,10 @@ define(
             var me = monthView;
             if (me.rawValue) {
                 var item = lib.g(getItemId(me, me.rawValue));
-                item && lib.addClasses(
-                    item,
-                    helper.getPartClasses(me, 'month-item-selected')
+                item && helper.addPartClasses(
+                    me,
+                    'month-item-selected',
+                    item
                 );
             }
         }
@@ -456,7 +460,6 @@ define(
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
             repaintMonthView(monthView, year, monthView.month);
-            monthView.fire('yearChange');
 
         }
 
@@ -471,7 +474,6 @@ define(
             var month = parseInt(monthSel.getValue(), 10);
             monthView.month = month;
             repaintMonthView(monthView, monthView.year, month);
-            monthView.fire('monthChange');
         }
 
         MonthView.prototype = {
@@ -494,7 +496,6 @@ define(
                  * 默认选项配置
                  */
                 var properties = {
-                    now: new Date(),
                     range: {
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
@@ -504,7 +505,7 @@ define(
                     rawValue: new Date()
                 };
                 lib.extend(properties, options);
-                lib.extend(this, properties);
+                this.setProperties(properties);
 
                 this.month = parseInt(this.month, 10)
                     || this.rawValue.getMonth();
@@ -534,20 +535,18 @@ define(
 
                 //向后按钮
                 var monthBack = this.getChild('monthBack');
-                lib.addClasses(
-                    monthBack.main,
-                    helper.getPartClasses(this, 'month-back')
+                monthBack.on(
+                    'click',
+                    lib.bind(goToPrevMonth, null, this)
                 );
-                monthBack.onclick = lib.bind(goToPrevMonth, null, this);
 
 
                 //向前按钮
                 var monthForward = this.getChild('monthForward');
-                lib.addClasses(
-                    monthForward.main,
-                    helper.getPartClasses(this, 'month-forward')
+                monthForward.on(
+                    'click',
+                    lib.bind(goToNextMonth, null, this)
                 );
-                monthForward.onclick = lib.bind(goToNextMonth, null, this);
 
                 var monthSel = this.getChild('monthSel');
                 monthSel.on(
@@ -642,7 +641,7 @@ define(
             }
         };
 
-        lib.inherits(MonthView, InputControl);
+        lib.inherits(MonthView, Control);
         ui.register(MonthView);
 
         return MonthView;

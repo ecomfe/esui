@@ -45,15 +45,10 @@
 /**
  * 基础按钮样式状态
  */
-.ui-button-hover,
-.ui-button-press, 
-.ui-button-active {
-    border:1px solid #888f9b;
-}
-
-
-.ui-button-press,
-.ui-button-active {
+ .ui-button:hover {
+     cursor: pointer;
+ }
+.ui-button:active {
     border:1px solid #BEBEBE;
     height:23px;
     .linear-gradient-background (top, #f6f6f6, #ffffff, "", 0, 0, #f6f6f6);
@@ -74,41 +69,47 @@
 }
 
 /** 春天系列 */
-.skin-button-spring,
-.skin-button-spring-add {
+.skin-spring-button,
+.skin-spring-add-button {
     border:1px solid #519D30;
     height:26px;
     line-height: 26px;
     color: white;
     font-weight: bold;
 }
-.skin-button-spring {
+.skin-spring-button {
     .linear-gradient-background (top, #6cbb4c, #519c30, "", 0, 0, #65b445);
     padding: 0 10px;
 }
-.skin-button-spring-add {
+.skin-spring-add-button {
     .linear-gradient-background (
         top, #6cbb4c, #519c30, "dn-ui-button-plus.gif", 9px, 7px, #65b445);
     width: 40px;
     padding: 0 13px 0 27px;
 }
 
-.skin-button-spring-press,
-.skin-button-spring-add-press {
+.skin-spring-button:active,
+.skin-spring-add-button:active {
     border:1px solid #509c2f;
     height:26px;
+}
+.skin-spring-button:active {
+    .linear-gradient-background (
+        top, #519c30, #6cbb4c, "", 0, 0, #65b445);
+}
+.skin-spring-add-button:active {
     .linear-gradient-background (
         top, #519c30, #6cbb4c, "dn-ui-button-plus.gif", 9px, 7px, #65b445);
 }
 
-.skin-button-spring-hover,
-.skin-button-spring-add-hover {
+.skin-spring-butto:hover,
+.skin-spring-add-button:hover {
     border:1px solid #157106;
 }
 
 
 /** 下载系列 */
-.skin-button-download {
+.skin-download-button {
     .linear-gradient-background (
         top, #FFF, #f6f6f6, "download.png", 40px, center, #65b445);
     height: 23px;
@@ -117,4 +118,25 @@
     padding-left: 12px;
     padding-right: 25px;
     width: 25px;
+}
+
+/** 关闭layer按钮 */
+.skin-layerClose-button {
+    background: url("../img/esui.png") repeat scroll -37px -88px transparent;
+    border: 0 none;
+    height: 12px;
+    overflow: hidden;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 12px;
+    padding: 0;
+}
+.skin-layerClose-button:active {
+    background: url("../img/esui.png") repeat scroll -37px -88px transparent;
+    border: 1px solid #f6f6f6;
+    height: 12px;
+    width: 12px;
+    right: 4px;
+    top: 4px;
 }

@@ -8,6 +8,7 @@
 
 define(
     function (require) {
+        var lib = require('./lib');
         var Control = require('./Control');
 
         /**
@@ -43,7 +44,6 @@ define(
          */
         Label.prototype.initOptions = function (options) {
             var properties = {};
-            var lib = require('./lib');
             lib.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             if (options.text == null) {
@@ -66,7 +66,6 @@ define(
         Label.prototype.repaint = function (changes) {
             changes = changes || allProperties;
 
-            var lib = require('./lib');
             var shouldRepaint = false;
             for (var i = 0; i < changes.length; i++) {
                 var record = changes[i];
@@ -122,7 +121,7 @@ define(
             return this.title;
         };
 
-        require('./lib').inherits(Label, Control);
+        lib.inherits(Label, Control);
         require('./main').register(Label);
         return Label;
     }

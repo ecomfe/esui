@@ -1,5 +1,6 @@
 define(
     function (require) {
+        var lib = require('./lib');
         var Panel = require('./Panel');
 
         /**
@@ -36,7 +37,7 @@ define(
          */
         Form.prototype.initOptions = function (options) {
             var properties = {};
-            require('./lib').extend(properties, options);
+            lib.extend(properties, options);
             properties.tagName = 'form';
             Panel.prototype.initOptions.call(this, properties);
             this.action = this.main.getAttribute('action');
@@ -73,7 +74,7 @@ define(
             return store;
         };
 
-        require('./lib').inherits(Form, Panel);
+        lib.inherits(Form, Panel);
         require('./main').register(Form);
         return Form;
     }

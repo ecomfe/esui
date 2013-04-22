@@ -2,15 +2,16 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>MonthView - ESUI Demo</title>
+        <title>RangeCalendar - ESUI Demo</title>
         <script src="loader/esl.js"></script>
         <script src="loader/config.js"></script>
         <link rel="stylesheet" href="demo.css" />
     </head>
     <body>
-        <header>MonthView</header>
+        <header>RangeCalendar</header>
         <div class="container">
-            <div data-ui="type:MonthView;id:test;"/>
+            <div data-ui-type="RangeCalendar" data-ui-name="test"
+                data-ui="id:test;paramValue:201303020000,20130402235959;"/>
         </div>
         <script>
         require(
@@ -18,14 +19,15 @@
                 'esui', 
                 'esui/Select',
                 'esui/MonthView',
+                'esui/RangeCalendar',
                 'css!esui/css/main.css',
                 'css!esui/css/Button.css',
                 'css!esui/css/Select.css',
-                'css!esui/css/MonthView.css'
+                'css!esui/css/MonthView.css',
+                'css!esui/css/RangeCalendar.css'
             ],
             function (ui) {
-                var monthView = ui.init()[0];
-                //monthView.setRawValue(new Date(2013, 3, 19));
+                var calendar = ui.init()[0];
             }
         )
         </script>

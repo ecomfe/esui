@@ -1,5 +1,8 @@
 define(
     function (require) {
+        var lib = require('./lib');
+        var helper = require('./controlHelper');
+
         var painters = {};
 
         // 这些属性不用加`px`
@@ -15,12 +18,12 @@ define(
             paddingTop: true, 
             paddingRight: true,
             paddingBottom: true,
-            paddingTop: true,
+            paddingLeft: true,
             margin: true,
             marginTop: true,
             marginRight: true,
             marginBottom: true,
-            marginTop: true,
+            marginLeft: true,
             borderWidth: true,
             borderTopWidth: true,
             borderRightWidth: true,
@@ -39,6 +42,9 @@ define(
                 name: name,
                 property: property || name,
                 paint: function (control, value) {
+                    if (value == null) {
+                        return;
+                    }
                     if (unitProperties.hasOwnProperty(this.property)) {
                         value = value === 0 ? '0' : value + 'px';
                     }
@@ -51,21 +57,24 @@ define(
          * 修改指定成员的`innerHTML`
          *
          * @param {string} name 指定负责的属性名
-         * @param {string=} member 指定成员，默认为`main`
+         * @param {string=|function=} element 指定DOM元素在当前控件下的id，
+         * 注意这个id并不是DOM元素的真实id，而是控件的id之后的部分，默认为空字符串
          * @param {function=} generate 指定生成HTML的函数
          */
-        painters.html = function (name, member, generate) {
+        painters.html = function (name, element, generate) {
             return {
                 name: name,
-                member: member || 'main',
+                element: element || '',
                 generate: generate,
                 paint: function (control, value) {
-                    var element = control[this.member];
+                    var element = typeof this.element === 'function'
+                        ? this.element(control)
+                        : lib.g(helper.getId(control, this.element));
                     var html = typeof this.generate === 'function'
                         ? this.generate(control, value)
                         : value;
                     if (element) {
-                        element.innerHTML = html;
+                        element.innerHTML = html || '';
                     }
                 }
             };
@@ -75,22 +84,24 @@ define(
          * 修改指定成员的`innerText`
          *
          * @param {string} name 指定负责的属性名
-         * @param {string=} member 指定成员，默认为`main`
+         * @param {string=|function=} element 指定成员，默认为空字符串
          * @param {function=} generate 指定生成HTML的函数，
          * 该函数只返回HTML，不需要转义
          */
-        painters.text = function (name, member, generate) {
+        painters.text = function (name, element, generate) {
             return {
                 name: name,
-                member: member || 'main',
+                element: element || 'main',
                 generate: generate,
                 paint: function (control, value) {
-                    var element = control[this.member];
+                    var element = typeof this.element === 'function'
+                        ? this.element(control)
+                        : lib.g(helper.getId(control, this.element));
                     var html = typeof this.generate === 'function'
                         ? this.generate(control, value)
                         : value;
                     if (element) {
-                        element.innerHTML = require('./lib').encodeHTML(html);
+                        element.innerHTML = lib.encodeHTML(html || '');
                     }
                 }
             };

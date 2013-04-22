@@ -30,23 +30,30 @@ define(
          *
          * @param {Event} e 事件对象
          */
-        function handleCommand(e) {
-            var e = e || window.event;
-            var cur = e.target || e.srcElement;
-            while(cur){
-                if ( cur.nodeType === 1 && ( cur.disabled !== true || e.type !== "click" ) ) {
-                    var commandName = cur.getAttribute( 'data-command' );
-                    if( commandName ){
-                        var args = cur.getAttribute( 'data-command-args' );
+        Command.prototype.handleCommand = function (e) {
+            var target = e.target;
+            while (target && target !== this.main) {
+                if (target.nodeType === 1 
+                    && (target.disabled !== true || e.type !== 'click')
+                ) {
+                    var commandName = target.getAttribute('data-command');
+                    if (commandName) {
+                        var args = target.getAttribute('data-command-args');
                         this.fire(
                             'command', 
-                            { name: commandName, triggerType: e.type, args: args, element: cur, e : e }
+                            {
+                                name: commandName, 
+                                triggerType: e.type, 
+                                args: args, 
+                                element: target, 
+                                e : e
+                            }
                         );
                     }
                 }
-                cur = cur.parentNode ;   
+                target = target.parentNode;
             }
-        }
+        };
 
         /**
          * 激活扩展
@@ -54,15 +61,13 @@ define(
          * @public
          */
         Command.prototype.activate = function () {
-            this.handler = handleCommand ;
-
             var helper = require('../controlHelper');
             for (var i = 0; i < this.events.length; i++) {
                 helper.addDOMEvent(
                     this.target, 
                     this.target.main, 
                     this.events[i], 
-                    this.handler
+                    this.handleCommand
                 );
             }
 
@@ -81,7 +86,7 @@ define(
                     this.target, 
                     this.target.main, 
                     this.events[i], 
-                    this.handler
+                    this.handleCommand
                 );
             }
             this.handler = null;
@@ -117,8 +122,8 @@ define(
                 map = {};
                 for (var i = 0; i < config.length; i++) {
                     var item = config[i];
-                    var name = item.type
-                        ? item.type + ':' + item.name
+                    var name = item.triggerType
+                        ? item.triggerType + ':' + item.name
                         : item.name;
                     map[name] = item.handler;
                 }

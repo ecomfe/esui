@@ -342,40 +342,40 @@ define(
             repaint: helper.createRepaint(
                 {
                     name: 'height',
-                    paint: function (calendar, value) {
-                        calendar.main.style.height = value + 'px';
-                        if (calendar.isShow) {
-                            resizeHandler(calendar);
+                    paint: function (dialog, value) {
+                        dialog.main.style.height = value + 'px';
+                        if (dialog.isShow) {
+                            resizeHandler(dialog);
                         }
                     }
                 },
                 {
                     name: 'width',
-                    paint: function (calendar, value) {
-                        calendar.main.style.width = value + 'px';
-                        if (calendar.isShow) {
-                            resizeHandler(calendar);
+                    paint: function (dialog, value) {
+                        dialog.main.style.width = value + 'px';
+                        if (dialog.isShow) {
+                            resizeHandler(dialog);
                         }
                     }
                 },
                 {
                     name: 'title',
-                    paint: function (calendar, value) {
-                        var titleId = helper.getId(calendar, 'title');
+                    paint: function (dialog, value) {
+                        var titleId = helper.getId(dialog, 'title');
                         lib.g(titleId).innerHTML = value;
                     }
                 },
                 {
                     name: 'content',
-                    paint: function (calendar, value) {
+                    paint: function (dialog, value) {
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
                             + '</div>';
                         // 获取body panel
-                        var body = calendar.getBody();
-                        var bodyId = helper.getId(calendar, 'body');
-                        var bodyClass = helper.getPartClasses(calendar, 'body');
+                        var body = dialog.getBody();
+                        var bodyId = helper.getId(dialog, 'body');
+                        var bodyClass = helper.getPartClasses(dialog, 'body');
                         var data = {
                             'class': bodyClass.join(' '),
                             'id': bodyId,
@@ -483,8 +483,7 @@ define(
              */
             show: function () {
                 var mask = this.mask;
-
-                if (helper.isInStage(this, 'RENDERED')) {
+                if (helper.isInStage(this, 'INITED')) {
                     this.render();
                 }
 
@@ -681,8 +680,14 @@ define(
             var cancelBtn = dialog.getFoot().getChild('btnCancel');
             okBtn.setContent(Dialog.OK_TEXT);
             cancelBtn.setContent(Dialog.CANCEL_TEXT);
-            okBtn.onclick = getBtnClickHandler(onok, index);
-            cancelBtn.onclick = getBtnClickHandler(oncancel, index);
+            okBtn.on(
+                'click',
+                getBtnClickHandler(onok, index)
+            );
+            cancelBtn.on(
+                'click',
+                getBtnClickHandler(oncancel, index)
+            );
 
         };
 
@@ -762,7 +767,10 @@ define(
             
             dialog.show();
             var okBtn = dialog.getFoot().getChild('okBtn');
-            okBtn.onclick = getBtnClickHandler(onok, index);
+            okBtn.on(
+                'click',
+                getBtnClickHandler(onok, index)
+            );
         }; 
 
         require('./lib').inherits(Dialog, Control);
