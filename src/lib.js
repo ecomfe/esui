@@ -485,6 +485,24 @@ define(function () {
         return newElement;
     };
 
+    /**
+     * 获取子元素
+     * @param {HTMLElement} element 目标元素
+     * @param {Array.<HTMLElement>} 目标元素的所有子元素
+     */
+    lib.getChildren = function (element) {
+        var children = element.children;
+        var result = [];
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (child.nodeType === 1) {
+                result.push(child);
+            }
+        }
+
+        return result;
+    };
+
 
     lib.getComputedStyle = function (element, key) {
         var doc = element.nodeType == 9 

@@ -22,6 +22,22 @@ define(function (require) {
             });
         });
 
+        describe('created via HTML', function () {
+            it('should extract config from each `<li>` child element if `path` is not given and the main element is not empty', function () {
+                var html = [
+                    '<ol data-ui="type: Wizard; id: test;">',
+                        '<li data-for="a"><span>1</span></li>',
+                        '<li data-for="b"><span>2</span></li>',
+                        '<li><span>3</span></li>',
+                    '</ol>'
+                ];
+                container.innerHTML = html;
+                require('esui').init(container);
+                var wizard = require('esui').get('test');
+                expect(wizard.get('steps')).toEqual(steps);
+            });
+        });
+
         describe('generally', function () {
             it('should assign an empty array to `steps` property if not given', function () {
                 var wizard = new Wizard();

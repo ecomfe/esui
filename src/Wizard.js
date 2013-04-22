@@ -38,6 +38,20 @@ define(
                 steps: [],
                 activeIndex: 0
             };
+
+            var children = lib.getChildren(this.main);
+            if (!options.path && children.length) {
+                for (var i = 0; i < children.length; i++) {
+                    var node = children[i];
+                    var config = { text: lib.getText(node) };
+                    var panel = node.getAttribute('data-for');
+                    if (panel) {
+                        config.panel = panel;
+                    }
+                    properties.steps.push(config);
+                }
+            }
+
             lib.extend(properties, options);
             this.setProperties(properties);
         };
