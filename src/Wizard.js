@@ -9,11 +9,11 @@ define(
          *
          * @constructor
          */
-        function WizardGuide() {
+        function Wizard() {
             Control.apply(this, arguments);
         }
 
-        WizardGuide.prototype.type = 'WizardGuide';
+        Wizard.prototype.type = 'Wizard';
 
         /**
          * 创建控件主元素
@@ -22,7 +22,7 @@ define(
          * @override
          * @protected
          */
-        WizardGuide.prototype.createMain = function () {
+        Wizard.prototype.createMain = function () {
             return document.createElement('ol');
         };
 
@@ -33,7 +33,7 @@ define(
          * @override
          * @protected
          */
-        WizardGuide.prototype.initOptions = function (options) {
+        Wizard.prototype.initOptions = function (options) {
             var properties = {
                 steps: [],
                 activeIndex: 0
@@ -45,7 +45,7 @@ define(
         /**
          * 控制对应面板的显示或隐藏
          *
-         * @param {WizardGuide} wizard 控件实例
+         * @param {Wizard} wizard 控件实例
          * @param {Object} config 对应的步骤配置项
          * @param {boolean} isActive 是否处于激活状态
          */
@@ -63,7 +63,7 @@ define(
         /**
          * 获取导航HTML
          *
-         * @param {WizardGuide} WizardGuide 控件实例
+         * @param {Wizard} Wizard 控件实例
          * @return {string}
          *
          * @inner
@@ -143,7 +143,7 @@ define(
          * @override
          * @protected
          */
-        WizardGuide.prototype.repaint = function (changes) {
+        Wizard.prototype.repaint = function (changes) {
             // 第一次渲染的时候同时有`steps`和`activeIndex`属性，
             // 这会导致连续执行2个`painter`，因此要特别处理改成一次
             if (!changes) {
@@ -154,7 +154,7 @@ define(
             }
         }
 
-        WizardGuide.prototype.setProperties = function (properties) {
+        Wizard.prototype.setProperties = function (properties) {
             if (properties.hasOwnProperty('steps')) {
                 // 如果同时有`activeIndex`和`steps`，
                 // 则`activeIndex`可以只赋在实例上不丢进更新列表，
@@ -185,11 +185,11 @@ define(
             }
         };
 
-        WizardGuide.prototype.getActiveStep = function () {
+        Wizard.prototype.getActiveStep = function () {
             return this.steps[this.activeIndex];
         };
 
-        WizardGuide.prototype.stepNext = function () {
+        Wizard.prototype.stepNext = function () {
             var maxStep = this.finishText 
                 ? this.steps.length 
                 : this.steps.length - 1;
@@ -198,15 +198,15 @@ define(
             }
         };
 
-        WizardGuide.prototype.stepPrevious = function () {
+        Wizard.prototype.stepPrevious = function () {
             if (this.activeIndex > 0) {
                 this.set('activeIndex',this.activeIndex - 1);
             }
         };
 
-        require('./main').register(WizardGuide);
-        lib.inherits(WizardGuide, Control);
+        require('./main').register(Wizard);
+        lib.inherits(Wizard, Control);
 
-        return WizardGuide;
+        return Wizard;
     }
 );
