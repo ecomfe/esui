@@ -238,6 +238,7 @@ define(
             var helper = require('./controlHelper');
             if (!layer) {
                 var layer = helper.layer.create('ol');
+                layer.id = helper.getId(this, 'layer');
                 layer.className = 
                     helper.getPartClasses(select, 'layer').join(' ');
                 layer.innerHTML = getLayerHTML(select);
@@ -376,7 +377,7 @@ define(
         Select.prototype.repaint = require('./controlHelper').createRepaint(
             paint.style('width'),
             paint.style('height'),
-            paint.html('datasource', 'selectionLayer', getLayerHTML),
+            paint.html('datasource', 'layer', getLayerHTML),
             {
                 name: 'disabled',
                 paint: function (select, value) {
