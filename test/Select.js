@@ -1,12 +1,12 @@
 define(function (require) {
     var Select = require('esui/Select');
     var datasource = [
-        { text: 'a', value: '1' },
-        { text: 'b', value: '2' },
-        { text: 'c', value: '3' },
-        { text: 'd', value: '4' },
-        { text: 'e', value: '5' },
-        { text: 'f', value: '6' }
+        { name: 'a', value: '1' },
+        { name: 'b', value: '2' },
+        { name: 'c', value: '3' },
+        { name: 'd', value: '4' },
+        { name: 'e', value: '5' },
+        { name: 'f', value: '6' }
     ];
 
     function findLayer() {
@@ -65,6 +65,26 @@ define(function (require) {
         });
 
         describe('generally', function () {
+            it('should accept `text` config property and treat it as `name`', function () {
+                var datasource = [
+                    { text: 'a', value: '1' }
+                ];
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                expect(findLayer().children[0].innerText).toBe('a');
+            });
+
+            it('should use `name` over `text` if both are given', function () {
+                var datasource = [
+                    { text: 'a', name: 'b', value: '1' }
+                ];
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                expect(findLayer().children[0].innerText).toBe('b');
+            });
+
             it('should have a `input[type="hidden"]` element', function () {
                 var select = new Select();
                 select.appendTo(container);

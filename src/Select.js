@@ -98,7 +98,10 @@ define(
                 var elements = this.main.getElementsByTagName('option');
                 for (var i = 0, length = elements.length; i < length; i++) {
                     var item = elements[i];
-                    var dataItem = { text: item.text, value: item.value };
+                    var dataItem = {
+                        name: item.name || item.text, 
+                        value: item.value
+                    };
 
                     properties.datasource.push(dataItem);
 
@@ -143,7 +146,7 @@ define(
                     select.selectedIndex = i;
                 }
                 var data = {
-                    text: lib.encodeHTML(item.text),
+                    text: lib.encodeHTML(item.name || item.text),
                     value: lib.encodeHTML(item.value)
                 };
                 html += lib.format(itemTemplate, data);
@@ -369,7 +372,9 @@ define(
 
             // 同步显示的文字
             var selectedItem = select.datasource[select.selectedIndex];
-            var displayText = selectedItem ? selectedItem.text : '';
+            var displayText = selectedItem 
+                ? (selectedItem.name || selectedItem.text)
+                : '';
             var textHolder = select.main.getElementsByTagName('span')[0];
             textHolder.innerHTML = lib.encodeHTML(displayText);
         }
