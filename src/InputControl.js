@@ -25,6 +25,14 @@ define(
             constructor: InputControl,
 
             /**
+             * 指定在哪些状态下该元素不处理相关的DOM事件
+             *
+             * @type {Object}
+             * @protected
+             */
+            ignoreStates: Control.prototype.ignoreStates.concat('readOnly'),
+
+            /**
              * 渲染控件
              * 
              * @override

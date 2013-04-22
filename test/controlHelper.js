@@ -170,6 +170,38 @@ define(function (require) {
                     expect(handlerB).not.toHaveBeenCalled();
                 });
             });
+
+            describe('when firing event', function () {
+                it('should not execute handlers if contorl\'s `ignoreStates` contains a state that this control currently has', function () {
+                    var control = {
+                        ignoreStates: ['none', 'disabled'],
+                        hasState: function (state) {
+                            return state === 'disabled';
+                        }
+                    };
+                    var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
+                    var handler = jasmine.createSpy();
+                    helper.addDOMEvent(control, element, 'click', handler);
+                    dispatchEvent(element, 'click');
+                    expect(handler).not.toHaveBeenCalled();
+                });
+
+                it('should execute handlers if control\'s `ignoreStates` doesn\'t contains any states this control current ly has', function () {
+                    var control = {
+                        ignoreStates: ['disabled'],
+                        hasState: function (state) {
+                            return false;
+                        }
+                    };
+                    var element = document.createElement('div');
+                    document.getElementById('container').appendChild(element);
+                    var handler = jasmine.createSpy();
+                    helper.addDOMEvent(control, element, 'click', handler);
+                    dispatchEvent(element, 'click');
+                    expect(handler).toHaveBeenCalled();
+                });
+            });
         });
     });
 });

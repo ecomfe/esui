@@ -508,6 +508,16 @@ define(
 
         function triggerDOMEvent(control, element, e) {
             e = e || window.event;
+
+            // 每个控件都能在某些状态下不处理DOM事件
+            if (control.ignoreStates) {
+                for (var i = 0; i < control.ignoreStates.length; i++) {
+                    if (control.hasState(control.ignoreStates[i])) {
+                        return;
+                    }
+                }
+            }
+
             if (!e.target) {
                 e.target = e.srcElement;
             }

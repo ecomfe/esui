@@ -65,6 +65,14 @@ define(
             constructor: Control,
 
             /**
+             * 指定在哪些状态下该元素不处理相关的DOM事件
+             *
+             * @type {Array.<string>}
+             * @protected
+             */
+            ignoreStates: ['disabled'],
+
+            /**
              * 初始化控件需要使用的选项
              *
              * @param {Object=} options 构造函数传入的选项
