@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>schedule - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>schedule</header>
+        <div class="container">
+            <h3>普通</h3>
+            <div style="width:750px;">
+                <div style="margin:10px;"><strong>日程投放控件</strong></div>
+                <div name="launchMode" data-ui="type:Schedule;id:mySchedule;"></div>
+            </div>
+            <button id='get'> 获取值 </button>
+        </div>
+    <script>
+
+        require(
+            [
+                'esui', 
+                'esui/Schedule',
+                'css!esui/css/schedule.css'
+            ],
+            function (ui) {
+                ui.init(document.body,{
+                    properties : {
+                        mySchedule: {
+                            rawValue: [
+                            [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1],
+                            [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                            [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0],
+                            [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1]
+                            ]
+                        }
+                    }   
+                });
+
+                document.getElementById('get').onclick = function() {
+                    alert(ui.get('mySchedule').getRawValue());
+                }
+
+            }
+        );
+        </script>
+    </body>
+</html>

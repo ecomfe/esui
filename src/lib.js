@@ -667,6 +667,28 @@ define(function () {
     };
 
     /**
+     * 获取鼠标位置
+     * @param event 事件对象
+     * @return void
+     */
+    lib.event.getMousePosition = function (e) {
+        var doc = document.documentElement;
+        var body = document.body;
+
+        e.pageX = e.pageX || (
+            e.clientX + 
+            (doc && doc.scrollLeft || body && body.scrollLeft || 0) - 
+            (doc && doc.clientLeft || body && body.clientLeft || 0)
+        );
+
+        e.pageY = e.pageY || (
+            e.clientY + 
+            (doc && doc.scrollTop  || body && body.scrollTop  || 0) - 
+            (doc && doc.clientTop  || body && body.clientTop  || 0)
+        );
+    };
+
+    /**
      * 组织事件冒泡
      * @param e 事件对象
      * @return {object} 获取事件目标对象

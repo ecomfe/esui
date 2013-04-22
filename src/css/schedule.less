@@ -1,0 +1,240 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 日程样式
+  * @author miaojian
+  */
+
+@import "mixin.less";
+@import "variable.less";
+@import "normalize.less";
+
+.ui-schedule {
+    font-size:12px;
+    width:710px;
+    height:236px;
+    padding:6px 0px 8px 0px;
+    background:#F7F7F7;
+    border:1px solid #CDCDCD;
+    position:relative;
+}
+
+.ui-schedule-body {
+    height: 200px;
+}
+
+.ui-schedule-head {
+    height:28px;
+    width:710px;
+    line-height:28px;
+    padding-top:10px;
+    position:relative;
+}
+
+.ui-schedule-help {
+    float:right;
+    width:200px;
+}
+.ui-schedule-help-text {
+    line-height:16px;
+    padding:2px 8px 0 3px;
+}
+
+.ui-schedule-help div{float:left;cursor:default;}
+
+.ui-schedule-shortcut {
+    float:left;
+    padding:2px 0 0 10px;
+    line-height:16px;
+}
+.ui-schedule-shortcut-item {
+    cursor:pointer;
+    color:#333;
+    display:block;
+    float:left;
+    padding: 0 10px;
+    height:20px;
+    text-align:center;
+    line-height:20px;
+    margin-right:10px;
+    border:1px solid #A8ADB6;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -o-border-radius:2px;
+    -ms-border-radius:2px;
+    border-radius:2px;
+    background:url("../../assets/img/esui.png") repeat scroll 0 0 transparent;
+}
+.ui-schedule-shortcut-item-hover,.ui-schedule-shortcut-item-press{
+    border:1px solid #888f9b;
+}
+.ui-schedule-shortcut-text-item{
+    color:#333;
+    display:block;
+    float:left;
+    width:60px;
+    height:20px;
+    line-height:20px;
+    margin-right:0px;
+}
+.ui-schedule-dayhead{
+    float:left;
+    width:65px;
+    margin:0px;
+}
+.ui-schedule-day {
+    line-height:25px;
+    padding-right:5px;
+    height:25px;
+    text-align:right;
+}
+
+.ui-schedule-seg {
+    float:left;
+    width:140px;
+}
+.ui-schedule-time,
+.ui-schedule-help-selected,
+.ui-schedule-help-unselected {
+    background:#fff;
+    border:1px solid #dcdcdc;
+    color:#E6E6E6;
+    cursor:pointer;
+    float:left;
+    font-size:12px;
+    height:23px;
+    line-height:23px;
+    text-align:center;
+    width:23px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    position:relative;
+}
+
+.ui-schedule-timehead {
+    border:0px;
+    width:50px;
+    text-align:center;
+    position:relative;
+    color:#000;
+    float:left;
+    font-size:12px;
+    height:23px;
+    line-height:23px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.ui-schedule-line {
+    height:25px;
+    padding:0px;
+    position:relative;
+    overflow:hidden;
+}
+.ui-schedule-timeline{
+    height:23px;
+    padding:0px 0px 0px 40px;
+}
+
+.ui-schedule-time-hover {
+    background:#fff;
+    border:1px solid #4fff00; /*A2D688;*/
+    color:#390;
+}
+.ui-schedule-timebody{
+    float:left;
+    margin:0px;
+    padding:0px;
+    width:600px;
+    border-top:1px solid #dcdcdc;
+    position:relative;
+}
+.ui-schedule-time-selected,
+.ui-schedule-help-selected {
+    background:#dcfacf;
+    border:1px solid #c2e8a6;
+    color:#fff;
+}
+.ui-schedule-shortcut-item-tip,
+.ui-schedule-timeitem-tip{
+    border:1px solid #a6a6a6;
+    line-height:20px;
+    padding:0px 5px; 
+}
+.ui-schedule-timeitem-tip .ui-schedule-timeitem-tipbody{
+    color:#a6a6a6;
+}
+.ui-schedule-overitem{
+    width:23px;
+    height:23px;
+    border:1px solid #f7de41;
+    cursor:pointer;
+    position:absolute;
+    top:-1px;
+    left:-1px;
+    background:#fff6bd;
+    display:none;
+}
+.ui-schedule-dragitem{
+    width:23px;
+    height:23px;
+    border:0px;
+    background:#FEFEFE;
+    opacity:0.1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=10)";  
+    filter: alpha(opacity=10);
+    -moz-opacity: 0.1;  
+    -khtml-opacity: 0.1;  
+    opacity: 0.1;
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+.ui-schedule-followitem{
+    position:absolute;
+    width:0px;
+    height:0px;
+    border:1px dotted #cc0000;
+    background:transparent;
+    top:0px;
+    left:0px;
+    display:none;
+    z-index:52;
+}
+.ui-schedule-continuecovertimes{
+    background:#dcfacf;
+    font-size:12px;
+    height:25px;
+    line-height:25px;
+    position:absolute;
+    color:#2b7a08;
+    border:0px;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=50)";  
+    filter: alpha(opacity=50);  
+    -moz-opacity: 0.5;  
+    -khtml-opacity: 0.5;  
+    opacity: 0.5;
+    margin: 0;
+}
+.ui-schedule-continuecovertimesover{
+    display:none;
+}
+.ui-schedule-coverclose{
+    position:absolute;
+    top:0px;
+    right:0px;
+    height:10px;
+    width:10px;
+    background:url("../../assets/img/uischeduleCoverClose.png") no-repeat;
+    z-index:9999;
+    cursor:pointer;
+    display:none;
+}
+.ui-schedule-covertimestip{
+    width:100%;
+    text-align:center;
+    height:25px;
+    line-height:25px;
+    border:0px;
+}
