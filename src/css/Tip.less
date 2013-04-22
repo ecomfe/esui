@@ -1,0 +1,120 @@
+@import "mixin.less";
+@import "variable.less";
+@import "common.less";
+
+.ui-tip-layer {
+    background:#fff6bd;
+    border:1px solid #d5ca81;
+    width:268px;
+    padding:0 5px;
+    margin-left:-5px;
+    margin-top:13px;
+    z-index:99999;
+}
+
+.ui-tip-title,
+.ui-tip-body {
+    padding:0;
+    margin:0;
+    font-size:12px;
+}
+
+.ui-tip-title {
+    padding-bottom:6px;
+    margin-top:5px;
+}
+
+.ui-tip-body {
+    margin-bottom:5px;
+}
+
+.ui-tip {
+    font-size:1px;
+}
+
+.ui-tip-arrow {
+    display:none;
+    position:absolute;
+    font-size:1px;
+}
+
+.ui-tip-arrow-tl {
+    display:block;
+    background:url(../img/esui_transparent.gif) -24px -12px;
+    width:12px;
+    height:13px;
+    top:-13px;
+    left:12px;
+}
+.ui-tip-arrow-tr {
+    display:block;
+    background:url(../img/esui_transparent.gif) -36px -12px;
+    width:12px;
+    height:13px;
+    top:-13px;
+    right:12px;
+}
+.ui-tip-arrow-bl {
+    display:block;
+    background:url(../img/esui_transparent.gif) -12px -12px;
+    width:12px;
+    height:13px;
+    bottom:-13px;
+    left:12px;
+}
+.ui-tip-arrow-br {
+    display:block;
+    background:url(../img/esui_transparent.gif) 0 -12px;
+    width:12px;
+    height:13px;
+    bottom:-13px;
+    right:12px;
+}
+
+.ui-tip-arrow-lt {
+    display:block;
+    background:url(../img/esui_transparent.gif) -26px 0;
+    width:13px;
+    height:12px;
+    top:7px;
+    left:-13px;
+}
+.ui-tip-arrow-lb {
+    display:block;
+    background:url(../img/esui_transparent.gif) -39px 0;
+    width:13px;
+    height:12px;
+    bottom:7px;
+    left:-13px;
+}
+.ui-tip-arrow-rt {
+    display:block;
+    background:url(../img/esui_transparent.gif);
+    width:13px;
+    height:12px;
+    top:7px;
+    right:-13px;
+}
+.ui-tip-arrow-rb {
+    display:block;
+    background:url(../img/esui_transparent.gif) -13px 0;
+    width:13px;
+    height:12px;
+    bottom:7px;
+    right:-13px;
+}
+
+.ui-tip {
+	width:14px;
+	height:14px;
+	background:url(../img/esui.png) -101px -89px;
+	overflow:hidden;
+	display:inline-block;
+	*display:inline;
+    vertical-align: middle;
+	zoom:1;
+}
+
+.ui-tip-layer-hidden {
+    display:none;
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Button - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Tip</header>
+        <div class="container" style="margin-left:100px">
+            <div data-ui="type:Tip;id:Tip;title:我是标题;content:我是内容"></div>
+            <div style="width:100px;height:100px;background:red">遮挡我</div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Control',
+                'esui/Tip',
+                'css!esui/css/main.css',
+                'css!esui/css/Tip.css'
+            ],
+            function (ui) {
+                var controls = ui.init();
+                var tip = controls[0];
+            }
+        )
+        </script>
+    </body>
+</html>
