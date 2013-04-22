@@ -1,5 +1,6 @@
 define(
     function (require) {
+        var lib = require('./lib');
         var Control = require('./Control');
 
         /**
@@ -37,7 +38,6 @@ define(
                 activeIndex: 0,
                 allowClose: false
             };
-            var lib = require('./lib');
             lib.extend(properties, options);
 
             // 如果子元素中有一个`[data-role="navigator"]`的元素，
@@ -107,7 +107,7 @@ define(
                     if (parent.children[i] === tabElement) {
                         // 如果点在关闭区域上，则移除这个元素，
                         // 其它情况为激活该元素
-                        if (require('./lib').hasClass(target, 'ui-tab-close')) {
+                        if (lib.hasClass(target, 'ui-tab-close')) {
                             tab.removeAt(i);
                         }
                         else {
@@ -127,7 +127,6 @@ define(
         Tab.prototype.initStructure = function () {
             this.navigator = document.createElement('ul');
 
-            var lib = require('./lib');
             this.main.insertBefore(
                 this.navigator, this.main.firstChild || null);
 
@@ -145,7 +144,6 @@ define(
          */
         function createTabElement(config, isActive, allowClose) {
             var tab = document.createElement('li');
-            var lib = require('./lib');
 
             if (isActive) {
                 lib.addClass(tab, 'ui-tab-active');
@@ -229,7 +227,6 @@ define(
         function activateTab(tab, index) {
             for (var i = 0; i < tab.tabs.length; i++) {
                 var config = tab.tabs[i];
-                var lib = require('./lib');
 
                 if (config.panel) {
                     var panel = lib.g(config.panel);
@@ -328,7 +325,6 @@ define(
             this.tabs.splice(index, 0, config);
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
             var tabElement = createTabElement(config, false, this.allowClose);
-            var lib = require('./lib');
             this.navigator.insertBefore(
                 tabElement, this.navigator.children[index] || null);
 
@@ -403,7 +399,7 @@ define(
 
         // TODO: 添加`allowClose`属性的控制
 
-        require('./lib').inherits(Tab, Control);
+        lib.inherits(Tab, Control);
         require('./main').register(Tab);
         return Tab;
     }

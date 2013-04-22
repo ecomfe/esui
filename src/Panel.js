@@ -8,6 +8,8 @@
 
 define(
     function (require) {
+        var lib = require('./lib');
+        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -35,7 +37,6 @@ define(
 
         Panel.prototype.initOptions = function (options) {
             var properties = {};
-            var lib = require('./lib');
             lib.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             if (options.content == null) {
@@ -51,7 +52,7 @@ define(
          * @override
          * @protected
          */
-        Panel.prototype.repaint = require('./controlHelper').createRepaint(
+        Panel.prototype.repaint = helper.createRepaint(
             {
                 name: 'content',
                 paint: function (control, value) {
@@ -71,7 +72,7 @@ define(
             this.setProperties({ content: html });
         };
 
-        require('./lib').inherits(Panel, Control);
+        lib.inherits(Panel, Control);
         require('./main').register(Panel);
         return Panel;
     }

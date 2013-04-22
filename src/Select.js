@@ -88,7 +88,6 @@ define(
                 datasource: []
             };
 
-            var lib = require('./lib');
             var properties = {};
             lib.extend(properties, defaults, options);
 
@@ -138,7 +137,6 @@ define(
             ];
             itemTemplate = itemTemplate.join('');
             var html = '';
-            var lib = require('./lib');
             for (var i = 0; i < select.datasource.length; i++) {
                 var item = select.datasource[i];
                 if (item.value == select.value) {
@@ -216,14 +214,13 @@ define(
          */
         function showLayer(select) {
             var layer = getSelectionLayer(select);
-            var helper = require('./controlHelper');
             var classes = helper.getPartClasses(select, 'layer-hidden');
             helper.layer.attachTo(
                 layer, 
                 select.main, 
                 { top: 'bottom', left: 'left', right: 'right' }
             );
-            require('./lib').removeClasses(layer, classes);
+            lib.removeClasses(layer, classes);
             select.addState('active');
         }
 
@@ -235,9 +232,8 @@ define(
         function hideLayer(select) {
             var layer = getSelectionLayer(select);
             if (layer) {
-                var helper = require('./controlHelper');
                 var classes = helper.getPartClasses(select, 'layer-hidden');
-                require('./lib').addClasses(layer, classes);
+                lib.addClasses(layer, classes);
                 select.removeState('active');
             }
         }
@@ -250,8 +246,6 @@ define(
          */
         function openLayer(select) {
             var layer = getSelectionLayer(select);
-            var lib = require('./lib');
-            var helper = require('./controlHelper');
             if (!layer) {
                 var layer = helper.layer.create('ol');
                 layer.id = helper.getId(select, 'layer');
@@ -323,9 +317,8 @@ define(
                 layer = openLayer(select);
             }
             else {
-                var helper = require('./controlHelper');
                 var classes = helper.getPartClasses(select, 'layer-hidden');
-                if (require('./lib').hasClass(layer, classes[0])) {
+                if (lib.hasClass(layer, classes[0])) {
                     showLayer(select);
                 }
                 else {
@@ -340,7 +333,6 @@ define(
          * @protected
          */
         Select.prototype.initStructure = function () {
-            var lib = require('./lib');
             // 如果主元素是`<select>`，删之替换成`<div>`
             if (this.main.nodeName.toLowerCase() === 'select') {
                 var main = this.createMain();
@@ -360,7 +352,6 @@ define(
                 { name: this.name }
             );
 
-            var helper = require('./controlHelper');
             helper.addDOMEvent(
                 this, this.main, 'click', lib.bind(toggleLayer, null, this));
         };
@@ -380,7 +371,7 @@ define(
             var selectedItem = select.datasource[select.selectedIndex];
             var displayText = selectedItem ? selectedItem.text : '';
             var textHolder = select.main.getElementsByTagName('span')[0];
-            textHolder.innerHTML = require('./lib').encodeHTML(displayText);
+            textHolder.innerHTML = lib.encodeHTML(displayText);
         }
 
         var paint = require('./painters');
@@ -391,7 +382,7 @@ define(
          * @param {Array=} 更新过的属性集合
          * @protected
          */
-        Select.prototype.repaint = require('./controlHelper').createRepaint(
+        Select.prototype.repaint = helper.createRepaint(
             paint.style('width'),
             paint.style('height'),
             paint.html('datasource', 'layer', getLayerHTML),
@@ -461,7 +452,7 @@ define(
             InputControl.prototype.dispose.apply(this, arguments);
         };
 
-        require('./lib').inherits(Select, InputControl);
+        lib.inherits(Select, InputControl);
         require('./main').register(Select);
         return Select;
     }
