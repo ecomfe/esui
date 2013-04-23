@@ -74,6 +74,33 @@ define(
             return store;
         };
 
+        function collectInputControls(control, name, type, store) {
+            if (control instanceof InputControl
+                && control.get('name') === name
+                && (!type || control.type === type)
+            ) {
+                store.push(control);
+            }
+
+            for (var i = 0; i < control.children.length; i++) {
+                collectInputControls(control, name, type, store);
+            }
+        }
+
+        /**
+         * 根据名称及可选的类型获取输入控件
+         *
+         * @param {string} name 控件的name属性
+         * @param {string=} type 控件的类型
+         * @return {Array.<Control>}
+         * @public
+         */
+        Form.prototype.getInputControlsByName = function (name, type) {
+            var store = [];
+            collectInputControls(this, name, type, store);
+            return store;
+        };
+
         lib.inherits(Form, Panel);
         require('./main').register(Form);
         return Form;
