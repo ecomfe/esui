@@ -131,6 +131,7 @@ define(
 
         var paint = require('./painters');
         var repaint = helper.createRepaint(
+            Control.prototype.repaint,
             paint.html('steps', null, getHTML),
             paint.html('finishText', null, getHTML),
             {

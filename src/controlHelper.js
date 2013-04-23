@@ -661,17 +661,24 @@ define(
         /**
          * 通过`painter`对象创建`repaint`方法
          *
-         * @param {...Object} `painter`对象
+         * @param {function=} supterRepaint 父类的`repaint`方法
+         * @param {...Object} args `painter`对象
          * @return {function} `repaint`方法的实现
          */
-        helper.createRepaint = function () {
-            var painters = [].concat.apply([], arguments);
+        helper.createRepaint = function (superRepaint) {
+            var hasSuperRepaint = typeof superRepaint === 'function';
+            var painters = [].concat.apply(
+                [], [].slice.call(arguments, hasSuperRepaint ? 1 : 0));
             var map = {};
             for (var i = 0; i < painters.length; i++) {
                 map[painters[i].name] = painters[i];
             }
 
             return function (changes) {
+                if (hasSuperRepaint) {
+                    superRepaint.apply(this, arguments);
+                }
+
                 if (!changes) {
                     for (var i = 0; i < painters.length; i++) {
                         var painter = painters[i];

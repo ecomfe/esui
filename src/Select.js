@@ -21,6 +21,7 @@ define(
          *
          * @param {Object} options 构造函数传入的参数
          * @return {HTMLElement} 主元素
+         * @override
          * @protected
          */
         Select.prototype.createMain = function (options) {
@@ -81,6 +82,7 @@ define(
          * 初始化参数
          *
          * @param {Object} options 构造函数传入的参数
+         * @override
          * @protected
          */
         Select.prototype.initOptions = function (options) {
@@ -307,14 +309,10 @@ define(
          * 根据下拉弹层当前状态打开或关闭之
          *
          * @param {Select} select Select控件实例
-         * @param {Event} 触发事件的事件对象
+         * @param {Event} e 触发事件的事件对象
          * @inner
          */
         function toggleLayer(select, e) {
-            if (select.disabled) {
-                return;
-            }
-
             var layer = getSelectionLayer(select);
             if (!layer) {
                 layer = openLayer(select);
@@ -333,6 +331,7 @@ define(
         /**
          * 初始化DOM结构
          *
+         * @override
          * @protected
          */
         Select.prototype.initStructure = function () {
@@ -385,12 +384,18 @@ define(
          * 重绘
          *
          * @param {Array=} 更新过的属性集合
+         * @override
          * @protected
          */
         Select.prototype.repaint = helper.createRepaint(
+            InputControl.prototype.repaint,
             paint.style('width'),
             paint.style('height'),
             paint.html('datasource', 'layer', getLayerHTML),
+            {
+                name: 'rawValue',
+                paint: updateValue
+            },
             {
                 name: 'disabled',
                 paint: function (select, value) {
@@ -400,8 +405,20 @@ define(
                 }
             },
             {
-                name: 'rawValue',
-                paint: updateValue
+                name: 'hidden',
+                paint: function (select, value) {
+                    if (value) {
+                        hideLayer(select);
+                    }
+                }
+            },
+            {
+                name: 'readOnly',
+                paint: function (select, value) {
+                    if (value) {
+                        hideLayer(select);
+                    }
+                }
             }
         );
 
@@ -409,6 +426,7 @@ define(
          * 批量更新属性并重绘
          *
          * @param {Object} 需更新的属性
+         * @override
          * @public
          */
         Select.prototype.setProperties = function (properties) {
@@ -433,14 +451,6 @@ define(
             }
 
             return changes;
-        };
-
-        /**
-         * 隐藏控件
-         */
-        Select.prototype.hide = function () {
-            InputControl.prototype.hide.apply(this, arguments);
-            hideLayer(this);
         };
 
         /**

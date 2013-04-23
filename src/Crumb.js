@@ -94,6 +94,7 @@ define(
          * @protected
          */
         Crumb.prototype.repaint = helper.createRepaint(
+            Control.prototype.repaint,
             paint.html('path', null, getHTML)
         );
 

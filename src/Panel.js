@@ -53,6 +53,7 @@ define(
          * @protected
          */
         Panel.prototype.repaint = helper.createRepaint(
+            Control.prototype.repaint,
             {
                 name: 'content',
                 paint: function (control, value) {

@@ -116,7 +116,6 @@ define(
                     this.initStructure();
 
                     helper.addPartClasses(this);
-                    this.setDisabled(this.disabled);
                 }
 
                 // 由子控件实现
@@ -139,6 +138,10 @@ define(
              * @protected
              */
             repaint: function (changes, changesIndex) {
+                if (!changesIndex || changesIndex.hasOwnProperty('disabled')) {
+                    var method = this.disabled ? 'addState' : 'removeState';
+                    this[method]('disabled');
+                }
             },
 
             /**
@@ -283,7 +286,6 @@ define(
              * 设置控件状态为禁用
              */
             disable: function () {
-                this.setProperties({ disabled: true });
                 this.addState('disabled');
             },
 
@@ -291,7 +293,6 @@ define(
              * 设置控件状态为启用
              */
             enable: function () {
-                this.setProperties({ disabled: false });
                 this.removeState('disabled');
             },
 
@@ -343,6 +344,9 @@ define(
                 if (!this.hasState(state)) {
                     this.states[state] = 1;
                     helper.addStateClasses(this, state);
+                    var properties = {};
+                    properties[state] = true;
+                    this.setProperties(properties);
                 }
             },
 
@@ -355,6 +359,9 @@ define(
                 if (this.hasState(state)) {
                     delete this.states[state];
                     helper.removeStateClasses(this, state);
+                    var properties = {};
+                    properties[state] = false;
+                    this.setProperties(properties);
                 }
             },
 

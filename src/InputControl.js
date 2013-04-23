@@ -21,13 +21,15 @@ define(
             Control.apply(this, arguments);
         }
 
+        var paint = require('./painters');
+
         InputControl.prototype = {
             constructor: InputControl,
 
             /**
              * 指定在哪些状态下该元素不处理相关的DOM事件
              *
-             * @type {Object}
+             * @type {Array.<string>}
              * @protected
              */
             ignoreStates: Control.prototype.ignoreStates.concat('readOnly'),
@@ -102,6 +104,36 @@ define(
                 return Control.prototype.setProperties.call(this, properties);
             },
 
+            repaint: helper.createRepaint(
+                Control.prototype.repaint,
+                {
+                    name: 'disabled',
+                    paint: function (control, value) {
+                        var nodeName = control.main.nodeName.toLowerCase();
+                        if (nodeName === 'input'
+                            || nodeName === 'select'
+                            || nodeName === 'textarea'
+                        ) {
+                            control.main.disabled = value;
+                        }
+                    }
+                },
+                {
+                    name: 'readOnly',
+                    paint: function (control, value) {
+                        var method = value ? 'addState' : 'removeState';
+                        control[method]('readOnly');
+                        var nodeName = control.main.nodeName.toLowerCase();
+                        if (nodeName === 'input'
+                            || nodeName === 'select'
+                            || nodeName === 'textarea'
+                        ) {
+                            control.main.readOnly = value;
+                        }
+                    }
+                }
+            ),
+
             /**
              * 将value从原始格式转换成string
              * 复杂类型的输入控件需要override此接口
@@ -129,48 +161,12 @@ define(
             },
 
             /**
-             * 设置控件状态为禁用
-             * 
-             * @override
-             */
-            disable: function () {
-                var nodeName = this.main.nodeName.toLowerCase();
-                if (nodeName === 'input'
-                    || nodeName === 'select'
-                    || nodeName === 'textarea'
-                ) {
-                    this.main.disabled = true;
-                }
-                Control.prototype.disable.call(this);
-            },
-
-            /**
-             * 设置控件状态为启用
-             * 
-             * @override
-             */
-            enable: function () {
-                var nodeName = this.main.nodeName.toLowerCase();
-                if (nodeName === 'input'
-                    || nodeName === 'select'
-                    || nodeName === 'textarea'
-                ) {
-                    this.main.disabled = false;
-                }
-                Control.prototype.enable.call(this);
-            },
-
-            /**
              * 设置控件的只读状态
              * 
              * @param {boolean} readOnly 是否只读
              */
             setReadOnly: function (readOnly) {
                 readOnly = !!readOnly;
-
-                var main = this.main;
-                main && (main.readOnly = readOnly);
-
                 this[readOnly ? 'addState' : 'removeState']('readOnly');
             },
 

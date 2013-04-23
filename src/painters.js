@@ -32,6 +32,21 @@ define(
         };
 
         /**
+         * 修改状态
+         *
+         * @param {string} name 指定负责的属性名，同时也是状态名称
+         */
+        painters.state = function (name) {
+            return {
+                name: name,
+                paint: function (control, value) {
+                    var method = value ? 'addState' : 'removeState';
+                    control[method](this.name);
+                }
+            };
+        };
+
+        /**
          * 修改`main`元素的样式
          *
          * @param {string} name 指定负责的属性名

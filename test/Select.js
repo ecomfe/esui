@@ -278,109 +278,147 @@ define(function (require) {
             });
 
             it('should hide the layer when itself is set to hidden even if the layer is previously shown', function () {
-                    var select = new Select({ datasource: datasource });
-                    select.appendTo(container);
-                    dispatchEvent(select.main, 'click');
-                    var layer = findLayer();
-                    expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
-                    select.hide();
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
+                select.hide();
+                expect(layer.className).toMatch(/ui-select-layer-hidden/);
+            });
+        });
+
+        describe('when disabled', function () {
+            it('should not open the layer when clicked', function () {
+                var select = new Select({ datasource: datasource, disabled: true });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                if (layer) {
                     expect(layer.className).toMatch(/ui-select-layer-hidden/);
+                }
             });
 
-            describe('when disabled', function () {
-                it('should not open the layer when clicked', function () {
-                    var select = new Select({ datasource: datasource, disabled: true });
-                    select.appendTo(container);
-                    dispatchEvent(select.main, 'click');
-                    var layer = findLayer();
-                    if (layer) {
-                        expect(layer.className).toMatch(/ui-select-layer-hidden/);
-                    }
-                });
-
-                it('must hide the layer even if the layer is previous set to visible', function () {
-                    var select = new Select({ datasource: datasource });
-                    select.appendTo(container);
-                    dispatchEvent(select.main, 'click');
-                    var layer = findLayer();
-                    expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
-                    select.disable();
-                    expect(layer.className).toMatch(/ui-select-layer-hidden/);
-                });
-
-                it('should repaint as normal when properties changed', function () {
-                    var select = new Select({ datasource: datasource, disable: true });
-                    select.appendTo(container);
-                    select.setProperties({ value: '3' });
-                    expect(select.getValue()).toBe('3');
-                    expect(container.getElementsByTagName('span')[0].innerHTML).toBe('c');
-                });
-
-                it('should return to normal after enabled again', function () {
-                    var select = new Select({ datasource: datasource, disable: true });
-                    select.appendTo(container);
-                    select.enable();
-                    dispatchEvent(select.main, 'click');
-                    var layer = findLayer();
-                    expect(layer).toBeDefined();
-                });
-
+            it('must hide the layer even if the layer is previous set to visible', function () {
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
+                select.disable();
+                expect(layer.className).toMatch(/ui-select-layer-hidden/);
             });
 
-            describe('`change` event', function () {
-                it('should fire if `value` is changed', function () {
-                    var select = new Select({ datasource: datasource, value: '2' });
-                    var spy = jasmine.createSpy();
-                    select.on('change', spy);
-                    select.appendTo(container);
-                    select.setProperties({ value: '3' });
-                    expect(spy).toHaveBeenCalled();
-                });
+            it('should repaint as normal when properties changed', function () {
+                var select = new Select({ datasource: datasource, disabled: true });
+                select.appendTo(container);
+                select.setProperties({ value: '3' });
+                expect(select.getValue()).toBe('3');
+                expect(container.getElementsByTagName('span')[0].innerHTML).toBe('c');
+            });
 
-                it('should fire if `rawValue` is changed', function () {
-                    var select = new Select({ datasource: datasource, value: '2' });
-                    var spy = jasmine.createSpy();
-                    select.on('change', spy);
-                    select.appendTo(container);
-                    select.setProperties({ rawValue: '3' });
-                    expect(spy).toHaveBeenCalled();
-                });
+            it('should return to normal after enabled again', function () {
+                var select = new Select({ datasource: datasource, disabled: true });
+                select.appendTo(container);
+                select.enable();
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer).toBeDefined();
+            });
+        });
 
-                it('should fire if `selectedIndex` is changed', function () {
-                    var select = new Select({ datasource: datasource, value: '2' });
-                    var spy = jasmine.createSpy();
-                    select.on('change', spy);
-                    select.appendTo(container);
-                    select.setProperties({ selectedIndex: 2 });
-                    expect(spy).toHaveBeenCalled();
-                });
+        describe('when readOnly', function () {
+            it('should not open the layer when clicked', function () {
+                var select = new Select({ datasource: datasource, readOnly: true });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                if (layer) {
+                    expect(layer.className).toMatch(/ui-select-layer-hidden/);
+                }
+            });
 
-                it('should not fire if `value` is given the same as previous', function () {
-                    var select = new Select({ datasource: datasource, value: '2' });
-                    var spy = jasmine.createSpy();
-                    select.on('change', spy);
-                    select.appendTo(container);
-                    select.setProperties({ value: '2' });
-                    expect(spy).not.toHaveBeenCalled();
-                });
+            it('must hide the layer even if the layer is previous set to visible', function () {
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
+                select.setReadOnly(true);
+                expect(layer.className).toMatch(/ui-select-layer-hidden/);
+            });
 
-                it('should not fire if `rawValue` is given the same as previous', function () {
-                    var select = new Select({ datasource: datasource, value: '2' });
-                    var spy = jasmine.createSpy();
-                    select.on('change', spy);
-                    select.appendTo(container);
-                    select.setProperties({ rawValue: '2' });
-                    expect(spy).not.toHaveBeenCalled();
-                });
+            it('should repaint as normal when properties changed', function () {
+                var select = new Select({ datasource: datasource, readOnly: true });
+                select.appendTo(container);
+                select.setProperties({ value: '3' });
+                expect(select.getValue()).toBe('3');
+                expect(container.getElementsByTagName('span')[0].innerHTML).toBe('c');
+            });
 
-                it('should not fire if `selectedIndex` is given the same as previous', function () {
-                    var select = new Select({ datasource: datasource, value: '2' });
-                    var spy = jasmine.createSpy();
-                    select.on('change', spy);
-                    select.appendTo(container);
-                    select.setProperties({ selectedIndex: 1 });
-                    expect(spy).not.toHaveBeenCalled();
-                });
+            it('should return to normal after enabled again', function () {
+                var select = new Select({ datasource: datasource, readOnly: true });
+                select.appendTo(container);
+                select.enable();
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                expect(layer).toBeDefined();
+            });
+        });
+
+        describe('`change` event', function () {
+            it('should fire if `value` is changed', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.setProperties({ value: '3' });
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should fire if `rawValue` is changed', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.setProperties({ rawValue: '3' });
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should fire if `selectedIndex` is changed', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.setProperties({ selectedIndex: 2 });
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should not fire if `value` is given the same as previous', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.setProperties({ value: '2' });
+                expect(spy).not.toHaveBeenCalled();
+            });
+
+            it('should not fire if `rawValue` is given the same as previous', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.setProperties({ rawValue: '2' });
+                expect(spy).not.toHaveBeenCalled();
+            });
+
+            it('should not fire if `selectedIndex` is given the same as previous', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.setProperties({ selectedIndex: 1 });
+                expect(spy).not.toHaveBeenCalled();
             });
         });
     });
