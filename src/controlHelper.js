@@ -674,32 +674,56 @@ define(
                 map[painters[i].name] = painters[i];
             }
 
-            return function (changes) {
+            return function (changes, changesIndex) {
                 if (hasSuperRepaint) {
                     superRepaint.apply(this, arguments);
                 }
 
-                if (!changes) {
-                    for (var i = 0; i < painters.length; i++) {
-                        var painter = painters[i];
-                        painter.paint(this, this[painter.name]);
-                    }
-                    return [];
-                }
-                else {
-                    var unpainted = [];
-                    for (var i = 0; i < changes.length; i++) {
-                        var record = changes[i];
-                        var painter = map[record.name];
-                        if (painter && typeof painter.paint === 'function') {
-                            painter.paint(this, record.newValue);
+                // 临时索引，不能直接修改`changesIndex`，会导致子类的逻辑错误
+                var index = changesIndex ? lib.clone(changesIndex) : {};
+                for (var i = 0; i < painters.length; i++) {
+                    var painter = painters[i];
+                    var propertyNames = [].concat(painter.name);
+
+                    // 以下2种情况下要调用：
+                    // 
+                    // - 第一次重会（没有`changes`）
+                    // - `changesIndex`有任何一个负责的属性的变化
+                    var shouldPaint = !changes;
+                    if (!shouldPaint) {
+                        for (var j = 0; j < propertyNames.length; j++) {
+                            var name = propertyNames[j];
+                            if (changesIndex.hasOwnProperty(name)) {
+                                shouldPaint = true;
+                                break;
+                            }
                         }
-                        else {
-                            unpainted.push(record);
-                        }
                     }
-                    return unpainted;
+                    if (!shouldPaint) {
+                        continue;
+                    }
+
+                    // 收集所有属性的值
+                    var properties = [this];
+                    for (var j = 0; j < propertyNames.length; j++) {
+                        var name = propertyNames[j];
+                        properties.push(this[name]);
+                        // 从索引中删除，为了后续构建`unpainted`数组
+                        delete index[name]; 
+                    }
+                    // 绘制
+                    painter.paint.apply(painter, properties);
                 }
+
+                // 构建出未渲染的属性集合
+                var unpainted = [];
+                for (var key in index) {
+                    if (index.hasOwnProperty(key)) {
+                        unpainted.push(index[key]);
+                    }
+                }
+
+                return unpainted;
             };
         };
 

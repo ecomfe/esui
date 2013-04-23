@@ -397,25 +397,9 @@ define(
                 paint: updateValue
             },
             {
-                name: 'disabled',
-                paint: function (select, value) {
-                    if (value) {
-                        hideLayer(select);
-                    }
-                }
-            },
-            {
-                name: 'hidden',
-                paint: function (select, value) {
-                    if (value) {
-                        hideLayer(select);
-                    }
-                }
-            },
-            {
-                name: 'readOnly',
-                paint: function (select, value) {
-                    if (value) {
+                name: ['disabled', 'hidden', 'readOnly'],
+                paint: function (select, disabled, hidden, readOnly) {
+                    if (disabled || hidden || readOnly) {
                         hideLayer(select);
                     }
                 }

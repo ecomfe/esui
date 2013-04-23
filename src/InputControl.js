@@ -21,8 +21,6 @@ define(
             Control.apply(this, arguments);
         }
 
-        var paint = require('./painters');
-
         InputControl.prototype = {
             constructor: InputControl,
 
