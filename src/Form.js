@@ -36,11 +36,14 @@ define(
          * @protected
          */
         Form.prototype.initOptions = function (options) {
-            var properties = {};
-            lib.extend(properties, options);
-            properties.tagName = 'form';
-            Panel.prototype.initOptions.call(this, properties);
-            this.action = this.main.getAttribute('action');
+            Panel.prototype.initOptions.call(this, options);
+            if (this.main.nodeName.toLowerCase() === 'form') {
+                this.action = this.main.getAttribute('action');
+                this.method = this.main.getAttribute('method');
+            }
+            else {
+                this.method = this.method || 'POST';
+            }
         };
 
         var InputControl = require('./InputControl');

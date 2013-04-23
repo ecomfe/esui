@@ -28,11 +28,17 @@ define(function (require) {
         });
 
         describe('create via HTML', function () {
-            it('should read `action` method from main element', function () {
+            it('should read `action` method from main element when created from `<form>` element', function () {
                 var main = document.createElement('form');
                 main.action = 'abc';
                 var form = new Form({ main: main });
                 expect(form.get('action')).toBe('abc');
+            });
+
+            it('should give default values to properties when created form other elements', function () {
+                var main = document.createElement('div');
+                var form = new Form({ main: main });
+                expect(form.get('method')).toBe('POST');
             });
         });
 
