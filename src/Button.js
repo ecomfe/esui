@@ -8,10 +8,14 @@
 
 define(
     function (require) {
+        // css
+        require('css!./css/Button.css');
+
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ui = require('./main');
+        var paint = require('./painters');
 
         /**
          * 按钮控件类
@@ -73,31 +77,56 @@ define(
             },
 
             /**
+             * 初始化DOM结构
+             *
+             * @protected
+             */
+            initStructure: function () {
+                // 初始化状态事件
+                helper.addDOMEvent(this, this.main, 'click', this.clickHandler);
+            },
+            /**
              * 重新渲染视图
              * 仅当生命周期处于RENDER时，该方法才重新渲染
              *
              * @param {Array=} 变更过的属性的集合
              * @override
              */
-            repaint: function (changes) {
-                var main = this.main;
-                main.innerHTML = this.content;
-                if (this.height) {
-                    main.style.height = this.height + 'px';
-                    main.style.lineHeight = this.height + 'px';
+            repaint: helper.createRepaint(
+                paint.style('width'),
+                {
+                    name: 'height',
+                    paint: function (button, value) {
+                        var main = button.main;
+                        main.style.height = value + 'px';
+                        main.style.lineHeight = value + 'px';
+                    } 
+                },
+                {
+                    name: 'content',
+                    paint: function (button, value) {
+                        button.main.innerHTML = value;
+                    }
+                },
+                {
+                    name: ['disabled', 'hidden', 'readOnly'],
+                    paint: function (button, disabled, hidden, readOnly) {
+                        if (disabled || hidden || readOnly) {
+                            hideLayer(select);
+                        }
+                    }
                 }
-                if (this.width) {
-                    main.style.width = this.width + 'px';
-                }
+            ),
 
-                // 初始化状态事件
-                helper.addDOMEvent(this, main, 'click', this.clickHandler);
-            },
+
 
             /**
              * 鼠标点击事件处理函数
              */
             clickHandler: function () {
+                if (this.disabled) {
+                    return;
+                }
                 this.fire('click');
             },
 

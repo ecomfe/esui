@@ -8,8 +8,11 @@
 
 define(
     function (require) {
-        require('./Button');
-        require('./Panel');
+        require('./MonthView');
+
+        // css
+        require('css!./css/Calendar.css');
+
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
@@ -151,8 +154,11 @@ define(
         function updateMain(calendar) {
             var date = calendar.rawValue;
             var textId = helper.getId(calendar, 'text');
+            var inputId = helper.getId(calendar, 'param-value');
             lib.g(textId).innerHTML =
                 lib.date.format(date, calendar.dateFormat);
+            lib.g(inputId).value =
+                lib.date.format(date, calendar.paramFormat);
         }
 
         /**
@@ -208,7 +214,7 @@ define(
                         end: new Date(2046, 10, 4)
                     },
                     dateFormat: 'yyyy-MM-dd',
-                    paramFormat: 'yyyy-MM-dd',
+                    paramFormat: 'yyyyMMdd',
                     rawValue: new Date(),
                     calType: 'sel' // 日历类型，另外还支持'input' 'label'
                 };
@@ -235,7 +241,8 @@ define(
                 var tpl = [
                     '<div class="${className}" id="${id}">${value}</div>',
                     '<div class="${arrow}"></div>',
-                    '<input type="hidden" name="${name}" />'
+                    '<input type="hidden" id="${inputId}" name="${name}"',
+                    ' value="${paramValue}" />'
                 ];
 
                 this.main.innerHTML = lib.format(
@@ -246,7 +253,9 @@ define(
                         id: helper.getId(this, 'text'),
                         value: lib.date.format(date, this.dateFormat),
                         arrow: helper.getPartClasses(this, 'arrow').join(' '),
-                        name: this.name
+                        name: this.name,
+                        paramValue: lib.date.format(date, this.paramFormat),
+                        inputId: helper.getId(this, 'param-value')
                     }
                 );
 
@@ -292,6 +301,9 @@ define(
                 {
                     name: 'rawValue',
                     paint: function (calendar, value) {
+                        if (calendar.disabled || calendar.readOnly) {
+                            return;
+                        }
                         // 更新主显示
                         updateMain(calendar);
                         if (calendar.layer) {
@@ -300,6 +312,14 @@ define(
                             monthView.setRawValue(value);
                         }
 
+                    }
+                },
+                {
+                    name: ['disabled', 'hidden', 'readOnly'],
+                    paint: function (calendar, disabled, hidden, readOnly) {
+                        if (disabled || hidden || readOnly) {
+                            hideLayer(calendar);
+                        }
                     }
                 }
             ),

@@ -9,7 +9,11 @@
 define(
     function (require) {
         require('./Button');
-        require('./Panel');
+        require('./MonthView');
+
+        // css
+        require('css!./css/RangeCalendar.css');
+
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
@@ -445,7 +449,9 @@ define(
          */
         function updateMain(calendar, range) {
             var textId = helper.getId(calendar, 'text');
+            var inputId = helper.getId(calendar, 'param-value');
             lib.g(textId).innerHTML = getValueText(calendar, range);
+            lib.g(inputId).value = convertToParam(range);
         }
 
         /**
@@ -481,7 +487,7 @@ define(
         /**
          * 重绘弹出层数据
          *
-         * @inner         
+         * @inner
          * @param {RangeCalendar} calendar RangeCalendar控件实例
          * @param {{begin:Date,end:Date}=} value 显示的日期
          */
@@ -565,7 +571,10 @@ define(
          */
         function getValueText(calendar, value) {
             var dateText = getDateValueText(calendar, value);
-            var shortcut = (this.curMiniName + '&nbsp;&nbsp;') || '';
+            var shortcut = '';
+            if (calendar.curMiniName) {
+                shortcut = calendar.curMiniName + '&nbsp;&nbsp;';
+            }
 
             if (dateText) {
                 return shortcut + dateText;
@@ -668,7 +677,8 @@ define(
                 var tpl = [
                     '<div class="${className}" id="${id}"></div>',
                     '<div class="${arrow}"></div>',
-                    '<input type="hidden" name="${name}" />'
+                    '<input type="hidden" id="${inputId}" name="${name}"',
+                    ' value="" />'
                 ];
 
                 this.main.innerHTML = lib.format(
@@ -678,7 +688,8 @@ define(
                             helper.getPartClasses(this, 'text').join(' '),
                         id: helper.getId(this, 'text'),
                         arrow: helper.getPartClasses(this, 'arrow').join(' '),
-                        name: this.name
+                        name: this.name,
+                        inputId: helper.getId(this, 'param-value')
                     }
                 );
 
@@ -695,8 +706,6 @@ define(
                         lib.un(document, 'mousedown', close);
                     }
                 );
-
-
 
             },
 
@@ -722,9 +731,20 @@ define(
                 {
                     name: 'rawValue',
                     paint: function (calendar, value) {
+                        if (calendar.disabled || calendar.readOnly) {
+                            return;
+                        }
                         updateMain(calendar, value);
                         if (calendar.layer) {
                             paintLayer(calendar, value);
+                        }
+                    }
+                },
+                {
+                    name: ['disabled', 'hidden', 'readOnly'],
+                    paint: function (calendar, disabled, hidden, readOnly) {
+                        if (disabled || hidden || readOnly) {
+                            hideLayer(calendar);
                         }
                     }
                 }
