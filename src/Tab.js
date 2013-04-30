@@ -1,6 +1,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -55,7 +56,7 @@ define(
                         // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
                         // 且这个配置会覆盖用户传入的`tabs`选项
                         properties.tabs = [];
-                        element.parentNode.removeChild(element);
+                        element.id = helper.getId(this, 'navigator');
                         for (var i = 0; i < element.children.length; i++) {
                             var tab = element.children[i];
                             var config = {
@@ -125,13 +126,16 @@ define(
          * @protected
          */
         Tab.prototype.initStructure = function () {
-            this.navigator = document.createElement('ul');
+            var navigator = lib.g(helper.getId(this, 'navigator'));
+            if (!navigator) {
+                navigator = document.createElement('ul');
+                navigator.id = helper.getId(this, 'navigator');
 
-            this.main.insertBefore(
-                this.navigator, this.main.firstChild || null);
+                this.main.insertBefore(navigator, this.main.firstChild || null);
+            }
 
             require('./controlHelper').addDOMEvent(
-                this, this.navigator, 'click', lib.bind(clickTab, null, this));
+                this, navigator, 'click', lib.bind(clickTab, null, this));
         };
 
         /**
@@ -165,7 +169,7 @@ define(
          * @inner
          */
         function fillNavigator(tab) {
-            var navigator = tab.navigator;
+            var navigator = lib.g(helper.getId(tab, 'navigator'));
             var parentNode = navigator.parentNode;
             var placeholder = navigator.nextSibling;
             navigator.innerHTML = '';
@@ -235,7 +239,8 @@ define(
                     }
                 }
 
-                var tabElement = tab.navigator.children[i];
+                var navigator = lib.g(helper.getId(tab, 'navigator'));
+                var tabElement = navigator.children[i];
                 var methodName = i === index ? 'addClass' : 'removeClass';
                 lib[methodName](tabElement, 'ui-tab-active');
             }
@@ -325,8 +330,9 @@ define(
             this.tabs.splice(index, 0, config);
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
             var tabElement = createTabElement(config, false, this.allowClose);
-            this.navigator.insertBefore(
-                tabElement, this.navigator.children[index] || null);
+            var navigator = lib.g(helper.getId(this, 'navigator'));
+            navigator.insertBefore(
+                tabElement, navigator.children[index] || null);
 
             // 如果原来是没有标签页的，则新加的这个默认激活
             if (this.tabs.length === 1) {
@@ -372,8 +378,9 @@ define(
          */
         Tab.prototype.removeAt = function (index) {
             var removed = this.tabs.splice(index, 1);
+            var navigator = lib.g(helper.getId(this, 'navigator'));
             if (removed.length) {
-                var tabElement = this.navigator.children[index];
+                var tabElement = navigator.children[index];
                 tabElement.parentNode.removeChild(tabElement);
 
                 // 如果删的标签在当前激活的标签的前面，
