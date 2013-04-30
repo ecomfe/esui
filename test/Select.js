@@ -286,6 +286,28 @@ define(function (require) {
                 select.hide();
                 expect(layer.className).toMatch(/ui-select-layer-hidden/);
             });
+
+            it('should be able to customize item template by changeing the `itemTemplate` property', function () {
+                var select = new Select({ datasource: datasource });
+                select.itemTemplate = '123';
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                for (var i = 0; i < layer.children.length; i++) {
+                    expect(layer.children[i].innerHTML).toBe('123');
+                }
+            });
+
+            it('should be able to customize item template by changing the `getItemHTML` function', function () {
+                var select = new Select({ datasource: datasource });
+                select.getItemHTML = function () { return '123'; };
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                for (var i = 0; i < layer.children.length; i++) {
+                    expect(layer.children[i].innerHTML).toBe('123');
+                }
+            });
         });
 
         describe('when disabled', function () {

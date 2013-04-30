@@ -126,6 +126,13 @@ define(
             lib.extend(this, properties);
         };
 
+        Select.prototype.itemTemplate = 
+            '<li data-value="${value}"><span>${text}</span></li>';
+
+        Select.prototype.getItemHTML = function (item) {
+            return lib.format(this.itemTemplate, item);
+        };
+
         /**
          * 获取下拉弹层的HTML
          *
@@ -133,14 +140,6 @@ define(
          * @inner
          */
         function getLayerHTML(select) {
-            // 拼接HTML需要缩进，去掉`white`配置
-            /* jshint white: false */
-            var itemTemplate = [
-                '<li data-value="${value}">',
-                    '<span>${text}</span>',
-                '</li>'
-            ];
-            itemTemplate = itemTemplate.join('');
             var html = '';
             for (var i = 0; i < select.datasource.length; i++) {
                 var item = select.datasource[i];
@@ -151,7 +150,7 @@ define(
                     text: lib.encodeHTML(item.name || item.text),
                     value: lib.encodeHTML(item.value)
                 };
-                html += lib.format(itemTemplate, data);
+                html += select.getItemHTML(data);
             }
             return html;
         }
