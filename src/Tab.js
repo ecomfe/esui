@@ -108,7 +108,8 @@ define(
                     if (parent.children[i] === tabElement) {
                         // 如果点在关闭区域上，则移除这个元素，
                         // 其它情况为激活该元素
-                        if (lib.hasClass(target, 'ui-tab-close')) {
+                        var className = helper.getPartClasses(tab, 'close')[0];
+                        if (lib.hasClass(target, className)) {
                             tab.removeAt(i);
                         }
                         else {
@@ -134,6 +135,8 @@ define(
                 this.main.insertBefore(navigator, this.main.firstChild || null);
             }
 
+            helper.addPartClasses(this, 'navigator', navigator);
+
             require('./controlHelper').addDOMEvent(
                 this, navigator, 'click', lib.bind(clickTab, null, this));
         };
@@ -141,25 +144,28 @@ define(
         /**
          * 创建一个标签元素
          *
+         * @param {Tab} tab 控件实例
          * @param {Object} config 标签页的配置
          * @param {string} config.title 标签页的标题
          * @param {boolean} isActive 是否自激活状态
          * @param {boolean} allowClose 是否允许关闭
          */
-        function createTabElement(config, isActive, allowClose) {
-            var tab = document.createElement('li');
+        function createTabElement(tab, config, isActive, allowClose) {
+            var element = document.createElement('li');
 
             if (isActive) {
-                lib.addClass(tab, 'ui-tab-active');
+                helper.addPartClasses(tab, 'active', element);
             }
 
-            tab.innerHTML += lib.encodeHTML(config.title);
+            element.innerHTML += lib.encodeHTML(config.title);
 
             if (allowClose) {
-                tab.innerHTML += '<span class="ui-tab-close">关闭</span>';
+                element.innerHTML += '<span class="'
+                    + helper.getPartClasses(tab, 'close').join(' ')
+                    + '">关闭</span>';
             }
 
-            return tab;
+            return element;
         } 
 
         /**
@@ -179,7 +185,7 @@ define(
                 var config = tab.tabs[i];
                 var isActive = tab.activeIndex === i;
                 var tabElement = 
-                    createTabElement(config, isActive, tab.allowClose);
+                    createTabElement(tab, config, isActive, tab.allowClose);
                 navigator.appendChild(tabElement);
             }
 
@@ -241,8 +247,9 @@ define(
 
                 var navigator = lib.g(helper.getId(tab, 'navigator'));
                 var tabElement = navigator.children[i];
-                var methodName = i === index ? 'addClass' : 'removeClass';
-                lib[methodName](tabElement, 'ui-tab-active');
+                var methodName = 
+                    i === index ? 'addPartClasses' : 'removePartClasses';
+                helper[methodName](tab, 'active', tabElement);
             }
 
             var event = {
@@ -329,7 +336,8 @@ define(
         Tab.prototype.insert = function (config, index) {
             this.tabs.splice(index, 0, config);
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
-            var tabElement = createTabElement(config, false, this.allowClose);
+            var tabElement = 
+                createTabElement(this, config, false, this.allowClose);
             var navigator = lib.g(helper.getId(this, 'navigator'));
             navigator.insertBefore(
                 tabElement, navigator.children[index] || null);

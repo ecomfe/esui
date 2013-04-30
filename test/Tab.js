@@ -104,6 +104,19 @@ define(function (require) {
                 var tab = new Tab({ main: main });
                 expect(main.firstChild.getAttribute('data-test')).toBe('true');
             });
+
+            it('should add `ui-tab-navigator` class to the existing navigator element', function () {
+                var main = document.createElement('div');
+                var html = [
+                    '<ul data-role="navigator" data-test="true">',
+                        '<li data-for="a">tab1</li>',
+                    '</ul>'
+                ];
+                main.innerHTML = html.join('\n');
+                var tab = new Tab({ main: main });
+                tab.appendTo(container);
+                expect(main.firstChild.className).toMatch('ui-tab-navigator');
+            });
         });
 
         describe('generally', function () {
@@ -116,6 +129,13 @@ define(function (require) {
                 expect(navigator.children[0].innerText).toBe('tab1');
                 expect(navigator.children[1].innerText).toBe('tab2');
                 expect(navigator.children[2].innerText).toBe('tab3');
+            });
+
+            it('should add `ui-tab-navigator` class to the navigator element', function () {
+                var tab = new Tab({ tabs: tabs });
+                tab.appendTo(container);
+                var navigator = container.getElementsByTagName('ul')[0];
+                expect(navigator.className).toMatch(/ui-tab-navigator/);
             });
 
             it('should rerender navigator `<ul>` element if `tabs` is changed via `setProperties`', function () {
