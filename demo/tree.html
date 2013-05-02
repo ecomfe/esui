@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tree</title>
+    <script src="loader/esl.js"></script>
+    <script src="loader/config.js"></script>
+    <style>
+        .ui-tree-node > ul {
+            height: 0;
+            overflow: hidden;
+        }
+        .ui-tree-node-expanded > ul {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        require(
+            [
+                'esui/Tree',
+                'css!esui/css/main.css'
+            ],
+            function (Tree) {
+                var datasource = {
+                    id: '1',
+                    text: '百度',
+                    children:[
+                        {
+                            id: '2',
+                            text: '联盟研发部',
+                            children: [
+                                { id: '21', text: 'RD' },
+                                { id: '21', text: 'FE' },
+                                { id: '21', text: 'QA' },
+                                { id: '21', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '3',
+                            text: '贴吧事业部',
+                            children: [
+                                { id: '31', text: 'RD' },
+                                { id: '31', text: 'FE' },
+                                { id: '31', text: 'QA' },
+                                { id: '31', text: 'PM' }
+                            ]
+                        }
+                    ]
+                };
+
+                var tree = new Tree({ datasource: datasource });
+                tree.on(
+                    'expand',
+                    function (e) {
+                        this.fillNode(e.node.id);
+                    }
+                );
+                tree.appendTo(document.getElementById('container'));
+            }
+        );
+    </script>
+</body>
+</html>
