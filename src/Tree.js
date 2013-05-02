@@ -166,6 +166,11 @@ define(
                 return;
             }
 
+            var emptyClassName = helper.getPartClasses(tree, 'node-empty')[0];
+            if (lib.hasClass(target, emptyClassName)) {
+                return;
+            }
+
             var className = helper.getPartClasses(tree, 'node-expanded')[0];
             var mode = lib.hasClass(target, className) ? 'collapse' : 'expand';
 
