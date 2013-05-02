@@ -4,40 +4,56 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
 
+        /**
+        * 树控件
+        */
         function Tree() {
             Control.apply(this, arguments);
         }
 
         Tree.prototype.type = 'Tree';
 
+        /**
+         * 创建主元素
+         *
+         * @return {HTMLElement} 主元素
+         * @override
+         * @protected
+         */
         Tree.prototype.createMain = function () {
             return document.createElement('ul');
         };
 
-        function buildNodeIndex(node, index) {
-            index = index || {};
-
-            index[node.id] = node;
-            if (node.children) {
-                for (var i = 0; i < node.children.length; i++) {
-                    buildNodeIndex(node.children[i], index);
-                }
-            }
-
-            return index;
-        }
-
+        /**
+         * 初始化参数
+         *
+         * @param {Object} options 构造函数传入的参数
+         * @override
+         * @protected
+         */
         Tree.prototype.initOptions = function (options) {
             var defaults = {
                 datasource: {}
             };
             var properties = lib.extend(defaults, options);
-            properties.nodeIndex = buildNodeIndex(properties.datasource);
             this.setProperties(properties);
         };
 
+        /**
+         * 每个节点显示的内容的模板
+         *
+         * @type {string}
+         * @public
+         */
         Tree.prototype.itemTemplate = '<span>${text}</span>';
 
+        /**
+         * 获取每个节点显示的内容
+         *
+         * @param {Object} node 节点数据
+         * @return {string} 节点的HTML
+         * @public
+         */
         Tree.prototype.getItemHTML = function (node) {
             return lib.format(this.itemTemplate, node);
         };
@@ -50,6 +66,15 @@ define(
             'empty': '无内容'
         };
 
+        /**
+         * 获取指示器（节点文字前的那个图标）的HTML
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Object} node 节点数据
+         * @param {string} type 指示器的类型，为`empty`、`expanded`或`collapsed`
+         * @return {string}
+         * @inner
+         */
         function getIndicatorHTML(tree, node, type) {
             var classes = [].concat(
                 helper.getPartClasses(tree, 'node-indicator'),
@@ -62,6 +87,15 @@ define(
             return html;
         }
 
+        /**
+         * 获取节点的内容HTML
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Object} node 节点数据
+         * @param {boolean} expanded 是否处于展开状态
+         * @return {string}
+         * @iner
+         */
         function getNodeContentHTML(tree, node, expanded) {
             var indicatorType = tree.strategy.isLeafNode(node)
                 ? 'empty'
@@ -82,6 +116,15 @@ define(
             return html;
         }
 
+        /**
+         * 获取节点的HTML
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Object} node 节点数据
+         * @param {boolean} expanded 是否处于展开状态
+         * @return {string}
+         * @iner
+         */
         function getNodeHTML(tree, node, expanded) {
             var state = tree.strategy.isLeafNode(node)
                 ? 'empty'
@@ -99,6 +142,13 @@ define(
             return html;
         }
 
+        /**
+         * 根据节点的当前状态展开或收起节点
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Event} e DOM事件对象
+         * @iner
+         */
         function toggleNode(tree, e) {
             var target = e.target;
             while (target !== tree.main && !target.hasAttribute('data-id')) {
@@ -122,6 +172,12 @@ define(
             tree.fire(mode, { node: node });
         }
 
+        /**
+         * 初始化DOM结构
+         *
+         * @override
+         * @protected
+         */
         Tree.prototype.initStructure = function () {
             helper.addDOMEvent(
                 this,
@@ -134,11 +190,39 @@ define(
             }
         };
 
+        /**
+         * 构建节点的id->数据的索引
+         *
+         * @param {Object} node 节点数据，第一次调用时为根
+         * @param {Object=} index 用于存放索引的对象，第一次调用时不传递
+         * @return {Object}
+         * @inner
+         */
+        function buildNodeIndex(node, index) {
+            index = index || {};
+
+            index[node.id] = node;
+            if (node.children) {
+                for (var i = 0; i < node.children.length; i++) {
+                    buildNodeIndex(node.children[i], index);
+                }
+            }
+
+            return index;
+        }
+
+        /**
+         * 重绘
+         *
+         * @override
+         * @protected
+         */
         Tree.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
             {
                 name: 'datasource',
                 paint: function (tree, datasource) {
+                    tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
                         getNodeHTML(tree, datasource, true);
                 }

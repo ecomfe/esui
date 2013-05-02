@@ -126,8 +126,21 @@ define(
             lib.extend(this, properties);
         };
 
+        /**
+         * 每个节点显示的内容的模板
+         *
+         * @type {string}
+         * @public
+         */
         Select.prototype.itemTemplate = '<span>${text}</span>';
 
+        /**
+         * 获取每个节点显示的内容
+         *
+         * @param {Object} item 节点数据
+         * @return {string} 节点的HTML
+         * @public
+         */
         Select.prototype.getItemHTML = function (item) {
             var data = {
                 text: lib.encodeHTML(item.name || item.text),
