@@ -155,7 +155,9 @@ define(
          */
         function toggleNode(tree, e) {
             var target = e.target;
-            while (target !== tree.main && !target.hasAttribute('data-id')) {
+            while (target !== tree.main 
+                && target.className.indexOf('indicator') < 0
+            ) {
                 target = target.parentNode;
             }
 
@@ -163,6 +165,8 @@ define(
                 return;
             }
 
+            // 再往上找一层找到`<li>`元素，上面有`data-id`等有用的属性
+            target = target.parentNode;
             var id = target.getAttribute('data-id');
             var node = tree.nodeIndex[id];
 
