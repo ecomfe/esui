@@ -21,9 +21,10 @@
         require(
             [
                 'esui/Tree',
+                'esui/TreeStrategy',
                 'css!esui/css/main.css'
             ],
-            function (Tree) {
+            function (Tree, TreeStrategy) {
                 var datasource = {
                     id: '1',
                     text: '百度',
@@ -51,13 +52,7 @@
                     ]
                 };
 
-                var tree = new Tree({ datasource: datasource });
-                tree.on(
-                    'expand',
-                    function (e) {
-                        this.fillNode(e.node.id);
-                    }
-                );
+                var tree = new Tree({ datasource: datasource, strategy: new TreeStrategy() });
                 tree.appendTo(document.getElementById('container'));
             }
         );

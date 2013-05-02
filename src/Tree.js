@@ -46,42 +46,56 @@ define(
         var indicatorTextMapping = {
             'collapsed': '展开',
             'expanded': '收起',
-            'busy': '加载中'
+            'busy': '加载中',
+            'empty': '无内容'
         };
 
-        function getIndicatorHTML(tree, node, mode) {
+        function getIndicatorHTML(tree, node, type) {
             var classes = [].concat(
                 helper.getPartClasses(tree, 'node-indicator'),
-                mode 
-                    ? helper.getPartClasses(tree, 'node-indicator-' + mode)
+                type 
+                    ? helper.getPartClasses(tree, 'node-indicator-' + type)
                     : []
             );
             var html = '<span class="' + classes.join(' ') + '">'
-                + indicatorTextMapping[mode || 'collapsed'] + '</span>';
+                + indicatorTextMapping[type || 'collapsed'] + '</span>';
+            return html;
+        }
+
+        function getNodeContentHTML(tree, node, expanded) {
+            var indicatorType = tree.strategy.isLeafNode(node)
+                ? 'empty'
+                : (expanded ? 'expanded' : 'collapsed');
+            var html = getIndicatorHTML(tree, node, indicatorType);
+            html += tree.getItemHTML(node);
+
+            if (expanded && !tree.strategy.isLeafNode(node)) {
+                html += '<ul>';
+                for (var i = 0; i < node.children.length; i++) {
+                    var child = node.children[i];
+                    html += getNodeHTML(
+                        tree, child, tree.strategy.shouldExpand(child));
+                }
+                html += '</ul>';
+            }
+
             return html;
         }
 
         function getNodeHTML(tree, node, expanded) {
-            var classes = helper.getPartClasses(tree, 'node');
-            if (expanded) {
-                classes = classes.concat(
-                    helper.getPartClasses(tree, 'node-expanded'));
-            }
+            var state = tree.strategy.isLeafNode(node)
+                ? 'empty'
+                : (expanded ? 'expanded' : 'collapsed');
+            var classes = [].concat(
+                helper.getPartClasses(tree, 'node'),
+                helper.getPartClasses(tree, 'node-' + state)
+            );
+
             var html = '<li class="' + classes.join(' ') + '" '
                 + 'id="' + helper.getId(tree, 'node-' + node.id) + '" '
                 + 'data-id="' + node.id + '">';
-            html += getIndicatorHTML(tree, node, expanded ? 'expanded' : '');
-            html += tree.getItemHTML(node);
-            if (expanded && node.children) {
-                html += '<ul>';
-                for (var i = 0; i < node.children.length; i++) {
-                    var child = node.children[i];
-                    html += getNodeHTML(tree, child, expanded);
-                }
-                html += '</ul>';
-            }
+            html += getNodeContentHTML(tree, node, expanded);
             html += '</li>';
-
             return html;
         }
 
@@ -104,13 +118,6 @@ define(
 
             var className = helper.getPartClasses(tree, 'node-expanded')[0];
             var mode = lib.hasClass(target, className) ? 'collapse' : 'expand';
-            // 展开的时候由于涉及到数据请求等，不一定立刻展开，
-            // 但收起的时候有一个默认行为
-            if (mode === 'collapse') {
-                helper.removePartClasses(tree, 'node-expanded', target);
-                target.firstChild.innerHTML = indicatorTextMapping.collapsed;
-                // 如果有需要删除子节点，再加代码
-            }
 
             tree.fire(mode, { node: node });
         }
@@ -122,6 +129,9 @@ define(
                 'click',
                 lib.curry(toggleNode, this)
             );
+            if (this.strategy) {
+                this.strategy.attachTo(this);
+            }
         };
 
         Tree.prototype.repaint = helper.createRepaint(
@@ -136,7 +146,7 @@ define(
         );
 
         /**
-         * 向指定节点填充子节点
+         * 向指定节点填充子节点并展开节点
          *
          * @param {string} id 节点的id
          * @param {Array.<Object>=} 子节点数据，如果不提供此参数，
@@ -145,7 +155,7 @@ define(
          * - 如果原本已经有子树的元素，则直接展开
          * - 如果原本没有子树元素，则取对应节点的`children`属性创建子树
          */
-        Tree.prototype.fillNode = function (id, children) {
+        Tree.prototype.expandNode = function (id, children) {
             var nodeElement = lib.g(helper.getId(this, 'node-' + id));
             if (!nodeElement) {
                 return;
@@ -164,7 +174,7 @@ define(
                 }
 
                 // 为了效率，直接刷掉原来的HTML
-                nodeElement.innerHTML = getNodeHTML(this, node, true);
+                nodeElement.innerHTML = getNodeContentHTML(this, node, true);
             }
             else {
                 // 需要修改`indicator`的字样
@@ -173,25 +183,50 @@ define(
             }
 
             // CSS3动画可以通过这个class来操作
-            helper.addPartClasses(this, 'node-expanded', nodeElement);
+            var nodeClasses = [].concat(
+                helper.getPartClasses(this, 'node'),
+                helper.getPartClasses(this, 'node-expanded')
+            );
+            nodeElement.className = nodeClasses.join(' ');
+
+            var indicator = nodeElement.firstChild;
+            var indicatorClasses = [].concat(
+                helper.getPartClasses(this, 'node-indicator'),
+                helper.getPartClasses(this, 'node-indicator-expanded')
+            );
+            indicator.className = indicatorClasses.join(' ');
         };
 
         /**
-         * 清空指定节点的子节点
+         * 收起指定节点
          *
          * @param {string} id 节点的id
+         * @param {boolean} removeChild 是否把子节点删除
          * @public
          */
-        Tree.prototype.emptyNode = function (id) {
+        Tree.prototype.collapseNode = function (id, removeChild) {
             var nodeElement = lib.g(helper.getId(this, 'node-' + id));
             if (!nodeElement) {
                 return;
             }
 
             var childRoot = nodeElement.getElementsByTagName('ul')[0];
-            if (childRoot) {
+            if (childRoot && removeChild) {
                 childRoot.parentNode.removeChild(childRoot);
             }
+
+            var nodeClasses = [].concat(
+                helper.getPartClasses(this, 'node'),
+                helper.getPartClasses(this, 'node-collapsed')
+            );
+            nodeElement.className = nodeClasses.join(' ');
+            var indicator = nodeElement.firstChild;
+            var indicatorClasses = [].concat(
+                helper.getPartClasses(this, 'node-indicator'),
+                helper.getPartClasses(this, 'node-indicator-collapsed')
+            );
+            indicator.className = indicatorClasses.join(' ');
+            indicator.innerHTML = indicatorTextMapping.collapsed;
         };
 
         /**
@@ -206,7 +241,7 @@ define(
                 return;
             }
 
-            var indicator = node.firstChild;
+            var indicator = nodeElement.firstChild;
             indicator.innerHTML = indicatorTextMapping.busy;
             var classes = [].concat(
                 helper.getPartClasses(this, 'node-indicator'),
