@@ -126,11 +126,14 @@ define(
             lib.extend(this, properties);
         };
 
-        Select.prototype.itemTemplate = 
-            '<li data-value="${value}"><span>${text}</span></li>';
+        Select.prototype.itemTemplate = '<span>${text}</span>';
 
         Select.prototype.getItemHTML = function (item) {
-            return lib.format(this.itemTemplate, item);
+            var data = {
+                text: lib.encodeHTML(item.name || item.text),
+                value: lib.encodeHTML(item.value)
+            };
+            return lib.format(this.itemTemplate, data);
         };
 
         /**
@@ -143,14 +146,12 @@ define(
             var html = '';
             for (var i = 0; i < select.datasource.length; i++) {
                 var item = select.datasource[i];
+                html += '<li data-value="' + lib.encodeHTML(item.value) + '">';
                 if (item.value == select.value) {
                     select.selectedIndex = i;
                 }
-                var data = {
-                    text: lib.encodeHTML(item.name || item.text),
-                    value: lib.encodeHTML(item.value)
-                };
-                html += select.getItemHTML(data);
+                html += select.getItemHTML(item);
+                html += '</li>';
             }
             return html;
         }
