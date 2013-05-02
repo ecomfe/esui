@@ -6,12 +6,31 @@
     <script src="loader/esl.js"></script>
     <script src="loader/config.js"></script>
     <style>
-        .ui-tree-node > ul {
-            height: 0;
-            overflow: hidden;
+        .ui-tree-root-expanded {
+            display: block;
         }
-        .ui-tree-node-expanded > ul {
-            height: auto;
+        .ui-tree-root-collapsed {
+            display: none;
+        }
+        .ui-tree-node-indicator {
+            /*
+            text-indent: -5000px;
+            */
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            overflow: hidden;
+            background-position: 0 0;
+            background-repeat: no-repeat;
+        }
+        .ui-tree-node-indicator-expanded {
+
+        }
+        .ui-tree-node-indicator-collapsed {
+
+        }
+        .ui-tree-node-indicator-empty {
+            display: none;
         }
     </style>
 </head>

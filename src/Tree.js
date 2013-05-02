@@ -104,7 +104,11 @@ define(
             html += tree.getItemHTML(node);
 
             if (expanded && !tree.strategy.isLeafNode(node)) {
-                html += '<ul>';
+                var classes = [].concat(
+                    helper.getPartClasses(tree, 'root'),
+                    helper.getPartClasses(tree, 'root-' + indicatorType)
+                );
+                html += '<ul class="' + classes.join(' ') + '">';
                 for (var i = 0; i < node.children.length; i++) {
                     var child = node.children[i];
                     html += getNodeHTML(
@@ -266,9 +270,20 @@ define(
                 nodeElement.innerHTML = getNodeContentHTML(this, node, true);
             }
             else {
-                // 需要修改`indicator`的字样
-                nodeElement.firstChild.innerHTML = 
-                    indicatorTextMapping.expanded;
+                // 需要修改`indicator`的字样和class
+                var indicator = nodeElement.firstChild;
+                indicator.innerHTML = indicatorTextMapping.expanded;
+                var indicatorClasses = [].concat(
+                    helper.getPartClasses(this, 'node-indicator'),
+                    helper.getPartClasses(this, 'node-indicator-expanded')
+                );
+                indicator.className = indicatorClasses.join(' ');
+                // 子树的class要改掉
+                var rootClasses = [].concat(
+                    helper.getPartClasses(this, 'root'),
+                    helper.getPartClasses(this, 'root-expanded')
+                );
+                nodeElement.lastChild.className = rootClasses.join(' ');
             }
 
             // CSS3动画可以通过这个class来操作
@@ -277,13 +292,6 @@ define(
                 helper.getPartClasses(this, 'node-expanded')
             );
             nodeElement.className = nodeClasses.join(' ');
-
-            var indicator = nodeElement.firstChild;
-            var indicatorClasses = [].concat(
-                helper.getPartClasses(this, 'node-indicator'),
-                helper.getPartClasses(this, 'node-indicator-expanded')
-            );
-            indicator.className = indicatorClasses.join(' ');
         };
 
         /**
@@ -300,8 +308,17 @@ define(
             }
 
             var childRoot = nodeElement.getElementsByTagName('ul')[0];
-            if (childRoot && removeChild) {
-                childRoot.parentNode.removeChild(childRoot);
+            if (childRoot) {
+                if (removeChild) {
+                    childRoot.parentNode.removeChild(childRoot);
+                }
+                else {
+                    var rootClasses = [].concat(
+                        helper.getPartClasses(this, 'root'),
+                        helper.getPartClasses(this, 'root-collapsed')
+                    );
+                    childRoot.className = rootClasses.join(' ');
+                }
             }
 
             var nodeClasses = [].concat(
