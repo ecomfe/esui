@@ -10,7 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var ui = require('./main');
-        var now = (new Date()).getTime();
+        var counter = 0x861005;
 
         /**
          * 获取LifeCycle枚举
@@ -36,7 +36,7 @@ define(
          * @return {string}
          */
         helper.getGUID = function () {
-            return 'esui' + now++;
+            return 'esui' + counter++;
         };
 
         /**
