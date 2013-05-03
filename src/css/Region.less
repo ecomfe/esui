@@ -1,0 +1,101 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 地域选择样式
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+@import "common.less";
+
+.ui-region {
+    font-size:12px;
+    background:#FEFEFE;
+    border:1px solid #CDCDCD;
+    position:relative;
+
+    input {margin:0 3px 0 0; vertical-align: middle;}
+    label {vertical-align: middle;}
+
+    dt,
+    dd,
+    dl {
+        border:0;
+        padding:0;
+        margin:0;
+    }
+    .ui-region-option-body {
+        height:32px;
+        line-height:32px;
+        padding-left:8px;
+        
+    }
+
+    .ui-region-option-level0 {
+        clear:both;
+        .ui-region-option-body {
+            background:#394459;
+            color: white;
+        }
+    }
+
+    .ui-region-option-level1 {
+        clear:both;
+        .ui-region-option-body {
+            background:#fff;
+            width:80px;/*80*/
+            float:left;
+            color:#666;
+            text-align:left;/*新加的*/
+        }
+        .ui-region-option-children {
+            padding-left:88px;
+        }
+    }
+
+    .ui-region-option-level2 {
+        display:inline-block;
+        *display:inline;
+        *zoom:1;
+        .ui-region-option-body {
+            width:100px;
+            margin:0;
+            float:none;
+            color:#000;
+            padding: 0;
+        }
+    }
+
+    .ui-region-option-level3-over {
+        display:block;
+        position:absolute;
+        margin-top:-12px;
+        background-color:#FFF;
+        border:1px solod #CCC;
+        padding:5px;
+        height:300px;
+        min-width:90px;
+        overflow-y:scroll;
+        z-index:100;       
+    }
+
+    .ui-region-option-level3-out {
+        display:none;
+    }
+
+    .ui-region-option-Abroad .ui-region-option-level1 {
+        display:inline-block;
+        *display:inline;
+        *zoom:1;
+    }
+}
+.ui-region-single {
+    border: none;
+}
+
+
+
+
+
+

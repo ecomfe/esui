@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Region - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Region</header>
+        <div class="container">
+            <div data-ui="type:Region;id:test;name:region1"></div>
+            <div data-ui="type:Region;id:test2;mode:single;name:region2"></div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Region',
+                'css!esui/css/main.css'
+            ],
+            function (ui) {
+                var controls = ui.init();
+                var region1 = controls[0];
+                var region2 = controls[1];
+
+                region1.setRawValue(['268', '269', '270']);
+            }
+        )
+        </script>
+    </body>
+</html>
