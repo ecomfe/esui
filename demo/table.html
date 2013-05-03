@@ -11,7 +11,7 @@
         <header>Table</header>
         <div class="container">
             <h3>普通</h3>
-            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">setDisable</button>
+            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button>
             <div data-ui="type:Table;id:myTable;"></div>
         </div>
         <script>
@@ -100,20 +100,19 @@
                     }   
                 });
 
-                ui.get( 'myTable' ).onsubrowopen = function ( arg ) {
+                ui.get('myTable').onsubrowopen = function ( arg ) {
                     this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
                 };
 
-                ui.get( 'myTable' ).onsubrowclose = function ( arg ) {
+                ui.get('myTable').onsubrowclose = function ( arg ) {
                     this.getSubrow( arg.index ).innerHTML = '';
                 };
 
                 ui.get('disabledBtn').onclick = function(){
-                    ui.get( 'myTable' ).set( 'disabled', true );
-                    ui.get( 'myTable' ).repaint();
+                    ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
                 }
 
-                ui.get( 'myTable' ).onsort = function ( field, order ) {
+                ui.get('myTable').onsort = function ( field, order ) {
                     var orderBy = field.field;
                     var lib = require('esui/lib');
                     var listData = lib.clone( data );

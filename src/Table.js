@@ -322,6 +322,7 @@ define(
             for(var i = 0, len = fields.length ; i < len ;i++) {
                 var index  = canExpand[i];
                 var offset = Math.abs(leftWidth) < Math.abs(leaveAverage) ? leftWidth : leaveAverage; 
+
                 leftWidth -= offset;
                 me.colsWidth[index] += offset;
 
@@ -351,7 +352,6 @@ define(
             } else if (leftWidth > 0) {// 如果空间富裕，则分配给第一个可调整的列
                 me.colsWidth[canExpand[0]] += leftWidth;
             }
-            
         }
         
         /**
@@ -455,6 +455,7 @@ define(
 
                 helper.addDOMEvent(table, head, 'mousemove', lib.bind(headMoveHandler, head, table));
                 helper.addDOMEvent(table, head, 'mousedown', lib.bind(dragStartHandler, head, table));
+
             }
 
             if (me.noHead) {
@@ -509,25 +510,24 @@ define(
             // 拼装html
             html.push(lib.format(tplTablePrefix, { width : '100%' , controlTableId : me.id}));//me._totalWidth - 2
             html.push('<tr>'); 
-            for (var i = 0; i < len; i++) {
+            for(var i = 0; i < len; i++){
                 var thClass = [ thCellClass ];
                 var field = fields[ i ];
                 var title = field.title;
-                var sortable = (!me.disabled && me.sortable && field.sortable);
-                var currentSort = (sortable 
-                                 && field.field 
-                                 && field.field == me.orderBy);
-                var tempThTextClass = thTextClass;
+                var sortable = me.sortable && field.sortable;
+                var currentSort = sortable && field.field && field.field == me.orderBy;
+                var realThTextClass = thTextClass;
+
                 if(i == 0){
-                    tempThTextClass += ' ' + getClass(me, 'hcell-text-first');
+                    realThTextClass += ' ' + getClass(me, 'hcell-text-first');
                 }else if(i == len - 1 ){
-                    tempThTextClass += ' ' + getClass(me, 'hcell-text-last');
+                    realThTextClass += ' ' + getClass(me, 'hcell-text-last');
                 }
 
                 // 计算排序图标样式
                 var sortIconHtml = '';
                 var orderClass = '';
-                if (sortable) {
+                if(sortable){
                     thClass.push(getClass(me, 'hcell-sort'));
                     if (currentSort) {
                         thClass.push(getClass(me, 'hcell-' + me.order));
@@ -536,20 +536,18 @@ define(
                 }
                 
                 // 计算表格对齐样式
-                if (field.align) {
+                if(field.align){
                     thClass.push(getClass(me, 'cell-align-' + field.align));
                 }
 
                 // 判断是否breakline模式
-                if (me.breakLine
-                    || field.breakLine
-               ) {
+                if(me.breakLine|| field.breakLine){
                     thClass.push(breakClass);
                 }
 
                 var contentHtml;
                 // 计算内容html
-                if (typeof title == 'function') {
+                if(typeof title == 'function') {
                     contentHtml = title.call(me);
                 } else {
                     contentHtml = title;
@@ -557,14 +555,14 @@ define(
                 contentHtml = contentHtml || '&nbsp;';
                 
                                             
-                html.push( '<th id="' + getTitleCellId(me, i) + '" index="' + i + '"',
+                html.push(  '<th id="' + getTitleCellId(me, i) + '" index="' + i + '"',
                             ' class="' + thClass.join(' ') + '"',
                             sortable ? ' sortable="1"' : '',
                             (i >= canDragBegin && i < canDragEnd ? ' dragright="1"' : ''),
                             (i <= canDragEnd && i > canDragBegin ? ' dragleft="1"' : ''),
                             ' style="width:' + (me.colsWidth[ i ] + me.rowWidthOffset) + 'px;',
                             (me.colsWidth[i] ? '' : 'display:none') + '">',
-                            '<div class="' + tempThTextClass +
+                            '<div class="' + realThTextClass +
                             (field.select ? ' ' + selClass : '') + '">',
                             contentHtml,
                             sortIconHtml,
@@ -574,7 +572,6 @@ define(
             html.push('</tr></table>');
 
             return html.join('');
-            
         }
         
         var tplSortIcon = '<div class="${className}"></div>';
@@ -615,10 +612,10 @@ define(
         }
 
         function titleOver(table, element){
-            if (table.isDraging || table.dragReady) {
+            if (table.isDraging || table.dragReady){
                 return;
             }
-            
+
             table.sortReady = 1;
             helper.addPartClasses(table, 'hcell-hover', element);
         }
@@ -629,7 +626,7 @@ define(
          * @private
          * @param {HTMLElement} cell 移出的单元格
          */
-        function titleOutHandler(element, e) {
+        function titleOutHandler(element, e){
             titleOut(this, element);
         }
 
@@ -644,17 +641,17 @@ define(
          * @private
          * @param {HTMLElement} cell 点击的单元格
          */
-        function titleClickHandler(element, e) {
+        function titleClickHandler(element, e){
             var me = this;
-            if (me.sortReady) { // 避免拖拽触发排序行为
+            if(me.sortReady && !me.disabled){ // 避免拖拽触发排序行为
                 var index = element.getAttribute('index');
                 var field = me.realFields[index];
                 var orderBy = me.orderBy;
                 var order = me.order;
                 
-                if (orderBy == field.field) {
+                if(orderBy == field.field){
                     order = (!order || order == 'asc') ? 'desc' : 'asc';
-                } else {
+                }else{
                     order = 'desc';
                 }
 
@@ -674,18 +671,18 @@ define(
          * @private
          * @return {Function}
          */
-        function headMoveHandler(table, e) {
+        function headMoveHandler(table, e){
             var me = table;
             var dragClass = 'startdrag';
             var range = 8; // 可拖拽的单元格边界范围
-            if (me.isDraging) {
+            if(me.isDraging){
                 return;
             }
         
             var tar = e.srcElement || e.target ;
             // 寻找th节点。如果查找不到，退出
             tar = findDragCell(me, tar);
-            if (!tar) {
+            if(!tar){
                 return;
             }
             var el = this;
@@ -697,7 +694,7 @@ define(
             var sortable = tar.getAttribute('sortable');
             
             // 如果允许拖拽，设置鼠标手型样式与当前拖拽点
-            if ( tar.getAttribute('dragleft') 
+            if( tar.getAttribute('dragleft') 
               && pageX - pos.left < range){
                 sortable && (titleOut(me, tar)); // 清除可排序列的over样式
                 helper.addPartClasses(me, dragClass, el);
@@ -724,14 +721,13 @@ define(
          * @param {HTMLElement} target 触发事件的元素
          * @return {HTMLTHElement}
          */
-        function findDragCell(taable, target) {    
-            while (target.nodeType == 1) {
-                if (target.nodeName == 'TH') {
+        function findDragCell(taable, target){    
+            while(target.nodeType == 1){
+                if(target.nodeName == 'TH'){
                     return target;
                 }
                 target = target.parentNode;
             }
-            
             return null;
         }
      
@@ -742,35 +738,43 @@ define(
          * @return {Function}
          */
         function dragStartHandler(table, e) {
-            var me = table;
-            var dragClass = getClass(me, 'startdrag');
-
+            var dragClass = getClass(table, 'startdrag');
             var tar = e.target || e.srcElement;
             
             // 寻找th节点，如果查找不到，退出
-            tar = findDragCell(me, tar);
-            if (!tar) {
+            tar = findDragCell(table, tar);
+            if(!tar){
                 return;
             }
             
-            if (lib.g(getId(me, 'head')).className.indexOf(dragClass) < 0) {
+            if(lib.g(getId(table, 'head')).className.indexOf(dragClass) < 0){
                 return;
             }            
                         
             // 获取显示区域高度
-            me.htmlHeight = document.documentElement.clientHeight;
+            table.htmlHeight = document.documentElement.clientHeight;
             
             // 记忆起始拖拽的状态
-            me.isDraging = true;
-            me.dragIndex = tar.getAttribute('index');
-            me.dragStart = e.pageX || e.clientX + lib.page.getScrollLeft();
-            
+            table.isDraging = true;
+            table.dragIndex = tar.getAttribute('index');
+            table.dragStart = e.pageX || e.clientX + lib.page.getScrollLeft();
+
             // 绑定拖拽事件
-            helper.addDOMEvent(me, document, 'mousemove', getDragingHandler(me));
-            helper.addDOMEvent(me, document, 'mouseup', getDragEndHandler(me));
+            var realDragingHandler = lib.bind(dragingHandler, null, table);
+            var realDragEndHandler = function(e){
+                var retrunResult = true;
+                try{ retrunResult = lib.bind(dragEndHandler, null, table)(e); }catch(er){}
+                //清除拖拽向全局绑定的事件
+                lib.un(document, 'mousemove', realDragingHandler);
+                lib.un(document, 'mouseup', realDragEndHandler);
+                return retrunResult;
+            };
+
+            lib.on(document, 'mousemove', realDragingHandler);
+            lib.on(document, 'mouseup', realDragEndHandler);
             
             // 显示拖拽基准线
-            showDragMark(me, me.dragStart);
+            showDragMark(table, table.dragStart);
             
             // 阻止默认行为
             lib.event.preventDefault(e);
@@ -784,13 +788,11 @@ define(
          * @desc 移动拖拽基准线
          * @return {Function}
          */
-        function getDragingHandler(table) {
-            return function (e) {
-                e = e || window.event;
-                showDragMark(table, e.pageX || e.clientX + lib.page.getScrollLeft());
-                lib.event.preventDefault(e);
-                return false;
-            };
+        function dragingHandler(table, evt) {
+            var e = evt || window.event;
+            showDragMark(table, e.pageX || e.clientX + lib.page.getScrollLeft());
+            lib.event.preventDefault(e);
+            return false;
         }
         
         /**
@@ -859,96 +861,90 @@ define(
          * @private
          * @return {Function}
          */
-        function getDragEndHandler(table) {
+        function dragEndHandler(table, evt) {
             var me = table;
-            return function (e) {
-                var e = e || window.event;
-                var index = parseInt(me.dragIndex, 10);
-                var pageX = e.pageX || e.clientX + lib.page.getScrollLeft();
-                var fields = me.realFields; 
-                var fieldLen = fields.length;
-                var alterSum = 0;
-                var colsWidth = me.colsWidth;
-                var revise = 0;
+            var e = evt || window.event;
+            var index = parseInt(me.dragIndex, 10);
+            var pageX = e.pageX || e.clientX + lib.page.getScrollLeft();
+            var fields = me.realFields; 
+            var fieldLen = fields.length;
+            var alterSum = 0;
+            var colsWidth = me.colsWidth;
+            var revise = 0;
 
-                // 校正拖拽元素
-                // 如果是从左边缘拖动的话，拖拽元素应该上一列
-                if (me.dragPoint == 'left') {
-                    index--;
+            // 校正拖拽元素
+            // 如果是从左边缘拖动的话，拖拽元素应该上一列
+            if (me.dragPoint == 'left') {
+                index--;
+            }
+            
+            // 校正拖拽列的宽度
+            // 不允许小于最小宽度
+            var minWidth = me.minColsWidth[ index ];
+            var offsetX = pageX - me.dragStart;
+            var currentWidth = colsWidth[ index ] + offsetX;
+            if (currentWidth < minWidth) {
+                offsetX += (minWidth - currentWidth);
+                currentWidth = minWidth;
+            }
+            
+            var alters = [];
+            var alterWidths = [];
+            //查找宽度允许改变的列
+            for (var i = index + 1; i < fieldLen; i++) {
+                if (!fields[ i ].stable && colsWidth[i] > 0) {
+                    alters.push(i);
+                    alterWidth = colsWidth[ i ];
+                    alterWidths.push(alterWidth);
+                    alterSum += alterWidth;
                 }
+            }
+
+            // 计算允许改变的列每列的宽度
+            var leave = offsetX;
+            var alterLen = alters.length;
+            for (var i = 0; i < alterLen; i++) {
+                var alter = alters[ i ];
+                var alterWidth = alterWidths[ i ];    //当前列宽
+                var roughWidth = offsetX * alterWidth / alterSum; // 变更的列宽
                 
-                // 校正拖拽列的宽度
+                // 校正变更的列宽
+                // roughWidth可能存在小数点
+                if (leave > 0) {
+                    offsetWidth = Math.ceil(roughWidth);
+                } else {
+                    offsetWidth = Math.floor(roughWidth);
+                }
+                offsetWidth = (Math.abs(offsetWidth) < Math.abs(leave) ? offsetWidth : leave);
+
+                // 校正变更后的列宽
                 // 不允许小于最小宽度
-                var minWidth = me.minColsWidth[ index ];
-                var offsetX = pageX - me.dragStart;
-                var currentWidth = colsWidth[ index ] + offsetX;
-                if (currentWidth < minWidth) {
-                    offsetX += (minWidth - currentWidth);
-                    currentWidth = minWidth;
+                alterWidth -= offsetWidth;
+                leave -= offsetWidth;
+                minWidth = me.minColsWidth[ alter ];
+                if (alterWidth < minWidth) {
+                    revise += minWidth - alterWidth;
+                    alterWidth = minWidth;
                 }
                 
-                var alters = [];
-                var alterWidths = [];
-                //查找宽度允许改变的列
-                for (var i = index + 1; i < fieldLen; i++) {
-                    if (!fields[ i ].stable && colsWidth[i] > 0) {
-                        alters.push(i);
-                        alterWidth = colsWidth[ i ];
-                        alterWidths.push(alterWidth);
-                        alterSum += alterWidth;
-                    }
-                }
+                colsWidth[alter] = alterWidth;
+            }
 
-                // 计算允许改变的列每列的宽度
-                var leave = offsetX;
-                var alterLen = alters.length;
-                for (var i = 0; i < alterLen; i++) {
-                    var alter = alters[ i ];
-                    var alterWidth = alterWidths[ i ];    //当前列宽
-                    var roughWidth = offsetX * alterWidth / alterSum; // 变更的列宽
-                    
-                    // 校正变更的列宽
-                    // roughWidth可能存在小数点
-                    if (leave > 0) {
-                        offsetWidth = Math.ceil(roughWidth);
-                    } else {
-                        offsetWidth = Math.floor(roughWidth);
-                    }
-                    offsetWidth = (Math.abs(offsetWidth) < Math.abs(leave) ? offsetWidth : leave);
+            // 校正拖拽列的宽度
+            // 当影响的列如果宽度小于最小宽度，会自动设置成最小宽度
+            // 相应地，拖拽列的宽度也会相应减小
+            currentWidth -= revise;
 
-                    // 校正变更后的列宽
-                    // 不允许小于最小宽度
-                    alterWidth -= offsetWidth;
-                    leave -= offsetWidth;
-                    minWidth = me.minColsWidth[ alter ];
-                    if (alterWidth < minWidth) {
-                        revise += minWidth - alterWidth;
-                        alterWidth = minWidth;
-                    }
-                    
-                    colsWidth[alter] = alterWidth;
-                }
+            colsWidth[index] = currentWidth;
 
-                // 校正拖拽列的宽度
-                // 当影响的列如果宽度小于最小宽度，会自动设置成最小宽度
-                // 相应地，拖拽列的宽度也会相应减小
-                currentWidth -= revise;
+            // 重新绘制每一列
+            resetColumns(me);
 
-                colsWidth[index] = currentWidth;
-
-                // 重新绘制每一列
-                resetColumns(me);
-                
-                // 清除拖拽向全局绑定的事件
-                helper.removeDOMEvent(me, document, 'mousemove');
-                helper.removeDOMEvent(me, document, 'mouseup');
-
-                me.isDraging = false;
-                hideDragMark(me);
-                
-                lib.event.preventDefault(e);
-                return false;
-            };
+            me.isDraging = false;
+            hideDragMark(me);
+            
+            lib.event.preventDefault(e);
+            return false;
         }
         
         /**
@@ -1298,14 +1294,13 @@ define(
             var index = el.getAttribute('index');
             var datasource = me.datasource;
             var dataLen = (datasource instanceof Array && datasource.length);
-            var dataItem;
             
             if (!dataLen || index >= dataLen){
                 return;
             }
             
             if (!el.getAttribute('data-subrowopened')){
-                dataItem = datasource[ index ];
+                var dataItem = datasource[ index ];
                 if (me.fire('subrowopen', { index:index, item: dataItem }) !== false) {
                     openSubrow(me, index, el);
                 }
@@ -1353,7 +1348,7 @@ define(
             var entry = element;
             var closeSuccess = 1;
             
-            if (currentIndex != 'undefined' && currentIndex !== null){
+            if (typeof currentIndex != 'undefined' && currentIndex !== null){
                 closeSuccess = closeSubrow(me, currentIndex, lib.g(getSubentryId(me, currentIndex)));
             }
             
@@ -1758,6 +1753,25 @@ define(
         function toggleSelectAll(arg) {
             selectAll(this, getHeadCheckbox(this).checked);
         }
+
+        /**
+         * 获取所有选择Box
+         * 
+         * @private
+         * @param {string} type box类型
+         */
+        function findSelectBox(table, type){
+            var inputs = getBody(table).getElementsByTagName('input');
+            var result = [];
+            for (var i = 0, len = inputs.length ; i < len; i++){
+                var input = inputs[i];
+                var inputId = input.id;
+                 if (input.getAttribute('type') == type && inputId){
+                    result.push(input)
+                 }
+            }
+            return result;
+        }
         
         /**
          * 更新所有checkbox的选择状态
@@ -1767,20 +1781,16 @@ define(
          */
         function selectAll(table, checked) {
             var me = table;
-            var inputs = getBody(me).getElementsByTagName('input');
-            var len = inputs.length;
+            var inputs = findSelectBox(me, 'checkbox');
             var selected = [];
             var selectedIndex = [];
             var cbIdPrefix = getId(me, 'multiSelect');
             var index = 0;
 
-            for (var i = 0 ; i < len; i++) {
+            for (var i = 0, len = inputs.length ; i < len; i++) {
                 var input = inputs[i];
                 var inputId = input.id;
-
-                if (input.getAttribute('type') == 'checkbox' 
-                 && inputId 
-                 && inputId.indexOf(cbIdPrefix) >= 0){
+                if (inputId.indexOf(cbIdPrefix) >= 0){
                     inputs[i].checked = checked;
                     
                     if (checked) {
@@ -1790,7 +1800,7 @@ define(
                         helper.removePartClasses(me, 'row-selected', getRow(me, index));
                     }
                     
-                    index ++;
+                    index++;
                 }
             }
             me.selectedIndex = selected;
@@ -1834,8 +1844,30 @@ define(
             }    
         }
 
+        /**
+         * 设置元素的disable样式
+         * 
+         * @private
+         */
+        function setDisabledStyle(table){
+            var inputs = findSelectBox(table, table.select == 'multi' ? 'checkbox' : 'radio');
+            for (var i = inputs.length - 1; i >= 0; i--) {
+                if(table.disabled){
+                    inputs[i].setAttribute('disabled', 'disabled');
+                }else{
+                    inputs[i].removeAttribute('disabled', 'disabled');
+                }
+            }
+            var selectAll = getHeadCheckbox(table);
+            if(selectAll){
+                if(table.disabled){
+                selectAll.setAttribute('disabled', 'disabled');
+                }else{
+                    selectAll.removeAttribute('disabled', 'disabled');
+                }
+            }
+        }
 
-     
         /**
         * 生成委托处理函数
         *
@@ -1923,7 +1955,6 @@ define(
                 var me = this;
                 me.realWidth = getWidth(me);
                 me.main.style.width = me.realWidth + 'px';   
-                me.subrowIndex = null;
 
                 initResizeHandler(me);
                 initMainEventhandler(me);
@@ -1934,16 +1965,15 @@ define(
              * 
              * @override
              */
-            repaint: function (changes) {
+            repaint: function (changes, changesIndex) {
                  // 初始化控件主元素上的行为
                 var me = this;
                 var main = me.main;
-    
+
                 var allProperities = {
                     bodyHeight: false,
                     breakLine: false,
                     datasource: false,
-                    disabled: false,
                     columnResizable: false,
                     fields: false,
                     followHead: false,
@@ -1974,9 +2004,7 @@ define(
                 var colsWidthChanged = false;
 
                 if(allProperities['fields']
-                || allProperities['select']
-                || allProperities['disabled']
-                   ){
+                || allProperities['select']){
                     initFields(me);
                     fieldsChanged = true;
                 }
@@ -2010,6 +2038,12 @@ define(
                     renderFoot(me);
                 }
 
+                me.extraRepaint =  helper.createRepaint({
+                    name: 'disabled',
+                    paint: setDisabledStyle
+                });
+                me.extraRepaint(changes, changesIndex);
+
                 // 如果未绘制过，初始化resize处理
                 if (helper.isInStage(me, 'RENDERED')){
                     // 重绘时触发onselectChange事件
@@ -2025,7 +2059,6 @@ define(
                 if (me.realWidth != getWidth(me)) {
                     handleResize(me);
                 }
-
             },
 
              /**
