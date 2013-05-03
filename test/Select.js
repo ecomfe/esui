@@ -128,36 +128,74 @@ define(function (require) {
                 expect(container.getElementsByTagName('span')[0].innerHTML).toBe('c');
             });
 
-            it('should adjust value related properties if given a non-exist `value`', function () {
+            it('should select the first item if given a non-exist `value` and no `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, value: '10' });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
             });
 
-            it('should adjust value related properties if given a non-exist `rawValue`', function () {
+            it('should select `emptyText` if given a non-exist `value` when `emptyText` is given', function () {
+                var select = new Select({ datasource: datasource, value: '10', emptyText: 'test' });
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
+            });
+
+            it('should select the first item if given a non-exist `rawValue` and no `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, rawValue: '10' });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
             });
 
-            it('should adjust value related properties if given a out-of-range `selectedIndex`', function () {
+            it('should select `emptyText` if given a non-exist `rawValue` when `emptyText` is given', function () {
+                var select = new Select({ datasource: datasource, rawValue: '10', emptyText: 'test' });
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
+            });
+
+            it('should select the first item if given a out-of-range `selectedIndex` and no `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, selectedIndex: 10 });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
             });
 
-            it('should assign value related properties by default if none of them are given', function () {
+            it('should select `emptyText` if given a out-of-range `selectedIndex` when `emptyText` is given', function () {
+                var select = new Select({ datasource: datasource, selectedIndex: 10, emptyText: 'test' });
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
+            });
+
+            it('should select the first item by default if none of them are given', function () {
                 var select = new Select({ datasource: datasource });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
             });
 
-            it('should adjust value related properties if `datasource` is change in runtime which causes value to be unsynced', function () {
+            it('should select `emptyText` by default if only `emptyText` is given', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
+            });
+
+            it('should render `emptyText` when `emptyText` is selcted', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                select.appendTo(container);
+                expect(select.main.firstChild.innerHTML).toBe('test');
+            });
+
+            it('should select the first item if `datasource` is change in runtime which causes value to be unsynced and no `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, value: '6' });
                 select.appendTo(container);
                 select.setProperties({ datasource: datasource.slice(0, 3) });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
+            });
+
+            it('should select `emptyText` if `datasource` is change in runtime which causes value to be unsynced when `emptyText` is given', function () {
+                var select = new Select({ datasource: datasource, value: '6', emptyText: 'test' });
+                select.appendTo(container);
+                select.setProperties({ datasource: datasource.slice(0, 3) });
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
             });
 
             it('should not adjust value related properties if `datasource` is change but value is still in sync', function () {
@@ -184,13 +222,35 @@ define(function (require) {
                 expect(select.getRawValue()).toBe('1');
             });
 
-            it('should adjust value related properties if `selectedIndex` is change in runtime and is given an out-of-range value', function () {
+            it('should select the first item if `selectedIndex` is change in runtime and is given an out-of-range value and no `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);
                 select.setProperties({ selectedIndex: 10 });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
             });
+
+            it('should `emptyText` if `selectedIndex` is change in runtime and is given an out-of-range value when `emptyText` is given', function () {
+                var select = new Select({ datasource: datasource, value: '2', emptyText: 'test' });
+                select.appendTo(container);
+                select.setProperties({ selectedIndex: 10 });
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
+            });
+
+            it('should select the first item if `emptyText` is removed when `emptyText` is previously selected', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                select.set('emptyText', null);
+                expect(select.get('selectedIndex')).toBe(0);
+                expect(select.getRawValue()).toBe('1');
+            });
+
+            it('should keep selecting `emptyText` if `datasource` is changed and given an item whose value is empty', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                select.set('datasource', [{ name: 'x', value: '' }]);
+                expect(select.get('selectedIndex')).toBe(-1);
+                expect(select.getRawValue()).toBe('');
+            })
 
             it('should accept runtime change of `value`', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
@@ -214,6 +274,14 @@ define(function (require) {
                 select.setProperties({ selectedIndex: 2 });
                 expect(select.get('selectedIndex')).toBe(2);
                 expect(select.getRawValue()).toBe('3');
+            });
+
+            it('should accept runtime changed of `emptyText', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                select.appendTo(container);
+                select.set('emptyText', 'changed');
+                expect(select.main.firstChild.innerHTML).toBe('changed');
+                expect(select.main.getElementsByTagName('input')[0].value).toBe('');
             });
 
             it('should sync `selectedIndex` after `value` is changed', function () {

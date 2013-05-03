@@ -67,14 +67,20 @@ define(
 
             // 有可能更换过`datasource`，或者给了一个不存在的`value`，
             // 则会导致`selectedIndex`无法同步，
-            // 因此如果`selectedIndex`在数组范围外或为初始值-1，要修正回来
+            // 因此如果`selectedIndex`在数组范围外，要根据`emptyText`来决定修正
             if (context.selectedIndex < 0 
                 || context.selectedIndex >= context.datasource.length
             ) {
-                context.selectedIndex = 0;
-                context.rawValue = context.datasource[0]
-                    ? context.datasource[0].value
-                    : '';
+                if (context.emptyText) {
+                    context.selectedIndex = -1;
+                    context.rawValue = '';
+                }
+                else {
+                    context.selectedIndex = 0;
+                    context.rawValue = context.datasource[0]
+                        ? context.datasource[0].value
+                        : '';
+                }
             }
         }
 
@@ -121,9 +127,7 @@ define(
                 }
             }
 
-            adjustValueProperties(properties);
-
-            lib.extend(this, properties);
+            this.setProperties(properties);
         };
 
         /**
@@ -383,12 +387,17 @@ define(
             hidden.value = select.rawValue;
 
             // 同步显示的文字
-            var selectedItem = select.datasource[select.selectedIndex];
-            var displayText = selectedItem 
-                ? (selectedItem.name || selectedItem.text)
-                : '';
             var textHolder = select.main.getElementsByTagName('span')[0];
-            textHolder.innerHTML = lib.encodeHTML(displayText);
+            if (select.selectedIndex === -1) {
+                textHolder.innerHTML = lib.encodeHTML(select.emptyText);
+            }
+            else {
+                var selectedItem = select.datasource[select.selectedIndex];
+                var displayText = selectedItem 
+                    ? (selectedItem.name || selectedItem.text)
+                    : '';
+                textHolder.innerHTML = lib.encodeHTML(displayText);
+            }
         }
 
         var paint = require('./painters');
@@ -406,7 +415,7 @@ define(
             paint.style('height'),
             paint.html('datasource', 'layer', getLayerHTML),
             {
-                name: 'rawValue',
+                name: ['rawValue', 'emptyText'],
                 paint: updateValue
             },
             {
@@ -436,7 +445,10 @@ define(
                 && properties.rawValue == null
                 && properties.selectedIndex == null
             ) {
-                properties.rawValue = this.rawValue;
+                properties.selectedIndex = this.selectedIndex;
+            }
+            if (!properties.hasOwnProperty('emptyText')) {
+                properties.emptyText = this.emptyText;
             }
 
             adjustValueProperties(properties);
