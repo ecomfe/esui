@@ -337,6 +337,9 @@ define(
          * @param {Event} 触发事件的事件对象
          */
         function mainClick(region, e) {
+            if (region.disabled || region.readOnly) {
+                return;
+            }
             var tar = e.target || e.srcElement;
             while (tar && tar != document.body) {
                 if (tar.nodeName.toLowerCase() === 'input') {
@@ -412,6 +415,9 @@ define(
          * @param {Event} 触发事件的事件对象
          */
         function mainMouseOver(region, e) {
+            if (region.disabled || region.readOnly) {
+                return;
+            }
             var tar = e.target || e.srcElement;
             var optionChildClass = helper.getPartClasses(
                 region, 'option-child');
@@ -424,6 +430,7 @@ define(
                 else if (tar.nodeName.toLowerCase() === 'label') {
                     var checkId = tar.getAttribute('for');
                     checkbox = lib.g(checkId);
+
                 }
                 else if (lib.hasClass(tar, optionChildClass[0])) {
                     optionChildLayer = tar;
@@ -456,6 +463,9 @@ define(
          * @param {Event} 触发事件的事件对象
          */
         function mainMouseOut(region, e) {
+            if (region.disabled || region.readOnly) {
+                return;
+            }
             var tar = e.target || e.srcElement;
             var optionChildClass = helper.getPartClasses(
                 region, 'option-child');
@@ -641,18 +651,23 @@ define(
             updateParamValue(region);
         }
 
-
-        // function changeToReadOnly(region, readonly) { 
-        //     // 遍历素有checkbox，设置为disable
-        //     var elements =
-        //         region.main.getElementsByTagName('input');
-        //     for (var i = 0, length = elements.length; i < length; i++) {
-        //         var item = elements[i];
-        //         if (item.getAttribute('type') == 'checkbox') {
-        //             item.disabled = readonly;
-        //         }
-        //     }
-        // }
+        /**
+         * 批量
+         * @inner
+         * @param {Region} region Region控件实例
+         * @param {boolean} disabled 是否不可用
+         */
+        function changeToDisabled(region, disabled) { 
+            // 遍历素有checkbox，设置为disabled
+            var elements =
+                region.main.getElementsByTagName('input');
+            for (var i = 0, length = elements.length; i < length; i++) {
+                var item = elements[i];
+                if (item.getAttribute('type') == 'checkbox') {
+                    item.disabled = disabled;
+                }
+            }
+        }
 
         /**
          * 更新输入控件的值
@@ -760,6 +775,9 @@ define(
                 {
                     name: 'rawValue',
                     paint: function (region, value) {
+                        if (region.disabled || region.readOnly) {
+                            return;
+                        }
                         if (region.mode == 'multi') {
                             selectMulti(region, value);
                         }
@@ -770,12 +788,18 @@ define(
                             });
                         }
                     }
-                },    
+                }, 
                 {
-                    name: 'readOnly',
-                    paint: function (region, readOnly) {
-                        if (readOnly) {
-                            changeToReadOnly(region, readOnly);
+                    name: ['disabled', 'readOnly'],
+                    paint: function (region, disabled, readOnly) {
+                        if (disabled || readOnly) {
+                            changeToDisabled(region, true);
+                            if (disabled) {
+                                // 隐藏input也要置为disabled
+                                var input =
+                                    lib.g(helper.getId(region, 'param-value'));
+                                input.disabled = disabled;
+                            }
                         }
                     }
                 }
