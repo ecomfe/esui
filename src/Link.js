@@ -22,12 +22,6 @@ define(
             Control.apply(this, arguments);
         }
 
-        var allProperties = [
-            { name: 'href' },
-            { name: 'target' }, 
-            { name: 'content' }
-        ];
-
         Link.prototype = {
 
             constructor: Link,
