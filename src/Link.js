@@ -11,14 +11,14 @@ define(
         var lib     = require('./lib');
         var Control = require('./Control');
         var helper  = require('./controlHelper');
+        var paint = require('./painters');
 
         /**
          * Link控件
          *
-         * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Link(options) {
+        function Link() {
             Control.apply(this, arguments);
         }
 
@@ -34,17 +34,19 @@ define(
 
             /**
              * 控件类型
+             *
              * @type {string}
              */
             type: 'Link',
 
             /**
              * 创建控件主元素
-             * @override
+             *
              * @return {HTMLElement}
+             * @override
+             * @protected
              */
             createMain: function () {
-
                 //主元素只能是a元素
                 return document.createElement('a');
             },
@@ -89,7 +91,7 @@ define(
 
                 helper.addDOMEvent(
                     this, this.main, 'click',
-                    lib.bind(this.clickHandler, null, this)
+                    lib.bind(this.fire, this, 'click')
                 );
             },
 
@@ -97,11 +99,9 @@ define(
              * 渲染控件
              */
             render: function () {
-                var main = this.main;
-
-                //如果控件主元素不为A,则不执行渲染操作
-                //目前处理是让其一直处于init状态下
-                if (main && main.tagName == 'A') {
+                // 如果控件主元素不为A,则不执行渲染操作
+                // 目前处理是让其一直处于init状态下
+                if (this.main && this.main.nodeName.toLowerCase() === 'a') {
 
                     Control.prototype.render.apply(this, arguments);
                 }
@@ -113,96 +113,20 @@ define(
              * @override
              * @protected
              */
-            repaint: function (changes) {
-                changes = changes || allProperties;
-
-                for (var i = 0; i < changes.length; i++) {
-                    var record = changes[i];
-
-                    switch (record.name) {
-                        case 'href':
-                            this.main.href = this.href;
-                            break;
-
-                        case 'target':
-                            this.main.target = this.target;
-                            break;
-
-                        case 'content':
-                            this.disposeChildren();
-                            this.main.innerHTML = this.content;
-                            this.initChildren(this.main);
-                            break;
+            repaint: helper.createRepaint(
+                Control.prototype.repaint,
+                paint.attribute('href'),
+                paint.attribute('target'),
+                paint.attribute('content'),
+                {
+                    name: 'content',
+                    paint: function (control, value) {
+                        control.disposeChildren();
+                        control.main.innerHTML = value;
+                        control.initChildren(control.main);
                     }
                 }
-            },
-
-            /**
-             * 设置链接地址
-             *
-             * @public
-             * @param {string} href 链接地址
-             */
-            setHref: function (href) {
-
-                this.setProperties({ href: href });
-            },
-
-            /**
-             * 设置链接target
-             *
-             * @public
-             * @param {string} target 链接target
-             */
-            setTarget: function (target) {
-
-                this.setProperties({ target: target });
-            },
-
-            /**
-             * 设置链接显示内容。 不经过html encode
-             *
-             * @param {[type]} content 链接显示内容
-             */
-            setContent: function (content) {
-
-                this.setProperties({ content: content });
-            },
-
-            /**
-             * 获取链接地址
-             * @return {string} 地址
-             */
-            getHref: function () {
-
-                return this.href;
-            },
-
-            /**
-             * 获取链接target
-             * @return {string} target
-             */
-            getTarget: function () {
-
-                return this.target;
-            },
-
-            /**
-             * 获取链接显示内容
-             * @return {string} 显示内容
-             */
-            getContent: function () {
-
-                return this.content;
-            },
-
-            /**
-             * 鼠标点击事件处理函数
-             */
-            clickHandler: function (link) {
-
-                link.fire('click');
-            }
+            )
 
         };
 
