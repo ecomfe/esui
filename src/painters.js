@@ -5,6 +5,40 @@ define(
 
         var painters = {};
 
+        /**
+         * 修改状态
+         *
+         * @param {string} name 指定负责的属性名，同时也是状态名称
+         */
+        painters.state = function (name) {
+            return {
+                name: name,
+                paint: function (control, value) {
+                    var method = value ? 'addState' : 'removeState';
+                    control[method](this.name);
+                }
+            };
+        };
+
+        /**
+        * 修改元素属性
+        *
+        * @param {string} name 指定负责的属性名
+        * @param {string=} attribute 对应DOM属性的名称，默认与`name`相同
+        * @param {*=} value 指定DOM属性的值，默认与更新的值相同
+        */
+        painters.attribute = function (name, attribute, value) {
+            return {
+                name: name,
+                attribute: attribute || name, 
+                value: value,
+                paint: function (control, value) {
+                    value = this.value == null ? value : this.value;
+                    control.main.setAttribute(this.attribute, value);
+                }
+            }
+        };
+
         // 这些属性不用加`px`
         var unitProperties = {
             width: true,
@@ -29,21 +63,6 @@ define(
             borderRightWidth: true,
             borderBottomWidth: true,
             borderLeftWidth: true,
-        };
-
-        /**
-         * 修改状态
-         *
-         * @param {string} name 指定负责的属性名，同时也是状态名称
-         */
-        painters.state = function (name) {
-            return {
-                name: name,
-                paint: function (control, value) {
-                    var method = value ? 'addState' : 'removeState';
-                    control[method](this.name);
-                }
-            };
         };
 
         /**
