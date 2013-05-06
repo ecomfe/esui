@@ -104,10 +104,10 @@ define(
                     var element = typeof this.element === 'function'
                         ? this.element(control)
                         : lib.g(helper.getId(control, this.element));
-                    var html = typeof this.generate === 'function'
-                        ? this.generate(control, value)
-                        : value;
                     if (element) {
+                        var html = typeof this.generate === 'function'
+                            ? this.generate(control, value)
+                            : value;
                         element.innerHTML = html || '';
                     }
                 }
@@ -131,10 +131,10 @@ define(
                     var element = typeof this.element === 'function'
                         ? this.element(control)
                         : lib.g(helper.getId(control, this.element));
-                    var html = typeof this.generate === 'function'
-                        ? this.generate(control, value)
-                        : value;
                     if (element) {
+                        var html = typeof this.generate === 'function'
+                            ? this.generate(control, value)
+                            : value;
                         element.innerHTML = lib.encodeHTML(html || '');
                     }
                 }
