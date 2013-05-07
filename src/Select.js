@@ -217,8 +217,7 @@ define(
          * @inner
          */
         function selectValue(select, e) {
-            e = e || window.event;
-            var target = e.target || e.srcElement;
+            var target = lib.event.getTarget(e);
             while (target && !target.hasAttribute('data-value')) {
                 target = target.parentNode;
             }
