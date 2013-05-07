@@ -285,67 +285,6 @@ define(
         };
 
         /**
-         * 控件主元素鼠标移入事件处理函数
-         * 
-         * @inner
-         */
-        function mainOverHandler() {
-            if (!this.isDisabled()) {
-                this.addState('hover');
-            }
-        }
-
-        /**
-         * 控件主元素鼠标移出事件处理函数
-         * 
-         * @inner
-         */
-        function mainOutHandler() {
-            if (!this.isDisabled()) {
-                this.removeState('hover');
-                this.removeState('press');
-            }
-        }
-
-        /**
-         * 控件主元素鼠标点击按下事件处理函数
-         * 
-         * @inner
-         */
-        function mainDownHandler() {
-            if (!this.isDisabled()) {
-                this.addState('press');
-            }
-        }
-
-        /**
-         * 控件主元素鼠标点击释放事件处理函数
-         * 
-         * @inner
-         */
-        function mainUpHandler() {
-            if (!this.isDisabled()) {
-                this.removeState('press');
-            }
-        }
-
-        /**
-         * 初始化hover状态的行为
-         * 
-         * @param {Control} control 控件实例
-         */
-        helper.initMouseBehavior = function (control) {
-            var main = control.main;
-            if (main) {
-                // TODO: 能搞成用addEventListener吗（需要一个DOM事件模块？）
-                main.onmouseover = lib.bind(mainOverHandler, control);
-                main.onmouseout = lib.bind(mainOutHandler, control);
-                main.onmousedown = lib.bind(mainDownHandler, control);
-                main.onmouseup = lib.bind(mainUpHandler, control);
-            }
-        };
-
-        /**
          * 销毁控件
          * 
          * @param {Control} control 控件实例
@@ -357,14 +296,6 @@ define(
             control.childrenIndex = null;
 
             // 移除自身行为
-            var main = control.main;
-            control.main = null;
-            if (main) {
-                main.onmouseup = null;
-                main.onmousedown = null;
-                main.onmouseout = null;
-                main.onmouseover = null;
-            }
             helper.clearDOMEvents(control);
 
             // 从控件树中移除
