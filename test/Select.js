@@ -500,6 +500,51 @@ define(function (require) {
                 expect(spy).toHaveBeenCalled();
             });
 
+            it('should fire if `datasource` is changed which causes the first item to be selected', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('datasource', datasource.slice(3));
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should fire if `datasource` is changed which causes `emptyText` to be selected', function () {
+                var select = new Select({ datasource: datasource, value: '2', emptyText: 'test' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('datasource', datasource.slice(3));
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should fire if `value` is changed to a non-exist value', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('value', 'abc');
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should fire if `rawValue` is changed to a non-exist value', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('rawValue', 'abc');
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it('should fire if `selectedIndex` is changed to an out-of-range value', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('selectedIndex', -1);
+                expect(spy).toHaveBeenCalled();
+            });
+
             it('should not fire if `value` is given the same as previous', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 var spy = jasmine.createSpy();
@@ -524,6 +569,15 @@ define(function (require) {
                 select.on('change', spy);
                 select.appendTo(container);
                 select.setProperties({ selectedIndex: 1 });
+                expect(spy).not.toHaveBeenCalled();
+            });
+
+            it('should not fire if `datasource` is changed but value is still available as previous', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('datasource', datasource.slice(0, 3));
                 expect(spy).not.toHaveBeenCalled();
             });
         });
