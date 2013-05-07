@@ -36,7 +36,7 @@ define(
                     value = this.value == null ? value : this.value;
                     control.main.setAttribute(this.attribute, value);
                 }
-            }
+            };
         };
 
         // 这些属性不用加`px`

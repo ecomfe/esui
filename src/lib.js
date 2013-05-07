@@ -129,6 +129,7 @@ define(function () {
         // 判断有继承的情况
         // 如果有一项是继承过来的，那么一定不是字面量Object
         // OwnProperty会首先被遍历，为了加速遍历过程，直接看最后一项
+        /* jshint noempty: false */
         var key;
         for (key in obj) {
         }
@@ -143,29 +144,26 @@ define(function () {
      * @return {Object} 拷贝后的新对象
      */
     lib.clone = function (source) {
-        var result = source, i, len;
-        if (!source
-            || source instanceof Number
-            || source instanceof String
-            || source instanceof Boolean
-        ) {
-            return result;
+        if (!source || typeof source !== 'object') {
+            return source;
         }
-        else if (lib.isArray(source)) {
+
+        var result = source;
+        if (lib.isArray(source)) {
             result = [];
-            var resultLen = 0;
-            for (i = 0, len = source.length; i < len; i++) {
-                result[resultLen++] = lib.clone(source[i]);
+            for (var i = 0; i < source.length; i++) {
+                result.push(source[i]);
             }
         }
-        else if (lib.isPlain(source)) {
+        else {
             result = {};
-            for (i in source) {
-                if (source.hasOwnProperty(i)) {
-                    result[i] = lib.clone(source[i]);
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    result[key] = lib.clone(source[key]);
                 }
             }
         }
+
         return result;
     };
 

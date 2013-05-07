@@ -99,9 +99,10 @@ define(
             var controlId;
             if ( ( controlId = dom.getAttribute( 'data-control' ) ) ) {
                 return this.get( controlId );
-            }else{
+            }
+            else {
                 var controlIdStart = dom.id.indexOf( 'ctrl-' );
-                if( controlIdStart == 0 ){
+                if( controlIdStart === 0 ){
                     var idParts = dom.id.split('-');
                     return idParts.length > 1 ?  this.get( idParts[1] ) : null ;
                 }

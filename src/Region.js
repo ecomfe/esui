@@ -340,7 +340,7 @@ define(
             if (region.disabled || region.readOnly) {
                 return;
             }
-            var tar = e.target || e.srcElement;
+            var tar = e.target;
             while (tar && tar != document.body) {
                 if (tar.nodeName.toLowerCase() === 'input') {
                     optionClick(region, tar);
@@ -418,7 +418,7 @@ define(
             if (region.disabled || region.readOnly) {
                 return;
             }
-            var tar = e.target || e.srcElement;
+            var tar = e.target;
             var optionChildClass = helper.getPartClasses(
                 region, 'option-child');
             while (tar && tar != document.body) {
@@ -466,7 +466,7 @@ define(
             if (region.disabled || region.readOnly) {
                 return;
             }
-            var tar = e.target || e.srcElement;
+            var tar = e.target;
             var optionChildClass = helper.getPartClasses(
                 region, 'option-child');
             while (tar && tar != document.body) {
@@ -663,9 +663,7 @@ define(
                 region.main.getElementsByTagName('input');
             for (var i = 0, length = elements.length; i < length; i++) {
                 var item = elements[i];
-                if (item.getAttribute('type') == 'checkbox') {
-                    item.disabled = disabled;
-                }
+                item.disabled = disabled;
             }
         }
 
@@ -792,16 +790,22 @@ define(
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (region, disabled, readOnly) {
+                        var editable = true;
+                        /** disable的优先级高于readOnly */
                         if (disabled || readOnly) {
-                            changeToDisabled(region, true);
-                            if (disabled) {
-                                // 隐藏input也要置为disabled
-                                var input =
-                                    lib.g(helper.getId(region, 'param-value'));
-                                input.disabled = disabled;
-                            }
+                            editable = false;
+                        }
+                        
+                        changeToDisabled(region, !editable);
+                        
+                        // 只读状态下要开放input的读属性    
+                        if (!disabled && readOnly) {
+                            var input =
+                                lib.g(helper.getId(region, 'param-value'));
+                            input.disabled = true;
                         }
                     }
+                    
                 }
             ),
 
