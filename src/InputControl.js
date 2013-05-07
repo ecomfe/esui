@@ -140,11 +140,7 @@ define(
              * @return {string}
              */
             stringifyValue: function (rawValue) {
-                if (typeof rawValue == 'string') {
-                    return rawValue;
-                }
-
-                return String(rawValue);
+                return rawValue ? (rawValue + '') : '';
             },
 
             /**

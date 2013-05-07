@@ -73,7 +73,7 @@ define(
             ) {
                 if (context.emptyText) {
                     context.selectedIndex = -1;
-                    context.rawValue = '';
+                    context.rawValue = null;
                 }
                 else {
                     context.selectedIndex = 0;
@@ -444,7 +444,7 @@ define(
                 && properties.rawValue == null
                 && properties.selectedIndex == null
             ) {
-                properties.selectedIndex = this.selectedIndex;
+                properties.rawValue = this.rawValue;
             }
             if (!properties.hasOwnProperty('emptyText')) {
                 properties.emptyText = this.emptyText;
