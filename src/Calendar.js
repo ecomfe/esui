@@ -71,7 +71,7 @@ define(
                 calendar.isHidePrevent = 0;
                 return;
             }
-            var tar = e.target || e.srcElement;
+            var tar = lib.event.getTarget(e);
             while (tar && tar != document.body) {
                 if (tar == calendar.layer) {
                     return;
