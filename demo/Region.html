@@ -14,13 +14,17 @@
             <br>
             <div data-ui="type:Region;id:test2;mode:single;name:region2"></div>
             <br>
-            <div data-ui="type:Region;id:test3;name:region3"></div>
+            <div data-ui="type:Region;id:test3;name:region3;"></div>
+            <br>
+            <button data-ui="type:Button;id:unlock;" style="float:left;">解锁</button>
+            <div id="tip"></div>
         </div>
         <script>
         require(
             [
                 'esui',
                 'esui/Region',
+                'esui/Button',
                 'css!esui/css/main.css'
             ],
             function (ui) {
@@ -28,18 +32,32 @@
                 var region1 = controls[0];
                 var region2 = controls[1];
                 var region3 = controls[2];
+                var unlock = controls[3];
 
                 region1.setProperties({
                     rawValue: ['268', '269', '270']
                 });
 
-
                 region3.setProperties({
-                    rawValue: ['258', '269', '270']
+                    rawValue: ['268', '269', '270']
+                });
+                region3.setProperties({
+                    readOnly: true,
+                    disabled: true
                 });
 
-                region3.setProperties({
-                    readOnly: true
+                unlock.on('click', function(){
+                    region3.setProperties({
+                        readOnly: false,
+                        disabled: false
+                    });
+                    document.getElementById('tip').innerHTML = '开锁';
+                    region3.setProperties({
+                        rawValue: ['263', '269', '270']
+                    });
+                    region3.setProperties({
+                        readOnly: true
+                    });
                 });
             }
         )
