@@ -219,22 +219,6 @@ define(function (require) {
                 expect(document.getElementById('c').style.display).toBe('');
             });
 
-            it('should correctly adjust tab element and relative panel when `activateAt` is called', function () {
-                var html = [
-                    '<div id="a"></div>',
-                    '<div id="b"></div>',
-                    '<div id="c"></div>'
-                ];
-                container.innerHTML = html.join('\n');
-                var tab = new Tab({ tabs: tabs, activeIndex: 1 });
-                tab.appendTo(container);
-                tab.activateAt(2);
-                expect(tab.get('activeIndex')).toBe(2);
-                expect(document.getElementById('a').style.display).toBe('none');
-                expect(document.getElementById('b').style.display).toBe('none');
-                expect(document.getElementById('c').style.display).toBe('');
-            });
-
             it('should activate the tab when it is clicked', function () {
                 var tab = new Tab({ tabs: tabs, activeIndex: 1 });
                 tab.appendTo(container);
@@ -263,6 +247,28 @@ define(function (require) {
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
                 expect(navigator.children[2].innerText).toBe('tab4');
+            });
+
+            it('should add a tab at first if `index` is less than 0 when `insert` is called', function () {
+                var tab = new Tab({ tabs: tabs.slice() });
+                tab.appendTo(container);
+                var newTab = { title: 'tab4', panel: 'd' };
+                tab.insert(newTab, -1);
+                expect(tab.get('tabs')[0]).toEqual(newTab);
+                var navigator = container.getElementsByTagName('ul')[0];
+                expect(navigator.children.length).toBe(4);
+                expect(navigator.children[0].innerText).toBe('tab4');
+            });
+
+            it('should add a tab at last if `index` is out of range when `insert` is called', function () {
+                var tab = new Tab({ tabs: tabs.slice() });
+                tab.appendTo(container);
+                var newTab = { title: 'tab4', panel: 'd' };
+                tab.insert(newTab, 10);
+                expect(tab.get('tabs')[3]).toEqual(newTab);
+                var navigator = container.getElementsByTagName('ul')[0];
+                expect(navigator.children.length).toBe(4);
+                expect(navigator.children[3].innerText).toBe('tab4');
             });
 
             it('should change `activeIndex` correctly when a tab is inserted', function () {
@@ -322,11 +328,32 @@ define(function (require) {
                 expect(container.getElementsByTagName('li')[1].className).toMatch(/ui-tab-active/);
             });
 
+            it('should keep the current active tab if `tabs` is changed but current active tab still exists', function () {
+                var tab = new Tab({ tabs: tabs, activeIndex: 1 });
+                tab.appendTo(container);
+                tab.set('tabs', tabs.slice(1, 2));
+                expect(tab.get('activeIndex')).toBe(0);
+                expect(container.getElementsByTagName('li')[0].className).toMatch(/ui-tab-active/);
+            });
+
             it('should set `activeIndex` to -1 if the last tab is removed', function () {
                 var tab = new Tab({ tabs: tabs.slice(0, 1), activeIndex: 0 });
                 tab.appendTo(container);
                 tab.removeAt(0);
                 expect(tab.get('activeIndex')).toBe(-1);
+            });
+
+            it('should hide the related panel if a tab is removed', function () {
+                var html = [
+                    '<div id="a"></div>',
+                    '<div id="b"></div>',
+                    '<div id="c"></div>'
+                ];
+                container.innerHTML = html.join('\n');
+                var tab = new Tab({ tabs: tabs.slice(), activeIndex: 1 });
+                tab.appendTo(container);
+                tab.removeAt(1);
+                expect(document.getElementById('b').style.display).toBe('none');
             });
 
             it('should set the newly added tab active if it is the only one', function () {
@@ -336,7 +363,7 @@ define(function (require) {
                 tab.add(tabs.slice(0, 1));
                 expect(tab.get('activeIndex')).toBe(0);
                 expect(document.getElementById('a').style.display).toBe('');
-            })
+            });
 
             it('should add an element with className `ui-tab-close` to each tab if `allowClose` is set to true', function () {
                 var tab = new Tab({ tabs: tabs, allowClose: true });
@@ -388,49 +415,54 @@ define(function (require) {
             var handler;
 
             beforeEach(function () {
-                tab = new Tab({ tabs: tabs.slice(), activeIndex: 0 });
+                tab = new Tab({ tabs: tabs.slice(), activeIndex: 1 });
                 tab.appendTo(container);
                 handler = jasmine.createSpy();
                 tab.on('activate', handler);
             });
 
             it('should fire when `activeIndex` is changed', function () {
-                tab.set('activeIndex', 1);
+                tab.set('activeIndex', 0);
                 expect(handler).toHaveBeenCalled();
             });
 
             it('should fire when `activate` is called with a tab different from the active one', function () {
-                tab.activate(tab.get('tabs')[1]);
-                expect(handler).toHaveBeenCalled();
-            });
-
-            it('should fire when `activateAt` is called with a different `activeIndex`', function () {
-                tab.activateAt(1);
+                tab.activate(tab.get('tabs')[0]);
                 expect(handler).toHaveBeenCalled();
             });
 
             it('should fire when currently active tab is removed', function () {
-                tab.remove(tab.get('tabs')[0]);
+                tab.remove(tab.get('tabs')[1]);
                 expect(handler).toHaveBeenCalled();
             });
 
+            it('should fire if `tabs` is changed and currently active tab disappears', function () {
+                tab.set('tabs', tabs.slice(2, 1));
+                expect(handler).toHaveBeenCalled();
+            })
+
+            it('should not fire if `tabs` is changed but currently active tab still exists', function () {
+                tab.set('tabs', tabs.slice(1, 2));
+                expect(handler).not.toHaveBeenCalled();
+            });
+
             it('should not fire when `activeIndex` is set but its value is not changed', function () {
-                tab.set('activeIndex', 0);
+                tab.set('activeIndex', 1);
                 expect(handler).not.toHaveBeenCalled();
             });
 
             it('should not fire when `activate` is called with the same active tab', function () {
-                tab.activate(tab.get('tabs')[0]);
+                tab.activate(tab.get('tabs')[1]);
                 expect(handler).not.toHaveBeenCalled();
             });
 
-            it('should not fire when `activateAt` is called with the same `activeIndex`', function () {
-                tab.activateAt(0);
+            it('should not fire when a none-activated & before-current tab is removed', function () {
+                tab.removeAt(0);
                 expect(handler).not.toHaveBeenCalled();
             });
 
-            it('should not fire when a none-activated tab is removed', function () {
-                tab.removeAt(1);
+            it('should not fire when a none-activated & after-current tab is removed', function () {
+                tab.removeAt(2);
                 expect(handler).not.toHaveBeenCalled();
             });
 
@@ -440,12 +472,12 @@ define(function (require) {
             });
 
             it('should give a correct event object when fired', function () {
-                tab.activateAt(1);
+                tab.set('activeIndex', 0);
                 var event = handler.mostRecentCall.args[0];
                 expect(event).toBeOfType('object');
                 expect(event.type).toBe('activate');
-                expect(event.activeIndex).toBe(1);
-                expect(event.tab).toEqual(tabs[1]);
+                expect(event.activeIndex).toBe(0);
+                expect(event.tab).toEqual(tabs[0]);
             });
         });
 

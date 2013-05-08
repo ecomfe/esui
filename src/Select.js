@@ -73,7 +73,7 @@ define(
             ) {
                 if (context.emptyText) {
                     context.selectedIndex = -1;
-                    context.rawValue = '';
+                    context.rawValue = null;
                 }
                 else {
                     context.selectedIndex = 0;
@@ -217,8 +217,7 @@ define(
          * @inner
          */
         function selectValue(select, e) {
-            e = e || window.event;
-            var target = e.target || e.srcElement;
+            var target = lib.event.getTarget(e);
             while (target && !target.hasAttribute('data-value')) {
                 target = target.parentNode;
             }
@@ -445,7 +444,7 @@ define(
                 && properties.rawValue == null
                 && properties.selectedIndex == null
             ) {
-                properties.selectedIndex = this.selectedIndex;
+                properties.rawValue = this.rawValue;
             }
             if (!properties.hasOwnProperty('emptyText')) {
                 properties.emptyText = this.emptyText;

@@ -113,7 +113,7 @@ define(
                             tab.removeAt(i);
                         }
                         else {
-                            tab.activateAt(i);
+                            tab.set('activeIndex', i);
                         }
                         return;
                     }
@@ -204,21 +204,34 @@ define(
             // 因此这里直接把`activeIndex`放自己身上，等`navigator`渲染后使用，
             // 不再把`activeIndex`和`allowClose`加入到`changes`集合中去
             if (properties.tabs) {
-                if (properties.activeIndex != null) {
-                    this.activeIndex = properties.activeIndex;
-                    delete properties.activeIndex;
-                }
-                else {
+                if (properties.activeIndex == null) {
                     // 如果仅改变`tabs`，则由于标签页的数量变化，
-                    // 可能导致`activeIndex`不同步，需要同步一次
-                    // 
-                    // 仅在这里做分支，是因为如果用户传递`activeIndex`，
-                    // 应该由用户保证正确性，出错也能及时让开发者发现
-                    if (this.activeIndex >= properties.tabs.length) {
-                        this.activeIndex = 0;
+                    // 确认现在激活的标签页是不是还在新的`tabs`中，
+                    // 如果不在了，则激活第1个标签
+                    var currentActiveTab = this.tabs[this.activeIndex];
+                    var activeIndex = -1;
+                    for (var i = 0; i < properties.tabs.length; i++) {
+                        if (properties.tabs[i] === currentActiveTab) {
+                            activeIndex = i;
+                            break;
+                        }
+                    }
+
+                    // 只有当激活的元素变了的时候，才需要触发`activate`事件，
+                    // 事件的触发由`properties`里有没有`activeIndex`决定，
+                    // 因此如果新的`tabs`中没有原来激活的那个标签，则要触发一下
+                    if (activeIndex === -1) {
+                        // 为了让基类`setProperties`检测到变化，
+                        // 先把`this.activeIndex`改掉
+                        this.activeIndex = -1;
+                        properties.activeIndex = 0;
+                    }
+                    else {
+                        this.activeIndex = activeIndex;
                     }
                 }
 
+                // 当`tabs`变化时，整个会重新刷，所以`allowClose`不用加进去
                 if (properties.allowClose != null) {
                     this.allowClose = properties.allowClose;
                     delete properties.allowClose;
@@ -226,6 +239,10 @@ define(
             }
 
             Control.prototype.setProperties.apply(this, arguments);
+
+            // TODO: 现在的逻辑下，如果`tabs`和`activeIndex`同时变化，
+            // 会导致2次reflow（一次`fillNavigator`，一次`activateTab`），
+            // 看是否还有优化的余地
         };
 
         /*
@@ -261,7 +278,8 @@ define(
 
         // 默认情况下只要处理了`tabs`就啥都处理完了
         var allProperties = [
-            { name: 'tabs' }
+            { name: 'tabs' },
+            { name: 'activeIndex' }
         ];
 
         /**
@@ -277,10 +295,6 @@ define(
                 var record = changes[i];
                 if (record.name === 'tabs') {
                     fillNavigator(this);
-                    // `tabs`变化导致`navigator`重新渲染，
-                    // 同时`activeIndex`的变化会被`setProperties`吞掉，
-                    // 因此要同步一次
-                    activateTab(this, this.activeIndex);
                 }
                 else if (record.name === 'activeIndex') {
                     activateTab(this, this.activeIndex);
@@ -300,19 +314,9 @@ define(
         Tab.prototype.activate = function (config) {
             for (var i = 0; i < this.tabs.length; i++) {
                 if (this.tabs[i] === config) {
-                    this.activateAt(i);
+                    this.set('activeIndex', i);
                 }
             }
-        };
-
-        /**
-         * 激活指定位置的标签页
-         *
-         * @param {number} index 待激活的标签页的下标
-         * @public
-         */
-        Tab.prototype.activateAt = function (index) {
-            this.setProperties({ activeIndex: index });
         };
 
         /**
@@ -334,6 +338,9 @@ define(
          * @param {string=} config.panel 标签页对应的容器的id
          */
         Tab.prototype.insert = function (config, index) {
+            index = Math.min(index, this.tabs.length);
+            index = Math.max(index, 0);
+
             this.tabs.splice(index, 0, config);
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
             var tabElement = 
@@ -385,9 +392,9 @@ define(
          * @param {number} index 需要移除的标签页的下标
          */
         Tab.prototype.removeAt = function (index) {
-            var removed = this.tabs.splice(index, 1);
+            var removed = this.tabs.splice(index, 1)[0];
             var navigator = lib.g(helper.getId(this, 'navigator'));
-            if (removed.length) {
+            if (removed) {
                 var tabElement = navigator.children[index];
                 tabElement.parentNode.removeChild(tabElement);
 
@@ -397,10 +404,9 @@ define(
                 if (index < this.activeIndex) {
                     this.activeIndex--;
                 }
-
                 // 如果正好激活的标签被删了，则把激活标签换成当前的后一个，
                 // 如果没有后一个了，则换成最后一个，这需要重新渲染
-                if (index === this.activeIndex) {
+                else if (index === this.activeIndex) {
                     // 由于可能`activeIndex`没变，因此不能走`setProperties`流程
                     this.activeIndex = Math.min(
                         this.activeIndex, 
@@ -408,7 +414,15 @@ define(
                     );
                     activateTab(this, this.activeIndex);
                 }
-                this.fire('remove', { tab: removed[0], index: index });
+
+                // 隐藏对应的元素
+                if (removed.panel) {
+                    var panel = lib.g(removed.panel);
+                    if (panel) {
+                        panel.style.display = 'none';
+                    }
+                }
+                this.fire('remove', { tab: removed, index: index });
             }
         };
 
