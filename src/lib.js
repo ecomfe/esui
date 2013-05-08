@@ -847,9 +847,9 @@ define(function () {
     lib.getCommandStr = function (source) {
         var result = [];
         if( source.name ){
-            result.push( 'data-command="' + source.name + '"');
+            result.push( ' data-command="' + source.name + '"');
             if( source.args ){
-                result.push( 'data-command-args="' + source.args + '"');
+                result.push( 'data-command-args="' + source.args + '" ');
             }
         }
         return result.join(' ');

@@ -27,10 +27,12 @@
         require(
             [
                 'esui', 
+                'esui/Tip',
                 'esui/Table',
                 'esui/Button',
                 'css!esui/css/main.css',
-                'css!esui/css/Table.css'
+                'css!esui/css/Table.css',
+                'css!esui/css/Tip.css'
             ],
             function (ui) {
                 var lib = require('esui/lib');
@@ -50,9 +52,7 @@
                                     title: '编号',
                                     field: 'id' ,
                                     sortable: true,
-                                    comparer : function( a,b ){
-                                        return a.id - b.id;
-                                    },
+                                    tip :'编号',
                                     resizable: true,
                                     subEntry: 1,
                                     width: 50,
@@ -63,6 +63,7 @@
                                 {
                                     title: '姓名',
                                     field: 'name' ,
+                                    tip :'姓名',
                                     comparer : function( a,b ){
                                         return a.name.localeCompare( b.name );
                                     },
@@ -76,6 +77,7 @@
                                 {
                                     title: '性别',
                                     field: 'sex' ,
+                                    tip :'性别',
                                     comparer : function( a,b ){
                                         return a.sex - b.sex;
                                     },
@@ -88,11 +90,13 @@
                                 },
                                 {
                                     title: '操作',
-                                    field: 'sex' ,
+                                    field: 'sex',
+                                    tip :'操作',
                                     resizable : true,
                                     width: 100,
-                                    content: function (item) {
-                                        return '';
+                                    content: function (item, index) {
+                                        return '<a href="#"' + lib.getCommandStr({ name:'link', args :'index:' + index}) + '>command链接</a>'
+                                             + '<button'+ lib.getCommandStr({ name:'button', args :'index:' + index }) +'>command按钮</button>';
                                     }
                                 }
                             ]
@@ -100,19 +104,20 @@
                     }   
                 });
 
-                ui.get('myTable').onsubrowopen = function ( arg ) {
+                var myTable = ui.get('myTable');
+                myTable.onsubrowopen = function ( arg ) {
                     this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
                 };
 
-                ui.get('myTable').onsubrowclose = function ( arg ) {
+                myTable.onsubrowclose = function ( arg ) {
                     this.getSubrow( arg.index ).innerHTML = '';
                 };
 
-                ui.get('disabledBtn').onclick = function(){
+                ui.get('disabledBtn').onclick = function () {
                     ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
-                }
+                };
 
-                ui.get('myTable').onsort = function ( field, order ) {
+                myTable.onsort = function ( field, order ) {
                     var orderBy = field.field;
                     var lib = require('esui/lib');
                     var listData = lib.clone( data );
@@ -138,6 +143,21 @@
                         } );    
                     }
                 };
+
+                function linkClickHandler(arg) {
+                    alert('link:' + arg.args.index);
+                }
+
+                function buttonClickHandler(arg) {
+                    alert('button:' + arg.args.index);
+                }
+                /*
+                myTable.oncommand = command.createDispatcher(
+                    [
+                        { type: 'click', name: 'link', handler: linkClickHandler },
+                        { type: 'click', name: 'button', handler: buttonClickHandler }
+                    ]
+                );*/
             }
         );
         </script>

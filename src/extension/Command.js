@@ -44,9 +44,7 @@ define(
                             {
                                 name: commandName, 
                                 triggerType: e.type, 
-                                args: args, 
-                                element: target, 
-                                e : e
+                                args: args
                             }
                         );
                     }
