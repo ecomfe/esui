@@ -7,6 +7,22 @@ define(
 
         require('css!./css/Tree.css');
 
+        var TreeStrategy = require('./TreeStrategy');
+
+        /**
+         * 不做任何事的`TreeStrategy`实现
+         */
+        function NullTreeStrategy() {
+            TreeStrategy.apply(this, arguments);
+        }
+
+        /**
+         * 不做任何事
+         */
+        NullTreeStrategy.prototype.attachTo = function () {};
+
+        lib.inherits(NullTreeStrategy, TreeStrategy);
+
         /**
         * 树控件
         */
@@ -36,7 +52,8 @@ define(
          */
         Tree.prototype.initOptions = function (options) {
             var defaults = {
-                datasource: {}
+                datasource: {},
+                strategy: new NullTreeStrategy()
             };
             var properties = lib.extend(defaults, options);
             this.setProperties(properties);
@@ -228,9 +245,7 @@ define(
                 'click',
                 lib.curry(toggleNode, this)
             );
-            if (this.strategy) {
-                this.strategy.attachTo(this);
-            }
+            this.strategy.attachTo(this);
         };
 
         /**
