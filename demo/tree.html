@@ -50,7 +50,7 @@
                 };
 
                 var tree = new Tree({ datasource: datasource, strategy: new TreeStrategy() });
-                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy(), skin: 'folder'});
+                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), skin: 'folder'});
                 tree.appendTo(document.getElementById('container'));
                 tree2.appendTo(document.getElementById('container'));
             }
