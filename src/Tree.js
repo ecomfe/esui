@@ -4,6 +4,9 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
 
+
+        require('css!./css/Tree.css');
+
         /**
         * 树控件
         */

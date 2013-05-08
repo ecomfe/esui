@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Wizard</title>
+    <script src="loader/esl.js"></script>
+    <script src="loader/config.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div id="container">
+        <button data-ui="type:Button;id:prev;">上一步</button>
+        <button data-ui="type:Button;id:next;">下一步</button>
+        <br>
+        <br>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Button',
+                'esui/Wizard',
+                'css!esui/css/main.css'
+            ],
+            function (ui, Button, Wizard) {
+                var buttons = ui.init();
+                var prev = buttons[0];
+                var next = buttons[1];
+                var steps = [
+                    { text: '1', panel: 'a' },
+                    { text: '2', panel: 'b' },
+                    { text: '3' }
+                    // { text: '4' },
+                    // { text: '5' },
+                    //{ text: '6' }
+                ];
+
+                var wizard = new Wizard({ steps: steps, activeIndex: 1 });
+                wizard.appendTo(document.getElementById('container'));
+                prev.on('click', function(){
+                    wizard.stepPrevious();
+                });
+                next.on('click', function(){
+                    wizard.stepNext();
+                });
+            }
+        );
+    </script>
+</body>
+</html>

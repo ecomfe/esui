@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Crumb</title>
+    <script src="loader/esl.js"></script>
+    <script src="loader/config.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        require(
+            [
+                'esui/Crumb',
+                'css!esui/css/main.css'
+            ],
+            function (Crumb) {
+                var path = [
+                    { text: 'test', href: 'http://test.com' },
+                    { text: 'test2', href: 'http://test2.com' },
+                    { text: 'test3'}
+                ];
+
+                var crumb = new Crumb({ path: path });
+                crumb.appendTo(document.getElementById('container'));
+                var crumb2 = new Crumb({ path: path, separator: '|' });
+                crumb2.appendTo(document.getElementById('container'));
+            }
+        );
+    </script>
+</body>
+</html>

@@ -4,6 +4,8 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
+        // css
+        require('css!./css/Crumb.css');
         /**
          * 面包屑导航控件
          *
@@ -35,7 +37,8 @@ define(
          */
         Crumb.prototype.initOptions = function (options) {
             var properties = {
-                path: []
+                path: [],
+                separator: '>'
             };
             lib.extend(properties, options);
             this.setProperties(properties);
@@ -56,6 +59,14 @@ define(
             for (var i = 0; i < path.length; i++) {
                 var node = path[i];
 
+                var separatorClasses =
+                    helper.getPartClasses(crumb, 'separator').join(' ');
+                var separator = ''
+                    + '<li class="'
+                    + separatorClasses
+                    + '">'
+                    + crumb.separator
+                    + '</li>';
                 var classes = helper.getPartClasses(crumb, 'node');
                 if (i === 0) {
                     classes = classes.concat(
@@ -66,6 +77,7 @@ define(
                     classes = classes.concat(
                         helper.getPartClasses(crumb, 'node-last')
                     );
+                    separator = '';
                 }
 
                 html += '<li class="' + classes + '">';
@@ -77,6 +89,9 @@ define(
                 html += lib.format(template, node);
 
                 html += '</li>';
+
+                html += separator;
+
             }
 
             html += '</ol>';

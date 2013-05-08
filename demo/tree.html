@@ -6,32 +6,6 @@
     <script src="loader/esl.js"></script>
     <script src="loader/config.js"></script>
     <style>
-        .ui-tree-root-expanded {
-            display: block;
-        }
-        .ui-tree-root-collapsed {
-            display: none;
-        }
-        .ui-tree-node-indicator {
-            /*
-            text-indent: -5000px;
-            */
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            overflow: hidden;
-            background-position: 0 0;
-            background-repeat: no-repeat;
-        }
-        .ui-tree-node-indicator-expanded {
-
-        }
-        .ui-tree-node-indicator-collapsed {
-
-        }
-        .ui-tree-node-indicator-empty {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -67,12 +41,18 @@
                                 { id: '31', text: 'QA' },
                                 { id: '31', text: 'PM' }
                             ]
+                        },
+                        {
+                            id: '4',
+                            text: '一半吃肉一般吃素部'
                         }
                     ]
                 };
 
                 var tree = new Tree({ datasource: datasource, strategy: new TreeStrategy() });
+                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy(), skin: 'folder'});
                 tree.appendTo(document.getElementById('container'));
+                tree2.appendTo(document.getElementById('container'));
             }
         );
     </script>

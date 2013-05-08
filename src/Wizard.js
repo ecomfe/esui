@@ -3,6 +3,8 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
+        // css
+        require('css!./css/Wizard.css');
 
         /**
          * 多步骤导航控件
@@ -99,16 +101,34 @@ define(
                         helper.getPartClasses(wizard, 'node-last')
                     );
                 }
+
+                // 当前步之前的一步
+                if (i === (wizard.activeIndex - 1)) {
+                    classes = classes.concat(
+                        helper.getPartClasses(wizard, 'node-active-prev')
+                    );
+                }
+                if (i <= (wizard.activeIndex - 1)) {
+                    classes = classes.concat(
+                        helper.getPartClasses(wizard, 'node-done')
+                    );
+                }
+
                 var isActive = i === wizard.activeIndex;
                 togglePanel(wizard, node, isActive);
                 if (isActive) {
                     classes = classes.concat(
                         helper.getPartClasses(wizard, 'node-active')
                     );
+                    if (i === wizard.steps.length - 1) {
+                        classes = classes.concat(
+                            helper.getPartClasses(wizard, 'node-last-active')
+                        );
+                    }
                 }
 
                 html += '<li class="' + classes.join(' ') + '">';
-                html += '<span>' + node.text + '</span>';
+                html += '<span class="text">' + node.text + '</span>';
                 html += '</li>';
             }
 
@@ -147,6 +167,22 @@ define(
                             ? 'addPartClasses'
                             : 'removePartClasses';
                         helper[method](wizard, 'node-active', node);
+
+                        if (i === wizard.steps.length - 1) {
+                            helper[method](wizard, 'node-last-active', node);
+                        }
+
+                        var isDone = i <= (wizard.activeIndex - 1);
+                        var method = isDone
+                            ? 'addPartClasses'
+                            : 'removePartClasses';
+                        helper[method](wizard, 'node-done', node);
+
+                        var isCurPrev = i === (wizard.activeIndex - 1);
+                        var method = isCurPrev
+                            ? 'addPartClasses'
+                            : 'removePartClasses';
+                        helper[method](wizard, 'node-active-prev', node);
                     }
                 }
             }
