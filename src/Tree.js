@@ -58,7 +58,11 @@ define(
          * @public
          */
         Tree.prototype.getItemHTML = function (node) {
-            return lib.format(this.itemTemplate, node);
+            var data = {
+                id: lib.encodeHTML(node.id),
+                text: lib.encodeHTML(node.text)
+            };
+            return lib.format(this.itemTemplate, data);
         };
 
 
