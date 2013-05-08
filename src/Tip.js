@@ -32,7 +32,10 @@ define(
             var properties = {
                 title: '',
                 content: '',
-                arrow: 'tl'
+                arrow: 'tl',
+                mode: 'over',
+                hideDelay: '100',
+                showDelay: '100'
             };
             lib.extend(properties, options);
             this.setProperties(properties);
@@ -57,12 +60,21 @@ define(
          * @protected
          */
         Tip.prototype.initStructure = function () {
+            var showEvent = 'mouseover';
+            var hideEvent = 'mouseout';
+            switch (this.mode) {
+                case 'over':
+                    break;
+                case 'click':
+                    showEvent = 'click';
+                    break;
+            }
             helper.addDOMEvent(
-                this, this.main, 'mouseover',
+                this, this.main, showEvent,
                 lib.curry(toggleLayer, this)
             );
             helper.addDOMEvent(
-                this, this.main, 'mouseout',
+                this, this.main, hideEvent,
                 lib.curry(hideLayer, this)
             );
         };
@@ -146,11 +158,19 @@ define(
          * @param {Tip} tip Tip控件实例
          * @inner
          */
-        function hideLayer(tip, layer) {
-            var layer = lib.g(helper.getId(tip, 'layer'));
-            if (layer) {
-                helper.addPartClasses(tip, 'layer-hidden', layer);
-            }
+        function hideLayer(tip) {
+            // 先清除各种定时器。
+            clearTimeout(tip.hideTime);
+            clearTimeout(tip.showTime);
+            var layer = lib.g(helper.getId(tip, 'layer'));            
+            tip.hideTime = setTimeout(
+                function () {
+                    if (layer) {
+                        helper.addPartClasses(tip, 'layer-hidden', layer);
+                    }
+                },
+                tip.hideDelay
+            );
         }
 
         /**
@@ -161,8 +181,30 @@ define(
          * @inner
          */
         function showLayer(tip, layer) {
-            helper.removePartClasses(tip, 'layer-hidden', layer);
+            clearTimeout(tip.hideTime); //清除隐藏定时器
+            var layer = lib.g(helper.getId(tip, 'layer'));
+            tip.showTime = setTimeout(
+                function () {
+                    helper.removePartClasses(tip, 'layer-hidden', layer);
+                },
+                tip.showDelay
+            );
         }
+
+        /**
+         * 显示下拉弹层
+         * @public
+         */
+        Tip.prototype.show = function () {
+            toggleLayer(this);
+        };
+        /**
+         * 隐藏下拉弹层
+         * @public
+         */
+        Tip.prototype.hide = function () {
+            hideLayer(this);
+        };
 
         /**
          * 重绘
