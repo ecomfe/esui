@@ -330,6 +330,20 @@ define(function (require) {
                 expect(layer.children[5].className).not.toMatch(/ui-select-layer-selected/);
             });
 
+            it('should change the element with `ui-select-layer-selected` class when value is changed', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                select.setValue('3');
+                var layer = findLayer();
+                expect(layer.children[0].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[1].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[2].className).toMatch(/ui-select-layer-selected/);
+                expect(layer.children[3].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[4].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[5].className).not.toMatch(/ui-select-layer-selected/);
+            });
+
             it('should select the correct item if an option element in layer is clicked', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);

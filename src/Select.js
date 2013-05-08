@@ -260,6 +260,32 @@ define(
         }
 
         /**
+         * 同步选中项的样式
+         *
+         * @param {Select} select 控件实例
+         * @inner
+         */
+        function syncSelectedItem(select) {
+            var layer = getSelectionLayer(select);
+
+            if (!layer) {
+                return;
+            }
+
+            var classes = helper.getPartClasses(select, 'layer-selected');
+            var items = layer.children;
+            for (var i = items.length - 1; i >= 0; i--) {
+                var item = items[i];
+                if (item.getAttribute('data-value') == select.rawValue) {
+                    lib.addClasses(item, classes);
+                }
+                else {
+                    lib.removeClasses(item, classes);
+                }
+            }
+        }
+
+        /**
          * 打开下拉弹层
          *
          * @param {Select} select Select控件实例
@@ -304,19 +330,7 @@ define(
             }
 
             showLayer(select);
-
-            // 同步选择状态
-            var items = layer.getElementsByTagName('li');
-            for (var i = items.length - 1; i >= 0; i--) {
-                var item = items[i];
-                var classes = helper.getPartClasses(select, 'layer-selected');
-                if (item.getAttribute('data-value') == select.rawValue) {
-                    lib.addClasses(item, classes);
-                }
-                else {
-                    lib.removeClass(item, classes);
-                }
-            }
+            syncSelectedItem(select);
 
             return layer;
         }
@@ -397,6 +411,8 @@ define(
                     : '';
                 textHolder.innerHTML = lib.encodeHTML(displayText);
             }
+
+            syncSelectedItem(select);
         }
 
         var paint = require('./painters');
