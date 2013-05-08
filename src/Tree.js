@@ -1,11 +1,10 @@
 define(
     function (require) {
+        require('css!./css/Tree.css');
+
         var Control = require('./Control');
         var lib = require('./lib');
         var helper = require('./controlHelper');
-
-
-        require('css!./css/Tree.css');
 
         var TreeStrategy = require('./TreeStrategy');
 
@@ -18,6 +17,9 @@ define(
 
         /**
          * 不做任何事
+         *
+         * @override
+         * @public
          */
         NullTreeStrategy.prototype.attachTo = function () {};
 
@@ -118,7 +120,7 @@ define(
          * @param {Object} node 节点数据
          * @param {boolean} expanded 是否处于展开状态
          * @return {string}
-         * @iner
+         * @inner
          */
         function getNodeContentHTML(tree, node, expanded) {
             var indicatorType = tree.strategy.isLeafNode(node)
@@ -180,7 +182,7 @@ define(
          * @param {Object} node 节点数据
          * @param {boolean} expanded 是否处于展开状态
          * @return {string}
-         * @iner
+         * @inner
          */
         function getNodeHTML(tree, node, expanded) {
             var classes = getNodeClasses(tree, node, expanded);
@@ -197,7 +199,7 @@ define(
          *
          * @param {Tree} tree 控件实例
          * @param {Event} e DOM事件对象
-         * @iner
+         * @inner
          */
         function toggleNode(tree, e) {
             var target = e.target;
