@@ -24,7 +24,7 @@ define(
          * @protected
          */
         Tree.prototype.createMain = function () {
-            return document.createElement('ul');
+            return document.createElement('div');
         };
 
         /**
@@ -124,6 +124,35 @@ define(
         }
 
         /**
+         * 获取一个节点元素应有的class
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Object} node 对应的节点数据
+         * @param {boolean} expanded 是否处于展开状态
+         * @param {Array.<string>} 对应的节点元素应有的class
+         * @inner
+         */
+        function getNodeClasses(tree, node, expanded) {
+            var state = tree.strategy.isLeafNode(node)
+                ? 'empty'
+                : (expanded ? 'expanded' : 'collapsed');
+            var classes = [].concat(
+                helper.getPartClasses(tree, 'node'),
+                helper.getPartClasses(tree, 'node-' + state)
+            );
+            // 根节点再加2个类
+            if (node === tree.datasource) {
+                classes = [].concat(
+                    helper.getPartClasses(tree),
+                    helper.getPartClasses(tree, 'root'),
+                    helper.getPartClasses(tree, 'root-' + state),
+                    classes
+                );
+            }
+            return classes;
+        }
+
+        /**
          * 获取节点的HTML
          *
          * @param {Tree} tree 控件实例
@@ -133,14 +162,7 @@ define(
          * @iner
          */
         function getNodeHTML(tree, node, expanded) {
-            var state = tree.strategy.isLeafNode(node)
-                ? 'empty'
-                : (expanded ? 'expanded' : 'collapsed');
-            var classes = [].concat(
-                helper.getPartClasses(tree, 'node'),
-                helper.getPartClasses(tree, 'node-' + state)
-            );
-
+            var classes = getNodeClasses(tree, node, expanded);
             var html = '<li class="' + classes.join(' ') + '" '
                 + 'id="' + helper.getId(tree, 'node-' + node.id) + '" '
                 + 'data-id="' + node.id + '">';
@@ -168,7 +190,7 @@ define(
                 return;
             }
 
-            // 再往上找一层找到`<li>`元素，上面有`data-id`等有用的属性
+            // 再往上找一层找到`<li>`元素或主元素，上面有`data-id`等有用的属性
             target = target.parentNode;
             var id = target.getAttribute('data-id');
             var node = tree.nodeIndex[id];
@@ -195,6 +217,7 @@ define(
          * @protected
          */
         Tree.prototype.initStructure = function () {
+            helper.addPartClasses(this, 'root');
             helper.addDOMEvent(
                 this,
                 this.main,
@@ -238,9 +261,12 @@ define(
             {
                 name: 'datasource',
                 paint: function (tree, datasource) {
+                    tree.main.setAttribute('data-id', datasource.id);
+                    var classes = getNodeClasses(tree, datasource, true);
+                    tree.main.className = classes.join(' ');
                     tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
-                        getNodeHTML(tree, datasource, true);
+                        getNodeContentHTML(tree, datasource, true);
                 }
             }
         );
@@ -256,7 +282,9 @@ define(
          * - 如果原本没有子树元素，则取对应节点的`children`属性创建子树
          */
         Tree.prototype.expandNode = function (id, children) {
-            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+            var nodeElement = this.main.getAttribute('data-id') === id
+                ? this.main
+                : lib.g(helper.getId(this, 'node-' + id));
             if (!nodeElement) {
                 return;
             }
@@ -287,17 +315,15 @@ define(
                 indicator.className = indicatorClasses.join(' ');
                 // 子树的class要改掉
                 var rootClasses = [].concat(
-                    helper.getPartClasses(this, 'root'),
-                    helper.getPartClasses(this, 'root-expanded')
+                    helper.getPartClasses(this, 'sub-root'),
+                    helper.getPartClasses(this, 'sub-root-expanded')
                 );
                 nodeElement.lastChild.className = rootClasses.join(' ');
             }
 
             // CSS3动画可以通过这个class来操作
-            var nodeClasses = [].concat(
-                helper.getPartClasses(this, 'node'),
-                helper.getPartClasses(this, 'node-expanded')
-            );
+            var node = this.nodeIndex[id];
+            var nodeClasses = getNodeClasses(this, node, true);
             nodeElement.className = nodeClasses.join(' ');
         };
 
@@ -309,7 +335,9 @@ define(
          * @public
          */
         Tree.prototype.collapseNode = function (id, removeChild) {
-            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+            var nodeElement = this.main.getAttribute('data-id') === id
+                ? this.main
+                : lib.g(helper.getId(this, 'node-' + id));
             if (!nodeElement) {
                 return;
             }
@@ -321,17 +349,15 @@ define(
                 }
                 else {
                     var rootClasses = [].concat(
-                        helper.getPartClasses(this, 'root'),
-                        helper.getPartClasses(this, 'root-collapsed')
+                        helper.getPartClasses(this, 'sub-root'),
+                        helper.getPartClasses(this, 'sub-root-collapsed')
                     );
                     childRoot.className = rootClasses.join(' ');
                 }
             }
 
-            var nodeClasses = [].concat(
-                helper.getPartClasses(this, 'node'),
-                helper.getPartClasses(this, 'node-collapsed')
-            );
+            var node = this.nodeIndex[id];
+            var nodeClasses = getNodeClasses(this, node, false);
             nodeElement.className = nodeClasses.join(' ');
             var indicator = nodeElement.firstChild;
             var indicatorClasses = [].concat(
