@@ -108,10 +108,22 @@ define(
                 if (helper.isInStage(this, 'INITED')) {
                     this.fire('beforerender');
 
-                    // 通用的渲染逻辑
+                    // 为控件主元素添加id
                     if (!this.main.id) {
                         this.main.id = helper.getId(this);
                     }
+
+                    // 为控件主元素添加控件实例标识属性
+                    var ui = require('./main');
+                    var attrPrefix = ;
+                    this.main.setAttribute( 
+                        ui.getConfig('instanceAttr'), 
+                        this.id 
+                    );
+                    this.main.setAttribute( 
+                        ui.getConfig('viewContextAttr'), 
+                        this.viewContext.id 
+                    );
 
                     this.initStructure();
 
