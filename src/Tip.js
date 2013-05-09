@@ -60,40 +60,18 @@ define(
          * @protected
          */
         Tip.prototype.initStructure = function () {
-            var showEvent = 'mouseover';
+            var showEvent = this.mode === 'click' ? 'click' : 'mouseover';
             var hideEvent = 'mouseout';
-            switch (this.mode) {
-                case 'over':
-                    break;
-                case 'click':
-                    showEvent = 'click';
-                    break;
-            }
+
             helper.addDOMEvent(
                 this, this.main, showEvent,
-                lib.curry(toggleLayer, this)
+                lib.bind(this.show, this)
             );
             helper.addDOMEvent(
                 this, this.main, hideEvent,
-                lib.curry(hideLayer, this)
+                lib.bind(this.hide, this)
             );
         };
-
-        /**
-         * 触发显示layer
-         *
-         * @param {Tip} tip Tip控件实例
-         * @inner
-         */
-        function toggleLayer(tip) {
-            var layer = lib.g(helper.getId(tip, 'layer'));
-             if (!layer) {
-                createLayer(tip);
-             }
-             else {
-                showLayer(tip, layer);
-             }
-        }
 
         /**
          * 创建layer
@@ -153,63 +131,48 @@ define(
         }
 
         /**
-         * 隐藏下拉弹层
+         * 显示弹层
          *
-         * @param {Tip} tip Tip控件实例
-         * @inner
-         */
-        function hideLayer(tip) {
-            // 先清除各种定时器。
-            clearTimeout(tip.hideTime);
-            clearTimeout(tip.showTime);
-            var layer = lib.g(helper.getId(tip, 'layer'));            
-            tip.hideTime = setTimeout(
-                function () {
-                    if (layer) {
-                        helper.addPartClasses(tip, 'layer-hidden', layer);
-                    }
-                },
-                tip.hideDelay
-            );
-        }
-
-        /**
-         * 显示下拉弹层
-         *
-         * @param {Tip} tip Tip控件实例
-         * @param {HTMLElement} layer 浮层DOM元素
-         * @inner
-         */
-        function showLayer(tip, layer) {
-            clearTimeout(tip.hideTime); //清除隐藏定时器
-            var layer = lib.g(helper.getId(tip, 'layer'));
-            tip.showTime = setTimeout(
-                function () {
-                    helper.removePartClasses(tip, 'layer-hidden', layer);
-                },
-                tip.showDelay
-            );
-        }
-
-        /**
-         * 显示下拉弹层
          * @public
          */
         Tip.prototype.show = function () {
-            toggleLayer(this);
+            clearTimeout(this.hideTime); //清除隐藏定时器
+            clearTimeout(this.showTime);
+
+            function show () {
+                var layer = lib.g(helper.getId(this, 'layer'));
+                if (!layer) {
+                    layer = createLayer(this);
+                }
+                helper.removePartClasses(this, 'layer-hidden', layer);
+            }
+
+            this.showTime = setTimeout(lib.bind(show, this), this.showDelay);
         };
         /**
-         * 隐藏下拉弹层
+         * 隐藏弹层
+         *
          * @public
          */
         Tip.prototype.hide = function () {
-            hideLayer(this);
+            // 先清除各种定时器。
+            clearTimeout(this.hideTime);
+            clearTimeout(this.showTime);
+            var layer = lib.g(helper.getId(this, 'layer'));
+
+            function hide() {
+                helper.addPartClasses(this, 'layer-hidden', layer);
+            }
+
+            if (layer) {
+                this.hideTime = 
+                    setTimeout(lib.bind(hide, this), this.hideDelay);
+            }
         };
 
         /**
          * 重绘
          *
-         * @param {Array=} 更新过的属性集合
          * @protected
          */
         Tip.prototype.repaint = helper.createRepaint(
