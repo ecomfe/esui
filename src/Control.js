@@ -115,7 +115,6 @@ define(
 
                     // 为控件主元素添加控件实例标识属性
                     var ui = require('./main');
-                    var attrPrefix = ;
                     this.main.setAttribute( 
                         ui.getConfig('instanceAttr'), 
                         this.id 
