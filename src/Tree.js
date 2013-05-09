@@ -131,8 +131,8 @@ define(
 
             if (expanded && !tree.strategy.isLeafNode(node)) {
                 var classes = [].concat(
-                    helper.getPartClasses(tree, 'root'),
-                    helper.getPartClasses(tree, 'root-' + indicatorType)
+                    helper.getPartClasses(tree, 'sub-root'),
+                    helper.getPartClasses(tree, 'sub-root-' + indicatorType)
                 );
                 html += '<ul class="' + classes.join(' ') + '">';
                 for (var i = 0; i < node.children.length; i++) {
