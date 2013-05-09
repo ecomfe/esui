@@ -198,7 +198,8 @@ define(
                                 + '.shortcutMoveHandler(this, event)',
 
                             click: getStrRef(me) 
-                                + '.shortcutClickHandler(this, event)',
+                                + '.shortcutClickHandler(this, event, '
+                                + i + ')',
 
                             index: i
                         }
@@ -503,16 +504,16 @@ define(
          * 点击星期checkbox的处理函数
          * 
          */
-        function dayClickHandler(element, e) {
+        function dayClickHandler(element) {
 
             var me = this;
             var dom = element;
             var dayIndex = parseInt(dom.getAttribute('value'), 10);
             var dayState = dom.checked;
 
-            var timeValue = me.rawValue[dayIndex];
+            var rawValueCopy = rawValueClone(me.rawValue);
 
-            var len = me.rawValue[dayIndex].length;
+            var timeValue = rawValueCopy[dayIndex];
 
             for (var i = 0, len = timeValue.length; i < len; i++) {
 
@@ -520,7 +521,16 @@ define(
 
             }
 
-            repaintView(this, me.rawValue);
+            if (me.onchange(rawValueCopy) !== false) {
+
+                me.rawValue = rawValueCopy;
+                repaintView(this, me.rawValue);
+            }
+            else {
+
+                dom.checked = !dayState;
+            }
+
         }
 
         /**
@@ -529,21 +539,30 @@ define(
          * 
          * @param  {Object} arg 选项
          */
-        function shortcutClickHandler(arg) {
-
-            var commandArgs = ui.parseAttribute(arg.args);
-            var index = commandArgs.index;
+        function shortcutClickHandler(element, event, index) {
 
             var func = this.shortcut[index].getVal;
             typeof func == 'function' && func.call(this);
 
+            var rawValue;
+
             if (typeof func == 'function') {
 
-                this.setRawValue(func.call(this));
+                rawValue = func.call(this);
             }
             else {
 
-                this.setRawValue(func);
+                rawValue = func;
+            }
+
+            var valueStr = this.stringifyValue(this.rawValue);
+            var curValueStr = this.stringifyValue(rawValue);
+
+            if (curValueStr != valueStr
+                && this.onchange(rawValue) !== false) {
+
+                this.rawValue = rawValue;
+                repaintView(this, this.rawValue);
             }
 
         }
@@ -907,20 +926,27 @@ define(
             var maxXCell = Math.max(startcell.x, endcell.x);
             var maxYCell = Math.max(startcell.y, endcell.y);
 
+            var rawValueCopy = rawValueClone(me.rawValue);
+
             for (var i = minYCell; i <= maxYCell; i++) {
                 for (var j = minXCell; j <= maxXCell; j++) {
 
-                    if (me.rawValue[i][j]) {
-                        me.rawValue[i][j] = 0;
+                    if (rawValueCopy[i][j]) {
+                        rawValueCopy[i][j] = 0;
                     }
                     else {
-                        me.rawValue[i][j] = 1;
+                        rawValueCopy[i][j] = 1;
                     }
                     
                 }
             }
             timebodyCellRange = null;
-            repaintView(me, me.rawValue);
+
+            if (me.onchange(rawValueCopy) !== false) {
+
+                me.rawValue = rawValueCopy;
+                repaintView(me, me.rawValue);
+            }
         }
 
         /**
@@ -1074,6 +1100,22 @@ define(
             lib.event.preventDefault(e);
         }
 
+        /**
+         * 拷贝rawValue一个副本
+         * @param  {Array} rawValue 一个二维数组
+         */
+        function rawValueClone(rawValue) {
+
+            var val = [];
+
+            for (var i = 0, len = rawValue.length; i < len; i++) {
+
+                val.push( [].slice.call(rawValue[i], 0) );
+            }
+
+            return val;
+        }
+
         Schedule.prototype = {
 
             constructor: Schedule,
@@ -1083,38 +1125,6 @@ define(
              * @type {string}
              */
             type: 'Schedule',
-
-            /**
-             * Command处理函数
-             * 全局事件配置配置， 主要用于Command扩展
-             *
-             */
-            /*oncommand: command.createDispatcher([
-                {
-                    type: 'mouseover', name: 'shortcut', 
-                    handler: shortcutOverOutHandler
-                },
-                { 
-                    type: 'mouseout', name: 'shortcut',
-                    handler: shortcutOverOutHandler
-                },
-                { 
-                    type: 'click', name: 'shortcut',
-                    handler: shortcutClickHandler
-                },
-                { 
-                    type: 'mousemove', name: 'shortcut',
-                    handler: shortcutMoveHandler
-                },
-                { 
-                    type: 'click', name: 'dayWord',
-                    handler: dayClickHandler
-                },
-                { 
-                    type: 'mouseover', name: 'coverTip',
-                    handler: coverTipOverHandler
-                }
-            ]),*/
 
             /**
              * 创建控件主元素
@@ -1199,6 +1209,7 @@ define(
              * @protected
              */
             repaint: helper.createRepaint(
+                 InputControl.prototype.repaint,
                 {
                     name: 'rawValue',
                     paint: function (schedule, rawValue) {
@@ -1208,6 +1219,9 @@ define(
                 }
             ),
 
+            /**
+             * 事件处理
+             */
             shortcutOverOutHandler: function() {
                 shortcutOverOutHandler.apply(this, arguments);
             },
@@ -1237,6 +1251,52 @@ define(
             },
 
             /**
+             * 将string类型的value转换成原始格式
+             *
+             * @override
+             * @param {string} value 字符串值
+             * @return {Array}
+             */
+            parseValue: function (value) {
+                var arr = [];
+                var step = 24;
+
+                for (var i = 0, len = value.length; i < len; i = i + step) {
+                    var inner = value.substring(i, i + step).split('');
+
+                    var innerOut = [];
+
+                    for (var j = 0; j < inner.length; j++) {
+
+                        innerOut.push(inner[j] - 0);
+                    }
+
+                    arr.push(innerOut);
+                }
+                return arr;
+            },
+
+            /**
+             * 将value从原始格式转换成string
+             * 
+             * @override
+             * 
+             * @param {Array} rawValue 原始值
+             * @return {string}
+             */
+            stringifyValue: function (rawValue) {
+
+                var arr = [];
+
+                for (var i = 0, len = rawValue.length; i < len; i++) {
+
+                    arr.push(rawValue[i].join(''));
+                }
+
+                return arr.join('');
+            },
+
+            /**
              * 设置控件的值，并更新视图
              *
              * @public
@@ -1244,7 +1304,7 @@ define(
              */
             setRawValue: function (rawValue) {
 
-                this.setProperties({ value: rawValue });
+                this.setProperties({ rawValue: rawValue });
             },
 
             /**
@@ -1253,9 +1313,15 @@ define(
              * @public
              */
             getRawValue: function () {
+
                 return this.rawValue;
             },
 
+            onchange: function () {},
+
+            /**
+             * 销毁释放控件
+             */
             dispose : function () {
                 helper.beforeDispose(this);
 

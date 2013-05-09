@@ -15,7 +15,10 @@
                 <div style="margin:10px;"><strong>日程投放控件</strong></div>
                 <div name="launchMode" data-ui="type:Schedule;id:mySchedule;"></div>
             </div>
+            <button id='getRaw'> 获取raw值 </button>
             <button id='get'> 获取值 </button>
+            <button id='set'> 赋值(setValue) </button>
+            <button id='setRaw'> 赋值(setRawValue) </button>
         </div>
     <script>
 
@@ -43,8 +46,33 @@
                 });
 
                 document.getElementById('get').onclick = function() {
+                    alert(ui.get('mySchedule').getValue());
+                }
+
+                document.getElementById('getRaw').onclick = function() {
                     alert(ui.get('mySchedule').getRawValue());
                 }
+
+                document.getElementById('set').onclick = function() {
+                    ui.get('mySchedule').setValue('100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+                }
+
+                document.getElementById('setRaw').onclick = function() {
+                    ui.get('mySchedule').setRawValue([
+                            [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+                            ]);
+                }
+
+                ui.get('mySchedule').onchange  = function (rawValue) {
+
+                    console.info(this.stringifyValue(rawValue));
+                };
 
             }
         );
