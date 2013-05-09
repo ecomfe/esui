@@ -56,17 +56,19 @@ define(
         function getHTML(crumb, path) {
             var html = '<ol>';
 
+            var separatorClasses =
+                helper.getPartClasses(crumb, 'separator').join(' ');
+            var separator = lib.format(
+                '<li class="${classes}">${text}</li>',
+                {
+                    classes: separatorClasses, 
+                    text: lib.encodeHTML(crumb.separator)
+                }
+            );
+
             for (var i = 0; i < path.length; i++) {
                 var node = path[i];
 
-                var separatorClasses =
-                    helper.getPartClasses(crumb, 'separator').join(' ');
-                var separator = ''
-                    + '<li class="'
-                    + separatorClasses
-                    + '">'
-                    + crumb.separator
-                    + '</li>';
                 var classes = helper.getPartClasses(crumb, 'node');
                 if (i === 0) {
                     classes = classes.concat(
