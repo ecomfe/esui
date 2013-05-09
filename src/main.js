@@ -14,7 +14,7 @@ define(
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext();
 
-        /**D
+        /**
          * 获取默认的控件视图环境
          * 
          * @return {ViewContext}
@@ -32,6 +32,8 @@ define(
         var config = {
             uiPrefix        : 'data-ui',
             extensionPrefix : 'data-ui-extension',
+            instanceAttr    : 'data-ctrl-id',
+            viewContextAttr : 'data-ctrl-view-context',
             uiClassPrefix   : 'ui',
             skinClassPrefix : 'skin'
         };
@@ -90,22 +92,24 @@ define(
          * 
          * @public
          * @param {HTMLElement} dom dom元素
-         * @return {esui.Control}
+         * @return {Control}
          */
         main.getControlByDom = function ( dom ) {
             if ( !dom ) {
-                return;
+                return null;
             }
-            var controlId;
-            if ( ( controlId = dom.getAttribute( 'data-control' ) ) ) {
-                return this.get( controlId );
-            }
-            else {
-                var controlIdStart = dom.id.indexOf( 'ctrl-' );
-                if( controlIdStart === 0 ){
-                    var idParts = dom.id.split('-');
-                    return idParts.length > 1 ?  this.get( idParts[1] ) : null ;
-                }
+
+            var getConf = main.getConfig;
+
+            var controlId = dom.getAttribute( getConf('instanceAttr') );
+            var viewContextId = dom.getAttribute( getConf('viewContextAttr') );
+            var viewContext;
+
+            if (controlId 
+                && viewContextId 
+                && (viewContext = ViewContext.get( viewContextId ))
+            ) {
+                return viewContext.get(controlId);
             }
             return null;
         };
