@@ -32,7 +32,7 @@ define(
             var properties = {
                 title: '',
                 content: '',
-                arrow: 'tl',
+                arrow: false,
                 mode: 'over',
                 hideDelay: '100',
                 showDelay: '100'
@@ -60,19 +60,33 @@ define(
          * @protected
          */
         Tip.prototype.initStructure = function () {
-            var showEvent = this.mode === 'click' ? 'click' : 'mouseover';
-            var hideEvent = 'mouseout';
-
-            helper.addDOMEvent(
-                this, this.main, showEvent,
-                lib.bind(this.show, this)
-            );
-            helper.addDOMEvent(
-                this, this.main, hideEvent,
-                lib.bind(this.hide, this)
-            );
+            if (this.mode === 'auto') {
+                this.show();
+            }
+            else {
+                var showEvent = this.mode === 'click' ? 'click' : 'mouseover';
+                var hideEvent = 'mouseout';
+                tipEvent(this, this.main, showEvent, hideEvent);
+            }
         };
 
+        /**
+         * 为DOM元素绑定tip控件显示隐藏触发事件
+         * @param  {Object} tip Tip控件实例
+         * @param  {Object} element 需要绑定事件的元素
+         * @param  {string} showEvent 触发显示的事件
+         * @param  {string} hideEvent 触发隐藏的事件
+         */
+        function tipEvent(tip, element, showEvent, hideEvent) {
+            helper.addDOMEvent(
+                    tip, element, showEvent,
+                    lib.bind(tip.show, tip)
+                );
+                helper.addDOMEvent(
+                    tip, element, hideEvent,
+                    lib.bind(tip.hide, tip)
+                );
+        }
         /**
          * 创建layer
          *
@@ -126,7 +140,7 @@ define(
                 classes = classes.concat(
                     helper.getPartClasses(tip, 'arrow-' + value));
             }
-            var arrowElement = lib.g(helper.getId(tip, 'arrow'));           
+            var arrowElement = lib.g(helper.getId(tip, 'arrow'));
             arrowElement.className = classes.join(' ');
         }
 
@@ -144,6 +158,7 @@ define(
                 if (!layer) {
                     layer = createLayer(this);
                 }
+                tipEvent(this, layer, 'mouseover', 'mouseout');
                 helper.removePartClasses(this, 'layer-hidden', layer);
             }
 
@@ -182,7 +197,8 @@ define(
             {
                 name: 'arrow',
                 paint: function (tip, value) {
-                    if (tip.layer) {
+                    var layer = lib.g(helper.getId(tip, 'layer'));
+                    if (layer) {
                         positionArrow(tip, value);
                     }
                 }
