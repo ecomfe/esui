@@ -1,0 +1,99 @@
+@import "common.less";
+.ui-pager {
+    background: #fff;
+    width: 800px;
+    height: 25px;
+}
+
+.ui-pager-label {
+    color: #333;
+    width: 60px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+
+.ui-pager-pagerMain {
+    width: 700px;
+    height: 25px;
+}
+
+.ui-pager-pagerMain a {
+    color: #333;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.ui-pager-pagerMain a:hover {
+    outline: 0;
+    text-decoration: none;
+}
+
+.ui-pager-pagerMain ul {
+    margin: 0;
+    padding: 0;
+}
+
+.ui-pager-pagerMain ul li {
+    /* Hack: 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
+     * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
+     * 为兼容Mac下显示效果，前面增加STHeiti */
+    font-family:STHeiti, SimSun;
+    font-size:12px;
+    color: #333;
+    vertical-align: top;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    margin-left: 4px;
+    text-align: center;
+}
+
+/*
+ * 部分沿用button控件的样式
+ */
+.ui-pager-pager-item {
+    .linear-gradient-background (top, #ffffff, #f6f6f6, "", 0, 0, #ffffff);
+    width: 23px;
+    height: 23px;
+    line-height: 23px;
+    border: 1px #ccc solid;
+    cursor: pointer;
+    .border-radius(2px, 2px, 2px, 2px);
+    .box-sizing(content-box);
+}
+
+.ui-pager-pager-item a {
+    width: 23px;
+    height: 23px;
+}
+
+.ui-pager-pager-item-current {
+    color: #333;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    font-weight: 600;
+}
+
+.ui-pager-pager-item-omit {
+    width: 25px;
+    height: 25px;
+    line-height: 35px;
+}
+
+#ctrl-test-pageBack {
+    width: 50px;
+}
+
+#ctrl-test-pageBack a {
+    width: 50px;
+}
+
+#ctrl-test-pageForward {
+    width: 50px;
+}
+
+#ctrl-test-pageForward a {
+    width: 50px;
+}

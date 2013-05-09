@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Pager - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="loader/config.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+    </head>
+    <body>
+        <header>Pager</header>
+        <div class="container">
+            <div data-ui="type:Pager;id:test;"></div>
+        </div>
+        <script>
+            var url = location.href;
+            var params = url.split('?');
+            if (params.length > 1) {
+                params = params[1].split('&');
+                var page = undefined;
+                var pageSize = undefined;
+                for (var i = 0, len = params.length; i < len; i++) {
+                    var param = params[i].split('=');
+                    var key = param[0];
+                    var value = param[1];
+                    if (key === 'page') {
+                        page = parseInt(value);
+                    }
+                    else if (key === 'pageSize') {
+                        pageSize = parseInt(value);
+                    }
+                }
+            }
+        </script>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Pager',
+                'css!esui/css/main.css',
+            ],
+            function (ui) {
+                var pager = ui.init()[0];
+                // pager.set('pageType', 'btn');
+                pager.set('count', 260);
+                pager.set('countPerPageList', [1, 10, 20, 100]);
+
+                if (pageSize) {
+                    pager.set('countPerPage', pageSize);
+                }
+                else {
+                    pager.set('countPerPage', 20);
+                }
+                
+                if (page) {
+                    pager.set('page', page);
+                }
+                else {
+                    pager.set('page', 10);
+                }
+                
+                pager.set('backCount', 3);
+                pager.set('forwardCount', 3);
+                pager.set('urlTemplate', 'file:///E:/dev/esui/demo/Pager.html?page=${page}&pageSize=${pageSize}');
+            }
+        );
+        </script>
+    </body>
+</html>
