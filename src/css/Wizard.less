@@ -15,59 +15,107 @@ ol {
     zoom: 1;
 }
 .ui-wizard {
+    @commonColor: #E4E4E4;
+    @doneColor: #ccf9b8;
+    @activeColor: #44ba0f;
+
+    @arrowHeight: 24px;
+
+    @arrowGap: 4px;
+
     li {
         list-style :none;
-          padding: 0;
+        padding: 0;
         float: left;
     }
     .ui-wizard-node {
-        width: 135px;
         color: #404040;
         font-size: 14px;
         font-weight: bold;
-        height: 23px;
-        line-height: 23px;
-        overflow: hidden;
+        height: @arrowHeight;
+        line-height: @arrowHeight;
         padding: 0 15px 0 0;
         text-align: center;
-        .background('flow_steps_bg.png', no-repeat, 100%, 0, #E4E4E4);
         position: relative;
-    }
+        background: #fff;
 
-    .ui-wizard-node-done {
-        background-color: #ffe6ba!important;
-        background-position: 100% -46px;
-    }
+        .text {
+            margin-right: @arrowGap;
+            color: #000;
+            height: @arrowHeight;
+            float: left;
+            position: relative;
+            text-align: center;
+            width: auto;
+            padding: 0 10px;
+            background-color: @commonColor;
 
-    .ui-wizard-node-last {
-        background-position: 100% -138px;
-    }
-
-    .ui-wizard-node-active-prev {
-        background-position: 100% -23px !important;
-    }
-
-    .ui-wizard-node-active {
-        background-color: #FF6600;
-        color: #FFFFFF;
-        .arrow {
-            background: none repeat scroll 0 0 #FF6600;
-            border-bottom: medium none;
-            border-image: none;
-            border-right: 2px solid #FFFFFF;
-            border-top: 2px solid #FFFFFF;
-            display: block;
-            height: 185px;
-            position: absolute;
-            right: 39px;
-            top: -83px;
-            transform: rotate(45deg);
-            width: 188px;
+            &:after {
+                border-bottom: (@arrowHeight/2) solid transparent;
+                border-left: (@arrowHeight/2) solid @commonColor;
+                border-top: (@arrowHeight/2) solid transparent;
+                content: " ";
+                height: 0;
+                position: absolute;
+                right: -(@arrowHeight/2);
+                top: 0;
+                width: 0;
+            }
+            &:before {
+                border-bottom: (@arrowHeight/2) solid @commonColor;
+                border-left: (@arrowHeight/2) solid transparent;
+                border-top: (@arrowHeight/2) solid @commonColor;
+                content: "";
+                height: 0;
+                left: -(@arrowHeight/2);
+                position: absolute;
+                top: 0;
+                width: 0;
+            }
         }
     }
 
+    .ui-wizard-node-done {
+        .text {
+            background-color: @doneColor;
+            color: #000;
+
+            &:after {
+                border-left: (@arrowHeight/2) solid @doneColor;
+            }
+            &:before {
+                border-bottom: (@arrowHeight/2) solid @doneColor;
+                border-top: (@arrowHeight/2) solid @doneColor;
+            }
+        }
+    }
+
+    .ui-wizard-node-last {
+        background: none;
+    }
+
+    .ui-wizard-node-active-prev {
+    }
+
+    .ui-wizard-node-active {
+        .text {
+            background-color: @activeColor;
+            color: #FFFFFF;
+            &:after {
+                border-left: (@arrowHeight/2) solid @activeColor;
+            }
+            &:before {
+                border-bottom: (@arrowHeight/2) solid @activeColor;
+                border-top: (@arrowHeight/2) solid @activeColor;
+            }
+        }
+
+    }
+
     .ui-wizard-node-last-active {
-        background-position: 100% -161px
+        .arrow {
+             border-color: @activeColor;
+        }
     }
 
 }
