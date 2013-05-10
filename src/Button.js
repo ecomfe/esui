@@ -27,6 +27,17 @@ define(
             Control.apply(this, arguments);
         }
 
+        /**
+         * 鼠标点击事件处理函数
+         * @param {Button} button Button控件实例
+         */
+        function clickHandler(button) {
+            if (button.disabled) {
+                return;
+            }
+            button.fire('click');
+        }
+
         Button.prototype = {
             /**
              * 控件类型
@@ -62,7 +73,8 @@ define(
                 ) {
                     properties.content = this.main.innerHTML;
                 }
-                lib.extend(this, properties);
+
+                this.setProperties(properties);
             },
 
             /**
@@ -83,7 +95,12 @@ define(
              */
             initStructure: function () {
                 // 初始化状态事件
-                helper.addDOMEvent(this, this.main, 'click', this.clickHandler);
+                helper.addDOMEvent(
+                    this,
+                    this.main,
+                    'click', 
+                    lib.bind(clickHandler, null, this)
+                );
             },
             /**
              * 重新渲染视图
@@ -93,6 +110,7 @@ define(
              * @override
              */
             repaint: helper.createRepaint(
+                Control.prototype.repaint,
                 paint.style('width'),
                 {
                     name: 'height',
@@ -107,28 +125,8 @@ define(
                     paint: function (button, value) {
                         button.main.innerHTML = value;
                     }
-                },
-                {
-                    name: ['disabled', 'hidden', 'readOnly'],
-                    paint: function (button, disabled, hidden, readOnly) {
-                        if (disabled || hidden || readOnly) {
-                            hideLayer(select);
-                        }
-                    }
                 }
             ),
-
-
-
-            /**
-             * 鼠标点击事件处理函数
-             */
-            clickHandler: function () {
-                if (this.disabled) {
-                    return;
-                }
-                this.fire('click');
-            },
 
             /**
              * 设置内容
