@@ -32,9 +32,6 @@ define(
          * @param {Button} button Button控件实例
          */
         function clickHandler(button) {
-            if (button.disabled) {
-                return;
-            }
             button.fire('click');
         }
 
@@ -98,8 +95,8 @@ define(
                 helper.addDOMEvent(
                     this,
                     this.main,
-                    'click', 
-                    lib.bind(clickHandler, null, this)
+                    'click',
+                    lib.curry(clickHandler, this)
                 );
             },
             /**
