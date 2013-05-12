@@ -49,35 +49,6 @@ define(
 
         var InputControl = require('./InputControl');
 
-        function collect(control, store) {
-            if (control instanceof InputControl) {
-                var name = control.get('name');
-                var value = control.getRawValue();
-                if (store.hasOwnProperty(name)) {
-                    store[name] = [].concat(store[name], value);
-                }
-                else {
-                    store[control.name] = value;
-                }
-            }
-            for (var i = 0; i < control.children.length; i++) {
-                collect(control.children[i], store);
-            }
-        }
-
-        /**
-         * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
-         * 如果有同`name`的多个控件，则值为数组
-         *
-         * @param {Object} 表单的数据
-         * @public
-         */
-        Form.prototype.getData = function () {
-            var store = {};
-            collect(this, store);
-            return store;
-        };
-
         /**
          * 根据名称及可选的类型获取输入控件
          * 
@@ -89,12 +60,12 @@ define(
          * - 与当前的`Form`使用同一个`ViewContext`
          * - 不作为另一个`InputControl`的子控件
          *
-         * @param {string} name 控件的name属性
+         * @param {string=} name 控件的name属性
          * @param {string=} type 控件的类型
          * @return {Array.<Control>}
          * @public
          */
-        Form.prototype.getInputControlsByName = function (name, type) {
+        Form.prototype.getInputControls = function (name, type) {
             var elements = [].concat(
                 lib.toArray(this.main.getElementsByTagName('input')),
                 lib.toArray(this.main.getElementsByTagName('select')),
@@ -108,7 +79,7 @@ define(
                 if (control
                     && control instanceof InputControl
                     && control.viewContext === this.viewContext
-                    && control.get('name') === name
+                    && (!name || control.get('name') === name)
                     && (!type || control.get('type') === type)
                 ) {
                     var parent = control.parent;
@@ -123,6 +94,30 @@ define(
             }
 
             return result;
+        };
+
+        /**
+         * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
+         * 如果有同`name`的多个控件，则值为数组
+         *
+         * @param {Object} 表单的数据
+         * @public
+         */
+        Form.prototype.getData = function () {
+            var inputs = this.getInputControls();
+            var store = {};
+            for (var i = 0; i < inputs.length; i++) {
+                var control = inputs[i];
+                var name = control.get('name');
+                var value = control.getRawValue();
+                if (store.hasOwnProperty(name)) {
+                    store[name] = [].concat(store[name], value);
+                }
+                else {
+                    store[name] = value;
+                }
+            }
+            return store;
         };
 
         lib.inherits(Form, Panel);
