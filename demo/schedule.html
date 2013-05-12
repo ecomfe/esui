@@ -19,14 +19,15 @@
             <button id='get'> 获取值 </button>
             <button id='set'> 赋值(setValue) </button>
             <button id='setRaw'> 赋值(setRawValue) </button>
+            <button id='setD1'> disabled(1) </button>
+            <button id='setD2'> disabled(0) </button>
         </div>
     <script>
 
         require(
             [
                 'esui', 
-                'esui/Schedule',
-                'css!esui/css/schedule.css'
+                'esui/Schedule'
             ],
             function (ui) {
                 ui.init(document.body,{
@@ -69,9 +70,17 @@
                             ]);
                 }
 
-                ui.get('mySchedule').onchange  = function (rawValue) {
+                document.getElementById('setD1').onclick = function() {
+                    ui.get('mySchedule').set('disabled', 1);
+                }
 
-                    console.info(this.stringifyValue(rawValue));
+                document.getElementById('setD2').onclick = function() {
+                    ui.get('mySchedule').set('disabled', 0);
+                }
+
+                ui.get('mySchedule').onchange  = function (e) {
+
+                    console.info(this.stringifyValue(e.rawValue));
                 };
 
             }

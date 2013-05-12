@@ -8,9 +8,11 @@
 
 define(
     function (require) {
+        // css
+        require('css!./css/Schedule.css');
+
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
-        var ui      = require('./main');
         var helper  = require('./controlHelper');
 
         /**
@@ -146,16 +148,6 @@ define(
         }
 
         /**
-         * 事件处理中获取当前ui的引用字符串
-         * @param  {Schedule} schedule Schedule实例
-         * @inner
-         */
-        function getStrRef(schedule) {
-
-            return 'require(\'esui/main\').get(\'' + schedule.id + '\')';
-        }
-
-        /**
          * 获取快捷方式的html
          * @param  {Schedule} schedule Schedule实例
          * @inner
@@ -165,9 +157,7 @@ define(
             var html = [];
 
             var tpl = ''
-                + '<span class="${clazz}" item="${index}" '
-                + 'onmouseover="${mouseover}" onmouseout="${mouseout}" '
-                + 'onmousemove="${mousemove}" onclick="${click}"'
+                + '<span class="${clazz}" item="${index}"'
                 + ' >${text}</span>';
 
             //说明标题拼接
@@ -188,19 +178,6 @@ define(
                         {
                             clazz: clazz,
                             text:  shortcut.text,
-                            mouseover: getStrRef(me) 
-                                + '.shortcutOverOutHandler(this, event, 1)',
-
-                            mouseout: getStrRef(me) 
-                                + '.shortcutOverOutHandler(this, event, 0)',
-
-                            mousemove: getStrRef(me) 
-                                + '.shortcutMoveHandler(this, event)',
-
-                            click: getStrRef(me) 
-                                + '.shortcutClickHandler(this, event, '
-                                + i + ')',
-
                             index: i
                         }
                     ));
@@ -261,14 +238,14 @@ define(
             var me = schedule;
             var html = [];
 
-            var dayHClass  = getClass(me, 'dayhead');
-            html.push('<div class="', dayHClass, '">');
+            var dayHClass = getClass(me, 'dayhead');
+            var dayHId    = getId(me, 'day-head');
+            html.push('<div id="', dayHId, '" class="', dayHClass, '">');
 
             var dayClass = getClass(me, 'day');
             var dayTpl = ''
                 + '<div class="' + dayClass + '">'
-                    + '<input type="checkbox" id="${dayId}" value="${value}" '
-                        + ' onclick="${click}">'
+                    + '<input type="checkbox" id="${dayId}" value="${value}">'
                     + '&nbsp;<label for="${dayId}">${dayWord}</label>'
                 + '</div>';
 
@@ -280,9 +257,7 @@ define(
                         {
                             dayWord: dayWords[i],
                             dayId: getId(me, 'lineState' + i),
-                            value: i,
-                            click: getStrRef(me)
-                                + '.dayClickHandler(this, event)'
+                            value: i
                         }
                     )
                 );
@@ -304,14 +279,9 @@ define(
             var html = [];
 
             var timeTpl = ''
-                + '<div class="${timeClass}" onmouseover="${mouseover}"'
-                    + ' onmouseout="${mouseout}"'
+                + '<div class="${timeClass}"'
                     + ' id="${itemId}"'
                     + ' day="${dayIndex}" timeitem="1" time="${timeIndex}">'
-                    + '<div id="${overItemId}" class="${overItemClass}">'
-                        + '<div id="${dragitemId}" class="${dragitemClass}">'
-                        + '</div>'
-                    + '</div>'
                 + '</div>';
 
             var timeBClass = getClass(me, 'timebody');
@@ -331,8 +301,6 @@ define(
                 for (j = 0; j < 24; j++) {
 
                     var itemId = getId(me, 'time_' + i + '_' + j);
-                    var overItemId = getId(me, 'overitem') + '_' + i + '_' + j;
-                    var dragitemId = getId(me, "dragitem") + "_" + i + "_" + j;
 
                     html.push(
                         lib.format(
@@ -341,15 +309,7 @@ define(
                                 itemId: itemId,
                                 timeClass: getClass(me, 'time'),
                                 dayIndex: i,
-                                timeIndex: j,
-                                mouseover: getStrRef(me) 
-                                    + '.timeOverHandler(this, event)',
-                                mouseout: getStrRef(me) 
-                                    + '.timeOutHandler(this, event)',
-                                overItemId: overItemId,
-                                overItemClass: getClass(me, 'overitem'),
-                                dragitemId: dragitemId,
-                                dragitemClass: getClass(me, "dragitem")
+                                timeIndex: j
                             }
                         )
                     );
@@ -371,9 +331,7 @@ define(
         function repaintView(schedule, value) {
             var me = schedule;
             var selectedClass = helper.getPartClasses(me, 'time-selected');
-            var div;
-            var divMatch;
-            var lineEl, lineDivs;
+            var hoverClass = helper.getPartClasses(me, 'time-hover');
 
             for (var i = 0; i < 7; i++) {
                 var statusArr = [];
@@ -397,6 +355,7 @@ define(
                         lib.removeClasses(item, selectedClass);
                     }
 
+                    lib.removeClasses(item, hoverClass);
                     statusArr.push(val);
                 }
                 //根据每周的value, 创建连续选中遮罩
@@ -462,7 +421,6 @@ define(
                 parent.appendChild(coverDiv);
 
                 //挂载事件
-                //lib.commandAttr({ name: 'coverTip' }, coverDiv);
                 helper.addDOMEvent(me, coverDiv, 'mouseover', 
                 lib.bind(coverTipOverHandler, me, coverDiv));
             }
@@ -475,8 +433,7 @@ define(
          */
         function coverTipOverHandler(element) {
 
-            lib.addClasses(element,
-                helper.getPartClasses(this, 'continuecovertimesover'));
+            element.style.display = 'none';
         }
 
         /**
@@ -493,175 +450,10 @@ define(
                 var item = removeDiv[0];
 
                 if (item.getAttribute('day') != null) {
+                    helper.clearDOMEvents(schedule, item);
                     parent.removeChild(item);
                 }
                 len--;
-            }
-        }
-
-        /**
-         * dayWord click handle 
-         * 点击星期checkbox的处理函数
-         * 
-         */
-        function dayClickHandler(element) {
-
-            var me = this;
-            var dom = element;
-            var dayIndex = parseInt(dom.getAttribute('value'), 10);
-            var dayState = dom.checked;
-
-            var rawValueCopy = rawValueClone(me.rawValue);
-
-            var timeValue = rawValueCopy[dayIndex];
-
-            for (var i = 0, len = timeValue.length; i < len; i++) {
-
-                timeValue[i] = dayState ? 1 : 0;
-
-            }
-
-            if (me.onchange(rawValueCopy) !== false) {
-
-                me.rawValue = rawValueCopy;
-                repaintView(this, me.rawValue);
-            }
-            else {
-
-                dom.checked = !dayState;
-            }
-
-        }
-
-        /**
-         * shortcut click handle 
-         * 点击shortcut的处理函数
-         * 
-         * @param  {Object} arg 选项
-         */
-        function shortcutClickHandler(element, event, index) {
-
-            var func = this.shortcut[index].getVal;
-            typeof func == 'function' && func.call(this);
-
-            var rawValue;
-
-            if (typeof func == 'function') {
-
-                rawValue = func.call(this);
-            }
-            else {
-
-                rawValue = func;
-            }
-
-            var valueStr = this.stringifyValue(this.rawValue);
-            var curValueStr = this.stringifyValue(rawValue);
-
-            if (curValueStr != valueStr
-                && this.onchange(rawValue) !== false) {
-
-                this.rawValue = rawValue;
-                repaintView(this, this.rawValue);
-            }
-
-        }
-
-        var timeTipTpl = ''
-            + '<div id="${timeId}" class="${timeClass}">${time}</div>'
-            + '<div id="${textId}" class="${textClass}">${text}</div>';
-
-        /**
-         * timeItem mouseover handler
-         * 时间的mouseover的处理函数
-         * 
-         */
-        function timeOverHandler(element, e) {
-            var clazz =  helper.getPartClasses(this, 'time-hover');
-            lib.addClasses(element, clazz);
-            
-            //获取鼠标位置
-            lib.event.getMousePosition(e);
-            var mousepos = {};
-            mousepos.y = e.pageY + 20;
-            mousepos.x = e.pageX + 10;
-
-
-            var me = this;
-            //var tipClass = getClass(me, 'timeitem-tip');
-            var time = parseInt(element.getAttribute('time'), 10);
-            var day  = parseInt(element.getAttribute('day'), 10);
-
-            var tipText = lib.format(timeTipTpl,
-                {
-                    time: '<strong>' + time 
-                        + ':00</strong>&nbsp;—&nbsp;<strong>'
-                        + (time + 1) + ':00</strong>',
-                   text: '点击/拖动鼠标选择',
-                   timeId: getId(me, 'timeitemtiphead'),
-                   textId: getId(me, 'timeitemtipbody'),
-                   timeClass: getClass(me, 'timeitem-tiphead'),
-                   textClass: getClass(me, 'timeitem-tipbody')
-                }
-            );
-
-
-            //创立并显示提示tip
-            var tipId = getId(me, 'timeitemtip');
-            var tipElement = showPromptTip(me, tipId, mousepos, tipText);
-            tipElement.style.display = 'block';
-
-
-            //创建可拖拽div
-            var overDivId = getId(me, 'overitem') + '_' + day + '_' + time;
-            //var overDivClass = getClass(me, 'overitem');
-            var overElement = lib.g(overDivId);
-            var dragElementId = getId(me, 'dragitem') + '_' + day + '_' + time;
-            var dragElement = lib.g(dragElementId);
-
-            dragElement.style.display = 'block';
-            overElement.style.display = 'block';
-            overElement.style.top = '-1px';
-            overElement.style.left = '-1px';
-
-
-            //创建鼠标跟随DIV
-            var followEleId = getId(me, 'followitem');
-            var followEleClass = getClass(me, 'followitem');
-            var followEle = lib.g(followEleId);
-            var timebody = lib.g(getId(me, 'timebody'));
-
-            if (!followEle) {
-                followEle = document.createElement('div');
-                followEle.className = followEleClass;
-                followEle.id = followEleId;
-                timebody.appendChild(followEle);
-            }
-
-            /* 显示遮罩层 */
-            var ele = element;
-            var dayLine = ele.parentNode.parentNode;
-            var continueCoverTimes = dayLine.getElementsByTagName('aside');
-
-            for (var i = 0, len = continueCoverTimes.length; i < len; i++) {
-                var item = continueCoverTimes[i];
-                var startCT = parseInt(item.getAttribute('starttime'), 10);
-                var endCT = parseInt(item.getAttribute('endtime'), 10);
-                var CoverDay = parseInt(item.getAttribute('day'), 10);
-
-                if ((time >= startCT) 
-                    && (time < endCT)
-                    && day == CoverDay) {
-
-                    lib.addClasses(item, 
-                        helper.getPartClasses(me, 'continuecovertimesover')
-                    );
-                }
-                else {
-                    lib.removeClasses(item, 
-                        helper.getPartClasses(me, 'continuecovertimesover')
-                    );
-                }
             }
         }
 
@@ -703,35 +495,92 @@ define(
                 me.followTip[tipId] = tipElement;
             }
 
+            //添加setTimeout,防止拖动的时候闪耀
+            me.tipElementTime = setTimeout(function () {
+
+                tipElement.style.display = 'block';
+            }, 100);
+
             return tipElement;
         }
 
         /**
-         * timeItem mouseout handler 
-         * 时间的mouseout的处理函数
+         * 隐藏tip遮罩
+         * @param  {Schedule} schedule
+         * @param  {String} tipId    要显示的tip Id
+         */
+        function hidePromptTip(schedule, tipId) {
+
+            clearTimeout(schedule.tipElementTime);
+
+            var tip = lib.g(tipId);
+            tip && (tip.style.display = 'none');
+        }
+
+        /**
+         * dayWord click handle 
+         * 点击星期checkbox的处理函数
          * 
          */
-        function timeOutHandler(element, e) {
-            var clazz =  helper.getPartClasses(this, 'time-hover');
+        function dayClickHandler(e) {
 
-            lib.removeClasses(element, clazz);
+            var target = lib.event.getTarget(e);
+
+            if (target.nodeName.toLowerCase() != 'input') {
+
+                return;
+            }
 
             var me = this;
+            var dom = target;
+            var dayIndex = parseInt(dom.getAttribute('value'), 10);
+            var dayState = dom.checked;
 
-            var time = parseInt(element.getAttribute('time'), 10);
-            var day  = parseInt(element.getAttribute('day'), 10);
+            var rawValueCopy = rawValueClone(me.rawValue);
 
-            //还原去掉hover效果
-            var overDivId = getId(me, 'overitem') + '_' + day + '_' + time;
-            lib.g(overDivId).style.display = 'none';
+            var timeValue = rawValueCopy[dayIndex];
 
-            //隐藏tip
-            var tipId = getId(me, 'timeitemtip');
-            lib.g(tipId).style.display = 'none';
+            for (var i = 0, len = timeValue.length; i < len; i++) {
 
-            //隐藏drag效果
-            var dragElementId = getId(me, 'dragitem') + '_' + day + '_' + time;
-            lib.g(dragElementId).style.display = 'none';
+                timeValue[i] = dayState ? 1 : 0;
+
+            }
+
+            me.setRawValue(rawValueCopy);
+
+        }
+
+        /**
+         * shortcut click handle 
+         * 点击shortcut的处理函数
+         * 
+         * @param  {Object} arg 选项
+         */
+        function shortcutClickHandler(e) {
+            var target = lib.event.getTarget(e);
+
+            if (!target || !target.hasAttribute('item')) {
+                return;
+            }
+
+            var index = target.getAttribute('item');
+
+            var func = this.shortcut[index].getVal;
+            typeof func == 'function' && func.call(this);
+
+            var rawValue;
+
+            if (typeof func == 'function') {
+
+                rawValue = func.call(this);
+            }
+            else {
+
+                rawValue = func;
+            }
+
+            this.setRawValue(rawValue);
+
         }
 
         /**
@@ -739,7 +588,16 @@ define(
          *
          * @inner
          */
-        function shortcutMoveHandler(element, e, i) {
+        function shortcutMoveHandler(e) {
+            var target = lib.event.getTarget(e);
+
+            if (!target || !target.getAttribute('item')) {
+
+                return;
+            }
+
+            var element = target;
+
             var me = this;
 
             //获取鼠标位置
@@ -757,8 +615,11 @@ define(
             setTimeout(function () {
                 var tipElement = lib.g(tipId);
 
-                tipElement.style.top =  mousepos.y + 'px';
-                tipElement.style.left = mousepos.x + 'px';
+                if (tipElement) {
+
+                    tipElement.style.top =  mousepos.y + 'px';
+                    tipElement.style.left = mousepos.x + 'px';
+                }
 
             }, 0);
         }
@@ -768,13 +629,24 @@ define(
          *
          * @inner
          */
-        function shortcutOverOutHandler(element, e, isOver) {
+        function shortcutOverOutHandler(isOver, e) {
+            var target = lib.event.getTarget(e);
+
+            if (!target || !target.getAttribute('item')) {
+
+                return;
+            }
+
+            var element = target;
+
+
             //获取鼠标位置
             lib.event.getMousePosition(e);
 
             var mousepos = {};
             mousepos.y = e.pageY + 20;
             mousepos.x = e.pageX + 10;
+
 
             var me = this;
 
@@ -783,40 +655,204 @@ define(
             var index = dom.getAttribute('item');
             var tipId = getId(me, 'shortcut-item') + index;
 
-            var shortcuts = me.shortcut;
-            var tipText = shortcuts[index].tip;
-
             //构建并获取tip
-            var tipElement = showPromptTip(me, tipId, mousepos, tipText);
-
-
             var clazz = helper.getPartClasses(me, 'shortcut-item-hover');
 
             if (isOver) {
                 lib.addClasses(dom, clazz);
-                tipElement.style.display = 'block';
+
+                var tipText = me.shortcut[index].tip;
+                showPromptTip(me, tipId, mousepos, tipText);
             }
             else {
                 lib.removeClasses(dom, clazz);
-                tipElement.style.display = 'none';
+                hidePromptTip(me, tipId);
             }
         }
 
-        var getTimeBodyDownHandler; //drag mousedown的句柄
+        var timeTipTpl = ''
+            + '<div id="${timeId}" class="${timeClass}">${time}</div>'
+            + '<div id="${textId}" class="${textClass}">${text}</div>';
+
+        /**
+         * timeItem mouseover handler
+         * 时间的mouseover的处理函数
+         * 
+         */
+        function timeOverHandler(e) {
+
+            var target = lib.event.getTarget(e);
+
+            if (!target || !target.getAttribute('timeitem')) {
+
+                return;
+            }
+
+            var element = target;
+
+            //添加hover class
+            lib.addClasses(
+                element, 
+                helper.getPartClasses(this, 'time-hover')
+            );
+            
+            //获取鼠标位置
+            lib.event.getMousePosition(e);
+            var mousepos = {};
+            mousepos.y = e.pageY + 20;
+            mousepos.x = e.pageX + 10;
+
+
+            var me = this;
+            
+            //获取当前元素所代表的时间
+            var time = parseInt(element.getAttribute('time'), 10);
+            var day  = parseInt(element.getAttribute('day'), 10);
+
+
+            //创立并显示提示tip
+            var tipText = lib.format(timeTipTpl,
+                {
+                    time: '<strong>' + time 
+                        + ':00</strong>&nbsp;—&nbsp;<strong>'
+                        + (time + 1) + ':00</strong>',
+                   text: '点击/拖动鼠标选择',
+                   timeId: getId(me, 'timeitemtiphead'),
+                   textId: getId(me, 'timeitemtipbody'),
+                   timeClass: getClass(me, 'timeitem-tiphead'),
+                   textClass: getClass(me, 'timeitem-tipbody')
+                }
+            );
+            var tipId = getId(me, 'timeitemtip');
+
+            showPromptTip(me, tipId, mousepos, tipText);
+
+
+            //重新计算所有遮罩层的显示
+            var timebody = lib.g(getId(me, 'timebody'));
+            var timeCovers = timebody.getElementsByTagName('aside');
+
+            for (var i = 0, len = timeCovers.length; i < len; i++) {
+                var item = timeCovers[i];
+                var startCT = parseInt(item.getAttribute('starttime'), 10);
+                var endCT = parseInt(item.getAttribute('endtime'), 10);
+                var CoverDay = parseInt(item.getAttribute('day'), 10);
+
+                if (time >= startCT
+                    && time < endCT
+                    && day == CoverDay) {
+
+                    item.style.display = 'none';
+                }
+                else {
+                    
+                    item.style.display = 'block';
+                }
+            }
+        }
+
+        /**
+         * timeItem mouseout handler 
+         * 时间的mouseout的处理函数
+         * 
+         */
+        function timeOutHandler(element, e) {
+
+            var target = lib.event.getTarget(e);
+
+            if (!target || !target.getAttribute('timeitem')) {
+
+                return;
+            }
+
+            var element = target;
+
+            //移除hover效果
+            lib.removeClasses(
+                element, 
+                helper.getPartClasses(this, 'time-hover')
+            );
+
+            //隐藏tip
+            hidePromptTip(this, getId(this, 'timeitemtip'));
+        }
+
         var getTimeBodyMoveHandler; //drag mousemove的句柄
         var getTimeBodyUpHandler; //drag mouseup的句柄
 
         /**
-         * 绑定拖动drag事件
+         * 绑定事件
          * @param  {Schedule} schedule
          */
         function bindEvent(schedule) {
             var me = schedule;
-            var timebody = lib.g(getId(me, 'timebody'));
-            
-            getTimeBodyDownHandler = lib.bind(timeBodyDownHandler, me);
 
-            lib.on(timebody, 'mousedown', getTimeBodyDownHandler);
+            var timebody = lib.g( getId(me, 'timebody') );
+            //绑定拖动drag事件
+            helper.addDOMEvent(
+                schedule, 
+                timebody, 
+                'mousedown', 
+                lib.bind(timeBodyDownHandler, me)
+            );
+
+            //绑定timebody mouseover事件
+            helper.addDOMEvent(
+                schedule, 
+                timebody, 
+                'mouseover', 
+                lib.bind(timeOverHandler, me)
+            );
+
+            //绑定timebody mouseout事件
+            helper.addDOMEvent(
+                schedule, 
+                timebody, 
+                'mouseout', 
+                lib.bind(timeOutHandler, me)
+            );
+
+            //绑定选择星期事件
+            helper.addDOMEvent(
+                schedule, 
+                lib.g( getId(me, 'day-head') ), 
+                'click', 
+                lib.bind(dayClickHandler, me)
+            );
+
+
+            var shortcut = lib.g( getId(me, 'shortcut') );
+            //绑定点击shortcut事件
+            helper.addDOMEvent(
+                schedule, 
+                shortcut, 
+                'click', 
+                lib.bind(shortcutClickHandler, me)
+            );
+
+            //shortcut mouseover
+            helper.addDOMEvent(
+                schedule, 
+                lib.g( getId(me, 'shortcut') ), 
+                'mouseover', 
+                lib.bind(shortcutOverOutHandler, me, 1)
+            );
+
+            //shortover mouseout
+            helper.addDOMEvent(
+                schedule, 
+                shortcut, 
+                'mouseout', 
+                lib.bind(shortcutOverOutHandler, me, 0)
+            );
+
+            //shortcut mousemove
+            helper.addDOMEvent(
+                schedule, 
+                shortcut, 
+                'mousemove', 
+                lib.bind(shortcutMoveHandler, me)
+            );
         }
 
         /**
@@ -826,15 +862,18 @@ define(
             var me = this;
             var doc = document;
 
+
             getTimeBodyMoveHandler = lib.bind(timeBodyMoveHandler, me);
             getTimeBodyUpHandler = lib.bind(timeBodyUpHandler, me);
 
             lib.on(doc, 'mousemove', getTimeBodyMoveHandler);
             lib.on(doc, 'mouseup', getTimeBodyUpHandler);
 
+
             //记录鼠标位置
             lib.event.getMousePosition(e);
             this.dragStartPos = {x: e.pageX, y: e.pageY};
+
 
             // 鼠标拖拽效果
             // 为了防止在控件渲染后，位置变动导致计算错误，所以每次mousedown
@@ -850,6 +889,7 @@ define(
             me.dragRange.push(timebodyLeft);
 
 
+            //添加兼容设置
             ondragHuck(timebody);
 
             // 显示follow区域
@@ -857,8 +897,12 @@ define(
                 { x: e.pageX, y: e.pageY }
             );
 
-            //渲染遮罩层
-            setFollowEle(this, cellPos);
+            //hock ie下drag快速移动有时不执行mouseout, 此处隐藏tip
+            var tipId = getId(me, 'timeitemtip');
+            lib.g(tipId) && (lib.g(tipId).style.display = 'none');
+
+            //渲染鼠标跟随div
+            repaintFollowEle(this, cellPos);
         }
 
         /**
@@ -873,8 +917,8 @@ define(
                 { x: e.pageX, y: e.pageY }
             );
 
-            //渲染遮罩层
-            setFollowEle(this, cellPos);
+            //渲染鼠标跟随div
+            repaintFollowEle(this, cellPos);
 
         }
 
@@ -883,31 +927,32 @@ define(
          */
         function timeBodyUpHandler(e) {
             var me = this;
-            var doc = document;
-            var followEle = lib.g(getId(me, 'followitem'));
 
-            followEle.style.cssText += 'display:none;width:0;height:0';
-            /*target,{position:"relative",top:"0px",left:"0px",
-                                        width:"23px",height:"23px"});
-            baidu.dom.setStyles(target.parentNode,{display:"none"});*/
+            //清除兼容设置
+            offDragHuck(lib.g(getId(me, 'timebody')));
+
+            //隐藏鼠标跟随div
+            var followEle = lib.g(getId(me, 'followitem'));
+            followEle.style.display = 'none';
 
             //记录鼠标位置
             lib.event.getMousePosition(e);
 
             //为了修正，up的时候再重新计算下位置
-            var cellPos = getTragTimeCellPos(this, 
+            var cellPos = getTragTimeCellPos(me, 
                 { x: e.pageX, y: e.pageY }
             );
-            setSelectedAreaValue(me, cellPos);
 
-            //清除兼容设置
-            var timebody = lib.g(getId(me, 'timebody'));
+            //hack ie8下重新渲染遮罩层的时候会跳动，发现是setCapture的原因
+            //此处使用setTimeout，使其跳出setCapture的范围
+            setTimeout(function () {
+                setSelectedAreaValue(me, cellPos);
+            }, 10);
 
             //卸载事件
+            var doc = document;
             lib.un(doc, 'mousemove', getTimeBodyMoveHandler);
             lib.un(doc, 'mouseup', getTimeBodyUpHandler);
-            //ondragHuck(timebody);
-            offDragHuck(timebody);
         }
 
         /**
@@ -942,11 +987,7 @@ define(
             }
             timebodyCellRange = null;
 
-            if (me.onchange(rawValueCopy) !== false) {
-
-                me.rawValue = rawValueCopy;
-                repaintView(me, me.rawValue);
-            }
+            me.setRawValue(rawValueCopy);
         }
 
         /**
@@ -1002,12 +1043,22 @@ define(
         }
 
         /**
-         * drag时的拖动遮罩层的渲染方法
+         * drag时的鼠标跟随层的渲染方法
          * @param {Schedule} schedule
          * @param {Object} cellPos  选择区域的开始和结束配置
          */
-        function setFollowEle(schedule, cellPos) {
-            var followEle = lib.g(getId(schedule, 'followitem'));
+        function repaintFollowEle(schedule, cellPos) {
+            var me = schedule;
+
+            var followEleId = getId(schedule, 'followitem');
+            var followEle = lib.g(followEleId);
+            if (!followEle) {
+                followEle = document.createElement('div');
+                followEle.className = getClass(me, 'followitem');
+                followEle.id = followEleId;
+                lib.g(getId(me, 'timebody')).appendChild(followEle);
+            }
+
 
             var startcell = cellPos.startcell;
             var endcell = cellPos.endcell;
@@ -1116,6 +1167,23 @@ define(
             return val;
         }
 
+        /**
+         * 设置星期checkbox的状态  
+         * @param {Schedule} schedule 当前控件
+         * @param {string} state    状态
+         * @param {boolean} value    值
+         */
+        function setDayCheckboxState(schedule, state, value) {
+
+            var dayHead = lib.g(getId(schedule, 'day-head'));
+            var inputs = dayHead.getElementsByTagName('input');
+
+            for (var i = 0, len = inputs.length; i < len; i++) {
+
+                inputs[i][state] = value;
+            }
+        }
+
         Schedule.prototype = {
 
             constructor: Schedule,
@@ -1177,7 +1245,9 @@ define(
                             + '<div class="${helpUnselectedClass}"></div>'
                             + '<div class="${helpTextClass}">${help}</div>'
                         + '</div>'
-                        + '<div class="${shortcutClass}">${shortcutHtml}</div>'
+                        + '<div class="${shortcutClass}" id="${shortcutId}">'
+                            + '${shortcutHtml}'
+                        + '</div>'
                     + '</div>';
 
                 this.main.innerHTML =
@@ -1191,6 +1261,7 @@ define(
                             helpUnselectedClass: getClass(me, 'help-unselected'),
                             helpTextClass: getClass(me, 'help-text'),
                             shortcutClass: getClass(me, 'shortcut'),
+                            shortcutId: getId(me, 'shortcut'),
                             bodyId: getId(me, 'body'), //7
                             helpSelected: me.helpSelected,
                             help: me.help,
@@ -1200,6 +1271,27 @@ define(
 
                 initBody(me);
                 bindEvent(me);
+            },
+
+            /**
+             * 设值
+             *
+             * @override
+             * @protected
+             */
+            setProperties: function (properties) {
+                var changes = InputControl.prototype.setProperties.call(
+                    this, properties);
+
+                var rawValueObj = changes['rawValue'];
+
+                if (rawValueObj 
+                    && (this.stringifyValue(rawValueObj.oldValue)
+                    !== this.stringifyValue(rawValueObj.newValue))) {
+
+                    this.fire('change', { rawValue: this.rawValue });
+                }
+
             },
 
             /**
@@ -1216,6 +1308,20 @@ define(
 
                         repaintView(schedule, rawValue);
                     }
+                },
+                {
+                    name: 'disabled',
+                    paint: function (schedule, value) {
+
+                        setDayCheckboxState(schedule, 'disabled', value);
+                    }
+                },
+                {
+                    name: 'readonly',
+                    paint: function (schedule, value) {
+
+                        setDayCheckboxState(schedule, 'readonly', value);
+                    }
                 }
             ),
 
@@ -1226,16 +1332,8 @@ define(
                 shortcutOverOutHandler.apply(this, arguments);
             },
 
-            shortcutClickHandler: function() {
-                shortcutClickHandler.apply(this, arguments);
-            },
-
             shortcutMoveHandler: function() {
                 shortcutMoveHandler.apply(this, arguments);
-            },
-
-            dayClickHandler: function() {
-                dayClickHandler.apply(this, arguments);
             },
 
             coverTipOverHandler: function() {
@@ -1317,19 +1415,11 @@ define(
                 return this.rawValue;
             },
 
-            onchange: function () {},
-
             /**
              * 销毁释放控件
              */
             dispose : function () {
                 helper.beforeDispose(this);
-
-                // remove movedown事件listener
-                if (getTimeBodyDownHandler) {
-                    var timebody = lib.g(getId(this, 'timebody'));
-                    lib.un(timebody, 'mousedown', getTimeBodyDownHandler);
-                }
 
                 //清除followTip
                 var followTip = this.followTip;
