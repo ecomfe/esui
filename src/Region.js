@@ -344,11 +344,13 @@ define(
             while (tar && tar != document.body) {
                 if (tar.nodeName.toLowerCase() === 'input') {
                     optionClick(region, tar);
+                    region.fire('change', region.rawValue);
                     return;
                 }
                 else if (tar.nodeName.toLowerCase() === 'label') {
                     var checkId = tar.getAttribute('for');
                     optionClick(region, lib.g(checkId));
+                    region.fire('change', region.rawValue);
                     return;
                 }
                 tar = tar.parentNode;
@@ -600,7 +602,6 @@ define(
                     }
                 }
             }
-
             properties.singleRegionData = result;
         }
 
@@ -658,12 +659,20 @@ define(
          * @param {boolean} disabled 是否不可用
          */
         function changeToDisabled(region, disabled) { 
-            // 遍历素有checkbox，设置为disabled
-            var elements =
-                region.main.getElementsByTagName('input');
-            for (var i = 0, length = elements.length; i < length; i++) {
-                var item = elements[i];
-                item.disabled = disabled;
+            if (region.mode === 'multi') {
+                // 遍历素有checkbox，设置为disabled
+                var elements =
+                    region.main.getElementsByTagName('input');
+                for (var i = 0, length = elements.length; i < length; i++) {
+                    var item = elements[i];
+                    item.disabled = disabled;
+                }
+            }
+            else {
+                var regionSel = region.getChild('regionSel');
+                regionSel.setProperties({
+                    disabled: disabled
+                });
             }
         }
 
@@ -797,12 +806,11 @@ define(
                         }
                         
                         changeToDisabled(region, !editable);
-                        
                         // 只读状态下要开放input的读属性    
                         if (!disabled && readOnly) {
                             var input =
                                 lib.g(helper.getId(region, 'param-value'));
-                            input.disabled = true;
+                            input.disabled = false;
                         }
                     }
                     
@@ -810,7 +818,7 @@ define(
             ),
 
             /**
-             * 设置日期
+             * 通过数组格式，设置选中的地域
              *
              * @param {Array} value 选取的地域.
              */
@@ -819,22 +827,25 @@ define(
             },
 
             /**
-             * 获取选取日期值
+             * 获取选中的地域，数组格式。
              * 
-             * @return {Date} 
+             * @return {Array} 
              */
             getRawValue: function () {
                 return this.rawValue;
-            },
+            }
 
             /**
-             * 获取日期字符串
+             * 将value从原始格式转换成string
+             * 复杂类型的输入控件需要override此接口
              * 
-             * @return {string} 
+             * @param {*} rawValue 原始值
+             * @return {string}
              */
-            getValue: function () {
-                return '';
+            stringifyValue: function (rawValue) {
+                return rawValue ? rawValue.join(',') : '';
             }
+
         };
 
         /* jshint maxlen: 600 */
