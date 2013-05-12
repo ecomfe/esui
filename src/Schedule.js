@@ -1326,29 +1326,6 @@ define(
             ),
 
             /**
-             * 事件处理
-             */
-            shortcutOverOutHandler: function() {
-                shortcutOverOutHandler.apply(this, arguments);
-            },
-
-            shortcutMoveHandler: function() {
-                shortcutMoveHandler.apply(this, arguments);
-            },
-
-            coverTipOverHandler: function() {
-                coverTipOverHandler.apply(this, arguments);
-            },
-
-            timeOverHandler: function() {
-                timeOverHandler.apply(this, arguments);
-            },
-
-            timeOutHandler: function() {
-                timeOutHandler.apply(this, arguments);
-            },
-
-            /**
              * 将string类型的value转换成原始格式
              *
              * @override
