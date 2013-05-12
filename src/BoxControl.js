@@ -131,7 +131,7 @@ define(
                 var len = els.length;
                 for ( var i = 0; i < len; i++ ) {
                     var el = els[ i ];
-                    var control = ui.getControlByDom( el );
+                    var control = ui.getControlByDOM( el );
                    
                     if (control 
                      && control instanceof BoxControl

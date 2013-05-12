@@ -94,7 +94,7 @@ define(
          * @param {HTMLElement} dom dom元素
          * @return {Control}
          */
-        main.getControlByDom = function ( dom ) {
+        main.getControlByDOM = function ( dom ) {
             if ( !dom ) {
                 return null;
             }
