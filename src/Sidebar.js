@@ -284,7 +284,7 @@ define(
 
             me._bodyEl && (me._bodyEl.style.height = bodyHeight + 'px');
 
-            me.onresize();
+            me.fire('resize');
         }
         
         /**
@@ -516,7 +516,7 @@ define(
                     //初始化的时候不会执行onmodechange方法
                     if (helper.isInStage(sidebar, 'RENDERED')) {
 
-                        sidebar.onmodechange(mode);
+                        sidebar.fire('modechange', { mode: mode });
                     }
                 }
             }
@@ -576,7 +576,7 @@ define(
          * 模式改变的事件
          * @param  {string} mode 模式类型（autohide fixed
          */
-        Sidebar.prototype.onmodechange = function (mode) {
+        Sidebar.prototype.onmodechange = function () {
         };
 
         /**
