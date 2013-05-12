@@ -38,6 +38,27 @@ define(function () {
     };
 
     /**
+     * 将对象转换为数组
+     *
+     * @public
+     * @param {*} source 任意对象
+     * @return {Array}
+     */
+    lib.toArray = function (source) {
+        var length = source.length;
+        if (typeof length === 'number') {
+            var result = [];
+            for (var i = 0; i < length; i++) {
+                result[i] = source[i];
+            }
+            return result;
+        }
+        else {
+            return [source];
+        }
+    }
+
+    /**
      * 判断一个数组中是否包含给定元素
      * @name baidu.array.contains
      * @function
@@ -102,40 +123,6 @@ define(function () {
 
         return target;
     };
-
-    lib.isPlain  = function (obj) {
-        var hasOwnProperty = Object.prototype.hasOwnProperty;
-        if (!obj
-            // 一般的情况，直接用toString判断
-            || Object.prototype.toString.call(obj) !== '[object Object]'
-            // IE下，DOM和BOM对象上一个语句为true，
-            // isPrototypeOf挂在Object.prototype上的，
-            // 因此所有的字面量都应该会有这个属性
-            // 对于在window上挂了isPrototypeOf属性的情况，直接忽略不考虑
-            || !('isPrototypeOf' in obj)
-        ) {
-            return false;
-        }
-
-        // 判断new fun()自定义对象的情况
-        // constructor不是继承自原型链的
-        // 并且原型中有isPrototypeOf方法才是Object
-        if (obj.constructor
-            && !hasOwnProperty.call(obj, 'constructor')
-            && !hasOwnProperty.call(obj.constructor.prototype, 'isPrototypeOf')
-        ) {
-            return false;
-        }
-        // 判断有继承的情况
-        // 如果有一项是继承过来的，那么一定不是字面量Object
-        // OwnProperty会首先被遍历，为了加速遍历过程，直接看最后一项
-        /* jshint noempty: false */
-        var key;
-        for (key in obj) {
-        }
-        return key === undefined || hasOwnProperty.call(obj, key);
-    };
-
 
     /**
      * 对一个object进行深度拷贝

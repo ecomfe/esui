@@ -1,6 +1,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var main = require('./main');
         var Panel = require('./Panel');
 
         /**
@@ -48,21 +49,52 @@ define(
 
         var InputControl = require('./InputControl');
 
-        function collect(control, store) {
-            if (control instanceof InputControl) {
-                var name = control.get('name');
-                var value = control.getRawValue();
-                if (store.hasOwnProperty(name)) {
-                    store[name] = [].concat(store[name], value);
-                }
-                else {
-                    store[control.name] = value;
+        /**
+         * 根据名称及可选的类型获取输入控件
+         * 
+         * 这个方法返回符合以下要求的控件：
+         * 
+         * - 是`InputControl`
+         * - `name`和`type`符合要求
+         * - 主元素在当前`Form`的主元素下
+         * - 与当前的`Form`使用同一个`ViewContext`
+         * - 不作为另一个`InputControl`的子控件
+         *
+         * @param {string=} name 控件的name属性
+         * @param {string=} type 控件的类型
+         * @return {Array.<Control>}
+         * @public
+         */
+        Form.prototype.getInputControls = function (name, type) {
+            var elements = [].concat(
+                lib.toArray(this.main.getElementsByTagName('input')),
+                lib.toArray(this.main.getElementsByTagName('select')),
+                lib.toArray(this.main.getElementsByTagName('textarea'))
+            );
+            var result = [];
+            
+            for (var i = 0; i < elements.length; i++) {
+                var element = elements[i];
+                var control = main.getControlByDOM(element);
+                if (control
+                    && control instanceof InputControl
+                    && control.viewContext === this.viewContext
+                    && (!name || control.get('name') === name)
+                    && (!type || control.get('type') === type)
+                ) {
+                    var parent = control.parent;
+                    // 如果一个输入控件是在另一个输入控件中的，则不需要它
+                    while (parent && !(parent instanceof InputControl)) {
+                        parent = parent.parent;
+                    }
+                    if (!(parent instanceof InputControl)) {
+                        result.push(control);
+                    }
                 }
             }
-            for (var i = 0; i < control.children.length; i++) {
-                collect(control.children[i], store);
-            }
-        }
+
+            return result;
+        };
 
         /**
          * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
@@ -72,35 +104,19 @@ define(
          * @public
          */
         Form.prototype.getData = function () {
+            var inputs = this.getInputControls();
             var store = {};
-            collect(this, store);
-            return store;
-        };
-
-        function collectInputControls(control, name, type, store) {
-            if (control instanceof InputControl
-                && control.get('name') === name
-                && (!type || control.type === type)
-            ) {
-                store.push(control);
+            for (var i = 0; i < inputs.length; i++) {
+                var control = inputs[i];
+                var name = control.get('name');
+                var value = control.getRawValue();
+                if (store.hasOwnProperty(name)) {
+                    store[name] = [].concat(store[name], value);
+                }
+                else {
+                    store[name] = value;
+                }
             }
-
-            for (var i = 0; i < control.children.length; i++) {
-                collectInputControls(control, name, type, store);
-            }
-        }
-
-        /**
-         * 根据名称及可选的类型获取输入控件
-         *
-         * @param {string} name 控件的name属性
-         * @param {string=} type 控件的类型
-         * @return {Array.<Control>}
-         * @public
-         */
-        Form.prototype.getInputControlsByName = function (name, type) {
-            var store = [];
-            collectInputControls(this, name, type, store);
             return store;
         };
 

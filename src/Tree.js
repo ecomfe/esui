@@ -166,7 +166,6 @@ define(
             // 根节点再加2个类
             if (node === tree.datasource) {
                 classes = [].concat(
-                    helper.getPartClasses(tree),
                     helper.getPartClasses(tree, 'root'),
                     helper.getPartClasses(tree, 'root-' + state),
                     classes
@@ -181,16 +180,18 @@ define(
          * @param {Tree} tree 控件实例
          * @param {Object} node 节点数据
          * @param {boolean} expanded 是否处于展开状态
+         * @parma {string} nodeName 使用节点的类型，默认为li
          * @return {string}
          * @inner
          */
-        function getNodeHTML(tree, node, expanded) {
+        function getNodeHTML(tree, node, expanded, nodeName) {
+            nodeName = nodeName || 'li';
             var classes = getNodeClasses(tree, node, expanded);
-            var html = '<li class="' + classes.join(' ') + '" '
+            var html = '<' + nodeName + ' class="' + classes.join(' ') + '" '
                 + 'id="' + helper.getId(tree, 'node-' + node.id) + '" '
                 + 'data-id="' + node.id + '">';
             html += getNodeContentHTML(tree, node, expanded);
-            html += '</li>';
+            html += '</' + nodeName + '>';
             return html;
         }
 
@@ -240,7 +241,6 @@ define(
          * @protected
          */
         Tree.prototype.initStructure = function () {
-            helper.addPartClasses(this, 'root');
             helper.addDOMEvent(
                 this,
                 this.main,
@@ -282,12 +282,9 @@ define(
             {
                 name: 'datasource',
                 paint: function (tree, datasource) {
-                    tree.main.setAttribute('data-id', datasource.id);
-                    var classes = getNodeClasses(tree, datasource, true);
-                    tree.main.className = classes.join(' ');
                     tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
-                        getNodeContentHTML(tree, datasource, true);
+                        getNodeHTML(tree, datasource, true, 'div');
                 }
             }
         );

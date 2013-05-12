@@ -110,7 +110,8 @@ define(function (require) {
                 var crumb = new Crumb();
                 crumb.appendTo(container);
                 crumb.set('path', path);
-                expect(container.getElementsByTagName('li').length).toBe(2);
+                // 2 nodes + 1 separator
+                expect(container.getElementsByTagName('li').length).toBe(3);
             });
         });
     });

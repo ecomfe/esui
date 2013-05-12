@@ -50,27 +50,6 @@ define(function (require) {
         }
         require('esui/lib').inherits(FakeInput, InputControl);
 
-        describe('generally', function () {
-            it('should collect all `rawValue` from its children', function () {
-                var inputs = [
-                    new FakeInput('a', 1),
-                    new FakeInput('b', 2)
-                ];
-                var form = new Form();
-                form.addChild(inputs[0]);
-                form.addChild(inputs[1]);
-                var data = form.getData();
-                expect(data).toEqual({ a: 1, b: 2 });
-            });
-
-            it('should be able collect `rawValue` from its deep decendants', function () {
-                var child = new FakeInput('a', 1);
-                child.addChild(new FakeInput('b', 2));
-                var form = new Form();
-                form.addChild(child);
-                var data = form.getData();
-                expect(data).toEqual({ a: 1, b: 2 });
-            });
-        })
+        // TODO: 如何测试`getData`？
     });
 });
