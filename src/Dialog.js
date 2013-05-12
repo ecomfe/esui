@@ -196,6 +196,38 @@ define(
         }
 
         /**
+         * 显示遮盖层
+         * @param {ui.Dialog} dialog 控件对象
+         */
+        function showMask(dialog) {
+            var mask = getMask(dialog);
+            var clazz = [];
+            var maskClass = helper.getPartClasses(dialog, 'mask').join(' ');
+
+            clazz.push(maskClass);
+            repaintMask(mask);
+
+            mask.className = clazz.join(' ');
+            mask.style.display = 'block';
+            dialog.curMaskListener = lib.curry(maskResizeHandler, dialog);
+            lib.on(window, 'resize', dialog.curMaskListener);            
+        }
+
+
+        /**
+         * 隐藏遮盖层
+         * @param {ui.Dialog} dialog 控件对象
+         */
+        function hideMask(dialog) {
+            var mask = getMask(dialog);
+            if ('undefined' != typeof mask) {
+                lib.removeNode(mask);
+                lib.un(window, 'resize', dialog.curMaskListener); 
+                dialog.curMaskListener = null;
+            }
+        }
+
+        /**
          * 页面大小发生变化的事件处理器
          *
          * @param {ui.Dialog} 控件对象
@@ -314,7 +346,7 @@ define(
                     needFoot: true
                 };
                 lib.extend(properties, options);
-                lib.extend(this, properties);
+                this.setProperties(properties);
             },
 
             /**
@@ -427,7 +459,7 @@ define(
              * 获取对话框主体的控件对象
              * 
              * 
-             * @return {HTMLElement} 
+             * @return {ui.Panel} 
              */
             getBody: function () {
                 return this.getChild('body');
@@ -440,14 +472,14 @@ define(
              * @return {HTMLElement} 
              */
             getBodyDOM: function () {
-                return getPartHtml(this, 'head');
+                return getPartHtml(this, 'body');
             },
 
             /**
              * 获取对话框头部的控件对象
              * 
              * 
-             * @return {HTMLElement} 
+             * @return {ui.Panel} 
              */
             getHead: function () {
                 return this.getChild('head');
@@ -467,7 +499,7 @@ define(
              * 获取对话框腿部的控件对象
              * 
              * 
-             * @return {HTMLElement} 
+             * @return {ui.Panel} 
              */
             getFoot: function () {
                 return this.getChild('foot');
@@ -507,30 +539,12 @@ define(
                 }
 
                 if (mask) {
-                    this.showMask();
+                    showMask(this);
                 }
 
                 this.fire('show');
                 this.isShow = true;
 
-            },
-
-            /**
-             * 显示遮盖层
-             * 
-             */
-            showMask: function () {
-                var mask = getMask(this);
-                var clazz = [];
-                var maskClass = helper.getPartClasses(this, 'mask').join(' ');
-
-                clazz.push(maskClass);
-                repaintMask(mask);
-
-                mask.className = clazz.join(' ');
-                mask.style.display = 'block';
-                this.curMaskListener = lib.curry(maskResizeHandler, this);
-                lib.on(window, 'resize', this.curMaskListener);            
             },
 
             /**
@@ -548,7 +562,7 @@ define(
                     main.style.left = main.style.top = '-10000px';
 
                     if (mask) {
-                        this.hideMask();
+                        hideMask(this);
                     }
                 }
 
@@ -556,17 +570,6 @@ define(
                 this.isShow = false;
             },
 
-            /**
-             * 隐藏遮盖层
-             */
-            hideMask: function () {
-                var mask = getMask(this);
-                if ('undefined' != typeof mask) {
-                    lib.removeNode(mask);
-                    lib.un(window, 'resize', this.curMaskListener); 
-                    this.curMaskListener = null;
-                }
-            },
 
             /**
              * 设置标题文字
@@ -742,7 +745,6 @@ define(
                 '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
                 '<div class="ui-dialog-text">${content}</div>'
             ].join('');
-
 
             //创建main
             var main = document.createElement('div');
