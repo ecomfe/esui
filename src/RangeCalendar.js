@@ -156,7 +156,6 @@ define(
             if (calendar.layer) {
                 helper.addPartClasses(calendar, 'layer-hidden', calendar.layer);
                 calendar.removeState('active');
-                calendar.fire('hide');
             }
         }
 
@@ -296,7 +295,6 @@ define(
             calendar.view = value;
             paintCal(calendar, 'begin', value.begin);
             paintCal(calendar, 'end', value.end);
-            calendar.fire('change', value, shortcutItems[index].name, index);
         }
 
         /**
@@ -342,7 +340,10 @@ define(
          */
         function paintCal(calendar, type, value, bindEvent) {
             var monthView = calendar.getChild(type + 'Cal');
-            monthView.setRawValue(value);
+            monthView.setProperties({
+                rawValue: value,
+                range: calendar.range
+            });
             if (bindEvent === true) {
                 monthView.on(
                     'change',
@@ -404,7 +405,6 @@ define(
             // 更新shortcut
             var selectedIndex = getSelectedIndex(calendar, calendar.view);
             paintMiniCal(calendar, selectedIndex);
-            calendar.fire('change');
         }
 
         /**
@@ -437,7 +437,7 @@ define(
             me.paramValue = convertToParam(value);
             updateMain(me, value);
             hideLayer(me);
-            me.fire('change');
+            me.fire('change', value);
         }
 
         /**
@@ -511,10 +511,10 @@ define(
         function convertToParam(value) {
             var beginTime = value.begin;
             var endTime = value.end;
-            var beginTail = '000000';
-            var endTail = '235959';
-            return lib.date.format(beginTime, 'yyyyMMdd') + beginTail + ',' +
-                lib.date.format(endTime, 'yyyyMMdd') + endTail;
+            var beginTail = ' 00:00:00';
+            var endTail = ' 23:59:59';
+            return lib.date.format(beginTime, 'yyyy-MM-dd') + beginTail + ',' +
+                lib.date.format(endTime, 'yyyy-MM-dd') + endTail;
         }
 
         /**
@@ -524,42 +524,43 @@ define(
          * @param {string} paramValue 20110301222222,20110401235959
          * @return {{begin:Date,end:Date}=}
          */
-        function convertToRaw(paramValue) {
-            /** 20110301222222 */
-            function parseToDate(num) {
-                function parse(source) {
-                    var match = null;
-                    var exq = /^(\d{4})[-\/]?([01]\d)[-\/]?([0-3]\d)$/;
-                    var match = exq.exec(source);
-                    if (match) {
-                        return new Date(
-                            parseInt(match[1], 10),
-                            parseInt(match[2], 10) - 1,
-                            parseInt(match[3], 10)
-                        );
-                    }
-                    return null;
-                }
-
-                num = num + '';
-                var date = parse(num.substring(0, 8));
-                if (num.substring(8, 10)) {
-                    date.setHours(num.substring(8, 10));
-                }
-                if (num.substring(10, 12)) {
-                    date.setMinutes(num.substring(10, 12));
-                }
-                if (num.substring(12)) {
-                    date.setSeconds(num.substring(12));
-                }
-                return date;
-            }
-        
+        function convertToRaw(paramValue) {            
             var strDates = paramValue.split(',');
             return {
                 begin: parseToDate(strDates[0]),
                 end: parseToDate(strDates[1])
             };
+        }
+        /**
+         * 字符串日期转换为Date对象
+         *
+         * @inner
+         * @param {string} dateStr 字符串日期
+         */
+        function parseToDate(dateStr) {
+            /** 2011-11-04 */
+            function parse(source) {
+                var dates = source.split('-');
+                if (dates) {
+                    return new Date(
+                        parseInt(dates[0], 10),
+                        parseInt(dates[1], 10) - 1,
+                        parseInt(dates[2], 10)
+                    );
+                }
+                return null;
+            }
+
+            dateStr = dateStr + '';
+            var dateAndHour =  dateStr.split(' ');
+            var date = parse(dateAndHour[0]);
+            if (dateAndHour[1]) {
+                var clock = dateAndHour[1].split(':');
+                date.setHours(clock[0]);
+                date.setMinutes(clock[1]);
+                date.setSeconds(clock[2]);
+            }
+            return date;
         }
 
         /**
@@ -645,14 +646,18 @@ define(
                         end: now
                     }),
                     dateFormat: 'yyyy-MM-dd',
-                    paramFormat: 'yyyyMMdd'
+                    paramFormat: 'yyyy-MM-dd'
                 };
 
-                if (options.paramValue) {
-                    options.rawValue = convertToRaw(options.paramValue);
+                if (options.paramvalue) {
+                    options.rawValue = convertToRaw(options.paramvalue);
                     options.view = {};
                     options.view.begin = options.rawValue.begin;
                     options.view.end = options.rawValue.end;
+                }
+
+                if (options.range && typeof options.range === 'string') {
+                    options.range = convertToRaw(options.range);
                 }
 
                 lib.extend(properties, options);
@@ -729,14 +734,19 @@ define(
              */
             repaint: helper.createRepaint(
                 {
-                    name: 'rawValue',
-                    paint: function (calendar, value) {
+                    name: ['rawValue', 'range'],
+                    paint: function (calendar, rawValue, range) {
                         if (calendar.disabled || calendar.readOnly) {
                             return;
                         }
-                        updateMain(calendar, value);
+                        if (range && typeof range === 'string') {
+                            calendar.range = convertToRaw(range);
+                        }
+                        if (rawValue) {
+                            updateMain(calendar, rawValue);
+                        }
                         if (calendar.layer) {
-                            paintLayer(calendar, value);
+                            paintLayer(calendar, rawValue);
                         }
                     }
                 },
@@ -749,13 +759,6 @@ define(
                     }
                 }
             ),
-
-            /**
-             * 鼠标点击事件处理函数
-             */
-            clickHandler: function () {
-                this.fire('click');
-            },
 
             /**
              * 设置日期
