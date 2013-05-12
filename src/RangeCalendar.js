@@ -434,7 +434,7 @@ define(
                 };
             }
             me.rawValue = value;
-            me.paramValue = convertToParam(value);
+            me.value = convertToParam(value);
             updateMain(me, value);
             hideLayer(me);
             me.fire('change', value);
@@ -494,7 +494,7 @@ define(
         function paintLayer(calendar, value) {
             calendar.view.begin = value.begin;
             calendar.view.end = value.end;
-            calendar.paramValue = convertToParam(value);
+            calendar.value = convertToParam(value);
             var selectedIndex = getSelectedIndex(calendar, calendar.view);
             paintMiniCal(calendar, selectedIndex);
             paintCal(calendar, 'begin', value.begin);
@@ -521,11 +521,11 @@ define(
          * 将字符串转换成对象型rawValue
          *
          * @inner
-         * @param {string} paramValue 20110301222222,20110401235959
+         * @param {string} value 20110301222222,20110401235959
          * @return {{begin:Date,end:Date}=}
          */
-        function convertToRaw(paramValue) {            
-            var strDates = paramValue.split(',');
+        function convertToRaw(value) {            
+            var strDates = value.split(',');
             return {
                 begin: parseToDate(strDates[0]),
                 end: parseToDate(strDates[1])
@@ -641,7 +641,7 @@ define(
                         begin: now,
                         end: now
                     },
-                    paramValue: convertToParam({
+                    value: convertToParam({
                         begin: now,
                         end: now
                     }),
@@ -649,8 +649,8 @@ define(
                     paramFormat: 'yyyy-MM-dd'
                 };
 
-                if (options.paramvalue) {
-                    options.rawValue = convertToRaw(options.paramvalue);
+                if (options.value) {
+                    options.rawValue = convertToRaw(options.value);
                     options.view = {};
                     options.view.begin = options.rawValue.begin;
                     options.view.end = options.rawValue.end;
