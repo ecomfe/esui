@@ -56,7 +56,7 @@ define(function () {
         else {
             return [source];
         }
-    }
+    };
 
     /**
      * 判断一个数组中是否包含给定元素

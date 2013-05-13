@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 渲染器模块
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var lib = require('./lib');
@@ -125,7 +133,7 @@ define(
         painters.text = function (name, element, generate) {
             return {
                 name: name,
-                element: element || 'main',
+                element: element || '',
                 generate: generate,
                 paint: function (control, value) {
                     var element = typeof this.element === 'function'
