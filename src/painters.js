@@ -125,7 +125,7 @@ define(
         painters.text = function (name, element, generate) {
             return {
                 name: name,
-                element: element || 'main',
+                element: element || '',
                 generate: generate,
                 paint: function (control, value) {
                     var element = typeof this.element === 'function'
