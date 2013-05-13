@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 树控件
+ * @author otakustay
+ */
+
 define(
     function (require) {
         require('css!./css/Tree.css');

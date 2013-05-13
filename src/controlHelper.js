@@ -3,7 +3,7 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file 控件类常用的helper方法模块
- * @author erik
+ * @author erik, otakustay
  */
 
 define(

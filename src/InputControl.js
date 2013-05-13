@@ -3,7 +3,7 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file 输入控件基类模块
- * @author erik
+ * @author erik, otakustay
  */
 
 define(

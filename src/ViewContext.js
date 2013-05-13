@@ -5,6 +5,7 @@
  * @file 视图环境类 用于对控件视图的管理
  * @author DBear, errorrik
  */
+ 
 define(
     function () {
         var counter = 0x830903;
