@@ -12,6 +12,9 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
+        // css
+        require('css!./css/CommandMenu.css');
+
         function CommandMenu() {
             Control.apply(this, arguments);
         }
