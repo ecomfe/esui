@@ -325,7 +325,7 @@ define(
             var oldDate = monthView.rawValue;
             monthView.rawValue = date;
             updateSelectState(monthView, oldDate);
-            monthView.fire('change');
+            monthView.fire('change', date);
         }
 
         /**
@@ -476,7 +476,6 @@ define(
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
             repaintMonthView(monthView, year, monthView.month);
-            this.fire('changeYear');
 
         }
 
@@ -498,8 +497,6 @@ define(
 
             //选择日期 
             updateSelectState(monthView);
-
-            this.fire('changeMonth');
         }
 
         /**
@@ -591,10 +588,6 @@ define(
                     rawValue: new Date()
                 };
                 lib.extend(properties, options);
-
-                if (properties.value) {
-                    properties.rawValue = parseToDate(properties.value);
-                }
 
                 properties.range = rangeAdapter(properties.range);
 
