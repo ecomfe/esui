@@ -12,6 +12,8 @@ define(
         var Control = require('./Control');
         var ui      = require('./main');
         var helper  = require('./controlHelper');
+        // css
+        require('css!./css/Sidebar.css');
         /**
          * Sidebar控件
          *

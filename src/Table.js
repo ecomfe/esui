@@ -12,6 +12,10 @@ define(
         var Control = require('./Control');
         var main = require('./main');
 
+
+        // css
+        require('css!./css/Table.css');
+
         /**
          * 表格控件类
          * 

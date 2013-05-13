@@ -12,6 +12,8 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
+        // css
+        require('css!./css/TextBox.css');
         /**
          * 默认TextBox选项配置
          * 

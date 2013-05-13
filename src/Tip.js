@@ -6,6 +6,9 @@ define(
         var ui = require('./main');
         var paint = require('./painters');
 
+        // css
+        require('css!./css/Tip.css');
+
         /**
          * 提示控件类
          * 

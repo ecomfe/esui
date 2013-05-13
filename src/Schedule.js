@@ -13,6 +13,10 @@ define(
         var ui      = require('./main');
         var helper  = require('./controlHelper');
 
+
+        // css
+        require('css!./css/Schedule.css');
+
         /**
          * Schedule控件
          *
