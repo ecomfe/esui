@@ -241,18 +241,23 @@ define(
                 /**
                  * 默认选项配置
                  */
+                var now = new Date();
                 var properties = {
-                    now: new Date(),
+                    now: now,
                     range: {
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
                     },
                     dateFormat: 'yyyy-MM-dd',
                     paramFormat: 'yyyy-MM-dd',
-                    rawValue: new Date(),
+                    rawValue: now,
                     calType: 'sel' // 日历类型，另外还支持'input' 'label'
                 };
                 lib.extend(properties, options);
+
+                if (properties.value) {
+                    properties.rawValue = parseToDate(properties.value);
+                }
 
                 // 类型如果是string
                 var range = properties.range;
