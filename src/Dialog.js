@@ -164,6 +164,14 @@ define(
          */
         function closeClickHandler() {
             this.hide();
+            if (this.closeOnHide === true) {
+                this.dispose();
+                //移除dom
+                var domId = helper.getId(this);
+                lib.removeNode(domId);
+            }
+            this.fire('close');
+
         }
 
         /**
@@ -328,6 +336,7 @@ define(
                 var properties = {
                     autoPosition: false,  // 是否自动定位居中
                     closeButton: true,    // 是否具有关闭按钮
+                    closeOnHide: true, // 右上角关闭按钮是隐藏还是移除
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
@@ -366,7 +375,11 @@ define(
                 // 初始化控件主元素上的行为
                 if (this.closeButton !== false) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
-                    helper.addDOMEvent(this, close, 'click', closeClickHandler);
+                    helper.addDOMEvent(
+                        this,
+                        close,
+                        'click',
+                        lib.curry(closeClickHandler, this));
                 }
             },
 
@@ -465,15 +478,6 @@ define(
                 return this.getChild('body');
             },
 
-            /**
-             * 获取对话框主体的dom元素
-             * 
-             * 
-             * @return {HTMLElement} 
-             */
-            getBodyDOM: function () {
-                return getPartHtml(this, 'body');
-            },
 
             /**
              * 获取对话框头部的控件对象
@@ -485,15 +489,6 @@ define(
                 return this.getChild('head');
             },
 
-            /**
-             * 获取对话框头部的dom元素
-             * 
-             * 
-             * @return {HTMLElement} 
-             */
-            getHeadDOM: function () {
-                return getPartHtml(this, 'head');
-            },
 
             /**
              * 获取对话框腿部的控件对象
@@ -505,15 +500,6 @@ define(
                 return this.getChild('foot');
             },
 
-            /**
-             * 获取对话框腿部的dom元素
-             * 
-             * 
-             * @return {HTMLElement} 
-             */
-            getFootDOM: function () {
-                return getPartHtml(this, 'foot');
-            },
 
             /**
              * 显示对话框
