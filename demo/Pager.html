@@ -41,27 +41,58 @@
             ],
             function (ui) {
                 var pager = ui.init()[0];
-                // pager.set('pageType', 'btn');
-                pager.set('count', 260);
-                pager.set('countPerPageList', [1, 10, 20, 100]);
 
-                if (pageSize) {
-                    pager.set('countPerPage', pageSize);
-                }
-                else {
-                    pager.set('countPerPage', 20);
-                }
-                
+                pager.set('pageType', 'PLAIN');
+                pager.set('count', 260);
                 if (page) {
                     pager.set('page', page);
                 }
                 else {
                     pager.set('page', 10);
                 }
+                pager.set('backCount', 4);
+                pager.set('forwardCount', 4);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: [13, 21, 101]
+                    });
+                }, 3000);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: []
+                    });
+                }, 4000);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: [1, 13, 20, 101]
+                    });
+                }, 5000);
                 
-                pager.set('backCount', 3);
-                pager.set('forwardCount', 3);
+                setTimeout(function () {
+                    if (pageSize) {
+                        pager.setProperties({
+                            pageSize: pageSize
+                        });
+                    }
+                    else {
+                        pager.setProperties({
+                            pageSize: 20
+                        });
+                    }
+                }, 2000);
+
                 pager.set('urlTemplate', 'file:///E:/dev/esui/demo/Pager.html?page=${page}&pageSize=${pageSize}');
+
+                pager.onchangePage = function (arg) {
+                    console.log('Changed page to ' + arg.page);
+                }
+
+                pager.onchangePageSize = function (arg) {
+                    console.log('Changed page size to ' + arg.pageSize);
+                }
             }
         );
         </script>

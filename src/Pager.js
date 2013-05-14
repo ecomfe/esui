@@ -11,7 +11,6 @@ define(
         // required js
         require('./Select');
         // required css
-        require('css!./css/Select.css');
         require('css!./css/Pager.css');
 
         var lib = require('./lib');
@@ -22,17 +21,18 @@ define(
         /**
          * 获取控件主元素代码
          *
+         * @inner
          * @param {Pager} pager Pager控件实例
          * @return {string} 拼接得到的html代码
          */
         function getMainHTML(pager) {
             var tpl = [
-                '<table style=""><tr>',
+                '<table><tr>',
                 '<td width="60" style="padding:0">',
-                    '<div class="${labelClass}">${label}</div>',
+                    '<div id="${labelId}" class="${labelClass}">${label}</div>',
                 '</td>',
                 '<td width="40" style="padding:0">',
-                    '<div data-ui="type:Select;childName:pagerSel;',
+                    '<div data-ui="type:Select;childName:select;',
                     'id:${pagerSelId};width:40;"></div>',
                 '</td>',
                 '<td width="700" style="padding:0">',
@@ -44,12 +44,13 @@ define(
             return lib.format(
                 tpl.join('\n'),
                 {
+                    labelId: helper.getId(pager, 'label'),
                     labelClass: helper.getPartClasses(pager, 'label').join(' '),
-                    label: '\u6bcf\u9875\u663e\u793a',
-                    pagerSelId: helper.getId(pager, 'pagerSel'),
-                    pagerMainId: helper.getId(pager, 'pagerMain'),
+                    label: '每页显示',
+                    pagerSelId: helper.getId(pager, 'select'),
+                    pagerMainId: helper.getId(pager, 'main'),
                     pagerMainClass:
-                        helper.getPartClasses(pager, 'pagerMain').join(' ')
+                        helper.getPartClasses(pager, 'main').join(' ')
                 }
             );
         }
@@ -57,51 +58,46 @@ define(
         /**
          * 获取页码区域元素代码
          *
+         * @inner
          * @param {Pager} pager Pager控件实例
          * @return {string} 拼接得到的html代码
          */
         function getPagerMainHTML(pager) {
-            // 页码的元素结构类型
-            var pageType = pager.pageType;
-            var page = pager.page;
-            var countPerPage = pager.countPerPage;
-            var backCount = pager.backCount;
-            var forwardCount = pager.forwardCount;
-            var urlTemplate = pager.urlTemplate;
-            // 计算所得的总页码
-            var totalPage = Math.ceil(pager.count / countPerPage);
             // 定义页码模板
-            var plainTpl = '<li class="${className}" id="${id}">${text}</li>';
+            var plainTpl = '<li class="${className}" id="${id}"'
+                + ' data-page="${page}">${text}</li>';
             var anchorTpl = '<li class="${className}" id="${id}">'
                 + '<a href="${link}">${text}</a></li>';
             var omitTpl = '<li class="${className}">…</li>';
-            // 数组html用于存储页码区域的元素代码
-            var html = [];
 
             /**
              * 根据模板拼接url
              *
-             * @param {number} page 页码
+             * @inner
+             * @param {number} num 页码
              * @return {string} 拼接返回的url
              */
-            function _getUrlByTemplate(page) {
-                var url = urlTemplate
-                    .replace('${page}', page)
-                    .replace('${pageSize}', countPerPage);
-
-                return url;
+            function getUrlByTemplate(num) {
+                return lib.format(
+                    pager.urlTemplate,
+                    {
+                        page: num,
+                        pageSize: pager.pageSize
+                    }
+                );
             }
 
             /**
              * 生成用于填充模板的对象
              *
+             * @inner
              * @param {string} className 类名
-             * @param {number} page 页码
-             * @param {number} id 用于模板的id字段
-             * @param {string} text 用于模板的text字段
-             * @return {string} 用于填充模板的对象
+             * @param {number=} num 页码
+             * @param {number=} id 用于模板的id字段
+             * @param {string=|number=} text 用于模板的text字段
+             * @return {Object} 用于填充模板的对象
              */
-            function _getTplObj(className, page, id, text) {
+            function getTplObj(className, num, id, text) {
                 var obj = {
                     className: helper.getPartClasses(
                         pager,
@@ -109,65 +105,89 @@ define(
                     ).join(' ')
                 };
 
-                if (page) {
-                    obj.link = _getUrlByTemplate(page);
+                if (arguments.length > 1) {
+                    obj.link = getUrlByTemplate(num);
                     obj.id = helper.getId(pager, id);
-                    obj.text = '' + text;
+                    obj.page = num;
+                    obj.text = text;
                 }
 
                 return obj;
             }
 
             /**
-             * 根据对象和模板格式化生成页面片段代码
+             * 根据模板和填充对象格式化生成页面片段代码
              *
+             * @inner
              * @param {Object} obj 用于填充模板的对象
-             * @param {string} tpl 页面片段模板
+             * @param {string=} tpl 页面片段模板
              * @return {string} 页面片段代码
              */
-            function _getSegmentHTML(obj, tpl) {
-                var pageTpl = pageType === 'anchor' ? anchorTpl : plainTpl;
-                if (tpl) {
-                    pageTpl = tpl;
-                }
+            function getSegmentHTML(obj, tpl) {
+                if (!tpl) {
+                    var Templates = {
+                        ANCHOR: anchorTpl,
+                        PLAIN: plainTpl
+                    };
 
-                return lib.format(pageTpl, obj);
+                    // 由于pageType需要由外部指定，当指定的模板不存在时默认匹配anchor
+                    tpl = Templates[pager.pageType] || Templates['ANCHOR'];
+                }
+                
+                return lib.format(tpl, obj);
             }
+
+            /**
+             * 将页面片段添加到html数组中
+             *
+             * @inner
+             * @param {Object|number} obj Object或者page
+             * @param {string=} tpl 可选模板
+             */
+            function addSegmentToHTML(oop, tpl) {
+                if (!lib.isPlain(oop)) {
+                    oop = getTplObj(
+                        'item',
+                        oop,
+                        'page-' + oop,
+                        oop
+                    );
+                }
+                var segment = getSegmentHTML(oop, tpl);
+
+                html.push(segment);
+            }
+
+            var page = pager.page;
+            var backCount = pager.backCount;
+            var forwardCount = pager.forwardCount;
+            // 计算得到的总页码数
+            var totalPage = Math.ceil(pager.count / pager.pageSize);
+            // 数组html用于存储页码区域的元素代码
+            var html = [];
 
             // <ul>起始
             html.push('<ul>');
 
             // 上一页
             if (page > 1) {
-                var obj = _getTplObj(
-                    'pager-item',
+                var obj = getTplObj(
+                    'item-bf',
                     page - 1,
-                    'pageBack',
-                    '\u4e0a\u4e00\u9875'
+                    'page-back',
+                    '上一页'
                 );
-                var segment = _getSegmentHTML(obj);
-
-                html.push(segment);
+                addSegmentToHTML(obj)
             }
 
             // 前缀页码
             if (page > backCount + 1) {
-                var obj = _getTplObj(
-                    'pager-item',
-                    1,
-                    'page-1',
-                    '1'
-                );
-                var segment = _getSegmentHTML(obj);
-
-                html.push(segment);
+                addSegmentToHTML(1);
 
                 // 前缀...符号
                 if (page > backCount + 2) {
-                    var obj = _getTplObj('pager-item-omit');
-                    var segment = _getSegmentHTML(obj, omitTpl);
-
-                    html.push(segment);
+                    var obj = getTplObj('item-omit');
+                    addSegmentToHTML(obj, omitTpl);
                 }
             }
 
@@ -177,76 +197,46 @@ define(
             // 前置页码
             var len = page > backCount ? backCount : page - 1;
             for (var i = page - len; i < page; i++) {
-                var obj = _getTplObj(
-                    'pager-item',
-                    i,
-                    'page-' + i,
-                    i
-                );
-                var segment = _getSegmentHTML(obj);
-
-                html.push(segment);
+                addSegmentToHTML(i);
             }
 
             // 当前页码
-            var obj = _getTplObj(
-                'pager-item-current',
+            var obj = getTplObj(
+                'item-current',
                 page,
                 'page-' + page,
                 page
             );
-            var segment = _getSegmentHTML(obj, plainTpl);
-
-            html.push(segment);
+            addSegmentToHTML(obj, plainTpl);
 
             // 后置页码
             var len = totalPage - page > forwardCount
                 ? forwardCount
                 : totalPage - page;
             for (var i = page + 1; i < page + len + 1; i++) {
-                var obj = _getTplObj(
-                    'pager-item',
-                    i,
-                    'page-' + i,
-                    i
-                );
-                var segment = _getSegmentHTML(obj);
-
-                html.push(segment);
+                addSegmentToHTML(i);
             }
 
             // 后缀页码
             if (page < totalPage - forwardCount) {
                 // 后缀...符号
                 if (page < totalPage - forwardCount - 1) {
-                    var obj = _getTplObj('pager-item-omit');
-                    var segment = _getSegmentHTML(obj, omitTpl);
-
-                    html.push(segment);
+                    var obj = getTplObj('item-omit');
+                    addSegmentToHTML(obj, omitTpl);
                 }
 
-                var obj = _getTplObj(
-                    'pager-item',
-                    totalPage,
-                    'page-' + totalPage,
-                    totalPage
-                );
-                var segment = _getSegmentHTML(obj);
-
-                html.push(segment);
+                addSegmentToHTML(totalPage);
             }
 
             // 下一页
             if (page < totalPage) {
-                var obj = _getTplObj(
-                    'pager-item',
+                var obj = getTplObj(
+                    'item-bf',
                     page + 1,
-                    'pageForward',
-                    '\u4e0b\u4e00\u9875'
+                    'page-forward',
+                    '下一页'
                 );
-                var segment = _getSegmentHTML(obj);
-
-                html.push(segment);
+                addSegmentToHTML(obj);
             }
 
             // </ul>结束
@@ -261,55 +251,55 @@ define(
          * @param {Pager} pager Pager控件实例
          */
         function repaintPager(pager) {
-            var count = pager.count;
-            var countPerPage = pager.countPerPage;
-            var page = pager.page;
-
+            // 修正每页显示条数，每页显示不能为0
+            var pageSize = pager.pageSize;
+            pageSize = pageSize > 0 ? pageSize : 1;
+            pager.pageSize = pageSize;
+            // 将修正后的每页显示数量更新至Select控件
+            pager.getChild('select').set('value', pageSize);
+            
             // 修正页码
+            var totalPage = Math.ceil(pager.count / pageSize);
+            var page = pager.page;
+            page = page > totalPage ? totalPage : page;
             page = page > 0 ? page : 1;
-            var totalPage = Math.ceil(count / countPerPage);
-            page = page <= totalPage ? page : totalPage;
             pager.page = page;
 
-            // 修正每页显示条数，每页显示不能为0
-            countPerPage = countPerPage <= 0 ? 1 : countPerPage;
-            pager.countPerPage = countPerPage;
-            // 将修正后的每页显示条数更新控件
-            var pagerSel = pager.getChild('pagerSel');
-            pagerSel.setProperties({
-                value: countPerPage
-            });
-
-            // 渲染pagerMain部分页面结构
-            var pagerMainId = helper.getId(pager, 'pagerMain');
-            var pagerMain = lib.g(pagerMainId);
+            // 渲染main元素页面结构
+            var pagerMain = lib.g(helper.getId(pager, 'main'));
             pagerMain.innerHTML = getPagerMainHTML(pager);
         }
 
         /**
          * 页码点击事件触发
          *
+         * @inner
          * @param {Pager} pager Pager控件实例
          * @param {Event} e 事件对象
          */
         function pagerClick(pager, e) {
-            var target = e.target || e.srcElement;
-            var classes = helper.getPartClasses(pager, 'pager-item');
-            var classesBack = helper.getId(pager, 'pageBack');
-            var classesForward = helper.getId(pager, 'pageForward');
+            var target = e.target;
+            var classes = helper.getPartClasses(pager, 'item');
+            var bfClasses = helper.getPartClasses(pager, 'item-bf');
+            var backId = helper.getId(pager, 'page-back');
+            var forwardId = helper.getId(pager, 'page-forward');
             var page = pager.page;
 
-            if (lib.hasClass(target, classes[0])) {
-                if (target.id === classesBack) {
+            if (lib.hasClass(target, classes[0])
+                || lib.hasClass(target, bfClasses[0])
+            ) {
+                if (target.id === backId) {
                     page--;
                 }
-                else if (target.id === classesForward) {
+                else if (target.id === forwardId) {
                     page++;
                 }
                 else {
-                    page = +target.innerHTML;
+                    page = +lib.getAttribute(target, 'data-page');
                 }
 
+                // 触发页码变更事件
+                pager.fire('changePage', {page: page});
                 // 跳转至某页码
                 pager.set('page', page);
             }
@@ -318,32 +308,89 @@ define(
         /**
          * 获取select的下拉控件的数据
          *
-         * @param {Array.<number>} countPerPageList 配置信息中的下拉数据
+         * @inner
+         * @param {Array.<number>} pageSizes 配置信息中的下拉数据
          * @return {Array.<Object>} 用于Select控件的datasource
          */
-        function getPageOptions(countPerPageList) {
-            var dataSource = [];
-            for (var i = 0, len = countPerPageList.length; i < len; i++) {
-                var countPerPage = countPerPageList[i];
-                dataSource.push({
-                    text: countPerPage,
-                    value: countPerPage
+        function getPageSizes(pageSizes) {
+            var datasource = [];
+            for (var i = 0, len = pageSizes.length; i < len; i++) {
+                var pageSize = pageSizes[i];
+                datasource.push({
+                    text: pageSize,
+                    value: pageSize
                 });
             }
 
-            return dataSource;
+            return datasource;
         }
 
         /**
          * 更新select控件的value
          *
+         * @inner
          * @param {Pager} pager Pager控件实例
          * @param {Select} pagerSel Select控件实例
          */
-        function changeCountPerPage(pager, pagerSel) {
-            var countPerPage = parseInt(pagerSel.getValue(), 10);
-            pager.countPerPage = countPerPage;
+        function changePageSize(pager, pagerSel) {
+            var pageSize = parseInt(pagerSel.getValue(), 10);
+            pager.pageSize = pageSize;
+
+            // 触发每页显示变更的事件
+            pager.fire('changePageSize', {pageSize: pageSize});
+            // 重绘页码
             repaintPager(pager);
+        }
+
+        /**
+         * 获取label的父元素
+         *
+         * @param {Pager} pager Pager控件实例
+         * @return {HTMLElement} label的父元素
+         */
+        function getLabelWrapDOM(pager) {
+            return lib.g(helper.getId(pager, 'label')).parentNode;
+        }
+
+        /**
+         * 获取Select控件的父元素
+         *
+         * @param {Select} pagerSel Select控件实例
+         * @return {HTMLElement} Select控件的父元素
+         */
+        function getSelectWrapDOM(pagerSel) {
+            return lib.g(helper.getId(pagerSel)).parentNode;
+        }
+
+        /**
+         * 显示Select控件及对应的label元素
+         *
+         * @param {Pager} pager Pager控件实例
+         * @param {Select} pagerSel Select控件实例
+         */
+        function showSelect(pager, pagerSel) {
+            var labelWrap = getLabelWrapDOM(pager);
+            var selectWrap = getSelectWrapDOM(pagerSel);
+            var clazz = helper.getPartClasses(pagerSel, 'hidden')[0];
+            // 检查是否处于隐藏状态，若是隐藏状态则显示该控件
+            if (lib.hasClass(selectWrap, clazz)) {
+                lib.removeClass(labelWrap, clazz);
+                lib.removeClass(selectWrap, clazz);
+            }
+        }
+
+        /**
+         * 隐藏Select控件及对应的label元素
+         *
+         * @param {Pager} pager Pager控件实例
+         * @param {Select} pagerSel Select控件实例
+         */
+        function hideSelect(pager, pagerSel) {
+            var labelWrap = getLabelWrapDOM(pager);
+            var selectWrap = getSelectWrapDOM(pagerSel);
+            var clazz = helper.getPartClasses(pagerSel, 'hidden')[0];
+            lib.addClass(labelWrap, clazz);
+            lib.addClass(selectWrap, clazz);
         }
 
         /**
@@ -363,6 +410,11 @@ define(
              */
             type: 'Pager',
 
+            defaultProperties: {
+                pageSizes: [15, 30, 50, 100],
+                pageSize: 15,
+            },
+
             /**
              * 初始化参数
              *
@@ -372,18 +424,17 @@ define(
              */
             initOptions: function (options) {
                 var properties = {
-                    pageType: 'anchor',
+                    pageType: 'ANCHOR',
                     count: 0,
-                    countPerPageList: [],
-                    countPerPage: 1,
                     page: 1,
-                    backCount: 0,
-                    forwardCount: 0,
+                    backCount: 3,
+                    forwardCount: 3,
                     urlTemplate: ''
                 };
 
+                lib.extend(properties, this.defaultProperties);
                 lib.extend(properties, options);
-                lib.extend(this, properties);
+                this.setProperties(properties);
             },
 
             /**
@@ -392,64 +443,68 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 主元素必须是`<div>`，若不是则需要重置
-                var mainDOM = this.main;
-                if (mainDOM.nodeName.toLowerCase() !== 'div') {
-                    var _main = this.createMain();
-                    lib.insertBefore(_main, mainDOM);
-                    mainDOM.parentNode.removeChild(mainDOM);
-                    mainDOM = this.main = _main;
-                }
-
                 // 填充主元素代码
-                mainDOM.innerHTML = getMainHTML(this);
+                this.main.innerHTML = getMainHTML(this);
                 // 创建控件树
-                this.initChildren(mainDOM);
+                this.initChildren(this.main);
 
-                // 每页显示的下拉菜单
-                var pagerSel = this.getChild('pagerSel');
-                pagerSel.setProperties({
-                    datasource: getPageOptions(this.countPerPageList),
-                    value: this.countPerPage
-                });
+                // 每页显示的select控件
+                var pagerSel = this.getChild('select');
                 pagerSel.on(
                     'change',
-                    lib.bind(changeCountPerPage, null, this, pagerSel)
+                    lib.curry(changePageSize, this, pagerSel)
                 );
+                // 当初始化pageSizes属性不存在或为空数组时，隐藏控件显示
+                if (!this.pageSizes || this.pageSizes.length === 0) {
+                    hideSelect(pagerSel);
+                }
+                else {
+                    pagerSel.setProperties({
+                        datasource: getPageSizes(this.pageSizes),
+                        value: this.pageSize
+                    });
+                }
 
                 // pager主元素绑定事件
-                var pagerMainId = helper.getId(this, 'pagerMain');
-                var pagerMain = lib.g(pagerMainId);
+                var pagerMain = lib.g(helper.getId(this, 'main'));
                 helper.addDOMEvent(
                     this, pagerMain, 'click',
-                    lib.bind(pagerClick, null, this)
+                    lib.curry(pagerClick, this)
                 );
             },
 
             /**
              * 重新绘制控件视图
+             *
+             * @protected
              */
             repaint: helper.createRepaint(
+                Control.prototype.repaint,
+                {
+                    name: 'pageSizes',
+                    paint: function (pager, value) {
+                        var pagerSel = pager.getChild('select');
+                        // 当pageSizes属性不存在或为空数组时，隐藏控件显示
+                        if (!value || value.length === 0) {
+                            hideSelect(pager, pagerSel);
+                        }
+                        else {
+                            pagerSel.setProperties({
+                                datasource: getPageSizes(value),
+                                value: pager.pageSize
+                            });
+                            showSelect(pager, pagerSel);
+                        }
+                    }
+                },
                 {
                     name: [
-                        'pageType', 'count', 'countPerPage', 'page',
+                        'pageType', 'count', 'pageSize', 'page',
                         'backCount', 'forwardCount', 'urlTemplate'
                     ],
                     paint: repaintPager
                 }
-            ),
-
-            /**
-             * 设置select控件的数据
-             *
-             * @param {Array.<number>} list 页码数组
-             */
-            setCountPerPageList: function (list) {
-                var pagerSel = this.getChild('pagerSel');
-                pagerSel.setProperties({
-                    datasource: getPageOptions(list)
-                });
-            }
+            )
         };
 
         lib.inherits(Pager, Control);
