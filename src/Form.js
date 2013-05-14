@@ -87,6 +87,7 @@ define(
                 if (control
                     && control instanceof InputControl
                     && control.viewContext === this.viewContext
+                    && control.get('name')
                     && (!name || control.get('name') === name)
                     && (!type || control.get('type') === type)
                 ) {
