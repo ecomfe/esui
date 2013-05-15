@@ -833,7 +833,7 @@ define(
              */
             getRawValue: function () {
                 return this.rawValue;
-            },
+            }
 
             /**
              * 将value从原始格式转换成string
