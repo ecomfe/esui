@@ -16,8 +16,10 @@
                 <td><input type="checkbox" value="2" data-ui="type:CheckBox;id:cb2" title="two" name="num"/></td>
                 <td><input type="checkbox" value="3" data-ui="type:CheckBox;id:cb3" title="three" name="num"/></td>
                 <td><div data-ui="type:Button;id:currCb">当前选中</div></td>
+                <!--
                 <td><div data-ui="type:Button;id:selAll">全选</div></td>
                 <td><div data-ui="type:Button;id:selInv">反选</div></td>
+                -->
             </tr>
             <tr>
                 <td><input type="radio" value="1" data-ui="type:Radio;id:r1" title="one" name="num2"/></td>
@@ -53,12 +55,12 @@
                     alert( 'group value:' + ui.get('cb3').getGroup().getValue() );
                 };
 
-                ui.get('selAll').onclick = function() {
-                    ui.get('cb1').getGroup().selectAll();
-                };
-                ui.get('selInv').onclick = function() {
-                    ui.get('cb1').getGroup().selectInverse();
-                };
+                // ui.get('selAll').onclick = function() {
+                //     ui.get('cb1').getGroup().selectAll();
+                // };
+                // ui.get('selInv').onclick = function() {
+                //     ui.get('cb1').getGroup().selectInverse();
+                // };
 
                 ui.get('cb1').onclick = function(e){
                     alert(e.type);
