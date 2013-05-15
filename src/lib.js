@@ -764,7 +764,7 @@ define(function () {
     lib.hasAttribute = function (element, name) {
         return element.hasAttribute
             ? element.hasAttribute(name)
-            : element.attributes[name].specified;
+            : (element.attributes[name] && element.attributes[name].specified);
     };
 
     /**
