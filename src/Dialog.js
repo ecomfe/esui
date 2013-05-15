@@ -661,7 +661,8 @@ define(
                     title: '',
                     width: width,
                     mask: true,
-                    main: main
+                    main: main,
+                    skin: 'confirm'
                 }
             );
 
@@ -743,7 +744,8 @@ define(
                     title: '',
                     width: width,
                     mask: true,
-                    main: main
+                    main: main,
+                    skin: 'alert'
                 }
             );
 

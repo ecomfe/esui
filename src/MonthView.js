@@ -63,13 +63,15 @@ define(
             var ds = [];
             var len = 11;
 
+            var i = 0;
+
             if (year == range.begin.getFullYear()) {
                 i = range.begin.getMonth();
             } else if (year == range.end.getFullYear()) {
                 len = range.end.getMonth();
             }
 
-            for (var i = 0; i <= len; i++) {
+            for (; i <= len; i++) {
                 ds.push({text: (i + 1), value: i});
             }
 
@@ -476,7 +478,7 @@ define(
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
             repaintMonthView(monthView, year, monthView.month);
-            this.fire('changeYear');
+            monthView.fire('changeYear');
 
         }
 
@@ -498,7 +500,7 @@ define(
 
             //选择日期 
             updateSelectState(monthView);
-            this.fire('changeMonth');
+            monthView.fire('changeMonth');
         }
 
         /**
