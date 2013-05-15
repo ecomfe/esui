@@ -12,6 +12,10 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
+        // css
+        require('css!./css/Select.css');
+
+
         /**
          * 下拉选择控件
          *
