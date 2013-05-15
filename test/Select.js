@@ -292,7 +292,7 @@ define(function (require) {
                 expect(select.getRawValue()).toBe('3');
             });
 
-            it('should accept runtime changed of `emptyText', function () {
+            it('should accept runtime change of `emptyText`', function () {
                 var select = new Select({ datasource: datasource, emptyText: 'test' });
                 select.appendTo(container);
                 select.set('emptyText', 'changed');

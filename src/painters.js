@@ -70,7 +70,7 @@ define(
             borderTopWidth: true,
             borderRightWidth: true,
             borderBottomWidth: true,
-            borderLeftWidth: true,
+            borderLeftWidth: true
         };
 
         /**

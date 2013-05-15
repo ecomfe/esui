@@ -755,6 +755,19 @@ define(function () {
     };
 
     /**
+     * 检查元素是否有指定的属性
+     *
+     * @param {HTMLElement} element 指定元素
+     * @param {string} name 指定属性名称
+     * @return {string}
+     */
+    lib.hasAttribute = function (element, name) {
+        return element.hasAttribute
+            ? element.hasAttribute(name)
+            : element.attributes[name].specified;
+    };
+
+    /**
      * 提供给setAttribute与getAttribute方法作名称转换使用
      * ie6,7下class要转换成className
      * @meta standard

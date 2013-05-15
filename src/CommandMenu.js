@@ -48,7 +48,7 @@ define(
         function selectItem(menu, e) {
             var target = e.target;
             while (target !== e.currentTarget
-                && !target.hasAttribute('data-index')
+                && !lib.hasAttribute(target, 'data-index')
             ) {
                 target = target.parentNode;
             }
