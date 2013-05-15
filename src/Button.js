@@ -112,6 +112,9 @@ define(
                 {
                     name: 'height',
                     paint: function (button, value) {
+                        if (!value) {
+                            return;
+                        }
                         var main = button.main;
                         main.style.height = value + 'px';
                         main.style.lineHeight = value + 'px';
