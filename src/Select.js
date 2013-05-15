@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
@@ -12,6 +13,9 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
+        // css
+        require('css!./css/Select.css');
+        
         /**
          * 下拉选择控件
          *
