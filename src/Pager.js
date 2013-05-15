@@ -166,7 +166,7 @@ define(
                     'page-back',
                     pager.backName
                 );
-                addSegmentToHTML(obj)
+                addSegmentToHTML(obj);
             }
 
             // 前缀页码

@@ -10,9 +10,7 @@ define(
     function (require) {
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
-        var ui      = require('./main');
         var helper  = require('./controlHelper');
-
 
         // css
         require('css!./css/Schedule.css');
@@ -336,7 +334,7 @@ define(
 
                     var itemId = getId(me, 'time_' + i + '_' + j);
                     var overItemId = getId(me, 'overitem') + '_' + i + '_' + j;
-                    var dragitemId = getId(me, "dragitem") + "_" + i + "_" + j;
+                    var dragitemId = getId(me, 'dragitem') + '_' + i + '_' + j;
 
                     html.push(
                         lib.format(
@@ -353,7 +351,7 @@ define(
                                 overItemId: overItemId,
                                 overItemClass: getClass(me, 'overitem'),
                                 dragitemId: dragitemId,
-                                dragitemClass: getClass(me, "dragitem")
+                                dragitemClass: getClass(me, 'dragitem')
                             }
                         )
                     );
@@ -375,9 +373,6 @@ define(
         function repaintView(schedule, value) {
             var me = schedule;
             var selectedClass = helper.getPartClasses(me, 'time-selected');
-            var div;
-            var divMatch;
-            var lineEl, lineDivs;
 
             for (var i = 0; i < 7; i++) {
                 var statusArr = [];
@@ -1019,23 +1014,27 @@ define(
             var startcellY = startcell.y;
             var endcellX = endcell.x;
             var endcellY = endcell.y;
+            var divWidth = 0;
+            var divHeight = 0;
+            var divTop = 0;
+            var divLeft = 0;
 
             if (endcellY >= startcellY) {
-                var divTop = startcellY * 25;
-                var divHeight = (endcellY - startcellY + 1) * 25 - 2;
+                divTop = startcellY * 25;
+                divHeight = (endcellY - startcellY + 1) * 25 - 2;
             }
             else {
-                var divTop = endcellY * 25;
-                var divHeight = (startcellY - endcellY + 1) * 25 - 2;
+                divTop = endcellY * 25;
+                divHeight = (startcellY - endcellY + 1) * 25 - 2;
             }
 
             if (endcellX >= startcellX) {
-                var divLeft = startcellX * 25;
-                var divWidth = (endcellX - startcellX + 1) * 25 - 2;
+                divLeft = startcellX * 25;
+                divWidth = (endcellX - startcellX + 1) * 25 - 2;
             }
             else {
-                var divLeft = endcellX * 25;
-                var divWidth = (startcellX - endcellX + 1) * 25 - 2;
+                divLeft = endcellX * 25;
+                divWidth = (startcellX - endcellX + 1) * 25 - 2;
             }
 
             var cssStyles = ''
@@ -1177,30 +1176,31 @@ define(
                     + '<div class="${headClass}">'
                         + '<div class="${helpClass}">'
                             + '<div class="${helpSelectedClass}"></div>'
-                            + '<div class="${helpTextClass}">${helpSelected}</div>'
+                            + '<div class="${helpTextClass}">'
+                                + '${helpSelected}' 
+                            + '</div>'
                             + '<div class="${helpUnselectedClass}"></div>'
                             + '<div class="${helpTextClass}">${help}</div>'
                         + '</div>'
                         + '<div class="${shortcutClass}">${shortcutHtml}</div>'
                     + '</div>';
 
-                this.main.innerHTML =
-                    lib.format(
-                        tpl,
-                        {
-                            headClass: getClass(me, 'head'),
-                            bodyClass: getClass(me, 'body'),
-                            helpClass: getClass(me, 'help'),
-                            helpSelectedClass: getClass(me, 'help-selected'),
-                            helpUnselectedClass: getClass(me, 'help-unselected'),
-                            helpTextClass: getClass(me, 'help-text'),
-                            shortcutClass: getClass(me, 'shortcut'),
-                            bodyId: getId(me, 'body'), //7
-                            helpSelected: me.helpSelected,
-                            help: me.help,
-                            shortcutHtml: getShortcutHtml(me)
-                        }
-                    );
+                this.main.innerHTML =lib.format(
+                    tpl,
+                    {
+                        headClass: getClass(me, 'head'),
+                        bodyClass: getClass(me, 'body'),
+                        helpClass: getClass(me, 'help'),
+                        helpSelectedClass: getClass(me, 'help-selected'),
+                        helpUnselectedClass: getClass(me, 'help-unselected'),
+                        helpTextClass: getClass(me, 'help-text'),
+                        shortcutClass: getClass(me, 'shortcut'),
+                        bodyId: getId(me, 'body'), //7
+                        helpSelected: me.helpSelected,
+                        help: me.help,
+                        shortcutHtml: getShortcutHtml(me)
+                    }
+                );
 
                 initBody(me);
                 bindEvent(me);

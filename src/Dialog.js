@@ -147,17 +147,6 @@ define(
         }
 
         /**
-         * 获取指定部分dom元素
-         *
-         * @param {string} type foot | body | head
-         * @inner
-         */
-        function getPartHtml(type) {
-            var domId = lib.getId(this, type);
-            return lib.g(domId);
-        }
-
-        /**
          * 点击头部关闭按钮时事件处理函数
          *
          * @inner
