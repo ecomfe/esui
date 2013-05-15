@@ -42,7 +42,8 @@
             function (ui) {
                 var pager = ui.init()[0];
 
-                pager.set('pageType', 'PLAIN');
+                pager.set('pageType', 'plain');
+
                 pager.set('count', 260);
                 if (page) {
                     pager.set('page', page);
@@ -52,6 +53,8 @@
                 }
                 pager.set('backCount', 4);
                 pager.set('forwardCount', 4);
+                pager.set('backName', '←');
+                pager.set('forwardName', '→');
 
                 setTimeout(function () {
                     pager.setProperties({
@@ -84,14 +87,14 @@
                     }
                 }, 2000);
 
-                pager.set('urlTemplate', 'file:///E:/dev/esui/demo/Pager.html?page=${page}&pageSize=${pageSize}');
+                pager.set('urlTemplate', 'Pager.html?page=${page}&pageSize=${pageSize}');
 
-                pager.onchangePage = function (arg) {
-                    console.log('Changed page to ' + arg.page);
+                pager.onchangepage = function () {
+                    console.log('Change page to ' + this.get('page'));
                 }
 
-                pager.onchangePageSize = function (arg) {
-                    console.log('Changed page size to ' + arg.pageSize);
+                pager.onchangepagesize = function () {
+                    console.log('Change page size to ' + this.get('pageSize'));
                 }
             }
         );
