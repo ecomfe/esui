@@ -10,7 +10,6 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
-        var main = require('./main');
 
 
         // css
@@ -183,7 +182,11 @@ define(
          * 
          * @private
          */
-        var tplTablePrefix = '<table cellpadding="0" cellspacing="0" width="${width}" controlTable="${controlTableId}">';
+        var tplTablePrefix = '<table '
+            + 'cellpadding="0" '
+            + 'cellspacing="0" '
+            + 'width="${width}" '
+            + 'controlTable="${controlTableId}">';
           
          /**
          * 缓存控件的核心数据
@@ -204,6 +207,11 @@ define(
         function cachingFollowHead(table) {
             var followDoms = table.followDoms;
 
+            function getStyleNum(dom, styleName) {
+                var result = lib.getComputedStyle(dom, styleName);
+                return (result === '' ? 0 : parseInt(result, 10));
+            }
+
             if (!followDoms) {
                 followDoms = [];
                 table.followDoms = followDoms;
@@ -219,11 +227,6 @@ define(
                         followDoms.push(walker);
                     }
                     walker = walker.nextSibling;
-                }
-
-                function getStyleNum(dom, styleName) {
-                    var result = lib.getComputedStyle(dom, styleName);
-                    return (result == '' ? 0 : +(result.replace('px','')));
                 }
 
                 // 读取height和width的值缓存
@@ -245,7 +248,6 @@ define(
             table.followTop = followOffest.top;
             table.followLeft = followOffest.left;
         }
-
 
         /**
          * 初始化列
@@ -300,8 +302,6 @@ define(
             // 减去边框的宽度
             var leftWidth = table.realWidth - 1;
             
-            var maxCanExpandIdx = len;
-
             // 读取列宽并保存
             for (var i = 0, len = fields.length; i < len; i++) {
                 var field = fields[i];
@@ -322,7 +322,9 @@ define(
             
             for (var i = 0, len = fields.length; i < len; i++) {
                 var index  = canExpand[i];
-                var offset = Math.abs(leftWidth) < Math.abs(leaveAverage) ? leftWidth : leaveAverage; 
+                var offset = Math.abs(leftWidth) < Math.abs(leaveAverage) 
+                    ? leftWidth 
+                    : leaveAverage; 
 
                 leftWidth -= offset;
                 table.colsWidth[index] += offset;
@@ -335,22 +337,26 @@ define(
                 }
             }
             
-            if (leftWidth < 0) {// 如果空间不够分配，需要重新从富裕的列调配空间
+            // 如果空间不够分配，需要重新从富裕的列调配空间
+            if (leftWidth < 0) {
                 var i = 0;
                 var len = fields.length;
-                while (i < len && leftWidth != 0) {
+                while (i < len && leftWidth !== 0) {
                     var index = canExpand[i];
                     var minWidth = table.minColsWidth[index];
 
                     if (minWidth < table.colsWidth[index]) {
-                        offset = table.colsWidth[canExpand[i]] - minWidth;
-                        offset = offset > Math.abs(leftWidth) ? leftWidth : -offset;
+                        var offset = table.colsWidth[canExpand[i]] - minWidth;
+                        offset = offset > Math.abs(leftWidth) 
+                            ? leftWidth 
+                            : -offset;
                         leftWidth += Math.abs(offset);
                         table.colsWidth[index] += offset;
                     }
                     i++;
                 }
-            } else if (leftWidth > 0) {// 如果空间富裕，则分配给第一个可调整的列
+            }
+            else if (leftWidth > 0) {// 如果空间富裕，则分配给第一个可调整的列
                 table.colsWidth[canExpand[0]] += leftWidth;
             }
         }
@@ -397,7 +403,12 @@ define(
             var thCellClass = getClass(table, 'fcell');
             var thTextClass = getClass(table, 'fcell-text');
             
-            html.push(lib.format(tplTablePrefix, { width: '100%', controlTableId : table.id }));
+            html.push(
+                lib.format(
+                    tplTablePrefix, 
+                    { width: '100%', controlTableId : table.id }
+                )
+            );
 
             for (var i = 0, len = footArray.length; i < len; i++) {
                 var footInfo = footArray[i];
@@ -417,17 +428,21 @@ define(
                 
                 fieldIndex += colspan;
                 if (footInfo.align) {
-                    thClass.push(getClass(table, 'cell-align-' + footInfo.align));
+                    thClass.push(
+                        getClass(table, 'cell-align-' + footInfo.align));
                 }
                 
                 colWidth += table.rowWidthOffset; 
                 (colWidth < 0) && (colWidth = 0);
-                html.push(  '<th id="' + getFootCellId(table, i) + '" class="' + thClass.join(' ') + '"',
-                            ' style="width:' + colWidth + 'px;',
-                            (colWidth ? '' : 'display:none;') + '">',
-                            '<div class="' + thTextClass + '">',
-                            contentHtml,
-                            '</div></th>');
+                html.push(
+                    '<th id="' + getFootCellId(table, i) + '" '
+                        + 'class="' + thClass.join(' ') + '"',
+                    ' style="width:' + colWidth + 'px;',
+                    (colWidth ? '' : 'display:none;') + '">',
+                    '<div class="' + thTextClass + '">',
+                    contentHtml,
+                    '</div></th>'
+                );
             }
 
             html.push('</tr></table>');
@@ -443,7 +458,6 @@ define(
             var type = 'head';
             var id = getId(table, type);
             var head = getHead(table);
-            var multiSelect = table.select && table.select.toLowerCase() == 'multi' ;
 
             if (!head) {
                 head = document.createElement('div');
@@ -452,12 +466,22 @@ define(
                 head.setAttribute('controlTable', table.id);
                 table.main.appendChild(head);
 
-                helper.addDOMEvent(table, head, 'mousemove', lib.bind(headMoveHandler, head, table));
-                helper.addDOMEvent(table, head, 'mousedown', lib.bind(dragStartHandler, head, table));
+                helper.addDOMEvent(
+                    table, 
+                    head, 
+                    'mousemove', 
+                    lib.bind(headMoveHandler, head, table)
+                );
+                helper.addDOMEvent(
+                    table, 
+                    head, 
+                    'mousedown', 
+                    lib.bind(dragStartHandler, head, table)
+                );
             }
 
             if (table.noHead) {
-                head.style.display = 'none'
+                head.style.display = 'none';
                 return;
             }
 
@@ -480,7 +504,9 @@ define(
         var tplSortIcon = '<div class="${className}"></div>';
 
         //表格头提示信息模版
-        var tplTitleTip = '<div id="${id}" class="${className}" data-ui="type:Tip;id:${id};content:${content}"></div>';
+        var tplTitleTip = '<div id="${id}" '
+            + 'class="${className}" '
+            + 'data-ui="type:Tip;id:${id};content:${content}"></div>';
 
         /**
          * 获取表格头的html
@@ -517,7 +543,13 @@ define(
 
             var html = [];
             // 拼装html
-            html.push(lib.format(tplTablePrefix, {width : '100%' , controlTableId : table.id}));//table._totalWidth - 2
+            html.push(
+                lib.format(
+                    tplTablePrefix, 
+                    // table._totalWidth - 2
+                    { width : '100%' , controlTableId : table.id }
+                )
+            );
             html.push('<tr>'); 
 
             for (var i = 0, len = fields.length; i < len; i++) {
@@ -525,21 +557,30 @@ define(
                 var field = fields[i];
                 var title = field.title;
                 var sortable = table.sortable && field.sortable;
-                var currentSort = sortable && field.field && field.field == table.orderBy;
+                var currentSort = 
+                    sortable && field.field && field.field == table.orderBy;
                 var realThTextClass = thTextClass;
 
-                (i == 0) && (realThTextClass += ' ' + getClass(table, 'hcell-text-first'));
-                (i == len - 1) && (realThTextClass += ' ' + getClass(table, 'hcell-text-last'))
+                if (i === 0) {
+                    realThTextClass += 
+                        ' ' + getClass(table, 'hcell-text-first');
+                }
+                if (i === len - 1) {
+                    realThTextClass += 
+                        ' ' + getClass(table, 'hcell-text-last');
+                }
 
                 // 计算排序图标样式
                 var sortIconHtml = '';
-                var orderClass = '';
                 if (sortable) {
                     thClass.push(getClass(table, 'hcell-sort'));
                     if (currentSort) {
                         thClass.push(getClass(table, 'hcell-' + table.order));
                     }             
-                    sortIconHtml = lib.format(tplSortIcon, { className : sortClass });
+                    sortIconHtml = lib.format(
+                        tplSortIcon, 
+                        { className : sortClass }
+                    );
                 }
 
                 //计算表格对齐样式
@@ -556,17 +597,21 @@ define(
                 var titleTipContent = '';
                 var tip = field.tip;
                 // 计算内容html
-                if (typeof tip == 'function') {
-                    titleTipContent =  tip.call(table);
-                } else {
+                if (typeof tip === 'function') {
+                    titleTipContent = tip.call(table);
+                }
+                else {
                     titleTipContent = tip;
                 }
                 if (titleTipContent) {
-                    titleTipHtml = lib.format(tplTitleTip, {
-                        id : getId(table, 'htip' + i),
-                        className : getClass(table,'htip'),
-                        content : titleTipContent
-                    });
+                    titleTipHtml = lib.format(
+                        tplTitleTip, 
+                        {
+                            id: getId(table, 'htip' + i),
+                            className: getClass(table,'htip'),
+                            content: titleTipContent
+                        }
+                    );
                     table.hasTip = true;
                 }
 
@@ -580,19 +625,21 @@ define(
                 contentHtml = contentHtml || '&nbsp;';
                 
                                             
-                html.push(  '<th id="' + getTitleCellId(table, i) + '" index="' + i + '"',
-                            ' class="' + thClass.join(' ') + '"',
-                            sortable ? ' sortable="1"' : '',
-                            (i >= canDragBegin && i < canDragEnd ? ' dragright="1"' : ''),
-                            (i <= canDragEnd && i > canDragBegin ? ' dragleft="1"' : ''),
-                            ' style="width:' + (table.colsWidth[ i ] + table.rowWidthOffset) + 'px;',
-                            (table.colsWidth[i] ? '' : 'display:none') + '">',
-                            '<div class="' + realThTextClass +
-                            (field.select ? ' ' + selClass : '') + '">',
-                            titleTipHtml,
-                            contentHtml,
-                            sortIconHtml,
-                            '</div></th>');
+                html.push(
+                    '<th id="' + getTitleCellId(table, i) + '" index="' + i + '"',
+                    ' class="' + thClass.join(' ') + '"',
+                    sortable ? ' sortable="1"' : '',
+                    (i >= canDragBegin && i < canDragEnd ? ' dragright="1"' : ''),
+                    (i <= canDragEnd && i > canDragBegin ? ' dragleft="1"' : ''),
+                    ' style="width:' + (table.colsWidth[ i ] + table.rowWidthOffset) + 'px;',
+                    (table.colsWidth[i] ? '' : 'display:none') + '">',
+                    '<div class="' + realThTextClass +
+                    (field.select ? ' ' + selClass : '') + '">',
+                    titleTipHtml,
+                    contentHtml,
+                    sortIconHtml,
+                    '</div></th>'
+                );
             }
             html.push('</tr></table>');
 
@@ -709,7 +756,6 @@ define(
 
             // 获取位置与序号
             var pos = lib.getOffset(tar);
-            var index = tar.getAttribute('index');
             var sortable = tar.getAttribute('sortable');
             
             // 如果允许拖拽，设置鼠标手型样式与当前拖拽点
@@ -718,12 +764,16 @@ define(
                 helper.addPartClasses(table, dragClass, el);
                 table.dragPoint = 'left';
                 table.dragReady = 1;
-            } else if (tar.getAttribute('dragright') && pos.left + tar.offsetWidth - pageX < range) {
+            }
+            else if (tar.getAttribute('dragright') 
+                && pos.left + tar.offsetWidth - pageX < range
+            ) {
                 sortable && (titleOut(table, tar)); // 清除可排序列的over样式
                 helper.addPartClasses(table, dragClass, el);
                 table.dragPoint = 'right';
                 table.dragReady = 1;
-            } else {
+            }
+            else {
                 helper.removePartClasses(table, dragClass, el);
                 sortable && (titleOver(table, tar)); // 附加可排序列的over样式
                 table.dragPoint = '';
@@ -807,7 +857,10 @@ define(
          */
         function dragingHandler(table, evt) {
             var e = evt || window.event;
-            showDragMark(table, e.pageX || e.clientX + lib.page.getScrollLeft());
+            showDragMark(
+                table, 
+                e.pageX || e.clientX + lib.page.getScrollLeft()
+            );
             lib.event.preventDefault(e);
             return false;
         }
@@ -830,7 +883,8 @@ define(
             
             mark.style.top = table.top + 'px';
             mark.style.left = left + 'px';
-            mark.style.height = table.htmlHeight - table.top + lib.page.getScrollTop() + 'px';
+            mark.style.height = 
+                table.htmlHeight - table.top + lib.page.getScrollTop() + 'px';
         }
         
         /**
@@ -926,10 +980,13 @@ define(
                 // roughWidth可能存在小数点
                 if (leave > 0) {
                     offsetWidth = Math.ceil(roughWidth);
-                } else {
+                }
+                else {
                     offsetWidth = Math.floor(roughWidth);
                 }
-                offsetWidth = (Math.abs(offsetWidth) < Math.abs(leave) ? offsetWidth : leave);
+                offsetWidth = Math.abs(offsetWidth) < Math.abs(leave) 
+                    ? offsetWidth 
+                    : leave;
 
                 // 校正变更后的列宽
                 // 不允许小于最小宽度
@@ -1027,7 +1084,11 @@ define(
             return html.join('');  
         }
         
-        var tplRowPrefix = '<div id="${id}" class="${className}" index="${index}">';
+        var tplRowPrefix = '<div '
+            + 'id="${id}" '
+            + 'class="${className}" '
+            + 'index="${index}">';
+
         /**
          * 获取表格体的单元格id
          * 
@@ -1037,7 +1098,7 @@ define(
          * @return {string}
          */
         function getBodyCellId(table, rowIndex, fieldIndex) {
-            return getId(table, 'cell') + rowIndex + "_" + fieldIndex;
+            return getId(table, 'cell') + rowIndex + '_' + fieldIndex;
         }
         
         /**
@@ -1055,17 +1116,24 @@ define(
             var tdTextClass = getClass(table, 'cell-text');
             var fields = table.realFields;
             var subrow = table.subrow && table.subrow != 'false';
-                
+            
+            var classes = [
+                getClass(table, 'row'),
+                getClass(table, 'row-' + ((index % 2) ? 'odd' : 'even'))
+            ];
             html.push(
-                lib.format( tplRowPrefix,
-                            {
-                                id : getId(table, 'row') + index,
-                                className : getClass(table, 'row') + ' ' 
-                                          + getClass(table, 'row-' + ((index % 2) ? 'odd' : 'even')),
-                                index: index
-                            }
+                lib.format(
+                    tplRowPrefix,
+                    {
+                        id: getId(table, 'row') + index,
+                        className: classes.join(' '),
+                        index: index
+                    }
                 ),
-                lib.format(tplTablePrefix, { width : '100%' , controlTableId : table.id })
+                lib.format(
+                    tplTablePrefix, 
+                    { width : '100%' , controlTableId : table.id }
+                )
             );
 
             for (var i = 0, fieldLen = fields.length; i < fieldLen; i++) {
@@ -1076,9 +1144,10 @@ define(
                 var colWidth = table.colsWidth[i];
                 var subentry = subrow && field.subEntry;
                 
-                if (i == 0) {
+                if (i === 0) {
                     textClass.push(getClass(table, 'cell-text-first'));
-                } else if (i == fieldLen - 1 ) {
+                }
+                else if (i === fieldLen - 1 ) {
                     textClass.push(getClass(table, 'cell-text-last'));
                 }
 
@@ -1103,31 +1172,50 @@ define(
                 }
                 // 构造内容html
                 contentHtml = '<div class="' + textClass.join(' ') + '">'
-                            + ('function' == typeof content ? content.call(table, data, index, i) : data[content])
-                            + '</div>';
+                    + ('function' == typeof content 
+                        ? content.call(table, data, index, i) 
+                        : data[content])
+                    + '</div>';
 
                 subentryHtml = '&nbsp;';
 
                 if (subentry) {
-                    if ( typeof field.isSubEntryShow != 'function'
-                      || field.isSubEntryShow.call(table, data, index, i) !== false) {
+                    var isSubEntryShown = 
+                        typeof field.isSubEntryShow === 'function'
+                            ? field.isSubEntryShow.call(table, data, index, i)
+                            : true;
+                    if (isSubEntryShown !== false) {
                         subentryHtml = getSubEntryHtml(table, index);
                     }
                     
                     tdClass.push(getClass(table, 'subentryfield'));
-                    contentHtml = '<table width="100%" collpadding="0" collspacing="0">'
-                                + '<tr><td width="' + table.subEntryWidth + '" align="right">' + subentryHtml
-                                + '</td><td>' + contentHtml + '</td></tr></table>';
+                    contentHtml = [
+                        '<table width="100%" collpadding="0" collspacing="0">',
+                            '<tr>',
+                                '<td ',
+                                    'width="' + table.subEntryWidth + '" ',
+                                    'align="right">',
+                                        subentryHtml,
+                                '</td>',
+                                '<td>',
+                                    contentHtml,
+                                '</td>',
+                            '</tr>',
+                        '</table>'
+                    ];
+                    contentHtml = contentHtml.join('');
                 }
 
-                html.push(  '<td id="' + getBodyCellId(table, index, i) + '"',
-                            'class="' + tdClass.join(' ')  + '"',
-                            ' style="width:' + (colWidth + table.rowWidthOffset) + 'px;',
-                            (colWidth ? '' : 'display:none'),
-                            '" controlTable="' + table.id,
-                            '" row="' + index + '" col="' + i + '">',
-                            contentHtml,
-                            '</td>');
+                html.push(
+                    '<td id="' + getBodyCellId(table, index, i) + '" ',
+                    'class="' + tdClass.join(' ')  + '" ',
+                    'style="width:' + (colWidth + table.rowWidthOffset) + 'px;',
+                    (colWidth ? '' : 'display:none') + '" ',
+                    'controlTable="' + table.id + '" ',
+                    'row="' + index + '" col="' + i + '">',
+                    contentHtml,
+                    '</td>'
+                );
             }
 
             html.push('</tr></table></div>');
@@ -1182,7 +1270,7 @@ define(
                     case 'multi':
                         input = lib.g(getId(table, 'multiSelect') + index);
                         // 如果点击的是checkbox，则不做checkbox反向处理
-                        if (typeof table.preSelectIndex == 'undefined' || table.preSelectIndex === null) {
+                        if (table.preSelectIndex == null) {
                             input.checked = !input.checked;
                         }
                         selectMulti(table, index);
@@ -1203,7 +1291,12 @@ define(
          * 
          * @private
          */
-        var tplSubEntry = '<div class="${className}" id="${id}" title="${title}" index="${index}"></div>';
+        var tplSubEntry = '<div '
+            + 'class="${className}" '
+            + 'id="${id}" '
+            + 'title="${title}" '
+            + 'index="${index}">'
+            + '</div>';
         
         /**
          * 获取子内容区域入口的html
@@ -1311,6 +1404,7 @@ define(
             
             if (!el.getAttribute('data-subrowopened')) {
                 var dataItem = datasource[index];
+                // BUG: `fire`没有返回值，这里只能触发事件时Event对象里放个属性让处理函数改
                 if (table.fire('subrowopen', {index:index, item: dataItem}) !== false) {
                     openSubrow(table, index, el);
                 }
@@ -1329,12 +1423,21 @@ define(
         function closeSubrow(table, index, element) {
             var entry = element;
             
+            // BUG: `fire`没有返回值，这里只能触发事件时Event对象里放个属性让处理函数改
             if (table.fire('subrowclose', {index : index, item : table.datasource[index]}) !== false) {
                 entryOut(table, entry);
                 table.subrowIndex = null;
                 
-                helper.removePartClasses(table, 'subentry-opened', entry);
-                helper.removePartClasses(table, 'row-unfolded', getRow(table, index));
+                helper.removePartClasses(
+                    table, 
+                    'subentry-opened', 
+                    entry
+                );
+                helper.removePartClasses(
+                    table, 
+                    'row-unfolded', 
+                    getRow(table, index)
+                );
                 
                 entry.setAttribute('title', table.subEntryOpenTip);
                 entry.setAttribute('data-subrowopened', '');
@@ -1357,7 +1460,11 @@ define(
             var closeSuccess = 1;
             
             if (typeof currentIndex != 'undefined' && currentIndex !== null) {
-                closeSuccess = closeSubrow(table, currentIndex, lib.g(getSubentryId(table, currentIndex)));
+                closeSuccess = closeSubrow(
+                    table, 
+                    currentIndex, 
+                    lib.g(getSubentryId(table, currentIndex))
+                );
             }
             
             if (!closeSuccess) {
@@ -1385,10 +1492,12 @@ define(
             table.viewHeight = lib.page.getViewHeight();
             
             var resizeHandler = function() {
-                var viewWidth = lib.page.getViewWidth(),
-                    viewHeight = lib.page.getViewHeight();
+                var viewWidth = lib.page.getViewWidth();
+                var viewHeight = lib.page.getViewHeight();
                     
-                if (viewWidth == table.viewWidth && viewHeight == table.viewHeight) {
+                if (viewWidth == table.viewWidth 
+                    && viewHeight == table.viewHeight
+                ) {
                     return;
                 }
                 
@@ -1432,8 +1541,11 @@ define(
                 var walker = table.main.parentNode.firstChild;
                 var i = 0;
                 while (walker) {
-                    if (walker.nodeType == 1 && walker.getAttribute('followThead')) {
-                        walker.style.width = table.realWidth - table.followWidthArr[i++] + 'px';
+                    if (walker.nodeType == 1 
+                        && walker.getAttribute('followThead')
+                    ) {
+                        walker.style.width = 
+                            table.realWidth - table.followWidthArr[i++] + 'px';
                     }
                     walker = walker.nextSibling;
                 }
@@ -1453,7 +1565,6 @@ define(
                 return;
             }
 
-            var walker = table.main.parentNode.firstChild;
             var domHead = getHead(table);
             var followWidths = table.followWidthArr;
             var placeHolderId = getId(table, 'TopPlaceholder');
@@ -1470,7 +1581,8 @@ define(
             
             // 写入表头跟随元素的宽度样式
             for (var i = 0, len = table.followDoms.length; i < len; i++) {
-                table.followDoms[i].style.width = table.realWidth - followWidths[i] + 'px';
+                table.followDoms[i].style.width = 
+                    table.realWidth - followWidths[i] + 'px';
             }
             domHead && (domHead.style.width = table.realWidth + 'px');
 
@@ -1486,7 +1598,8 @@ define(
                 var followDoms = table.followDoms;
                 var len = followDoms.length;
                 var placeHolder = lib.g(placeHolderId);
-                var mainHeight = parseInt(lib.getComputedStyle(table.main , 'height'));
+                var mainHeight = 
+                    parseInt(lib.getComputedStyle(table.main , 'height'), 10);
                 
                 function setPos(dom, pos, top , left) {
                     if (dom) {
@@ -1497,17 +1610,31 @@ define(
                 }
 
                 if (lib.ie && lib.ie < 7) {
-                    if (scrollTop > table.followTop && scrollTop - table.followTop < mainHeight) {
+                    if (scrollTop > table.followTop 
+                        && scrollTop - table.followTop < mainHeight
+                    ) {
                         posStyle = 'absolute';
-                        placeHolder.style.height = fhArr[fhLen - 1] + domHead.offsetHeight + 'px';
+                        placeHolder.style.height = 
+                            fhArr[fhLen - 1] + domHead.offsetHeight + 'px';
                         placeHolder.style.display = '';
                         var curLeft = mainOffestLeft - scrollLeft ;
                         for (var i = 0 ; i < len; i++) {
-                            setPos(followDoms[i], posStyle, fhArr[i] + scrollTop, curLeft);
+                            setPos(
+                                followDoms[i], 
+                                posStyle, 
+                                fhArr[i] + scrollTop, 
+                                curLeft
+                            );
                         }
 
-                        setPos(domHead, posStyle, fhArr[fhLen - 1] + scrollTop, curLeft);
-                    } else {
+                        setPos(
+                            domHead, 
+                            posStyle, 
+                            fhArr[fhLen - 1] + scrollTop, 
+                            curLeft
+                        );
+                    }
+                    else {
                         placeHolder.style.height  = 0;
                         placeHolder.style.display = 'none';
                         posStyle = '';
@@ -1518,9 +1645,13 @@ define(
 
                         setPos(domHead, posStyle, 0 , 0);
                     }
-                } else {
-                    if (scrollTop > table.followTop && scrollTop - table.followTop < mainHeight) {
-                        placeHolder.style.height = fhArr[fhLen - 1] + domHead.offsetHeight + 'px';
+                }
+                else {
+                    if (scrollTop > table.followTop 
+                        && scrollTop - table.followTop < mainHeight
+                    ) {
+                        placeHolder.style.height = 
+                            fhArr[fhLen - 1] + domHead.offsetHeight + 'px';
                         placeHolder.style.display = '';
                         posStyle = 'fixed';
                         var curLeft = mainOffestLeft - scrollLeft ;
@@ -1529,7 +1660,8 @@ define(
                         }
 
                         setPos(domHead, posStyle, fhArr[fhLen - 1] , curLeft);
-                    } else {
+                    }
+                    else {
                         placeHolder.style.height  = 0;
                         placeHolder.style.display = 'none';
                         posStyle = '';
@@ -1553,16 +1685,12 @@ define(
          * @private
          */
         function resetColumns(table) {
-            var datasource = table.datasource || [];
             var colsWidth = table.colsWidth;
             var foot = table.foot;
             var id = table.id;
             var len = foot instanceof Array && foot.length;
-            var dLen = datasource.length;
             var tds = getBody(table).getElementsByTagName('td');
-            var tables = table.main.getElementsByTagName('table');
             var tdsLen = tds.length;
-            var index = 0;
             
             // 重新设置表格尾的每列宽度
             if (len) {
@@ -1588,8 +1716,9 @@ define(
             // 重新设置表格头的每列宽度
             len = colsWidth.length;
             if (!table.noHead) {
-                for (i = 0; i < len; i++) {
-                    var width = Math.max(colsWidth[i] + table.rowWidthOffset, 0);
+                for (var i = 0; i < len; i++) {
+                    var width = 
+                        Math.max(colsWidth[i] + table.rowWidthOffset, 0);
                     var td = lib.g(getTitleCellId(table, i));
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
@@ -1601,7 +1730,8 @@ define(
             for (var i = 0; i < tdsLen; i++) {
                 var td = tds[i];
                 if (td.getAttribute('controlTable') == id) {
-                    var width = Math.max(colsWidth[j % len] + table.rowWidthOffset, 0);
+                    var width = 
+                        Math.max(colsWidth[j % len] + table.rowWidthOffset, 0);
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
                     j++;
@@ -1615,33 +1745,42 @@ define(
          * @private
          */
         function getMultiSelectTpl(table) {
-            return{ 
+            return { 
                 width : 36,
                 stable : true,
                 select : true,
                 title : function (item, index) {
-                    return lib.format(  '<input type="checkbox" id="${id}" class="${className}" index="${index}" ${disabled}/>',
-                                        {
-                                            id : getId(table, 'selectAll'),
-                                            className : getClass(table, 'selectAll'),
-                                            disabled : table.disabled ? 'disabled="disabled"' : '',
-                                            index : index
-                                        }
-                   );
-                            
+                    var template = '<input '
+                        + 'type="checkbox" '
+                        + 'id="${id}" '
+                        + 'class="${className}" '
+                        + 'index="${index}" '
+                        + '${disabled}/>';
+                    var data = {
+                        id: getId(table, 'selectAll'),
+                        className: getClass(table, 'selectAll'),
+                        disabled: table.disabled ? 'disabled="disabled"' : '',
+                        index: index
+                    };
+                    return lib.format(template, data);
                 },
                 
                 content : function (item, index) {
-                    return lib.format(  '<input type="checkbox" id="${id}" class="${className}"  index="${index}" ${disabled}/>',
-                                        {
-                                            id : getId(table, 'multiSelect') + index,
-                                            className : getClass(table, 'multiSelect'),
-                                            disabled : table.disabled ? 'disabled="disabled"' : '',
-                                            index : index
-                                        }
-                   );
+                    var template = '<input '
+                        + 'type="checkbox" '
+                        + 'id="${id}" '
+                        + 'class="${className}" '
+                        + 'index="${index}" '
+                        + '${disabled}/>';
+                    var data = {
+                        id: getId(table, 'multiSelect') + index,
+                        className: getClass(table, 'multiSelect'),
+                        disabled: table.disabled ? 'disabled="disabled"' : '',
+                        index: index
+                    };
+                    return lib.format(template, data);
                 }
-            }
+            };
         }
         
         /**
@@ -1656,17 +1795,21 @@ define(
                 title : '&nbsp;',
                 select : true,
                 content : function (item, index) {
-                    var id = getId(table, 'singleSelect');
-                    return lib.format(  '<input type="radio" id="${id}" name="${name}" class="${className}" index="${index}"/>',
-                                        {
-                                            id : id + index,
-                                            name : id ,
-                                            className : getClass(table, 'singleSelect'),
-                                            index : index
-                                        }
-                   );
+                    var template = '<input '
+                        + 'type="radio" '
+                        + 'id="${id}" '
+                        + 'name="${name}" '
+                        + 'class="${className}" '
+                        + 'index="${index}"/>';
+                    var data = {
+                        id : getId(table, 'singleSelect') + index,
+                        name : id ,
+                        className : getClass(table, 'singleSelect'),
+                        index : index
+                    };
+                    return lib.format(template, data);
                 }
-            }
+            };
         }
         
         /**
@@ -1702,17 +1845,21 @@ define(
                 var input = inputs[i];
                 if (input.id.indexOf(cbIdPrefix) >= 0) {
                     var inputIndex = input.getAttribute('index');
-                    if (updateAll) {
-                        var row = table.getRow(inputIndex);
-                    }
+                    // 下面也只在`updateAll`的时候用，所以没关系
+                    var row = updateAll && table.getRow(inputIndex);
                     if (!input.checked) {
                         allChecked = false;
                         // faster
-                        updateAll && helper.removePartClasses(table, selectedClass, row); 
-                    } else {
+                        if (updateAll) {
+                            helper.removePartClasses(table, selectedClass, row);
+                        }
+                    }
+                    else {
                         selected.push(inputIndex);
                         // faster
-                        updateAll && helper.addPartClasses(table, selectedClass, row);
+                        if (updateAll) {
+                            helper.addPartClasses(table, selectedClass, row);
+                        }
                     }
                 }
             }
@@ -1755,7 +1902,7 @@ define(
                 var input = inputs[i];
                 var inputId = input.id;
                 if (input.getAttribute('type') == type && inputId) {
-                    result.push(input)
+                    result.push(input);
                 }
             }
             return result;
@@ -1780,9 +1927,12 @@ define(
                     
                     if (checked) {
                         selected.push(index);
-                        helper.addPartClasses(table, 'row-selected', getRow(table, index));
-                    } else {
-                        helper.removePartClasses(table, 'row-selected', getRow(table, index));
+                        helper.addPartClasses(
+                            table, 'row-selected', getRow(table, index));
+                    }
+                    else {
+                        helper.removePartClasses(
+                            table, 'row-selected', getRow(table, index));
                     }
                 }
             }
@@ -1807,7 +1957,8 @@ define(
             table.fire('selectChange', index);
 
             if (selectedIndex && selectedIndex.length) {
-                helper.removePartClasses(table, 'row-selected', getRow(table, selectedIndex[0]));
+                helper.removePartClasses(
+                    table, 'row-selected', getRow(table, selectedIndex[0]));
             }
             table.selectedIndex = [index];
             helper.addPartClasses(table, 'row-selected', getRow(table, index));
@@ -1834,7 +1985,8 @@ define(
          * @private
          */
         function setDisabledStyle(table) {
-            var inputs = findSelectBox(table, table.select == 'multi' ? 'checkbox' : 'radio');
+            var inputs = findSelectBox(
+                table, table.select == 'multi' ? 'checkbox' : 'radio');
             for (var i = inputs.length - 1; i >= 0; i--) {
                 if (table.disabled) {
                     inputs[i].setAttribute('disabled', 'disabled');
@@ -1864,28 +2016,35 @@ define(
                 var e = e || window.event;
                 var cur = e.target || e.srcElement;
                 while (cur) {
-                    if (cur.nodeType === 1 && (cur.disabled !== true || e.type !== "click")) {
+                    if (cur.nodeType === 1 
+                        && (cur.disabled !== true || e.type !== 'click')
+                    ) {
                         for (var i = handlerQueue.length - 1; i >= 0; i--) {
                             var handlerItem = handlerQueue[i];
-                            if (!handlerItem.matchFn || handlerItem.matchFn(cur)) {
+                            if (!handlerItem.matchFn 
+                                || handlerItem.matchFn(cur)
+                            ) {
                                 handlerItem.handler.call(scrope, cur, e);
                             }
-                        };
+                        }
                     }
                     if (cur == element) {
                         break;
                     }
                     cur = cur.parentNode ;   
                 }
-            }
+            };
         }
 
         /**
         * 事件委托
         */
         function delegate(control, element, eventType, handlerQueue) {
-            helper.addDOMEvent( control, element, eventType, 
-                                getDelegateHandler(element, handlerQueue, control)
+            helper.addDOMEvent(
+                control, 
+                element, 
+                eventType, 
+                getDelegateHandler(element, handlerQueue, control)
             );
         }
 
@@ -1896,36 +2055,93 @@ define(
             var getClassMatch = function (className) {
                 return function (element) {
                     return lib.hasClass(element, className);
-                }
+                };
             };
 
-            var rowClass = helper.getPartClasses(table, 'row')[0];
-            var titleClass =  helper.getPartClasses(table, 'hcell')[0];
-            var subentryClass = helper.getPartClasses(table, 'subentry')[0];
-            var selectAllClass = helper.getPartClasses(table, 'selectAll')[0];
-            var multiSelectClass = helper.getPartClasses(table, 'multiSelect')[0];
-            var singleSelectClass = helper.getPartClasses(table, 'singleSelect')[0];
+            var rowClass = 
+                helper.getPartClasses(table, 'row')[0];
+            var titleClass =  
+                helper.getPartClasses(table, 'hcell')[0];
+            var subentryClass = 
+                helper.getPartClasses(table, 'subentry')[0];
+            var selectAllClass = 
+                helper.getPartClasses(table, 'selectAll')[0];
+            var multiSelectClass = 
+                helper.getPartClasses(table, 'multiSelect')[0];
+            var singleSelectClass = 
+                helper.getPartClasses(table, 'singleSelect')[0];
 
-            delegate(table, table.main, 'mouseover', [
-                    { handler : rowOverHandler, matchFn : getClassMatch(rowClass) },
-                    { handler : titleOverHandler, matchFn : getClassMatch(titleClass) },
-                    { handler : entryOverHandler, matchFn : getClassMatch(subentryClass) }
-            ]);
+            delegate(
+                table, 
+                table.main, 
+                'mouseover',
+                [
+                    {
+                        handler: rowOverHandler, 
+                        matchFn: getClassMatch(rowClass)
+                    },
+                    {
+                        handler: titleOverHandler, 
+                        matchFn: getClassMatch(titleClass)
+                    },
+                    {
+                        handler: entryOverHandler, 
+                        matchFn: getClassMatch(subentryClass)
+                    }
+                ]
+            );
 
-            delegate(table, table.main, 'mouseout', [
-                    { handler : rowOutHandler, matchFn : getClassMatch(rowClass) },
-                    { handler : titleOutHandler, matchFn : getClassMatch(titleClass) },
-                    { handler : entryOutHandler, matchFn : getClassMatch(subentryClass) }
-            ]);
+            delegate(
+                table, 
+                table.main, 
+                'mouseout', 
+                [
+                    {
+                        handler: rowOutHandler, 
+                        matchFn : getClassMatch(rowClass)
+                    },
+                    {
+                        handler: titleOutHandler, 
+                        matchFn : getClassMatch(titleClass)
+                    },
+                    {
+                        handler: entryOutHandler, 
+                        matchFn : getClassMatch(subentryClass)
+                    }
+                ]
+            );
 
-            delegate(table, table.main, 'click', [
-                    { handler : rowClickHandler, matchFn : getClassMatch(rowClass) },
-                    { handler : titleClickHandler, matchFn : getClassMatch(titleClass) },
-                    { handler : fireSubrow, matchFn : getClassMatch(subentryClass) },
-                    { handler : toggleSelectAll, matchFn : getClassMatch(selectAllClass) },
-                    { handler : rowCheckboxClick, matchFn : getClassMatch(multiSelectClass) },
-                    { handler : selectSingleHandler, matchFn : getClassMatch(singleSelectClass) }
-            ]);
+            delegate(
+                table, 
+                table.main, 
+                'click', 
+                [
+                    {
+                        handler: rowClickHandler,
+                        matchFn : getClassMatch(rowClass)
+                    },
+                    {
+                        handler: titleClickHandler,
+                        matchFn : getClassMatch(titleClass)
+                    },
+                    {
+                        handler: fireSubrow,
+                        matchFn : getClassMatch(subentryClass)
+                    },
+                    {
+                        handler: toggleSelectAll,
+                        matchFn : getClassMatch(selectAllClass)
+                    },
+                    {
+                        handler: rowCheckboxClick,
+                        matchFn : getClassMatch(multiSelectClass)
+                    },
+                    {
+                        handler: selectSingleHandler,
+                        matchFn : getClassMatch(singleSelectClass)
+                    }
+                ]
+            );
         }
 
         Table.prototype = {
@@ -1952,7 +2168,6 @@ define(
             repaint: function (changes, changesIndex) {
                  // 初始化控件主元素上的行为
                 var table = this;
-                var main = table.main;
 
                 var allProperities = {
                     bodyHeight: false,
@@ -1988,14 +2203,16 @@ define(
                 var colsWidthChanged = false;
 
                 if (allProperities['fields']
-                || allProperities['select']) {
+                    || allProperities['select']
+                ) {
                     initFields(table);
                     fieldsChanged = true;
                 }
                 if (fieldsChanged
-                || allProperities['noHead']
-                || allProperities['breakLine']
-                || allProperities['columnResizable']) {
+                    || allProperities['noHead']
+                    || allProperities['breakLine']
+                    || allProperities['columnResizable']
+                ) {
                     initMinColsWidth(table);
                     initColsWidth(table);
                     renderHead(table);
@@ -2006,17 +2223,19 @@ define(
                     initTopResetHandler(table);
                 }
                 if (fieldsChanged
-                || colsWidthChanged
-                || allProperities['noDataHtml']
-                || allProperities['datasource']) {
+                    || colsWidthChanged
+                    || allProperities['noDataHtml']
+                    || allProperities['datasource']
+                ) {
                     renderBody(table);
                 }
                 if (allProperities['bodyHeight']) {
                     updateBodyHeight(table, getBody(table));
                 }
                 if (fieldsChanged
-                || colsWidthChanged
-                || allProperities['foot']) {
+                    || colsWidthChanged
+                    || allProperities['foot']
+                ) {
                     renderFoot(table);
                 }
 
@@ -2030,9 +2249,9 @@ define(
                 if (helper.isInStage(table, 'RENDERED')) {
                     // 重绘时触发onselectChange事件
                     switch (table.select) {
-                    case 'multi':
-                        table.fire('selectChange', []);
-                        break;
+                        case 'multi':
+                            table.fire('selectChange', []);
+                            break;
                     }
                 }
                 
