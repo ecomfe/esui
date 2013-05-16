@@ -46,7 +46,7 @@ define(
         };
 
         require('./lib').inherits(RequiredRule, Rule);
-        require('./main').registerRule(RequiredRule);
+        require('./main').registerRule(RequiredRule, 0);
         return RequiredRule;
     }
 );

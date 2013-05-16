@@ -469,16 +469,21 @@ define(
          * @inner
          * @type {Object}
          */
-        var ruleClasses = {};
+        var ruleClasses = [];
 
         /**
          * 注册控件验证规则类。
          * 通过类的prototype.type识别控件类型信息。
          * 
          * @param {Function} ruleClass 验证规则类
+         * @param {number} priority 优先级，越小的优先级越高
          */
-        main.registerRule = function (ruleClass) {
-            registerClass(ruleClass, ruleClasses);
+        main.registerRule = function (ruleClass, priority) {
+            // 多个Rule共享一个属性似乎也没问题
+            ruleClasses.push({ type: ruleClasses, priority: priority });
+            // 能有几个规则，这里就不优化为插入排序了
+            ruleClasses.sort(
+                function (x, y) { return x.priority - y.priority; });
         };
 
         /**
@@ -489,9 +494,10 @@ define(
          */
         main.createRulesByControl = function (control) {
             var rules = [];
-            for (var type in ruleClasses) {
-                if (control.get(type)) {
-                    rules.push(new ruleClasses[type]());
+            for (var i = 0; i < ruleClasses.length; i++) {
+                var RuleClass = ruleClasses.type;
+                if (control.get(RuleClass.prototype.type) != null) {
+                    rules.push(new RuleClass());
                 }
             }
 

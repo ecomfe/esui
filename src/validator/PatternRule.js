@@ -50,7 +50,7 @@ define(
         };
 
         require('./lib').inherits(PatternRule, Rule);
-        require('./main').registerRule(PatternRule);
+        require('./main').registerRule(PatternRule, 200);
         return PatternRule;
     }
 );

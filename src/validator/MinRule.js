@@ -50,7 +50,7 @@ define(
         };
 
         require('./lib').inherits(MinRule, Rule);
-        require('./main').registerRule(MinRule);
+        require('./main').registerRule(MinRule, 300);
         return MinRule;
     }
 );

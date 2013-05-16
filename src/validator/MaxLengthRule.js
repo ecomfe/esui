@@ -50,7 +50,7 @@ define(
         };
 
         require('./lib').inherits(MaxLengthRule, Rule);
-        require('./main').registerRule(MaxLengthRule);
+        require('./main').registerRule(MaxLengthRule, 100);
         return MaxLengthRule;
     }
 );

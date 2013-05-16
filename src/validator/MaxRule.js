@@ -50,7 +50,7 @@ define(
         };
 
         require('./lib').inherits(MaxRule, Rule);
-        require('./main').registerRule(MaxRule);
+        require('./main').registerRule(MaxRule, 301);
         return MaxRule;
     }
 );
