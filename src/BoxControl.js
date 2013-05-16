@@ -4,39 +4,22 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
-        /**
-         * 获取click事件handler
-         *
-         * @protected
-         */
-        function clickHandler( box, e ) {
-            if ( !box.isDisabled() ) {
-                box.fire( 'click', e );
-            }
-        }
-
-        function updateChecked( box ){
-            var datasource = box.datasource;
-            // 初始化checked
-            switch ( typeof datasource ) {
-                case 'string':
-                case 'number':
-                    box.setChecked( datasource == value );
-                    break;
-
-                default:
-                    if ( datasource instanceof Array ) {
-                        box.setChecked( lib.inArray( datasource, value ) );
-                    }
-                    break;
-            }
-        }
-
-        function updateTitle( box ){
+        function updateTitle( box ) {
             var title = box.title 
                 || box.main.title 
-                || ( box.getValue() != 'on' ? box.getValue() : '' );
-            box.label.innerHTML = lib.encodeHTML( title );
+                || ( box.getValue() === 'on' ? '' : box.getValue());
+            lib.g(helper.getId(box, 'label')).innerHTML = lib.encodeHTML(title);
+        }
+
+        /**
+         * 同步选中状态
+         *
+         * @param {BoxControl} box 控件实例
+         * @param {Event} e DOM事件对象
+         */
+        function syncChecked(box, e) {
+            var checked = lib.g(helper.getId(box, 'box')).checked;
+            box.setProperties({ checked: checked });
         }
 
         /**
@@ -57,11 +40,110 @@ define(
              * @return {HTMLInputElement}
              */
             createMain: function () {
-                return helper.createInput({
-                        name: this.name,
-                        type: this.type.toLowerCase()
-                });
+                return document.createElement('div');
             },
+
+            initOptions: function (options) {
+                var properties = {
+                    value: 'on',
+                    checked: false
+                };
+
+                lib.extend(properties, options);
+
+                properties.name = 
+                    properties.name || this.main.getAttribute('name');
+
+                // 初始可以有一个`datasource`，用来判断一开始是否选中，
+                // 这个属性只能用一次，且不会保存下来
+                // 
+                // `datasource`可以是以下类型：
+                // 
+                // - 数组：此时只要`rawValue`在`datasource`中（弱等比较）则选上
+                // - 其它：只要`rawValue`与此相等（弱等比较）则选上
+                var datasource = properties.datasource;
+                delete properties.datasource;
+
+                // 这里涉及到`value`和`rawValue`的优先级问题，
+                // 而这个处理在`InputControl.prototype.setProperties`里，
+                // 因此要先用一下，然后再管`datasource`
+                this.setProperties(properties);
+                if (datasource != null) {
+                    if (lib.isArray(datasource)) {
+                        for (var i = 0; i < datasource.length; i++) {
+                            if (datasource[i] == this.value) {
+                                this.checked = true;
+                                break;
+                            }
+                        }
+                    }
+                    else if (this.rawValue == datasource) {
+                        this.checked = true;
+                    }
+                }
+
+                if (!this.title) {
+                    this.title = this.main.title
+                        || ( this.getValue() === 'on' ? '' : this.getValue() );
+                }
+            },
+            
+            /**
+             * 渲染控件
+             *
+             * @public
+             */
+            initStructure: function () {
+                // 如果用的是一个`<input>`，替换成`<div>`
+                if (this.main.nodeName.toLowerCase() === 'input') {
+                    var main = this.createMain();
+                    lib.insertBefore(main, this.main);
+                    lib.removeNode(this.main);
+                    this.main = main;
+                }
+
+                var html = '<input type="${type}" name="${name}" id="${id}" />'
+                    + '<label for="${id}" id="${labelId}"></label>';
+                this.main.innerHTML = lib.format(
+                    html,
+                    {
+                        type: this.type,
+                        name: this.name,
+                        id: helper.getId(this, 'box'),
+                        labelId: helper.getId(this, 'label')
+                    }
+                );
+
+                helper.addDOMEvent(
+                    this, 
+                    this.main, 
+                    'click', 
+                    lib.bind(this.fire, this, 'click')
+                );
+
+                helper.addDOMEvent(
+                    this,
+                    this.main,
+                    'change',
+                    lib.curry(syncChecked, this)
+                );
+            },
+
+            repaint: helper.createRepaint(
+                {
+                    name: ['rawValue', 'checked'],
+                    paint: function (box, rawValue, checked) {
+                        var value = box.stringifyValue(rawValue);
+                        var box = lib.g(helper.getId(box, 'box'));
+                        box.value = value;
+                        box.checked = checked;
+                    }
+                },
+                {
+                    name: 'title',
+                    paint: updateTitle
+                }
+            ),
 
             /**
              * 设置选中状态
@@ -70,7 +152,7 @@ define(
              * @param {boolean} checked 状态
              */
             setChecked: function ( checked ) {
-                this.main.checked = !!checked;
+                this.setProperties({ checked: checked });
             },
             
             /**
@@ -79,71 +161,8 @@ define(
              * @public
              * @return {boolean}
              */
-            isChecked: function() { 
-                return this.main.checked;
-            },
-            
-            /**
-             * 渲染控件
-             *
-             * @public
-             */
-            initStructure : function(){
-                var main = this.main;
-                var label = this.label;
-
-                // 插入点击相关的label元素
-                if ( !label ) {
-                    label = document.createElement( 'label' );
-                    label.className = 
-                        helper.getPartClasses( this, 'label' ).join(' ');
-                    lib.setAttribute( label, 'for', main.id );
-
-                    lib.insertAfter( label, main );
-                    this.label = label;
-                }
-
-                // 初始化label的内容
-                updateTitle( this );
-                // 初始化disabled
-                this.setDisabled ( !!this.disabled );
-
-                //初始化rawValue
-                this.setRawValue( main.value || 'on' );
-
-                updateChecked( this );
-
-                helper.initName( this );
-
-                helper.addDOMEvent(
-                    this, 
-                    this.main, 
-                    'click', 
-                    lib.curry( clickHandler, this )
-                );
-
-            },
-
-            repaint : helper.createRepaint(
-                {
-                    name: 'title',
-                    paint: updateTitle
-                },
-                {
-                    name: 'datasource',
-                    paint: updateChecked
-                }
-            ),
-
-            /**
-             * 释放控件
-             * 
-             * @protected
-             */
-            dispose: function () {
-                this.label = null;
-
-                InputControl.prototype.dispose.apply(this, arguments);
+            isChecked: function () {
+                return this.checked;
             }
         };
 
