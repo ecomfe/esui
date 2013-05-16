@@ -137,7 +137,7 @@ define(
              * @param {string=} tpl 可选模板
              */
             function addSegmentToHTML(obj, tpl) {
-                if (!lib.isPlain(obj)) {
+                if (typeof obj === 'number') {
                     obj = getTplObj(
                         'item',
                         obj,
