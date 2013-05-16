@@ -478,7 +478,7 @@ define(
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
             repaintMonthView(monthView, year, monthView.month);
-            monthView.fire('changeYear');
+            monthView.fire('changeyear');
 
         }
 
@@ -500,7 +500,7 @@ define(
 
             //选择日期 
             updateSelectState(monthView);
-            monthView.fire('changeMonth');
+            monthView.fire('changemonth');
         }
 
         /**
