@@ -13,6 +13,8 @@ define(function () {
      */
     var lib = {};
 
+    /* ========================== 语言部分 ========================== */
+
     var whitespace = /(^[\s\t\xa0\u3000]+)|([\u3000\xa0\s\t]+$)/g;
 
     /**
@@ -191,20 +193,6 @@ define(function () {
     };
 
     /**
-     * 从文档中获取指定的DOM元素
-     * 
-     * @param {string|HTMLElement} id 元素的id或DOM元素
-     * @return {HTMLElement|null} 获取的元素，查找不到时返回null
-     */
-    lib.g = function (id) {
-        if (!id) {
-            return null;
-        }
-
-        return typeof id === 'string' ? document.getElementById(id) : id;
-    };
-
-    /**
      * 字符串格式化
      * 
      * @param {string} template 原字符串
@@ -266,6 +254,204 @@ define(function () {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    };
+
+    /**
+     * 将字符串转换成camel格式
+     * 
+     * @param {string} source 源字符串
+     * @return {string}
+     */
+    lib.camelize = function (source) {
+        return source.replace( 
+            /-([a-z])/g, 
+            function (alpha) {
+                return alpha.toUpperCase();
+            }
+        );
+    };
+
+    /**
+     * 将字符串转换成pascal格式
+     * 
+     * @param {string} source 源字符串
+     * @return {string}
+     */
+    lib.pascalize = function (source) {
+        return source.charAt(0).toUpperCase() + lib.camelize(source.slice(1));
+    };
+
+    /**
+     * @namespace lib.date 操作日期的方法。
+     */
+    lib.date = lib.date || {};
+
+    /**
+     * 对目标日期对象进行格式化
+     * @name baidu.date.format
+     * @function
+     * @grammar baidu.date.format(source, pattern)
+     * @param {Date} source 目标日期对象
+     * @param {string} pattern 日期格式化规则
+     * 
+     * @remark
+     * 
+     * <b>格式表达式，变量含义：</b><br><br>
+     * hh: 带 0 补齐的两位 12 进制时表示<br>
+     * h: 不带 0 补齐的 12 进制时表示<br>
+     * HH: 带 0 补齐的两位 24 进制时表示<br>
+     * H: 不带 0 补齐的 24 进制时表示<br>
+     * mm: 带 0 补齐两位分表示<br>
+     * m: 不带 0 补齐分表示<br>
+     * ss: 带 0 补齐两位秒表示<br>
+     * s: 不带 0 补齐秒表示<br>
+     * yyyy: 带 0 补齐的四位年表示<br>
+     * yy: 带 0 补齐的两位年表示<br>
+     * MM: 带 0 补齐的两位月表示<br>
+     * M: 不带 0 补齐的月表示<br>
+     * dd: 带 0 补齐的两位日表示<br>
+     * d: 不带 0 补齐的日表示     
+     *             
+     * @returns {string} 格式化后的字符串
+     */
+    lib.date.format = function (source, pattern) {
+        if ('string' != typeof pattern) {
+            return source.toString();
+        }
+
+        function replacer(patternPart, result) {
+            pattern = pattern.replace(patternPart, result);
+        }
+        
+        var pad = lib.number.pad;
+        var year = source.getFullYear();
+        var month = source.getMonth() + 1;
+        var date2 = source.getDate();
+        var hours = source.getHours();
+        var minutes = source.getMinutes();
+        var seconds = source.getSeconds();
+
+        replacer(/yyyy/g, pad(year, 4));
+        replacer(/yy/g, pad(parseInt(year.toString().slice(2), 10), 2));
+        replacer(/MM/g, pad(month, 2));
+        replacer(/M/g, month);
+        replacer(/dd/g, pad(date2, 2));
+        replacer(/d/g, date2);
+
+        replacer(/HH/g, pad(hours, 2));
+        replacer(/H/g, hours);
+        replacer(/hh/g, pad(hours % 12, 2));
+        replacer(/h/g, hours % 12);
+        replacer(/mm/g, pad(minutes, 2));
+        replacer(/m/g, minutes);
+        replacer(/ss/g, pad(seconds, 2));
+        replacer(/s/g, seconds);
+
+        return pattern;
+    };
+
+    /**
+     * 将目标字符串转换成日期对象
+     * @name baidu.date.parse
+     * @function
+     * @grammar baidu.date.parse(source)
+     * @param {string} source 目标字符串
+     * @remark
+     * 
+     * 对于目标字符串，下面这些规则决定了 parse 方法能够成功地解析：
+     * 
+     * - 短日期可以使用“/”或“-”作为日期分隔符，
+     * 但是必须用月/日/年的格式来表示，例如"7/20/96"。
+     * - 以 "July 10 1995" 形式表示的长日期中的年、月、日可以按任何顺序排列，
+     * 年份值可以用 2 位数字表示也可以用 4 位数字表示。
+     * 如果使用 2 位数字来表示年份，那么该年份必须大于或等于 70。
+     * - 括号中的任何文本都被视为注释。这些括号可以嵌套使用。
+     * - 逗号和空格被视为分隔符。允许使用多个分隔符。
+     * - 月和日的名称必须具有两个或两个以上的字符。
+     * 如果两个字符所组成的名称不是独一无二的，
+     * 那么该名称就被解析成最后一个符合条件的月或日。
+     * 例如，"Ju" 被解释为七月而不是六月。
+     * - 在所提供的日期中，如果所指定的星期几的值与
+     * 按照该日期中剩余部分所确定的星期几的值不符合，
+     * 那么该指定值就会被忽略。
+     * 例如，尽管 1996 年 11 月 9 日实际上是星期五，
+     * "Tuesday November 9 1996" 也还是可以被接受并进行解析的。
+     * 但是结果 date 对象中包含的是 "Friday November 9 1996"。
+     * - JScript 处理所有的标准时区，
+     * 以及全球标准时间 (UTC) 和格林威治标准时间 (GMT)。
+     * - 小时、分钟、和秒钟之间用冒号分隔，
+     * 尽管不是这三项都需要指明。"10:"、"10:11"、和 "10:11:12" 都是有效的。
+     * - 如果使用 24 小时计时的时钟，
+     * 那么为中午 12 点之后的时间指定"PM"是错误的。例如 "23:15 PM" 就是错误的。
+     * - 包含无效日期的字符串是错误的。
+     * 例如，一个包含有两个年份或两个月份的字符串就是错误的。
+     *             
+     * @returns {Date} 转换后的日期对象
+     */
+    lib.date.parse = function (source) {
+        // by Tangram 1.x: baidu.date.parse
+        var reg = new RegExp('^\\d+(\\-|\\/)\\d+(\\-|\\/)\\d+\x24');
+        if ('string' == typeof source) {
+            if (reg.test(source) || isNaN(Date.parse(source))) {
+                var d = source.split(/ |T/);
+                var d1 = d.length > 1 
+                    ? d[1].split(/[^\d]/) 
+                    : [0, 0, 0];
+                var d0 = d[0].split(/[^\d]/);
+                return new Date(
+                    d0[0] - 0, d0[1] - 1, d0[2] - 0, 
+                    d1[0] - 0, d1[1] - 0, d1[2] - 0
+                );
+            }
+            else {
+                return new Date(source);
+            }
+        }
+        
+        return new Date();
+    };
+
+    /**
+     * @namespace lib.number 操作number的方法。
+     */
+    lib.number = lib.number || {};
+
+    /**
+     * 对目标数字进行0补齐处理
+     * @name lib.number.pad
+     * @function
+     * @grammar lib.number.pad(source, length)
+     * @param {number} source 需要处理的数字
+     * @param {number} length 需要输出的长度
+     *             
+     * @returns {string} 对目标数字进行0补齐处理后的结果
+     */
+    lib.number.pad = function (source, length) {
+        var pre = '';
+        var negative = (source < 0);
+        var string = String(Math.abs(source));
+
+        if (string.length < length) {
+            pre = (new Array(length - string.length + 1)).join('0');
+        }
+
+        return (negative ?  '-' : '') + pre + string;
+    };
+
+    /* ========================== DOM部分 ========================== */
+
+    /**
+     * 从文档中获取指定的DOM元素
+     * 
+     * @param {string|HTMLElement} id 元素的id或DOM元素
+     * @return {HTMLElement|null} 获取的元素，查找不到时返回null
+     */
+    lib.g = function (id) {
+        if (!id) {
+            return null;
+        }
+
+        return typeof id === 'string' ? document.getElementById(id) : id;
     };
 
     /**
@@ -342,6 +528,27 @@ define(function () {
     };
 
     /**
+     * 移除目标元素的className
+     * 
+     * @param {HTMLElement} element 目标元素或目标元素的id
+     * @param {string} className 要移除的className
+     * 
+     * @return {HTMLElement} 目标元素
+     */
+    lib.removeClass = function (element, className) {
+        var classes = element.className ? element.className.split(/\s+/) : [];
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i] === className) {
+                classes.splice(i, 1);
+                i--;
+            }
+        }
+        element.className = classes.join(' ');
+
+        return element;
+    };
+
+    /**
      * 批量移除className
      *
      * @param {HTMLElement} element 目标元素
@@ -373,41 +580,6 @@ define(function () {
     };
 
     /**
-     * 移除目标元素
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
-     * 
-     */
-    lib.removeNode = function (element) {
-        if ( typeof element === 'string') {
-            element = lib.g(element);
-        }
-        var parent = element.parentNode;
-        parent.removeChild(element);
-    };
-
-    /**
-     * 移除目标元素的className
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
-     * @param {string} className 要移除的className
-     * 
-     * @return {HTMLElement} 目标元素
-     */
-    lib.removeClass = function (element, className) {
-        var classes = element.className ? element.className.split(/\s+/) : [];
-        for (var i = 0; i < classes.length; i++) {
-            if (classes[i] === className) {
-                classes.splice(i, 1);
-                i--;
-            }
-        }
-        element.className = classes.join(' ');
-
-        return element;
-    };
-
-    /**
      * 切换目标元素的className
      * 
      * @param {HTMLElement} element 目标元素或目标元素的id
@@ -432,6 +604,20 @@ define(function () {
         element.className = classes.join(' ');
 
         return element;
+    };
+
+    /**
+     * 移除目标元素
+     * 
+     * @param {HTMLElement} element 目标元素或目标元素的id
+     * 
+     */
+    lib.removeNode = function (element) {
+        if ( typeof element === 'string') {
+            element = lib.g(element);
+        }
+        var parent = element.parentNode;
+        parent.removeChild(element);
     };
 
     /**
@@ -489,6 +675,13 @@ define(function () {
     };
 
 
+    /**
+     * 获取计算样式值
+     *
+     * @param {HTMLElement} element 目标元素
+     * @param {string} key 样式名称
+     * @return {string}
+     */
     lib.getComputedStyle = function (element, key) {
         var doc = element.nodeType == 9 
             ? element 
@@ -506,7 +699,7 @@ define(function () {
     /**
      * 获取元素在页面中的位置和尺寸信息
      *
-     * @param {HTMLElement} 目标元素
+     * @param {HTMLElement} element 目标元素
      * @return {Object} 元素的尺寸和位置信息
      */
     lib.getOffset = function (element) {
@@ -537,29 +730,127 @@ define(function () {
         return offset;
     };
 
-    /**
-     * 将字符串转换成camel格式
-     * 
-     * @param {string} source 源字符串
-     * @return {string}
-     */
-    lib.camelize = function (source) {
-        return source.replace( 
-            /-([a-z])/g, 
-            function (alpha) {
-                return alpha.toUpperCase();
+    lib.on = function (element, type, listener) {
+        if (element.addEventListener) {
+            element.addEventListener(type, listener, false);
+        }
+        else if (element.attachEvent) {
+            element.attachEvent('on' + type, listener);
+        }
+    };
+
+    lib.un = function (element, type, listener) {
+        if (element.addEventListener) {
+            element.removeEventListener(type, listener, false);
+        }
+        else if (element.attachEvent) {
+            element.detachEvent('on' + type, listener);
+        }
+    };
+
+    lib.getText = function (element) {
+        // by Tangram 1.x: baidu.dom.getText
+        var ret = '';
+        var childs;
+        var i = 0;
+        var l;
+
+        //  text 和 CDATA 节点，取nodeValue
+        if (element.nodeType === 3 || element.nodeType === 4) {
+
+            ret += element.nodeValue;
+        } 
+        else if (element.nodeType !== 8) {// 8 是 comment Node
+            childs = element.childNodes;
+
+            for (l = childs.length; i < l; i++) {
+                ret += lib.getText(childs[i]);
             }
-        );
+        }
+
+        return ret;
     };
 
     /**
-     * 将字符串转换成pascal格式
-     * 
-     * @param {string} source 源字符串
+     * 检查元素是否有指定的属性
+     *
+     * @param {HTMLElement} element 指定元素
+     * @param {string} name 指定属性名称
      * @return {string}
      */
-    lib.pascalize = function (source) {
-        return source.charAt(0).toUpperCase() + lib.camelize(source.slice(1));
+    lib.hasAttribute = function (element, name) {
+        return element.hasAttribute
+            ? element.hasAttribute(name)
+            : (element.attributes[name] && element.attributes[name].specified);
+    };
+
+    /**
+     * 提供给setAttribute与getAttribute方法作名称转换使用
+     * ie6,7下class要转换成className
+     * @meta standard
+     */
+    lib.NAME_ATTRS = (function () {
+        var result = {
+            'cellpadding': 'cellPadding',
+            'cellspacing': 'cellSpacing',
+            'colspan': 'colSpan',
+            'rowspan': 'rowSpan',
+            'valign': 'vAlign',
+            'usemap': 'useMap',
+            'frameborder': 'frameBorder'
+        };
+        
+        if (lib.ie < 8) {
+            result['for'] = 'htmlFor';
+            result['class'] = 'className';
+        } else {
+            result['htmlFor'] = 'for';
+            result['className'] = 'class';
+        }
+        
+        return result;
+    })();
+
+
+    /**
+     * 设置元素属性，会对某些值做转换            
+     * @returns {HTMLElement} 目标元素
+     */
+    lib.setAttribute = function (element, key, value) {
+        element = lib.g(element);
+
+        if ('style' == key){
+            element.style.cssText = value;
+        } else {
+            key = lib.NAME_ATTRS[key] || key;
+            element.setAttribute(key, value);
+        }
+
+        return element;
+    };
+
+    /**
+     * 获取目标元素的属性值
+     * @name baidu.dom.getAttr
+     * @function
+     * @grammar baidu.dom.getAttr(element, key)
+     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * @param {string} key 要获取的attribute键名
+     * @shortcut getAttr
+     * @meta standard
+     * @see baidu.dom.setAttr,baidu.dom.setAttrs
+     *             
+     * @returns {string|null} 目标元素的attribute值，获取不到时返回null
+     */
+    lib.getAttribute = function (element, key) {
+        element = lib.g(element);
+
+        if ('style' == key){
+            return element.style.cssText;
+        }
+
+        key = lib.NAME_ATTRS[key] || key;
+        return element.getAttribute(key);
     };
 
     /**
@@ -712,333 +1003,6 @@ define(function () {
          */
         lib.ie =  document.documentMode || + RegExp.$1;
     }
-
-    lib.on = function (element, type, listener) {
-        if (element.addEventListener) {
-            element.addEventListener(type, listener, false);
-        }
-        else if (element.attachEvent) {
-            element.attachEvent('on' + type, listener);
-        }
-    };
-
-    lib.un = function (element, type, listener) {
-        if (element.addEventListener) {
-            element.removeEventListener(type, listener, false);
-        }
-        else if (element.attachEvent) {
-            element.detachEvent('on' + type, listener);
-        }
-    };
-
-    lib.getText = function (element) {
-        // by Tangram 1.x: baidu.dom.getText
-        var ret = '';
-        var childs;
-        var i = 0;
-        var l;
-
-        //  text 和 CDATA 节点，取nodeValue
-        if (element.nodeType === 3 || element.nodeType === 4) {
-
-            ret += element.nodeValue;
-        } 
-        else if (element.nodeType !== 8) {// 8 是 comment Node
-            childs = element.childNodes;
-
-            for (l = childs.length; i < l; i++) {
-                ret += lib.getText(childs[i]);
-            }
-        }
-
-        return ret;
-    };
-
-    /**
-     * 检查元素是否有指定的属性
-     *
-     * @param {HTMLElement} element 指定元素
-     * @param {string} name 指定属性名称
-     * @return {string}
-     */
-    lib.hasAttribute = function (element, name) {
-        return element.hasAttribute
-            ? element.hasAttribute(name)
-            : (element.attributes[name] && element.attributes[name].specified);
-    };
-
-    /**
-     * 提供给setAttribute与getAttribute方法作名称转换使用
-     * ie6,7下class要转换成className
-     * @meta standard
-     */
-    lib.NAME_ATTRS = (function () {
-        var result = {
-            'cellpadding': 'cellPadding',
-            'cellspacing': 'cellSpacing',
-            'colspan': 'colSpan',
-            'rowspan': 'rowSpan',
-            'valign': 'vAlign',
-            'usemap': 'useMap',
-            'frameborder': 'frameBorder'
-        };
-        
-        if (lib.ie < 8) {
-            result['for'] = 'htmlFor';
-            result['class'] = 'className';
-        } else {
-            result['htmlFor'] = 'for';
-            result['className'] = 'class';
-        }
-        
-        return result;
-    })();
-
-
-    /**
-     * 设置元素属性，会对某些值做转换            
-     * @returns {HTMLElement} 目标元素
-     */
-    lib.setAttribute = function (element, key, value) {
-        element = lib.g(element);
-
-        if ('style' == key){
-            element.style.cssText = value;
-        } else {
-            key = lib.NAME_ATTRS[key] || key;
-            element.setAttribute(key, value);
-        }
-
-        return element;
-    };
-
-    /**
-     * 获取目标元素的属性值
-     * @name baidu.dom.getAttr
-     * @function
-     * @grammar baidu.dom.getAttr(element, key)
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
-     * @param {string} key 要获取的attribute键名
-     * @shortcut getAttr
-     * @meta standard
-     * @see baidu.dom.setAttr,baidu.dom.setAttrs
-     *             
-     * @returns {string|null} 目标元素的attribute值，获取不到时返回null
-     */
-    lib.getAttribute = function (element, key) {
-        element = lib.g(element);
-
-        if ('style' == key){
-            return element.style.cssText;
-        }
-
-        key = lib.NAME_ATTRS[key] || key;
-        return element.getAttribute(key);
-    };
-
-    /**
-     * 将Object解析成Dom元素属性字符串
-     * (如将 {click:'action'} 解析为 data-command-click ='action')
-     *
-     * @param {string} source 属性值源对象
-     * 
-     * @return {string}
-     */
-    lib.getCommandStr = function (source) {
-        var result = [];
-        if( source.name ){
-            result.push( ' data-command="' + source.name + '"');
-            if( source.args ){
-                result.push( 'data-command-args="' + source.args + '" ');
-            }
-        }
-        return result.join(' ');
-    };
-
-    /**
-     * 将Object转换为带data-command的对象，
-     * 如果传入dom元素则将为该元素添加对应的Attribute
-     *
-     * @param {object} source 属性值源对象
-     * @param {object} element dom元素对象（可选）
-     * @return {object}
-     */
-    lib.commandAttr = function (source, element) {
-        var result = {};
-        if( source.name ){
-            result['data-command']= source.name;
-            if( source.args ){
-                result['data-command-args'] = source.args;
-                if (element) {
-                    element.setAttribute(
-                        'data-command-args', 
-                        result['data-command-args']
-                    );
-                }
-            }
-            if (element) {
-                element.setAttribute('data-command', result['data-command']);
-            }
-        }
-        return result;
-    };
-
-    /**
-     * @namespace lib.date 操作日期的方法。
-     */
-    lib.date = lib.date || {};
-
-    /**
-     * 对目标日期对象进行格式化
-     * @name baidu.date.format
-     * @function
-     * @grammar baidu.date.format(source, pattern)
-     * @param {Date} source 目标日期对象
-     * @param {string} pattern 日期格式化规则
-     * @remark
-     * 
-    <b>格式表达式，变量含义：</b><br><br>
-    hh: 带 0 补齐的两位 12 进制时表示<br>
-    h: 不带 0 补齐的 12 进制时表示<br>
-    HH: 带 0 补齐的两位 24 进制时表示<br>
-    H: 不带 0 补齐的 24 进制时表示<br>
-    mm: 带 0 补齐两位分表示<br>
-    m: 不带 0 补齐分表示<br>
-    ss: 带 0 补齐两位秒表示<br>
-    s: 不带 0 补齐秒表示<br>
-    yyyy: 带 0 补齐的四位年表示<br>
-    yy: 带 0 补齐的两位年表示<br>
-    MM: 带 0 补齐的两位月表示<br>
-    M: 不带 0 补齐的月表示<br>
-    dd: 带 0 补齐的两位日表示<br>
-    d: 不带 0 补齐的日表示     
-     *             
-     * @returns {string} 格式化后的字符串
-     */
-    lib.date.format = function (source, pattern) {
-        // by Tangram 1.x: baidu.date.format
-        if ('string' != typeof pattern) {
-            return source.toString();
-        }
-
-        function replacer(patternPart, result) {
-            pattern = pattern.replace(patternPart, result);
-        }
-        
-        var pad     = lib.number.pad,
-            year    = source.getFullYear(),
-            month   = source.getMonth() + 1,
-            date2   = source.getDate(),
-            hours   = source.getHours(),
-            minutes = source.getMinutes(),
-            seconds = source.getSeconds();
-
-        replacer(/yyyy/g, pad(year, 4));
-        replacer(/yy/g, pad(parseInt(year.toString().slice(2), 10), 2));
-        replacer(/MM/g, pad(month, 2));
-        replacer(/M/g, month);
-        replacer(/dd/g, pad(date2, 2));
-        replacer(/d/g, date2);
-
-        replacer(/HH/g, pad(hours, 2));
-        replacer(/H/g, hours);
-        replacer(/hh/g, pad(hours % 12, 2));
-        replacer(/h/g, hours % 12);
-        replacer(/mm/g, pad(minutes, 2));
-        replacer(/m/g, minutes);
-        replacer(/ss/g, pad(seconds, 2));
-        replacer(/s/g, seconds);
-
-        return pattern;
-    };
-
-    /**
-     * 将目标字符串转换成日期对象
-     * @name baidu.date.parse
-     * @function
-     * @grammar baidu.date.parse(source)
-     * @param {string} source 目标字符串
-     * @remark
-     * 
-     * 对于目标字符串，下面这些规则决定了 parse 方法能够成功地解析：
-     * 
-     * - 短日期可以使用“/”或“-”作为日期分隔符，
-     * 但是必须用月/日/年的格式来表示，例如"7/20/96"。
-     * - 以 "July 10 1995" 形式表示的长日期中的年、月、日可以按任何顺序排列，
-     * 年份值可以用 2 位数字表示也可以用 4 位数字表示。
-     * 如果使用 2 位数字来表示年份，那么该年份必须大于或等于 70。
-     * - 括号中的任何文本都被视为注释。这些括号可以嵌套使用。
-     * - 逗号和空格被视为分隔符。允许使用多个分隔符。
-     * - 月和日的名称必须具有两个或两个以上的字符。
-     * 如果两个字符所组成的名称不是独一无二的，
-     * 那么该名称就被解析成最后一个符合条件的月或日。
-     * 例如，"Ju" 被解释为七月而不是六月。
-     * - 在所提供的日期中，如果所指定的星期几的值与
-     * 按照该日期中剩余部分所确定的星期几的值不符合，
-     * 那么该指定值就会被忽略。
-     * 例如，尽管 1996 年 11 月 9 日实际上是星期五，
-     * "Tuesday November 9 1996" 也还是可以被接受并进行解析的。
-     * 但是结果 date 对象中包含的是 "Friday November 9 1996"。
-     * - JScript 处理所有的标准时区，
-     * 以及全球标准时间 (UTC) 和格林威治标准时间 (GMT)。
-     * - 小时、分钟、和秒钟之间用冒号分隔，
-     * 尽管不是这三项都需要指明。"10:"、"10:11"、和 "10:11:12" 都是有效的。
-     * - 如果使用 24 小时计时的时钟，
-     * 那么为中午 12 点之后的时间指定"PM"是错误的。例如 "23:15 PM" 就是错误的。
-     * - 包含无效日期的字符串是错误的。
-     * 例如，一个包含有两个年份或两个月份的字符串就是错误的。
-     *             
-     * @returns {Date} 转换后的日期对象
-     */
-    lib.date.parse = function (source) {
-        // by Tangram 1.x: baidu.date.parse
-        var reg = new RegExp('^\\d+(\\-|\\/)\\d+(\\-|\\/)\\d+\x24');
-        if ('string' == typeof source) {
-            if (reg.test(source) || isNaN(Date.parse(source))) {
-                var d = source.split(/ |T/);
-                var d1 = d.length > 1 
-                    ? d[1].split(/[^\d]/) 
-                    : [0, 0, 0];
-                var d0 = d[0].split(/[^\d]/);
-                return new Date(
-                    d0[0] - 0, d0[1] - 1, d0[2] - 0, 
-                    d1[0] - 0, d1[1] - 0, d1[2] - 0
-                );
-            }
-            else {
-                return new Date(source);
-            }
-        }
-        
-        return new Date();
-    };
-
-    /**
-     * @namespace lib.number 操作number的方法。
-     */
-    lib.number = lib.number || {};
-
-    /**
-     * 对目标数字进行0补齐处理
-     * @name lib.number.pad
-     * @function
-     * @grammar lib.number.pad(source, length)
-     * @param {number} source 需要处理的数字
-     * @param {number} length 需要输出的长度
-     *             
-     * @returns {string} 对目标数字进行0补齐处理后的结果
-     */
-    lib.number.pad = function (source, length) {
-        var pre = '';
-        var negative = (source < 0);
-        var string = String(Math.abs(source));
-
-        if (string.length < length) {
-            pre = (new Array(length - string.length + 1)).join('0');
-        }
-
-        return (negative ?  '-' : '') + pre + string;
-    };
 
     /**
      * @namespace lib.dom 操作dom的方法。
