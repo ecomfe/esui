@@ -8,6 +8,7 @@
 
 define(
     function (require) {
+        var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
         
@@ -18,7 +19,11 @@ define(
          * @param {Object} options 初始化参数
          */
         function InputControl(options) {
-            Control.apply(this, arguments);
+            options = options ? lib.extend({}, options) : {};
+            if (options.main && !options.name) {
+                options.name = options.main.getAttribute('name');
+            }
+            Control.call(this, options);
         }
 
         InputControl.prototype = {
@@ -38,7 +43,6 @@ define(
              * @override
              */
             initStructure: function () {
-                helper.initName(control);
             },
 
             // repaint: function () {
