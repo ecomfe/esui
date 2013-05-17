@@ -52,6 +52,43 @@ define(
             this.setProperties(properties);
         };
 
+
+        /**
+         * 无链接的文字节点的内容HTML模板
+         *
+         * @type {string}
+         * @public
+         */
+        Crumb.prototype.textNodeTemplate = '<span>${text}</span>';
+
+        /**
+         * 链接节点的内容HTML模板
+         *
+         * @type {string}
+         * @public
+         */
+        Crumb.prototype.linkNodeTemplate = '<a href="${href}">${text}</a>';
+
+        /**
+         * 获取节点的HTML内容
+         *
+         * @param {Object} node 节点数据项
+         * @param {string=} node.href 链接地址
+         * @param {string} node.text 显示文字
+         * @return {string}
+         * @public
+         */
+        Crumb.prototype.getNodeHTML = function (node) {
+            var template = node.href
+                ? this.linkNodeTemplate
+                : this.textNodeTemplate;
+            var data = {
+                href: lib.encodeHTML(node.href),
+                text: lib.encodeHTML(node.text)
+            };
+            return lib.format(template, data);
+        };
+
         /**
          * 获取导航HTML
          *
@@ -91,17 +128,9 @@ define(
                 }
 
                 html += '<li class="' + classes + '">';
-
-                var template = node.href
-                    ? '<a href="${href}">${text}</a>'
-                    : '<span>${text}</span>';
-
-                html += lib.format(template, node);
-
+                html += crumb.getNodeHTML(node);
                 html += '</li>';
-
                 html += separator;
-
             }
 
             html += '</ol>';

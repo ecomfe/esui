@@ -172,6 +172,36 @@ define(
             }
         };
 
+        Form.prototype.repaint = function (changes, changesIndex) {
+            Control.prototype.repaint.apply(this, arguments);
+
+            var shouldAttachSubmit = false;
+            if (!changesIndex && this.submitButton) {
+                shouldAttachSubmit = true;
+            }
+            else if (changesIndex 
+                && changesIndex.hasOwnProperty('submitButton')
+            ) {
+                var record = changesIndex.submitButton;
+                if (record.oldValue) {
+                    var oldButton = this.viewContext.get(record.oldValue);
+                    if (oldButton && this.submitHandler) {
+                        oldButton.un('click', this.submitHandler);
+                    }
+
+                    shouldAttachSubmit = !!this.submitButton;
+                }
+            }
+
+            if (shouldAttachSubmit) {
+                var button = this.viewContext.get(this.submitButton);
+                if (button) {
+                    this.submitHandler = lib.bind(this.fire, this, 'submit');
+                    button.on('click', this.submitHandler);
+                }
+            }
+        };
+
         var InputControl = require('./InputControl');
 
         /**

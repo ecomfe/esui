@@ -10,6 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var helper = require('./controlHelper');
+        var ui = require('./main');
 
         /**
          * 控件基类
@@ -114,7 +115,6 @@ define(
                     }
 
                     // 为控件主元素添加控件实例标识属性
-                    var ui = require('./main');
                     this.main.setAttribute( 
                         ui.getConfig('instanceAttr'), 
                         this.id 
@@ -149,7 +149,9 @@ define(
              * @protected
              */
             repaint: function (changes, changesIndex) {
-                if (!changesIndex || changesIndex.hasOwnProperty('disabled')) {
+                if (!changesIndex
+                    || changesIndex.hasOwnProperty('disabled')
+                ) {
                     var method = this.disabled ? 'addState' : 'removeState';
                     this[method]('disabled');
                 }
@@ -229,6 +231,11 @@ define(
              * @param {Object} properties 属性值集合
              */
             setProperties: function (properties) {
+                if (properties.hasOwnProperty('viewContext')) {
+                    this.setViewContext(properties.viewContext);
+                    delete properties.viewContext;
+                }
+
                 var changes = [];
                 var changesIndex = {};
                 for (var key in properties) {
@@ -283,6 +290,14 @@ define(
                     for (var i = 0, len = children.length; i < len; i++) {
                         children[i].setViewContext(viewContext);
                     }
+                }
+
+                // 在主元素上加个属性，以便找到`ViewContext`
+                if (this.viewContext && helper.isInStage(this, 'RENDERED')) {
+                    this.main.setAttribute( 
+                        ui.getConfig('viewContextAttr'), 
+                        this.viewContext.id 
+                    );
                 }
             },
 
@@ -483,7 +498,7 @@ define(
                 options = options || {};
                 options.viewContext = this.viewContext;
 
-                var children = require('./main').init(wrap, options);
+                var children = ui.init(wrap, options);
                 for (var i = 0, len = children.length; i < len; i++) {
                     this.addChild(children[i]);
                 }

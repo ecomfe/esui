@@ -144,7 +144,13 @@ define(function () {
                 result.push(source[i]);
             }
         }
-        else {
+        else if (Object.prototype.toString.call(source) === '[object Object]'
+            // IE下，DOM和BOM对象上一个语句为true，
+            // isPrototypeOf挂在`Object.prototype`上的，
+            // 因此所有的字面量都应该会有这个属性
+            // 对于在`window`上挂了`isPrototypeOf`属性的情况，直接忽略不考虑
+            && ('isPrototypeOf' in source)
+        ) {
             result = {};
             for (var key in source) {
                 if (source.hasOwnProperty(key)) {
@@ -452,6 +458,19 @@ define(function () {
         }
 
         return typeof id === 'string' ? document.getElementById(id) : id;
+    };
+
+    /**
+     * 判断一个元素是否输入元素
+     *
+     * @param {HTMLElement} element 目标元素
+     * @return {boolean}
+     */
+    lib.isInput = function (element) {
+        var nodeName = element.nodeName.toLowerCase();
+        return nodeName === 'input'
+            || nodeName === 'select'
+            || nodeName === 'textarea';
     };
 
     /**

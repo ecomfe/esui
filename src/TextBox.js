@@ -14,18 +14,6 @@ define(
 
         // css
         require('css!./css/TextBox.css');
-        /**
-         * 默认TextBox选项配置
-         * 
-         * @const
-         * @inner
-         * @type {Object}
-         */
-        var DEFAULT_OPTION = {
-            mode: 'text',
-            value: '',
-            placeholder: ''
-        };
 
         /**
          * 文本框输入控件类
@@ -34,284 +22,293 @@ define(
          * @param {Object} options 初始化参数
          */
         function TextBox(options) {
-            helper.init(this, options, DEFAULT_OPTION);
+            InputControl.apply(this, arguments);
+        }
 
-            var main = this.main;
-            if (main) {
-                // 从main中读取placeholder
-                if (!this.placeholder) {
-                    this.placeholder = main.getAttribute('placeholder');
+        TextBox.prototype.type = 'TextBox';
+
+        /**
+         * 创建主元素
+         *
+         * @return {HTMLElement} 主元素
+         * @override
+         * @protected
+         */
+        TextBox.prototype.createMain = function () {
+            return document.createElement('div');
+        };
+
+        /**
+         * 初始化参数
+         *
+         * @param {Object} options 构造函数传入的参数
+         * @override
+         * @protected
+         */
+        TextBox.prototype.initOptions = function (options) {
+            var properties = {
+                mode: 'text',
+                value: '',
+                placeholder: ''
+            };
+            lib.extend(properties, options);
+
+            if (properties.name) {
+                properties.name = this.main.getAttribute('name');
+            }
+
+            if (lib.isInput(this.main)) {
+                var nodeName = this.main.nodeName.toLowerCase();
+
+                if (nodeName === 'textarea') {
+                    properties.mode = 'textarea';
                 }
-                main.setAttribute('placeholder', '');
+                else {
+                    var type = this.main.type;
+                    properties.mode = type === 'password' ? 'password' : 'text';
+                }
 
-                // 从main中读取mode
-                switch (main.tagName) {
-                    case 'INPUT':
-                        this.mode = main.getAttribute('type');
-                        break;
-                    case 'TEXTAREA':
-                        this.mode = 'textarea';
-                        break;
+                if (!properties.placeholder) {
+                    properties.placeholder = 
+                        this.main.getAttribute('placeholder');
+                }
+
+                if (!properties.value) {
+                    properties.value = this.main.value;
                 }
             }
 
-            helper.afterInit(this);
-        }
+            this.setProperties(properties);
+        };
 
         /**
-         * 鼠标按下事件处理函数
-         * 
+         * 将特殊的按键分发为事件
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
          * @inner
-         * @param {HTMLEvent} e 事件参数
          */
-        function keypressHandler(e) {
-            e = e || window.event;
+        function dispatchSpecialKey(textbox, e) {
             var keyCode = e.keyCode || e.which;
             
-            if (keyCode == 13) {
-                this.fire('enter');
+            if (keyCode === 13) {
+                textbox.fire('enter');
             }
         }
 
         /**
-         * 输入框获得焦点事件处理函数
-         * 
+         * 控制placeholder的显示与隐藏
+         *
+         * @param {TextBox} textbox 控件实例
          * @inner
          */
-        function focusHandler() {
-            var main = this.main;
-            
-            helper.removeStateClasses(this, 'placing');
-            if (this.placing) {
-                main.value = '';
-            }
+        function togglePlaceholder(textbox) {
+            var input = lib.g(helper.getId(textbox, 'input'));
 
-            if (this.autoSelect) {
-                main.select();
-            }
-
-            this.fire('focus');
-        }
-
-        /**
-         * 输入框失去焦点事件处理函数
-         * 
-         * @inner
-         */
-        function blurHandler() {
-            this.setRawValue(this.main.value);
-            this.fire('blur');
-        }
-
-        /**
-         * 输入框用户输入事件处理函数
-         * 
-         * @inner
-         */
-        function inputHandler() {
-            if (lib.ie) {
-                if (window.event.propertyName == 'value') {
-                    this.fire('change');
-                }
-            } 
-            else {
-                this.fire('change');
-            } 
-        }
-        
-        TextBox.prototype = {
-            /**
-             * 控件类型
-             * 
-             * @type {string}
-             */
-            type: 'TextBox',
-
-            /**
-             * 创建控件主元素
-             * 
-             * @override
-             * @return {HTMLElement}
-             */
-            createMain: function () {
-                var mode = this.mode || 'text';
-                switch (mode) {
-                    case 'text':
-                    case 'password':
-                    case 'textarea':
-                        return helper.createInput({
-                            name: this.name,
-                            type: mode
-                        });
-                }
-
-                return null;
-            },
-
-            /**
-             * 渲染控件
-             * 
-             * @override
-             */
-            render: function () {
-                helper.beforeRender(this);
-                helper.renderInputMain(this);
-                helper.initMouseBehavior(this);
-
-                var main = this.main;
-                if (main) {
-                    // 初始化控件主元素上的行为
-                    if (helper.isInStage(this, 'INITED')) {
-                        main.onfocus = lib.bind(focusHandler, this);
-                        main.onblur = lib.bind(blurHandler, this);
-                        main.onkeypress = lib.bind(keypressHandler, this);
-                        this.addInputListener();
-                        helper.addPartClasses(this, this.mode);
-                    }
-
-                    this.setWidth(this.width);
-                    this.setHeight(this.height);
-                }
-
-                helper.afterRender(this);
-            },
-
-            /**
-             * 获取输入控件的原始值
-             * 
-             * @override
-             * @return {string} 
-             */
-            getRawValue: function () {
-                if (this.placing) {
-                    return '';
-                }
-
-                if (this.main) {
-                    return this.main.value;
-                }
-
-                return this.rawValue || '';
-            },
-
-            /**
-             * 设置输入控件的原始值
-             * 
-             * @override
-             * @param {string} rawValue 输入控件的原始值
-             */
-            setRawValue: function (rawValue) {
-                rawValue = rawValue || '';
-                this.rawValue = rawValue;
-
-                var main = this.main;
-                var placeholder = this.placeholder;
-                
-                // 移除输入事件的处理，设置后再重新挂载
-                // ie下setValue会触发propertychange事件
-                this.removeInputListener();
-
-                main.value = rawValue;
-                if (rawValue) {
-                    this.placing = 0;
-                    helper.removeStateClasses(this, 'placing');
-                }
-                else if (placeholder) {
-                    this.placing = 1;
-                    main.value = placeholder;
-                    helper.addStateClasses(this, 'placing');
-                }
-
-                // 重新挂载输入事件的处理
-                this.addInputListener();
-            },
-
-            /**
-             * 添加用户输入事件监听器
-             * 
-             * @private
-             */
-            addInputListener: function () {
-                var main = this.main;
-                var handler = this.inputHandler;
-
-                if (!handler) {
-                    handler = this.inputHandler = lib.bind(inputHandler, this);
-                }
-                
-                if (lib.ie) {
-                    main.onpropertychange = handler;
+            if (!('placeholder' in input)) {
+                var placeholder = 
+                    lib.g(helper.getId(textbox, 'placeholder'));
+                // 只有没焦点且没值的时候才显示placeholder
+                if (document.activeElement !== input && !textbox.rawValue) {
+                    helper.removePartClasses(
+                        textbox, 'placeholder-hidden', placeholder);
                 }
                 else {
-                    lib.on(main, 'input', handler);
+                    helper.addPartClasses(
+                        textbox, 'placeholder-hidden', placeholder);
                 }
-            },
+            }
+        }
 
-            /**
-             * 移除用户输入事件监听器
-             * 
-             * @private
-             */
-            removeInputListener: function () {
-                var handler = this.inputHandler;
-                var main = this.main;
+        /**
+         * 获得焦点的逻辑
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
+        function focus(textbox, e) {
+            togglePlaceholder(textbox);
 
-                if (lib.ie) {
-                    main.onpropertychange = null;
-                } 
-                else {
-                    handler && lib.un(main, 'input', handler);
+            if (textbox.autoSelect) {
+                input.select();
+            }
+
+            textbox.fire('focus');
+        }
+
+        /**
+         * 失去焦点的逻辑
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
+        function blur(textbox, e) {
+            togglePlaceholder(textbox);
+
+            textbox.fire('blur');
+        }
+
+        /**
+         * 同步DOM的值与控件的属性
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
+        function syncValue(textbox, e) {
+            var input = lib.g(helper.getId(textbox, 'input'));
+            if (e.type === 'input' || e.propertyName === 'value') {
+                textbox.rawValue = input.value;
+                textbox.fire('input');
+            }
+        }
+
+        /**
+         * 初始化DOM结构
+         *
+         * @override
+         * @protected
+         */
+        TextBox.prototype.initStructure = function () {
+            if (lib.isInput(this.main)) {
+                var main = this.createMain();
+                lib.insertBefore(main, this.main);
+                lib.removeNode(this.main);
+                this.main = main;
+            }
+
+            var template = this.mode === 'textarea'
+                ? '<textarea id="${id}" name="${name}"></textarea>'
+                : '<input type="${type}" id="${id}" name="${name}" />';
+            this.main.innerHTML = lib.format(
+                template,
+                {
+                    type: this.mode,
+                    id: helper.getId(this, 'input'),
+                    name: this.name
                 }
-            },
+            );
 
-            /**
-             * 设置控件的高度
-             *
-             * @param {number} height 高度
-             */
-            setHeight: function (height) {
-                this.height = height;
-                height && (this.main.style.height = height + 'px');
-            },
-            
-            /**
-             * 设置控件的宽度
-             *
-             * @param {number} width 宽度
-             */
-            setWidth: function (width) {
-                this.width = width;
-                width && (this.main.style.width = width + 'px');
-            },
+            var input = lib.g(helper.getId(this, 'input'));
+            helper.addDOMEvent(
+                this,
+                input,
+                'keypress',
+                lib.curry(dispatchSpecialKey, this)
+            );
+            helper.addDOMEvent(
+                this,
+                input,
+                'focus',
+                lib.curry(focus, this)
+            );
+            helper.addDOMEvent(
+                this,
+                input,
+                'blur',
+                lib.curry(blur, this)
+            );
+            var inputEventName = ('oninput' in input) 
+                ? 'input' 
+                : 'propertychange';
+            helper.addDOMEvent(
+                this,
+                input,
+                inputEventName,
+                lib.curry(syncValue, this)
+            );
 
-            /**
-             * 获焦并选中文本
-             */
-            select: function () {
-                this.main.select();
-            },
-
-            /**
-             * 销毁释放控件
-             * 
-             * @override
-             */
-            dispose: function () {
-                helper.beforeDispose(this);
-
-                var main = this.main;
-                if (main) {
-                    main.onkeypress = null;
-                    main.onfocus = null;
-                    main.onblur = null;
-                    this.removeInputListener();
-                }
-
-                this.inputHandler = null;
-                helper.dispose(this);
-                helper.afterDispose(this);
+            if (!('placeholder' in input)) {
+                var placeholder = document.createElement('label');
+                placeholder.id = helper.getId(this, 'placeholder');
+                lib.setAttribute(placeholder, 'for', input.id);
+                placeholder.className = 
+                    helper.getPartClasses(this, 'placeholder').join(' ');
+                lib.insertAfter(placeholder, input);
             }
         };
+
+        /**
+         * 重绘
+         *
+         * @param {Array=} 更新过的属性集合
+         * @override
+         * @protected
+         */
+        TextBox.prototype.repaint = helper.createRepaint(
+            {
+                name: 'width',
+                paint: function (textbox, width) {
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    input.style.width = width + 'px';
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.style.maxWidth = width + 'px';
+                    }
+                }
+            },
+            {
+                name: 'height',
+                paint: function (textbox, height) {
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    input.style.height = height + 'px';
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.style.height = height + 'px';
+                    }
+                }
+            },
+            {
+                name: 'title',
+                paint: function (textbox, title) {
+                    textbox.main.setAttribute('title', title);
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    input.setAttribute('title', title);
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.setAttribute('title', title);
+                    }
+                }
+            },
+            {
+                name: 'rawValue',
+                paint: function (textbox, rawValue) {
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    var eventName = 
+                        ('oninput' in input) ? 'input' : 'propertychange';
+                    // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
+                    helper.removeDOMEvent(textbox, input, eventName);
+                    input.value = rawValue;
+                    helper.addDOMEvent(
+                        textbox,
+                        input,
+                        eventName,
+                        lib.curry(syncValue, textbox)
+                    );
+
+                    togglePlaceholder(textbox);
+                }
+            },
+            {
+                name: 'placeholder',
+                paint: function (textbox, placeholder) {
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    if ('placeholder' in input) {
+                        input.setAttribute('placeholder', placeholder);
+                    }
+                    else {
+                        var label = 
+                            lib.g(helper.getId(textbox, 'placeholder'));
+                        label.innerHTML = lib.encodeHTML(placeholder);
+                    }
+                }
+            }
+        );
 
         require('./lib').inherits(TextBox, InputControl);
         require('./main').register(TextBox);
