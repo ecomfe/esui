@@ -31,12 +31,16 @@ define(
 
             this.main = options.main ? options.main : this.createMain(options);
 
-            this.initOptions(options);
-
-            // 自创建id
-            if (!this.id) {
+            // 如果没给id，自己创建一个，
+            // 这个有可能在后续的`initOptions`中被重写，则会在`setProperties`中处理，
+            // 这个不能放到`initOptions`的后面，
+            // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
+            // 会把其它控件的`ViewContext`给冲掉导致各种错误
+            if (!this.id && !options.id) {
                 this.id = helper.getGUID();
             }
+
+            this.initOptions(options);
 
             // 初始化视图环境
             helper.initViewContext(this);
@@ -231,6 +235,15 @@ define(
              * @param {Object} properties 属性值集合
              */
             setProperties: function (properties) {
+                // 只有在渲染以前（就是`initOptions`调用的那次）才允许设置id
+                if (properties.hasOwnProperty('id')) {
+                    if (helper.isInStage(this, 'INITED')) {
+                        this.id = properties.id;
+                    }
+                    delete properties.id;
+                }
+
+                // 吞掉`viewContext`的设置，逻辑都在`setViewContext`中
                 if (properties.hasOwnProperty('viewContext')) {
                     this.setViewContext(properties.viewContext);
                     delete properties.viewContext;
