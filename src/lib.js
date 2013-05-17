@@ -467,7 +467,7 @@ define(function () {
      * @return {boolean}
      */
     lib.isInput = function (element) {
-        var nodeName = this.main.nodeName.toLowerCase();
+        var nodeName = element.nodeName.toLowerCase();
         return nodeName === 'input'
             || nodeName === 'select'
             || nodeName === 'textarea';

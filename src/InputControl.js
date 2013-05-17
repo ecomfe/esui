@@ -250,7 +250,7 @@ define(
                     label = document.createElement('label');
                     label.id = helper.getId(this, 'validity');
                     if (lib.isInput(this.main)) {
-                        label.for = this.main.id;    
+                        lib.setAttribute(label, 'for', this.main.id);
                     }
                     else {
                         var nestedInput = 
@@ -258,7 +258,7 @@ define(
                             || this.main.getElementsByTagName('textarea')[0]
                             || this.main.getElementsByTagName('select')[0];
                         if (nestedInput && nestedInput.type !== 'hidden') {
-                            label.for = nestedInput.id;
+                            lib.setAttribute(label, 'for', nestedInput.id);
                         }
                     }
                     lib.insertAfter(label, this.main);
