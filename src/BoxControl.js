@@ -8,7 +8,9 @@ define(
             var title = box.title 
                 || box.main.title 
                 || ( box.getValue() === 'on' ? '' : box.getValue());
-            lib.g(helper.getId(box, 'label')).innerHTML = lib.encodeHTML(title);
+            title = lib.encodeHTML(title);
+            lib.g(helper.getId(box, 'label')).innerHTML = title;
+            lib.g(helper.getId(box, 'box')).setAttribute('title', title);
         }
 
         /**
@@ -107,7 +109,7 @@ define(
                 this.main.innerHTML = lib.format(
                     html,
                     {
-                        type: this.type,
+                        type: this.type.toLowerCase(),
                         name: this.name,
                         id: helper.getId(this, 'box'),
                         labelId: helper.getId(this, 'label')
