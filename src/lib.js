@@ -144,7 +144,13 @@ define(function () {
                 result.push(source[i]);
             }
         }
-        else {
+        else if (Object.prototype.toString.call(source) === '[object Object]'
+            // IE下，DOM和BOM对象上一个语句为true，
+            // isPrototypeOf挂在`Object.prototype`上的，
+            // 因此所有的字面量都应该会有这个属性
+            // 对于在`window`上挂了`isPrototypeOf`属性的情况，直接忽略不考虑
+            && ('isPrototypeOf' in source)
+        ) {
             result = {};
             for (var key in source) {
                 if (source.hasOwnProperty(key)) {
@@ -465,7 +471,7 @@ define(function () {
         return nodeName === 'input'
             || nodeName === 'select'
             || nodeName === 'textarea';
-    }
+    };
 
     /**
      * 判断元素是否拥有指定的className
