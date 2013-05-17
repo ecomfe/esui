@@ -129,6 +129,14 @@ define(
                 );
             },
 
+            setProperties: function (properties) {
+                var changes = 
+                    InputControl.prototype.setProperties.apply(this, arguments);
+                if (changes.hasOwnProperty('checked')) {
+                    this.fire('change');
+                }
+            },
+
             repaint: helper.createRepaint(
                 {
                     name: ['rawValue', 'checked'],
