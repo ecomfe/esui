@@ -103,7 +103,7 @@ define(
          * @inner
          */
         function togglePlaceholder(textbox) {
-            var input = lib.g(helper.getId(textbox, 'input'));
+            var input = lib.g(textbox.inputId);
 
             if (!('placeholder' in input)) {
                 var placeholder = 
@@ -158,7 +158,7 @@ define(
          * @inner
          */
         function syncValue(textbox, e) {
-            var input = lib.g(helper.getId(textbox, 'input'));
+            var input = lib.g(textbox.inputId);
             if (e.type === 'input' || e.propertyName === 'value') {
                 textbox.rawValue = input.value;
                 textbox.fire('input');
@@ -177,6 +177,10 @@ define(
                 lib.insertBefore(main, this.main);
                 lib.removeNode(this.main);
                 this.main = main;
+                this.inputId = this.main.id || helper.getId(this, 'input');
+            }
+            else {
+                this.inputId = helper.getId(this, 'input');
             }
 
             var template = this.mode === 'textarea'
@@ -186,12 +190,12 @@ define(
                 template,
                 {
                     type: this.mode,
-                    id: helper.getId(this, 'input'),
+                    id: this.inputId,
                     name: this.name
                 }
             );
 
-            var input = lib.g(helper.getId(this, 'input'));
+            var input = lib.g(this.inputId);
             helper.addDOMEvent(
                 this,
                 input,
@@ -241,7 +245,7 @@ define(
             {
                 name: 'width',
                 paint: function (textbox, width) {
-                    var input = lib.g(helper.getId(textbox, 'input'));
+                    var input = lib.g(textbox.inputId);
                     input.style.width = width + 'px';
                     var placeholder = 
                         lib.g(helper.getId(textbox, 'placeholder'));
@@ -253,7 +257,7 @@ define(
             {
                 name: 'height',
                 paint: function (textbox, height) {
-                    var input = lib.g(helper.getId(textbox, 'input'));
+                    var input = lib.g(textbox.inputId);
                     input.style.height = height + 'px';
                     var placeholder = 
                         lib.g(helper.getId(textbox, 'placeholder'));
@@ -266,7 +270,7 @@ define(
                 name: 'title',
                 paint: function (textbox, title) {
                     textbox.main.setAttribute('title', title);
-                    var input = lib.g(helper.getId(textbox, 'input'));
+                    var input = lib.g(textbox.inputId);
                     input.setAttribute('title', title);
                     var placeholder = 
                         lib.g(helper.getId(textbox, 'placeholder'));
@@ -278,7 +282,7 @@ define(
             {
                 name: 'rawValue',
                 paint: function (textbox, rawValue) {
-                    var input = lib.g(helper.getId(textbox, 'input'));
+                    var input = lib.g(textbox.inputId);
                     var eventName = 
                         ('oninput' in input) ? 'input' : 'propertychange';
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
@@ -297,7 +301,7 @@ define(
             {
                 name: 'placeholder',
                 paint: function (textbox, placeholder) {
-                    var input = lib.g(helper.getId(textbox, 'input'));
+                    var input = lib.g(textbox.inputId);
                     if ('placeholder' in input) {
                         input.setAttribute('placeholder', placeholder);
                     }
