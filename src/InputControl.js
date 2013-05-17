@@ -11,6 +11,42 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
+
+        /**
+         * 校验
+         *
+         * @param {InputControl} control 目标控件
+         * @return {Validity}
+         * @inner
+         */
+        function checkValidity(control) {
+            var Validity = require('./validator/Validity');
+            var validity = new Validity();
+            var eventArg = {
+                validity: validity
+            };
+            control.fire('beforevalidate', eventArg);
+
+            // 验证合法性
+            var rules = ui.createRulesByControl(control);
+            for (var i = 0, len = rules.length; i < len; i++) {
+                var rule = rules[i];
+                validity.addState( 
+                    rule.getName(), 
+                    rule.check(control.getValue(), control)
+                );
+            }
+
+            // 触发invalid和aftervalidate事件
+            // 这两个事件中用户可能会对validity进行修改操作
+            // 所以validity.isValid()结果不能缓存
+            if (!validity.isValid()) {
+                control.fire('invalid', eventArg);
+            }
+            control.fire('aftervalidate', eventArg);
+
+            return validity;
+        }
         
         /**
          * 输入控件基类
@@ -183,7 +219,8 @@ define(
              * @return {boolean}
              */
             checkValidity: function () {
-                return helper.checkValidity(this, true);
+                var validity = checkValidity(this);
+                return validity.isValid();
             },
 
             /**
@@ -192,7 +229,74 @@ define(
              * @return {boolean}
              */
             validate: function () {
-                return helper.checkValidity(this);
+                var validity = checkValidity(this);
+                this.showValidity(validity);
+                return validity.isValid();
+            },
+
+            /**
+             * 获取显示验证信息用的元素
+             *
+             * @return {HTMLElement}
+             * @public
+             */
+            getValidityLabel: function () {
+                if (!helper.isInStage(this, 'RENDERED')) {
+                    return null;
+                }
+
+                var label = lib.g(this.validityLabel);
+                if (!label) {
+                    label = document.createElement('label');
+                    label.id = helper.getId(this, 'validity');
+                    if (lib.isInput(this.main)) {
+                        label.for = this.main.id;    
+                    }
+                    else {
+                        var nestedInput = 
+                            this.main.getElementsByTagName('input')[0]
+                            || this.main.getElementsByTagName('textarea')[0]
+                            || this.main.getElementsByTagName('select')[0];
+                        if (nestedInput && nestedInput.type !== 'hidden') {
+                            label.for = nestedInput.id;
+                        }
+                    }
+                    lib.insertAfter(label, this.main);
+                }
+            },
+
+            /**
+             * 显示验证信息
+             *
+             * @param {Validity} 验证结果
+             * @public
+             */
+            showValidity: function (validity) {
+                var label = this.getValidityLabel();
+
+                if (!label) {
+                    return;
+                }
+
+                if (validity.isValid()) {
+                    label.innerHTML = '';
+                    helper.removePartClasses(this, 'validity-invalid', label);
+                    helper.addPartClasses(this, 'validity-valid', label);
+                }
+                else {
+                    var message = '';
+                    var states = validity.getStates();
+                    for (var i = 0; i < states.length; i++) {
+                        var state = states[i];
+                        if (!state.getState()) {
+                            message = state.getMessage();
+                            break;
+                        }
+                    }
+                    label.innerHTML = message;
+                    helper.removePartClasses(this, 'validity-valid', label);
+                    helper.addPartClasses(this, 'validity-invalid', label);
+                }
             }
         };
 

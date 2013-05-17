@@ -455,6 +455,19 @@ define(function () {
     };
 
     /**
+     * 判断一个元素是否输入元素
+     *
+     * @param {HTMLElement} element 目标元素
+     * @return {boolean}
+     */
+    lib.isInput = function (element) {
+        var nodeName = this.main.nodeName.toLowerCase();
+        return nodeName === 'input'
+            || nodeName === 'select'
+            || nodeName === 'textarea';
+    }
+
+    /**
      * 判断元素是否拥有指定的className
      * 
      * @param {HTMLElement} element 目标元素或目标元素的id
