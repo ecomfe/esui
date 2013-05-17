@@ -15,12 +15,6 @@ define(
         // css
         require('css!./css/TextBox.css');
 
-        var DEFAULT_OPTION = {
-            mode: 'text',
-            value: '',
-            placeholder: ''
-        };
-
         /**
          * 文本框输入控件类
          * 
@@ -33,10 +27,24 @@ define(
 
         TextBox.prototype.type = 'TextBox';
 
+        /**
+         * 创建主元素
+         *
+         * @return {HTMLElement} 主元素
+         * @override
+         * @protected
+         */
         TextBox.prototype.createMain = function () {
             return document.createElement('div');
         };
 
+        /**
+         * 初始化参数
+         *
+         * @param {Object} options 构造函数传入的参数
+         * @override
+         * @protected
+         */
         TextBox.prototype.initOptions = function (options) {
             var properties = {
                 mode: 'text',
@@ -64,12 +72,23 @@ define(
                     properties.placeholder = 
                         this.main.getAttribute('placeholder');
                 }
+
+                if (!properties.value) {
+                    properties.value = this.main.value;
+                }
             }
 
             this.setProperties(properties);
         };
 
-        function dispatchKey(textbox, e) {
+        /**
+         * 将特殊的按键分发为事件
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
+        function dispatchSpecialKey(textbox, e) {
             var keyCode = e.keyCode || e.which;
             
             if (keyCode === 13) {
@@ -77,6 +96,12 @@ define(
             }
         }
 
+        /**
+         * 控制placeholder的显示与隐藏
+         *
+         * @param {TextBox} textbox 控件实例
+         * @inner
+         */
         function togglePlaceholder(textbox) {
             var input = lib.g(helper.getId(textbox, 'input'));
 
@@ -95,6 +120,13 @@ define(
             }
         }
 
+        /**
+         * 获得焦点的逻辑
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
         function focus(textbox, e) {
             togglePlaceholder(textbox);
 
@@ -105,12 +137,26 @@ define(
             textbox.fire('focus');
         }
 
+        /**
+         * 失去焦点的逻辑
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
         function blur(textbox, e) {
             togglePlaceholder(textbox);
 
             textbox.fire('blur');
         }
 
+        /**
+         * 同步DOM的值与控件的属性
+         *
+         * @param {TextBox} textbox 控件实例
+         * @param {Event} e DOM事件对象
+         * @inner
+         */
         function syncValue(textbox, e) {
             var input = lib.g(helper.getId(textbox, 'input'));
             if (e.type === 'input' || e.propertyName === 'value') {
@@ -119,6 +165,12 @@ define(
             }
         }
 
+        /**
+         * 初始化DOM结构
+         *
+         * @override
+         * @protected
+         */
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
                 var main = this.createMain();
@@ -144,7 +196,7 @@ define(
                 this,
                 input,
                 'keypress',
-                lib.curry(dispatchKey, this)
+                lib.curry(dispatchSpecialKey, this)
             );
             helper.addDOMEvent(
                 this,
@@ -158,7 +210,9 @@ define(
                 'blur',
                 lib.curry(blur, this)
             );
-            var inputEventName = ('oninput' in input) ? 'input' : 'propertychange';
+            var inputEventName = ('oninput' in input) 
+                ? 'input' 
+                : 'propertychange';
             helper.addDOMEvent(
                 this,
                 input,
@@ -176,11 +230,51 @@ define(
             }
         };
 
-        var paint = require('./painters');
-
+        /**
+         * 重绘
+         *
+         * @param {Array=} 更新过的属性集合
+         * @override
+         * @protected
+         */
         TextBox.prototype.repaint = helper.createRepaint(
-            paint.style('width'),
-            paint.style('height'),
+            {
+                name: 'width',
+                paint: function (textbox, width) {
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    input.style.width = width + 'px';
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.style.maxWidth = width + 'px';
+                    }
+                }
+            },
+            {
+                name: 'height',
+                paint: function (textbox, height) {
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    input.style.height = height + 'px';
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.style.height = height + 'px';
+                    }
+                }
+            },
+            {
+                name: 'title',
+                paint: function (textbox, title) {
+                    textbox.main.setAttribute('title', title);
+                    var input = lib.g(helper.getId(textbox, 'input'));
+                    input.setAttribute('title', title);
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.setAttribute('title', title);
+                    }
+                }
+            },
             {
                 name: 'rawValue',
                 paint: function (textbox, rawValue) {
