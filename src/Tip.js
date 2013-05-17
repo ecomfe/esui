@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 提示框
+ * @author lisijin
+ */
+
 define(
     function (require) {
         var lib = require('./lib');
@@ -29,6 +37,7 @@ define(
          * @protected
          */
         Tip.prototype.initOptions = function (options) {
+            getDomProperties(options);
             /**
              * 默认选项配置
              */
@@ -44,6 +53,17 @@ define(
             this.setProperties(properties);
         };
 
+        /**
+         * 从DOM中抽取title和content属性，如果有的话
+         * 优先级低于data-ui
+         * @param  {Object} options 构造函数传入的参数
+         * 
+         */
+        function getDomProperties(options) {
+            var main = options.main;
+            options.title = options.title || main.getAttribute('title');
+            options.content = options.content || main.innerHTML;
+        }
         /**
          * 创建主元素
          *
@@ -128,6 +148,7 @@ define(
             );
 
             tip.repaint();
+            return layer;
         }
 
         /**
