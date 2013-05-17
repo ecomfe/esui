@@ -10,7 +10,7 @@ define(
                 || ( box.getValue() === 'on' ? '' : box.getValue());
             title = lib.encodeHTML(title);
             lib.g(helper.getId(box, 'label')).innerHTML = title;
-            lib.g(helper.getId(box, 'box')).setAttribute('title', title);
+            lib.g(box.boxId).setAttribute('title', title);
         }
 
         /**
@@ -20,7 +20,7 @@ define(
          * @param {Event} e DOM事件对象
          */
         function syncChecked(box, e) {
-            var checked = lib.g(helper.getId(box, 'box')).checked;
+            var checked = lib.g(box.boxId).checked;
             box.setProperties({ checked: checked });
         }
 
@@ -102,6 +102,10 @@ define(
                     lib.insertBefore(main, this.main);
                     lib.removeNode(this.main);
                     this.main = main;
+                    this.boxId = this.main.id || helper.getId(this, 'box');
+                }
+                else {
+                    this.boxId = helper.getId(this, 'box');
                 }
 
                 var html = '<input type="${type}" name="${name}" id="${id}" />'
@@ -111,7 +115,7 @@ define(
                     {
                         type: this.type.toLowerCase(),
                         name: this.name,
-                        id: helper.getId(this, 'box'),
+                        id: this.boxId,
                         labelId: helper.getId(this, 'label')
                     }
                 );
@@ -145,7 +149,7 @@ define(
                     name: ['rawValue', 'checked'],
                     paint: function (box, rawValue, checked) {
                         var value = box.stringifyValue(rawValue);
-                        var box = lib.g(helper.getId(box, 'box'));
+                        var box = lib.g(box.boxId);
                         box.value = value;
                         box.checked = checked;
                     }

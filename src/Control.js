@@ -109,6 +109,8 @@ define(
                 if (helper.isInStage(this, 'INITED')) {
                     this.fire('beforerender');
 
+                    this.initStructure();
+
                     // 为控件主元素添加id
                     if (!this.main.id) {
                         this.main.id = helper.getId(this);
@@ -123,8 +125,6 @@ define(
                         ui.getConfig('viewContextAttr'), 
                         this.viewContext.id 
                     );
-
-                    this.initStructure();
 
                     helper.addPartClasses(this);
                 }
