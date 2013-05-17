@@ -116,16 +116,17 @@ define(
                     }
                 );
 
+                var box = lib.g(helper.getId(this, 'box'));
                 helper.addDOMEvent(
                     this, 
-                    this.main, 
+                    box, 
                     'click', 
-                    lib.bind(this.fire, this, 'click')
+                    function () { this.fire('click'); }
                 );
 
                 helper.addDOMEvent(
                     this,
-                    this.main,
+                    box,
                     'change',
                     lib.curry(syncChecked, this)
                 );
