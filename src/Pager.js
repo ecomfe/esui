@@ -402,7 +402,7 @@ define(
              */
             defaultProperties: {
                 pageSizes: [15, 30, 50, 100],
-                pageSize: 15,
+                pageSize: 15
             },
 
             /**
