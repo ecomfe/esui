@@ -311,7 +311,9 @@ define(
             var rawElements = wrap.getElementsByTagName('*');
             var elements = [];
             for (var i = 0, len = rawElements.length; i < len; i++) {
-                elements[i] = rawElements[i];
+                if (rawElements[i].nodeType === 1) {
+                    elements.push(rawElements[i]);
+                }
             }
 
             var uiPrefix = main.getConfig('uiPrefix');
