@@ -173,27 +173,31 @@ define(
          */
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
+                this.inputId = this.main.id || helper.getId(this, 'input');
+                this.main.id = this.inputId;
+
+                // 生成一个`<div>`并把原来的`<input>`或`<textarea>`放进去
                 var main = this.createMain();
                 lib.insertBefore(main, this.main);
                 lib.removeNode(this.main);
+                main.appendChild(this.main);
                 this.main = main;
-                this.inputId = this.main.id || helper.getId(this, 'input');
             }
             else {
                 this.inputId = helper.getId(this, 'input');
-            }
-
-            var template = this.mode === 'textarea'
-                ? '<textarea id="${id}" name="${name}"></textarea>'
-                : '<input type="${type}" id="${id}" name="${name}" />';
-            this.main.innerHTML = lib.format(
-                template,
-                {
-                    type: this.mode,
-                    id: this.inputId,
-                    name: this.name
+                var html = this.mode === 'textarea'
+                    ? '<textarea id="' + this.inputId + '"'
+                    : '<input type="' + this.mode + '" '
+                        + 'id="' + this.inputId + '"';
+                if (this.name) {
+                    html += ' name="' + lib.encodeHTML(this.name) + '"';
                 }
-            );
+                html += this.mode === 'textarea'
+                    ? '></textarea>'
+                    : ' />';
+
+                this.main.innerHTML = html;
+            }
 
             var input = lib.g(this.inputId);
             helper.addDOMEvent(
@@ -269,13 +273,22 @@ define(
             {
                 name: 'title',
                 paint: function (textbox, title) {
-                    textbox.main.setAttribute('title', title);
                     var input = lib.g(textbox.inputId);
-                    input.setAttribute('title', title);
                     var placeholder = 
                         lib.g(helper.getId(textbox, 'placeholder'));
-                    if (placeholder) {
-                        placeholder.setAttribute('title', title);
+                    if (title) {
+                        textbox.main.setAttribute('title', title);
+                        input.setAttribute('title', title);
+                        if (placeholder) {
+                            placeholder.setAttribute('title', title);
+                        }
+                    }
+                    else {
+                        textbox.main.removeAttribute('title');
+                        input.removeAttribute('title');
+                        if (placeholder) {
+                            placeholder.removeAttribute('title');
+                        }
                     }
                 }
             },
@@ -303,7 +316,12 @@ define(
                 paint: function (textbox, placeholder) {
                     var input = lib.g(textbox.inputId);
                     if ('placeholder' in input) {
-                        input.setAttribute('placeholder', placeholder);
+                        if (placeholder) {
+                            input.setAttribute('placeholder', placeholder);
+                        }
+                        else {
+                            input.removeAttribute('placeholder');
+                        }
                     }
                     else {
                         var label = 
