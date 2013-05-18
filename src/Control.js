@@ -237,7 +237,7 @@ define(
             setProperties: function (properties) {
                 // 只有在渲染以前（就是`initOptions`调用的那次）才允许设置id
                 if (properties.hasOwnProperty('id')) {
-                    if (helper.isInStage(this, 'INITED')) {
+                    if (!this.stage) {
                         this.id = properties.id;
                     }
                     delete properties.id;
