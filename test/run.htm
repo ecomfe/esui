@@ -50,6 +50,16 @@
                 element.fireEvent('on' + type, event);
             }
         }
+
+        function getText(element) {
+            return element.textContent || element.innerText;
+        }
+
+        function hasAttribute(element, name) {
+            return element.hasAttribute
+                ? element.hasAttribute(name)
+                : (element.attributes[name] && element.attributes[name].specified);
+        }
         
         var suits = [
             'esui', 'controlHelper', 'Control', 'Label', 'Panel',

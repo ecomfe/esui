@@ -72,7 +72,7 @@ define(function (require) {
                 var select = new Select({ datasource: datasource });
                 select.appendTo(container);
                 dispatchEvent(select.main, 'click');
-                expect(findLayer().children[0].innerText).toBe('a');
+                expect(getText(findLayer().children[0])).toBe('a');
             });
 
             it('should use `name` over `text` if both are given', function () {
@@ -82,7 +82,7 @@ define(function (require) {
                 var select = new Select({ datasource: datasource });
                 select.appendTo(container);
                 dispatchEvent(select.main, 'click');
-                expect(findLayer().children[0].innerText).toBe('b');
+                expect(getText(findLayer().children[0])).toBe('b');
             });
 
             it('should have a `input[type="hidden"]` element', function () {

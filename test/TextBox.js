@@ -173,10 +173,10 @@ define(function () {
                 textbox.appendTo(container);
                 textbox.set('title', '');
                 var input = findInput(textbox);
-                expect(input.attributes.title && input.attributes.title.specified).toBeFalsy();
+                expect(hasAttribute(input, 'title')).toBeFalsy();
                 var label = textbox.main.getElementsByTagName('label')[0];
                 if (label) {
-                    expect(label.attributes.title && input.attributes.title.specified).toBeFalsy();
+                    expect(hasAttribute(input, 'title')).toBeFalsy();
                 }
             });
 
