@@ -426,7 +426,11 @@ define(
             }
 
             if (!handler) {
+                var oldQueue = events[type];
                 events[type] = [];
+                if (oldQueue) {
+                    events[type].handler = oldQueue.handler;
+                }
             }
             else {
                 var queue = events[type];
