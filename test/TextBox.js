@@ -184,6 +184,18 @@ define(function () {
                         expect(label.className).toContain('hidden');
                     }
                 });
+
+                it('should appear when `value` is set to empty', function () {
+                    var textbox = new TextBox({ placeholder: 'test', value: 'test' });
+                    textbox.appendTo(container);
+                    textbox.set('value', '');
+                    var input = findInput(textbox);
+                    var label = textbox.main.getElementsByTagName('label')[0];
+                    // Only test IE
+                    if (label) {
+                        expect(label.className).not.toContain('hidden');
+                    }
+                })
             })
 
             // NOTICE: `input`和`enter`事件没法测

@@ -29,21 +29,31 @@
         });
     </script>
     <script>
-        function dispatchEvent(element, type) {
+        function dispatchEvent(element, type, properties) {
             if (typeof document.createEvent === 'function') {
                 var event = document.createEvent('Event');
                 event.initEvent(type, true, false);
+                for (var key in properties) {
+                    if (properties.hasOwnProperty(key)) {
+                        event[key] = properties[key];
+                    }
+                }
                 element.dispatchEvent(event);
             }
             else {
                 var event = document.createEventObject();
+                for (var key in properties) {
+                    if (properties.hasOwnProperty(key)) {
+                        event[key] = properties[key];
+                    }
+                }
                 element.fireEvent('on' + type, event);
             }
         }
         
         var suits = [
             'esui', 'controlHelper', 'Control', 'Label', 'Panel',
-            'Select', 'Form', 'Tab', 'Crumb', 'Wizard',
+            'Select', 'Form', 'Tab', 'Crumb', 'Wizard', 'TextBox',
             'extension/CustomData', 'extension/Command'
         ];
         require(

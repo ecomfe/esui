@@ -49,11 +49,12 @@ define(
             var properties = {
                 mode: 'text',
                 value: '',
-                placeholder: ''
+                placeholder: '',
+                autoSelect: false
             };
             lib.extend(properties, options);
 
-            if (properties.name) {
+            if (!properties.name) {
                 properties.name = this.main.getAttribute('name');
             }
 
@@ -100,16 +101,20 @@ define(
          * 控制placeholder的显示与隐藏
          *
          * @param {TextBox} textbox 控件实例
+         * @param {boolean=} focused 额外指定文本框是否聚集
          * @inner
          */
-        function togglePlaceholder(textbox) {
+        function togglePlaceholder(textbox, focused) {
             var input = lib.g(textbox.inputId);
 
             if (!('placeholder' in input)) {
                 var placeholder = 
                     lib.g(helper.getId(textbox, 'placeholder'));
+                if (typeof focused !== 'boolean') {
+                    focused = document.activeElement === input;
+                }
                 // 只有没焦点且没值的时候才显示placeholder
-                if (document.activeElement !== input && !textbox.rawValue) {
+                if (!focused && !textbox.rawValue) {
                     helper.removePartClasses(
                         textbox, 'placeholder-hidden', placeholder);
                 }
@@ -128,7 +133,7 @@ define(
          * @inner
          */
         function focus(textbox, e) {
-            togglePlaceholder(textbox);
+            togglePlaceholder(textbox, true);
 
             if (textbox.autoSelect) {
                 input.select();
@@ -145,7 +150,7 @@ define(
          * @inner
          */
         function blur(textbox, e) {
-            togglePlaceholder(textbox);
+            togglePlaceholder(textbox, false);
 
             textbox.fire('blur');
         }
@@ -249,6 +254,9 @@ define(
             {
                 name: 'width',
                 paint: function (textbox, width) {
+                    if (!width) {
+                        return;
+                    }
                     var input = lib.g(textbox.inputId);
                     input.style.width = width + 'px';
                     var placeholder = 
@@ -261,6 +269,9 @@ define(
             {
                 name: 'height',
                 paint: function (textbox, height) {
+                    if (!height) {
+                        return;
+                    }
                     var input = lib.g(textbox.inputId);
                     input.style.height = height + 'px';
                     var placeholder = 
