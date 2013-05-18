@@ -243,7 +243,7 @@ define(
                 // 如果同时有`activeIndex`和`steps`，
                 // 则`activeIndex`可以只赋在实例上不丢进更新列表，
                 // 因为`getHTML`是会处理这事的
-                if (properties.hasOwnProperty('steps')) {
+                if (properties.hasOwnProperty('activeIndex')) {
                     this.activeIndex = properties.activeIndex;
                     delete properties.activeIndex;
                 }

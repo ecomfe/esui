@@ -85,6 +85,12 @@ define(function (require) {
                 expect(wizard.get('activeIndex')).toBe(0);
             });
 
+            it('should reset `activeIndex` to 0 if `steps` is changed and no new `activeIndex` is given', function () {
+                var wizard = new Wizard({ steps: steps, activeIndex: 2 });
+                wizard.set('steps', steps.slice(0, 2));
+                expect(wizard.get('activeIndex')).toBe(0);
+            })
+
             it('should create as many `<li>` element as `steps.length` if no `finishText` is specified', function () {
                 var wizard = new Wizard({ steps: steps });
                 wizard.appendTo(container);
