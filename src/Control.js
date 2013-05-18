@@ -564,8 +564,7 @@ define(
              */
             fire: function (type, arg) {
                 // 构造event argument
-                var eventArg = {};
-                lib.extend(eventArg, arg);
+                var eventArg = arg || {};
                 eventArg.type = type;
 
                 // 先调用直接写在实例上的"onxxx"
