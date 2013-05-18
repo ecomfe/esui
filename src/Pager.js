@@ -164,7 +164,7 @@ define(
                     'item-extend',
                     page - 1,
                     'page-back',
-                    pager.backName
+                    pager.backText
                 );
                 addSegmentToHTML(obj);
             }
@@ -223,7 +223,7 @@ define(
                     'item-extend',
                     page + 1,
                     'page-forward',
-                    pager.forwardName
+                    pager.forwardText
                 );
                 addSegmentToHTML(obj);
             }
@@ -419,8 +419,8 @@ define(
                     page: 1,
                     backCount: 3,
                     forwardCount: 3,
-                    backName: '上一页',
-                    forwardName: '下一页',
+                    backText: '上一页',
+                    forwardText: '下一页',
                     urlTemplate: ''
                 };
 
@@ -494,7 +494,7 @@ define(
                     name: [
                         'pageType', 'count', 'pageSize',
                         'page', 'backCount', 'forwardCount',
-                        'backName', 'forwardName', 'urlTemplate'
+                        'backText', 'forwardText', 'urlTemplate'
                     ],
                     paint: repaintPager
                 }
