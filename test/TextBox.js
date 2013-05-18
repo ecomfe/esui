@@ -108,6 +108,30 @@ define(function () {
         });
 
         describe('generally', function () {
+            it('should sync value when input text', function () {
+                var textbox = new TextBox();
+                textbox.appendTo(container);
+                var input = findInput(textbox);
+                input.value = 'test';
+                if ('oninput' in input) {
+                    dispatchEvent(input, 'input');
+                }
+                expect(textbox.getValue()).toBe('test');
+            });
+
+            it('should fire an `input` event when input text', function () {
+                var textbox = new TextBox();
+                textbox.appendTo(container);
+                var handler = jasmine.createSpy('input');
+                textbox.on('input', handler);
+                var input = findInput(textbox);
+                input.value = 'test';
+                if ('oninput' in input) {
+                    dispatchEvent(input, 'input');
+                }
+                expect(handler).toHaveBeenCalled();
+            });
+
             it('should delegate `focus` and `blur` events', function () {
                 var textbox = new TextBox();
                 textbox.appendTo(container);
@@ -118,8 +142,6 @@ define(function () {
                 var input = findInput(textbox);
                 dispatchEvent(input, 'focus');
                 dispatchEvent(input, 'blur');
-                // input.focus();
-                // input.blur();
                 expect(focus).toHaveBeenCalled();
                 expect(blur).toHaveBeenCalled();
             });
@@ -132,6 +154,30 @@ define(function () {
                 var input = findInput(textbox);
                 expect(input.style.width).toBe('200px');
                 expect(input.style.height).toBe('40px');
+            });
+
+            it('should accept `title` property and reflect on `title` DOM attribute', function () {
+                var textbox = new TextBox();
+                textbox.appendTo(container);
+                textbox.set('title', 'test');
+                var input = findInput(textbox);
+                expect(input.getAttribute('title')).toBe('test');
+                var label = textbox.main.getElementsByTagName('label')[0];
+                if (label) {
+                    expect(label.getAttribute('title')).toBe('test');
+                }
+            });
+
+            it('should remove `title` DOM attribute when `title` is empty', function () {
+                var textbox = new TextBox({ title: 'test' });
+                textbox.appendTo(container);
+                textbox.set('title', '');
+                var input = findInput(textbox);
+                expect(input.attributes.title && input.attributes.title.specified).toBeFalsy();
+                var label = textbox.main.getElementsByTagName('label')[0];
+                if (label) {
+                    expect(label.attributes.title && input.attributes.title.specified).toBeFalsy();
+                }
             });
 
             it('should accept `placeholder` property and fix compatibility', function () {
