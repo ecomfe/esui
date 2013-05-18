@@ -249,6 +249,8 @@ define(
                 if (!label) {
                     label = document.createElement('label');
                     label.id = helper.getId(this, 'validity');
+                    label.className = 'ui-validity';
+                    helper.addPartClasses(this, 'validity', label);
                     if (lib.isInput(this.main)) {
                         lib.setAttribute(label, 'for', this.main.id);
                     }
