@@ -1,20 +1,25 @@
 @import "common.less";
+/** Pager 文字配色 */
+@pager-text-color: #333;
+
 .ui-pager {
+    font-size: 12px;
     background: #fff;
     height: 25px;
+    line-height: 25px;
 }
 
 .ui-pager-label {
-    color: #333;
+    color: @pager-text-color;
     width: 55px;
-    height: 25px;
-    line-height: 25px;
     text-align: center;
-    display: inline-block;
+    vertical-align: top;
+    .inline-block();
 }
 
 .ui-select {
-    display: inline-block;
+    vertical-align: top;
+    .inline-block();
 }
 
 .ui-select-hidden {
@@ -24,10 +29,7 @@
 .ui-pager-main {
     margin: 0;
     padding: 0;
-    height: 25px;
-    line-height: 25px;
-    text-align: center;
-    display: inline-block;
+    .inline-block();
 }
 
 /*
@@ -38,14 +40,20 @@
      * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
      * 为兼容Mac下显示效果，前面增加STHeiti */
     font-family:STHeiti, SimSun;
-    font-size:12px;
-    color: #333;
-    vertical-align: top;
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
     margin-left: 4px;
     text-align: center;
+    vertical-align: top;
+    color: @pager-text-color;
+    .inline-block();
+}
+
+.ui-pager-main a {
+    color: @pager-text-color;
+    .inline-block();
+}
+
+.ui-pager-main a:hover {
+    text-decoration: none;
 }
 
 /*
@@ -55,31 +63,17 @@
     .linear-gradient-background (top, #ffffff, #f6f6f6, "", 0, 0, #ffffff);
     width: 23px;
     height: 23px;
-    line-height: 23px;
     border: 1px #ccc solid;
     cursor: pointer;
     .border-radius(2px, 2px, 2px, 2px);
     .box-sizing(content-box);
 }
 
-.ui-pager-item-extend {
-    width: 50px;
-}
-
-.ui-pager-main a {
-    color: #333;
-    display: inline-block;
-}
-
-.ui-pager-main a:hover {
-    text-decoration: none;
-}
-
 .ui-pager-item a {
     width: 23px;
 }
 
-.ui-pager-item-extend a {
+.ui-pager-item-extend, .ui-pager-item-extend a {
     width: 50px;
 }
 
@@ -89,10 +83,10 @@
 }
 
 .ui-pager-item-current {
-    color: #333;
     font-weight: 600;
+    line-height: 26px;
 }
 
 .ui-pager-item-omit {
-    line-height: 35px;
+    line-height: 36px;
 }
