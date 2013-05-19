@@ -104,9 +104,17 @@ define(
                 +   '${closeIcon}'
                 + '</div>';
 
+            var headClasses = [].concat(
+                helper.getPartClasses(me, head)
+            );
+            if (me.draggable) {
+                headClasses = headClasses.concat(
+                    helper.getPartClasses(me, head + '-draggable')
+                );
+            }
             var headData = {
                 'headId':  helper.getId(me, head),
-                'headClass':  helper.getPartClasses(me, head).join(' '),
+                'headClass':  headClasses.join(' '),
                 'titleId':  helper.getId(me, title),
                 'titleClass':  helper.getPartClasses(me, title).join(' '),
                 'title': me.title,
@@ -191,6 +199,87 @@ define(
             main.style.left = left + 'px';
             main.style.top = page.getScrollTop() + top + 'px';
         }
+
+        var getDialogHeadDownHandler; //drag mousedown的句柄
+        var getDialogHeadMoveHandler; //drag mousemove的句柄
+        var getDialogHeadUpHandler; //drag mouseup的句柄
+
+        /**
+         * 绑定拖动drag事件
+         * @param {ui.Dialog} 控件对象
+         */
+        function initDragHandler(dialog) {
+            var me = dialog;
+            var head = lib.g(helper.getId(me, 'head'));
+            
+            getDialogHeadDownHandler = lib.bind(dialogHeadDownHandler, me);
+
+            lib.on(head, 'mousedown', getDialogHeadDownHandler);
+        }
+
+        /**
+         * drag时 mousedown的事件处理函数
+         */
+        function dialogHeadDownHandler(e) {
+            var me = this;
+            var button = e.button;
+            var head = lib.g(helper.getId(me, 'head'));
+            // 只有左键点击时才触发
+            var isLeft = false;
+            if ((!e.which && button === 1) || e.which === 1) {
+                isLeft = true;
+            }
+            if (!isLeft) {
+                lib.un(head, 'mouseup', getDialogHeadUpHandler);
+                return;
+            }
+            var doc = document;
+
+            getDialogHeadMoveHandler = lib.bind(dialogHeadMoveHandler, me);
+            getDialogHeadUpHandler = lib.bind(dialogHeadUpHandler, me);
+
+            lib.on(doc, 'mousemove', getDialogHeadMoveHandler);
+            lib.on(doc, 'mouseup', getDialogHeadUpHandler);
+
+            //记录鼠标位置
+            lib.event.getMousePosition(e);
+            me.dragStartPos = {x: e.pageX, y: e.pageY};
+        }
+
+        /**
+         * drag时 mousemove的事件处理函数
+         */
+        function dialogHeadMoveHandler(e) {
+            var me = this;
+
+            //记录鼠标位置
+            lib.event.getMousePosition(e);
+
+            //计算移动距离
+            var movedDistance = {
+                x: e.pageX - me.dragStartPos.x,
+                y: e.pageY - me.dragStartPos.y
+            };
+
+            me.dragStartPos = {x: e.pageX, y: e.pageY};
+
+            var main = me.main;
+            var mainPos = lib.getOffset(main);
+            main.style.left = mainPos.left + movedDistance.x + 'px';
+            main.style.top = mainPos.top + movedDistance.y + 'px';
+
+        }
+
+        /**
+         * drag时 mouseup的事件处理函数
+         */
+        function dialogHeadUpHandler(e) {
+            //卸载事件
+            lib.un(document, 'mousemove', getDialogHeadMoveHandler);
+            var head = lib.g(helper.getId(this, 'head'));
+            lib.un(head, 'mouseup', getDialogHeadUpHandler);
+        }
+
 
         /**
          * 显示遮盖层
@@ -509,8 +598,7 @@ define(
 
                 // 拖拽功能初始化
                 if (this.draggable) {
-                    // TODO: 拖拽的库函数还未实现
-                    // baidu.dom.draggable(main, {handler:this.getHead()});
+                    initDragHandler(this);
                 }
 
                 if (mask) {
