@@ -47,15 +47,39 @@ define(
             Control.call(this, lib.extend(DEFAULT_OPTION, options));
         }
 
+        /**
+         * 判断值是否为空
+         * 
+         * @private
+         * @return {bool}
+         */
         function hasValue(obj) {
             return !(typeof obj == 'undefined' || obj === null);
         }
 
-         /**
+        /**
+         * 设置元素属性 自动加上data-前缀
+         * 
+         * @private
+         */
+        function setAttr(element, key, value){
+            lib.setAttribute(element, 'data-' + key, value);
+        }
+
+        /**
          * 获取dom子部件的id
          * 
-         * @protected
+         * @private
          * @return {string}
+         */
+        function getAttr(element, key){
+            return lib.getAttribute(element, 'data-' + key);
+        }
+
+         /**
+         * 元素属性 自动加上data-前缀
+         * 
+         * @protected
          */
         function getId(table, name) {
             return helper.getId(table, name);
@@ -189,7 +213,7 @@ define(
                             + 'cellpadding="0" '
                             + 'cellspacing="0" '
                             + 'width="${width}" '
-                            + 'control-table="${controlTableId}">';
+                            + 'data-control-table="${controlTableId}">';
           
          /**
          * 缓存控件的核心数据
@@ -226,7 +250,7 @@ define(
                 // 缓存表格跟随的dom元素
                 while (walker) {
                     if (walker.nodeType == 1
-                     && walker.getAttribute('followthead')) {
+                     && getAttr(walker, 'follow-thead')) {
                         followDoms.push(walker);
                     }
                     walker = walker.nextSibling;
@@ -274,7 +298,7 @@ define(
 
             if (!table.noHead) {
                 for (var i = 0, len = fields.length; i < len; i++) {
-                    var field = fields[ i ];
+                    var field = fields[i];
                     var width = field.minWidth;
                     if (!width && !field.breakLine) {
                         // 30包括排序和外层padding
@@ -381,7 +405,7 @@ define(
                     foot = document.createElement('div');
                     foot.id = id;
                     foot.className = getClass(table, type);
-                    foot.setAttribute('control-table', table.id);
+                    setAttr(foot, 'control-table', table.id);
                     
                     table.main.appendChild(foot);
                 }
@@ -405,7 +429,7 @@ define(
             var colsWidth = table.colsWidth;
             var thCellClass = getClass(table, 'fcell');
             var thTextClass = getClass(table, 'fcell-text');
-            
+            var rowWidthOffset = table.rowWidthOffset;
             html.push(
                 lib.format(
                     tplTablePrefix, 
@@ -435,7 +459,7 @@ define(
                         getClass(table, 'cell-align-' + footInfo.align));
                 }
                 
-                colWidth += table.rowWidthOffset; 
+                colWidth += rowWidthOffset; 
                 (colWidth < 0) && (colWidth = 0);
                 html.push(
                     '<th id="' + getFootCellId(table, i) + '" '
@@ -466,7 +490,7 @@ define(
                 head = document.createElement('div');
                 head.id = id;
                 head.className = getClass(table, type);
-                head.setAttribute('control-table', table.id);
+                setAttr(head, 'control-table', table.id);
                 table.main.appendChild(head);
 
                 helper.addDOMEvent(
@@ -538,6 +562,7 @@ define(
             var selClass = getClass(table, 'hcell-sel');
             var canDragBegin = -1;
             var canDragEnd = -1;
+            var rowWidthOffset = table.rowWidthOffset;
 
             if (!table.disabled) {
                 // 计算最开始可拖拽的单元格
@@ -641,12 +666,12 @@ define(
                 
                                             
                 html.push(
-                    '<th id="' + getTitleCellId(table, i) + '" index="' + i + '"',
+                    '<th id="' + getTitleCellId(table, i) + '" data-index="' + i + '"',
                     ' class="' + thClass.join(' ') + '"',
-                    sortable ? ' sortable="1"' : '',
-                    (i >= canDragBegin && i < canDragEnd ? ' dragright="1"' : ''),
-                    (i <= canDragEnd && i > canDragBegin ? ' dragleft="1"' : ''),
-                    ' style="width:' + (table.colsWidth[i] + table.rowWidthOffset) + 'px;',
+                    sortable ? ' data-sortable="1"' : '',
+                    (i >= canDragBegin && i < canDragEnd ? ' data-dragright="1"' : ''),
+                    (i <= canDragEnd && i > canDragBegin ? ' data-dragleft="1"' : ''),
+                    ' style="width:' + (table.colsWidth[i] + rowWidthOffset) + 'px;',
                     (table.colsWidth[i] ? '' : 'display:none') + '">',
                     '<div class="' + realThTextClass +
                     (field.select ? ' ' + selClass : '') + '">',
@@ -728,7 +753,7 @@ define(
         function titleClickHandler(element, e) {
             var table = this;
             if (table.sortReady) { // 避免拖拽触发排序行为
-                var index = element.getAttribute('index');
+                var index = getAttr(element, 'index');
                 var field = table.realFields[index];
                 if(field.sortable){
                     var orderBy = table.orderBy;
@@ -774,16 +799,16 @@ define(
 
             // 获取位置与序号
             var pos = lib.getOffset(tar);
-            var sortable = tar.getAttribute('sortable');
+            var sortable = getAttr(tar, 'sortable');
             
             // 如果允许拖拽，设置鼠标手型样式与当前拖拽点
-            if (tar.getAttribute('dragleft')  && pageX - pos.left < range) {
+            if (getAttr(tar, 'dragleft')  && pageX - pos.left < range) {
                 sortable && (titleOut(table, tar)); // 清除可排序列的over样式
                 helper.addPartClasses(table, dragClass, el);
                 table.dragPoint = 'left';
                 table.dragReady = 1;
             }
-            else if (tar.getAttribute('dragright') 
+            else if (getAttr(tar, 'dragright') 
                 && pos.left + tar.offsetWidth - pageX < range
             ) {
                 sortable && (titleOut(table, tar)); // 清除可排序列的over样式
@@ -840,7 +865,7 @@ define(
             
             // 记忆起始拖拽的状态
             table.isDraging = true;
-            table.dragIndex = tar.getAttribute('index');
+            table.dragIndex = getAttr(tar, 'index');
             table.dragStart = e.pageX || e.clientX + lib.page.getScrollLeft();
 
             // 绑定拖拽事件
@@ -1108,7 +1133,7 @@ define(
         var tplRowPrefix = '<div '
                         + 'id="${id}" '
                         + 'class="${className}" '
-                        + 'index="${index}">';
+                        + 'data-index="${index}">';
 
         /**
          * 获取表格体的单元格id
@@ -1137,7 +1162,8 @@ define(
             var tdTextClass = getClass(table, 'cell-text');
             var fields = table.realFields;
             var subrow = table.subrow && table.subrow != 'false';
-            
+            var rowWidthOffset = table.rowWidthOffset;
+
             var classes = [
                 getClass(table, 'row'),
                 getClass(table, 'row-' + ((index % 2) ? 'odd' : 'even'))
@@ -1230,9 +1256,9 @@ define(
                 html.push(
                     '<td id="' + getBodyCellId(table, index, i) + '" ',
                     'class="' + tdClass.join(' ')  + '" ',
-                    'style="width:' + (colWidth + table.rowWidthOffset) + 'px;',
+                    'style="width:' + (colWidth + rowWidthOffset) + 'px;',
                     (colWidth ? '' : 'display:none') + '" ',
-                    'control-table="' + table.id + '" ',
+                    'data-control-table="' + table.id + '" ',
                     'row="' + index + '" col="' + i + '">',
                     contentHtml,
                     '</td>'
@@ -1287,7 +1313,7 @@ define(
                     table.dontSelectLine = false;
                     return;
                 }
-                var index = element.getAttribute('index');
+                var index = getAttr(element, 'index');
                 var input;
                 
                 switch (table.select) {
@@ -1315,7 +1341,7 @@ define(
                         +  'class="${className}" '
                         + 'id="${id}" '
                         + 'title="${title}" '
-                        + 'index="${index}">'
+                        + 'data-index="${index}">'
                         + '</div>';
         
         /**
@@ -1414,7 +1440,7 @@ define(
         function fireSubrow(element, e) {
             var table = this;
             var el = element;
-            var index = el.getAttribute('index');
+            var index = getAttr(el, 'index');
             var datasource = table.datasource;
             var dataLen = (datasource instanceof Array && datasource.length);
             
@@ -1422,7 +1448,7 @@ define(
                 return;
             }
             
-            if (!el.getAttribute('data-subrowopened')) {
+            if (!getAttr(el, 'subrowopened')) {
                 var dataItem = datasource[index];
                 var eventArgs = {
                     index:index, 
@@ -1469,8 +1495,8 @@ define(
                     getRow(table, index)
                 );
                 
-                entry.setAttribute('title', table.subEntryOpenTip);
-                entry.setAttribute('data-subrowopened', '');
+                setAttr(entry, 'title', table.subEntryOpenTip);
+                setAttr(entry, 'subrowopened', '');
                 
                 lib.g(getSubrowId(table, index)).style.display = 'none';
                 return true;
@@ -1504,8 +1530,8 @@ define(
             helper.addPartClasses(table, 'subentry-opened', entry);
             helper.addPartClasses(table, 'row-unfolded', getRow(table, index));
 
-            entry.setAttribute('title', table.subEntryCloseTip);
-            entry.setAttribute('data-subrowopened', '1');
+            setAttr(entry, 'title', table.subEntryCloseTip);
+            setAttr(entry, 'subrowopened', '1');
             
             lib.g(getSubrowId(table, index)).style.display = '';
             
@@ -1572,7 +1598,7 @@ define(
                 var i = 0;
                 while (walker) {
                     if (walker.nodeType == 1 
-                        && walker.getAttribute('followthead')
+                        && getAttr(walker, 'follow-thead')
                     ) {
                         walker.style.width = 
                             table.realWidth - table.followWidthArr[i++] + 'px';
@@ -1721,6 +1747,7 @@ define(
             var len = foot instanceof Array && foot.length;
             var tds = getBody(table).getElementsByTagName('td');
             var tdsLen = tds.length;
+            var rowWidthOffset = table.rowWidthOffset;
             
             // 重新设置表格尾的每列宽度
             if (len) {
@@ -1736,7 +1763,7 @@ define(
                     colIndex += colspan;
 
                     var td = lib.g(getFootCellId(table, i));
-                    width = Math.max(width + table.rowWidthOffset, 0);
+                    width = Math.max(width + rowWidthOffset, 0);
                     
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
@@ -1748,7 +1775,7 @@ define(
             if (!table.noHead) {
                 for (var i = 0; i < len; i++) {
                     var width = 
-                        Math.max(colsWidth[i] + table.rowWidthOffset, 0);
+                        Math.max(colsWidth[i] + rowWidthOffset, 0);
                     var td = lib.g(getTitleCellId(table, i));
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
@@ -1759,8 +1786,8 @@ define(
             var j = 0;
             for (var i = 0; i < tdsLen; i++) {
                 var td = tds[i];
-                if (td.getAttribute('control-table') == id) {
-                    var width = Math.max(colsWidth[j % len] + table.rowWidthOffset, 0);
+                if (getAttr(td, 'control-table') == id) {
+                    var width = Math.max(colsWidth[j % len] + rowWidthOffset, 0);
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
                     j++;
@@ -1783,7 +1810,7 @@ define(
                                 +  'type="checkbox" '
                                 +  'id="${id}" '
                                 +  'class="${className}" '
-                                +  'index="${index}" '
+                                +  'data-index="${index}" '
                                 +  '${disabled}/>';
                     var data = {
                         id: getId(table, 'select-all'),
@@ -1799,7 +1826,7 @@ define(
                                 +  'type="checkbox" '
                                 +  'id="${id}" '
                                 +  'class="${className}" '
-                                +  'index="${index}" '
+                                +  'data-index="${index}" '
                                 +  '${disabled}/>';
                     var data = {
                         id: getId(table, 'multi-select') + index,
@@ -1829,7 +1856,7 @@ define(
                                 +  'id="${id}" '
                                 +  'name="${name}" '
                                 +  'class="${className}" '
-                                +  'index="${index}"/>';
+                                +  'data-index="${index}"/>';
                     var id =  getId(table, 'single-select');
                     var data = {
                         id : id + index,
@@ -1848,7 +1875,7 @@ define(
          * @private
          */
         function rowCheckboxClick(element, e) {
-            var index = element.getAttribute('index');
+            var index = getAttr(element, 'index');
             selectMulti(this, index);
         }
         
@@ -1870,7 +1897,7 @@ define(
             for (var i = 0, len = inputs.length; i < len; i++) {
                 var input = inputs[i];
                 if (input.id.indexOf(cbIdPrefix) >= 0) {
-                    var inputIndex = input.getAttribute('index');
+                    var inputIndex = getAttr(input, 'index');
                     // 下面也只在`updateAll`的时候用，所以没关系
                     var row = updateAll && table.getRow(inputIndex);
                     if (!input.checked) {
@@ -1948,7 +1975,7 @@ define(
             for (var i = 0, len = inputs.length; i < len; i++) {
                 var input = inputs[i];
                 if (input.id.indexOf(cbIdPrefix) >= 0) {
-                    var index = input.getAttribute('index');
+                    var index = getAttr(input, 'index');
                     inputs[i].checked = checked;
                     
                     if (checked) {
@@ -1968,7 +1995,7 @@ define(
         }
         
         function selectSingleHandler(element, e) {
-            selectSingle(this, element.getAttribute('index'));
+            selectSingle(this, getAttr(element, 'index'));
         }
 
         /**
