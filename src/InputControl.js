@@ -180,7 +180,7 @@ define(
              * @return {string}
              */
             stringifyValue: function (rawValue) {
-                return rawValue ? (rawValue + '') : '';
+                return rawValue != null ? (rawValue + '') : '';
             },
 
             /**
