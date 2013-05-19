@@ -259,7 +259,7 @@ define(
                         lib.format(
                             '<div class="ui-hidden ${class}" id="${id}">',
                             {
-                                class: popClass,
+                                'class': popClass,
                                 id: popId
                             }
                         ) 
@@ -337,9 +337,6 @@ define(
          * @param {Event} 触发事件的事件对象
          */
         function mainClick(region, e) {
-            if (region.disabled || region.readOnly) {
-                return;
-            }
             var tar = e.target;
             while (tar && tar != document.body) {
                 if (tar.nodeName.toLowerCase() === 'input') {
@@ -417,9 +414,6 @@ define(
          * @param {Event} 触发事件的事件对象
          */
         function mainMouseOver(region, e) {
-            if (region.disabled || region.readOnly) {
-                return;
-            }
             var tar = e.target;
             var optionChildClass = helper.getPartClasses(
                 region, 'option-child');
@@ -526,10 +520,10 @@ define(
             // ff下offsetParent获取到的是region控件所在div;
             // ie下是省级checkbox所在的dt
             if (lib.ie) {
-                var regionDiv = lib.g(region.domId);
+                var regionDiv = lib.g(helper.getId(region));
                 var regionDivPos = lib.getOffset(regionDiv);
-                cityDiv.style.left = (pos.left - regionDivPos.left) + 'px';
-                cityDiv.style.top = (pos.top - regionDivPos.top + 28) + 'px';
+                cityDiv.style.left = (offset.left - regionDivPos.left) + 'px';
+                cityDiv.style.top = (offset.top - regionDivPos.top + 28) + 'px';
             }
             helper.addPartClasses(region, 'option-level3-over', cityDiv);
         }
