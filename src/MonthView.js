@@ -375,25 +375,21 @@ define(
             me.month = view.getMonth();
             me.year = view.getFullYear();
 
-            var monthSelect = me.getChild('monthSel');
-            monthSelect.setProperties({
-                datasource: getMonthOptions(me, me.year),
-                value: me.month
-            });
-
             var yearSelect = me.getChild('yearSel');
+            // 改变year会触发日历重绘，为了避免month改变时的二次重绘，
+            // 此时暂停重绘一次
+            monthView.stopRepaint = true;
             yearSelect.setProperties({
                 datasource: getYearOptions(me),
                 value: me.year
             });
 
-            //填充日历主体
-            var monthMainId = helper.getId(me, 'monthMain');
-            var monthMain = lib.g(monthMainId);
-            monthMain.innerHTML = getMonthMainHTML(me);
-
-            //选择日期 
-            updateSelectState(me);
+            // 修改month会连带更新日历主体
+            var monthSelect = me.getChild('monthSel');
+            monthSelect.setProperties({
+                datasource: getMonthOptions(me, me.year),
+                value: me.month
+            });
         }
 
         /**
@@ -475,6 +471,9 @@ define(
          * @param {Select} yearSel Select控件实例
          */
         function changeYear(monthView, yearSel) {
+            if (monthView.stopRepaint) {
+                return;
+            }
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
             repaintMonthView(monthView, year, monthView.month);
@@ -492,7 +491,18 @@ define(
         function changeMonth(monthView, monthSel) {
             var month = parseInt(monthSel.getValue(), 10);
             monthView.month = month;
+            updateMain(monthView);
+            monthView.fire('changemonth');
+        }
 
+        /**
+         * 更新日历主体
+         *
+         * @inner
+         * @param {MonthView} monthView MonthView控件实例
+         * @param {Select} monthSel Select控件实例
+         */
+        function updateMain(monthView) {
             //填充日历主体
             var monthMainId = helper.getId(monthView, 'monthMain');
             var monthMain = lib.g(monthMainId);
@@ -500,7 +510,6 @@ define(
 
             //选择日期 
             updateSelectState(monthView);
-            monthView.fire('changemonth');
         }
 
         /**
