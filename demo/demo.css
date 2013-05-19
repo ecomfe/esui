@@ -369,6 +369,11 @@ table {
     background-color: #a2a2a2;
     color: #fff;
 }
+#navigator li.cur a{
+    background-color: #a2a2a2;
+    color: #fff;
+}
+
 #page {
     width: 1200px;
     margin: 0 auto 40px;
