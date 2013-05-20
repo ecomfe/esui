@@ -12,6 +12,7 @@
         <div class="container">
             <div data-ui="type:Pager;id:test;"></div>
         </div>
+        <div id="message"></div>
         <script>
             var url = location.href;
             var params = url.split('?');
@@ -90,11 +91,11 @@
                 pager.set('urlTemplate', 'Pager.html?page=${page}&pageSize=${pageSize}');
 
                 pager.onchangepage = function () {
-                    console.log('Change page to ' + this.get('page'));
+                    document.getElementById('message').innerHTML += '<p>Change page to ' + this.get('page') + '</p>';
                 }
 
                 pager.onchangepagesize = function () {
-                    console.log('Change page size to ' + this.get('pageSize'));
+                    document.getElementById('message').innerHTML += '<p>Change page size to ' + this.get('pageSize') + '</p>';
                 }
             }
         );
