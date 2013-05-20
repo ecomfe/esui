@@ -715,6 +715,20 @@ define(function () {
         return ''; 
     };
 
+     /**
+     * 获取元素样式值
+     *
+     * @param {HTMLElement} element 目标元素
+     * @param {string} key 样式名称
+     * @return {string}
+     */
+    lib.getStyle = function(element, key){
+        key = lib.camelize(key);
+        return element.style[key]
+            || (element.currentStyle ? element.currentStyle[key] : "")
+            || lib.getComputedStyle(element, key);
+    };
+
     /**
      * 获取元素在页面中的位置和尺寸信息
      *
