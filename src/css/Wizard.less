@@ -35,11 +35,12 @@ ol {
         height: @arrowHeight;
         line-height: @arrowHeight;
         padding: 0 15px 0 0;
+        padding: 0\9;
         text-align: center;
         position: relative;
         background: #fff;
 
-        .text {
+        span {
             margin-right: @arrowGap;
             color: #000;
             height: @arrowHeight;
@@ -76,7 +77,7 @@ ol {
     }
 
     .ui-wizard-node-done {
-        .text {
+        span {
             background-color: @doneColor;
             color: #000;
 
@@ -98,7 +99,7 @@ ol {
     }
 
     .ui-wizard-node-active {
-        .text {
+        span {
             background-color: @activeColor;
             color: #FFFFFF;
             &:after {
@@ -110,12 +111,6 @@ ol {
             }
         }
 
-    }
-
-    .ui-wizard-node-last-active {
-        .arrow {
-             border-color: @activeColor;
-        }
     }
 
 }
