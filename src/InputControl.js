@@ -93,7 +93,7 @@ define(
              * @return {string} 
              */
             getValue: function () {
-                return this.stringifyValue(this.rawValue);
+                return this.stringifyValue(this.getRawValue());
             },
 
             /**
