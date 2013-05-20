@@ -9,3 +9,4 @@ require.config({
         }
     ]
 });
+document.createElement('header');

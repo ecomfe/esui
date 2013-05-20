@@ -16,7 +16,7 @@
                 <span id="tip" style="float:left;"></span>
             </div>
             <div style="overflow:hidden;zoom:1">
-                <div data-ui="type:Calendar;id:test;name:test"></div>
+                <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;"></div>
             <div style="overflow:hidden;zoom:1">
         </div>
         <script>
@@ -33,13 +33,13 @@
                 var unlock = controls[0];
                 var update = controls[1];
 
-                calendar.setRawValue(new Date(2013, 3, 19));
+                //calendar.setRawValue(new Date(2013, 3, 19));
 
-                setTimeout(function(){
-                    calendar.disable();
-                    document.getElementById('tip').innerHTML = '日历已锁';
+                // setTimeout(function(){
+                //     calendar.disable();
+                //     document.getElementById('tip').innerHTML = '日历已锁';
 
-                }, 2000);
+                // }, 2000);
 
                 unlock.on('click', function(){
                     calendar.enable();
@@ -47,7 +47,11 @@
                 });
                 var i = 1;
                 update.on('click', function(){
-                    calendar.setRawValue(new Date(2013, i++, 19));
+                    //calendar.setRawValue(new Date(2013, i++, 19));
+                    calendar.setRange({
+                        begin: new Date(2013, 3, 21),
+                        end: new Date(2018, 3, 19)
+                    });
                 });
             }
         )

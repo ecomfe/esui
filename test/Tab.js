@@ -126,9 +126,9 @@ define(function (require) {
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator).toBeDefined();
                 expect(navigator.children.length).toBe(3);
-                expect(navigator.children[0].innerText).toBe('tab1');
-                expect(navigator.children[1].innerText).toBe('tab2');
-                expect(navigator.children[2].innerText).toBe('tab3');
+                expect(getText(navigator.children[0])).toBe('tab1');
+                expect(getText(navigator.children[1])).toBe('tab2');
+                expect(getText(navigator.children[2])).toBe('tab3');
             });
 
             it('should add `ui-tab-navigator` class to the navigator element', function () {
@@ -149,7 +149,7 @@ define(function (require) {
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator).toBeDefined();
                 expect(navigator.children.length).toBe(1);
-                expect(navigator.children[0].innerText).toBe('tab4');
+                expect(getText(navigator.children[0])).toBe('tab4');
             });
 
             it('should reset `activeIndex` to 0 if `tabs` is changed via `setProperties` and current `activeIndex` is out of range', function () {
@@ -235,7 +235,7 @@ define(function (require) {
                 expect(tab.get('tabs')[3]).toEqual(newTab);
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
-                expect(navigator.children[3].innerText).toBe('tab4');
+                expect(getText(navigator.children[3])).toBe('tab4');
             });
 
             it('should add a tab config & element at the given position when `insert` is called', function () {
@@ -246,7 +246,7 @@ define(function (require) {
                 expect(tab.get('tabs')[2]).toEqual(newTab);
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
-                expect(navigator.children[2].innerText).toBe('tab4');
+                expect(getText(navigator.children[2])).toBe('tab4');
             });
 
             it('should add a tab at first if `index` is less than 0 when `insert` is called', function () {
@@ -257,7 +257,7 @@ define(function (require) {
                 expect(tab.get('tabs')[0]).toEqual(newTab);
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
-                expect(navigator.children[0].innerText).toBe('tab4');
+                expect(getText(navigator.children[0])).toBe('tab4');
             });
 
             it('should add a tab at last if `index` is out of range when `insert` is called', function () {
@@ -268,7 +268,7 @@ define(function (require) {
                 expect(tab.get('tabs')[3]).toEqual(newTab);
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(4);
-                expect(navigator.children[3].innerText).toBe('tab4');
+                expect(getText(navigator.children[3])).toBe('tab4');
             });
 
             it('should change `activeIndex` correctly when a tab is inserted', function () {
@@ -295,8 +295,8 @@ define(function (require) {
                 expect(tab.get('tabs')[1]).toEqual({ title: 'tab3', panel: 'c' });
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(2);
-                expect(navigator.children[0].innerText).toBe('tab1');
-                expect(navigator.children[1].innerText).toBe('tab3');
+                expect(getText(navigator.children[0])).toBe('tab1');
+                expect(getText(navigator.children[1])).toBe('tab3');
             });
 
             it('should remove a tab config & element when `removeAt` is called', function () {
@@ -308,8 +308,8 @@ define(function (require) {
                 expect(tab.get('tabs')[1]).toEqual({ title: 'tab3', panel: 'c' });
                 var navigator = container.getElementsByTagName('ul')[0];
                 expect(navigator.children.length).toBe(2);
-                expect(navigator.children[0].innerText).toBe('tab1');
-                expect(navigator.children[1].innerText).toBe('tab3');
+                expect(getText(navigator.children[0])).toBe('tab1');
+                expect(getText(navigator.children[1])).toBe('tab3');
             });
 
             it('should reset `activeIndex` to the next one if the active tab is removed', function () {

@@ -21,7 +21,22 @@
             ],
             function (ui) {
                 var monthView = ui.init()[0];
-                //monthView.setRawValue(new Date(2013, 3, 19));
+                monthView.setProperties({
+                    rawValue: new Date(2009, 2, 19),
+                    range: {
+                        begin: new Date(2008, 3, 19),
+                        end: new Date(2014, 3, 19)
+                    }
+                });
+
+
+                monthView.setProperties({
+                    range: {
+                        begin: new Date(2009, 3, 19),
+                        end: new Date(2014, 3, 19)
+                    }
+                });
+
             }
         )
         </script>

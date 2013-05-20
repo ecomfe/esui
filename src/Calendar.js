@@ -54,7 +54,6 @@ define(
             if (calendar.layer) {
                 helper.addPartClasses(calendar, 'layer-hidden', calendar.layer);
                 calendar.removeState('active');
-                calendar.fire('hide');
             }
 
         }
@@ -104,7 +103,10 @@ define(
                 calendar.initChildren(layer);
 
                 var monthView = calendar.getChild('monthView');
-                monthView.setRawValue(calendar.rawValue);
+                monthView.setProperties({
+                    'rawValue': calendar.rawValue,
+                    'range': calendar.range
+                });
                 monthView.on(
                     'change',
                     lib.bind(updateDisplay, null, calendar, monthView)
@@ -142,7 +144,7 @@ define(
             }
             calendar.rawValue = date;
             updateMain(calendar);
-            calendar.fire('change');
+            calendar.fire('change', date);
         }
 
         /**
@@ -188,6 +190,38 @@ define(
             }
         }
 
+        /**
+         * 字符串日期转换为Date对象
+         *
+         * @inner
+         * @param {string} dateStr 字符串日期
+         */
+        function parseToDate(dateStr) {
+            /** 2011-11-04 */
+            function parse(source) {
+                var dates = source.split('-');
+                if (dates) {
+                    return new Date(
+                        parseInt(dates[0], 10),
+                        parseInt(dates[1], 10) - 1,
+                        parseInt(dates[2], 10)
+                    );
+                }
+                return null;
+            }
+
+            dateStr = dateStr + '';
+            var dateAndHour =  dateStr.split(' ');
+            var date = parse(dateAndHour[0]);
+            if (dateAndHour[1]) {
+                var clock = dateAndHour[1].split(':');
+                date.setHours(clock[0]);
+                date.setMinutes(clock[1]);
+                date.setSeconds(clock[2]);
+            }
+            return date;
+        }
+
         Calendar.prototype = {
             /**
              * 控件类型
@@ -207,19 +241,37 @@ define(
                 /**
                  * 默认选项配置
                  */
+                var now = new Date();
                 var properties = {
-                    now: new Date(),
+                    now: now,
                     range: {
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
                     },
                     dateFormat: 'yyyy-MM-dd',
-                    paramFormat: 'yyyyMMdd',
-                    rawValue: new Date(),
+                    paramFormat: 'yyyy-MM-dd',
+                    rawValue: now,
                     calType: 'sel' // 日历类型，另外还支持'input' 'label'
                 };
                 lib.extend(properties, options);
-                lib.extend(this, properties);
+
+                if (properties.value) {
+                    properties.rawValue = parseToDate(properties.value);
+                }
+
+                // 类型如果是string
+                var range = properties.range;
+                if (typeof range === 'string') {
+                    var beginAndEnd = range.split(',');
+                    var begin = parseToDate(beginAndEnd[0]);
+                    var end = parseToDate(beginAndEnd[1]);
+                    properties.range = {
+                        begin: begin,
+                        end: end
+                    };
+
+                }
+                this.setProperties(properties);
             },
 
 
@@ -299,8 +351,8 @@ define(
              */
             repaint: helper.createRepaint(
                 {
-                    name: 'rawValue',
-                    paint: function (calendar, value) {
+                    name: ['rawValue', 'range'],
+                    paint: function (calendar, rawValue, range) {
                         if (calendar.disabled || calendar.readOnly) {
                             return;
                         }
@@ -309,7 +361,10 @@ define(
                         if (calendar.layer) {
                             // 更新日历
                             var monthView = calendar.getChild('monthView');
-                            monthView.setRawValue(value);
+                            monthView.setProperties({
+                                rawValue: rawValue,
+                                range: range
+                            });
                         }
 
                     }
@@ -323,13 +378,6 @@ define(
                     }
                 }
             ),
-
-            /**
-             * 鼠标点击事件处理函数
-             */
-            clickHandler: function () {
-                this.fire('click');
-            },
 
             /**
              * 设置日期
@@ -348,6 +396,16 @@ define(
             getRawValue: function () {
                 return this.rawValue;
             },
+
+            /**
+             * 设置日期可选区间
+             *
+             * @param {Object} range 日期可选区间.
+             */
+            setRange: function (range) {
+                this.setProperties({ 'range': range });
+            },
+
 
             /**
              * 将value从原始格式转换成string

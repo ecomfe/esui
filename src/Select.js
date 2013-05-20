@@ -1,9 +1,20 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 下拉框控件
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
+        // css
+        require('css!./css/Select.css');
+        
         /**
          * 下拉选择控件
          *
@@ -218,7 +229,7 @@ define(
          */
         function selectValue(select, e) {
             var target = lib.event.getTarget(e);
-            while (target && !target.hasAttribute('data-value')) {
+            while (target && !lib.hasAttribute(target, 'data-value')) {
                 target = target.parentNode;
             }
             if (target) {
@@ -397,7 +408,7 @@ define(
         function updateValue(select) {
             // 同步`value`
             var hidden = select.main.getElementsByTagName('input')[0];
-            hidden.value = select.rawValue;
+            hidden.value = select.rawValue == null ? '' : select.rawValue;
 
             // 同步显示的文字
             var textHolder = select.main.getElementsByTagName('span')[0];

@@ -104,9 +104,17 @@ define(
                 +   '${closeIcon}'
                 + '</div>';
 
+            var headClasses = [].concat(
+                helper.getPartClasses(me, head)
+            );
+            if (me.draggable) {
+                headClasses = headClasses.concat(
+                    helper.getPartClasses(me, head + '-draggable')
+                );
+            }
             var headData = {
                 'headId':  helper.getId(me, head),
-                'headClass':  helper.getPartClasses(me, head).join(' '),
+                'headClass':  headClasses.join(' '),
                 'titleId':  helper.getId(me, title),
                 'titleClass':  helper.getPartClasses(me, title).join(' '),
                 'title': me.title,
@@ -147,23 +155,20 @@ define(
         }
 
         /**
-         * 获取指定部分dom元素
-         *
-         * @param {string} type foot | body | head
-         * @inner
-         */
-        function getPartHtml(type) {
-            var domId = lib.getId(this, type);
-            return lib.g(domId);
-        }
-
-        /**
          * 点击头部关闭按钮时事件处理函数
          *
          * @inner
          */
         function closeClickHandler() {
             this.hide();
+            if (this.closeOnHide === true) {
+                this.dispose();
+                //移除dom
+                var domId = helper.getId(this);
+                lib.removeNode(domId);
+            }
+            this.fire('close');
+
         }
 
         /**
@@ -193,6 +198,119 @@ define(
 
             main.style.left = left + 'px';
             main.style.top = page.getScrollTop() + top + 'px';
+        }
+
+        var getDialogHeadDownHandler; //drag mousedown的句柄
+        var getDialogHeadMoveHandler; //drag mousemove的句柄
+        var getDialogHeadUpHandler; //drag mouseup的句柄
+
+        /**
+         * 绑定拖动drag事件
+         * @param {ui.Dialog} 控件对象
+         */
+        function initDragHandler(dialog) {
+            var me = dialog;
+            var head = lib.g(helper.getId(me, 'head'));
+            
+            getDialogHeadDownHandler = lib.bind(dialogHeadDownHandler, me);
+
+            lib.on(head, 'mousedown', getDialogHeadDownHandler);
+        }
+
+        /**
+         * drag时 mousedown的事件处理函数
+         */
+        function dialogHeadDownHandler(e) {
+            var me = this;
+            var button = e.button;
+            var head = lib.g(helper.getId(me, 'head'));
+            // 只有左键点击时才触发
+            var isLeft = false;
+            if ((!e.which && button === 1) || e.which === 1) {
+                isLeft = true;
+            }
+            if (!isLeft) {
+                lib.un(head, 'mouseup', getDialogHeadUpHandler);
+                return;
+            }
+            var doc = document;
+
+            getDialogHeadMoveHandler = lib.bind(dialogHeadMoveHandler, me);
+            getDialogHeadUpHandler = lib.bind(dialogHeadUpHandler, me);
+
+            lib.on(doc, 'mousemove', getDialogHeadMoveHandler);
+            lib.on(doc, 'mouseup', getDialogHeadUpHandler);
+
+            //记录鼠标位置
+            lib.event.getMousePosition(e);
+            me.dragStartPos = {x: e.pageX, y: e.pageY};
+        }
+
+        /**
+         * drag时 mousemove的事件处理函数
+         */
+        function dialogHeadMoveHandler(e) {
+            var me = this;
+
+            //记录鼠标位置
+            lib.event.getMousePosition(e);
+
+            //计算移动距离
+            var movedDistance = {
+                x: e.pageX - me.dragStartPos.x,
+                y: e.pageY - me.dragStartPos.y
+            };
+
+            me.dragStartPos = {x: e.pageX, y: e.pageY};
+
+            var main = me.main;
+            var mainPos = lib.getOffset(main);
+            main.style.left = mainPos.left + movedDistance.x + 'px';
+            main.style.top = mainPos.top + movedDistance.y + 'px';
+
+        }
+
+        /**
+         * drag时 mouseup的事件处理函数
+         */
+        function dialogHeadUpHandler(e) {
+            //卸载事件
+            lib.un(document, 'mousemove', getDialogHeadMoveHandler);
+            var head = lib.g(helper.getId(this, 'head'));
+            lib.un(head, 'mouseup', getDialogHeadUpHandler);
+        }
+
+
+        /**
+         * 显示遮盖层
+         * @param {ui.Dialog} dialog 控件对象
+         */
+        function showMask(dialog) {
+            var mask = getMask(dialog);
+            var clazz = [];
+            var maskClass = helper.getPartClasses(dialog, 'mask').join(' ');
+
+            clazz.push(maskClass);
+            repaintMask(mask);
+
+            mask.className = clazz.join(' ');
+            mask.style.display = 'block';
+            dialog.curMaskListener = lib.curry(maskResizeHandler, dialog);
+            lib.on(window, 'resize', dialog.curMaskListener);            
+        }
+
+
+        /**
+         * 隐藏遮盖层
+         * @param {ui.Dialog} dialog 控件对象
+         */
+        function hideMask(dialog) {
+            var mask = getMask(dialog);
+            if ('undefined' != typeof mask) {
+                lib.removeNode(mask);
+                lib.un(window, 'resize', dialog.curMaskListener); 
+                dialog.curMaskListener = null;
+            }
         }
 
         /**
@@ -296,6 +414,7 @@ define(
                 var properties = {
                     autoPosition: false,  // 是否自动定位居中
                     closeButton: true,    // 是否具有关闭按钮
+                    closeOnHide: true, // 右上角关闭按钮是隐藏还是移除
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
@@ -314,7 +433,7 @@ define(
                     needFoot: true
                 };
                 lib.extend(properties, options);
-                lib.extend(this, properties);
+                this.setProperties(properties);
             },
 
             /**
@@ -334,7 +453,11 @@ define(
                 // 初始化控件主元素上的行为
                 if (this.closeButton !== false) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
-                    helper.addDOMEvent(this, close, 'click', closeClickHandler);
+                    helper.addDOMEvent(
+                        this,
+                        close,
+                        'click',
+                        lib.curry(closeClickHandler, this));
                 }
             },
 
@@ -427,61 +550,34 @@ define(
              * 获取对话框主体的控件对象
              * 
              * 
-             * @return {HTMLElement} 
+             * @return {ui.Panel} 
              */
             getBody: function () {
                 return this.getChild('body');
             },
 
-            /**
-             * 获取对话框主体的dom元素
-             * 
-             * 
-             * @return {HTMLElement} 
-             */
-            getBodyDOM: function () {
-                return getPartHtml(this, 'head');
-            },
 
             /**
              * 获取对话框头部的控件对象
              * 
              * 
-             * @return {HTMLElement} 
+             * @return {ui.Panel} 
              */
             getHead: function () {
                 return this.getChild('head');
             },
 
-            /**
-             * 获取对话框头部的dom元素
-             * 
-             * 
-             * @return {HTMLElement} 
-             */
-            getHeadDOM: function () {
-                return getPartHtml(this, 'head');
-            },
 
             /**
              * 获取对话框腿部的控件对象
              * 
              * 
-             * @return {HTMLElement} 
+             * @return {ui.Panel} 
              */
             getFoot: function () {
                 return this.getChild('foot');
             },
 
-            /**
-             * 获取对话框腿部的dom元素
-             * 
-             * 
-             * @return {HTMLElement} 
-             */
-            getFootDOM: function () {
-                return getPartHtml(this, 'foot');
-            },
 
             /**
              * 显示对话框
@@ -502,35 +598,16 @@ define(
 
                 // 拖拽功能初始化
                 if (this.draggable) {
-                    // TODO: 拖拽的库函数还未实现
-                    // baidu.dom.draggable(main, {handler:this.getHead()});
+                    initDragHandler(this);
                 }
 
                 if (mask) {
-                    this.showMask();
+                    showMask(this);
                 }
 
                 this.fire('show');
                 this.isShow = true;
 
-            },
-
-            /**
-             * 显示遮盖层
-             * 
-             */
-            showMask: function () {
-                var mask = getMask(this);
-                var clazz = [];
-                var maskClass = helper.getPartClasses(this, 'mask').join(' ');
-
-                clazz.push(maskClass);
-                repaintMask(mask);
-
-                mask.className = clazz.join(' ');
-                mask.style.display = 'block';
-                this.curMaskListener = lib.curry(maskResizeHandler, this);
-                lib.on(window, 'resize', this.curMaskListener);            
             },
 
             /**
@@ -548,7 +625,7 @@ define(
                     main.style.left = main.style.top = '-10000px';
 
                     if (mask) {
-                        this.hideMask();
+                        hideMask(this);
                     }
                 }
 
@@ -556,17 +633,6 @@ define(
                 this.isShow = false;
             },
 
-            /**
-             * 隐藏遮盖层
-             */
-            hideMask: function () {
-                var mask = getMask(this);
-                if ('undefined' != typeof mask) {
-                    lib.removeNode(mask);
-                    lib.un(window, 'resize', this.curMaskListener); 
-                    this.curMaskListener = null;
-                }
-            },
 
             /**
              * 设置标题文字
@@ -672,7 +738,8 @@ define(
                     title: '',
                     width: width,
                     mask: true,
-                    main: main
+                    main: main,
+                    skin: 'confirm'
                 }
             );
 
@@ -743,7 +810,6 @@ define(
                 '<div class="ui-dialog-text">${content}</div>'
             ].join('');
 
-
             //创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
@@ -755,7 +821,8 @@ define(
                     title: '',
                     width: width,
                     mask: true,
-                    main: main
+                    main: main,
+                    skin: 'alert'
                 }
             );
 

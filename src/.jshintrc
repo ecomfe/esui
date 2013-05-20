@@ -25,7 +25,6 @@
     "boss": false,
     "debug": false,
     "eqnull": true,
-    "es5": true,
     "esnext": false,
     "evil": true,
     "expr": true,

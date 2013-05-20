@@ -12,13 +12,17 @@ define(
         var Control = require('./Control');
         var ui      = require('./main');
         var helper  = require('./controlHelper');
+
+        // css
+        require('css!./css/Sidebar.css');
+
         /**
          * Sidebar控件
          *
          * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Sidebar(options) {
+        function Sidebar() {
             Control.apply(this, arguments);
         }
 
@@ -142,7 +146,7 @@ define(
             
             // 初始化minibar
             div.innerHTML   = html.join('');
-            div.id          = helper.getId(me, 'MiniBar');
+            div.id          = helper.getId(me, 'minibar');
             div.className   = helper.getPartClasses(me, 'minibar').join(' ');
             div.style.left  = '-10000px';
             div.style.top   = me.top + 'px';
@@ -167,11 +171,11 @@ define(
 
             require('./Button');
             var btnAutoHide = ui.create('Button', {
-                id      : helper.getId(me, 'AutoHide'),
+                id      : helper.getId(me, 'autohide'),
                 skin    : 'autohide'
             });
             var btnFixed    = ui.create('Button', {
-                id      : helper.getId(me, 'Fixed'),
+                id      : helper.getId(me, 'fixed'),
                 skin    : 'fixed'
             });
             
@@ -552,7 +556,7 @@ define(
          *
          */
         Sidebar.prototype.getMiniBar = function () {
-            return lib.g(helper.getId(this, 'MiniBar'));
+            return lib.g(helper.getId(this, 'minibar'));
         };
 
         /**
@@ -570,19 +574,6 @@ define(
          */
         Sidebar.prototype.isAutoHide = function () {
             return this.mode == 'autohide';
-        };
-
-        /**
-         * 模式改变的事件
-         * @param  {string} mode 模式类型（autohide fixed
-         */
-        Sidebar.prototype.onmodechange = function () {
-        };
-
-        /**
-         * resize的事件
-         */
-        Sidebar.prototype.onresize = function () {
         };
 
         /**

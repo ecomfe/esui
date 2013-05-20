@@ -3,13 +3,14 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file 控件基类模块
- * @author erik
+ * @author erik, otakustay
  */
 
 define(
     function (require) {
         var lib = require('./lib');
         var helper = require('./controlHelper');
+        var ui = require('./main');
 
         /**
          * 控件基类
@@ -30,12 +31,16 @@ define(
 
             this.main = options.main ? options.main : this.createMain(options);
 
-            this.initOptions(options);
-
-            // 自创建id
-            if (!this.id) {
+            // 如果没给id，自己创建一个，
+            // 这个有可能在后续的`initOptions`中被重写，则会在`setProperties`中处理，
+            // 这个不能放到`initOptions`的后面，
+            // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
+            // 会把其它控件的`ViewContext`给冲掉导致各种错误
+            if (!this.id && !options.id) {
                 this.id = helper.getGUID();
             }
+
+            this.initOptions(options);
 
             // 初始化视图环境
             helper.initViewContext(this);
@@ -108,13 +113,14 @@ define(
                 if (helper.isInStage(this, 'INITED')) {
                     this.fire('beforerender');
 
+                    this.initStructure();
+
                     // 为控件主元素添加id
                     if (!this.main.id) {
                         this.main.id = helper.getId(this);
                     }
 
                     // 为控件主元素添加控件实例标识属性
-                    var ui = require('./main');
                     this.main.setAttribute( 
                         ui.getConfig('instanceAttr'), 
                         this.id 
@@ -123,8 +129,6 @@ define(
                         ui.getConfig('viewContextAttr'), 
                         this.viewContext.id 
                     );
-
-                    this.initStructure();
 
                     helper.addPartClasses(this);
                 }
@@ -149,7 +153,9 @@ define(
              * @protected
              */
             repaint: function (changes, changesIndex) {
-                if (!changesIndex || changesIndex.hasOwnProperty('disabled')) {
+                if (!changesIndex
+                    || changesIndex.hasOwnProperty('disabled')
+                ) {
                     var method = this.disabled ? 'addState' : 'removeState';
                     this[method]('disabled');
                 }
@@ -229,6 +235,20 @@ define(
              * @param {Object} properties 属性值集合
              */
             setProperties: function (properties) {
+                // 只有在渲染以前（就是`initOptions`调用的那次）才允许设置id
+                if (properties.hasOwnProperty('id')) {
+                    if (!this.stage) {
+                        this.id = properties.id;
+                    }
+                    delete properties.id;
+                }
+
+                // 吞掉`viewContext`的设置，逻辑都在`setViewContext`中
+                if (properties.hasOwnProperty('viewContext')) {
+                    this.setViewContext(properties.viewContext);
+                    delete properties.viewContext;
+                }
+
                 var changes = [];
                 var changesIndex = {};
                 for (var key in properties) {
@@ -283,6 +303,14 @@ define(
                     for (var i = 0, len = children.length; i < len; i++) {
                         children[i].setViewContext(viewContext);
                     }
+                }
+
+                // 在主元素上加个属性，以便找到`ViewContext`
+                if (this.viewContext && helper.isInStage(this, 'RENDERED')) {
+                    this.main.setAttribute( 
+                        ui.getConfig('viewContextAttr'), 
+                        this.viewContext.id 
+                    );
                 }
             },
 
@@ -483,7 +511,7 @@ define(
                 options = options || {};
                 options.viewContext = this.viewContext;
 
-                var children = require('./main').init(wrap, options);
+                var children = ui.init(wrap, options);
                 for (var i = 0, len = children.length; i < len; i++) {
                     this.addChild(children[i]);
                 }
@@ -536,8 +564,7 @@ define(
              */
             fire: function (type, arg) {
                 // 构造event argument
-                var eventArg = {};
-                lib.extend(eventArg, arg);
+                var eventArg = arg || {};
                 eventArg.type = type;
 
                 // 先调用直接写在实例上的"onxxx"

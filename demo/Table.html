@@ -46,7 +46,7 @@
                             select:'multi',
                             subrowMutex: 1,
                             followHead:true,
-                            //selectMode :'line',
+                            selectMode :'line',
                             fields: [
                                 {
                                     title: '编号',
@@ -95,8 +95,7 @@
                                     resizable : true,
                                     width: 100,
                                     content: function (item, index) {
-                                        return '<a href="#"' + lib.getCommandStr({ name:'link', args :'index:' + index}) + '>command链接</a>'
-                                             + '<button'+ lib.getCommandStr({ name:'button', args :'index:' + index }) +'>command按钮</button>';
+                                        return '<a href="#">操作</a>';
                                     }
                                 }
                             ]
@@ -113,18 +112,21 @@
                     this.getSubrow( arg.index ).innerHTML = '';
                 };
 
+                myTable.onselect = function ( arg ) {
+                    alert(arg.selectedIndex.toString());
+                };
+
                 ui.get('disabledBtn').onclick = function () {
                     ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
                 };
 
-                myTable.onsort = function ( field, order ) {
-                    var orderBy = field.field;
+                myTable.onsort = function ( arg ) {
+                    var orderBy = arg.field.field;
                     var lib = require('esui/lib');
                     var listData = lib.clone( data );
-                    if (order) {
+                    if (arg.order) {
                         listData.sort( function (a, b) {
                             var compareResult;
-                            
                             switch ( orderBy ) {
                             case 'name':
                                 compareResult = a.name.localeCompare( b.name );
@@ -135,13 +137,15 @@
                                 break;
                             }
                             
-                            if ( order == 'desc' ) {
+                            if ( arg.order == 'desc' ) {
                                 compareResult = -compareResult;
                             }
                             
                             return compareResult;
                         } );    
                     }
+
+                    myTable.set('datasource', listData);
                 };
 
                 function linkClickHandler(arg) {

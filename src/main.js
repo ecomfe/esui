@@ -67,24 +67,69 @@ define(
             if (!source) {
                 return {};
             }
-            
-            var value = {};
-            var items = source.split(/\s*;\s*/);
-            var len = items.length;
-
-            while (len--) {
-                var item = items[len];
-                if (!item) {
-                    continue;
+            // 为了让key和value中有`:`或`;`这类分隔符时能正常工作，不采用正则
+            // 
+            // 分析的原则是：
+            // 
+            // 1. 找到第1个冒号，取前面部分为key
+            // 2. 找下个早号前的最后一个分号，取前面部分为value
+            // 3. 如果字符串没结束，回到第1步
+            var result = {}; // 保存结果
+            var lastStop = 0; // 上次找完时停下的位置，分隔字符串用
+            var cursor = 0; // 当前检索到的字符
+            // 为了保证只用一个`source`串就搞定，下面会涉及到很多的游标，
+            // 简单的方法是每次截完一段后把`soruce`截过的部分去掉，
+            // 不过这么做会频繁分配字符串对象，所以优化了一下保证`source`不变
+            while (cursor < source.length) {
+                // 找key，找到第1个冒号
+                while (cursor < source.length
+                    && source.charAt(cursor) !== ':'
+                ) {
+                    cursor++;
                 }
-
-                var segment = item.split(/\s*:\s*/);
-                value[segment[0]] = valueReplacer ?
-                    valueReplacer(segment[1])
-                    : segment[1];
+                // 如果找到尾也没找到冒号，那就是最后有一段非键值对的字符串，丢掉
+                if (cursor >= source.length) {
+                    break;
+                }
+                // 把key截出来
+                var key = lib.trim(source.slice(lastStop, cursor));
+                // 移到冒号后面一个字符
+                cursor++;
+                // 下次切分就从这个字符开始了
+                lastStop = cursor;
+                // 找value，要找最后一个分号，这里就需要前溯了，先找到第1个分号
+                while (cursor < source.length
+                    && source.charAt(cursor) !== ';'
+                ) {
+                    cursor++;
+                }
+                // 然后做前溯一直到下一个冒号
+                var lookAheadIndex = cursor + 1;
+                while (lookAheadIndex < source.length) {
+                    var ch = source.charAt(lookAheadIndex);
+                    // 如果在中途还发现有分号，把游标移过来
+                    if (ch === ';') {
+                        cursor = lookAheadIndex;
+                    }
+                    // 如果发现了冒号，则上次的游标就是最后一个分号了
+                    if (ch === ':') {
+                        break;
+                    }
+                    lookAheadIndex++;
+                }
+                // 把value截出来，这里没有和key一样判断是否已经跑到尾，
+                // 是因为我们允许最后一个键值对没有分号结束，
+                // 但是会遇上`key:`这样的串，即只有键没有值，
+                // 这时我们就认为值是个空字符串了
+                var value = lib.trim(source.slice(lastStop, cursor));
+                // 加入到结果中
+                result[key] = valueReplacer ? valueReplacer(value) : value;
+                // 再往前进一格，开始下一次查找
+                cursor++;
+                lastStop = cursor;
             }
 
-            return value;
+            return result;
         };
 
         /**
@@ -94,7 +139,7 @@ define(
          * @param {HTMLElement} dom dom元素
          * @return {Control}
          */
-        main.getControlByDom = function ( dom ) {
+        main.getControlByDOM = function ( dom ) {
             if ( !dom ) {
                 return null;
             }
@@ -266,7 +311,9 @@ define(
             var rawElements = wrap.getElementsByTagName('*');
             var elements = [];
             for (var i = 0, len = rawElements.length; i < len; i++) {
-                elements[i] = rawElements[i];
+                if (rawElements[i].nodeType === 1) {
+                    elements.push(rawElements[i]);
+                }
             }
 
             var uiPrefix = main.getConfig('uiPrefix');
@@ -424,16 +471,21 @@ define(
          * @inner
          * @type {Object}
          */
-        var ruleClasses = {};
+        var ruleClasses = [];
 
         /**
          * 注册控件验证规则类。
          * 通过类的prototype.type识别控件类型信息。
          * 
          * @param {Function} ruleClass 验证规则类
+         * @param {number} priority 优先级，越小的优先级越高
          */
-        main.registerRule = function (ruleClass) {
-            registerClass(ruleClass, ruleClasses);
+        main.registerRule = function (ruleClass, priority) {
+            // 多个Rule共享一个属性似乎也没问题
+            ruleClasses.push({ type: ruleClasses, priority: priority });
+            // 能有几个规则，这里就不优化为插入排序了
+            ruleClasses.sort(
+                function (x, y) { return x.priority - y.priority; });
         };
 
         /**
@@ -444,9 +496,10 @@ define(
          */
         main.createRulesByControl = function (control) {
             var rules = [];
-            for (var type in ruleClasses) {
-                if (control.get(type)) {
-                    rules.push(new ruleClasses[type]());
+            for (var i = 0; i < ruleClasses.length; i++) {
+                var RuleClass = ruleClasses.type;
+                if (control.get(RuleClass.prototype.type) != null) {
+                    rules.push(new RuleClass());
                 }
             }
 

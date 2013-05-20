@@ -63,13 +63,15 @@ define(
             var ds = [];
             var len = 11;
 
+            var i = 0;
+
             if (year == range.begin.getFullYear()) {
                 i = range.begin.getMonth();
             } else if (year == range.end.getFullYear()) {
                 len = range.end.getMonth();
             }
 
-            for (var i = 0; i <= len; i++) {
+            for (; i <= len; i++) {
                 ds.push({text: (i + 1), value: i});
             }
 
@@ -336,6 +338,7 @@ define(
          * @param {number} month 月.
          */
         function repaintMonthView(monthView, year, month) {
+            // 如果没有指定，则显示rawValue对应月份日期
             if (year == null) {
                 year = monthView.year;
             }
@@ -345,43 +348,48 @@ define(
             }
 
             var me = monthView;
+
+            // 允许设置的范围
             var range = me.range;
-            var view = new Date(year, month, 1);
             var rangeBegin = range.begin.getFullYear() * 12
                 + range.begin.getMonth();
             var rangeEnd = range.end.getFullYear() * 12 + range.end.getMonth();
+
+            // 欲设置的年月
             var viewMonth = year * 12 + month;
 
+            var view = new Date(year, month, 1);
             month = view.getMonth();
 
+            // 设置早了，补足
             if (rangeBegin - viewMonth > 0) {
                 month += (rangeBegin - viewMonth);
             }
+            // 设置晚了，减余
             else if (viewMonth - rangeEnd > 0) {
                 month -= (viewMonth - rangeEnd);
             }
+
+            // 重新设置
             view.setMonth(month);
             me.month = view.getMonth();
             me.year = view.getFullYear();
 
+            var yearSelect = me.getChild('yearSel');
+            // 改变year会触发日历重绘，为了避免month改变时的二次重绘，
+            // 此时暂停重绘一次
+            monthView.stopRepaint = true;
+            yearSelect.setProperties({
+                datasource: getYearOptions(me),
+                value: me.year
+            });
+
+            // 修改month会连带更新日历主体
             var monthSelect = me.getChild('monthSel');
             monthSelect.setProperties({
                 datasource: getMonthOptions(me, me.year),
                 value: me.month
             });
-
-            var yearSelect = me.getChild('yearSel');
-            yearSelect.setProperties({
-                value: me.year
-            });
-
-            //填充日历主体
-            var monthMainId = helper.getId(me, 'monthMain');
-            var monthMain = lib.g(monthMainId);
-            monthMain.innerHTML = getMonthMainHTML(me);
-
-            //选择日期 
-            updateSelectState(me);
         }
 
         /**
@@ -463,9 +471,13 @@ define(
          * @param {Select} yearSel Select控件实例
          */
         function changeYear(monthView, yearSel) {
+            if (monthView.stopRepaint) {
+                return;
+            }
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
             repaintMonthView(monthView, year, monthView.month);
+            monthView.fire('changeyear');
 
         }
 
@@ -479,7 +491,85 @@ define(
         function changeMonth(monthView, monthSel) {
             var month = parseInt(monthSel.getValue(), 10);
             monthView.month = month;
-            repaintMonthView(monthView, monthView.year, month);
+            updateMain(monthView);
+            monthView.fire('changemonth');
+        }
+
+        /**
+         * 更新日历主体
+         *
+         * @inner
+         * @param {MonthView} monthView MonthView控件实例
+         * @param {Select} monthSel Select控件实例
+         */
+        function updateMain(monthView) {
+            //填充日历主体
+            var monthMainId = helper.getId(monthView, 'monthMain');
+            var monthMain = lib.g(monthMainId);
+            monthMain.innerHTML = getMonthMainHTML(monthView);
+
+            //选择日期 
+            updateSelectState(monthView);
+        }
+
+        /**
+         * range适配器，将string型range适配为Object
+         *
+         * @inner
+         * @param {Object | string} range
+         */
+         function rangeAdapter(range) {            
+            // range类型如果是string
+            if (typeof range === 'string') {
+                var beginAndEnd = range.split(',');
+                var begin = parseToDate(beginAndEnd[0]);
+                var end = parseToDate(beginAndEnd[1]);
+                return {
+                    begin: begin,
+                    end: end
+                };
+            }
+            else {
+                return range;
+            }
+         }
+
+        /**
+         * 字符串日期转换为Date对象
+         *
+         * @inner
+         * @param {string} dateStr 字符串日期
+         */
+                 /**
+         * 字符串日期转换为Date对象
+         *
+         * @inner
+         * @param {string} dateStr 字符串日期
+         */
+        function parseToDate(dateStr) {
+            /** 2011-11-04 */
+            function parse(source) {
+                var dates = source.split('-');
+                if (dates) {
+                    return new Date(
+                        parseInt(dates[0], 10),
+                        parseInt(dates[1], 10) - 1,
+                        parseInt(dates[2], 10)
+                    );
+                }
+                return null;
+            }
+
+            dateStr = dateStr + '';
+            var dateAndHour =  dateStr.split(' ');
+            var date = parse(dateAndHour[0]);
+            if (dateAndHour[1]) {
+                var clock = dateAndHour[1].split(':');
+                date.setHours(clock[0]);
+                date.setMinutes(clock[1]);
+                date.setSeconds(clock[2]);
+            }
+            return date;
         }
 
         MonthView.prototype = {
@@ -511,6 +601,12 @@ define(
                     rawValue: new Date()
                 };
                 lib.extend(properties, options);
+                if (properties.value) {
+                    properties.rawValue = parseToDate(properties.value);
+                }
+
+                properties.range = rangeAdapter(properties.range);
+
                 this.setProperties(properties);
 
                 this.month = parseInt(this.month, 10)
@@ -560,11 +656,6 @@ define(
                     lib.bind(changeMonth, null, this, monthSel)
                 );
                 var yearSel = this.getChild('yearSel');
-                yearSel.setProperties({
-                    datasource: getYearOptions(this),
-                    value: this.year
-                });
-
                 yearSel.on(
                     'change',
                     lib.bind(changeYear, null, this, yearSel)
@@ -600,12 +691,17 @@ define(
              */
             repaint: helper.createRepaint(
                 {
-                    name: 'rawValue',
-                    paint: function (monthView, value) {
+                    name: ['rawValue', 'range'],
+                    paint: function (monthView, rawValue, range) {
+                        if (range) {
+                            monthView.range = rangeAdapter(range);
+                        }
                         monthView.month = monthView.rawValue.getMonth();
                         monthView.year = monthView.rawValue.getFullYear();
                         repaintMonthView(
-                            monthView, value.getFullYear(), value.getMonth()
+                            monthView,
+                            monthView.rawValue.getFullYear(),
+                            monthView.rawValue.getMonth()
                         );
 
                     }
@@ -613,11 +709,14 @@ define(
             ),
 
             /**
-             * 鼠标点击事件处理函数
+             * 设置可选中的日期区间
+             *
+             * @param {Object} range 可选中的日期区间
              */
-            clickHandler: function () {
-                this.fire('click');
+            setRange: function (range) {
+                this.setProperties({ 'range': range });
             },
+
 
             /**
              * 设置日期
@@ -638,13 +737,15 @@ define(
             },
 
             /**
-             * 获取日期字符串
+             * 将value从原始格式转换成string
              * 
-             * @return {string} 
+             * @param {*} rawValue 原始值
+             * @return {string}
              */
-            getValue: function () {
-                return lib.date.format(this.rawValue, this.paramFormat) || null;
+            stringifyValue: function (rawValue) {
+                return lib.date.format(this.rawValue, this.paramFormat) || '';
             }
+
         };
 
         lib.inherits(MonthView, Control);

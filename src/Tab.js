@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 标签页控件
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var lib = require('./lib');
@@ -142,6 +150,37 @@ define(
         };
 
         /**
+         * 标签页内容的模板
+         *
+         * @type {string}
+         * @public
+         */
+        Tab.prototype.contentTemplate = '<span>${title}</span>';
+
+        /**
+         * 获取标签页内容的HTML
+         *
+         * @param {Object} config 标签页数据项
+         * @param {boolean} allowClose 是否允许关闭
+         * @return {string}
+         * @public
+         */
+        Tab.prototype.getContentHTML = function (config, allowClose) {
+            var html = lib.format(
+                this.contentTemplate,
+                {
+                    title: lib.encodeHTML(config.title)
+                }
+            );
+            if (allowClose) {
+                html += '<span class="'
+                    + helper.getPartClasses(this, 'close').join(' ')
+                    + '">关闭</span>';
+            }
+            return html;
+        };
+
+        /**
          * 创建一个标签元素
          *
          * @param {Tab} tab 控件实例
@@ -157,13 +196,7 @@ define(
                 helper.addPartClasses(tab, 'active', element);
             }
 
-            element.innerHTML += lib.encodeHTML(config.title);
-
-            if (allowClose) {
-                element.innerHTML += '<span class="'
-                    + helper.getPartClasses(tab, 'close').join(' ')
-                    + '">关闭</span>';
-            }
+            element.innerHTML = tab.getContentHTML(config, allowClose);
 
             return element;
         } 

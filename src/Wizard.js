@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 多步骤导航控件
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var lib = require('./lib');
@@ -77,6 +85,31 @@ define(
         }
 
         /**
+         * 节点内容的HTML模板
+         *
+         * @type {string}
+         * @public
+         */
+        Wizard.prototype.nodeTemplate = '<span>${text}</span>';
+
+        /**
+         * 获取节点内容HTML
+         *
+         * @param {Object} node 节点数据项
+         * @param {string} node.text 显示的文字
+         * @return {string}
+         * @public
+         */
+        Wizard.prototype.getNodeHTML = function (node) {
+            return lib.format(
+                this.nodeTemplate,
+                {
+                    text: lib.encodeHTML(node.text)
+                }
+            );
+        };
+
+        /**
          * 获取导航HTML
          *
          * @param {Wizard} Wizard 控件实例
@@ -128,7 +161,7 @@ define(
                 }
 
                 html += '<li class="' + classes.join(' ') + '">';
-                html += '<span class="text">' + node.text + '</span>';
+                html += wizard.getNodeHTML(node);
                 html += '</li>';
             }
 
@@ -210,7 +243,7 @@ define(
                 // 如果同时有`activeIndex`和`steps`，
                 // 则`activeIndex`可以只赋在实例上不丢进更新列表，
                 // 因为`getHTML`是会处理这事的
-                if (properties.hasOwnProperty('steps')) {
+                if (properties.hasOwnProperty('activeIndex')) {
                     this.activeIndex = properties.activeIndex;
                     delete properties.activeIndex;
                 }

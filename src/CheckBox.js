@@ -8,7 +8,7 @@ define(
          */
         function CheckBox( options ) {
             BoxControl.call( this, options );
-        };
+        }
 
         CheckBox.prototype.type = 'CheckBox';
 

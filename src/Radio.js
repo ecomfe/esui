@@ -10,7 +10,7 @@ define(
             // 类型声明，用于生成控件子dom的id和class
 
             BoxControl.call( this, options );
-        };
+        }
 
         Radio.prototype.type = 'Radio';
 

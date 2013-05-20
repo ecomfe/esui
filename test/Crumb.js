@@ -32,7 +32,7 @@ define(function (require) {
 
             it('should create a `<a>` element if a node have both `text` and `href` properties', function () {
                 var path = [
-                    { text: 'test', href: 'http://test.com' }
+                    { text: 'test', href: 'http://test.com/' }
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
@@ -40,7 +40,7 @@ define(function (require) {
                 var node = ol.firstChild.firstChild;
                 expect(node.nodeName.toLowerCase()).toBe('a');
                 expect(node.innerHTML).toBe('test');
-                expect(node.getAttribute('href', 2)).toBe('http://test.com');
+                expect(node.getAttribute('href', 2)).toBe('http://test.com/');
             });
 
             it('should create a `<span>` element if a node have only a `text` property', function () {
@@ -110,7 +110,8 @@ define(function (require) {
                 var crumb = new Crumb();
                 crumb.appendTo(container);
                 crumb.set('path', path);
-                expect(container.getElementsByTagName('li').length).toBe(2);
+                // 2 nodes + 1 separator
+                expect(container.getElementsByTagName('li').length).toBe(3);
             });
         });
     });

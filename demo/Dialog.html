@@ -14,7 +14,7 @@
             <button id="trigger-confirm">点我没事！</button>
             <button id="trigger-static">点我点我！</button>
 
-            <div data-ui="type:Dialog;width:400;mask:true;id:staticDg">
+            <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg;closeOnHide:false;">
                 <h1 data-role="title">我来自静态html</h1>
                 <div data-role="content">
                   <p>第一行</p>
@@ -37,7 +37,7 @@
                 document.getElementById('trigger-alert').onclick = function () {
                     Dialog.alert({
                         title: '电你',
-                        content: '<h1>请不要随便点我！</h1>',
+                        content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
                         onok: function(dialog) {
                             alert('关了！');
                         },
