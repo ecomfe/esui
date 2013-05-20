@@ -8,12 +8,12 @@
 
 define(
     function (require) {
-        // css
-        require('css!./css/Schedule.css');
-
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
         var helper  = require('./controlHelper');
+
+        // css
+        require('css!./css/Schedule.css');
 
         /**
          * Schedule控件
@@ -21,7 +21,7 @@ define(
          * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Schedule(options) {
+        function Schedule() {
             InputControl.apply(this, arguments);
         }
 
@@ -207,18 +207,18 @@ define(
             var me = schedule;
             var html = [];
 
-            var timelineClass = getClass(me, 'timeline');
-            var bodyHeadId    = getId('BodyHead');
+            var timelineClass = getClass(me, 'time-line');
+            var bodyHeadId    = getId('body-head');
             html.push(
                 '<div class="', timelineClass, '" id="',
                 bodyHeadId + '">'
             );
 
-            var timeHClass = getClass(me, 'timehead');
+            var timeHClass = getClass(me, 'time-head');
             for (var i = 0; i <= 24; i = i + 2) {
                 html.push(
                     '<div class="', timeHClass, 
-                    '" time="', i, '" id="', getId(me, 'TimeHead' + i), '">',
+                    '" time="', i, '" id="', getId(me, 'time-head' + i), '">',
                      i + ':00', 
                      '</div>'
                 );
@@ -238,7 +238,7 @@ define(
             var me = schedule;
             var html = [];
 
-            var dayHClass = getClass(me, 'dayhead');
+            var dayHClass = getClass(me, 'day-head');
             var dayHId    = getId(me, 'day-head');
             html.push('<div id="', dayHId, '" class="', dayHClass, '">');
 
@@ -256,7 +256,7 @@ define(
                         dayTpl,
                         {
                             dayWord: dayWords[i],
-                            dayId: getId(me, 'lineState' + i),
+                            dayId: getId(me, 'line-state' + i),
                             value: i
                         }
                     )
@@ -284,8 +284,8 @@ define(
                     + ' day="${dayIndex}" timeitem="1" time="${timeIndex}">'
                 + '</div>';
 
-            var timeBClass = getClass(me, 'timebody');
-            var timeBId    = getId(me, 'timebody');
+            var timeBClass = getClass(me, 'time-body');
+            var timeBId    = getId(me, 'time-body');
             html.push('<div id="', timeBId, '" class="', timeBClass, '">');
 
             //7天
@@ -376,14 +376,14 @@ define(
             var i = index;
 
             //将当前星期的checkbox先初始化为不选中
-            var checkInput = lib.g(getId(me, 'lineState' + i));
+            var checkInput = lib.g(getId(me, 'line-state' + i));
             checkInput.checked = false;
 
             //对于连续选中大于3天的进行遮罩处理
             var patt = /1{3,}/g;
             var statusStr = arr.join('');
             var result;
-            var coverClass = getClass(me, 'continuecovertimes');
+            var coverClass = getClass(me, 'continue-covertimes');
             var coverTpl = ''
                     + '<div class="${coverClass}">'
                         + '<strong>${text}</strong>'
@@ -414,7 +414,7 @@ define(
                         end: end,
                         text: length == 24 
                             ? '全天投放' : start + '.00-' + end + '.00',
-                        coverClass: getClass(me, 'covertimestip')
+                        coverClass: getClass(me, 'covertimes-tip')
                     }
                 );
 
@@ -717,19 +717,19 @@ define(
                         + ':00</strong>&nbsp;—&nbsp;<strong>'
                         + (time + 1) + ':00</strong>',
                    text: '点击/拖动鼠标选择',
-                   timeId: getId(me, 'timeitemtiphead'),
-                   textId: getId(me, 'timeitemtipbody'),
-                   timeClass: getClass(me, 'timeitem-tiphead'),
-                   textClass: getClass(me, 'timeitem-tipbody')
+                   timeId: getId(me, 'timeitem-tip-head'),
+                   textId: getId(me, 'timeitem-tip-body'),
+                   timeClass: getClass(me, 'timeitem-tip-head'),
+                   textClass: getClass(me, 'timeitem-tip-body')
                 }
             );
-            var tipId = getId(me, 'timeitemtip');
+            var tipId = getId(me, 'timeitem-tip');
 
             showPromptTip(me, tipId, mousepos, tipText);
 
 
             //重新计算所有遮罩层的显示
-            var timebody = lib.g(getId(me, 'timebody'));
+            var timebody = lib.g(getId(me, 'time-body'));
             var timeCovers = timebody.getElementsByTagName('aside');
 
             for (var i = 0, len = timeCovers.length; i < len; i++) {
@@ -774,7 +774,7 @@ define(
             );
 
             //隐藏tip
-            hidePromptTip(this, getId(this, 'timeitemtip'));
+            hidePromptTip(this, getId(this, 'timeitem-tip'));
         }
 
         var getTimeBodyMoveHandler; //drag mousemove的句柄
@@ -787,7 +787,7 @@ define(
         function bindEvent(schedule) {
             var me = schedule;
 
-            var timebody = lib.g( getId(me, 'timebody') );
+            var timebody = lib.g( getId(me, 'time-body') );
             //绑定拖动drag事件
             helper.addDOMEvent(
                 schedule, 
@@ -878,7 +878,7 @@ define(
             // 鼠标拖拽效果
             // 为了防止在控件渲染后，位置变动导致计算错误，所以每次mousedown
             // 位置都计算一遍
-            var timebody = lib.g(getId(me, 'timebody'));
+            var timebody = lib.g(getId(me, 'time-body'));
             me.dragRange = [];
 
             var timebodyTop = lib.getOffset(timebody).top;
@@ -898,7 +898,7 @@ define(
             );
 
             //hock ie下drag快速移动有时不执行mouseout, 此处隐藏tip
-            var tipId = getId(me, 'timeitemtip');
+            var tipId = getId(me, 'timeitem-tip');
             lib.g(tipId) && (lib.g(tipId).style.display = 'none');
 
             //渲染鼠标跟随div
@@ -929,10 +929,10 @@ define(
             var me = this;
 
             //清除兼容设置
-            offDragHuck(lib.g(getId(me, 'timebody')));
+            offDragHuck(lib.g(getId(me, 'time-body')));
 
             //隐藏鼠标跟随div
-            var followEle = lib.g(getId(me, 'followitem'));
+            var followEle = lib.g(getId(me, 'follow-item'));
             followEle.style.display = 'none';
 
             //记录鼠标位置
@@ -1050,13 +1050,13 @@ define(
         function repaintFollowEle(schedule, cellPos) {
             var me = schedule;
 
-            var followEleId = getId(schedule, 'followitem');
+            var followEleId = getId(schedule, 'follow-item');
             var followEle = lib.g(followEleId);
             if (!followEle) {
                 followEle = document.createElement('div');
-                followEle.className = getClass(me, 'followitem');
+                followEle.className = getClass(me, 'follow-item');
                 followEle.id = followEleId;
-                lib.g(getId(me, 'timebody')).appendChild(followEle);
+                lib.g(getId(me, 'time-body')).appendChild(followEle);
             }
 
 
@@ -1066,23 +1066,28 @@ define(
             var startcellY = startcell.y;
             var endcellX = endcell.x;
             var endcellY = endcell.y;
+            var divTop;
+            var divLeft;
+            var divHeight;
+            var divWidth;
+
 
             if (endcellY >= startcellY) {
-                var divTop = startcellY * 25;
-                var divHeight = (endcellY - startcellY + 1) * 25 - 2;
+                divTop = startcellY * 25;
+                divHeight = (endcellY - startcellY + 1) * 25 - 2;
             }
             else {
-                var divTop = endcellY * 25;
-                var divHeight = (startcellY - endcellY + 1) * 25 - 2;
+                divTop = endcellY * 25;
+                divHeight = (startcellY - endcellY + 1) * 25 - 2;
             }
 
             if (endcellX >= startcellX) {
-                var divLeft = startcellX * 25;
-                var divWidth = (endcellX - startcellX + 1) * 25 - 2;
+                divLeft = startcellX * 25;
+                divWidth = (endcellX - startcellX + 1) * 25 - 2;
             }
             else {
-                var divLeft = endcellX * 25;
-                var divWidth = (startcellX - endcellX + 1) * 25 - 2;
+                divLeft = endcellX * 25;
+                divWidth = (startcellX - endcellX + 1) * 25 - 2;
             }
 
             var cssStyles = ''
@@ -1241,7 +1246,9 @@ define(
                     + '<div class="${headClass}">'
                         + '<div class="${helpClass}">'
                             + '<div class="${helpSelectedClass}"></div>'
-                            + '<div class="${helpTextClass}">${helpSelected}</div>'
+                            + '<div class="${helpTextClass}">'
+                                + '${helpSelected}'
+                            + '</div>'
                             + '<div class="${helpUnselectedClass}"></div>'
                             + '<div class="${helpTextClass}">${help}</div>'
                         + '</div>'
@@ -1250,24 +1257,23 @@ define(
                         + '</div>'
                     + '</div>';
 
-                this.main.innerHTML =
-                    lib.format(
-                        tpl,
-                        {
-                            headClass: getClass(me, 'head'),
-                            bodyClass: getClass(me, 'body'),
-                            helpClass: getClass(me, 'help'),
-                            helpSelectedClass: getClass(me, 'help-selected'),
-                            helpUnselectedClass: getClass(me, 'help-unselected'),
-                            helpTextClass: getClass(me, 'help-text'),
-                            shortcutClass: getClass(me, 'shortcut'),
-                            shortcutId: getId(me, 'shortcut'),
-                            bodyId: getId(me, 'body'), //7
-                            helpSelected: me.helpSelected,
-                            help: me.help,
-                            shortcutHtml: getShortcutHtml(me)
-                        }
-                    );
+                this.main.innerHTML = lib.format(
+                    tpl,
+                    {
+                        headClass: getClass(me, 'head'),
+                        bodyClass: getClass(me, 'body'),
+                        helpClass: getClass(me, 'help'),
+                        helpSelectedClass: getClass(me, 'help-selected'),
+                        helpUnselectedClass: getClass(me, 'help-unselected'),
+                        helpTextClass: getClass(me, 'help-text'),
+                        shortcutClass: getClass(me, 'shortcut'),
+                        shortcutId: getId(me, 'shortcut'),
+                        bodyId: getId(me, 'body'), //7
+                        helpSelected: me.helpSelected,
+                        help: me.help,
+                        shortcutHtml: getShortcutHtml(me)
+                    }
+                );
 
                 initBody(me);
                 bindEvent(me);
