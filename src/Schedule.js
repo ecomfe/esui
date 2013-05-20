@@ -29,13 +29,8 @@ define(
             //图例说明文本
             helpSelected: '投放时间段',
             help: '暂停时间段',
-            
-            shortcutTips: [
-                '周一到周日全天投放',
-                '周一到周五全天投放',
-                '周六、周日全天投放'
-            ],
 
+            //星期checkbox显示文本
             dayWords: [
                 '星期一',
                 '星期二',
@@ -46,6 +41,7 @@ define(
                 '星期日'
             ],
 
+            //快捷方式配置
             shortcut: shortcut()
         };
 
