@@ -235,7 +235,7 @@ define(
             var followDoms = table.followDoms;
 
             function getStyleNum(dom, styleName) {
-                var result = lib.getComputedStyle(dom, styleName);
+                var result = lib.getStyle(dom, styleName);
                 return (result === '' ? 0 : parseInt(result, 10));
             }
 
@@ -1219,10 +1219,10 @@ define(
                 }
                 // 构造内容html
                 contentHtml = '<div class="' + textClass.join(' ') + '">'
-                    + ('function' == typeof content 
-                        ? content.call(table, data, index, i) 
-                        : data[content])
-                    + '</div>';
+                            + ('function' == typeof content 
+                                ? content.call(table, data, index, i) 
+                                : data[content])
+                            + '</div>';
 
                 subentryHtml = '&nbsp;';
 
@@ -1642,7 +1642,7 @@ define(
             }
             domHead && (domHead.style.width = table.realWidth + 'px');
 
-            table.topReseter = function () {
+            table.topReseter = function() {
                 if (!table.followHead) {
                     return ;
                 }
@@ -1654,8 +1654,8 @@ define(
                 var followDoms = table.followDoms;
                 var len = followDoms.length;
                 var placeHolder = lib.g(placeHolderId);
-                var mainHeight = 
-                    parseInt(lib.getComputedStyle(table.main , 'height'), 10);
+                var mainHeight = table.main.offsetHeight;
+                var curLeft = mainOffestLeft - scrollLeft ;
                 
                 function setPos(dom, pos, top , left) {
                     if (dom) {
@@ -1664,16 +1664,12 @@ define(
                         dom.style.position = pos;
                     }
                 }
-
                 if (lib.ie && lib.ie < 7) {
-                    if (scrollTop > table.followTop 
-                        && scrollTop - table.followTop < mainHeight
-                    ) {
+                    if (scrollTop > table.followTop) {
                         posStyle = 'absolute';
-                        placeHolder.style.height = 
-                            fhArr[fhLen - 1] + domHead.offsetHeight + 'px';
+                        placeHolder.style.height = fhArr[fhLen - 1] 
+                                                 + domHead.offsetHeight + 'px';
                         placeHolder.style.display = '';
-                        var curLeft = mainOffestLeft - scrollLeft ;
                         for (var i = 0 ; i < len; i++) {
                             setPos(
                                 followDoms[i], 
@@ -1704,13 +1700,11 @@ define(
                 }
                 else {
                     if (scrollTop > table.followTop 
-                        && scrollTop - table.followTop < mainHeight
-                    ) {
-                        placeHolder.style.height = 
-                            fhArr[fhLen - 1] + domHead.offsetHeight + 'px';
+                         && scrollTop - table.followTop < mainHeight) {
+                        placeHolder.style.height = fhArr[fhLen - 1] 
+                                                 + domHead.offsetHeight + 'px';
                         placeHolder.style.display = '';
                         posStyle = 'fixed';
-                        var curLeft = mainOffestLeft - scrollLeft ;
                         for (var i = 0; i < len; i++) {
                             setPos(followDoms[i], posStyle, fhArr[i] ,curLeft );
                         }
