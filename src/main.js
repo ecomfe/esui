@@ -30,12 +30,13 @@ define(
          * @type {Object}
          */
         var config = {
-            uiPrefix        : 'data-ui',
-            extensionPrefix : 'data-ui-extension',
-            instanceAttr    : 'data-ctrl-id',
-            viewContextAttr : 'data-ctrl-view-context',
-            uiClassPrefix   : 'ui',
-            skinClassPrefix : 'skin'
+            uiPrefix: 'data-ui',
+            extensionPrefix: 'data-ui-extension',
+            instanceAttr: 'data-ctrl-id',
+            viewContextAttr: 'data-ctrl-view-context',
+            uiClassPrefix: 'ui',
+            skinClassPrefix: 'skin',
+            stateClassPrefix: 'state'
         };
 
         /**
