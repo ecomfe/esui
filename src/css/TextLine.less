@@ -1,0 +1,41 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 带行号输入框
+  * @author dbear
+  */
+@import "mixin.less";
+@import "variable.less";
+@import "common.less";
+
+.ui-textline {
+    position: relative;
+    border: 1px solid #dddddd;
+    background: #fff;
+
+    .ui-textline-num-line {
+        background: #f8f9fb;
+        color: #000;
+        font-weight: bold;
+        line-height: 21px;
+        text-align: center;
+        width: 46px;
+        font-size: 12px;
+        overflow-y: scroll;
+    }
+
+    .ui-textbox  {
+        left: 30px;
+        top: 0;
+        position: absolute;
+        background: #fff;
+        textarea {
+            line-height: 21px;
+            font-size: 14px;
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+    }
+}
