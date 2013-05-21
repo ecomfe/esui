@@ -33,7 +33,8 @@
                 <td colspan="3"><div data-ui="type:Button;id:xRender">Call Render Again</div></td>
             </tr>
         </table>
-        <div data-ui-type="BoxGroup" data-ui-name="frameworks" data-ui-id="frameworks" data-ui-box-type="checkbox">
+        <h3>纵向</h3>
+        <div data-ui-type="BoxGroup" data-ui-name="frameworks" data-ui-box-type="checkbox">
             <ul>
                 <li>
                     <input type="checkbox" id="framework-er" name="frameworks" value="er" />
@@ -53,7 +54,28 @@
                 </li>
             </ul>
         </div>
-        <div id="frameworks-value"></div>
+        <h3>横向</h3>
+        <div data-ui-type="BoxGroup" data-ui-name="frameworks" data-ui-box-type="checkbox"
+        data-ui-skin="horizon" >
+            <ul>
+                <li>
+                    <input type="checkbox" id="framework-er" name="frameworks" value="er" />
+                    <label for="framework-er">ER</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="framework-esui" name="frameworks" value="esui" />
+                    <label for="framework-esui">ESUI</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="framework-ef" name="frameworks" value="ef" />
+                    <label for="framework-ef">EF</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="framework-tangram" name="frameworks" value="tangram" />
+                    <label for="framework-tangram">Tangram</label>
+                </li>
+            </ul>
+        </div>
         </div>
         <script>
         require(
@@ -99,13 +121,6 @@
                   ui.get('x1').repaint();
                   ui.get('x3').repaint();
                 }
-
-                ui.get('frameworks').on(
-                    'change',
-                    function () {
-                        document.getElementById('frameworks-value').innerHTML = this.getRawValue();
-                    }
-                );
             }
         );
         </script>
