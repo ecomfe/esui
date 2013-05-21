@@ -31,7 +31,6 @@ define(
          * @param {Object} options 输入的配置项
          * @param {string|undefined} options.name 输入控件的名称
          * @param {string} options.boxType 选项框的类型，参考`unknownTypes`
-         * @return {Array.<Object>}
          * @inner
          */
         function extractDatasourceFromDOM(element, options) {
@@ -61,6 +60,7 @@ define(
             }
 
             var datasource = [];
+            var values = [];
             for (var i = 0, length = boxes.length; i < length; i++) {
                 var box = boxes[i];
                 if (box.type === options.boxType
@@ -75,10 +75,17 @@ define(
                             box.title || (box.value === 'on' ? box.value : '');
                     }
                     datasource.push(item);
+
+                    if (box.checked) {
+                        values.push(box.value);
+                    }
                 }
             }
 
-            return datasource;
+            options.datasource = datasource;
+            if (!options.rawValue) {
+                options.rawValue = values;
+            }
         }
 
         /**
@@ -97,12 +104,32 @@ define(
             lib.extend(properties, options);
 
             if (!properties.datasource.length) {
-                properties.datasource = 
-                    extractDatasourceFromDOM(this.main, properties);
+                extractDatasourceFromDOM(this.main, properties);
+            }
+            if (!properties.rawValue) {
+                properties.rawValue = [];
             }
 
             this.setProperties(properties);
         };
+
+        /**
+         * 同步值
+         *
+         * @param {BoxGroup} group 控件实例
+         * @inner
+         */
+        function syncValue(group) {
+            var result = [];
+            for (var i = 0; i < group.children.length; i++) {
+                var box = group.children[i];
+                if (box.isChecked()) {
+                    result.push(box.getValue());
+                }
+            }
+            group.rawValue = result;
+            group.fire('change');
+        }
 
         /**
          * 渲染控件
@@ -129,10 +156,36 @@ define(
                     value: item.value
                 };
                 var box = new BoxType(options);
+                box.on('change', lib.curry(syncValue, group));
                 box.appendTo(group.main);
                 group.addChild(box);
             }
         }
+
+        /**
+         * 批量更新属性并重绘
+         *
+         * @param {Object} 需更新的属性
+         * @override
+         * @public
+         */
+        BoxGroup.prototype.setProperties = function (properties) {
+            // 修改了`datasource`或`boxType`，且没给新的`rawValue`的时候，
+            // 要把`rawValue`清空。由于上层`setProperties`是全等判断，
+            // 如果当前`rawValue`正好也是空的，就不要改值了，以免引起`change`事件
+            if ((properties.datasource || properties.boxType)
+                && !properties.rawValue 
+                && this.rawValue.length
+            ) {
+                properties.rawValue = [];
+            }
+
+            var changes = 
+                InputControl.prototype.setProperties.apply(this, arguments);
+            if (changes.hasOwnProperty('rawValue')) {
+                this.fire('change');
+            }
+        };
 
         /**
          * 重渲染
@@ -149,6 +202,8 @@ define(
                 name: 'rawValue',
                 paint: function (group, rawValue) {
                     rawValue = rawValue || [];
+                    // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
+                    this.rawValue = rawValue;
                     var map = {};
                     for (var i = 0; i < rawValue.length; i++) {
                         map[rawValue[i]] = true;
@@ -169,24 +224,6 @@ define(
                 }
             }
         );
-
-        /**
-         * 获取输入控件的原始值，`BoxGroup`不保存`rawValue`，需要的时候去子控件中获取
-         * 
-         * @return {Array.<string>} 
-         * @override
-         * @public
-         */
-        BoxGroup.prototype.getRawValue = function () {
-            var result = [];
-            for (var i = 0; i < this.children.length; i++) {
-                var box = this.children[i];
-                if (box.isChecked()) {
-                    result.push(box.getValue());
-                }
-            }
-            return result;
-        };
 
         /**
          * 将string类型的value转换成原始格式

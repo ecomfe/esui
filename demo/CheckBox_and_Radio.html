@@ -33,7 +33,7 @@
                 <td colspan="3"><div data-ui="type:Button;id:xRender">Call Render Again</div></td>
             </tr>
         </table>
-        <div data-ui-type="BoxGroup" data-ui-name="frameworks" data-ui-box-type="checkbox">
+        <div data-ui-type="BoxGroup" data-ui-name="frameworks" data-ui-id="frameworks" data-ui-box-type="checkbox">
             <ul>
                 <li>
                     <input type="checkbox" id="framework-er" name="frameworks" value="er" />
@@ -53,6 +53,7 @@
                 </li>
             </ul>
         </div>
+        <div id="frameworks-value"></div>
         </div>
         <script>
         require(
@@ -98,6 +99,13 @@
                   ui.get('x1').repaint();
                   ui.get('x3').repaint();
                 }
+
+                ui.get('frameworks').on(
+                    'change',
+                    function () {
+                        document.getElementById('frameworks-value').innerHTML = this.getRawValue();
+                    }
+                );
             }
         );
         </script>
