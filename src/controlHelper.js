@@ -13,14 +13,17 @@ define(
         var counter = 0x861005;
 
         /**
-         * 获取LifeCycle枚举
+         * LifeCycle枚举
          * 
+         * @type {Object} 
          * @inner
-         * @return {Object} 
          */
-        function getLifeCycle() {
-            return require('./Control').LifeCycle;
-        }
+        var LifeCycle = {
+            NEW: 0,
+            INITED: 1,
+            RENDERED: 2,
+            DISPOSED: 4
+        };
 
         /**
          * 控件类常用的helper方法模块
@@ -157,7 +160,7 @@ define(
                     element,
                     helper.getPartClasses(control, part)
                 );
-            }
+        }
         };
 
         /**
@@ -261,7 +264,6 @@ define(
          * @return {boolean}
          */
         helper.isInStage = function (control, stage) {
-            var LifeCycle = getLifeCycle();
             if (LifeCycle[stage] == null) {
                 throw new Error('Invalid life cycle stage: ' + stage);
             }
@@ -276,7 +278,6 @@ define(
          * @param {string} stage 生命周期阶段
          */
         helper.changeStage = function (control, stage) {
-            var LifeCycle = getLifeCycle();
             if (LifeCycle[stage] == null) {
                 throw new Error('Invalid life cycle stage: ' + stage);
             }
