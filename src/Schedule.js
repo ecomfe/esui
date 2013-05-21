@@ -1221,7 +1221,9 @@ define(
                 };
 
                 
-                lib.extend(this, properties, DEFAULT_OPTION, options);
+                lib.extend(properties, DEFAULT_OPTION, options);
+
+                this.setProperties(properties);
 
                 //检测是否初始化value值，没有则设置为默认
                 initValue(Schedule);
@@ -1364,6 +1366,11 @@ define(
             stringifyValue: function (rawValue) {
 
                 var arr = [];
+
+                if (!rawValue) {
+
+                    return null;
+                }
 
                 for (var i = 0, len = rawValue.length; i < len; i++) {
 
