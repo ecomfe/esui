@@ -1,0 +1,37 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 组合框样式
+ * @author dbear
+ */
+
+@import "mixin.less";
+@import "variable.less";
+@import "common.less";
+
+
+.ui-checkbox,
+.ui-radio {
+    *margin-left: -2px;
+    vertical-align: middle;
+    margin-right: 8px;
+
+    input {
+        margin-right: 2px;
+        margin-top: 2px;
+    }
+    label {
+        line-height: 22px;
+    }
+}
+
+.ui-boxgroup {
+
+}
+.skin-horizon-boxgroup {
+    .ui-checkbox,
+    .ui-radio {     
+        .inline-block ();
+    }
+}

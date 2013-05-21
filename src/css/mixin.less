@@ -147,6 +147,14 @@
     .box-sizing(border-box);
 }
 
+.input-outter-size-height (@height, @tb-padding, @tb-border) {
+    height: @height;
+    line-height: @height;
+    *height: (@height - @tb-padding - @tb-border);
+    *line-height: (@height - @tb-padding - @tb-border);
+    .box-sizing(border-box);
+}
+
 /*
  * 设置尺寸为内部显示尺寸
  * @height 设置高度

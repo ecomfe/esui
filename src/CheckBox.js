@@ -1,6 +1,7 @@
 define(
     function (require) {
         var BoxControl = require('./BoxControl');
+        require('css!./css/Radio.css');
         /**
          * 多选框控件
          * 
