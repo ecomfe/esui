@@ -331,6 +331,47 @@ define(
         }
 
         /**
+         * 根据range修正year month
+         * @inner
+         * @param {MonthView} monthView MonthView控件实例
+         * @param {number} year 年.
+         * @param {number} month 月.
+         * @return {Object} 
+         */
+        function reviseYearMonth(monthView, year, month) {
+            var me = monthView;
+            // 允许设置的范围
+            var range = me.range;
+            var rangeBegin = range.begin.getFullYear() * 12
+                + range.begin.getMonth();
+            var rangeEnd = range.end.getFullYear() * 12 + range.end.getMonth();
+            // 欲设置的年月
+            var viewMonth = year * 12 + month;
+            var view = new Date(year, month, 1);
+            month = view.getMonth();
+            
+            // 设置早了，补足
+            if (rangeBegin - viewMonth > 0) {
+                month += (rangeBegin - viewMonth);
+            }
+            // 设置晚了，减余
+            else if (viewMonth - rangeEnd > 0) {
+                month -= (viewMonth - rangeEnd);
+            }
+ 
+            // 重新设置
+            view.setMonth(month);
+            month = view.getMonth();
+            year = view.getFullYear();
+            
+            return {
+                year: year,
+                month: month
+            };
+
+        }
+
+        /**
          * 绘制浮动层内的日历部件
          * @inner
          * @param {MonthView} monthView MonthView控件实例
@@ -348,48 +389,28 @@ define(
             }
 
             var me = monthView;
-
-            // 允许设置的范围
-            var range = me.range;
-            var rangeBegin = range.begin.getFullYear() * 12
-                + range.begin.getMonth();
-            var rangeEnd = range.end.getFullYear() * 12 + range.end.getMonth();
-
-            // 欲设置的年月
-            var viewMonth = year * 12 + month;
-
-            var view = new Date(year, month, 1);
-            month = view.getMonth();
-
-            // 设置早了，补足
-            if (rangeBegin - viewMonth > 0) {
-                month += (rangeBegin - viewMonth);
-            }
-            // 设置晚了，减余
-            else if (viewMonth - rangeEnd > 0) {
-                month -= (viewMonth - rangeEnd);
-            }
-
-            // 重新设置
-            view.setMonth(month);
-            me.month = view.getMonth();
-            me.year = view.getFullYear();
+            var revisedYearMonth = reviseYearMonth(me, year, month);
+            me.month = revisedYearMonth.month;
+            me.year = revisedYearMonth.year;
 
             var yearSelect = me.getChild('yearSel');
-            // 改变year会触发日历重绘，为了避免month改变时的二次重绘，
-            // 此时暂停重绘一次
-            monthView.stopRepaint = true;
+            var lastYear = yearSelect.getValue();
+
             yearSelect.setProperties({
                 datasource: getYearOptions(me),
                 value: me.year
             });
 
-            // 修改month会连带更新日历主体
-            var monthSelect = me.getChild('monthSel');
-            monthSelect.setProperties({
-                datasource: getMonthOptions(me, me.year),
-                value: me.month
-            });
+
+            // 如果year选择的数据没改变，则要手动触发月份变化
+            if (lastYear == me.year) {
+                var monthSelect = me.getChild('monthSel');
+                monthSelect.setProperties({
+                    datasource: getMonthOptions(me, me.year),
+                    value: me.month
+                });
+            }
+
         }
 
         /**
@@ -471,14 +492,27 @@ define(
          * @param {Select} yearSel Select控件实例
          */
         function changeYear(monthView, yearSel) {
-            if (monthView.stopRepaint) {
-                return;
-            }
             var year = parseInt(yearSel.getValue(), 10);
             monthView.year = year;
-            repaintMonthView(monthView, year, monthView.month);
-            monthView.fire('changeyear');
 
+            var month = monthView.month;
+
+            var revisedYearMonth = reviseYearMonth(monthView, year, month);
+            month = revisedYearMonth.month;
+            monthView.month = month;
+
+            // 年份改变导致月份重绘
+            var monthSelect = monthView.getChild('monthSel');
+            var changes = monthSelect.setProperties({
+                datasource: getMonthOptions(monthView, monthView.year),
+                value: monthView.month
+            });
+            
+            // 如果month选择的数据没改变，则要手动触发变化
+            if (!changes.hasOwnProperty('rawValue')) {
+                changeMonth(monthView, monthSelect);
+            }
+            monthView.fire('changeyear');
         }
 
         /**
@@ -639,7 +673,7 @@ define(
                 var monthBack = this.getChild('monthBack');
                 monthBack.on(
                     'click',
-                    lib.bind(goToPrevMonth, null, this)
+                    lib.curry(goToPrevMonth, this)
                 );
 
 
@@ -647,18 +681,18 @@ define(
                 var monthForward = this.getChild('monthForward');
                 monthForward.on(
                     'click',
-                    lib.bind(goToNextMonth, null, this)
+                    lib.curry(goToNextMonth, this)
                 );
 
                 var monthSel = this.getChild('monthSel');
                 monthSel.on(
                     'change',
-                    lib.bind(changeMonth, null, this, monthSel)
+                    lib.curry(changeMonth, this, monthSel)
                 );
                 var yearSel = this.getChild('yearSel');
                 yearSel.on(
                     'change',
-                    lib.bind(changeYear, null, this, yearSel)
+                    lib.curry(changeYear, this, yearSel)
                 );
 
                 var monthMainId = helper.getId(this, 'monthMain');
@@ -667,7 +701,7 @@ define(
                 //为日期绑定点击事件
                 helper.addDOMEvent(
                     this, monthMain, 'click',
-                    lib.bind(monthViewClick, null, this)
+                    lib.curry(monthViewClick, this)
                 );
             },
 
