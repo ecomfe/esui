@@ -55,19 +55,6 @@ define(
             this.fire('init');
         }
 
-        /**
-         * 控件生命周期枚举
-         * 
-         * @static
-         * @type {Object}
-         */
-        Control.LifeCycle = {
-            NEW: 0,
-            INITED: 1,
-            RENDERED: 2,
-            DISPOSED: 4
-        };
-
         Control.prototype = {
             constructor: Control,
 
@@ -512,6 +499,11 @@ define(
                 wrap = wrap || this.main;
                 options = options || {};
                 options.viewContext = this.viewContext;
+                // 容器类控件会需要渲染自己的`innerHTML`，
+                // 如果原来`init`的时候有传`valueReplacer`，这里就得再用上
+                if (this.valueReplacer) {
+                    options.valueReplacer = this.valueReplacer;
+                }
 
                 var children = ui.init(wrap, options);
                 for (var i = 0, len = children.length; i < len; i++) {
