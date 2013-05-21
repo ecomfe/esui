@@ -1,7 +1,6 @@
 define(function (require) {
     var helper = require('esui/controlHelper');
     var ui = require('esui');
-    var LifeCycle = require('esui/Control').LifeCycle;
 
     describe('controlHelper', function () {
         it('should be an object', function () {
@@ -275,14 +274,14 @@ define(function (require) {
 
             it('should return `true` if the control\'s `stage` matches the given value', function () {
                 var control = {
-                    stage: LifeCycle.INITED
+                    stage: 1
                 };
                 expect(helper.isInStage(control, 'INITED')).toBe(true);
             });
 
             it('should return `false` if the control\'s `stage` does not match the given value', function () {
                 var control = {
-                    stage: LifeCycle.INITED
+                    stage: 1
                 };
                 expect(helper.isInStage(control, 'RENDERED')).toBe(false);
             });
