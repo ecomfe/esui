@@ -11,6 +11,8 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
+        var supportPlaceholder = 
+            ('placeholder' in document.createElement('input'));
 
         // css
         require('css!./css/TextBox.css');
@@ -107,7 +109,7 @@ define(
         function togglePlaceholder(textbox, focused) {
             var input = lib.g(textbox.inputId);
 
-            if (!('placeholder' in input)) {
+            if (!supportPlaceholder) {
                 var placeholder = 
                     lib.g(helper.getId(textbox, 'placeholder'));
                 if (typeof focused !== 'boolean') {
@@ -233,7 +235,7 @@ define(
                 lib.curry(syncValue, this)
             );
 
-            if (!('placeholder' in input)) {
+            if (!supportPlaceholder) {
                 var placeholder = document.createElement('label');
                 placeholder.id = helper.getId(this, 'placeholder');
                 lib.setAttribute(placeholder, 'for', input.id);
@@ -326,7 +328,7 @@ define(
                 name: 'placeholder',
                 paint: function (textbox, placeholder) {
                     var input = lib.g(textbox.inputId);
-                    if ('placeholder' in input) {
+                    if (supportPlaceholder) {
                         if (placeholder) {
                             input.setAttribute('placeholder', placeholder);
                         }
@@ -337,7 +339,7 @@ define(
                     else {
                         var label = 
                             lib.g(helper.getId(textbox, 'placeholder'));
-                        label.innerHTML = lib.encodeHTML(placeholder);
+                        label.innerHTML = lib.encodeHTML(placeholder || '');
                     }
                 }
             }
