@@ -152,7 +152,7 @@ define(
                 var item = datasource[i];
                 var options = {
                     name: group.name,
-                    title: item.tile || item.name || item.text,
+                    title: item.title || item.name || item.text,
                     value: item.value
                 };
                 var box = new BoxType(options);
