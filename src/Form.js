@@ -173,7 +173,7 @@ define(
         };
 
         Form.prototype.repaint = function (changes, changesIndex) {
-            Control.prototype.repaint.apply(this, arguments);
+            Panel.prototype.repaint.apply(this, arguments);
 
             var shouldAttachSubmit = false;
             if (!changesIndex && this.submitButton) {
