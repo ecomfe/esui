@@ -19,6 +19,7 @@ define(
          * @param {Object} options 初始化参数
          */
         function Control(options) {
+            helper.changeStage(this, 'NEW');
             this.children = [];
             this.childrenIndex = {};
             this.states = {};
@@ -61,9 +62,10 @@ define(
          * @type {Object}
          */
         Control.LifeCycle = {
-            INITED   : 1,
-            RENDERED : 2,
-            DISPOSED : 4
+            NEW: 0,
+            INITED: 1,
+            RENDERED: 2,
+            DISPOSED: 4
         };
 
         Control.prototype = {
@@ -563,6 +565,11 @@ define(
              * @param {Object=} arg 事件对象
              */
             fire: function (type, arg) {
+                // 构造函数阶段不发送任何事件
+                if (helper.isInStage(this, 'NEW')) {
+                    return;
+                }
+
                 // 构造event argument
                 var eventArg = arg || {};
                 eventArg.type = type;

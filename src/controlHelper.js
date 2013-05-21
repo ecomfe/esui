@@ -262,7 +262,7 @@ define(
          */
         helper.isInStage = function (control, stage) {
             var LifeCycle = getLifeCycle();
-            if (!LifeCycle[stage]) {
+            if (LifeCycle[stage] == null) {
                 throw new Error('Invalid life cycle stage: ' + stage);
             }
 
@@ -277,7 +277,7 @@ define(
          */
         helper.changeStage = function (control, stage) {
             var LifeCycle = getLifeCycle();
-            if (!LifeCycle[stage]) {
+            if (LifeCycle[stage] == null) {
                 throw new Error('Invalid life cycle stage: ' + stage);
             }
 
