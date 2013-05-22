@@ -11,6 +11,7 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
+        var main = require('./main');
 
         /**
          * 校验
@@ -28,7 +29,7 @@ define(
             control.fire('beforevalidate', eventArg);
 
             // 验证合法性
-            var rules = ui.createRulesByControl(control);
+            var rules = main.createRulesByControl(control);
             for (var i = 0, len = rules.length; i < len; i++) {
                 var rule = rules[i];
                 validity.addState( 
@@ -237,16 +238,18 @@ define(
             /**
              * 获取显示验证信息用的元素
              *
+             * @param {boolean=} 指定在没有找到已经存在的元素的情况下，不要额外创建
              * @return {HTMLElement}
              * @public
              */
-            getValidityLabel: function () {
+            getValidityLabel: function (dontCreate) {
                 if (!helper.isInStage(this, 'RENDERED')) {
                     return null;
                 }
 
                 var label = lib.g(this.validityLabel);
-                if (!label) {
+
+                if (!label && !dontCreate) {
                     label = document.createElement('label');
                     label.id = helper.getId(this, 'validity');
                     label.className = 'ui-validity';
@@ -265,6 +268,8 @@ define(
                     }
                     lib.insertAfter(label, this.main);
                 }
+
+                return label;
             },
 
             /**
@@ -299,6 +304,17 @@ define(
                     helper.removePartClasses(this, 'validity-valid', label);
                     helper.addPartClasses(this, 'validity-invalid', label);
                 }
+            },
+
+            /**
+             * 销毁控件
+             */
+            dispose: function () {
+                var validityLabel = this.getValidityLabel(true);
+                if (validityLabel && validityLabel.parentNode) {
+                    validityLabel.parentNode.removeChild(validityLabel);
+                }
+                Control.prototype.dispose.apply(this, arguments);
             }
         };
 
