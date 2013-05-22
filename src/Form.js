@@ -11,6 +11,7 @@ define(
         var lib = require('./lib');
         var main = require('./main');
         var Panel = require('./Panel');
+        var BoxControl = require('./BoxControl');
 
         /**
          * 输入控件集合类
@@ -29,18 +30,26 @@ define(
         InputCollection.prototype.splice = Array.prototype.splice;
 
         /**
-         * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
+         * 获取表单数据，形成以`name`为键，`fetchValue`指定方法的返回值为值，
          * 如果有同`name`的多个控件，则值为数组
          *
-         * @param {Object} 表单的数据
-         * @public
+         * @param {Array.<InputControl>} 输入控件集合
+         * @param {function} fetchValue 获取值的函数
+         * @return {Object} 表单的数据
+         * @inner
          */
-        InputCollection.prototype.getData = function () {
+        function getData(inputs, fetchValue) {
             var store = {};
             for (var i = 0; i < this.inputs.length; i++) {
                 var control = this.inputs[i];
+
+                // 排除未选中的选择框控件
+                if (control instanceof BoxControl && !control.isChecked()) {
+                    continue;
+                }
+
                 var name = control.get('name');
-                var value = control.getRawValue();
+                var value = fetchValue(control);
                 if (store.hasOwnProperty(name)) {
                     store[name] = [].concat(store[name], value);
                 }
@@ -49,24 +58,40 @@ define(
                 }
             }
             return store;
+        }
+
+        /**
+         * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
+         * 如果有同`name`的多个控件，则值为数组
+         *
+         * @return {Object} 表单的数据
+         * @public
+         */
+        InputCollection.prototype.getData = function () {
+            return getData(
+                this.inputs, 
+                function () { return control.getRawValue(); }
+            );
         };
 
+        /**
+         * 获取提交的字符串数据
+         *
+         * @return {string} 可提交的字符串
+         * @public
+         */
         InputCollection.prototype.getDataAsString = function () {
-            var store = {};
-            for (var i = 0; i < this.inputs.length; i++) {
-                var control = this.inputs[i];
-                var name = control.get('name');
-                var value = encodeURIComponent(control.getValue());
-                if (store.hasOwnProperty(name)) {
-                    store[name] = store[name] + ',' + value;
+            var store = getData(
+                this.inputs, 
+                function (control) {
+                    var value = control.getValue();
+                    return encodeURIComponent(value);
                 }
-                else {
-                    store[name] = value;
-                }
-            }
+            );
             var valueString = '';
             for (var key in store) {
                 if (store.hasOwnProperty(key)) {
+                    // 数组默认就是逗号分隔的所以没问题
                     valueString += encodeURIComponent(key) + '=' + store[key];
                 }
             }
