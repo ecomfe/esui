@@ -196,7 +196,7 @@ define(
             if (shouldAttachSubmit) {
                 var button = this.viewContext.get(this.submitButton);
                 if (button) {
-                    this.submitHandler = function () { this.fire('submit'); };
+                    this.submitHandler = lib.bind(this.fire, this, 'submit');
                     button.on('click', this.submitHandler);
                 }
             }
