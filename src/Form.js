@@ -49,7 +49,7 @@ define(
                 }
 
                  // 不对disabled和readonly的控件进行验证
-                if (control.isDisabled() || control.isReadOnly()) {
+                if (control.isDisabled()) {
                     continue;
                 }
 
@@ -201,7 +201,7 @@ define(
                 this.fire('submit');
             }
             else {
-                this.fire('submitFail');
+                this.fire('invalid');
             }
 
         };
@@ -371,7 +371,7 @@ define(
             for (var i = 0; i < inputs.length; i++) {
                 var control = inputs[i];
                  // 不对disabled和readonly的控件进行验证
-                if (control.isDisabled() || control.isReadOnly()) {
+                if (control.isDisabled()) {
                     continue;
                 }
 
