@@ -20,7 +20,7 @@ define(
          * @inner
          */
         function InputCollection(inputs) {
-            this.inputs = inputs;
+            this.length = inputs.length;
             for (var i = 0; i < inputs.length; i++) {
                 this[i] = inputs[i];
             }
@@ -40,8 +40,8 @@ define(
          */
         function getData(inputs, fetchValue) {
             var store = {};
-            for (var i = 0; i < this.inputs.length; i++) {
-                var control = this.inputs[i];
+            for (var i = 0; i < inputs.length; i++) {
+                var control = inputs[i];
 
                 // 排除未选中的选择框控件
                 if (control instanceof BoxControl && !control.isChecked()) {
@@ -69,8 +69,8 @@ define(
          */
         InputCollection.prototype.getData = function () {
             return getData(
-                this.inputs, 
-                function () { return control.getRawValue(); }
+                this, 
+                function (control) { return control.getRawValue(); }
             );
         };
 
@@ -82,7 +82,7 @@ define(
          */
         InputCollection.prototype.getDataAsString = function () {
             var store = getData(
-                this.inputs, 
+                this, 
                 function (control) {
                     var value = control.getValue();
                     return encodeURIComponent(value);
