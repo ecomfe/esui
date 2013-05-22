@@ -51,6 +51,29 @@ define(
             return store;
         };
 
+        InputCollection.prototype.getDataAsString = function () {
+            var store = {};
+            for (var i = 0; i < this.inputs.length; i++) {
+                var control = this.inputs[i];
+                var name = control.get('name');
+                var value = encodeURIComponent(control.getValue());
+                if (store.hasOwnProperty(name)) {
+                    store[name] = store[name] + ',' + value;
+                }
+                else {
+                    store[name] = value;
+                }
+            }
+            var valueString = '';
+            for (var key in store) {
+                if (store.hasOwnProperty(key)) {
+                    valueString += encodeURIComponent(key) + '=' + store[key];
+                }
+            }
+
+            return valueString;
+        };
+
         /**
          * 获取字符串形式的控件值
          *
@@ -272,12 +295,23 @@ define(
          * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
          * 如果有同`name`的多个控件，则值为数组
          *
-         * @param {Object} 表单的数据
+         * @return {Object} 表单的数据
          * @public
          */
         Form.prototype.getData = function () {
             var inputs = this.getInputControls();
             return inputs.getData();
+        };
+
+        /**
+         * 获取提交的字符串数据
+         *
+         * @return {string}
+         * @public
+         */
+        Form.prototype.getDataAsString = function () {
+            var inputs = this.getInputControls();
+            return inputs.getDataAsString();
         };
 
         lib.inherits(Form, Panel);
