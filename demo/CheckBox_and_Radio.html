@@ -21,17 +21,6 @@
                 <td><div data-ui="type:Button;id:selInv">反选</div></td>
                 -->
             </tr>
-            <tr>
-                <td><input type="radio" value="1" data-ui="type:Radio;id:r1" title="one" name="num2"/></td>
-                <td><input type="radio" value="2" data-ui="type:Radio;id:r2" title="two" name="num2"/></td>
-                <td><input type="radio" value="3" data-ui="type:Radio;id:r3" title="three" name="num2"/></td>
-                <td colspan="3"><div data-ui="type:Button;id:currRadio">当前选中</div></td>
-            </tr>
-            <tr>
-                <td><input type="radio" value="1" data-ui="type:Radio;id:x1" title="one"/></td>
-                <td><input type="checkbox" value="3" data-ui="type:CheckBox;id:x3" title="three"/></td>
-                <td colspan="3"><div data-ui="type:Button;id:xRender">Call Render Again</div></td>
-            </tr>
         </table>
         <h3>纵向</h3>
         <div data-ui-type="BoxGroup" data-ui-name="frameworks" data-ui-box-type="checkbox">
@@ -83,7 +72,6 @@
                 'esui', 
                 'esui/Button',
                 'esui/CheckBox',
-                'esui/Radio',
                 'esui/BoxGroup',
                 'css!esui/css/main.css',
                 'css!esui/css/Button.css'
@@ -106,21 +94,21 @@
                 //     ui.get('cb1').getGroup().selectInverse();
                 // };
 
-                ui.get('cb1').onclick = function(e){
-                    alert(e.type);
-                }
+                // ui.get('cb1').onclick = function(e){
+                //     alert(e.type);
+                // }
 
-                ui.get('currRadio').onclick = function () {
-                    alert( 'checked one:' + ui.get('r1').isChecked() );
-                    alert( 'checked two:' + ui.get('r2').isChecked() );
-                    alert( 'checked three:' + ui.get('r3').isChecked() );
-                    // alert( 'group value:' + ui.get('r3').getGroup().getValue() );
-                };
+                // ui.get('currRadio').onclick = function () {
+                //     alert( 'checked one:' + ui.get('r1').isChecked() );
+                //     alert( 'checked two:' + ui.get('r2').isChecked() );
+                //     alert( 'checked three:' + ui.get('r3').isChecked() );
+                //     // alert( 'group value:' + ui.get('r3').getGroup().getValue() );
+                // };
 
-                ui.get('xRender').onclick = function() {
-                  ui.get('x1').repaint();
-                  ui.get('x3').repaint();
-                }
+                // ui.get('xRender').onclick = function() {
+                //   ui.get('x1').repaint();
+                //   ui.get('x3').repaint();
+                // }
             }
         );
         </script>

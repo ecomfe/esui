@@ -11,17 +11,6 @@ define(
             InputControl.apply(this, arguments);
         }
 
-        /**
-         * 已知的控件类型
-         *
-         * @type {Object}
-         * @public
-         */
-        BoxGroup.knownTypes = {
-            'radio': require('./Radio'),
-            'checkbox': require('./CheckBox')
-        };
-
         BoxGroup.prototype.type = 'BoxGroup';
 
         /*
@@ -121,53 +110,87 @@ define(
          */
         function syncValue(group) {
             var result = [];
-            for (var i = 0; i < group.children.length; i++) {
-                var box = group.children[i];
-                if (box.isChecked()) {
-                    result.push(box.getValue());
+            var inputs = group.main.getElementsByTagName('input');
+            for (var i = inputs.length - 1; i >= 0; i--) {
+                var input = inputs[i];
+                if (input.type === group.boxType && input.checked) {
+                    result.push(input.value);
                 }
             }
+
             group.rawValue = result;
             var input = lib.g(helper.getId(group, 'value'));
             input.value = group.getValue();
+
+            console.log(group.rawValue);
+
             group.fire('change');
         }
+
+        var itemTemplate = '<div class="${wrapperClass}">'
+            + '<input type="${type}" name="${name}" id="${id}" title="${title}"'
+                + 'value="${value}"${checked} />'
+            + '<label for="${id}" id="${labelId}" '
+                + 'title="${title}">${title}</label>'
+            + '</div>';
 
         /**
          * 渲染控件
          *
          * @param {BoxGroup} group 控件实例
          * @param {Array.<Object>} 数据源对象
+         * @param {string} boxType 选择框的类型
          * @inner
          */
-        function render(group, datasource) {
-            var BoxType = BoxGroup.knownTypes[group.boxType];
-            if (!BoxType) {
-                throw new Error('Unknown box type "' + group.type + '"');
-            }
+        function render(group, datasource, boxType) {
+            // `BoxGroup`只会加`change`事件，所以全清就行
+            helper.clearDOMEvents(group);
 
-            // 一般来说`datasource`不会变，所以这里不做性能优化了
-
-            var initialHTML = '<input type="hidden" '
+            // 一个隐藏的`<input>`元素
+            var html = '<input type="hidden" '
                 + 'id="' + helper.getId(group, 'value') + '"';
             if (group.name) {
-                initialHTML += ' name="' + group.name + '"';
+                html += ' name="' + group.name + '"';
             }
-            initialHTML += ' />';
+            html += ' />';
 
-            group.disposeChildren();
-            group.main.innerHTML = initialHTML;
+            var classes = [].concat(
+                helper.getPartClasses(group, boxType),
+                helper.getPartClasses(group, 'wrapper')
+            );
+
+            var valueIndex = {};
+            for (var i = 0; i < group.rawValue.length; i++) {
+                valueIndex[group.rawValue[i]] = true;
+            }
+
+            // 分组的选择框必须有相同的`name`属性，所以哪怕没有也给造一个
+            var name = group.name || helper.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
-                var options = {
-                    name: group.name,
+                var data = {
+                    wrapperClass: classes.join(' '),
+                    id: helper.getId(group, 'box-' + i),
+                    labelId: helper.getId(group, 'label-' + i),
+                    type: group.boxType,
+                    name: name,
                     title: item.title || item.name || item.text,
-                    value: item.value
+                    value: item.value,
+                    checked: valueIndex[item.value] ? ' checked="checked"' : ''
                 };
-                var box = new BoxType(options);
-                box.on('change', lib.curry(syncValue, group));
-                box.appendTo(group.main);
-                group.addChild(box);
+                html += lib.format(itemTemplate, data);
+            }
+
+            group.main.innerHTML = html;
+
+            // `change`事件不会冒泡的，所以在这里要给一个一个加上
+            var inputs = group.main.getElementsByTagName('input');
+            var sync = lib.curry(syncValue, group);
+            for (var i = inputs.length - 1; i >= 0; i--) {
+                var input = inputs[i];
+                if (input.type === group.boxType) {
+                    helper.addDOMEvent(group, input, 'change', sync);
+                }
             }
         }
 
@@ -213,16 +236,21 @@ define(
                 paint: function (group, rawValue) {
                     rawValue = rawValue || [];
                     // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
-                    this.rawValue = rawValue;
+                    group.rawValue = rawValue;
                     var map = {};
                     for (var i = 0; i < rawValue.length; i++) {
                         map[rawValue[i]] = true;
                     }
-                    for (var i = 0; i < group.children.length; i++) {
-                        var box = group.children[i];
-                        var checked = map.hasOwnProperty(box.getValue());
-                        box.setChecked(checked);
+
+                    var inputs = group.main.getElementsByTagName('input');
+                    for (var i = inputs.length - 1; i >= 0; i--) {
+                        var input = inputs[i];
+                        if (input.type === group.boxType) {
+                            input.checked = map.hasOwnProperty(input.value);
+                        }
                     }
+
+                    // 有可能`rawValue`给多了，所以要重新获取一次以同步
                     var input = lib.g(helper.getId(group, 'value'));
                     input.value = group.getValue();
                 }
