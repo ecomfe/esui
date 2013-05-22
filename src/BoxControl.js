@@ -142,6 +142,7 @@ define(
             },
 
             repaint: helper.createRepaint(
+                InputControl.prototype.repaint,
                 {
                     name: ['rawValue', 'checked'],
                     paint: function (box, rawValue, checked) {

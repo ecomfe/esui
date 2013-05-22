@@ -185,6 +185,7 @@ define(
              * @override
              */
             repaint: helper.createRepaint(
+                InputControl.prototype.repaint,
                 {
                     name: 'height',
                     paint: function (textLine, height) {

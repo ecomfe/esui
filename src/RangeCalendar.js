@@ -730,6 +730,7 @@ define(
              * @override
              */
             repaint: helper.createRepaint(
+                InputControl.prototype.repaint,
                 {
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {

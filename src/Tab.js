@@ -322,6 +322,7 @@ define(
          * @protected
          */
         Tab.prototype.repaint = function (changes) {
+            Control.prototype.repaint.apply(this, arguments);
             changes = changes || allProperties;
 
             for (var i = 0; i < changes.length; i++) {

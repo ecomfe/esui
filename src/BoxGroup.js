@@ -203,6 +203,7 @@ define(
          * @protected
          */
         BoxGroup.prototype.repaint = helper.createRepaint(
+            InputControl.prototype.repaint,
             {
                 name: ['datasource', 'boxType'],
                 paint: render

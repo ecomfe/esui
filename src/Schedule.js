@@ -1305,7 +1305,7 @@ define(
              * @protected
              */
             repaint: helper.createRepaint(
-                 InputControl.prototype.repaint,
+                InputControl.prototype.repaint,
                 {
                     name: 'rawValue',
                     paint: function (schedule, rawValue) {

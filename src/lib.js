@@ -725,7 +725,7 @@ define(function () {
     lib.getStyle = function(element, key){
         key = lib.camelize(key);
         return element.style[key]
-            || (element.currentStyle ? element.currentStyle[key] : "")
+            || (element.currentStyle ? element.currentStyle[key] : '')
             || lib.getComputedStyle(element, key);
     };
 

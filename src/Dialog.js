@@ -469,6 +469,7 @@ define(
              * @override
              */
             repaint: helper.createRepaint(
+                Control.prototype.repaint,
                 {
                     name: 'height',
                     paint: function (dialog, value) {

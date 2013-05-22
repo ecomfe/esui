@@ -2216,6 +2216,7 @@ define(
              * @override
              */
             repaint: function (changes, changesIndex) {
+                Control.prototype.repaint.apply(this, arguments);
                  // 初始化控件主元素上的行为
                 var table = this;
 

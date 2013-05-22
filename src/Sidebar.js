@@ -503,6 +503,7 @@ define(
          * @protected
          */
         Sidebar.prototype.repaint = helper.createRepaint(
+            Control.prototype.repaint,
             {
                 name: 'mode',
                 paint: function (sidebar, mode) {

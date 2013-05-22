@@ -259,6 +259,7 @@ define(
          * @protected
          */
         TextBox.prototype.repaint = helper.createRepaint(
+            InputControl.prototype.repaint,
             {
                 name: 'width',
                 paint: function (textbox, width) {

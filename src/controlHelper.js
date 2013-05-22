@@ -509,7 +509,7 @@ define(
             control.main = main;
 
             return initialMain;
-        }
+        };
 
         /**
          * 通过`painter`对象创建`repaint`方法

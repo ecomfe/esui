@@ -64,6 +64,7 @@ define(
          * @protected
          */
         Label.prototype.repaint = function (changes) {
+            Control.prototype.repaint.apply(this, arguments);
             changes = changes || allProperties;
 
             var shouldRepaint = false;

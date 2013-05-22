@@ -822,6 +822,7 @@ define(
              * @override
              */
             repaint: helper.createRepaint(
+                InputControl.prototype.repaint,
                 {
                     name: 'rawValue',
                     paint: function (region, value) {

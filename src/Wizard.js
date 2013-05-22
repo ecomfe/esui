@@ -228,6 +228,7 @@ define(
          * @protected
          */
         Wizard.prototype.repaint = function (changes) {
+            Control.prototype.repaint.apply(this, arguments);
             // 第一次渲染的时候同时有`steps`和`activeIndex`属性，
             // 这会导致连续执行2个`painter`，因此要特别处理改成一次
             if (!changes) {

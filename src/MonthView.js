@@ -719,6 +719,7 @@ define(
              * @override
              */
             repaint: helper.createRepaint(
+                Control.prototype.repaint,
                 {
                     name: ['rawValue', 'range'],
                     paint: function (monthView, rawValue, range) {
