@@ -180,21 +180,21 @@ define(
          */
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
-                // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
-                this.main.setAttribute(
-                    require('./main').getConfig('instanceAttr'),
-                    helper.getGUID()
-                );
+                var main = helper.replaceMain(this);
                 
-                this.inputId = this.main.id || helper.getId(this, 'input');
-                this.main.id = this.inputId;
+                this.inputId = main.id || helper.getId(this, 'input');
 
-                // 生成一个`<div>`并把原来的`<input>`或`<textarea>`放进去
-                var main = this.createMain();
-                lib.insertBefore(main, this.main);
-                lib.removeNode(this.main);
-                main.appendChild(this.main);
-                this.main = main;
+                // TextBox上会有`maxlength`之类的属性，因此不能直接丢掉，
+                // 但保留下来就不能加`data-ctrl-id`属性，
+                // 不加又会导致`main.init`重复创建控件，
+                // 因此这里需要复制一个用，好在`cloneNode(false)`没兼容问题
+                var input = main.cloneNode(false);
+                // `helper.replaceMain`会给加上`data-ctrl-id`，要重新去掉
+                input.removeAttribute(
+                    require('./main').getConfig('instanceAttr'));
+                input.id = this.inputId;
+                // 把原来的`<input>`或`<textarea>`放进去
+                this.main.appendChild(input);
             }
             else {
                 this.inputId = helper.getId(this, 'input');

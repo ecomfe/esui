@@ -96,14 +96,14 @@ define(function () {
                 expect(textbox.get('mode')).toBe('textarea');
             });
 
-            it('should preserve the element as its child DOM', function () {
+            it('should preserve attributes from original DOM element', function () {
                 var div = document.createElement('div');
-                div.innerHTML = '<input type="text" />';
+                div.innerHTML = '<input type="text" maxlength="3" />';
                 var main = div.firstChild;
 
                 var textbox = new TextBox({ main: main });
                 textbox.appendTo(container);
-                expect(findInput(textbox)).toBe(main);
+                expect(findInput(textbox).getAttribute('maxlength')).toBe('3');
             });
         });
 

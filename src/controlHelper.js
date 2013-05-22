@@ -488,6 +488,30 @@ define(
         };
 
         /**
+         * 替换控件的主元素
+         *
+         * @param {Control} control 控件实例
+         * @param {HTMLElement=} main 用于替换的主元素
+         * @parma {HTMLElement=} 原来的主元素
+         */
+        helper.replaceMain = function (control, main) {
+            main = main || control.createMain();
+            var initialMain = control.main;
+
+            // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
+            initialMain.setAttribute(
+                ui.getConfig('instanceAttr'),
+                helper.getGUID()
+            );
+            
+            lib.insertBefore(main, initialMain);
+            initialMain.parentNode.removeChild(initialMain);
+            control.main = main;
+
+            return initialMain;
+        }
+
+        /**
          * 通过`painter`对象创建`repaint`方法
          *
          * @param {function=} supterRepaint 父类的`repaint`方法
