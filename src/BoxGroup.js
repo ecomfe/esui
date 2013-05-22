@@ -83,7 +83,7 @@ define(
             }
 
             options.datasource = datasource;
-            if (!options.rawValue) {
+            if (!options.rawValue && !options.value) {
                 options.rawValue = values;
             }
         }
@@ -106,7 +106,7 @@ define(
             if (!properties.datasource.length) {
                 extractDatasourceFromDOM(this.main, properties);
             }
-            if (!properties.rawValue) {
+            if (!properties.rawValue && !properties.value) {
                 properties.rawValue = [];
             }
 
@@ -170,12 +170,12 @@ define(
          * @public
          */
         BoxGroup.prototype.setProperties = function (properties) {
-            // 修改了`datasource`或`boxType`，且没给新的`rawValue`的时候，
+            // 修改了`datasource`或`boxType`，且没给新的`rawValue`或`value`的时候，
             // 要把`rawValue`清空。由于上层`setProperties`是全等判断，
             // 如果当前`rawValue`正好也是空的，就不要改值了，以免引起`change`事件
             if ((properties.datasource || properties.boxType)
-                && !properties.rawValue 
-                && this.rawValue.length
+                && (!properties.rawValue && !properties.value)
+                && (!this.rawValue || !this.rawValue.length)
             ) {
                 properties.rawValue = [];
             }
