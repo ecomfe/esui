@@ -48,6 +48,11 @@ define(
                     continue;
                 }
 
+                 // 不对disabled和readonly的控件进行验证
+                if (control.isDisabled() || control.isReadOnly()) {
+                    continue;
+                }
+
                 var name = control.get('name');
                 var value = fetchValue(control);
                 if (store.hasOwnProperty(name)) {
@@ -187,6 +192,20 @@ define(
             Panel.apply(this, arguments);
         }
 
+        /**
+         * 表单验证
+         *
+         */
+        Form.prototype.validateAndSubmit = function() {
+            if (this.validate()) {
+                this.fire('submit');
+            }
+            else {
+                this.fire('submitFail');
+            }
+
+        };
+
         Form.prototype.type = 'Form';
 
         /**
@@ -244,7 +263,8 @@ define(
             if (shouldAttachSubmit) {
                 var button = this.viewContext.get(this.submitButton);
                 if (button) {
-                    this.submitHandler = lib.bind(this.fire, this, 'submit');
+                    this.submitHandler =
+                        lib.bind(this.validateAndSubmit, this);
                     button.on('click', this.submitHandler);
                 }
             }
@@ -339,6 +359,26 @@ define(
             return inputs.getDataAsString();
         };
 
+        /**
+         * 验证所有表单控件
+         *
+         * @return {boolean}
+         * @public
+         */
+        Form.prototype.validate = function () {
+            var inputs = this.getInputControls();
+            var result = true;
+            for (var i = 0; i < inputs.length; i++) {
+                var control = inputs[i];
+                 // 不对disabled和readonly的控件进行验证
+                if (control.isDisabled() || control.isReadOnly()) {
+                    continue;
+                }
+
+                result &= control.validate();
+            }
+            return !!result;
+        };
         lib.inherits(Form, Panel);
         require('./main').register(Form);
         return Form;

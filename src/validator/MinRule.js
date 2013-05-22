@@ -8,6 +8,7 @@
 define(
     function (require) {
         var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
 
         /**
          * MinRule类声明
@@ -49,8 +50,8 @@ define(
             );
         };
 
-        require('./lib').inherits(MinRule, Rule);
-        require('./main').registerRule(MinRule, 300);
+        require('../lib').inherits(MinRule, Rule);
+        require('../main').registerRule(MinRule, 300);
         return MinRule;
     }
 );

@@ -8,6 +8,7 @@
 define(
     function (require) {
         var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
 
         /**
          * MaxRule类声明
@@ -49,8 +50,8 @@ define(
             );
         };
 
-        require('./lib').inherits(MaxRule, Rule);
-        require('./main').registerRule(MaxRule, 301);
+        require('../lib').inherits(MaxRule, Rule);
+        require('../main').registerRule(MaxRule, 301);
         return MaxRule;
     }
 );

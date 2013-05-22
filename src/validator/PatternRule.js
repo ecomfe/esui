@@ -8,6 +8,7 @@
 define(
     function (require) {
         var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
 
         /**
          * PatternRule类声明
@@ -49,8 +50,8 @@ define(
             );
         };
 
-        require('./lib').inherits(PatternRule, Rule);
-        require('./main').registerRule(PatternRule, 200);
+        require('../lib').inherits(PatternRule, Rule);
+        require('../main').registerRule(PatternRule, 200);
         return PatternRule;
     }
 );

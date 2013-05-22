@@ -8,6 +8,7 @@
 define(
     function (require) {
         var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
 
         /**
          * MaxLengthRule类声明
@@ -44,13 +45,13 @@ define(
          */
         MaxLengthRule.prototype.check = function (value, control) {
             return new ValidityState(
-                value.length <= this.getLimitCondition(), 
+                value.length <= this.getLimitCondition(control), 
                 this.getErrorMessage(control)
             );
         };
 
-        require('./lib').inherits(MaxLengthRule, Rule);
-        require('./main').registerRule(MaxLengthRule, 100);
+        require('../lib').inherits(MaxLengthRule, Rule);
+        require('../main').registerRule(MaxLengthRule, 100);
         return MaxLengthRule;
     }
 );

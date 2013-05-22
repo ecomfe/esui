@@ -496,7 +496,7 @@ define(
          */
         main.registerRule = function (ruleClass, priority) {
             // 多个Rule共享一个属性似乎也没问题
-            ruleClasses.push({ type: ruleClasses, priority: priority });
+            ruleClasses.push({ type: ruleClass, priority: priority });
             // 能有几个规则，这里就不优化为插入排序了
             ruleClasses.sort(
                 function (x, y) { return x.priority - y.priority; });
@@ -511,7 +511,7 @@ define(
         main.createRulesByControl = function (control) {
             var rules = [];
             for (var i = 0; i < ruleClasses.length; i++) {
-                var RuleClass = ruleClasses.type;
+                var RuleClass = ruleClasses[i].type;
                 if (control.get(RuleClass.prototype.type) != null) {
                     rules.push(new RuleClass());
                 }

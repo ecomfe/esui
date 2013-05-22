@@ -8,6 +8,7 @@
 define(
     function (require) {
         var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
 
         /**
          * RequiredRule类声明
@@ -45,8 +46,8 @@ define(
             return new ValidityState(!!value, this.getErrorMessage(control));
         };
 
-        require('./lib').inherits(RequiredRule, Rule);
-        require('./main').registerRule(RequiredRule, 0);
+        require('../lib').inherits(RequiredRule, Rule);
+        require('../main').registerRule(RequiredRule, 0);
         return RequiredRule;
     }
 );

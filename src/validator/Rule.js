@@ -42,7 +42,7 @@ define(
             // 基类接口，参数没用但需要记录文档
             /* jshint unused:false */
 
-            var ValidityState = require('ValidityState');
+            var ValidityState = require('./ValidityState');
             return new ValidityState(true, '');
 
         };
@@ -54,10 +54,10 @@ define(
          * @return {string}
          */
         Rule.prototype.getErrorMessage = function (control) {
-            
-            var lib = require('./lib');
-            return lib.format(this.errorMessage, control);
-
+            var lib = require('../lib');
+            var errorMessage =
+                control.get(this.type + 'ErrorMessage') || this.errorMessage;
+            return lib.format(errorMessage, control);
         };
 
         /**
@@ -69,6 +69,17 @@ define(
         Rule.prototype.getLimitCondition = function (control) {
 
             return control.get(this.type);
+
+        };
+
+        /**
+         * 获取规则类型 
+         *
+         * @return {string}
+         */
+        Rule.prototype.getName = function () {
+
+            return this.type;
 
         };
 

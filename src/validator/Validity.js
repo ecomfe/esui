@@ -116,7 +116,7 @@ define(
          */
         Validity.prototype.isValid = function () {
 
-            var states = this.getstates();
+            var states = this.getStates();
 
             for (var i = 0; i < states.length; i ++) {
                 if (!states[i].getState()) {
