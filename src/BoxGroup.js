@@ -128,6 +128,8 @@ define(
                 }
             }
             group.rawValue = result;
+            var input = lib.g(helper.getId(group, 'value'));
+            input.value = group.getValue();
             group.fire('change');
         }
 
@@ -146,8 +148,15 @@ define(
 
             // 一般来说`datasource`不会变，所以这里不做性能优化了
 
+            var initialHTML = '<input type="hidden" '
+                + 'id="' + helper.getId(group, 'value') + '"';
+            if (group.name) {
+                initialHTML += ' name="' + group.name + '"';
+            }
+            initialHTML += ' />';
+
             group.disposeChildren();
-            group.main.innerHTML = '';
+            group.main.innerHTML = initialHTML;
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
                 var options = {
@@ -213,6 +222,8 @@ define(
                         var checked = map.hasOwnProperty(box.getValue());
                         box.setChecked(checked);
                     }
+                    var input = lib.g(helper.getId(group, 'value'));
+                    input.value = group.getValue();
                 }
             },
             {
