@@ -325,6 +325,13 @@ define(
             var controls = [];
             for (var i = 0, len = elements.length; i < len; i++) {
                 var element = elements[i];
+
+                // 有时候，一个控件会自己把`main.innerHTML`生成子控件，比如`Panel`，
+                // 但这边有缓存这些子元素，可能又会再生成一次，所以要去掉
+                if (element.getAttribute(config.instanceAttr)) {
+                    continue;
+                }
+
                 var attributes = element.attributes;
                 var controlOptions = {};
                 var extensionOptions = {};
