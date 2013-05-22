@@ -402,13 +402,11 @@ define(
             });
 
 
-            // 如果year选择的数据没改变，则要手动触发月份变化
+            // 如果year选择的数据没改变，
+            // 但可能还是需要重回日历，
+            // 因此要手动触发year的change
             if (lastYear == me.year) {
-                var monthSelect = me.getChild('monthSel');
-                monthSelect.setProperties({
-                    datasource: getMonthOptions(me, me.year),
-                    value: me.month
-                });
+                yearSelect.fire('change');
             }
 
         }
