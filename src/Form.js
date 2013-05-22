@@ -226,10 +226,26 @@ define(
                 lib.toArray(this.main.getElementsByTagName('select')),
                 lib.toArray(this.main.getElementsByTagName('textarea'))
             );
+            var instanceAttribute = require('./main').getConfig('instanceAttr');
             var result = [];
             
             for (var i = 0; i < elements.length; i++) {
                 var element = elements[i];
+
+                // 所有的`InputControl`必须有一个`<input type="hidden">`在主元素下，
+                // 则分为2种情况讨论：
+                // 
+                // - `InputControl`的主元素本身就是`<input>`类元素
+                // - `InputControl`的主元素下有一个`<input type="hidden">`元素
+                // 
+                // 因此需要找当前DOM元素和其父元素上有没有对应的`data-ctrl-id`属性
+                if (!element.getAttribute(instanceAttribute)) {
+                    element = element.parentNode;
+                    if (!element.getAttribute(instanceAttribute)) {
+                        continue;
+                    }
+                }
+
                 var control = main.getControlByDOM(element);
                 if (control
                     && control instanceof InputControl
