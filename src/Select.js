@@ -378,6 +378,12 @@ define(
         Select.prototype.initStructure = function () {
             // 如果主元素是`<select>`，删之替换成`<div>`
             if (this.main.nodeName.toLowerCase() === 'select') {
+                // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
+                this.main.setAttribute(
+                    require('./main').getConfig('instanceAttr'),
+                    helper.getGUID()
+                );
+                
                 var main = this.createMain();
                 lib.insertBefore(main, this.main);
                 this.main.parentNode.removeChild(this.main);

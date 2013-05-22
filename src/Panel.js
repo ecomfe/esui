@@ -39,9 +39,6 @@ define(
             var properties = {};
             lib.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
-            if (options.content == null) {
-                properties.content = this.main.innerHTML;
-            }
             lib.extend(this, properties);
         };
 
@@ -56,9 +53,14 @@ define(
             Control.prototype.repaint,
             {
                 name: 'content',
-                paint: function (control, value) {
-                    control.disposeChildren();
-                    control.main.innerHTML = value;
+                paint: function (control, content) {
+                    // 第一次刷新的时候是可能没有`content`的，
+                    // 这时在`innerHTML`上就地创建控件，不要刷掉内容，
+                    // 后续有要求`content`是字符串，所以不管非字符串的后果
+                    if (content != null) {
+                        control.disposeChildren();
+                        control.main.innerHTML = content;
+                    }
                     control.initChildren(control.main);
                 }
             }

@@ -180,6 +180,12 @@ define(
          */
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
+                // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
+                this.main.setAttribute(
+                    require('./main').getConfig('instanceAttr'),
+                    helper.getGUID()
+                );
+                
                 this.inputId = this.main.id || helper.getId(this, 'input');
                 this.main.id = this.inputId;
 

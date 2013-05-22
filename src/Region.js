@@ -786,6 +786,12 @@ define(
             initStructure: function () {
                 // 如果主元素不是`<div>`，替换成`<div>`
                 if (this.main.nodeName.toLowerCase() !== 'div') {
+                    // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
+                    this.main.setAttribute(
+                        require('./main').getConfig('instanceAttr'),
+                        helper.getGUID()
+                    );
+                    
                     var main = this.createMain();
                     lib.insertBefore(main, this.main);
                     this.main.parentNode.removeChild(this.main);
