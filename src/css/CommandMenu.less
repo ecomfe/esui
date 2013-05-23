@@ -2,8 +2,8 @@
 @import "variable.less";
 
 .ui-commandmenu {
-    .linear-gradient-background (
-        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -6px, #f3f3f3);
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #f3f3f3);
     border: 1px solid #D8D8D8;
     border-radius: 3px 3px 3px 3px;
     cursor: pointer;
@@ -15,21 +15,24 @@
 
     &:hover,
 	&:focus {
-    	.linear-gradient-background (
-       		top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -36px, #f3f3f3);
+    	.linear-gradient-background-with-image (
+       		top, #ffffff, #f6f6f6, "esui-combo-arrow.png",
+            right, -36px, #f3f3f3);
 	}
 
 	&:active {
-    	.linear-gradient-background (
-       		top, #f6f6f6, #ffffff, "dn-combo-arrow.png", right, -36px, #f3f3f3);
+    	.linear-gradient-background-with-image (
+       		top, #f6f6f6, #ffffff, "esui-combo-arrow.png",
+            right, -36px, #f3f3f3);
 	}
 }
 
 .ui-commandmenu-active,
 .ui-commandmenu-active:hover,
 .ui-commandmenu-active:focus {
-    .linear-gradient-background (
-        top, #ffffff, #f6f6f6, "dn-combo-arrow.png", right, -69px, #f3f3f3);
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "esui-combo-arrow.png",
+        right, -69px, #f3f3f3);
 }
 
 .ui-commandmenu-layer {

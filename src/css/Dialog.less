@@ -24,7 +24,7 @@
         height: 26px;
         position: relative;
         .ui-dialog-close-icon {
-            background:url(../img/ui-dialog-head-close.png) no-repeat;
+            .background("esui-dialog-head-close.png");
             height: 13px;
             width: 13px;
             position: absolute;
@@ -38,7 +38,7 @@
             line-height:28px;
             font-size: 15px;
             line-height: 26px;
-            background: url(../img/ui-dialog-head-bg.png);
+            .background("esui-dialog-head-bg.png", repeat);
         }
     }
 
@@ -90,7 +90,7 @@
     .ui-dialog-body {
         padding-bottom: 20px;
         .ui-dialog-icon-warning {
-            background: url("../img/dialog-notice.png") no-repeat scroll 0 0 transparent;
+            .background("esui-dialog-notice.png");
             display: block;
             float: left;
             height: 22px;
@@ -99,7 +99,7 @@
         }
 
         .ui-dialog-icon-confirm {
-            background:url(../img/dialog-question.png) no-repeat;
+            .background("esui-dialog-question.png");
             display:block;
             float:left;
             height: 34px;

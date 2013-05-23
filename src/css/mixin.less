@@ -25,7 +25,46 @@
 }
 
 /* 
- * 线性渐变背景
+ * 无图标线性渐变背景
+ * @direction 渐变方向
+ * @from-color 起始颜色
+ * @to-color 终止颜色
+ * @b-color 背景色
+ */
+
+.linear-gradient-background (
+    @direction:top, @from-color, @to-color, @b-color:transparent
+) {
+    @top: 0% 0%, 0% 100%;
+    @left: 0% 0%, 100% 0%;
+    @bottom: 0% 100%, 0% 0%;
+    @right: 100% 0%, 0% 0%;
+
+    background: @b-color;
+
+    /* Safari 4-5, Chrome 1-9 */
+    background: 
+        -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
+  
+    /* Safari 5.1, Chrome 10+ */
+    background:
+        -webkit-linear-gradient(@direction, @from-color, @to-color);
+  
+    /* Firefox 3.6+ */
+    background:
+        -moz-linear-gradient(@direction, @from-color, @to-color);
+  
+    /* IE 10 */
+    background:
+        -ms-linear-gradient(@direction, @from-color, @to-color);
+  
+    /* Opera 11.10+ */
+    background:
+        -o-linear-gradient(@direction, @from-color, @to-color);
+}
+
+/* 
+ * 带图标线性渐变背景
  * @direction 渐变方向
  * @from-color 起始颜色
  * @to-color 终止颜色
@@ -35,12 +74,14 @@
  * @s-y y轴偏移 
  * @b-color 背景色
  */
-.linear-gradient-background (
+
+.linear-gradient-background-with-image (
     @direction:top, @from-color, @to-color,
     @image-url:"", 
     @s-x:0, @s-y:0, 
     @b-color:transparent,
-    @repeat-type:no-repeat) {
+    @repeat-type:no-repeat
+) {
     @top: 0% 0%, 0% 100%;
     @left: 0% 0%, 100% 0%;
     @bottom: 0% 100%, 0% 0%;

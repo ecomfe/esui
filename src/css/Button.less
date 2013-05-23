@@ -20,7 +20,7 @@
 }
 
 .ui-button {
-    .linear-gradient-background (top, #ffffff, #f6f6f6, "", 0, 0, #ffffff);
+    .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
     border:1px solid #CCC;
     cursor:pointer;
     /* Hack: 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
@@ -51,7 +51,7 @@
 .ui-button:active {
     border:1px solid #BEBEBE;
     height:23px;
-    .linear-gradient-background (top, #f6f6f6, #ffffff, "", 0, 0, #f6f6f6);
+    .linear-gradient-background (top, #f6f6f6, #ffffff, #f6f6f6);
 }
 
 .ui-button-disabled {
@@ -78,12 +78,12 @@
     font-weight: bold;
 }
 .skin-spring-button {
-    .linear-gradient-background (top, #6cbb4c, #519c30, "", 0, 0, #65b445);
+    .linear-gradient-background (top, #6cbb4c, #519c30, #65b445);
     padding: 0 10px;
 }
 .skin-spring-add-button {
-    .linear-gradient-background (
-        top, #6cbb4c, #519c30, "dn-ui-button-plus.gif", 9px, 7px, #65b445);
+    .linear-gradient-background-with-image (
+        top, #6cbb4c, #519c30, "esui-button-plus.gif", 9px, 7px, #65b445);
     width: 40px;
     padding: 0 13px 0 27px;
 }
@@ -94,12 +94,11 @@
     height:26px;
 }
 .skin-spring-button:active {
-    .linear-gradient-background (
-        top, #519c30, #6cbb4c, "", 0, 0, #65b445);
+    .linear-gradient-background (top, #519c30, #6cbb4c, #65b445);
 }
 .skin-spring-add-button:active {
-    .linear-gradient-background (
-        top, #519c30, #6cbb4c, "dn-ui-button-plus.gif", 9px, 7px, #65b445);
+    .linear-gradient-background-with-image (
+        top, #519c30, #6cbb4c, "esui-button-plus.gif", 9px, 7px, #65b445);
 }
 
 .skin-spring-button:hover,
@@ -110,8 +109,8 @@
 
 /** 下载系列 */
 .skin-download-button {
-    .linear-gradient-background (
-        top, #FFF, #f6f6f6, "download.png", 40px, center, #65b445);
+    .linear-gradient-background-with-image (
+        top, #FFF, #f6f6f6, "esui-download.png", 40px, center, #65b445);
     height: 23px;
     line-height: 24px;
     margin: 3px 10px;
@@ -120,13 +119,13 @@
     width: 25px;
 }
 .skin-download-button:active {
-    .linear-gradient-background (
-        top, #f6f6f6, #FFF, "download.png", 40px, center, #65b445);
+    .linear-gradient-background-with-image (
+        top, #f6f6f6, #FFF, "esui-download.png", 40px, center, #65b445);
 }
 
 /** 关闭layer按钮 */
 .skin-layerClose-button {
-    background: url("../img/esui.png") repeat scroll -37px -88px transparent;
+    .background("esui.png", repeat, -37px, -88px, transparent);
     border: 0 none;
     height: 12px;
     overflow: hidden;
@@ -137,7 +136,7 @@
     padding: 0;
 }
 .skin-layerClose-button:active {
-    background: url("../img/esui.png") repeat scroll -37px -88px transparent;
+    .background("esui.png", repeat, -37px, -88px, transparent);
     border: 1px solid #f6f6f6;
     height: 12px;
     width: 12px;
