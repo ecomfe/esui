@@ -4,6 +4,8 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
+        require('css!./css/Box.css');
+
         /**
          * 单选或复选框组
          */
@@ -121,8 +123,6 @@ define(
             group.rawValue = result;
             var input = lib.g(helper.getId(group, 'value'));
             input.value = group.getValue();
-
-            console.log(group.rawValue);
 
             group.fire('change');
         }
