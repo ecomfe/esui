@@ -41,9 +41,6 @@ define(
             for (var i = 0; i < len; i++) {
                 html.push(getLevelHtml(region, data[i], 1));
             }
-
-            html.push('<div>' + region.cityCache.join('')　 + '</div>');
-
             var tpl = '<input type="hidden" id="${inputId}" name="${name}" />';
 
             html.push(lib.format(
@@ -91,10 +88,18 @@ define(
             }
 
             for (key in region.regionDataMap) {
+                if (key in map) {
+                    region.regionDataMap[key].isSelected = true;
+                }
+                else {
+                    region.regionDataMap[key].isSelected = false;
+                }
                 var checkbox = getOptionDOM(region, key);
-                checkbox.checked = (key in map);
+                if (checkbox) {
+                    checkbox.checked = (key in map);
+                }
             }
-            // 更新显示信息
+            // 重复调一次，主要是为了更新“选中了几个城市”的显示信息
             updateMulti(region);
             updateParamValue(region);
         }
@@ -171,9 +176,18 @@ define(
                 return isChecked;
             }
             else {
+                // 弹出层城市不一定创建，所以使用其他方法
+                if (checkbox) {
+                    if (checkbox.checked) {
+                        region.rawValue.push(data.id);
+                    }
+                    return checkbox.checked;
+                }
+                else if(region.regionDataMap[data.id].isSelected) {
+                    region.rawValue.push(data.id);
+                }
 
-                checkbox && checkbox.checked && region.rawValue.push(data.id);
-                return checkbox.checked;
+                return region.regionDataMap[data.id].isSelected;
             }
         }
 
@@ -203,7 +217,7 @@ define(
 
         // 地区、省、城市、区选项
         var tplInputItem = [
-            '<div class="${itemClasses}" id="${itemWrapperId}">',
+            '<div class="${itemClasses}" id="${itemWrapperId}" >',
                 '<input type="checkbox" value="${itemValue}" id="${itemId}"',
                 ' data-optionId="${itemValue}" data-level="${level}">',
                 '<label for="${itemId}">${text}</label>',
@@ -251,10 +265,14 @@ define(
             var subItemHtml = [];
             var children = item.children;
             if (children != null) {
-                item.selected = 0;
+                item.isSelected = false;
                 // 省（直辖市）级具有弹出层
                 if (item.level == 3) {
-                    subItemHtml.push(formatItemChildren(me, item));
+                    // 按需加载，先保存到缓存里
+                    if (item.children && item.children.length > 0) {
+                        region.cityCache[item.id] =
+                            formatItemChildren(me, item);
+                    }
                 } else {
                     var len = children instanceof Array && children.length;
                     for (var i = 0; i < len; i++) {
@@ -516,13 +534,17 @@ define(
             var len = children instanceof Array && children.length;
             var item;
             var checkbox;
-
             if (len) {
                 while (len--) {
                     item = children[len];
                     checkbox = getOptionDOM(region, item.id);
-                    checkbox.checked = isChecked;
-                    optionClick(region, checkbox, 1);
+                    if (checkbox) {
+                        checkbox.checked = isChecked;
+                        optionClick(region, checkbox, 1);
+                    }
+                    else {
+                        region.regionDataMap[item.id].isSelected = isChecked;
+                    }
                 }
             }
             else if (len === 0) {
@@ -575,16 +597,19 @@ define(
             if (type == 'hide') {
                 handler = hideSubCity;
             }
+
+            var itemId;
             while (tar && tar != document.body) {
                 var optionChildLayer;
                 if (lib.hasClass(tar, textClass[0])) {
+                    itemId = tar.firstChild.getAttribute('value');
                     optionChildLayer = tar.previousSibling.firstChild;
                 }
                 else if (lib.hasClass(tar, layerClass[0])) {
                     optionChildLayer = tar;
                 }
-                if (optionChildLayer && optionChildLayer.children.length > 0) {
-                    handler(region, optionChildLayer);
+                if (optionChildLayer) {
+                    handler(region, optionChildLayer, itemId);
                     return;
                 }
 
@@ -599,8 +624,19 @@ define(
          * @inner
          * @param {Region} region Region控件实例
          * @param {HTMLInputElement} dom 弹出层的dom.
+         * @param {string} itemId 弹出层对应的父城市id.
          */
-        function showSubCity(region, dom) {
+        function showSubCity(region, dom, itemId) {
+            // 装载
+            if (itemId) {
+                var subCityHTML = region.cityCache[itemId];
+                if (!subCityHTML) {
+                    return;
+                }
+                dom.innerHTML = subCityHTML;
+                selectMulti(region, region.rawValue);
+            }
+
             lib.removeClass(dom, 'ui-hidden');
             var wrapper = dom.parentNode.nextSibling;
             helper.addPartClasses(region, 'text-over', wrapper);
@@ -612,8 +648,9 @@ define(
          * @inner
          * @param {Region} region Region控件实例
          * @param {HTMLInputElement} dom 弹出层的dom.
+         * @param {string} itemId 弹出层对应的父城市id.
          */
-        function hideSubCity(region, dom) {
+        function hideSubCity(region, dom, itemId) {
             lib.addClass(dom, 'ui-hidden');
             var wrapper = dom.parentNode.nextSibling;
             helper.removePartClasses(region, 'text-over', wrapper);
@@ -760,8 +797,8 @@ define(
                 var properties = {
                     regionData: lib.clone(Region.REGION_LIST),
                     mode: 'multi',
-                    cityCache: [],
-                    rawValue: []
+                    rawValue: [],
+                    cityCache: {}
                 };
                 lib.extend(properties, options);
 
