@@ -267,6 +267,7 @@ define(
                         }
                     }
                     lib.insertAfter(label, this.main);
+                    this.validityLabel = label.id;
                 }
 
                 return label;
