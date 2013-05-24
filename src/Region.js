@@ -87,12 +87,12 @@ define(
                 map[value[len]] = 1;
             }
 
-            for (key in region.regionDataMap) {
-                if (key in map) {
-                    region.regionDataMap[key].isSelected = true;
+            for (key in region.regionDataIndex) {
+                if (map.hasOwnProperty(key)) {
+                    region.regionDataIndex[key].isSelected = true;
                 }
                 else {
-                    region.regionDataMap[key].isSelected = false;
+                    region.regionDataIndex[key].isSelected = false;
                 }
                 var checkbox = getOptionDOM(region, key);
                 if (checkbox) {
@@ -183,11 +183,11 @@ define(
                     }
                     return checkbox.checked;
                 }
-                else if(region.regionDataMap[data.id].isSelected) {
+                else if(region.regionDataIndex[data.id].isSelected) {
                     region.rawValue.push(data.id);
                 }
 
-                return region.regionDataMap[data.id].isSelected;
+                return region.regionDataIndex[data.id].isSelected;
             }
         }
 
@@ -259,8 +259,7 @@ define(
              * height: 5px
              * width: 25px;
              *
-             */        
-            var me = region;        
+             */      
             item.level = level;
             var subItemHtml = [];
             var children = item.children;
@@ -271,13 +270,13 @@ define(
                     // 按需加载，先保存到缓存里
                     if (item.children && item.children.length > 0) {
                         region.cityCache[item.id] =
-                            formatItemChildren(me, item);
+                            formatItemChildren(region, item);
                     }
                 } else {
                     var len = children instanceof Array && children.length;
                     for (var i = 0; i < len; i++) {
                         subItemHtml.push(
-                            getLevelHtml(me, item.children[i], level + 1)
+                            getLevelHtml(region, item.children[i], level + 1)
                         );
                     }
                 }
@@ -339,16 +338,16 @@ define(
                         {
                             popLayerClass:
                                 helper.getPartClasses(
-                                    me,
+                                    region,
                                     'locator'
                                 ).join(' '),
                             layerBoxClass:
                                 helper.getPartClasses(
-                                    me,
+                                    region,
                                     'city-box'
                                 ).join(' '),
-                            id: helper.getId(me, 'sub-' + item.id),
-                            infoId: helper.getId(me, 'info-' + item.id),
+                            id: helper.getId(region, 'sub-' + item.id),
+                            infoId: helper.getId(region, 'info-' + item.id),
                             innerHTML: subItemHtml.join('')
                         }
                     );
@@ -405,7 +404,6 @@ define(
          * @return {string}
          */
         function formatItemChildren(region, item) {
-            var me = region;
             if (item.level == 3 && item.children != null) {
                 var itemHtml = [];
                 var leftLength = 0, rightLength = 0;
@@ -413,7 +411,7 @@ define(
                     item.children[i].parent = item;
                     item.children[i].level = item.level + 1;
                     itemHtml.push(
-                        getLevelHtml(me, item.children[i], item.level + 1)
+                        getLevelHtml(region, item.children[i], item.level + 1)
                     );
                     
                     if (i % 2 === 0
@@ -470,7 +468,7 @@ define(
          */
         function initMultiData(region, properties) {
             var source = properties.regionData;
-            properties.regionDataMap = {};
+            properties.regionDataIndex = {};
             walker(source, {children: source});
 
             function walker(data, parent) {
@@ -485,7 +483,7 @@ define(
                 for (var i = 0; i < len; i++) {
                     var item = lib.clone(data[i]);
                     item.parent = parent;
-                    properties.regionDataMap[item.id] = item;
+                    properties.regionDataIndex[item.id] = item;
                     walker(item.children, item);
                 }
             }
@@ -528,7 +526,7 @@ define(
          */
         function optionClick(region, dom, dontRefreshView) {  
             var id = dom.getAttribute('data-optionId');
-            var data = region.regionDataMap[id];
+            var data = region.regionDataIndex[id];
             var isChecked = dom.checked;
             var children = data.children;
             var len = children instanceof Array && children.length;
@@ -543,7 +541,7 @@ define(
                         optionClick(region, checkbox, 1);
                     }
                     else {
-                        region.regionDataMap[item.id].isSelected = isChecked;
+                        region.regionDataIndex[item.id].isSelected = isChecked;
                     }
                 }
             }
@@ -552,10 +550,10 @@ define(
                 if (dom.getAttribute('level') == 3) {
                     var selCityIdsLength = 0;
                     var cityTotalLength =
-                        region.regionDataMap[id].parent.children.length;
+                        region.regionDataIndex[id].parent.children.length;
                     for (var i = 0; i < cityTotalLength; i++) {
                         var child =
-                            region.regionDataMap[id].parent.children[i];
+                            region.regionDataIndex[id].parent.children[i];
                         if (getOptionDOM(child.id).checked === true) {
                             selCityIdsLength++;
                         }
@@ -564,7 +562,7 @@ define(
                         region,
                         selCityIdsLength,
                         cityTotalLength,
-                        region.regionDataMap[id].parent.id
+                        region.regionDataIndex[id].parent.id
                     );
                 }
             }
@@ -797,14 +795,15 @@ define(
                 var properties = {
                     regionData: lib.clone(Region.REGION_LIST),
                     mode: 'multi',
-                    rawValue: [],
-                    cityCache: {}
+                    rawValue: []
                 };
                 lib.extend(properties, options);
 
                 if (properties.mode == 'multi') {
                     //增加map型地域数据
                     initMultiData(this, properties);
+
+                    this.cityCache = {};
                 }
                 else {
                     properties.rawValue = '';
