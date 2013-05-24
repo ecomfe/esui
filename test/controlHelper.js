@@ -250,7 +250,7 @@ define(function (require) {
                     id: 'test'
                 };
                 var id = helper.getId(control);
-                expect(id).toBe('ctrl-test');
+                expect(id).toMatch(/^ctrl-test-\d+$/);
             });
 
             it('should return the correct id string for a part', function () {
@@ -258,7 +258,7 @@ define(function (require) {
                     id: 'test'
                 };
                 var id = helper.getId(control, 'label');
-                expect(id).toBe('ctrl-test-label');
+                expect(id).toMatch(/^ctrl-test-\d+-label$/);
             });
         });
 
