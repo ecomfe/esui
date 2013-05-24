@@ -218,11 +218,14 @@
 }
 
 /*
- * 隐藏元素内文字，使用背景图片替换
+ * 隐藏元素内文字
  */
-.iconize (@url) {
+.indentText() {
     text-indent: -500%;
-    background-image: url(@{base-url}@{image-url});
+    /** IE6,7 下使用text-indent会导致内容消失，因此做下hack */
+    _text-indent: 0;
+    _font-size: 0;
+    _line-height: 0;
 }
 
 /*

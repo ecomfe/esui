@@ -18,11 +18,12 @@
     z-index:200;
 
     .ui-dialog-head {
-        background: none repeat scroll 0 0 #394459;
+        .background("esui-dialog-head-bg.png", repeat);
         color: #FFFFFF;
         font-weight: bold;
         height: 26px;
         position: relative;
+        width: 100%;
         .ui-dialog-close-icon {
             .background("esui-dialog-head-close.png");
             height: 13px;
@@ -38,7 +39,6 @@
             line-height:28px;
             font-size: 15px;
             line-height: 26px;
-            .background("esui-dialog-head-bg.png", repeat);
         }
     }
 
@@ -95,6 +95,7 @@
             float: left;
             height: 22px;
             margin: 18px 10px 8px 40px;
+            _margin: 15px 10px 8px 25px;
             width: 33px;
         }
 
@@ -104,6 +105,7 @@
             float:left;
             height: 34px;
             margin: 15px 10px 8px 40px;
+            _margin: 12px 10px 8px 25px;
             width: 34px;
         }
 

@@ -10,7 +10,8 @@
 
 .ui-textbox {
     position: relative;
-    .inline-block();
+    display: inline-block;
+    *display: inline;
 
     input, textarea {
         color: #333;
@@ -33,6 +34,18 @@
         overflow: auto;
         resize: none;
     }
+
+    .ui-textbox-placeholder {
+        color: #999;
+        position: absolute;
+        left: 3px;
+        top: 6px;
+    }
+
+    .ui-textbox-placeholder-hidden {
+        display: none;
+    }
+
 }
 
 .ui-textbox-disabled,
@@ -45,14 +58,6 @@
     }
 }
 
-.ui-textbox-placeholder {
-    color: #999;
-    position: absolute;
-    left: 0;
-}
-.ui-textbox-placeholder-hidden {
-    display: none;
-}
 
 .ui-textbox-validity {
     padding-left: 10px;
