@@ -277,17 +277,6 @@ define(
         }
 
         /**
-         * 初始化列
-         *
-         * @private
-         */
-        function initCols(table) {
-           initFields(table);
-           initMinColsWidth(table);
-           initColsWidth(table);
-        }
-
-        /**
          * 初始最小列宽
          *
          * @private
@@ -917,10 +906,24 @@ define(
          */
         function showDragMark(table, left) {
             var mark = getDragMark(table);
-            
+            var tableOffset = null;
             if (!table.top) {
-                table.top = lib.getOffset(table.main).top;
-            }    
+                tableOffset = lib.getOffset(table.main);
+                table.top = tableOffset.top;
+            }
+            if(!table.left){
+                if(!tableOffset){
+                    tableOffset = lib.getOffset(table.main);
+                }
+                table.left = tableOffset.left;
+            }
+
+            var right = table.left + table.realWidth;
+            //加减1是为了在表格边框以内
+            var rangeLeft = table.left + 1;
+            var rangeRight = right - 1; 
+            left = left < rangeLeft ? rangeLeft : left;
+            left = left > rangeRight ? rangeRight : left;
             
             if (!mark) {
                 mark = createDragMark(table);
@@ -2010,21 +2013,6 @@ define(
             table.selectedIndex = [index];
             helper.addPartClasses(table, 'row-selected', getRow(table, index));
         }
-        
-        /**
-         * 重置表头样式
-         * 
-         * @private
-         */
-        function resetHeadStyle(table) {
-            var ths = getHead(table).getElementsByTagName('th');
-            var len = ths.length;
-                
-            while (len--) {
-                var th = ths[len];
-                helper.removePartClasses(table, 'thcell-sort', th.firstChild);
-            }    
-        }
 
         /**
          * 设置元素的disable样式
@@ -2057,7 +2045,7 @@ define(
                 var children = table.children;
                 for (var i = children.length - 1; i >= 0; i--) {
                     children[i].setDisabled(table.disabled);
-                };
+                }
             }
         }
 
