@@ -832,13 +832,23 @@ define(function () {
             'usemap': 'useMap',
             'frameborder': 'frameBorder'
         };
-        
-        if (lib.ie < 8) {
-            result['for'] = 'htmlFor';
-            result['class'] = 'className';
-        } else {
-            result['htmlFor'] = 'for';
+
+        var div = document.createElement('div');
+        div.innerHTML = '<label for="test" className="test"></label>';
+        var label = div.getElementsByTagName('label')[0];
+
+        if (label.getAttribute('class') === 'test') {
             result['className'] = 'class';
+        }
+        else {
+            result['class'] = 'className';
+        }
+
+        if (label.getAttribute('for') === 'test') {
+            result['htmlFor'] = 'for';
+        }
+        else {
+            result['for'] = 'htmlFor';
         }
         
         return result;
@@ -881,7 +891,7 @@ define(function () {
         if ('style' == key){
             return element.style.cssText;
         }
-
+        
         key = lib.NAME_ATTRS[key] || key;
         return element.getAttribute(key);
     };
