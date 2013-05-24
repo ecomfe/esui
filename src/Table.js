@@ -857,6 +857,8 @@ define(
             table.dragIndex = getAttr(tar, 'index');
             table.dragStart = e.pageX || e.clientX + lib.page.getScrollLeft();
 
+            cacheTableOffset(table);
+
             // 绑定拖拽事件
             var realDragingHandler = lib.curry(dragingHandler, table);
             var realDragEndHandler = function(e) {
@@ -880,6 +882,17 @@ define(
             // 阻止默认行为
             lib.event.preventDefault(e);
             return false;
+        }
+
+         /**
+         * 缓存Table的Offset数据
+         * 
+         * @private
+         */
+        function cacheTableOffset(table){
+            var tableOffset = lib.getOffset(table.main);
+            table.top = tableOffset.top;
+            table.left = tableOffset.left;
         }
 
         /**
@@ -906,22 +919,12 @@ define(
          */
         function showDragMark(table, left) {
             var mark = getDragMark(table);
-            var tableOffset = null;
-            if (!table.top) {
-                tableOffset = lib.getOffset(table.main);
-                table.top = tableOffset.top;
-            }
-            if(!table.left){
-                if(!tableOffset){
-                    tableOffset = lib.getOffset(table.main);
-                }
-                table.left = tableOffset.left;
-            }
 
             var right = table.left + table.realWidth;
             //加减1是为了在表格边框以内
             var rangeLeft = table.left + 1;
-            var rangeRight = right - 1; 
+            var rangeRight = right - 1;
+
             left = left < rangeLeft ? rangeLeft : left;
             left = left > rangeRight ? rangeRight : left;
             
