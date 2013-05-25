@@ -127,7 +127,7 @@ define(
                     separator = '';
                 }
 
-                html += '<li class="' + classes + '">';
+                html += '<li class="' + classes.join(' ') + '">';
                 html += crumb.getNodeHTML(node);
                 html += '</li>';
                 html += separator;
