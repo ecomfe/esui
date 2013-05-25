@@ -131,8 +131,11 @@ define(
             for (var id in this.controls) {
                 if (this.controls.hasOwnProperty(id)) {
                     var control = this.controls[id];
-                    this.remove(control);
                     control.dispose();
+                    // 如果控件销毁后“不幸”`viewContext`还在，就移除掉
+                    if (control.viewContext && control.viewContext === this) {
+                        this.remove(control);
+                    }
                 }
             }
         };

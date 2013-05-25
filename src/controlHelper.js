@@ -253,14 +253,10 @@ define(
          */
         helper.getId = function (control, part) {
             part = part ? '-' + part : '';
-            // 如果2个控件虽然不在一个`ViewContext`下，但id相同的话，
-            // 则如果只依赖`id`生成DOM元素的id，会导致DOM元素的id相同破坏控件的行为，
-            // 因此需要给控件一个`guid`，保证每个控件的这个字段不同，以此来生成DOM的id
-            if (!control.guid) {
-                var guid = counter++;
-                control.guid = guid + '';
-            }
-            return 'ctrl-' + control.id + '-' + control.guid +　part;
+            var viewContextId = control.viewContext
+                ? control.viewContext.id + '-'
+                : '';
+            return 'ctrl-' + viewContextId + control.id +　part;
         };
 
         /**
