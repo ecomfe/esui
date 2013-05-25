@@ -565,6 +565,7 @@ define(
                 // 构造event argument
                 var eventArg = arg || {};
                 eventArg.type = type;
+                eventArg.target = this;
 
                 // 先调用直接写在实例上的"onxxx"
                 var me = this;
