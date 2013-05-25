@@ -342,6 +342,10 @@ define(
              * 销毁控件
              */
             dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
                 var validityLabel = this.getValidityLabel(true);
                 if (validityLabel) {
                     lib.removeNode(validityLabel);

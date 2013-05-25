@@ -2321,6 +2321,10 @@ define(
              * @override
              */
             dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
                 helper.beforeDispose(this);
                 var main = this.main;
                 if (main) {

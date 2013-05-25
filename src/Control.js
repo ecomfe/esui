@@ -177,9 +177,11 @@ define(
              * @public
              */
             dispose: function () {
-                helper.beforeDispose(this);
-                helper.dispose(this);
-                helper.afterDispose(this);
+                if (!helper.isInStage(this, 'DISPOSED')) {
+                    helper.beforeDispose(this);
+                    helper.dispose(this);
+                    helper.afterDispose(this);
+                }
             },
 
             /**
@@ -471,8 +473,9 @@ define(
              * 移除全部子控件
              */
             disposeChildren: function () {
-                for (var i = 0; i < this.children.length; i++) {
-                    this.children[i].dispose();
+                var children = this.children.slice();
+                for (var i = 0; i < children.length; i++) {
+                    children[i].dispose();
                 }
                 this.children = [];
                 this.childrenIndex = {};
