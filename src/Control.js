@@ -168,7 +168,7 @@ define(
              * @public
              */
             insertBefore: function (reference) {
-                reference.parentNode.appendChild(this.main, reference);
+                reference.parentNode.insertBefore(this.main, reference);
                 this.render();
             },
 
@@ -413,7 +413,7 @@ define(
              * @return {boolean}
              */
             hasState: function (state) {
-                return this.states[state];
+                return !!this.states[state];
             },
 
             /**
@@ -499,16 +499,14 @@ define(
                 wrap = wrap || this.main;
                 options = options || {};
                 options.viewContext = this.viewContext;
+                options.parent = this;
                 // 容器类控件会需要渲染自己的`innerHTML`，
                 // 如果原来`init`的时候有传`valueReplacer`，这里就得再用上
                 if (this.valueReplacer) {
                     options.valueReplacer = this.valueReplacer;
                 }
 
-                var children = ui.init(wrap, options);
-                for (var i = 0, len = children.length; i < len; i++) {
-                    this.addChild(children[i]);
-                }
+                ui.init(wrap, options);
             },
 
             /**

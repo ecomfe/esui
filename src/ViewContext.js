@@ -31,9 +31,10 @@ define(
         /**
          * ViewContext类声明
          *
+         * @param {string} id 该`ViewContext`的id
          * @constructor
          */
-        function ViewContext() {
+        function ViewContext(id) {
             /**
              * 视图环境控件集合
              * 
@@ -41,12 +42,23 @@ define(
              */
             this.controls = {};
 
+            id = id || getGUID;
+            // 如果已经有同名的，就自增长一下
+            if (pool.hasOwnProperty(id)) {
+                var i = 1;
+                var prefix = id + '-';
+                while (pool.hasOwnProperty(id + i)) {
+                    i++;
+                }
+                id = prefix + i;
+            }
+
             /**
              * 视图环境id
              * 
              * @type {string} 
              */
-            this.id = getGUID();
+            this.id = id;
 
             // 入池
             pool[this.id] = this;

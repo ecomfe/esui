@@ -12,7 +12,7 @@ define(
         var main = {};
 
         var ViewContext = require('./ViewContext');
-        var defaultViewContext = new ViewContext();
+        var defaultViewContext = new ViewContext('default');
 
         /**
          * 获取默认的控件视图环境
@@ -402,6 +402,9 @@ define(
                     var control = main.create(type, controlOptions);
                     if (control) {
                         controls.push(control);
+                        if (options.parent) {
+                            options.parent.addChild(control);
+                        }
                         control.render();
                     }
                 }
