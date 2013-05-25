@@ -68,6 +68,7 @@ define(
             );
             if (control.isHidden()) {
                 classes = classes.concat(
+                    classPrefix + '-hidden',
                     classPrefix + '-validity-hidden',
                     helper.getPartClasses(control, 'validity-hidden')
                 );
@@ -192,6 +193,7 @@ define(
                         if (validityLabel) {
                             var classPrefix = main.getConfig('uiClassPrefix');
                             var classes = [].concat(
+                                classPrefix + '-hidden',
                                 classPrefix + '-validity-hidden',
                                 helper.getPartClasses(
                                     control, 'validity-hidden')
