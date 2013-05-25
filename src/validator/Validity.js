@@ -128,6 +128,15 @@ define(
 
         };
 
+        /**
+         * 获取验证状态的字符串
+         *
+         * @return {string}
+         */
+        Validity.prototype.getValidState = function () {
+            return this.isValid() ? 'valid' : 'invalid';
+        };
+
         return Validity;
 
     }

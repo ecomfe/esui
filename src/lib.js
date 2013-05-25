@@ -636,7 +636,9 @@ define(function () {
             element = lib.g(element);
         }
         var parent = element.parentNode;
-        parent.removeChild(element);
+        if (parent) {
+            parent.removeChild(element);
+        }
     };
 
     /**
