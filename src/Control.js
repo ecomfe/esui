@@ -102,6 +102,8 @@ define(
                 if (helper.isInStage(this, 'INITED')) {
                     this.fire('beforerender');
 
+                    this.domIDPrefix = this.viewContext.id;
+
                     this.initStructure();
 
                     // 为控件主元素添加id

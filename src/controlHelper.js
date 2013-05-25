@@ -253,10 +253,14 @@ define(
          */
         helper.getId = function (control, part) {
             part = part ? '-' + part : '';
-            var viewContextId = control.viewContext
-                ? control.viewContext.id + '-'
+            if (!control.domIDPrefix) {
+                control.domIDPrefix = 
+                    control.viewContext && control.viewContext.id;
+            }
+            var prefix = control.domIDPrefix
+                ? control.domIDPrefix+ '-'
                 : '';
-            return 'ctrl-' + viewContextId + control.id +　part;
+            return 'ctrl-' + prefix + control.id +　part;
         };
 
         /**
