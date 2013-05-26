@@ -336,7 +336,7 @@ define(
                             }
                         }
                     }
-                    label.innerHTML = message;
+                    label.innerHTML = lib.encodeHTML(message);
                 }
             },
 
