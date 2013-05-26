@@ -76,7 +76,7 @@ define(
          */
         Validity.prototype.getState = function (name) {
 
-            return this.statesMap[name];
+            return this.stateIndex[name] || null;
 
         };
 
@@ -154,7 +154,7 @@ define(
          */
         Validity.prototype.getValidState = function () {
             return this.customValidState
-                || this.isValid() ? 'valid' : 'invalid';
+                || (this.isValid() ? 'valid' : 'invalid');
         };
 
         return Validity;
