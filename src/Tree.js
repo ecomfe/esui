@@ -212,34 +212,21 @@ define(
          */
         function toggleNode(tree, e) {
             var target = e.target;
-            while (target !== tree.main 
+            while (target && target !== tree.main 
                 && target.className.indexOf('indicator') < 0
             ) {
                 target = target.parentNode;
             }
 
-            if (target === tree.main) {
+            if (!target || target === tree.main) {
                 return;
             }
 
             // 再往上找一层找到`<li>`元素或主元素，上面有`data-id`等有用的属性
             target = target.parentNode;
             var id = target.getAttribute('data-id');
-            var node = tree.nodeIndex[id];
 
-            if (!node) {
-                return;
-            }
-
-            var emptyClassName = helper.getPartClasses(tree, 'node-empty')[0];
-            if (lib.hasClass(target, emptyClassName)) {
-                return;
-            }
-
-            var className = helper.getPartClasses(tree, 'node-expanded')[0];
-            var mode = lib.hasClass(target, className) ? 'collapse' : 'expand';
-
-            tree.fire(mode, { node: node });
+            tree.triggerToggleStrategy(id);
         }
 
         /**
@@ -392,6 +379,91 @@ define(
             );
             indicator.className = indicatorClasses.join(' ');
             indicator.innerHTML = indicatorTextMapping.collapsed;
+        };
+
+        /**
+         * 判断一个节点是否为空
+         *
+         * @param {Tree} tree 控件实例
+         * @param {HTMLElement} nodeElement 节点对应的DOM元素
+         * @return {boolean}
+         * @inner
+         */
+        function isEmpty(tree, nodeElement) {
+            var className = helper.getPartClasses(tree, 'node-empty')[0];
+            return lib.hasClass(nodeElement, className);
+        }
+
+        /**
+         * 判断一个节点是否展开
+         *
+         * @param {Tree} tree 控件实例
+         * @param {HTMLElement} nodeElement 节点对应的DOM元素
+         * @return {boolean}
+         * @inner
+         */
+        function isExpanded(tree, nodeElement) {
+            var className = helper.getPartClasses(tree, 'node-expanded')[0];
+            return lib.hasClass(nodeElement, className);
+        }
+
+        /**
+         * 根据节点的状态展开或收起节点
+         *
+         * @param {string} id 节点的id
+         * @param {Array.<Object>=} 子节点数据，参考`expandNode`方法
+         * @param {boolean} removeChild 是否把子节点删除，参考`collapseNode`方法
+         * @public
+         */
+        Tree.prototype.toggleNode = function (id, children, removeChild) {
+            if (!this.nodeIndex[id]) {
+                return;
+            }
+
+            var nodeElement = this.main.getAttribute('data-id') === id
+                ? this.main
+                : lib.g(helper.getId(this, 'node-' + id));
+
+            if (isEmpty(this, nodeElement)) {
+                return;
+            }
+
+            if (isExpanded(this, nodeElement)) {
+                this.collapseNode(id, removeChild);
+            }
+            else {
+                this.expandNode(id, children);
+            }
+        };
+
+        /**
+         * 触发展开或收起节点的策略
+         * 
+         * 与`toggleNode`不同，该方法用来根据节点的状态，
+         * 触发`expand`或`collapse`事件，以便使用`TreeStrategy`进行具体的策略
+         * 
+         * 在关联的`TreeStrategy`以外的逻辑，推荐使用此方法，而不是`toggleNode`
+         *
+         * @param {string} id 节点的id
+         * @public
+         */
+        Tree.prototype.triggerToggleStrategy = function (id) {
+            var node = this.nodeIndex[id];
+
+            if (!node) {
+                return;
+            }
+
+            var nodeElement = this.main.getAttribute('data-id') === id
+                ? this.main
+                : lib.g(helper.getId(this, 'node-' + id));
+
+            if (isEmpty(this, nodeElement)) {
+                return;
+            }
+
+            var mode = isExpanded(this, nodeElement) ? 'collapse' : 'expand';
+            this.fire(mode, { node: node });
         };
 
         /**
