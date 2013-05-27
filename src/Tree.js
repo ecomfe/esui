@@ -235,7 +235,7 @@ define(
             }
 
             // 如果直接就找到主元素或者找没了，那就点在不知所谓的地方了
-            if (!parent || parent === tree.main) {
+            if (!parent || parent === tree.main || !target) {
                 return;
             }
 
