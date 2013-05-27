@@ -27,18 +27,27 @@ define(
          */
         function getMainHTML(pager) {
             var tpl = [
-                '<span id="${labelId}" class="${labelClass}">${label}</span>',
-                '<div data-ui="type:Select;childName:select;',
-                    'id:${selectId};width:40;"></div>',
+                '<div id="${selectWrapperId}" class="${selectWrapperClass}">',
+                    '<span id="${labelId}" class="${labelClass}">${labelText}',
+                    '</span>',
+                    '<div data-ui="type:Select;childName:select;',
+                        'id:${selectId};width:40;"></div>',
+                '</div>',
                 '<ul id="${mainId}" class="${mainClass}"></ul>'
             ];
 
             return lib.format(
                 tpl.join('\n'),
                 {
+                    selectWrapperId: helper.getId(pager, 'select-wrapper'),
+                    selectWrapperClass:
+                        helper.getPartClasses(
+                            pager,
+                            'select-wrapper'
+                        ).join(' '),
                     labelId: helper.getId(pager, 'label'),
                     labelClass: helper.getPartClasses(pager, 'label').join(' '),
-                    label: '每页显示',
+                    labelText: '每页显示',
                     selectId: helper.getId(pager, 'select'),
                     mainId: helper.getId(pager, 'main'),
                     mainClass:
@@ -329,38 +338,25 @@ define(
         }
 
         /**
-         * 获取label元素
+         * 获取Select控件和label的父元素容器
          *
          * @param {Pager} pager Pager控件实例
-         * @return {HTMLElement} label的父元素
+         * @return {HTMLElement} Select控件和label的父元素
          */
-        function getLabelWrapper(pager) {
-            return lib.g(helper.getId(pager, 'label'));
-        }
-
-        /**
-         * 获取Select控件的元素
-         *
-         * @param {Select} select Select控件实例
-         * @return {HTMLElement} Select控件的父元素
-         */
-        function getSelectWrapper(select) {
-            return select.main;
+        function getSelectWrapper(pager) {
+            return lib.g(helper.getId(pager, 'select-wrapper'));
         }
 
         /**
          * 显示Select控件及对应的label元素
          *
          * @param {Pager} pager Pager控件实例
-         * @param {Select} select Select控件实例
          */
-        function showSelect(pager, select) {
-            var labelWrapper = getLabelWrapper(pager);
-            var selectWrapper = getSelectWrapper(select);
-            var clazz = helper.getPartClasses(select, 'hidden')[0];
+        function showSelect(pager) {
+            var selectWrapper = getSelectWrapper(pager);
+            var clazz = helper.getPartClasses(pager, 'select-hidden')[0];
             // 检查是否处于隐藏状态，若是隐藏状态则显示该控件
             if (lib.hasClass(selectWrapper, clazz)) {
-                lib.removeClass(labelWrapper, clazz);
                 lib.removeClass(selectWrapper, clazz);
             }
         }
@@ -369,13 +365,10 @@ define(
          * 隐藏Select控件及对应的label元素
          *
          * @param {Pager} pager Pager控件实例
-         * @param {Select} select Select控件实例
          */
-        function hideSelect(pager, select) {
-            var labelWrapper = getLabelWrapper(pager);
-            var selectWrapper = getSelectWrapper(select);
-            var clazz = helper.getPartClasses(select, 'hidden')[0];
-            lib.addClass(labelWrapper, clazz);
+        function hideSelect(pager) {
+            var selectWrapper = getSelectWrapper(pager);
+            var clazz = helper.getPartClasses(pager, 'select-hidden')[0];
             lib.addClass(selectWrapper, clazz);
         }
 
@@ -448,7 +441,7 @@ define(
                 );
                 // 当初始化pageSizes属性不存在或为空数组时，隐藏控件显示
                 if (!this.pageSizes || this.pageSizes.length === 0) {
-                    hideSelect(this, select);
+                    hideSelect(this);
                 }
                 else {
                     select.setProperties({
@@ -479,14 +472,14 @@ define(
                         var select = pager.getChild('select');
                         // 当pageSizes属性不存在或为空数组时，隐藏控件显示
                         if (!value || value.length === 0) {
-                            hideSelect(pager, select);
+                            hideSelect(pager);
                         }
                         else {
                             select.setProperties({
                                 datasource: getPageSizes(value),
                                 value: '' + pager.pageSize
                             });
-                            showSelect(pager, select);
+                            showSelect(pager);
                         }
                     }
                 },

@@ -4,16 +4,18 @@
 
 .ui-pager {
     font-size: 12px;
-    background: #fff;
     height: 25px;
     line-height: 25px;
 }
 
 .ui-pager-label {
     color: @pager-text-color;
-    width: 55px;
     text-align: center;
     vertical-align: top;
+    .inline-block();
+}
+
+.ui-pager-select-wrapper {
     .inline-block();
 }
 
@@ -22,7 +24,7 @@
     .inline-block();
 }
 
-.ui-select-hidden {
+.ui-pager-select-hidden {
     display: none;
 }
 
@@ -36,7 +38,7 @@
  * 部分沿用button控件的样式
  */
 .ui-pager-main li {
-    /* Hack: 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
+    /* Hack 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
      * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
      * 为兼容Mac下显示效果，前面增加STHeiti */
     font-family:STHeiti, SimSun;
