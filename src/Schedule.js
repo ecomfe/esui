@@ -97,19 +97,11 @@ define(
 
         /**
          * 初始化视图的值
-         * @param  {Schedule} schedule Schedule实例
          * @inner
          */
-        function initValue(schedule) {
-            var value = schedule.rawValue;
-
-            //有值则返回
-            if (value) {
-                return;
-            }
-
+        function initValue() {
             //如果没有初始值，默认全部设为0，即全部选中
-            value = [];
+            var value = [];
             for (var i = 0; i < 7; i++) {
                 var lineValue = [];
                 value.push(lineValue);
@@ -120,7 +112,7 @@ define(
                 }
             }
 
-            schedule.rawValue = value;
+            return value;
         }
 
         /**
@@ -1213,20 +1205,21 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                var properties = {
-
-                    dragRange: [], //记录当前timebody区域的位置
-                    dragStartPos: null, //记录drag开始时的鼠标位置
-                    followTip: {} //记录当前创建的tip元素
-                };
-
+                var properties = {};
                 
                 lib.extend(properties, DEFAULT_OPTION, options);
 
                 this.setProperties(properties);
 
-                //检测是否初始化value值，没有则设置为默认
-                initValue(Schedule);
+                //检测是否初始化rawValue值，没有则设置为默认
+                if (this.rawValue == null) {
+
+                    this.setRawValue(initValue());
+                }
+
+                //记录当前创建的tip元素
+                this.followTip = {};
+
             },
 
             /**
@@ -1240,6 +1233,7 @@ define(
                 this.main.tabIndex = 0;
 
                 var tpl = ''
+                    + '<input type="hidden" name="${name}" id="${inputId}"/>'
                     + '<div class="${bodyClass}" id="${bodyId}"></div>'
                     + '<div class="${headClass}">'
                         + '<div class="${helpClass}">'
@@ -1258,6 +1252,8 @@ define(
                 this.main.innerHTML = lib.format(
                     tpl,
                     {
+                        name: this.name,
+                        inputId: getId(me, 'value-input'),
                         headClass: getClass(me, 'head'),
                         bodyClass: getClass(me, 'body'),
                         helpClass: getClass(me, 'help'),
@@ -1309,6 +1305,11 @@ define(
                 {
                     name: 'rawValue',
                     paint: function (schedule, rawValue) {
+
+                        //填充hidden input的值
+                        var value = schedule.stringifyValue(rawValue);
+                        lib.g(getId(schedule, 'value-input')).value =
+                                value == null ? '' : value;
 
                         repaintView(schedule, rawValue);
                     }
