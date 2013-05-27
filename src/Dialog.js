@@ -418,7 +418,6 @@ define(
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
-                    height: 175,            // 对话框的高度
                     top: 100,             // 对话框的垂直位置
                     left: 0,              // 对话框的水平位置
                     title: '我是标题',    // 标题的显示文字

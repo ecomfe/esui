@@ -21,23 +21,19 @@
 
 .ui-button {
     .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
-    border:1px solid #CCC;
-    cursor:pointer;
-    /* Hack: 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
-     * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
-     * 为兼容Mac下显示效果，前面增加STHeiti */
-    font-family:STHeiti, SimSun;
-    font-size:12px;
-    text-align:center;
-    color:#333;
-    height:23px;
-    line-height:23px;
+    border: 1px solid #CCC;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+    color: #333;
+    height: 23px;
+    line-height: 23px;
     padding: 0 10px;
     vertical-align: top;
-    display:inline-block;
-    *display:inline;
-    *margin-bottom:8px;
-    zoom:1;
+    display: inline-block;
+    *display: inline;
+    *margin-bottom: 8px;
+    zoom: 1;
     .border-radius(2px, 2px, 2px, 2px);
     .box-sizing(content-box);
 }
@@ -49,15 +45,15 @@
      cursor: pointer;
  }
 .ui-button:active {
-    border:1px solid #BEBEBE;
-    height:23px;
+    border: 1px solid #BEBEBE;
+    height: 23px;
     .linear-gradient-background (top, #f6f6f6, #ffffff, #f6f6f6);
 }
 
 .ui-button-disabled {
-    background:#f6f6f6;
-    border-color:#cfcfcf;
-    color:#999;
+    background: #f6f6f6;
+    border-color: #cfcfcf;
+    color: #999;
 }
 
 .ui-button-lf-icon {
@@ -71,8 +67,8 @@
 /** 春天系列 */
 .skin-spring-button,
 .skin-spring-add-button {
-    border:1px solid #519D30;
-    height:26px;
+    border: 1px solid #519D30;
+    height: 26px;
     line-height: 26px;
     color: white;
     font-weight: bold;
@@ -90,8 +86,8 @@
 
 .skin-spring-button:active,
 .skin-spring-add-button:active {
-    border:1px solid #509c2f;
-    height:26px;
+    border: 1px solid #509c2f;
+    height: 26px;
 }
 .skin-spring-button:active {
     .linear-gradient-background (top, #519c30, #6cbb4c, #65b445);
@@ -103,7 +99,7 @@
 
 .skin-spring-button:hover,
 .skin-spring-add-button:hover {
-    border:1px solid #157106;
+    border: 1px solid #157106;
 }
 
 

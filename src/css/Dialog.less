@@ -12,10 +12,9 @@
     background: none repeat scroll 0 0 #FFFFFF;
     border: 2px solid #394459;
     .border-radius(3px, 3px, 3px, 3px);
-    position:absolute;
-    width:660px;
-    font-size:12px;
-    z-index:200;
+    position: absolute;
+    width: 660px;
+    z-index: 200;
 
     .ui-dialog-head {
         .background("esui-dialog-head-bg.png", repeat);
@@ -35,8 +34,8 @@
         }
 
         .ui-dialog-title {
-            padding-left:12px;
-            line-height:28px;
+            padding-left: 12px;
+            line-height: 28px;
             font-size: 15px;
             line-height: 26px;
         }
@@ -47,26 +46,9 @@
     }
 
     .ui-dialog-body {
-        padding:10px 8px 8px;
+        padding: 10px 8px 8px;
         overflow: hidden;
         zoom: 1;
-
-        .ui-dialog-icon {
-            display:none;
-         }
-
-        .ui-dialog-text {
-            float: left;
-            margin-top: 20px;
-            h1 {
-                margin: 0;
-                font-family: 微软雅黑;
-                font-size: 12px;
-                font-weight: normal;
-                line-height: 18px;
-                width: 265px;
-            }
-        }
     }
     .ui-dialog-foot-panel {
         margin:0px 8px 3px;
@@ -89,6 +71,10 @@
 .skin-confirm-dialog {
     .ui-dialog-body {
         padding-bottom: 20px;
+        .ui-dialog-icon {
+            display:none;
+        }
+
         .ui-dialog-icon-warning {
             .background("esui-dialog-notice.png");
             display: block;
@@ -101,8 +87,8 @@
 
         .ui-dialog-icon-confirm {
             .background("esui-dialog-question.png");
-            display:block;
-            float:left;
+            display: block;
+            float: left;
             height: 34px;
             margin: 15px 10px 8px 40px;
             _margin: 12px 10px 8px 25px;
@@ -112,9 +98,6 @@
         .ui-dialog-text {
             float: left;
             margin-top: 20px;
-            font-family: 微软雅黑;
-            font-size: 12px;
-            font-weight: normal;
             line-height: 18px;
             width: 265px;
         }
@@ -122,11 +105,11 @@
 }
 
 .ui-dialog-mask {
-    position:fixed;
-    *position:absolute;
-    top:0;
-    left:0;
-    background:#333;
+    position: fixed;
+    *position: absolute;
+    top: 0;
+    left: 0;
+    background: #333;
     opacity: .2;
     filter:alpha(opacity=20);
     z-index:50;
