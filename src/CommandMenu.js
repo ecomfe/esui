@@ -156,6 +156,10 @@ define(
          * @public
          */
         CommandMenu.prototype.dispose = function () {
+            if (helper.isInStage(this, 'DISPOSED')) {
+                return;
+            }
+                
             var layer = lib.g(helper.getId(this, 'layer'));
             if (layer) {
                 layer.parentNode.removeChild(layer);

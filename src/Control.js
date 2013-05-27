@@ -102,6 +102,8 @@ define(
                 if (helper.isInStage(this, 'INITED')) {
                     this.fire('beforerender');
 
+                    this.domIDPrefix = this.viewContext.id;
+
                     this.initStructure();
 
                     // 为控件主元素添加id
@@ -168,7 +170,7 @@ define(
              * @public
              */
             insertBefore: function (reference) {
-                reference.parentNode.appendChild(this.main, reference);
+                reference.parentNode.insertBefore(this.main, reference);
                 this.render();
             },
 
@@ -177,9 +179,11 @@ define(
              * @public
              */
             dispose: function () {
-                helper.beforeDispose(this);
-                helper.dispose(this);
-                helper.afterDispose(this);
+                if (!helper.isInStage(this, 'DISPOSED')) {
+                    helper.beforeDispose(this);
+                    helper.dispose(this);
+                    helper.afterDispose(this);
+                }
             },
 
             /**
@@ -413,7 +417,7 @@ define(
              * @return {boolean}
              */
             hasState: function (state) {
-                return this.states[state];
+                return !!this.states[state];
             },
 
             /**
@@ -471,8 +475,9 @@ define(
              * 移除全部子控件
              */
             disposeChildren: function () {
-                for (var i = 0; i < this.children.length; i++) {
-                    this.children[i].dispose();
+                var children = this.children.slice();
+                for (var i = 0; i < children.length; i++) {
+                    children[i].dispose();
                 }
                 this.children = [];
                 this.childrenIndex = {};
@@ -499,16 +504,14 @@ define(
                 wrap = wrap || this.main;
                 options = options || {};
                 options.viewContext = this.viewContext;
+                options.parent = this;
                 // 容器类控件会需要渲染自己的`innerHTML`，
                 // 如果原来`init`的时候有传`valueReplacer`，这里就得再用上
                 if (this.valueReplacer) {
                     options.valueReplacer = this.valueReplacer;
                 }
 
-                var children = ui.init(wrap, options);
-                for (var i = 0, len = children.length; i < len; i++) {
-                    this.addChild(children[i]);
-                }
+                ui.init(wrap, options);
             },
 
             /**
@@ -565,6 +568,7 @@ define(
                 // 构造event argument
                 var eventArg = arg || {};
                 eventArg.type = type;
+                eventArg.target = this;
 
                 // 先调用直接写在实例上的"onxxx"
                 var me = this;

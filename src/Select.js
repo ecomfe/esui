@@ -491,6 +491,10 @@ define(
          * @public
          */
         Select.prototype.dispose = function () {
+            if (helper.isInStage(this, 'DISPOSED')) {
+                return;
+            }
+            
             var layer = getSelectionLayer(this);
             if (layer) {
                 layer.parentNode.removeChild(layer);

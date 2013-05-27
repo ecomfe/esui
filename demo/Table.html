@@ -9,9 +9,11 @@
     </head>
     <body>
         <header>Table</header>
-        <div class="container">
+        <div id="console" style="text-align:center;"></div>
+        <div class="container" id="container" style="margin:0 auto;">
             <h3>普通</h3>
-            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button>
+            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
+            <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>
             <div data-ui="type:Table;id:myTable;"></div>
         </div>
         <script>
@@ -23,6 +25,11 @@
             {id:5, name: '樊总', sex: 1},
             {id:6, name: '铮哥', sex: 1}
         ];
+        data = data.concat(data);
+        data = data.concat(data);
+        data = data.concat(data);
+        data = data.concat(data);
+        var myTable = null;
 
         require(
             [
@@ -103,7 +110,7 @@
                     }   
                 });
 
-                var myTable = ui.get('myTable');
+                myTable = ui.get('myTable');
                 myTable.onsubrowopen = function ( arg ) {
                     this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
                 };
@@ -118,6 +125,28 @@
 
                 ui.get('disabledBtn').onclick = function () {
                     ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
+                };
+
+                ui.get('changeWidthBtn').onclick = function () {
+                   var container = document.getElementById('container');
+                   var width = container.style.width;
+                   switch(width){
+                        case '640px':
+                        width = 960;
+                        break;
+                        case '960px':
+                        width = 1280;
+                        break;
+                        case '1280px':
+                        width = 640;
+                        break;
+                        default:
+                        width = 960;
+                        break;
+                   }
+                   container.style.width = width + 'px';
+                   myTable.adjustWidth();
+                   //myTable.set('width', width);
                 };
 
                 myTable.onsort = function ( arg ) {
@@ -155,13 +184,6 @@
                 function buttonClickHandler(arg) {
                     alert('button:' + arg.args.index);
                 }
-                /*
-                myTable.oncommand = command.createDispatcher(
-                    [
-                        { type: 'click', name: 'link', handler: linkClickHandler },
-                        { type: 'click', name: 'button', handler: buttonClickHandler }
-                    ]
-                );*/
             }
         );
         </script>

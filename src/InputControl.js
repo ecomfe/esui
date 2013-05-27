@@ -48,6 +48,34 @@ define(
 
             return validity;
         }
+
+        /**
+         * 设置验证信息容器的class
+         *
+         * @param {InputControl} control 控件实例
+         * @param {HTMLElement} label 验证信息容器
+         * @param {string} validState 验证结果状态字符串
+         * @return {string}
+         * @inner
+         */
+        function setValidityLabelClass(control, label, validState) {
+            var classPrefix = main.getConfig('uiClassPrefix');
+            var classes = [].concat(
+                classPrefix + '-validity',
+                helper.getPartClasses(control, 'validity'),
+                classPrefix + '-validity-' + validState,
+                helper.getPartClasses(control, 'validity-' + validState)
+            );
+            if (control.isHidden()) {
+                classes = classes.concat(
+                    classPrefix + '-hidden',
+                    classPrefix + '-validity-hidden',
+                    helper.getPartClasses(control, 'validity-hidden')
+                );
+            }
+
+            label.className = classes.join(' ');
+        }
         
         /**
          * 输入控件基类
@@ -73,20 +101,6 @@ define(
              * @protected
              */
             ignoreStates: Control.prototype.ignoreStates.concat('readOnly'),
-
-            /**
-             * 渲染控件
-             * 
-             * @override
-             */
-            initStructure: function () {
-            },
-
-            // repaint: function () {
-                // TODO: 修改为painter实现
-                // this.setRawValue(this.rawValue);
-                // this.setReadOnly(this.readOnly);
-            // },
 
             /**
              * 获取输入控件的值
@@ -170,6 +184,27 @@ define(
                             control.main.readOnly = value;
                         }
                     }
+                },
+                {
+                    name: 'hidden',
+                    paint: function (control, hidden) {
+                        // 需要同步验证信息的样式
+                        var validityLabel = control.getValidityLabel(true);
+                        if (validityLabel) {
+                            var classPrefix = main.getConfig('uiClassPrefix');
+                            var classes = [].concat(
+                                classPrefix + '-hidden',
+                                classPrefix + '-validity-hidden',
+                                helper.getPartClasses(
+                                    control, 'validity-hidden')
+                            );
+                            var method = control.isHidden()
+                                ? 'addClasses'
+                                : 'removeClasses';
+                            lib[method](validityLabel, classes);
+                        }
+                    }
+
                 }
             ),
 
@@ -252,8 +287,6 @@ define(
                 if (!label && !dontCreate) {
                     label = document.createElement('label');
                     label.id = helper.getId(this, 'validity');
-                    label.className = 'ui-validity';
-                    helper.addPartClasses(this, 'validity', label);
                     if (lib.isInput(this.main)) {
                         lib.setAttribute(label, 'for', this.main.id);
                     }
@@ -286,24 +319,24 @@ define(
                     return;
                 }
 
+                setValidityLabelClass(this, label, validity.getValidState());
+
                 if (validity.isValid()) {
                     label.innerHTML = '';
-                    helper.removePartClasses(this, 'validity-invalid', label);
-                    helper.addPartClasses(this, 'validity-valid', label);
                 }
                 else {
-                    var message = '';
-                    var states = validity.getStates();
-                    for (var i = 0; i < states.length; i++) {
-                        var state = states[i];
-                        if (!state.getState()) {
-                            message = state.getMessage();
-                            break;
+                    var message = validity.getCustomMessage();
+                    if (!message) {
+                        var states = validity.getStates();
+                        for (var i = 0; i < states.length; i++) {
+                            var state = states[i];
+                            if (!state.getState()) {
+                                message = state.getMessage();
+                                break;
+                            }
                         }
                     }
-                    label.innerHTML = message;
-                    helper.removePartClasses(this, 'validity-valid', label);
-                    helper.addPartClasses(this, 'validity-invalid', label);
+                    label.innerHTML = lib.encodeHTML(message);
                 }
             },
 
@@ -311,9 +344,13 @@ define(
              * 销毁控件
              */
             dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
                 var validityLabel = this.getValidityLabel(true);
-                if (validityLabel && validityLabel.parentNode) {
-                    validityLabel.parentNode.removeChild(validityLabel);
+                if (validityLabel) {
+                    lib.removeNode(validityLabel);
                 }
                 Control.prototype.dispose.apply(this, arguments);
             }

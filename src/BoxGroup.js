@@ -232,6 +232,17 @@ define(
                 paint: render
             },
             {
+                name: ['disabled', 'readOnly'],
+                paint: function (group, disabled, readOnly) {
+                    var inputs = group.main.getElementsByTagName('input');
+                    for (var i = inputs.length - 1; i >= 0; i--) {
+                        var input = inputs[i];
+                        input.disabled = disabled;
+                        input.readOnly = readOnly;
+                    }
+                }
+            },
+            {
                 name: 'rawValue',
                 paint: function (group, rawValue) {
                     rawValue = rawValue || [];

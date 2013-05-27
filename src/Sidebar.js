@@ -583,6 +583,10 @@ define(
          * @override
          */
         Sidebar.prototype.dispose = function () {
+            if (helper.isInStage(this, 'DISPOSED')) {
+                return;
+            }
+            
             helper.beforeDispose(this);
 
             // remove resize事件listener

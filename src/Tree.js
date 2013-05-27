@@ -211,35 +211,55 @@ define(
          * @inner
          */
         function toggleNode(tree, e) {
-            var target = e.target;
-            while (target !== tree.main 
-                && target.className.indexOf('indicator') < 0
+            // 无论点在哪，往上找肯定能找到一个子树（或树本身）的节点元素，
+            // 但我们要知道的是，接受点击事件的是这个根下面的哪个直接子元素。
+            // 
+            // 一个根下面只有3类直接子元素：
+            // 
+            // - 提示元素，有`ui-tree-node-indicator`这个class
+            // - 下级子树的根，有`ui-tree-sub-root`或`ui-tree-root`这个class
+            // - 其它内容，均属于树的节点内容
+            // 
+            // 因此，只要不是下级子树的根，就算点击正常了。
+            // 为了实现这点，要在向上查节点的同时，记下前一个节点，向上查直接到根就行。
+            var parent = e.target;
+            var target = null;
+
+            // 直接往根上找
+            var nodeClass = helper.getPartClasses(tree, 'node')[0];
+            while (parent && parent !== tree.main 
+                && !lib.hasClass(parent, nodeClass)
             ) {
-                target = target.parentNode;
+                target = parent;
+                parent = parent.parentNode;
             }
 
-            if (target === tree.main) {
+            // 如果直接就找到主元素或者找没了，那就点在不知所谓的地方了
+            if (!parent || parent === tree.main || !target) {
                 return;
             }
 
-            // 再往上找一层找到`<li>`元素或主元素，上面有`data-id`等有用的属性
-            target = target.parentNode;
-            var id = target.getAttribute('data-id');
-            var node = tree.nodeIndex[id];
+            // 然后就看下一层接收事件的是哪个元素了，
+            // 如果是提示元素，那肯定是要触发事件的，
+            // 此外如果配了`wideToggleArea`属性，那么只要不是点在子树上都有效
+            var indicatorClass = 
+                helper.getPartClasses(tree, 'node-indicator')[0];
+            var validEvent = lib.hasClass(target, indicatorClass);
+            if (!validEvent) {
+                var rootClass = helper.getPartClasses(tree, 'root')[0];
+                var subRootClass = helper.getPartClasses(tree, 'sub-root')[0];
 
-            if (!node) {
-                return;
+                validEvent = tree.wideToggleArea
+                    && !lib.hasClass(target, subRootClass)
+                    && !lib.hasClass(target, rootClass);
             }
 
-            var emptyClassName = helper.getPartClasses(tree, 'node-empty')[0];
-            if (lib.hasClass(target, emptyClassName)) {
-                return;
+            if (validEvent) {
+                // 上一层就是节点的容器元素，上面有`data-id`等有用的属性
+                var id = parent.getAttribute('data-id');
+
+                tree.triggerToggleStrategy(id);
             }
-
-            var className = helper.getPartClasses(tree, 'node-expanded')[0];
-            var mode = lib.hasClass(target, className) ? 'collapse' : 'expand';
-
-            tree.fire(mode, { node: node });
         }
 
         /**
@@ -308,9 +328,8 @@ define(
          * - 如果原本没有子树元素，则取对应节点的`children`属性创建子树
          */
         Tree.prototype.expandNode = function (id, children) {
-            var nodeElement = this.main.getAttribute('data-id') === id
-                ? this.main
-                : lib.g(helper.getId(this, 'node-' + id));
+            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+
             if (!nodeElement) {
                 return;
             }
@@ -361,9 +380,8 @@ define(
          * @public
          */
         Tree.prototype.collapseNode = function (id, removeChild) {
-            var nodeElement = this.main.getAttribute('data-id') === id
-                ? this.main
-                : lib.g(helper.getId(this, 'node-' + id));
+            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+
             if (!nodeElement) {
                 return;
             }
@@ -392,6 +410,87 @@ define(
             );
             indicator.className = indicatorClasses.join(' ');
             indicator.innerHTML = indicatorTextMapping.collapsed;
+        };
+
+        /**
+         * 判断一个节点是否为空
+         *
+         * @param {Tree} tree 控件实例
+         * @param {HTMLElement} nodeElement 节点对应的DOM元素
+         * @return {boolean}
+         * @inner
+         */
+        function isEmpty(tree, nodeElement) {
+            var className = helper.getPartClasses(tree, 'node-empty')[0];
+            return lib.hasClass(nodeElement, className);
+        }
+
+        /**
+         * 判断一个节点是否展开
+         *
+         * @param {Tree} tree 控件实例
+         * @param {HTMLElement} nodeElement 节点对应的DOM元素
+         * @return {boolean}
+         * @inner
+         */
+        function isExpanded(tree, nodeElement) {
+            var className = helper.getPartClasses(tree, 'node-expanded')[0];
+            return lib.hasClass(nodeElement, className);
+        }
+
+        /**
+         * 根据节点的状态展开或收起节点
+         *
+         * @param {string} id 节点的id
+         * @param {Array.<Object>=} 子节点数据，参考`expandNode`方法
+         * @param {boolean} removeChild 是否把子节点删除，参考`collapseNode`方法
+         * @public
+         */
+        Tree.prototype.toggleNode = function (id, children, removeChild) {
+            if (!this.nodeIndex[id]) {
+                return;
+            }
+
+            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+
+            if (isEmpty(this, nodeElement)) {
+                return;
+            }
+
+            if (isExpanded(this, nodeElement)) {
+                this.collapseNode(id, removeChild);
+            }
+            else {
+                this.expandNode(id, children);
+            }
+        };
+
+        /**
+         * 触发展开或收起节点的策略
+         * 
+         * 与`toggleNode`不同，该方法用来根据节点的状态，
+         * 触发`expand`或`collapse`事件，以便使用`TreeStrategy`进行具体的策略
+         * 
+         * 在关联的`TreeStrategy`以外的逻辑，推荐使用此方法，而不是`toggleNode`
+         *
+         * @param {string} id 节点的id
+         * @public
+         */
+        Tree.prototype.triggerToggleStrategy = function (id) {
+            var node = this.nodeIndex[id];
+
+            if (!node) {
+                return;
+            }
+
+            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+
+            if (isEmpty(this, nodeElement)) {
+                return;
+            }
+
+            var mode = isExpanded(this, nodeElement) ? 'collapse' : 'expand';
+            this.fire(mode, { node: node });
         };
 
         /**

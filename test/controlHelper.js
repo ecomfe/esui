@@ -247,18 +247,40 @@ define(function (require) {
 
             it('should return the correct id string', function () {
                 var control = {
+                    id: 'test',
+                    viewContext: {
+                        id: 'view'
+                    }
+                };
+                var id = helper.getId(control);
+                expect(id).toBe('ctrl-view-test');
+            });
+
+            it('should return the correct id string when no viewContext is associated', function () {
+                var control = {
                     id: 'test'
                 };
                 var id = helper.getId(control);
-                expect(id).toMatch(/^ctrl-test-\d+$/);
+                expect(id).toBe('ctrl-test');
             });
 
             it('should return the correct id string for a part', function () {
                 var control = {
+                    id: 'test',
+                    viewContext: {
+                        id: 'view'
+                    }
+                };
+                var id = helper.getId(control, 'label');
+                expect(id).toBe('ctrl-view-test-label');
+            });
+
+            it('should return the correct id string for a part when no viewContext is associated', function () {
+                var control = {
                     id: 'test'
                 };
                 var id = helper.getId(control, 'label');
-                expect(id).toMatch(/^ctrl-test-\d+-label$/);
+                expect(id).toBe('ctrl-test-label');
             });
         });
 

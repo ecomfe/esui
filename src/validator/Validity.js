@@ -31,6 +31,11 @@ define(
              */
             this.customMessage = '';
             
+            /**
+             * 自定义验证结果状态
+             * @type {string=}
+             */
+            this.customValidState = null;
         }
 
         /**
@@ -71,7 +76,7 @@ define(
          */
         Validity.prototype.getState = function (name) {
 
-            return this.statesMap[name];
+            return this.stateIndex[name] || null;
 
         };
 
@@ -79,6 +84,7 @@ define(
          * 获取验证状态集合
          *
          * @return {Array}
+         * @public
          */
         Validity.prototype.getStates = function () {
 
@@ -89,7 +95,8 @@ define(
         /**
          * 获取自定义验证信息
          *
-         * @return {string} 
+         * @return {string}
+         * @public
          */
         Validity.prototype.getCustomMessage = function () {
 
@@ -101,11 +108,23 @@ define(
         /**
          * 设置自定义验证信息
          *
+         * @param {string} message 自定义验证信息
+         * @public
          */
         Validity.prototype.setCustomMessage = function (message) {
 
             this.customMessage = message;
 
+        };
+
+        /**
+         * 设置自定义验证结果
+         *
+         * @param {string} validState 验证结果字符串
+         * @public
+         */
+        Validity.prototype.setCustomValidState = function (validState) {
+            this.customValidState = validState;
         };
 
 
@@ -126,6 +145,16 @@ define(
 
             return true;
 
+        };
+
+        /**
+         * 获取验证状态的字符串
+         *
+         * @return {string}
+         */
+        Validity.prototype.getValidState = function () {
+            return this.customValidState
+                || (this.isValid() ? 'valid' : 'invalid');
         };
 
         return Validity;
