@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Wizard</title>
+    <script src="loader/esl.js"></script>
+    <script src="loader/config.js"></script>
+</head>
+<body>
+    <div id="container">
+        <div data-ui-type="Tab"
+         data-ui-id="test" data-ui-orientation="vertical">
+            <div title="tab1" id="a">我是Tab1</div>
+            <div title="tab2" id="b">我是Tab2</div>
+            <div title="tab3" id="c">我是Tab3</div>
+        </div>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Tab',
+                'css!esui/css/main.css'
+            ],
+            function (ui, Tab) {
+                var tab = ui.init()[0];
+            }
+        );
+    </script>
+</body>
+</html>

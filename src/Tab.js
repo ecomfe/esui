@@ -12,6 +12,10 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
+
+        // css
+        require('css!./css/Tab.css');
+
         /**
          * 标签页控件
          *
@@ -45,8 +49,10 @@ define(
             var properties = {
                 tabs: [],
                 activeIndex: 0,
-                allowClose: false
+                allowClose: false,
+                orientation: 'horizontal'
             };
+
             lib.extend(properties, options);
 
             // 如果子元素中有一个`[data-role="navigator"]`的元素，
@@ -94,7 +100,7 @@ define(
                     properties.tabs = tabs;
                 }
             }
-            lib.extend(this, properties);
+            this.setProperties(properties);
         };
 
         /*
@@ -106,11 +112,11 @@ define(
         function clickTab(tab, e) {
             var target = e.target;
             var tabElement = target;
-            while (tabElement.nodeName.toLowerCase() !== 'li') {
+            while (tabElement && tabElement.nodeName.toLowerCase() !== 'li') {
                 tabElement = tabElement.parentNode;
             }
 
-            if (tabElement.nodeName.toLowerCase() === 'li') {
+            if (tabElement && tabElement.nodeName.toLowerCase() === 'li') {
                 var parent = tabElement.parentNode;
                 for (var i = 0; i < parent.children.length; i++) {
                     if (parent.children[i] === tabElement) {
@@ -191,9 +197,11 @@ define(
          */
         function createTabElement(tab, config, isActive, allowClose) {
             var element = document.createElement('li');
+            
+            helper.addPartClasses(tab, 'item', element);
 
             if (isActive) {
-                helper.addPartClasses(tab, 'active', element);
+                helper.addPartClasses(tab, 'item-active', element);
             }
 
             element.innerHTML = tab.getContentHTML(config, allowClose);
@@ -299,7 +307,7 @@ define(
                 var tabElement = navigator.children[i];
                 var methodName = 
                     i === index ? 'addPartClasses' : 'removePartClasses';
-                helper[methodName](tab, 'active', tabElement);
+                helper[methodName](tab, 'item-active', tabElement);
             }
 
             var event = {
@@ -321,23 +329,29 @@ define(
          * @param {Array=} 更新过的属性集合
          * @protected
          */
-        Tab.prototype.repaint = function (changes) {
-            Control.prototype.repaint.apply(this, arguments);
-            changes = changes || allProperties;
-
-            for (var i = 0; i < changes.length; i++) {
-                var record = changes[i];
-                if (record.name === 'tabs') {
-                    fillNavigator(this);
+        Tab.prototype.repaint = helper.createRepaint(
+            Control.prototype.repaint,
+            {
+                name: ['tabs', 'allowClose'],
+                paint: function(tab, tabs, allowClose) {
+                    fillNavigator(tab);
                 }
-                else if (record.name === 'activeIndex') {
-                    activateTab(this, this.activeIndex);
+            },
+            {
+                name: 'activeIndex',
+                paint: function (tab, activeIndex) {
+                    activateTab(tab, activeIndex);
                 }
-                else if (record.name === 'allowClose') {
-                    fillNavigator(this);
+            },
+            {
+                name: 'orientation',
+                paint: function (tab, orientation) {
+                    tab.removeState('vertical');
+                    tab.removeState('horizontal');
+                    tab.addState(orientation);
                 }
             }
-        };
+        );
 
         /**
          * 激活一个标签页
