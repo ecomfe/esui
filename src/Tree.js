@@ -453,6 +453,10 @@ define(
 
             var nodeElement = lib.g(helper.getId(this, 'node-' + id));
 
+            if (!nodeElement) {
+                return;
+            }
+
             if (isEmpty(this, nodeElement)) {
                 return;
             }
@@ -484,6 +488,10 @@ define(
             }
 
             var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+
+            if (!nodeElement) {
+                return;
+            }
 
             if (isEmpty(this, nodeElement)) {
                 return;
