@@ -1670,8 +1670,7 @@ define(
                     var scrollLeft = lib.page.getScrollLeft();
                     var fhArr = table.followHeightArr;
                     var fhLen = fhArr.length;
-                    var len = followDoms.length;
-
+                    
                     initTableOffset(table);
                     var curLeft = absolutePosition ? table.left : table.left - scrollLeft;
 
@@ -1680,7 +1679,7 @@ define(
                     placeHolder.style.display = '';
 
                     if (absolutePosition) {
-                        for (var i = 0 ; i < len; i++) {
+                        for (var i = 0, len = followDoms.length; i < len; i++) {
                             setPos(
                                 followDoms[i], 
                                 posStyle, 
@@ -1696,7 +1695,7 @@ define(
                             curLeft
                         );
                     } else {
-                        for (var i = 0; i < len; i++) {
+                        for (var i = 0, len = followDoms.length; i < len; i++) {
                             setPos(followDoms[i], posStyle, fhArr[i] ,curLeft);
                         }
                         setPos(domHead, posStyle, fhArr[fhLen - 1] , curLeft);
@@ -1707,7 +1706,7 @@ define(
                     placeHolder.style.display = 'none';
                     posStyle = '';
 
-                    for (var i = 0; i < len; i++) {
+                    for (var i = 0, len = followDoms.length; i < len; i++) {
                         setPos(followDoms[i], posStyle, 0, 0);
                     }
 
