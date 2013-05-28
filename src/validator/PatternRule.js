@@ -24,7 +24,7 @@ define(
          * 
          * @type {string}
          */
-        PatternRule.prototype.type = 'min';
+        PatternRule.prototype.type = 'pattern';
 
 
         /**
