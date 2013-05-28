@@ -714,6 +714,9 @@ define(function () {
                 return styles[key] || styles.getPropertyValue(key);
             }
         }
+        else if (element && element.currentStyle) {
+            return element.currentStyle[key];
+        }
         return ''; 
     };
 
