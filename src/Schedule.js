@@ -21,14 +21,19 @@ define(
          * @param {Object=} options 初始化参数
          * @constructor
          */
-        function Schedule() {
+        function Schedule(options) {
             InputControl.apply(this, arguments);
         }
 
-        var DEFAULT_OPTION = {
+
+        /**
+         * 挂接到Schedule上以便进行全局替换
+         */
+        Schedule.defaultProperties = {
+
             //图例说明文本
-            helpSelected: '投放时间段',
-            help: '暂停时间段',
+            helpSelectedText: '投放时间段',
+            helpText: '暂停时间段',
 
             //星期checkbox显示文本
             dayWords: [
@@ -89,11 +94,6 @@ define(
                 }
             ];
         }
-
-        /**
-         * 挂接到Schedule上以便进行全局替换
-         */
-        Schedule.DEFAULT_OPTION = DEFAULT_OPTION;
 
         /**
          * 初始化视图的值
@@ -1177,6 +1177,30 @@ define(
             }
         }
 
+        /**
+         * 根据坐标值改变当前值
+         * @param {Schedule} schedule 当前控件
+         * @param {Boolean} isSelect 是否选中当前坐标
+         * @param {Array.<number>}  Coord 当前坐标[星期，小时]
+         */
+        function dealValueByCoord(schedule, isSelect, coord) {
+
+            var rawValueCopy = rawValueClone(schedule.rawValue);
+
+            for (var i = 0, len = coord.length; i < len; i++) {
+
+                var item = coord[i];
+
+                if (rawValueCopy[item[0]] != null
+                    && rawValueCopy[item[0]][item[1]] != null) {
+
+                    rawValueCopy[item[0]][item[1]] = isSelect ? 1 : 0;
+                }
+            }
+
+            schedule.setRawValue(rawValueCopy);
+        }
+
         Schedule.prototype = {
 
             constructor: Schedule,
@@ -1207,7 +1231,7 @@ define(
             initOptions: function (options) {
                 var properties = {};
                 
-                lib.extend(properties, DEFAULT_OPTION, options);
+                lib.extend(properties, Schedule.defaultProperties, options);
 
                 this.setProperties(properties);
 
@@ -1263,8 +1287,8 @@ define(
                         shortcutClass: getClass(me, 'shortcut'),
                         shortcutId: getId(me, 'shortcut'),
                         bodyId: getId(me, 'body'), //7
-                        helpSelected: me.helpSelected,
-                        help: me.help,
+                        helpSelected: me.helpSelectedText,
+                        help: me.helpText,
                         shortcutHtml: getShortcutHtml(me)
                     }
                 );
@@ -1400,6 +1424,22 @@ define(
             getRawValue: function () {
 
                 return this.rawValue;
+            },
+
+            /**
+             * 按照坐标选择
+              * @param {...Array.<number>}  Coord 当前坐标[星期，小时]
+             */
+            select: function (coord) {
+                dealValueByCoord(this, 1, [].slice.call(arguments));
+            },
+
+            /**
+             * 取消选择按照坐标
+             * @param {...Array.<number>}  Coord 当前坐标[星期，小时]
+             */
+            unselect: function (coord) {
+                dealValueByCoord(this, 0, [].slice.call(arguments));
             },
 
             /**
