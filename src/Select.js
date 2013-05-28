@@ -229,7 +229,10 @@ define(
          */
         function selectValue(select, e) {
             var target = lib.event.getTarget(e);
-            while (target && !lib.hasAttribute(target, 'data-value')) {
+            var layer = getSelectionLayer(select);
+            while (target && target !== layer
+                && !lib.hasAttribute(target, 'data-value')
+            ) {
                 target = target.parentNode;
             }
             if (target) {

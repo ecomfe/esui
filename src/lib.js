@@ -814,9 +814,14 @@ define(function () {
      * @return {string}
      */
     lib.hasAttribute = function (element, name) {
-        return element.hasAttribute
-            ? element.hasAttribute(name)
-            : (element.attributes[name] && element.attributes[name].specified);
+        if (element.hasAttribute) {
+            return element.hasAttribute(name);
+        }
+        else {
+            return element.attributes
+                && element.attributes[name]
+                && element.attributes[name].specified;
+        }
     };
 
     /**
