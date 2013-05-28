@@ -253,7 +253,12 @@ define(
             helper.layer.attachTo(
                 layer, 
                 select.main, 
-                { top: 'bottom', left: 'left', right: 'right' }
+                {
+                    top: 'bottom', 
+                    left: 'left', 
+                    right: 'right', 
+                    spaceDetection: 'vertical'
+                }
             );
             lib.removeClasses(layer, classes);
             select.addState('active');
