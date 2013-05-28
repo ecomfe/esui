@@ -36,7 +36,7 @@ define(
             helpText: '暂停时间段',
 
             //星期checkbox显示文本
-            dayWords: [
+            dayTexts: [
                 '星期一',
                 '星期二',
                 '星期三',
@@ -237,13 +237,13 @@ define(
                     + '&nbsp;<label for="${dayId}">${dayWord}</label>'
                 + '</div>';
 
-            var dayWords = me.dayWords;
+            var dayTexts = me.dayTexts;
             for (var i = 0; i < 7; i++) {
                 html.push(
                     lib.format(
                         dayTpl,
                         {
-                            dayWord: dayWords[i],
+                            dayWord: dayTexts[i],
                             dayId: getId(me, 'line-state' + i),
                             value: i
                         }
