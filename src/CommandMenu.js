@@ -146,7 +146,15 @@ define(
         CommandMenu.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
             paint.html('datasource', 'layer', getLayerHTML),
-            paint.text('displayText')
+            paint.text('displayText'),
+            {
+                name: ['disabled', 'hidden', 'readOnly'],
+                paint: function (menu, disabled, hidden, readOnly) {
+                    if (disabled || hidden || readOnly) {
+                        hideLayer(menu);
+                    }
+                }
+            }
         );
 
         /**
