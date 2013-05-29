@@ -141,7 +141,7 @@ define(
             helper.layer.attachTo(
                 layer, 
                 calendar.main, 
-                { top: 'bottom', left: 'left' }
+                { top: 'bottom', left: 'left', spaceDetection: 'vertical' }
             );
             helper.removePartClasses(calendar, 'layer-hidden', calendar.layer);
             calendar.addState('active');
