@@ -720,7 +720,8 @@ define(
             var type = args.type || 'confirm';
             var onok = args.onok;
             var oncancel = args.oncancel;
-            var width   = args.width || 300; 
+            var width   = args.width || 300;
+            var context = args.viewContext;
             var tpl = [
                 '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
                 '<div class="ui-dialog-text">${content}</div>'
@@ -739,7 +740,8 @@ define(
                     width: width,
                     mask: true,
                     main: main,
-                    skin: 'confirm'
+                    skin: 'confirm',
+                    viewContext: context
                 }
             );
 
@@ -805,6 +807,7 @@ define(
             var type = args.type || 'warning';
             var onok = args.onok;
             var width   = args.width || 300; 
+            var context = args.viewContext;
             var tpl = [
                 '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
                 '<div class="ui-dialog-text">${content}</div>'
@@ -822,7 +825,8 @@ define(
                     width: width,
                     mask: true,
                     main: main,
-                    skin: 'alert'
+                    skin: 'alert',
+                    viewContext: context
                 }
             );
 
