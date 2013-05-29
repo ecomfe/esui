@@ -715,8 +715,8 @@ define(
 
             var index = Dialog.increment();
 
-            var title = args.title || '';
-            var content = args.content || '';
+            var title = lib.encodeHTML(args.title) || '';
+            var content = lib.encodeHTML(args.content) || '';
             var type = args.type || 'confirm';
             var onok = args.onok;
             var oncancel = args.oncancel;
@@ -802,8 +802,8 @@ define(
 
             var index = Dialog.increment();
 
-            var title = args.title || '';
-            var content = args.content || '';
+            var title = lib.encodeHTML(args.title) || '';
+            var content = lib.encodeHTML(args.content) || '';
             var type = args.type || 'warning';
             var onok = args.onok;
             var width   = args.width || 300; 
