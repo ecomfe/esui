@@ -25,7 +25,7 @@
                         { text: 'a' },
                         { text: 'b', handler: function () { console.log('b'); } },
                         { text: 'c', handler: function () { console.log('c'); } },
-                        { text: 'd' }
+                        { text: 'd', handler: function () { this.hide(); } }
                     ]
                 };
                 var menu = new CommandMenu(options);

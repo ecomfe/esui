@@ -24,7 +24,10 @@ define(function () {
      * @return {string} 删除两端空白字符后的字符串
      */
     lib.trim = function (source) {
-        // by Tangram 1.x: baidu.string.trim
+        if (!source) {
+            return '';
+        }
+        
         return String(source).replace(whitespace, '');
     };
 
@@ -58,25 +61,6 @@ define(function () {
         else {
             return [source];
         }
-    };
-
-    /**
-     * 判断一个数组中是否包含给定元素
-     * @name baidu.array.contains
-     * @function
-     * @grammar baidu.array.contains(source, obj)
-     * @param {Array} source 需要判断的数组.
-     * @param {Any} obj 要查找的元素.
-     * @return {boolean} 判断结果.
-     * @author berg
-     */
-    lib.inArray = function(source, obj) {
-        for ( var i = 0 , len = source.length ; i < len; i++) {
-            if(i in source && source[i] === obj) {
-                return true;
-            }
-        }
-        return false;
     };
 
     /**
@@ -210,6 +194,10 @@ define(function () {
         if (data == null) {
             return template;
         }
+
+        if (!template) {
+            return '';
+        }
         
         return template.replace(
             /\$\{(.+?)\}/g,
@@ -231,7 +219,10 @@ define(function () {
      * @return {string} html解码后的字符串
      */
     lib.decodeHTML = function (source) {
-        // by Tangram 1.x: baidu.string.decodeHTML
+        if (!source) {
+            return '';
+        }
+
         var str = String(source)
             .replace(/&quot;/g, '"')
             .replace(/&lt;/g, '<')
@@ -253,7 +244,10 @@ define(function () {
      * @return {string} html编码后的字符串
      */
     lib.encodeHTML = function (source) {
-        // by Tangram 1.x: baidu.string.encodeHTML
+        if (!source) {
+            return '';
+        }
+
         return String(source)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -269,6 +263,10 @@ define(function () {
      * @return {string}
      */
     lib.camelize = function (source) {
+        if (!source) {
+            return '';
+        }
+
         return source.replace( 
             /-([a-z])/g, 
             function (alpha) {
@@ -284,6 +282,10 @@ define(function () {
      * @return {string}
      */
     lib.pascalize = function (source) {
+        if (!source) {
+            return '';
+        }
+
         return source.charAt(0).toUpperCase() + lib.camelize(source.slice(1));
     };
 

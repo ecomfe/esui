@@ -47,7 +47,7 @@ define(
             if (pool.hasOwnProperty(id)) {
                 var i = 1;
                 var prefix = id + '-';
-                while (pool.hasOwnProperty(id + i)) {
+                while (pool.hasOwnProperty(prefix + i)) {
                     i++;
                 }
                 id = prefix + i;
