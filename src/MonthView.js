@@ -12,8 +12,6 @@ define(
         require('./Select');
         require('./Panel');
         // css
-        require('css!./css/Button.css');
-        require('css!./css/Select.css');
         require('css!./css/MonthView.css');
 
         var lib = require('./lib');

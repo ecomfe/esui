@@ -11,7 +11,6 @@ define(
         require('./TextBox');
         require('./Panel');
         // css
-        require('css!./css/TextBox.css');
         require('css!./css/TextLine.css');
 
         var lib = require('./lib');

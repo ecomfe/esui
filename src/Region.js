@@ -11,7 +11,6 @@ define(
         require('./Select');
         // css
         require('css!./css/Region.css');
-        require('css!./css/Select.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
