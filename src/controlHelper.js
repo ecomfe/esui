@@ -36,10 +36,12 @@ define(
          * 获取唯一id
          * 
          * @inner
+         * @param {string} prefix 前缀
          * @return {string}
          */
-        helper.getGUID = function () {
-            return 'esui' + counter++;
+        helper.getGUID = function (prefix) {
+            prefix = prefix || 'esui';
+            return prefix + counter++;
         };
 
         /**

@@ -107,11 +107,7 @@ define(
             var headClasses = [].concat(
                 helper.getPartClasses(me, head)
             );
-            if (me.draggable) {
-                headClasses = headClasses.concat(
-                    helper.getPartClasses(me, head + '-draggable')
-                );
-            }
+
             var headData = {
                 'headId':  helper.getId(me, head),
                 'headClass':  headClasses.join(' '),
@@ -160,12 +156,11 @@ define(
          * @inner
          */
         function closeClickHandler() {
-            this.hide();
             if (this.closeOnHide === true) {
                 this.dispose();
-                //移除dom
-                var domId = helper.getId(this);
-                lib.removeNode(domId);
+            }
+            else {
+                this.hide();
             }
             this.fire('close');
 
@@ -207,14 +202,20 @@ define(
         /**
          * 绑定拖动drag事件
          * @param {ui.Dialog} 控件对象
+         * @param {boolean} unbind 是否移除事件
          */
-        function initDragHandler(dialog) {
+        function initDragHandler(dialog, unbind) {
             var me = dialog;
             var head = lib.g(helper.getId(me, 'head'));
             
             getDialogHeadDownHandler = lib.bind(dialogHeadDownHandler, me);
 
-            lib.on(head, 'mousedown', getDialogHeadDownHandler);
+            if (unbind === true) {
+                lib.un(head, 'mousedown', getDialogHeadDownHandler);
+            }
+            else {
+                lib.on(head, 'mousedown', getDialogHeadDownHandler);
+            }
         }
 
         /**
@@ -377,19 +378,6 @@ define(
         Dialog.OK_TEXT = '确定';
         Dialog.CANCEL_TEXT = '取消';
 
-
-        /**
-         * 自增函数
-         *
-         * @inner
-         */
-        Dialog.increment = (function () {
-            var i = 0;
-            return function () {
-                return i++;
-            };
-        }());
-
         Dialog.prototype = {
             /**
              * 控件类型
@@ -517,22 +505,22 @@ define(
                 },
                 {
                     name: 'foot',
-                    paint: function (calendar, value) { 
+                    paint: function (dialog, value) { 
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
                             + '</div>';
-                        var footId = helper.getId(calendar, 'foot');
-                        var footClass = helper.getPartClasses(calendar, 'foot');
+                        var footId = helper.getId(dialog, 'foot');
+                        var footClass = helper.getPartClasses(dialog, 'foot');
                         // 取消了foot
                         if (value == null) {
-                            calendar.needFoot = false;
-                            var foot = calendar.getFoot();
-                            calendar.removeChild(foot);
+                            dialog.needFoot = false;
+                            var foot = dialog.getFoot();
+                            dialog.removeChild(foot);
                         }
                         else {
-                            calendar.needFoot = true;
-                            var foot = calendar.getFoot();
+                            dialog.needFoot = true;
+                            var foot = dialog.getFoot();
                             var data = {
                                 'class': footClass.join(' '),
                                 'id': footId,
@@ -542,6 +530,20 @@ define(
                                 lib.format(bfTpl, data)
                             );
                         }
+                    }
+                },
+                {
+                    name: 'draggable',
+                    paint: function (dialog, draggable) {
+                        var unbind = false;
+                        if (draggable) {
+                            dialog.addState('draggable');
+                        }
+                        else {
+                            dialog.removeState('draggable');
+                            unbind = true;
+                        }
+                        initDragHandler(dialog, unbind);
                     }
                 }
             ),
@@ -595,11 +597,6 @@ define(
                 }
                 this.setWidth(this.width);
                 resizeHandler(this);
-
-                // 拖拽功能初始化
-                if (this.draggable) {
-                    initDragHandler(this);
-                }
 
                 if (mask) {
                     showMask(this);
@@ -677,7 +674,23 @@ define(
              */
             setWidth: function (width) {
                 this.setProperties({'width': width});
+            },
+
+
+            /**
+             * 销毁控件
+             */
+            dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                this.hide();
+                //移除dom
+                var domId = helper.getId(this);
+                lib.removeNode(domId);
+                Control.prototype.dispose.apply(this, arguments);
             }
+
         };
 
 
@@ -686,40 +699,24 @@ define(
          *
          */
         Dialog.confirm = function (args) {
-            var dialogPrefix    = 'DialogConfirm';
+            var dialogPrefix    = 'dialog-confirm';
             var ui = require('./main');
 
             /**
              * 获取按钮点击的处理函数
              * 
              * @private
-             * @param {Function} eventHandler 用户定义的按钮点击函数
-             * @return {Functioin}
+             * @param {ui.Dialog} 控件对象
+             * @param {string} 事件类型
              */
-            function getBtnClickHandler(eventHandler, id) {
-                return function () {
-                    var dialog = ui.get(dialogPrefix + id);
-                    var domId = helper.getId(dialog);
-                    var isFunc = (typeof eventHandler == 'function');
-
-                    if ((isFunc && eventHandler(dialog) !== false) || !isFunc) {
-                        dialog.hide();
-                        dialog.dispose();
-                        //移除dom
-                        lib.removeNode(domId);
-                    }
-                
-                    dialog = null;
-                };
+            function btnClickHandler(dialog, type) {
+                dialog.fire(type);
+                dialog.dispose();
             }
-
-            var index = Dialog.increment();
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
             var type = args.type || 'confirm';
-            var onok = args.onok;
-            var oncancel = args.oncancel;
             var width   = args.width || 300;
             var context = args.viewContext;
             var tpl = [
@@ -734,7 +731,7 @@ define(
             var dialog = ui.create(
                 'Dialog', 
                 {
-                    id: dialogPrefix + index,
+                    id: helper.getGUID(dialogPrefix),
                     closeButton: false,
                     title: '',
                     width: width,
@@ -757,19 +754,21 @@ define(
             cancelBtn.setContent(Dialog.CANCEL_TEXT);
             okBtn.on(
                 'click',
-                getBtnClickHandler(onok, index)
+                lib.curry(btnClickHandler, dialog, 'ok')
             );
             cancelBtn.on(
                 'click',
-                getBtnClickHandler(oncancel, index)
+                lib.curry(btnClickHandler, dialog, 'cancel')
             );
+
+            return dialog;
 
         };
 
 
         Dialog.alert = function (args) {
-            var dialogPrefix = 'DialogAlert';
-            var okPrefix = 'DialogAlertOk';
+            var dialogPrefix = 'dialog-alert';
+            var okPrefix = 'dialog-alert-ok';
 
             var ui = require('./main');
 
@@ -777,35 +776,18 @@ define(
              * 获取按钮点击的处理函数
              * 
              * @private
-             * @param {Function} eventHandler 用户定义的按钮点击函数
-             * @return {Functioin}
+             * @param {ui.Dialog} 控件对象
+             * @param {string} 事件类型
              */
-            function getBtnClickHandler(eventHandler, id) {
-                return function () {
-                    var dialog = ui.get(dialogPrefix + id);
-                    var okBtn = ui.get(okPrefix + id);
-                    var domId = helper.getId(dialog);
-
-                    var isFunc = (typeof eventHandler == 'function');
-
-                    if ((isFunc && eventHandler(dialog) !== false) || !isFunc) {
-                        dialog.hide();
-                        okBtn.dispose();
-                        dialog.dispose();
-                        //移除dom
-                        lib.removeNode(domId);
-                    }
-                
-                    dialog = null;
-                };
+            function btnClickHandler(dialog, okBtn) {
+                dialog.fire('ok');
+                okBtn.dispose();
+                dialog.dispose();
             }
-
-            var index = Dialog.increment();
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
             var type = args.type || 'warning';
-            var onok = args.onok;
             var width   = args.width || 300; 
             var context = args.viewContext;
             var tpl = [
@@ -816,10 +798,11 @@ define(
             //创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
+            var dialogId = helper.getGUID(dialogPrefix);
             var dialog = ui.create(
                 'Dialog', 
                 {
-                    id: dialogPrefix + index,
+                    id: dialogId,
                     closeButton: false,
                     title: '',
                     width: width,
@@ -837,7 +820,7 @@ define(
 
             dialog.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:' 
-                + okPrefix + index + '; skin:spring;width:50;">'
+                + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
                 + Dialog.OK_TEXT
                 + '</div>'
             );
@@ -846,8 +829,9 @@ define(
             var okBtn = dialog.getFoot().getChild('okBtn');
             okBtn.on(
                 'click',
-                getBtnClickHandler(onok, index)
+                lib.curry(btnClickHandler, dialog, okBtn)
             );
+            return dialog;
         }; 
 
         require('./lib').inherits(Dialog, Control);

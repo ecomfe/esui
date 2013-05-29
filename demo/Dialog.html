@@ -35,29 +35,30 @@
                 var staticDg = controls[0];
                 var Dialog = require('esui/Dialog');
                 document.getElementById('trigger-alert').onclick = function () {
-                    Dialog.alert({
+                    var dialog = Dialog.alert({
                         title: '电你',
                         content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
-                        onok: function(dialog) {
-                            alert('关了！');
-                        },
                         width: 400
                     });
+
+                    dialog.on('ok', function(){
+                            alert('关了！');
+                    })
                 };
 
 
                 document.getElementById('trigger-confirm').onclick = function () {
-                    Dialog.confirm({
+                    var dialog = Dialog.confirm({
                         title: '给你机会选择',
-                        content: '确定要点我吗？',
-                        onok: function(dialog) {
-                            alert('你死定了！');
-                        },
-                        oncancel: function(dialog) {
-                            alert('算你识相！');
-                        },
+                        content: '确定要点我吗？te',
                         width: 400
                     });
+                    dialog.on('ok', function(){
+                            alert('你死定了！');
+                    })
+                    dialog.on('cancel', function(){
+                            alert('算你识相！');
+                    })
                 };
 
                 document.getElementById('trigger-static').onclick = function () {
