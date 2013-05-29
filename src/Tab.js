@@ -317,12 +317,6 @@ define(
             tab.fire('activate', event);
         }
 
-        // 默认情况下只要处理了`tabs`就啥都处理完了
-        var allProperties = [
-            { name: 'tabs' },
-            { name: 'activeIndex' }
-        ];
-
         /**
          * 重绘
          *

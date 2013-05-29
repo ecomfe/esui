@@ -16,7 +16,7 @@ define(
         var lib = require('./lib');
         var ui = require('./main');
         var helper = require('./controlHelper');
-        var Control = require('./control');
+        var Control = require('./Control');
 
         /**
          * 获取控件主元素代码

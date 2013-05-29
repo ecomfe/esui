@@ -700,6 +700,15 @@ define(
             options = options || { left: 'left', top: 'top' };
             var lib = require('./lib');
             var offset = lib.getOffset(target);
+
+            // 浮层的存在会影响页面高度计算，必须先让它消失，
+            // 但在消失前，又必须先计算到浮层的正确高度
+            var previousDisplayValue = element.style.display;
+            element.style.display = 'block';
+            var elementHeight = element.offsetHeight;
+            var elementWidth = element.offsetWidth;
+            element.style.display = 'none';
+
             // 有2种特殊的情况：
             // 
             // -`{ top: 'top', bottom: 'bottom' }`
@@ -716,6 +725,44 @@ define(
                 config.right = null;
             }
 
+            // 如果要靠住某一边，且要检测剩余空间，则那个边空间不够，就要移到另一边
+            if (config.spaceDetection === 'vertical'
+                || config.spaceDetection === 'both') {
+                // 默认放上边
+                if (config.top === 'bottom') {
+                    var pageHeight = lib.page.getHeight();
+                    if (pageHeight - offset.bottom < elementHeight) {
+                        config.top = null;
+                        config.bottom = 'top';
+                    }
+                }
+                // 默认放下边
+                else if (config.bottom === 'top') {
+                    if (offset.top < elementHeight) {
+                        config.top = 'bottom';
+                        config.bottom = null;
+                    }
+                }
+            }
+            if (config.spaceDetection === 'horizontal'
+                || config.spaceDetection === 'both') {
+                // 默认放右边
+                if (config.left === 'right') {
+                    var pageWidth = lib.page.getWidth();
+                    if (pageWidth - offset.right < element.offsetWidth) {
+                        config.left = null;
+                        config.right = 'left';
+                    }
+                }
+                // 默认放下边
+                else if (config.right === 'left') {
+                    if (offset.left < element.offsetWidth) {
+                        config.left = 'right';
+                        config.right = null;
+                    }
+                }
+            }
+
             var properties = {};
             if (config.width) {
                 properties.width = config.width;
@@ -728,16 +775,17 @@ define(
                 properties.left = offset[config.left];
             }
             else if (config.right) {
-                properties.right = offset[config.right];
+                properties.left = offset[config.right] - elementWidth;
             }
 
             if (config.top) {
                 properties.top = offset[config.top];
             }
             else if (config.bottom) {
-                properties.bottom = offset[config.bottom];
+                properties.top = offset[config.bottom] - elementHeight;
             }
 
+            element.style.display = previousDisplayValue;
             render(element, properties);
         };
 

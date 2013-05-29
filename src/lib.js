@@ -714,6 +714,9 @@ define(function () {
                 return styles[key] || styles.getPropertyValue(key);
             }
         }
+        else if (element && element.currentStyle) {
+            return element.currentStyle[key];
+        }
         return ''; 
     };
 
@@ -814,9 +817,14 @@ define(function () {
      * @return {string}
      */
     lib.hasAttribute = function (element, name) {
-        return element.hasAttribute
-            ? element.hasAttribute(name)
-            : (element.attributes[name] && element.attributes[name].specified);
+        if (element.hasAttribute) {
+            return element.hasAttribute(name);
+        }
+        else {
+            return element.attributes
+                && element.attributes[name]
+                && element.attributes[name].specified;
+        }
     };
 
     /**
