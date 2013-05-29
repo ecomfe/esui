@@ -654,11 +654,11 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是`<div>`，替换成`<div>`
-                if (this.main.nodeName.toLowerCase() !== 'div') {
+                // 如果主元素不是包裹元素，替换成`<div>`
+                if (!lib.isBlock(this.main)) {
                     helper.replaceMain(this);
                 }
-                
+
                 this.main.innerHTML = getMainHTML(this);
 
                 // 创建控件树

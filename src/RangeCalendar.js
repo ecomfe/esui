@@ -649,6 +649,8 @@ define(
                     paramFormat: 'yyyy-MM-dd'
                 };
 
+                helper.extractValueFromInput(this, options);
+
                 if (options.value) {
                     options.rawValue = convertToRaw(options.value);
                     options.view = {};
@@ -671,11 +673,11 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是`<div>`，替换成`<div>`
-                if (this.main.nodeName.toLowerCase() !== 'div') {
+                // 如果主元素不是包裹元素，替换成`<div>`
+                if (!lib.isBlock(this.main)) {
                     helper.replaceMain(this);
                 }
-                
+
                 var tpl = [
                     '<div class="${className}" id="${id}"></div>',
                     '<div class="${arrow}"></div>',
@@ -785,6 +787,16 @@ define(
              */
             stringifyValue: function (rawValue) {
                 return convertToParam(rawValue) || '';
+            },
+
+            /**
+             * 将string类型的value转换成原始格式
+             * 
+             * @param {string} value 字符串值
+             * @return {*}
+             */
+            parseValue: function (value) {
+                return convertToRaw(value);
             }
         };
 

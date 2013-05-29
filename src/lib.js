@@ -474,6 +474,19 @@ define(function () {
     };
 
     /**
+     * 判断一个元素是否块形元素
+     *
+     * @param {HTMLElement} element 目标元素
+     * @return {boolean}
+     */
+    lib.isBlock = function (element) {
+        var nodeName = element.nodeName.toLowerCase();
+        return nodeName === 'div'
+            || nodeName === 'article'
+            || nodeName === 'section';
+    };
+
+    /**
      * 判断元素是否拥有指定的className
      * 
      * @param {HTMLElement} element 目标元素或目标元素的id

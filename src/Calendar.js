@@ -253,6 +253,9 @@ define(
                     rawValue: now,
                     calType: 'sel' // 日历类型，另外还支持'input' 'label'
                 };
+
+                helper.extractValueFromInput(this, options);
+
                 lib.extend(properties, options);
 
                 if (properties.value) {
@@ -281,8 +284,8 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是`<div>`，替换成`<div>`
-                if (this.main.nodeName.toLowerCase() !== 'div') {
+                // 如果主元素不是包裹元素，替换成`<div>`
+                if (!lib.isBlock(this.main)) {
                     helper.replaceMain(this);
                 }
                 
@@ -332,10 +335,6 @@ define(
              * @override
              */
             createMain: function (options) {
-                var calType = options.calType;
-                if (calType == 'label') {
-                    return document.createElement('div');
-                }
                 return document.createElement('div');
             },
 
@@ -413,6 +412,16 @@ define(
              */
             stringifyValue: function (rawValue) {
                 return lib.date.format(rawValue, this.paramFormat) || null;
+            },
+
+            /**
+             * 将string类型的value转换成原始格式
+             * 
+             * @param {string} value 字符串值
+             * @return {*}
+             */
+            parseValue: function (value) {
+                return parseToDate(value);
             }
         };
 

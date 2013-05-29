@@ -39,17 +39,20 @@ define(
         function getMainHTML(textLine) {
             var tpl = [
                 '<div id="${numLineId}" class="${numLineClass}">1</div>',
-                '<textarea data-ui="type:TextBox;childName:text;',
+                '<textarea name="${name}" ',
+                'data-ui="type:TextBox;childName:text;',
                 'id:text;mode:textarea" >',
                 '</textarea>'
             ].join('');
+
 
             return lib.format(
                 tpl,
                 {
                     numLineId: helper.getId(textLine, 'num-line'),
                     numLineClass:
-                        helper.getPartClasses(textLine, 'num-line').join(' ')
+                        helper.getPartClasses(textLine, 'num-line').join(' '),
+                    name: textLine.name
                 }
             );
         }
@@ -122,6 +125,7 @@ define(
                     width: 300,
                     height: 200
                 };
+                helper.extractValueFromInput(this, options);
                 lib.extend(properties, options);
                 this.setProperties(properties);
             },
@@ -133,8 +137,8 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是`<div>`，替换成`<div>`
-                if (this.main.nodeName.toLowerCase() !== 'div') {
+                // 如果主元素不是包裹元素，替换成`<div>`
+                if (!lib.isBlock(this.main)) {
                     helper.replaceMain(this);
                 }
                 
@@ -225,31 +229,77 @@ define(
                     paint: function (textLine, value) {
                         // 输入区
                         var textArea = textLine.getChild('text');
-                        if (value && lib.trim(value)) {
-                            value = lib.decodeHTML(value);
-                            textLine.value =
-                                value.replace(/\n{2,}/g, '\n');
-
-                        }
-                        else {
-                            textLine.value = '';
-                        }
-                        textArea.setProperties({
-                            rawValue: textLine.value
-                        });
+                        textLine.value = lib.decodeHTML(value.join('\n'));
+                        textArea.setRawValue(textLine.value);
                         refreshLineNum(textLine);
                     }
                 }
             ),
 
             /**
-             * 获取内容字符串形式（包含换行符）
-             *
+             * 将value从原始格式转换成string
+             * 
+             * @param {*} rawValue 原始值
              * @return {string}
              */
+            stringifyValue: function (rawValue) {
+                return rawValue.join('\n');
+            },
+
+            /**
+             * 将string类型的value转换成原始格式
+             * 
+             * @param {string} value 字符串值
+             * @return {Array}
+             */
+            parseValue: function (value) {
+                return lib.trim(value.replace(/\n{2,}/g, '\n')).split('\n');
+            },
+
+            /**
+             * 获取内容数组形式（去重，去空行）
+             *
+             * @return {Array}
+             */
             getRawValue: function() {
-                var text = this.getChild('text');
-                return lib.trim(text.getValue());
+                var text = this.getChild('text').getValue();
+                var items = text.replace(/\n{2,}/g, '\n').split('\n');
+                var value;
+                var container = {};
+                var result = [];
+
+                for (var i = 0, len = items.length; i < len; i++) {
+                    value = lib.trim(items[i]);
+                    if (value.length === 0 || container[value]) {
+                        continue;
+                    }
+                    container[value] = 1;
+                    result.push(value);
+                }
+        
+                return result;
+            },
+
+            /**
+             * 获取内容数组形式,并去除空串内容（不去重）
+             *
+             * @return {Array}
+             */
+            getValueRepeatableItems: function() {
+                var text = this.getChild('text').getValue();
+                var items = text.split('\n');
+                var value;
+                var result = [];
+        
+                for (var i = 0, len = items.length; i < len; i++) {
+                    value = lib.trim(items[i]);
+                    if (value.length === 0) {
+                        continue;
+                    }
+                    result.push(value);
+                }
+        
+                return result;
             },
 
             /**
@@ -261,28 +311,6 @@ define(
                var items = this.getValue().split('\n');
                var len = items.length;
                return len;
-            },
-
-            /**
-             * 获取内容数组形式,并去除空串内容
-             *
-             * @return {Array}
-             */
-            getValueRepeatableItems: function() {
-                var items = this.getValue().split('\n');
-                var len = items.length;
-                var value;
-                var result = [];
-        
-                for (var i = 0; i < len; i++) {
-                    value = lib.trim(items[i]);
-                    if (value.length === 0) {
-                        continue;
-                    }
-                    result.push(value);
-                }
-        
-                return result;
             },
 
             /**

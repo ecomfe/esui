@@ -797,6 +797,13 @@ define(
                     mode: 'multi',
                     rawValue: []
                 };
+
+                helper.extractValueFromInput(this, options);
+
+                if (options.value) {
+                    options.rawValue = options.value.split(',');
+                }
+
                 lib.extend(properties, options);
 
                 if (properties.mode == 'multi') {
@@ -820,8 +827,8 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是`<div>`，替换成`<div>`
-                if (this.main.nodeName.toLowerCase() !== 'div') {
+                // 如果主元素不是包裹元素，替换成`<div>`
+                if (!lib.isBlock(this.main)) {
                     helper.replaceMain(this);
                 }
 
@@ -837,17 +844,6 @@ define(
                 }
 
 
-            },
-
-            /**
-             * 创建控件主元素
-             *
-             * @param {Object=} options 构造函数传入的参数
-             * @return {HTMLElement}
-             * @override
-             */
-            createMain: function (options) {
-                return document.createElement('DIV');
             },
 
             /**
@@ -920,7 +916,6 @@ define(
 
             /**
              * 将value从原始格式转换成string
-             * 复杂类型的输入控件需要override此接口
              * 
              * @param {*} rawValue 原始值
              * @return {string}
@@ -932,6 +927,16 @@ define(
                 else {
                     return rawValue;
                 }
+            },
+
+            /**
+             * 将string类型的value转换成原始格式
+             * 
+             * @param {string} value 字符串值
+             * @return {*}
+             */
+            parseValue: function (value) {
+                return value.split(',');
             }
 
         };

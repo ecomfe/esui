@@ -495,6 +495,26 @@ define(
         };
 
         /**
+         * 替换控件的主元素中提取信息
+         *
+         * @param {Control} control 控件实例
+         * @param {Object} options 需要更新的参数
+         * @return {Object} 提取到的value和name
+         */
+        helper.extractValueFromInput = function (control, options) {
+            var main = control.main;
+            // 如果是输入元素
+            if (lib.isInput(main)) {
+                if (main.value && !options.value) {
+                    options.value = main.value;
+                }
+                if (main.name && !options.name) {
+                    options.name = main.name;
+                }
+            }
+        };
+
+        /**
          * 替换控件的主元素
          *
          * @param {Control} control 控件实例
