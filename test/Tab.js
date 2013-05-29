@@ -163,11 +163,11 @@ define(function (require) {
                 expect(tab.get('activeIndex')).toBe(0);
             });
 
-            it('should add a `ui-tab-active` class for selected tab', function () {
+            it('should add a `ui-tab-item-active` class for selected tab', function () {
                 var tab = new Tab({ tabs: tabs, activeIndex: 1 });
                 tab.appendTo(container);
                 var tabElement = container.getElementsByTagName('li')[1];
-                expect(tabElement.className).toMatch(/ui-tab-active/);
+                expect(tabElement.className).toMatch(/ui-tab-item-active/);
             });
 
             it('should change the `display` style of all panel when tab is rendered', function () {
@@ -317,7 +317,7 @@ define(function (require) {
                 tab.appendTo(container);
                 tab.removeAt(1);
                 expect(tab.get('activeIndex')).toBe(1);
-                expect(container.getElementsByTagName('li')[1].className).toMatch(/ui-tab-active/);
+                expect(container.getElementsByTagName('li')[1].className).toMatch(/ui-tab-item-active/);
             });
 
             it('should set active tab to the last one if the last tab is active and removed', function () {
@@ -325,7 +325,7 @@ define(function (require) {
                 tab.appendTo(container);
                 tab.removeAt(2);
                 expect(tab.get('activeIndex')).toBe(1);
-                expect(container.getElementsByTagName('li')[1].className).toMatch(/ui-tab-active/);
+                expect(container.getElementsByTagName('li')[1].className).toMatch(/ui-tab-item-active/);
             });
 
             it('should keep the current active tab if `tabs` is changed but current active tab still exists', function () {
@@ -333,7 +333,7 @@ define(function (require) {
                 tab.appendTo(container);
                 tab.set('tabs', tabs.slice(1, 2));
                 expect(tab.get('activeIndex')).toBe(0);
-                expect(container.getElementsByTagName('li')[0].className).toMatch(/ui-tab-active/);
+                expect(container.getElementsByTagName('li')[0].className).toMatch(/ui-tab-item-active/);
             });
 
             it('should set `activeIndex` to -1 if the last tab is removed', function () {
