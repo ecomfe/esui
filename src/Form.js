@@ -9,6 +9,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var helper = require('./controlHelper');
         var main = require('./main');
         var Panel = require('./Panel');
         var CheckBox = require('./CheckBox');
@@ -191,19 +192,36 @@ define(
         function Form(options) {
             Panel.apply(this, arguments);
         }
-
+        
         /**
-         * 表单验证
+         * 进行提交逻辑，根据`autoValidate`属性有不同行为
          *
+         * @inner
          */
-        Form.prototype.validateAndSubmit = function() {
-            if (this.validate()) {
-                this.fire('submit');
-            }
-            else {
-                this.fire('invalid');
+        function performSubmit(form) {
+            var isValid = form.get('autoValidate')
+                ? form.validate()
+                : true;
+
+            form.fire(isValid ? 'submit' : 'invalid');
+        }
+
+        Form.prototype.initStructure = function () {
+            if (this.main.nodeName.toLowerCase() === 'form') {
+                // 劫持表单的提交事件
+                helper.addDOMEvent(
+                    this, 
+                    this.main,
+                    'submit',
+                    function (e) {
+                        this.fire('submit');
+                        e.preventDefault();
+                        return false;
+                    }
+                );
             }
 
+            this.performSubmit = lib.curry(performSubmit, this);
         };
 
         Form.prototype.type = 'Form';
@@ -236,37 +254,6 @@ define(
             }
             else {
                 this.method = this.method || 'POST';
-            }
-        };
-
-        Form.prototype.repaint = function (changes, changesIndex) {
-            Panel.prototype.repaint.apply(this, arguments);
-
-            var shouldAttachSubmit = false;
-            if (!changesIndex && this.submitButton) {
-                shouldAttachSubmit = true;
-            }
-            else if (changesIndex 
-                && changesIndex.hasOwnProperty('submitButton')
-            ) {
-                var record = changesIndex.submitButton;
-                if (record.oldValue) {
-                    var oldButton = this.viewContext.get(record.oldValue);
-                    if (oldButton && this.submitHandler) {
-                        oldButton.un('click', this.submitHandler);
-                    }
-
-                    shouldAttachSubmit = !!this.submitButton;
-                }
-            }
-
-            if (shouldAttachSubmit) {
-                var button = this.viewContext.get(this.submitButton);
-                if (button) {
-                    this.submitHandler =
-                        lib.bind(this.validateAndSubmit, this);
-                    button.on('click', this.submitHandler);
-                }
             }
         };
 
@@ -370,7 +357,7 @@ define(
             var result = true;
             for (var i = 0; i < inputs.length; i++) {
                 var control = inputs[i];
-                 // 不对disabled和readonly的控件进行验证
+                 // 不对disabled的控件进行验证
                 if (control.isDisabled()) {
                     continue;
                 }
@@ -379,6 +366,36 @@ define(
             }
             return !!result;
         };
+
+        Form.prototype.repaint = function (changes, changesIndex) {
+            Panel.prototype.repaint.apply(this, arguments);
+
+            var shouldAttachSubmit = false;
+            if (!changesIndex && this.submitButton) {
+                shouldAttachSubmit = true;
+            }
+            else if (changesIndex 
+                && changesIndex.hasOwnProperty('submitButton')
+            ) {
+                var record = changesIndex.submitButton;
+                if (record.oldValue) {
+                    var oldButton = this.viewContext.get(record.oldValue);
+                    if (oldButton) {
+                        oldButton.un('click', this.performSubmit);
+                    }
+
+                    shouldAttachSubmit = !!this.submitButton;
+                }
+            }
+
+            if (shouldAttachSubmit) {
+                var button = this.viewContext.get(this.submitButton);
+                if (button) {
+                    button.on('click', this.performSubmit);
+                }
+            }
+        };
+
         lib.inherits(Form, Panel);
         require('./main').register(Form);
         return Form;
