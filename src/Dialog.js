@@ -266,8 +266,38 @@ define(
 
             var main = me.main;
             var mainPos = lib.getOffset(main);
-            main.style.left = mainPos.left + movedDistance.x + 'px';
-            main.style.top = mainPos.top + movedDistance.y + 'px';
+
+            var curMainLeft = mainPos.left + movedDistance.x;
+            var curMainTop = mainPos.top + movedDistance.y;
+
+            var pageWidth = lib.page.getWidth();
+            var pageHeight = lib.page.getHeight();
+
+            var offset = lib.getOffset(main);
+
+            // 判断边缘是否已经超出屏幕
+            // 1. 上边缘超出
+            if (curMainTop < 0) {
+                curMainTop = 0;
+            }
+            // 2. 下边缘超出
+            else if (curMainTop > pageHeight - offset.height) {
+                curMainTop = pageHeight - offset.height;
+            }
+
+
+            // 3. 左边缘超出
+            if (curMainLeft < 0) {
+                curMainLeft = 0;
+            }
+            // 4. 右边缘超出
+            else if (curMainLeft > pageWidth - offset.width) {
+                curMainLeft = pageWidth - offset.width;
+            }
+
+
+            main.style.left = curMainLeft + 'px';
+            main.style.top = curMainTop + 'px';
 
         }
 
@@ -460,7 +490,9 @@ define(
                 {
                     name: 'height',
                     paint: function (dialog, value) {
-                        dialog.main.style.height = value + 'px';
+                        if (value) {
+                            dialog.main.style.height = value + 'px';
+                        }
                         if (dialog.isShow) {
                             resizeHandler(dialog);
                         }
@@ -469,7 +501,9 @@ define(
                 {
                     name: 'width',
                     paint: function (dialog, value) {
-                        dialog.main.style.width = value + 'px';
+                        if (value) {
+                            dialog.main.style.width = value + 'px';
+                        }
                         if (dialog.isShow) {
                             resizeHandler(dialog);
                         }
