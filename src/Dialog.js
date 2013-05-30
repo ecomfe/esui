@@ -457,15 +457,27 @@ define(
              * 初始化DOM结构，仅在第一次渲染时调用
              */
             initStructure: function () {
+                var ui = require('./main');
                 var main = this.main;
+                // 判断main是否在body下，如果不在，要移到body下
+                if (main.parentNode.nodeName.toLowerCase() !== 'body') {
+                    main.setAttribute(
+                        ui.getConfig('instanceAttr'),
+                        helper.getGUID()
+                    );
+                    var newMain = this.createMain();
+                    document.body.appendChild(newMain);
+                    main.parentNode.removeChild(main);
+                    this.main = newMain;
+                }
 
                 // 设置样式
-                main.style.left = '-10000px';
-                main.innerHTML = ''
+                this.main.style.left = '-10000px';
+                this.main.innerHTML = ''
                     + getHeadHtml(this)
                     + getBFHtml(this, 'body')
                     + getBFHtml(this, 'foot');
-                this.initChildren(main);
+                this.initChildren(this.main);
 
                 // 初始化控件主元素上的行为
                 if (this.closeButton !== false) {
