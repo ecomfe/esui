@@ -756,15 +756,34 @@ define(
              * @param {string} 事件类型
              */
             function btnClickHandler(dialog, type) {
+                // 有可能在参数里设置了处理函数
+                var handler;
+                if (type === 'ok') {
+                    handler = dialog.onok;
+                }
+                else {
+                    handler = dialog.oncancel;
+                }
+                var isFunc = (typeof handler == 'function');
+                if (isFunc) {
+                    handler(dialog);
+                }
                 dialog.fire(type);
                 dialog.dispose();
             }
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
-            var type = args.type || 'confirm';
-            var width   = args.width || 300;
-            var context = args.viewContext;
+
+            var properties = {
+                type: 'confirm',
+                width: 300,
+                skin: 'confirm',
+                title: ''
+            };
+
+            lib.extend(properties, args);
+
             var tpl = [
                 '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
                 '<div class="ui-dialog-text">${content}</div>'
@@ -774,19 +793,16 @@ define(
             //创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
-            var dialog = ui.create(
-                'Dialog', 
-                {
-                    id: helper.getGUID(dialogPrefix),
-                    closeButton: false,
-                    title: '',
-                    width: width,
-                    mask: true,
-                    main: main,
-                    skin: 'confirm',
-                    viewContext: context
-                }
-            );
+
+            properties.id = helper.getGUID(dialogPrefix);
+            properties.closeButton = false;
+            properties.mask = true;
+            properties.main = main;
+
+            var type = properties.type;
+            properties.type = null;
+
+            var dialog = ui.create('Dialog', properties);
 
             dialog.setTitle(title);
             dialog.setContent(
@@ -826,6 +842,12 @@ define(
              * @param {string} 事件类型
              */
             function btnClickHandler(dialog, okBtn) {
+                // 有可能在参数里设置了处理函数
+                var handler = dialog.onok;
+                var isFunc = (typeof handler == 'function');
+                if (isFunc) {
+                    handler(dialog);
+                }
                 dialog.fire('ok');
                 okBtn.dispose();
                 dialog.dispose();
@@ -833,9 +855,16 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
-            var type = args.type || 'warning';
-            var width   = args.width || 300; 
-            var context = args.viewContext;
+
+            var properties = {
+                type: 'warning',
+                width: 300,
+                skin: 'alert',
+                title: ''
+            };
+
+            lib.extend(properties, args);
+
             var tpl = [
                 '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
                 '<div class="ui-dialog-text">${content}</div>'
@@ -844,21 +873,17 @@ define(
             //创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
-            var dialogId = helper.getGUID(dialogPrefix);
-            var dialog = ui.create(
-                'Dialog', 
-                {
-                    id: dialogId,
-                    closeButton: false,
-                    title: '',
-                    width: width,
-                    mask: true,
-                    main: main,
-                    skin: 'alert',
-                    viewContext: context
-                }
-            );
 
+            var dialogId = helper.getGUID(dialogPrefix);
+            properties.id = dialogId;
+            properties.closeButton = false;
+            properties.mask = true;
+            properties.main = main;
+
+            var type = properties.type;
+            properties.type = null;
+
+            var dialog = ui.create('Dialog', properties);
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })
