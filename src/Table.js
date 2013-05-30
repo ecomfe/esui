@@ -41,7 +41,11 @@ define(
                 breakLine : false,
                 followHeightArr : [0, 0],
                 followWidthArr : [],
-                hasTip : false
+                hasTip : false,
+                tipWidth : 18,
+                sortWidth : 9,
+                fontSize : 13,
+                colPadding : 8
             };
 
             Control.call(this, lib.extend(DEFAULT_OPTION, options));
@@ -279,20 +283,27 @@ define(
         function initMinColsWidth(table) {
             var fields = table.realFields;
             var result = [];
+            var fontSize = table.fontSize;
+            var extraWidth = table.colPadding * 2;
 
             if (!table.noHead) {
+
                 for (var i = 0, len = fields.length; i < len; i++) {
                     var field = fields[i];
                     var width = field.minWidth;
                     if (!width && !field.breakLine) {
-                        // 30包括排序和外层padding
-                        width = field.title.length * 13 + 30;
+                        width = field.title.length * fontSize
+                                + extraWidth
+                                + (field.sortable ? table.sortWidth : 0)
+                                + (field.tip ? table.tipWidth : 0);
+
                     }
                     result[i] = width;
                 }
             } else {
+                var minWidth = fontSize + extraWidth;
                 for (var i = 0, len = fields.length; i < len; i++) {
-                    result[i] = 50;
+                    result[i] = minWidth;
                 }
             }
 
@@ -628,6 +639,7 @@ define(
                             content: titleTipContent
                         }
                     );
+
                     table.hasTip = true;
                 }
 
@@ -1077,6 +1089,7 @@ define(
 
             tBody.style.width = table.realWidth + 'px';
             tBody.innerHTML = getBodyHtml(table);
+
         }
 
          /**
@@ -1785,7 +1798,7 @@ define(
          */
         function getMultiSelectTpl(table) {
             return { 
-                width : 36,
+                width : 30,
                 stable : true,
                 select : true,
                 title : function (item, index) {
@@ -2238,6 +2251,8 @@ define(
                     || allProperities['noHead']
                     || allProperities['breakLine']
                     || allProperities['columnResizable']
+                    || allProperities['colPadding']
+                    || allProperities['fontSize']
                 ) {
                     initMinColsWidth(table);
                     initColsWidth(table);
@@ -2285,7 +2300,8 @@ define(
                     // 重绘时触发onselect事件
                     switch (table.select) {
                         case 'multi':
-                            table.fire('select',{selectedIndex : []} );
+                            table.selectedIndex = [];
+                            table.fire('select',{ selectedIndex : table.selectedIndex });
                             break;
                     }
                 }
@@ -2315,6 +2331,18 @@ define(
              */
             adjustWidth : function(){
                 handleResize(this);
+            },
+
+            /**
+             * 设置Table的datasource，并强制更新
+             *
+             * @public
+             */
+            setDatasource : function(datasource){
+                this.datasource = datasource;
+                var record = { name: 'datasource' };
+
+                this.repaint([record], { datasource: record });
             },
 
             /**
