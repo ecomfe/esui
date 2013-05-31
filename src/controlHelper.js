@@ -317,6 +317,8 @@ define(
             if (control.viewContext) {
                 control.viewContext.remove(control);
             }
+
+            control.renderOptions = null;
         };
 
         /**

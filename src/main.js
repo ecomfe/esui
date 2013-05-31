@@ -391,11 +391,10 @@ define(
                     // 绑定视图环境和控件主元素
                     controlOptions.viewContext = options.viewContext;
                     // 容器类控件会需要渲染自己的`innerHTML`，
-                    // 如果有传`valueReplacer`，就要给控件，
-                    // 以便`initChildren`的时候用同样的`valueReplacer`
-                    if (options.valueReplacer) {
-                        controlOptions.valueReplacer = options.valueReplacer;
-                    }
+                    // 这种渲染使用`initChildren`，再调用`main.init`，
+                    // 因此需要把此处`main.init`的参数交给控件，方便再带回来，
+                    // 以便`properties`、`valueReplacer`之类的能保留
+                    controlOptions.renderOptions = options;
                     controlOptions.main = element;
 
                     // 创建控件
