@@ -933,9 +933,13 @@ define(
             
             mark.style.top = table.top + 'px';
             mark.style.left = left + 'px';
-            mark.style.height = table.htmlHeight 
-                                - table.top 
-                                + lib.page.getScrollTop() + 'px';
+
+            var height = table.htmlHeight
+                        - table.top
+                        + lib.page.getScrollTop();
+            var mainHeight = table.main.offsetHeight;
+            height = mainHeight > height ? height : mainHeight;
+            mark.style.height = height + 'px';
         }
         
         /**
