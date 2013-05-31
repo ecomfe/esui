@@ -180,7 +180,7 @@
  */
 .input-outter-size (@height, @width, @tb-padding, @lr-padding, @tb-border, @lr-border) {
     height: @height;
-    line-height: @height;
+    line-height: 1;
     width: @width;
     *height: (@height - @tb-padding - @tb-border);
     *line-height: (@height - @tb-padding - @tb-border);
@@ -190,7 +190,7 @@
 
 .input-outter-size-height (@height, @tb-padding, @tb-border) {
     height: @height;
-    line-height: @height;
+    line-height: 1;
     *height: (@height - @tb-padding - @tb-border);
     *line-height: (@height - @tb-padding - @tb-border);
     .box-sizing(border-box);
