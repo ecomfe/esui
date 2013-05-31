@@ -103,6 +103,17 @@ define(
             ignoreStates: Control.prototype.ignoreStates.concat('readOnly'),
 
             /**
+             * 获得应当获取焦点的元素
+             *
+             * @return {HTMLElement}
+             * @protected
+             * @inner
+             */
+            getFocusTarget: function () {
+                return this.main;
+            },
+
+            /**
              * 获取输入控件的值
              * 
              * @return {string} 
