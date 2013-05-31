@@ -11,6 +11,7 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
+        var ValidityLabel = require('./Validity');
         var main = require('./main');
 
         /**
@@ -49,34 +50,6 @@ define(
             return validity;
         }
 
-        /**
-         * 设置验证信息容器的class
-         *
-         * @param {InputControl} control 控件实例
-         * @param {HTMLElement} label 验证信息容器
-         * @param {string} validState 验证结果状态字符串
-         * @return {string}
-         * @inner
-         */
-        function setValidityLabelClass(control, label, validState) {
-            var classPrefix = main.getConfig('uiClassPrefix');
-            var classes = [].concat(
-                classPrefix + '-validity',
-                helper.getPartClasses(control, 'validity'),
-                classPrefix + '-validity-' + validState,
-                helper.getPartClasses(control, 'validity-' + validState)
-            );
-            if (control.isHidden()) {
-                classes = classes.concat(
-                    classPrefix + '-hidden',
-                    classPrefix + '-validity-hidden',
-                    helper.getPartClasses(control, 'validity-hidden')
-                );
-            }
-
-            label.className = classes.join(' ');
-        }
-        
         /**
          * 输入控件基类
          * 
@@ -285,7 +258,7 @@ define(
              * 获取显示验证信息用的元素
              *
              * @param {boolean=} 指定在没有找到已经存在的元素的情况下，不要额外创建
-             * @return {HTMLElement}
+             * @return {Validity} 返回一个已经放在DOM正确位置的`Validity`控件
              * @public
              */
             getValidityLabel: function (dontCreate) {
@@ -293,24 +266,24 @@ define(
                     return null;
                 }
 
-                var label = lib.g(this.validityLabel);
+                var label = this.validityLabel
+                    && this.viewContext.get(this.validityLabel);
 
                 if (!label && !dontCreate) {
-                    label = document.createElement('label');
-                    label.id = helper.getId(this, 'validity');
-                    if (lib.isInput(this.main)) {
-                        lib.setAttribute(label, 'for', this.main.id);
+                    var options = {
+                        id: this.id + '-validity',
+                        target: this,
+                        focusTarget: this.getFocusTarget(),
+                        viewContext: this.viewContext
+                    };
+                    label = new ValidityLabel(options);
+                    if (this.main.nextSibling) {
+                        label.insertBefore(this.main.nextSibling);
                     }
                     else {
-                        var nestedInput = 
-                            this.main.getElementsByTagName('input')[0]
-                            || this.main.getElementsByTagName('textarea')[0]
-                            || this.main.getElementsByTagName('select')[0];
-                        if (nestedInput && nestedInput.type !== 'hidden') {
-                            lib.setAttribute(label, 'for', nestedInput.id);
-                        }
+                        label.appendTo(this.main.parentNode);
                     }
-                    lib.insertAfter(label, this.main);
+
                     this.validityLabel = label.id;
                 }
 
@@ -330,25 +303,7 @@ define(
                     return;
                 }
 
-                setValidityLabelClass(this, label, validity.getValidState());
-
-                if (validity.isValid()) {
-                    label.innerHTML = '';
-                }
-                else {
-                    var message = validity.getCustomMessage();
-                    if (!message) {
-                        var states = validity.getStates();
-                        for (var i = 0; i < states.length; i++) {
-                            var state = states[i];
-                            if (!state.getState()) {
-                                message = state.getMessage();
-                                break;
-                            }
-                        }
-                    }
-                    label.innerHTML = lib.encodeHTML(message);
-                }
+                label.set('validity', validity);
             },
 
             /**
@@ -361,7 +316,7 @@ define(
                 
                 var validityLabel = this.getValidityLabel(true);
                 if (validityLabel) {
-                    lib.removeNode(validityLabel);
+                    validityLabel.dispose();
                 }
                 Control.prototype.dispose.apply(this, arguments);
             }

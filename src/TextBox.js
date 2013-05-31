@@ -84,6 +84,10 @@ define(
             this.setProperties(properties);
         };
 
+        TextBox.prototype.getFocusTarget = function () {
+            return lib.g(this.inputId);
+        };
+
         /**
          * 将特殊的按键分发为事件
          *

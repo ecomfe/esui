@@ -162,7 +162,11 @@ define(
              */
             appendTo: function (wrap) {
                 wrap.appendChild(this.main);
-                this.render();
+                if (helper.isInStage(this, 'NEW')
+                    || helper.isInStage(this, 'INITED')
+                ) {
+                    this.render();
+                }
             },
 
             /**
@@ -173,7 +177,11 @@ define(
              */
             insertBefore: function (reference) {
                 reference.parentNode.insertBefore(this.main, reference);
-                this.render();
+                if (helper.isInStage(this, 'NEW')
+                    || helper.isInStage(this, 'INITED')
+                ) {
+                    this.render();
+                }
             },
 
             /**
