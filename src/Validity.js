@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 验证信息显示控件
+ * @author otakustay
+ */
+
 define(
     // 你说为啥要有这么个控件？因为有2货喜欢在验证提示里放别的控件！
     // 你说为啥这东西不继承`Label`？因为有2货要往里放控件！

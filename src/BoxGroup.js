@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 选择框组
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var lib = require('./lib');

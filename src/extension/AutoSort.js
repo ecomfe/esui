@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 表格自动排序扩展
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var Table = require('../Table');

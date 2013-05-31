@@ -1,3 +1,11 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 自定义数据扩展
+ * @author otakustay
+ */
+
 define(
     function (require) {
         var Extension = require('../Extension');
