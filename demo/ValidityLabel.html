@@ -16,13 +16,19 @@
             [
                 'esui', 
                 'esui/TextBox',
+                'esui/Validity',
                 'esui/validator/RequiredRule',
                 'css!esui/css/main.css',
                 'css!esui/css/TextBox.css'
             ],
-            function (ui, TextBox) {
+            function (ui, TextBox, ValidityLabel) {
+                var validityLabel = new ValidityLabel({
+                    id: 'test-validity'
+                });
+                validityLabel.appendTo(document.getElementById('container'));
                 var textbox = new TextBox({
                     id: 'test',
+                    validityLabel: 'test-validity',
                     required: true,
                     requiredErrorMessage: '不能为空 <a href="http://www.baidu.com">百度一下</a>'
                 });

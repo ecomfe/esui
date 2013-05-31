@@ -272,8 +272,6 @@ define(
                 if (!label && !dontCreate) {
                     var options = {
                         id: this.id + '-validity',
-                        target: this,
-                        focusTarget: this.getFocusTarget(),
                         viewContext: this.viewContext
                     };
                     label = new ValidityLabel(options);
@@ -303,7 +301,12 @@ define(
                     return;
                 }
 
-                label.set('validity', validity);
+                var properties = {
+                    target: this, 
+                    focusTarget: this.getFocusTarget(),
+                    validity: validity
+                };
+                label.setProperties(properties);
             },
 
             /**

@@ -38,19 +38,6 @@ define(
         };
 
         /**
-         * 初始化结构
-         *
-         * @protected
-         */
-        Validity.prototype.initStructure = function () {
-            if (this.main.nodeName.toLowerCase() === 'label') {
-                if (this.focusTarget && this.focusTarget.id) {
-                    lib.setAttribute(this.main, 'for', this.focusTarget.id);
-                }
-            }
-        };
-
-        /**
          * 获取元素的全部class
          *
          * @param {Validity} label 控件实例
@@ -58,21 +45,31 @@ define(
          * @inner
          */
         function getClasses(label, state) {
-            var classes = [].concat(
-                helper.getPartClasses(label),
-                helper.getPartClasses(label.target, 'validity')
-            );
-            if (state) {
+            var classes = helper.getPartClasses(label);
+            if (label.target) {
                 classes = classes.concat(
-                    helper.getPartClasses(label, state),
-                    helper.getPartClasses(label.target, 'validity-' + state)
+                    helper.getPartClasses(label.target, 'validity')
                 );
             }
-            if (label.target.isHidden() || label.isHidden()) {
+            if (state) {
                 classes = classes.concat(
-                    helper.getStateClasses(label, 'hidden'),
-                    helper.getPartClasses(label.target, 'validity-hidden')
+                    helper.getPartClasses(label, state)
                 );
+                if (label.target) {
+                    classes = classes.concat(
+                        helper.getPartClasses(label.target, 'validity-' + state)
+                    );
+                }
+            }
+            if ((label.target && label.target.isHidden()) || label.isHidden()) {
+                classes = classes.concat(
+                    helper.getStateClasses(label, 'hidden')
+                );
+                if (label.target) {
+                    classes = classes.concat(
+                        helper.getPartClasses(label.target, 'validity-hidden')
+                    );
+                }
             }
             return classes;
         }
@@ -95,6 +92,26 @@ define(
          */
         Validity.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
+            {
+                name: 'target',
+                paint: function (label, target) {
+                    var validState = label.validity
+                        ? label.validity.getValidState()
+                        : '';
+                    var classes = getClasses(label, validState);
+                    label.main.className = classes.join(' ');
+                }
+            },
+            {
+                name: 'focusTarget',
+                paint: function (label, focusTarget) {
+                    if (label.main.nodeName.toLowerCase() === 'label'
+                        && (focusTarget && focusTarget.id)
+                    ) {
+                        lib.setAttribute(label.main, 'for', focusTarget.id);
+                    }
+                }
+            },
             {
                 name: 'validity',
                 paint: function (label, validity) {
@@ -146,9 +163,8 @@ define(
             Control.prototype.dispose.apply(this, arguments);
         };
 
-        // 这个控件是不能从`main.init()`生成的，只能通过`InputControl`直接构建出来，
-        // 所以不在`main`下注册
         lib.inherits(Validity, Control);
+        require('./main').register(Validity);
         return Validity;
     }
 );

@@ -564,7 +564,7 @@ define(
                 }
 
                 // 临时索引，不能直接修改`changesIndex`，会导致子类的逻辑错误
-                var index = changesIndex ? lib.clone(changesIndex) : {};
+                var index = lib.extend({}, changesIndex);
                 for (var i = 0; i < painters.length; i++) {
                     var painter = painters[i];
                     var propertyNames = [].concat(painter.name);
