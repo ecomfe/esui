@@ -14,7 +14,7 @@
             <h3>普通</h3>
             <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
             <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>
-            <div data-ui="type:Table;id:myTable;"></div>
+            <div data-ui="type:Table;id:myTable;" data-ui-extension-sort-type="AutoSort"></div>
         </div>
         <script>
         var data = [
@@ -37,6 +37,7 @@
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',
+                'esui/extension/AutoSort',
                 'css!esui/css/main.css',
                 'css!esui/css/Table.css',
                 'css!esui/css/Tip.css'
@@ -119,9 +120,9 @@
                     this.getSubrow( arg.index ).innerHTML = '';
                 };
 
-                myTable.onselect = function ( arg ) {
-                    alert(arg.selectedIndex.toString());
-                };
+                // myTable.onselect = function ( arg ) {
+                //     alert(arg.selectedIndex.toString());
+                // };
 
                 ui.get('disabledBtn').onclick = function () {
                     ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
@@ -149,41 +150,41 @@
                    //myTable.set('width', width);
                 };
 
-                myTable.onsort = function ( arg ) {
-                    var orderBy = arg.field.field;
-                    var lib = require('esui/lib');
-                    var listData = lib.clone( data );
-                    if (arg.order) {
-                        listData.sort( function (a, b) {
-                            var compareResult;
-                            switch ( orderBy ) {
-                            case 'name':
-                                compareResult = a.name.localeCompare( b.name );
-                                break;
+                // myTable.onsort = function ( arg ) {
+                //     var orderBy = arg.field.field;
+                //     var lib = require('esui/lib');
+                //     var listData = lib.clone( data );
+                //     if (arg.order) {
+                //         listData.sort( function (a, b) {
+                //             var compareResult;
+                //             switch ( orderBy ) {
+                //             case 'name':
+                //                 compareResult = a.name.localeCompare( b.name );
+                //                 break;
 
-                            case 'sex':
-                                compareResult = a.sex > b.sex ;
-                                break;
-                            }
+                //             case 'sex':
+                //                 compareResult = a.sex > b.sex ;
+                //                 break;
+                //             }
                             
-                            if ( arg.order == 'desc' ) {
-                                compareResult = -compareResult;
-                            }
+                //             if ( arg.order == 'desc' ) {
+                //                 compareResult = -compareResult;
+                //             }
                             
-                            return compareResult;
-                        } );    
-                    }
+                //             return compareResult;
+                //         } );    
+                //     }
 
-                    myTable.set('datasource', listData);
-                };
+                //     myTable.set('datasource', listData);
+                // };
 
-                function linkClickHandler(arg) {
-                    alert('link:' + arg.args.index);
-                }
+                // function linkClickHandler(arg) {
+                //     alert('link:' + arg.args.index);
+                // }
 
-                function buttonClickHandler(arg) {
-                    alert('button:' + arg.args.index);
-                }
+                // function buttonClickHandler(arg) {
+                //     alert('button:' + arg.args.index);
+                // }
             }
         );
         </script>
