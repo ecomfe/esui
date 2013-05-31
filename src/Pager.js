@@ -27,18 +27,24 @@ define(
          */
         function getMainHTML(pager) {
             var tpl = [
-                '<div id="${selectWrapperId}" class="${selectWrapperClass}">',
-                    '<span id="${labelId}" class="${labelClass}">${labelText}',
-                    '</span>',
-                    '<div data-ui="type:Select;childName:select;',
+                '<div id="${pagerWrapperId}" class="${pagerWrapperClass}">',
+                    '<div id="${selectWrapperId}" ',
+                    'class="${selectWrapperClass}">',
+                        '<span id="${labelId}" class="${labelClass}">',
+                        '${labelText}</span>',
+                        '<div data-ui="type:Select;childName:select;',
                         'id:${selectId};width:40;"></div>',
-                '</div>',
-                '<ul id="${mainId}" class="${mainClass}"></ul>'
+                    '</div>',
+                    '<ul id="${mainId}" class="${mainClass}"></ul>',
+                '</div>'
             ];
 
             return lib.format(
                 tpl.join('\n'),
                 {
+                    pagerWrapperId: helper.getId(pager, 'pager-wrapper'),
+                    pagerWrapperClass:
+                        helper.getPartClasses(pager, pager.layout)[0],
                     selectWrapperId: helper.getId(pager, 'select-wrapper'),
                     selectWrapperClass:
                         helper.getPartClasses(
@@ -266,6 +272,41 @@ define(
         }
 
         /**
+         * 绘制Pager控件布局结构
+         *
+         * @inner
+         * @param {Pager} pager Pager控件实例
+         * @param {string} style 布局样式
+         */
+        function repaintLayout(pager, style) {
+            /**
+             * 获取class的集合
+             *
+             * @param{...string} style 布局类型
+             * @return{Array.<string>} 布局类型集合
+             */
+            function getClasses() {
+                var classes = [];
+                for (var i = 0, len = arguments.length; i < len; i++) {
+                    classes.push(helper.getPartClasses(pager, arguments[i])[0]);
+                }
+
+                return classes;
+            }
+
+            var pagerWrapper = lib.g(helper.getId(pager, 'pager-wrapper'));
+            lib.removeClasses(
+                pagerWrapper,
+                getClasses(
+                    'alignLeft', 'alignLeftReversed',
+                    'alignRight', 'alignRightReversed',
+                    'distributed', 'distributedReversed'
+                )
+            );
+            lib.addClass(pagerWrapper, helper.getPartClasses(pager, style)[0]);
+        }
+
+        /**
          * 页码点击事件触发
          *
          * @inner
@@ -414,7 +455,8 @@ define(
                     forwardCount: 3,
                     backText: '上一页',
                     forwardText: '下一页',
-                    urlTemplate: ''
+                    urlTemplate: '',
+                    layout: 'alignLeft'
                 };
 
                 lib.extend(properties, this.defaultProperties, options);
@@ -482,6 +524,10 @@ define(
                             showSelect(pager);
                         }
                     }
+                },
+                {
+                    name: 'layout',
+                    paint: repaintLayout
                 },
                 {
                     name: [

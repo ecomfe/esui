@@ -90,6 +90,15 @@
 
                 pager.set('urlTemplate', 'Pager.html?page=${page}&pageSize=${pageSize}');
 
+                // pager.set('layout', 'alignLeft');
+                // pager.set('layout', 'alignLeftReverse');
+                // pager.set('layout', 'alignRight');
+                // pager.set('layout', 'alignRightReverse');
+                // pager.set('layout', 'distributed');
+                // pager.set('layout', 'distributedReverse');
+                pager.set('layout', 'something');
+
+
                 pager.onchangepage = function () {
                     document.getElementById('message').innerHTML += '<p>Change page to ' + this.get('page') + '</p>';
                 }

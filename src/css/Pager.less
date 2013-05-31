@@ -11,11 +11,10 @@
 .ui-pager-label {
     color: @pager-text-color;
     text-align: center;
-    vertical-align: top;
-    .inline-block();
 }
 
 .ui-pager-select-wrapper {
+    margin-left: 5px;
     .inline-block();
 }
 
@@ -91,4 +90,32 @@
 
 .ui-pager-item-omit {
     line-height: 36px;
+}
+
+/*
+ * 布局皮肤样式
+ */
+/* 左侧正序、左侧逆序 */
+.ui-pager-alignLeft, .ui-pager-alignLeftReverse {
+    float: left;
+}
+/* 左侧逆序 */
+.ui-pager-alignLeftReverse .ui-pager-select-wrapper {
+    float: right;
+}
+/* 右侧正序、右侧逆序 */
+.ui-pager-alignRight, .ui-pager-alignRightReverse {
+    float: right;
+}
+/* 右侧逆序 */
+.ui-pager-alignRightReverse .ui-pager-select-wrapper {
+    float: right;
+}
+/* 分散正序 */
+.ui-pager-distributed .ui-pager-main {
+    float: right;
+}
+/* 分散逆序 */
+.ui-pager-distributedReverse .ui-pager-select-wrapper {
+    float: right;
 }
