@@ -29,7 +29,7 @@ define(
              * @type {Object}
              */
             var DEFAULT_OPTION = {
-                noDataHtml : 'text',
+                noDataHtml : '没有数据',
                 followHead : false,
                 sortable : false,
                 columnResizable : false,
@@ -1136,6 +1136,8 @@ define(
             }
         }
         
+        var noDataHtmlTpl = '<div style="${style}" class="${className}">'
+                            + '${html}</div>'
         /**
          * 获取表格主体的html
          * 
@@ -1148,7 +1150,16 @@ define(
             var html = [];
             
             if (!dataLen) {
-                return table.noDataHtml;
+                return lib.format(
+                    noDataHtmlTpl,
+                    {
+                        style : table.bodyHeight
+                                ? 'height:' + (table.bodyHeight - 1) + 'px;'
+                                : '',
+                        className: getClass(table, 'body-nodata'),
+                        html: table.noDataHtml
+                    }
+                );
             }
 
             for (var i = 0; i < dataLen; i++) {
