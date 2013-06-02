@@ -284,7 +284,7 @@ define(
             var fields = table.realFields;
             var result = [];
             var fontSize = table.fontSize;
-            var extraWidth = table.colPadding * 2;
+            var extraWidth = table.colPadding * 2 + 5;
 
             if (!table.noHead) {
 
@@ -294,7 +294,8 @@ define(
                     if (!width && !field.breakLine) {
                         width = field.title.length * fontSize
                                 + extraWidth
-                                + (field.sortable ? table.sortWidth : 0)
+                                + (table.sortable && field.sortable
+                                    ? table.sortWidth : 0)
                                 + (field.tip ? table.tipWidth : 0);
 
                     }
@@ -712,9 +713,18 @@ define(
             if (table.isDraging || table.dragReady) {
                 return;
             }
-
-            table.sortReady = 1;
+            
             helper.addPartClasses(table, 'hcell-hover', element);
+
+            if (table.sortable) {
+                table.sortReady = 1;
+                var index = getAttr(element, 'index');
+                var field = table.realFields[index];
+
+                if (field && field.sortable) {
+                    helper.addPartClasses(table, 'hcell-sort-hover', element);
+                }
+            }
         }
         
         /**
@@ -728,8 +738,12 @@ define(
         }
 
         function titleOut(table, element) {
-            table.sortReady = 0;
             helper.removePartClasses(table, 'hcell-hover', element);
+
+            if (table.sortable) {
+                table.sortReady = 0;
+                helper.removePartClasses(table, 'hcell-sort-hover', element);
+            }
         }
 
         /**
@@ -740,7 +754,7 @@ define(
          */
         function titleClickHandler(element, e) {
             var table = this;
-            if (table.sortReady) { // 避免拖拽触发排序行为
+            if (table.sortable && table.sortReady) { // 避免拖拽触发排序行为
                 var index = getAttr(element, 'index');
                 var field = table.realFields[index];
                 if (field.sortable) {
@@ -770,6 +784,10 @@ define(
          * @return {Function}
          */
         function headMoveHandler(table, e) {
+            if(!table.columnResizable){
+                return;
+            }
+
             var dragClass = 'startdrag';
             var range = 8; // 可拖拽的单元格边界范围
             if (table.isDraging) {
@@ -836,6 +854,10 @@ define(
          * @return {Function}
          */
         function dragStartHandler(table, e) {
+            if(!table.columnResizable){
+                return;
+            }
+            
             var dragClass = getClass(table, 'startdrag');
             var tar = e.target;
             
@@ -1103,17 +1125,14 @@ define(
          */
         function updateBodyHeight(table, tBody) {
             var style = tBody.style;
-
+            style.overflowX = 'hidden';
+            style.overflowY = 'auto';
             // 如果设置了表格体高度
             // 表格需要出现横向滚动条
             if (table.bodyHeight) {
                 style.height = table.bodyHeight + 'px';
-                style.overflowX = 'hidden';
-                style.overflowY = 'auto';
             } else {
                 style.height = 'auto';
-                style.overflowX = 'visible';
-                style.overflowY = 'visible';
             }
         }
         
@@ -1672,7 +1691,7 @@ define(
                 if (!table.followHead) {
                     return ;
                 }
-
+                var main = table.main;
                 var scrollTop = lib.page.getScrollTop();
                 var posStyle = lib.ie && lib.ie < 7 ? 'absolute' : 'fixed';
                 var mainHeight = table.main.offsetHeight;
@@ -1732,7 +1751,7 @@ define(
 
             };
 
-            lib.on(window, 'scroll', table.topReseter);    
+            lib.on(window, 'scroll', table.topReseter);
         }
         
         /**
@@ -2247,6 +2266,7 @@ define(
 
                 if (allProperities['fields']
                     || allProperities['select']
+                    || allProperities['sortable']
                 ) {
                     initFields(table);
                     fieldsChanged = true;
@@ -2254,7 +2274,6 @@ define(
                 if (fieldsChanged
                     || allProperities['noHead']
                     || allProperities['breakLine']
-                    || allProperities['columnResizable']
                     || allProperities['colPadding']
                     || allProperities['fontSize']
                 ) {
