@@ -14,7 +14,7 @@
     .border-radius(3px, 3px, 3px, 3px);
     position: absolute;
     width: 660px;
-    z-index: 200;
+    z-index: @dialog-z-index;
 
     .ui-dialog-head {
         .background("esui-dialog-head-bg.png", repeat);
@@ -23,6 +23,8 @@
         height: 26px;
         position: relative;
         width: 100%;
+        margin: 0;
+        padding: 0;
         .ui-dialog-close-icon {
             .background("esui-dialog-head-close.png");
             height: 13px;
@@ -113,6 +115,6 @@
     left: 0;
     background: #333;
     opacity: .2;
-    filter:alpha(opacity=20);
-    z-index:50;
+    filter: alpha(opacity=20);
+    z-index: @mask-z-index;
 }
