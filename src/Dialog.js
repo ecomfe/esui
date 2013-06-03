@@ -445,7 +445,7 @@ define(
                     width: 600,           // 对话框的宽度
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
-                    foot: ''
+                    defaultFoot: ''
                         + '<div data-ui="type:Button;id:btnFootOk;'
                         + 'childName:btnOk;'
                         + 'skin:spring;height:26;width:50;">确定</div>'
@@ -467,7 +467,17 @@ define(
                     options.mask = false;
                 }
 
+                if (options.needFoot === 'false') {
+                    options.needFoot = false;
+                }
+
                 lib.extend(properties, options);
+
+                if (properties.needFoot) {
+                    if (!properties.foot) {
+                        properties.foot = properties.defaultFoot;
+                    }
+                }
                 this.setProperties(properties);
             },
 
@@ -486,7 +496,9 @@ define(
                 this.main.style.left = '-10000px';
                 createHead(this, this.roles['title']);
                 createBF(this, 'body', this.roles['content']);
-                createBF(this, 'foot', this.roles['foot']);
+                if (this.needFoot) {
+                    createBF(this, 'foot', this.roles['foot']);
+                }
 
                 // 初始化控件主元素上的行为
                 if (this.closeButton) {
@@ -572,7 +584,9 @@ define(
                         if (value == null) {
                             dialog.needFoot = false;
                             var foot = dialog.getFoot();
-                            dialog.removeChild(foot);
+                            if (foot) {
+                                dialog.removeChild(foot);
+                            }
                         }
                         else {
                             dialog.needFoot = true;
