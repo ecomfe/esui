@@ -17,6 +17,7 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
+        var ui = require('./main');
 
         var maskIdPrefix = 'ctrlMask';
 
@@ -43,42 +44,29 @@ define(
             var els = main.getElementsByTagName('*');
             var len = els.length;
             var roleName;
-            var content;
             var roles = {};
 
             while (len--) {
                 roleName = els[len].getAttribute('data-role');
                 if (roleName) {
-                    content = els[len].innerHTML;
                     // 不再校验，如果设置了相同的data-role，
                     // 直接覆盖
-                    roles[roleName] = content;
+                    roles[roleName] = els[len];
                 }
             }
 
-            options.title = roles.title || options.title;
-            options.content = roles.content || options.content;
-
-            if (options.needFoot === true) {
-                if (roles.foot) {
-                    options.foot = roles.foot;
-                }
-            }
-            else if (options.needFoot === false) {
-                options.foot = null;
-            }
+            options.roles = roles;
 
         }
-
 
         /**
          * 构建对话框标题栏
          * 
+         * @param {ui.Dialog} 控件对象
+         * @param {HTMLElement} mainDOM head主元素
          * @inner
          */
-        function getHeadHtml(control) {
-            var me = control;
-            var head = 'head';
+        function createHead(control, mainDOM) {
             var title = 'title';
             var close = 'close-icon';
 
@@ -86,69 +74,86 @@ define(
                 '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
             var closeIcon = '';
 
-            if (me.closeButton) {
+            if (control.closeButton) {
                 closeIcon = lib.format(
                     closeTpl,
                     {
-                        'clsId': helper.getId(me, close),
-                        'clsClass': helper.getPartClasses(me, close).join(' ')
+                        'clsId': helper.getId(control, close),
+                        'clsClass':
+                             helper.getPartClasses(control, close).join(' ')
                     }
                 );
             }
 
             var headTpl = ''
-                + '<div id="${headId}" class="${headClass}">'
-                +   '<div id="${titleId}" class="${titleClass}">'
-                +   '${title}'
-                +   '</div>'
-                +   '${closeIcon}'
-                + '</div>';
+                + '<div id="${titleId}" class="${titleClass}">'
+                + '</div>'
+                + '${closeIcon}';
 
             var headClasses = [].concat(
-                helper.getPartClasses(me, head)
+                helper.getPartClasses(control, 'head')
             );
 
             var headData = {
-                'headId':  helper.getId(me, head),
-                'headClass':  headClasses.join(' '),
-                'titleId':  helper.getId(me, title),
-                'titleClass':  helper.getPartClasses(me, title).join(' '),
-                'title': me.title,
+                'titleId':  helper.getId(control, title),
+                'titleClass':  helper.getPartClasses(control, title).join(' '),
                 'closeIcon': closeIcon
             };
 
             var headHtml = lib.format(headTpl, headData);
 
-            var headPanelHtml = ''
-                + '<div data-ui="type:Panel;childName:head">'
-                + headHtml
-                + '</div>';
+            if (mainDOM) {
+                control.title = mainDOM.innerHTML;
+            }
+            else {
+                mainDOM = document.createElement('div');
+                control.main.appendChild(mainDOM);
+            }
 
-            return headPanelHtml;
+            mainDOM.innerHTML = headHtml;
+            lib.addClasses(mainDOM, headClasses);
+            var properties = {
+                main: mainDOM
+            };
+
+            var panel = ui.create('Panel', properties);
+            panel.render();
+            control.addChild(panel, 'head');
+            return panel;
 
         }
 
         /**
          * 构建对话框主内容和底部内容
          *
-         * @param {string} type foot | body 
+         * @param {ui.Dialog} 控件对象
+         * @param {string} type foot | body
+         * @param {HTMLElement} mainDOM body或foot主元素
          * @inner
          */
-        function getBFHtml(control, type) {
-            var tpl = ''
-                + '<div class="${panelClass}" '
-                + 'data-ui="type:Panel;childName:${childName}">'
-                + '</div>';
+        function createBF(control, type, mainDOM) {
+            if (mainDOM) {
+                control.content = mainDOM.innerHTML;
+            }
+            else {
+                mainDOM = document.createElement('div');
+                control.main.appendChild(mainDOM);
+            }
 
-            var data = {
-                'panelClass':
-                    helper.getPartClasses(control, type + '-panel').join(' '),
-                'childName': type
+            lib.addClasses(
+                mainDOM,
+                helper.getPartClasses(control, type + '-panel')
+            );
+            var properties = {
+                main: mainDOM
             };
 
-            return lib.format(tpl, data);
-
+            var panel = ui.create('Panel', properties);
+            panel.render();
+            control.addChild(panel, type);
+            return panel;
         }
+
 
         /**
          * 点击头部关闭按钮时事件处理函数
@@ -206,7 +211,7 @@ define(
          */
         function initDragHandler(dialog, unbind) {
             var me = dialog;
-            var head = lib.g(helper.getId(me, 'head'));
+            var head = dialog.getChild('head').main;
             
             getDialogHeadDownHandler = lib.bind(dialogHeadDownHandler, me);
 
@@ -307,7 +312,7 @@ define(
         function dialogHeadUpHandler(e) {
             //卸载事件
             lib.un(document, 'mousemove', getDialogHeadMoveHandler);
-            var head = lib.g(helper.getId(this, 'head'));
+            var head = this.getHead().main;
             lib.un(head, 'mouseup', getDialogHeadUpHandler);
         }
 
@@ -316,7 +321,7 @@ define(
          * 显示遮盖层
          * @param {ui.Dialog} dialog 控件对象
          */
-        function showMask(dialog) {
+        function showMask(dialog, zIndex) {
             var mask = getMask(dialog);
             var clazz = [];
             var maskClass = helper.getPartClasses(dialog, 'mask').join(' ');
@@ -326,6 +331,7 @@ define(
 
             mask.className = clazz.join(' ');
             mask.style.display = 'block';
+            mask.style.zIndex = zIndex;
             dialog.curMaskListener = lib.curry(maskResizeHandler, dialog);
             lib.on(window, 'resize', dialog.curMaskListener);            
         }
@@ -457,27 +463,18 @@ define(
              * 初始化DOM结构，仅在第一次渲染时调用
              */
             initStructure: function () {
-                var ui = require('./main');
                 var main = this.main;
                 // 判断main是否在body下，如果不在，要移到body下
-                if (main.parentNode.nodeName.toLowerCase() !== 'body') {
-                    main.setAttribute(
-                        ui.getConfig('instanceAttr'),
-                        helper.getGUID()
-                    );
-                    var newMain = this.createMain();
-                    document.body.appendChild(newMain);
-                    main.parentNode.removeChild(main);
-                    this.main = newMain;
+                if (main.parentNode
+                    && main.parentNode.nodeName.toLowerCase() !== 'body') {
+                    document.body.appendChild(main);
                 }
 
                 // 设置样式
                 this.main.style.left = '-10000px';
-                this.main.innerHTML = ''
-                    + getHeadHtml(this)
-                    + getBFHtml(this, 'body')
-                    + getBFHtml(this, 'foot');
-                this.initChildren(this.main);
+                createHead(this, this.roles['title']);
+                createBF(this, 'body', this.roles['content']);
+                createBF(this, 'foot', this.roles['foot']);
 
                 // 初始化控件主元素上的行为
                 if (this.closeButton !== false) {
@@ -486,7 +483,8 @@ define(
                         this,
                         close,
                         'click',
-                        lib.curry(closeClickHandler, this));
+                        lib.curry(closeClickHandler, this)
+                    );
                 }
             },
 
@@ -644,8 +642,26 @@ define(
                 this.setWidth(this.width);
                 resizeHandler(this);
 
+                // 要把dialog置顶
+                var zIndex = 1203;
+                if (this.alwaysTop) {
+                    // 查找当前dialog个数
+                    var rawElements = document.body.children;
+                    var dialogNum = 0;
+                    for (var i = 0, len = rawElements.length; i < len; i++) {
+                        if (rawElements[i].nodeType === 1) {
+                            if (lib.hasClass(rawElements[i], 'ui-dialog')) {
+                                dialogNum ++;
+                            }
+                        }
+                    }
+
+                    zIndex += 2*dialogNum;
+                }
+                this.main.style.zIndex = zIndex;
+
                 if (mask) {
-                    showMask(this);
+                    showMask(this, zIndex - 1);
                 }
 
                 this.fire('show');
@@ -798,6 +814,7 @@ define(
             properties.closeButton = false;
             properties.mask = true;
             properties.main = main;
+            properties.alwaysTop = true;
 
             var type = properties.type;
             properties.type = null;
@@ -879,6 +896,7 @@ define(
             properties.closeButton = false;
             properties.mask = true;
             properties.main = main;
+            properties.alwaysTop = true;
 
             var type = properties.type;
             properties.type = null;

@@ -1,19 +1,123 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Dialog - ESUI Demo</title>
-        <script src="loader/esl.js"></script>
-        <script src="loader/config.js"></script>
-        <link rel="stylesheet" href="demo.css" />
-    </head>
-    <body>
-        <header>Dialog</header>
-        <div class="container">
-            <button id="trigger-alert">点我电你哦！</button>
-            <button id="trigger-confirm">点我没事！</button>
-            <button id="trigger-static">点我点我！</button>
+<head>
+    <meta charset="utf-8" />
+    <title>TextBox - ESUI Demo</title>
+    <script src="loader/esl.js"></script>
+    <script src="loader/config.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="demo.css" />
+    <style>
+        label {
+            display: block;
+        }
+        .invalid {
+            color: #f00;
+        }
+    </style>
+    <script>
+        var ready = (function () {
+            var list = [];
+            return function (callback) {
+                if (callback) {
+                    list.push(callback);
+                }
+                else {
+                    for (var i = 0; i < list.length; i++) {
+                        list[i]();
+                    }
+                    ready = function (callback) {
+                        callback();
+                    };
+                }
+            }
+        }());
+    </script>
+</head>
+<body>
+    <h1>TextBox</h1>
+    <div id="page">
+        <ul id="navigator">
+            <li><a href="Panel.html">Panel</a></li>
+            <li><a href="Label.html">Label</a></li>
+            <li><a href="Link.html">Link</a></li>
+            <li><a href="Button.html">Button</a></li>
+            <li><a href="Tip.html">Tip</a></li>
+            <li><a href="TextBox.html">TextBox</a></li>
+            <li><a href="BoxControl.html">BoxControl</a></li>
+            <li><a href="Select.html">Select</a></li>
+            <li><a href="MonthView.html">MonthView</a></li>
+            <li><a href="Calendar.html">Calendar</a></li>
+            <li><a href="RangeCalendar.html">RangeCalendar</a></li>
+            <li><a href="Region.html">Region</a></li>
+            <li><a href="Schedule.html">Schedule</a></li>
+            <li><a href="Crumb.html">Crumb</a></li>
+            <li><a href="CommandMenu.html">CommandMenu</a></li>
+            <li><a href="Wizard.html">Wizard</a></li>
+            <li><a href="Tab.html">Tab</a></li>
+            <li><a href="Pager.html">Pager</a></li>
+            <li><a href="Sidebar.html">Sidebar</a></li>
+            <li class="cur"><a href="Dialog.html">Dialog</a></li>
+            <li><a href="Tree.html">Tree</a></li>
+            <li><a href="Table.html">Table</a></li>
+        </ul>
+        <div id="main">
+            <h2>多种创建方式</h2>
+            <section class="intro">
+                <p>两种创建方式：js动态；html静态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-script">脚本</li>
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div>
+                    <label>js动态创建：</label>
+                    <button id="trigger-common">试试</button>
+                </div>
+                <div>
+                    <label>html静态创建：</label>
+                    <button id="trigger-static">点我点我！</button>
+                </div>
+                <pre class="source source-script">
+                    //创建main
+                    var main = document.createElement('div');
+                    document.body.appendChild(main);
 
+                    var dialog = ui.create('Dialog', {
+                        title: '电你',
+                        content: '随便创建随便创建随便创建',
+                        width: 400,
+                        main: main
+                    });
+                    dialog.show();
+                    var btnOk = dialog.getFoot().getChild('btnOk');
+                    var btnCancel = dialog.getFoot().getChild('btnCancel');
+                    btnOk.on('click', function(){
+                        alert('随便创建！');
+                        dialog.dispose();
+                    });
+                    btnCancel.on('click', function(){
+                        alert('不！！！！');
+                        dialog.dispose();
+                    });
+                </pre>
+                <pre class="source source-markup">
+        &lt;div&nbsp;
+        data-ui-id=&quot;staticDg&quot;
+        data-ui-type=&quot;Dialog&quot;
+        data-ui-width=&quot;400&quot;
+        data-ui-draggable=&quot;true&quot;
+        data-ui-closeOnHide=&quot;false&quot;
+        data-ui-mask=&quot;true&quot; &gt;
+            &lt;h1 data-role="title"&gt;我来自静态html&lt;/h1&lt;
+            &lt;div data-role="content"&lt;
+              &lt;p&gt;第一行&lt;/p&gt;
+              &lt;span data-ui="type:Button;id:springBtn;skin:spring">显示文字&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+                </pre>
+            </section>
             <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg;closeOnHide:false;">
                 <h1 data-role="title">我来自静态html</h1>
                 <div data-role="content">
@@ -21,51 +125,169 @@
                   <span data-ui="type:Button;id:springBtn;skin:spring">显示文字</span>
                 </div>
             </div>
-        </div>
-        <script>
-        require(
-            [
-                'esui',
-                'esui/Button',
-                'esui/Dialog',
-                'css!esui/css/main.css'
-            ],
-            function (ui) {
-                var controls = ui.init();
-                var staticDg = controls[0];
-                var Dialog = require('esui/Dialog');
-                document.getElementById('trigger-alert').onclick = function () {
-                    var dialog = Dialog.alert({
+            <h2>两种默认框</h2>
+            <section class="intro">
+                <p>两种默认框：警告框（Alert）；确认框（Confirm）</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">脚本</li>
+                </ul>
+                <div>
+                    <label>警告框：</label>
+                    <button id="trigger-alert">点我电你哦！</button>
+                </div>
+                <div>
+                    <label>确认框：</label>
+                    <button id="trigger-confirm">点我没事！</button>
+                </div>
+                <pre class="source source-markup">
+                    var alertDialog = Dialog.alert({
                         title: '电你',
                         content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
-                        width: 400
+                        width: 400,
+                        onok: function() {
+                            alert('关了2！');
+                        }
                     });
 
-                    dialog.on('ok', function(){
-                            alert('关了！');
+                    alertDialog.on('ok', function(){
+                        alert('关了！');
                     })
-                };
 
 
-                document.getElementById('trigger-confirm').onclick = function () {
-                    var dialog = Dialog.confirm({
+                    var confirmDialog = Dialog.confirm({
                         title: '给你机会选择',
                         content: '确定要点我吗？te',
+                        onok: function() {
+                            alert('你死定了2！');
+                        },
                         width: 400
                     });
-                    dialog.on('ok', function(){
-                            alert('你死定了！');
+                    confirmDialog.on('ok', function(){
+                        alert('你死定了！');
                     })
-                    dialog.on('cancel', function(){
-                            alert('算你识相！');
+                    confirmDialog.on('cancel', function(){
+                        alert('算你识相！');
                     })
-                };
+                </pre>
+            </section>
+            <h2>mask优先级</h2>
+            <section class="intro">
+                <p>Alert和Confirm弹出框的层级优先级最高，会一直保持在最上</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-script">脚本</li>
+                </ul>
+                <div>
+                    <button id="trigger-z-index-test">看看谁在前！</button>
+                </div>
+                <pre class="source source-script"></pre>
+            </section>
+        </div>
+    </div>
+    <script>
+    require(
+        [
+            'esui',
+            'esui/Button',
+            'esui/Dialog',
+            'css!esui/css/main.css'
+        ],
+        function (ui, Button, Dialog) {
+            var controls = ui.init();
+            var staticDg = controls[0];
+            document.getElementById('trigger-alert').onclick = function () {
+                var dialog = Dialog.alert({
+                    title: '电你',
+                    content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
+                    width: 400,
+                    onok: function() {
+                        alert('关了2！');
+                    }
+                });
 
-                document.getElementById('trigger-static').onclick = function () {
-                    staticDg.show();
-                };
-            }
-        )
-        </script>
-    </body>
+                dialog.on('ok', function(){
+                    alert('关了！');
+                })
+            };
+
+
+            document.getElementById('trigger-confirm').onclick = function () {
+                var dialog = Dialog.confirm({
+                    title: '给你机会选择',
+                    content: '确定要点我吗？te',
+                    onok: function() {
+                        alert('你死定了2！');
+                    },
+                    width: 400
+                });
+                dialog.on('ok', function(){
+                    alert('你死定了！');
+                })
+                dialog.on('cancel', function(){
+                    alert('算你识相！');
+                })
+            };
+
+            document.getElementById('trigger-static').onclick = function () {
+                staticDg.show();
+            };
+
+            document.getElementById('trigger-common').onclick = function () {
+                //创建main
+                var main = document.createElement('div');
+                document.body.appendChild(main);
+
+                var dialog = ui.create('Dialog', {
+                    title: '电你',
+                    content: '随便创建随便创建随便创建',
+                    width: 400,
+                    main: main
+                });
+                dialog.show();
+                var btnOk = dialog.getFoot().getChild('btnOk');
+                var btnCancel = dialog.getFoot().getChild('btnCancel');
+                btnOk.on('click', function(){
+                    alert('随便创建！');
+                    dialog.dispose();
+                });
+                btnCancel.on('click', function(){
+                    alert('不！！！！');
+                    dialog.dispose();
+                });
+
+            };
+
+            document.getElementById('trigger-z-index-test').onclick = function () {
+                //创建main
+                var main = document.createElement('div');
+                document.body.appendChild(main);
+
+                var dialog = ui.create('Dialog', {
+                    title: '我应该在后面',
+                    content: '我应该在后面我应该在后面我应该在后面我应该在后面我应该在后面',
+                    width: 400,
+                    main: main,
+                    left: 100
+                });
+                dialog.show();
+                var btnOk = dialog.getFoot().getChild('btnOk');
+                var btnCancel = dialog.getFoot().getChild('btnCancel');
+                btnOk.on('click', function(){
+                    alert('我在后面！');
+                    dialog.dispose();
+                });
+                btnCancel.on('click', function(){
+                    alert('不！！！！');
+                    dialog.dispose();
+                });
+                document.getElementById('trigger-alert').click();
+            };
+        }
+    )
+    </script>
+    <script src="demo.js"></script>
+</body>
 </html>
