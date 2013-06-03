@@ -202,6 +202,7 @@
                 var dialog = Dialog.alert({
                     title: '电你',
                     content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
+                    autoPosition: true,
                     width: 400,
                     onok: function() {
                         alert('关了2！');
@@ -232,31 +233,41 @@
             };
 
             document.getElementById('trigger-static').onclick = function () {
-                staticDg.show();
+                if (staticDg) {
+                   staticDg.show(); 
+                }
+                
             };
 
             document.getElementById('trigger-common').onclick = function () {
-                //创建main
-                var main = document.createElement('div');
-                document.body.appendChild(main);
-
-                var dialog = ui.create('Dialog', {
-                    title: '电你',
-                    content: '随便创建随便创建随便创建',
-                    width: 400,
-                    main: main
-                });
+                var dialog = ui.get('test');
+                if (!dialog) {
+                    //创建main
+                    var main = document.createElement('div');
+                    document.body.appendChild(main);
+                    dialog = ui.create('Dialog', {
+                        title: '电你',
+                        content: '随便创建随便创建随便创建',
+                        width: 400,
+                        draggable:true,
+                        closeOnHide: false,
+                        id: 'test',
+                        childName: 'test',
+                        main: main
+                    });
+                    dialog.render();
+                    var btnOk = dialog.getFoot().getChild('btnOk');
+                    var btnCancel = dialog.getFoot().getChild('btnCancel');
+                    btnOk.on('click', function(){
+                        alert('随便创建！');
+                        dialog.dispose();
+                    });
+                    btnCancel.on('click', function(){
+                        alert('不！！！！');
+                        dialog.dispose();
+                    });
+                }
                 dialog.show();
-                var btnOk = dialog.getFoot().getChild('btnOk');
-                var btnCancel = dialog.getFoot().getChild('btnCancel');
-                btnOk.on('click', function(){
-                    alert('随便创建！');
-                    dialog.dispose();
-                });
-                btnCancel.on('click', function(){
-                    alert('不！！！！');
-                    dialog.dispose();
-                });
 
             };
 

@@ -161,7 +161,7 @@ define(
          * @inner
          */
         function closeClickHandler() {
-            if (this.closeOnHide === true) {
+            if (this.closeOnHide) {
                 this.dispose();
             }
             else {
@@ -171,6 +171,8 @@ define(
 
         }
 
+
+        var getResizeHandler; //resize的句柄
         /**
          * 页面resize时事件的处理函数
          *
@@ -191,9 +193,8 @@ define(
                 left = 0;
             }
 
-
             if (!top) {
-                top = 100;
+                top = (page.getViewHeight() - main.offsetHeight) / 2;
             }
 
             main.style.left = left + 'px';
@@ -216,10 +217,14 @@ define(
             getDialogHeadDownHandler = lib.bind(dialogHeadDownHandler, me);
 
             if (unbind === true) {
-                lib.un(head, 'mousedown', getDialogHeadDownHandler);
+                helper.removeDOMEvent(
+                    me, head, 'mousedown', getDialogHeadDownHandler
+                );
             }
             else {
-                lib.on(head, 'mousedown', getDialogHeadDownHandler);
+                helper.addDOMEvent(
+                    me, head, 'mousedown', getDialogHeadDownHandler
+                );
             }
         }
 
@@ -229,14 +234,12 @@ define(
         function dialogHeadDownHandler(e) {
             var me = this;
             var button = e.button;
-            var head = lib.g(helper.getId(me, 'head'));
             // 只有左键点击时才触发
             var isLeft = false;
             if ((!e.which && button === 1) || e.which === 1) {
                 isLeft = true;
             }
             if (!isLeft) {
-                lib.un(head, 'mouseup', getDialogHeadUpHandler);
                 return;
             }
             var doc = document;
@@ -312,8 +315,7 @@ define(
         function dialogHeadUpHandler(e) {
             //卸载事件
             lib.un(document, 'mousemove', getDialogHeadMoveHandler);
-            var head = this.getHead().main;
-            lib.un(head, 'mouseup', getDialogHeadUpHandler);
+            lib.un(document, 'mouseup', getDialogHeadUpHandler);
         }
 
 
@@ -436,14 +438,11 @@ define(
                  * 默认Dialog选项配置
                  */
                 var properties = {
-                    autoPosition: false,  // 是否自动定位居中
                     closeButton: true,    // 是否具有关闭按钮
                     closeOnHide: true, // 右上角关闭按钮是隐藏还是移除
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
-                    top: 100,             // 对话框的垂直位置
-                    left: 0,              // 对话框的水平位置
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     foot: ''
@@ -455,6 +454,19 @@ define(
                         + 'height:26;">取消</div>',
                     needFoot: true
                 };
+
+                if (options.closeOnHide === 'false') {
+                    options.closeOnHide = false;
+                }
+
+                if (options.closeButton === 'false') {
+                    options.closeButton = false;
+                }
+
+                if (options.mask === 'false') {
+                    options.mask = false;
+                }
+
                 lib.extend(properties, options);
                 this.setProperties(properties);
             },
@@ -477,7 +489,7 @@ define(
                 createBF(this, 'foot', this.roles['foot']);
 
                 // 初始化控件主元素上的行为
-                if (this.closeButton !== false) {
+                if (this.closeButton) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
                     helper.addDOMEvent(
                         this,
@@ -634,11 +646,13 @@ define(
                 if (helper.isInStage(this, 'INITED')) {
                     this.render();
                 }
-
-                // 浮动层自动定位功能初始化
-                if (this.autoPosition) {
-                    lib.on(window, 'resize', resizeHandler);
+                else if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
                 }
+
+                getResizeHandler = lib.curry(resizeHandler, this);
+                // 浮动层自动定位功能初始化
+                lib.on(window, 'resize', getResizeHandler);
                 this.setWidth(this.width);
                 resizeHandler(this);
 
@@ -675,9 +689,7 @@ define(
              */
             hide: function () {
                 if (this.isShow) {
-                    if (this.autoPosition) {
-                        lib.un(window, 'resize', resizeHandler);
-                    }
+                    lib.un(window, 'resize', getResizeHandler);
                     var main = this.main;
                     var mask = this.mask;
 
