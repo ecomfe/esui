@@ -774,7 +774,7 @@ define(
                 }
                 this.hide();
                 //移除dom
-                var domId = helper.getId(this);
+                var domId = this.main.id;
                 lib.removeNode(domId);
                 Control.prototype.dispose.apply(this, arguments);
             }
