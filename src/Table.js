@@ -29,23 +29,23 @@ define(
              * @type {Object}
              */
             var DEFAULT_OPTION = {
-                noDataHtml : '没有数据',
-                followHead : false,
-                sortable : false,
-                columnResizable : false,
-                rowWidthOffset : -1,
-                subrowMutex : 1,
-                subEntryOpenTip : '点击展开',
-                subEntryCloseTip : '点击收起',
-                subEntryWidth : 18,
-                breakLine : false,
-                followHeightArr : [0, 0],
-                followWidthArr : [],
-                hasTip : false,
-                tipWidth : 18,
-                sortWidth : 9,
-                fontSize : 13,
-                colPadding : 8
+                noDataHtml: '没有数据',
+                followHead: false,
+                sortable: false,
+                columnResizable: false,
+                rowWidthOffset: -1,
+                subrowMutex: 1,
+                subEntryOpenTip: '点击展开',
+                subEntryCloseTip: '点击收起',
+                subEntryWidth: 18,
+                breakLine: false,
+                followHeightArr: [0, 0],
+                followWidthArr: [],
+                hasTip: false,
+                tipWidth: 18,
+                sortWidth: 9,
+                fontSize: 13,
+                colPadding: 8
             };
 
             Control.call(this, lib.extend(DEFAULT_OPTION, options));
@@ -574,7 +574,7 @@ define(
             html.push(
                 lib.format(
                     tplTablePrefix, 
-                    { width : '100%' , controlTableId : table.id }
+                    { width: '100%' , controlTableId: table.id }
                 )
             );
             html.push('<tr>'); 
@@ -607,7 +607,7 @@ define(
                     }             
                     sortIconHtml = lib.format(
                         tplSortIcon, 
-                        { className : sortClass }
+                        { className: sortClass }
                     );
                 }
 
@@ -772,7 +772,7 @@ define(
 
                     renderHead(table);
 
-                    table.fire('sort', {field : field, order: order});
+                    table.fire('sort', {field: field, order: order});
                 }
             }
         }
@@ -1137,7 +1137,7 @@ define(
         }
         
         var noDataHtmlTpl = '<div style="${style}" class="${className}">'
-                            + '${html}</div>'
+                            + '${html}</div>';
         /**
          * 获取表格主体的html
          * 
@@ -1153,9 +1153,7 @@ define(
                 return lib.format(
                     noDataHtmlTpl,
                     {
-                        style : table.bodyHeight
-                                ? 'height:' + (table.bodyHeight - 1) + 'px;'
-                                : '',
+                        style: 'height:' + (table.bodyHeight - 1) + 'px;',
                         className: getClass(table, 'body-nodata'),
                         html: table.noDataHtml
                     }
@@ -1164,7 +1162,7 @@ define(
 
             for (var i = 0; i < dataLen; i++) {
                 var item = data[i];
-                html[i] = getRowHtml(table, item, i);
+                html[i] = getRowHtml(table, item, i, dataLen);
             }
             
             return html.join('');  
@@ -1195,7 +1193,7 @@ define(
          * @param {number} index 当前行的序号
          * @return {string}
          */
-        function getRowHtml(table, data, index) {
+        function getRowHtml(table, data, index, dataLen) {
             var html = [];
             var tdCellClass = getClass(table, 'cell');
             var tdBreakClass = getClass(table, 'cell-break');
@@ -1206,7 +1204,8 @@ define(
 
             var classes = [
                 getClass(table, 'row'),
-                getClass(table, 'row-' + ((index % 2) ? 'odd' : 'even'))
+                getClass(table, 'row-' + ((index % 2) ? 'odd' : 'even')),
+                index == dataLen - 1 ?  getClass(table,'row-last') : ''
             ];
             html.push(
                 lib.format(
@@ -1219,7 +1218,7 @@ define(
                 ),
                 lib.format(
                     tplTablePrefix, 
-                    { width : '100%' , controlTableId : table.id }
+                    { width: '100%' , controlTableId: table.id }
                 )
             );
 
@@ -1395,10 +1394,10 @@ define(
             return lib.format(
                 tplSubEntry,
                 {
-                    className : getClass(table, 'subentry'),
-                    id :  getSubentryId(table, index),
-                    title :  table.subEntryOpenTip,
-                    index : index
+                    className: getClass(table, 'subentry'),
+                    id:  getSubentryId(table, index),
+                    title:  table.subEntryOpenTip,
+                    index: index
                 }
            );
         }
@@ -1513,8 +1512,8 @@ define(
          */
         function closeSubrow(table, index, entry) {
             var eventArgs = { 
-                index : index, 
-                item : table.datasource[index]
+                index: index, 
+                item: table.datasource[index]
             };
 
             table.fire('subrowclose', eventArgs);
@@ -1832,10 +1831,10 @@ define(
          */
         function getMultiSelectTpl(table) {
             return { 
-                width : 30,
-                stable : true,
-                select : true,
-                title : function (item, index) {
+                width: 30,
+                stable: true,
+                select: true,
+                title: function (item, index) {
                     var template = '<input '
                                 +  'type="checkbox" '
                                 +  'id="${id}" '
@@ -1851,7 +1850,7 @@ define(
                     return lib.format(template, data);
                 },
                 
-                content : function (item, index) {
+                content: function (item, index) {
                     var template = '<input '
                                 +  'type="checkbox" '
                                 +  'id="${id}" '
@@ -1876,11 +1875,11 @@ define(
          */
          function getSingleSelectTpl(table) {
             return {
-                width : 30,
-                stable : true,
-                title : '&nbsp;',
-                select : true,
-                content : function (item, index) {
+                width: 30,
+                stable: true,
+                title: '&nbsp;',
+                select: true,
+                content: function (item, index) {
                     var template = '<input '
                                 +  'type="radio" '
                                 +  'id="${id}" '
@@ -1889,10 +1888,10 @@ define(
                                 +  'data-index="${index}"/>';
                     var id =  getId(table, 'single-select');
                     var data = {
-                        id : id + index,
-                        name : id ,
-                        className : getClass(table, 'single-select'),
-                        index : index
+                        id: id + index,
+                        name: id ,
+                        className: getClass(table, 'single-select'),
+                        index: index
                     };
                     return lib.format(template, data);
                 }
@@ -1948,7 +1947,7 @@ define(
             }
 
             table.selectedIndex = selected;
-            table.fire('select', {selectedIndex : selected});
+            table.fire('select', {selectedIndex: selected});
 
             if (!updateAll) {
                 var row = getRow(table, index);
@@ -2021,7 +2020,7 @@ define(
             }
 
             table.selectedIndex = selected;
-            table.fire('select', {selectedIndex : selected});
+            table.fire('select', {selectedIndex: selected});
         }
         
         function selectSingleHandler(element, e) {
@@ -2037,7 +2036,7 @@ define(
         function selectSingle(table, index) {
             var selectedIndex = table.selectedIndex;
 
-            table.fire('select', {selectedIndex : index});
+            table.fire('select', {selectedIndex: index});
 
             if (selectedIndex && selectedIndex.length) {
                 helper.removePartClasses(
@@ -2169,15 +2168,15 @@ define(
                 [
                     {
                         handler: rowOutHandler, 
-                        matchFn : getClassMatch(rowClass)
+                        matchFn: getClassMatch(rowClass)
                     },
                     {
                         handler: titleOutHandler, 
-                        matchFn : getClassMatch(titleClass)
+                        matchFn: getClassMatch(titleClass)
                     },
                     {
                         handler: entryOutHandler, 
-                        matchFn : getClassMatch(subentryClass)
+                        matchFn: getClassMatch(subentryClass)
                     }
                 ]
             );
@@ -2189,27 +2188,27 @@ define(
                 [
                     {
                         handler: rowClickHandler,
-                        matchFn : getClassMatch(rowClass)
+                        matchFn: getClassMatch(rowClass)
                     },
                     {
                         handler: titleClickHandler,
-                        matchFn : getClassMatch(titleClass)
+                        matchFn: getClassMatch(titleClass)
                     },
                     {
                         handler: fireSubrow,
-                        matchFn : getClassMatch(subentryClass)
+                        matchFn: getClassMatch(subentryClass)
                     },
                     {
                         handler: toggleSelectAll,
-                        matchFn : getClassMatch(selectAllClass)
+                        matchFn: getClassMatch(selectAllClass)
                     },
                     {
                         handler: rowCheckboxClick,
-                        matchFn : getClassMatch(multiSelectClass)
+                        matchFn: getClassMatch(multiSelectClass)
                     },
                     {
                         handler: selectSingleHandler,
-                        matchFn : getClassMatch(singleSelectClass)
+                        matchFn: getClassMatch(singleSelectClass)
                     }
                 ]
             );
@@ -2223,7 +2222,7 @@ define(
              */
             type: 'Table',
 
-            initStructure : function() {
+            initStructure: function() {
                 this.realWidth = getWidth(this);
                 this.main.style.width = this.realWidth + 'px';   
 
@@ -2317,13 +2316,13 @@ define(
 
                 table.extraRepaint = helper.createRepaint([
                     {
-                        name : 'disabled',
-                        paint : setDisabledStyle
+                        name: 'disabled',
+                        paint: setDisabledStyle
                     },
                     {
 
-                        name : 'width',
-                        paint : handleResize
+                        name: 'width',
+                        paint: handleResize
                     }
                 ]);
                 table.extraRepaint(changes, changesIndex);
@@ -2335,7 +2334,7 @@ define(
                     switch (table.select) {
                         case 'multi':
                             table.selectedIndex = [];
-                            table.fire('select',{ selectedIndex : table.selectedIndex });
+                            table.fire('select',{ selectedIndex: table.selectedIndex });
                             break;
                     }
                 }
@@ -2354,7 +2353,7 @@ define(
              * @param {number} index 行序号
              * @return {HTMLElement}
              */
-            getSubrow : function(index) {
+            getSubrow: function(index) {
                 return lib.g(getSubrowId(this, index));    
             },
 
@@ -2363,7 +2362,7 @@ define(
              *
              * @public
              */
-            adjustWidth : function(){
+            adjustWidth: function(){
                 handleResize(this);
             },
 
@@ -2372,7 +2371,7 @@ define(
              *
              * @public
              */
-            setDatasource : function(datasource){
+            setDatasource: function(datasource){
                 this.datasource = datasource;
                 var record = { name: 'datasource' };
 
