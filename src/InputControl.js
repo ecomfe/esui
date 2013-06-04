@@ -295,6 +295,13 @@ define(
              * @public
              */
             showValidity: function (validity) {
+                if (this.validity) {
+                    helper.removeState(
+                        'validity-' + this.validity.getValidState());
+                }
+                this.validity = validity;
+                this.addState('validity-' + validity.getValidState());
+
                 var label = this.getValidityLabel();
 
                 if (!label) {
