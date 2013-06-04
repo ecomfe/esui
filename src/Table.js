@@ -10,10 +10,6 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
-
-        // css
-        require('css!./css/Table.css');
-
         /**
          * 表格控件类
          * 

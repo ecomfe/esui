@@ -11,8 +11,6 @@ define(
         var Control = require('./Control');
         var lib = require('./lib');
         var helper = require('./controlHelper');
-
-        require('css!./css/Tree.css');
         
         var TreeStrategy = require('./TreeStrategy');
 

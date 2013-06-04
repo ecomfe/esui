@@ -11,9 +11,6 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
-        // css
-        require('css!./css/Wizard.css');
-
         /**
          * 多步骤导航控件
          *

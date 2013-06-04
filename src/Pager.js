@@ -10,8 +10,6 @@ define(
     function (require) {
         // required js
         require('./Select');
-        // required css
-        require('css!./css/Pager.css');
 
         var lib = require('./lib');
         var ui = require('./main');

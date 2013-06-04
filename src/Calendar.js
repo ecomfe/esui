@@ -10,9 +10,6 @@ define(
     function (require) {
         require('./MonthView');
 
-        // css
-        require('css!./css/Calendar.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');

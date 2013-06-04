@@ -14,9 +14,6 @@ define(
         var supportPlaceholder = 
             ('placeholder' in document.createElement('input'));
 
-        // css
-        require('css!./css/TextBox.css');
-
         /**
          * 文本框输入控件类
          * 

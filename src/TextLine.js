@@ -10,8 +10,6 @@ define(
     function (require) {
         require('./TextBox');
         require('./Panel');
-        // css
-        require('css!./css/TextLine.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');

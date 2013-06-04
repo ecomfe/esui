@@ -10,9 +10,6 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
-        // css
-        require('css!./css/Button.css');
-        require('css!./css/Dialog.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');

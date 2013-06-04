@@ -12,8 +12,6 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
-        require('css!./css/Box.css');
-
         function updateTitle( box ) {
             var title = box.title 
                 || box.main.title 

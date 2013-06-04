@@ -11,9 +11,6 @@ define(
         require('./Button');
         require('./MonthView');
 
-        // css
-        require('css!./css/RangeCalendar.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');

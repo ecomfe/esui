@@ -11,10 +11,6 @@ define(
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
         var helper  = require('./controlHelper');
-
-        // css
-        require('css!./css/Schedule.css');
-
         /**
          * Schedule控件
          *

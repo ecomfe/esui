@@ -12,8 +12,6 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
-        // css
-        require('css!./css/Crumb.css');
         /**
          * 面包屑导航控件
          *

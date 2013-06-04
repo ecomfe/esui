@@ -9,9 +9,6 @@
 define(
     function (require) {
         require('./Select');
-        // css
-        require('css!./css/Region.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
