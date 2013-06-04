@@ -10,6 +10,10 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
+        
+        // 仅在调试的时候打开
+        //require('css!./css/Button.css');
+        //require('css!./css/Dialog.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
@@ -38,7 +42,7 @@ define(
             if (!main) {
                 return;
             }
-            var els = main.getElementsByTagName('*');
+            var els = lib.getChildren(main);
             var len = els.length;
             var roleName;
             var roles = {};
@@ -449,7 +453,8 @@ define(
                         + '<div data-ui="type:Button;'
                         + 'id:btnFootCancel;childName:btnCancel;'
                         + 'height:26;">取消</div>',
-                    needFoot: true
+                    needFoot: true,
+                    roles: {}
                 };
 
                 if (options.closeOnHide === 'false') {
@@ -500,12 +505,14 @@ define(
                 // 初始化控件主元素上的行为
                 if (this.closeButton) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
-                    helper.addDOMEvent(
-                        this,
-                        close,
-                        'click',
-                        lib.curry(closeClickHandler, this)
-                    );
+                    if (close) {
+                        helper.addDOMEvent(
+                            this,
+                            close,
+                            'click',
+                            lib.curry(closeClickHandler, this)
+                        );
+                    }
                 }
             },
 
