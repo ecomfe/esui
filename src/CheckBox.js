@@ -149,6 +149,11 @@ define(
                 }
             },
 
+            getFocusTarget: function () {
+                var box = lib.g(this.boxId);
+                return box;
+            },
+
             repaint: helper.createRepaint(
                 InputControl.prototype.repaint,
                 {

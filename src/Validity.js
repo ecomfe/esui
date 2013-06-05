@@ -108,10 +108,13 @@ define(
             {
                 name: 'focusTarget',
                 paint: function (label, focusTarget) {
-                    if (label.main.nodeName.toLowerCase() === 'label'
-                        && (focusTarget && focusTarget.id)
-                    ) {
-                        lib.setAttribute(label.main, 'for', focusTarget.id);
+                    if (label.main.nodeName.toLowerCase() === 'label') {
+                        if (focusTarget && focusTarget.id) {
+                            lib.setAttribute(label.main, 'for', focusTarget.id);
+                        }
+                        else {
+                            lib.removeAttribute(label.main, 'for');
+                        }
                     }
                 }
             },

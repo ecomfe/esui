@@ -887,9 +887,10 @@ define(function () {
     lib.setAttribute = function (element, key, value) {
         element = lib.g(element);
 
-        if ('style' == key){
+        if ('style' == key) {
             element.style.cssText = value;
-        } else {
+        }
+        else {
             key = lib.NAME_ATTRS[key] || key;
             element.setAttribute(key, value);
         }
@@ -919,6 +920,19 @@ define(function () {
         
         key = lib.NAME_ATTRS[key] || key;
         return element.getAttribute(key);
+    };
+
+    /**
+     * 移除一个属性
+     *
+     * @param {HTMLElement} element 目标元素
+     * @param {string} key 属性名称
+     */
+    lib.removeAttribute = function (element, key) {
+        element = lib.g(element);
+
+        key = lib.NAME_ATTRS[key] || key;
+        element.removeAttribute(key);
     };
 
     /**

@@ -333,6 +333,14 @@ define(
                 }
             },
             {
+                name: ['disabled', 'readOnly'],
+                paint: function (textbox, disabled, readOnly) {
+                    var input = lib.g(textbox.inputId);
+                    input.disabled = disabled;
+                    input.readOnly = readOnly;
+                }
+            },
+            {
                 name: 'placeholder',
                 paint: function (textbox, placeholder) {
                     var input = lib.g(textbox.inputId);
