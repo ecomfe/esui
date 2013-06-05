@@ -83,7 +83,7 @@ define(
              * @inner
              */
             getFocusTarget: function () {
-                return this.main;
+                return null;
             },
 
             /**
