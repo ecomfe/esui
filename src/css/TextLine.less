@@ -36,6 +36,28 @@
             border: 0;
             padding: 0;
             margin: 0;
+            &:hover {
+                border: none;
+            }
         }
+
     }
+    &:hover {
+        border: 1px solid #6e8ab8;
+    }
+}
+
+/** 验证 */
+.ui-textline-validity-invalid {
+    border: 1px solid red;
+}
+.ui-textline-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.ui-textline-validity-label-invalid {
+    .background('esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
 }

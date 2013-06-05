@@ -6,7 +6,7 @@
  * @author erik, zhaolei
  */
 
-@import "mixin.less";
+@import "common.less";
 
 .ui-textbox {
     position: relative;
@@ -58,7 +58,27 @@
 }
 
 
-.ui-textbox-validity {
+/** 验证 */
+.ui-textbox-validity-label {
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+    color: #CC0000;
     padding-left: 10px;
-    color: #999;
+}
+
+.ui-textbox-validity-label-notice {
+    color: #FF0000;
+}
+
+.ui-textbox-validity-label-warn {
+    color: red;
+}
+
+.ui-textbox-validity-label-invalid {
+    color: #CC0000;
+}
+
+.ui-textbox-validity-invalid input {
+    border: 1px solid red;
 }

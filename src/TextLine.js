@@ -12,7 +12,7 @@ define(
         require('./Panel');
 
         // 仅在调试的时候打开
-        // require('css!./css/TextLine.css');
+        //require('css!./css/TextLine.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
@@ -40,9 +40,9 @@ define(
             var tpl = [
                 '<div id="${numLineId}" class="${numLineClass}">1</div>',
                 '<textarea name="${name}" ',
-                'data-ui="type:TextBox;childName:text;',
-                'id:text;mode:textarea" >',
-                '</textarea>'
+                'data-ui="type:TextBox;childName:text;mode:textarea" >',
+                '</textarea>',
+                '<input type="hidden" id="${inputId}" name="${name}"/>'
             ].join('');
 
 
@@ -52,7 +52,8 @@ define(
                     numLineId: helper.getId(textLine, 'num-line'),
                     numLineClass:
                         helper.getPartClasses(textLine, 'num-line').join(' '),
-                    name: textLine.name
+                    name: textLine.name,
+                    inputId: helper.getId(textLine, 'param-value')
                 }
             );
         }
@@ -121,6 +122,8 @@ define(
                 disabled: disabled,
                 readOnly: readOnly
             });
+
+
         }
 
         TextLine.prototype = {
@@ -263,6 +266,9 @@ define(
                                     lib.decodeHTML(value);
                             }
                             textArea.setRawValue(textLine.value);
+
+                            var inputId = helper.getId(textLine, 'param-value');
+                            lib.g(inputId).value = textLine.value;
                             refreshLineNum(textLine);
                         }
                     }

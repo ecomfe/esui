@@ -45,7 +45,7 @@ define(
          */
         MinRule.prototype.check = function (value, control) {
             return new ValidityState(
-                !isNaN(value) && value >= this.getLimitCondition(), 
+                !isNaN(value) && value >= this.getLimitCondition(control), 
                 this.getErrorMessage(control)
             );
         };
