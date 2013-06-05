@@ -48,7 +48,7 @@ define(
             var classes = helper.getPartClasses(label);
             if (label.target) {
                 classes = classes.concat(
-                    helper.getPartClasses(label.target, 'validity')
+                    helper.getPartClasses(label.target, 'validity-label')
                 );
             }
             if (state) {
@@ -57,7 +57,9 @@ define(
                 );
                 if (label.target) {
                     classes = classes.concat(
-                        helper.getPartClasses(label.target, 'validity-' + state)
+                        helper.getPartClasses(
+                            label.target, 'validity-label-' + state
+                        )
                     );
                 }
             }
@@ -67,7 +69,8 @@ define(
                 );
                 if (label.target) {
                     classes = classes.concat(
-                        helper.getPartClasses(label.target, 'validity-hidden')
+                        helper.getPartClasses(
+                            label.target, 'validity-label-hidden')
                     );
                 }
             }
