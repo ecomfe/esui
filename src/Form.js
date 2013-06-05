@@ -202,8 +202,11 @@ define(
             var isValid = form.get('autoValidate')
                 ? form.validate()
                 : true;
+            var data = {
+                triggerSource: this
+            };
 
-            form.fire(isValid ? 'submit' : 'invalid');
+            form.fire(isValid ? 'submit' : 'invalid', data);
         }
 
         Form.prototype.initStructure = function () {
@@ -367,6 +370,15 @@ define(
             return !!result;
         };
 
+        /**
+         * 验证并提交表单
+         *
+         * @public
+         */
+        Form.prototype.validateAndSubmit = function () {
+            performSubmit.call(this, this);
+        };
+
         Form.prototype.repaint = function (changes, changesIndex) {
             Panel.prototype.repaint.apply(this, arguments);
 
@@ -374,14 +386,18 @@ define(
             if (!changesIndex && this.submitButton) {
                 shouldAttachSubmit = true;
             }
-            else if (changesIndex 
+            if (changesIndex 
                 && changesIndex.hasOwnProperty('submitButton')
             ) {
+                // 如果是运行期个性`submitButton`，要先把原来的`click`事件解除
                 var record = changesIndex.submitButton;
                 if (record.oldValue) {
-                    var oldButton = this.viewContext.get(record.oldValue);
-                    if (oldButton) {
-                        oldButton.un('click', this.performSubmit);
+                    for (var i = 0; i < record.oldValue.length; i++) {
+                        var oldButton = 
+                            this.viewContext.get(record.oldValue[i]);
+                        if (oldButton) {
+                            oldButton.un('click', this.performSubmit);
+                        }
                     }
 
                     shouldAttachSubmit = !!this.submitButton;
@@ -389,11 +405,22 @@ define(
             }
 
             if (shouldAttachSubmit) {
-                var button = this.viewContext.get(this.submitButton);
-                if (button) {
-                    button.on('click', this.performSubmit);
+                for (var i = 0; i < this.submitButton.length; i++) {
+                    var button = this.viewContext.get(this.submitButton[i]);
+                    if (button) {
+                        button.on('click', this.performSubmit);
+                    }
                 }
             }
+        };
+
+        Form.prototype.setProperties = function (properties) {
+            properties = lib.extend({}, properties);
+            // 允许`submitButton`是个数组
+            if (typeof properties.submitButton === 'string') {
+                properties.submitButton = properties.submitButton.split(',');
+            }
+            Panel.prototype.setProperties.call(this, properties);
         };
 
         lib.inherits(Form, Panel);

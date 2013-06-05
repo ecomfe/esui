@@ -44,8 +44,9 @@ define(
          * @return {validator/ValidityState}
          */
         PatternRule.prototype.check = function (value, control) {
+            var regex = new RegExp(this.getLimitCondition(control));
             return new ValidityState(
-                new RegExp(this.getLimitCondition(control)).test(value),
+                regex.test(value),
                 this.getErrorMessage(control)
             );
         };

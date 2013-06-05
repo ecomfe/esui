@@ -39,7 +39,7 @@ define(
             var properties = {};
             lib.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
-            lib.extend(this, properties);
+            this.setProperties(properties);
         };
 
         /**

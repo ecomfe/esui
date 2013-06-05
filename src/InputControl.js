@@ -296,7 +296,7 @@ define(
              */
             showValidity: function (validity) {
                 if (this.validity) {
-                    helper.removeState(
+                    this.removeState(
                         'validity-' + this.validity.getValidState());
                 }
                 this.validity = validity;
