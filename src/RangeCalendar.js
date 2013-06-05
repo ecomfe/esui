@@ -670,8 +670,9 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是包裹元素，替换成`<div>`
-                if (!lib.isBlock(this.main)) {
+                // 如果主元素是输入元素，替换成`<div>`
+                // 如果输入了非块级元素，则不负责
+                if (lib.isInput(this.main)) {
                     helper.replaceMain(this);
                 }
 
@@ -733,9 +734,6 @@ define(
                 {
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (calendar.disabled || calendar.readOnly) {
-                            return;
-                        }
                         if (range && typeof range === 'string') {
                             calendar.range = convertToRaw(range);
                         }

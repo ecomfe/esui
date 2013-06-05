@@ -11,6 +11,9 @@ define(
         require('./TextBox');
         require('./Panel');
 
+        // 仅在调试的时候打开
+        // require('css!./css/TextLine.css');
+
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
@@ -99,6 +102,27 @@ define(
                 me.getChild('text').main.firstChild.scrollTop;
         }
 
+        /**
+         * 批量
+         * @inner
+         * @param {Region} region Region控件实例
+         * @param {boolean} disabled 是否不可用
+         * @param {boolean} readOnly 是否只读
+         */
+        function changeToDisabled(textLine, disabled, readOnly) {
+            var editable = true;
+            /** disable的优先级高于readOnly */
+            if (disabled || readOnly) {
+                editable = false;
+            }
+
+            var textArea = textLine.getChild('text');
+            textArea.setProperties({
+                disabled: disabled,
+                readOnly: readOnly
+            });
+        }
+
         TextLine.prototype = {
             /**
              * 控件类型
@@ -120,7 +144,8 @@ define(
                  */
                 var properties = {
                     width: 300,
-                    height: 200
+                    height: 200,
+                    value: ''
                 };
                 helper.extractValueFromInput(this, options);
                 lib.extend(properties, options);
@@ -134,8 +159,9 @@ define(
              * @protected
              */
             initStructure: function () {
-                // 如果主元素不是包裹元素，替换成`<div>`
-                if (!lib.isBlock(this.main)) {
+                // 如果主元素是输入元素，替换成`<div>`
+                // 如果输入了非块级元素，则不负责
+                if (lib.isInput(this.main)) {
                     helper.replaceMain(this);
                 }
                 
@@ -226,9 +252,25 @@ define(
                     paint: function (textLine, value) {
                         // 输入区
                         var textArea = textLine.getChild('text');
-                        textLine.value = lib.decodeHTML(value.join('\n'));
-                        textArea.setRawValue(textLine.value);
-                        refreshLineNum(textLine);
+                        if (value) {
+                            if (typeof value === 'array') {
+                                textLine.value =
+                                    lib.decodeHTML(value.join('\n'));
+                            }
+                            // 好怕怕有一个人直接设置了字符串
+                            else if (typeof value === 'string') {
+                                textLine.value =
+                                    lib.decodeHTML(value);
+                            }
+                            textArea.setRawValue(textLine.value);
+                            refreshLineNum(textLine);
+                        }
+                    }
+                }, 
+                {
+                    name: ['disabled', 'readOnly'],
+                    paint: function (textLine, disabled, readOnly) {
+                        changeToDisabled(textLine, disabled, readOnly);
                     }
                 }
             ),

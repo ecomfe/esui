@@ -499,7 +499,7 @@ define(
         };
 
         /**
-         * 替换控件的主元素中提取信息
+         * 替换控件的主元素中提取信息(name value disabled readonly)
          *
          * @param {Control} control 控件实例
          * @param {Object} options 需要更新的参数
@@ -514,6 +514,16 @@ define(
                 }
                 if (main.name && !options.name) {
                     options.name = main.name;
+                }
+                if (main.disabled 
+                    && (options.disabled === null
+                        || options.disabled === undefined)) {
+                    options.disabled = main.disabled;
+                }
+                if (main.readOnly 
+                    && (options.readOnly === null
+                        || options.readOnly === undefined)) {
+                    options.readOnly = main.readonly;
                 }
             }
         };
