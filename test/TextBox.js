@@ -197,6 +197,103 @@ define(function () {
                 }
             });
 
+            describe('unit label', function () {
+                it('should appear when `unit` is set', function () {
+                    var textbox = new TextBox({ unit: 'px' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = textbox.main.getElementsByTagName('label');
+                    for (var i = 0; i < unitLabel.length; i++) {
+                        if (unitLabel[i].className.indexOf('unit') >= 0) {
+                            unitLabel = unitLabel[i];
+                            break;
+                        }
+                    }
+                    expect(unitLabel).toBeDefined();
+                    expect(unitLabel.nodeName.toLowerCase()).toBe('label');
+                    expect(unitLabel.getAttribute('for') || unitLabel.getAttribute('htmlFor')).toBe(input.id);
+                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                    expect(unitLabel.innerHTML).toBe('px');
+                });
+
+                it('should not appear when `unit` is not set or is a falsy value', function () {
+                    var textbox = new TextBox();
+                    textbox.appendTo(container);
+                    var labels = textbox.main.getElementsByTagName('label');
+                    var unitLabel;
+                    for (var i = 0; i < labels.length; i++) {
+                        if (labels[i].className.indexOf('unit') >= 0) {
+                            unitLabel = labels[i];
+                            break;
+                        }
+                    }
+                    expect(unitLabel).toBeUndefined();
+                });
+
+                it('should appear before `<input>` element when `unitType` is set to `prefix`', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'prefix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = input.previousSibling;
+                    expect(unitLabel).toBeDefined();
+                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                });
+
+                it('should appear before `<input>` element when `unitType` is set to `suffix`', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = input.nextSibling;
+                    expect(unitLabel).toBeDefined();
+                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                });
+
+                it('should appear after `<input>` element when `unitType` is not set', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = input.nextSibling;
+                    expect(unitLabel).toBeDefined();
+                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                });
+
+                it('should add `ui-textbox-unit-{unitType}` class to main element', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                    textbox.appendTo(container);
+                    expect(textbox.main.className).toContain('ui-textbox-unit-suffix');
+                    textbox.set('unitType', 'prefix');
+                    expect(textbox.main.className).toContain('ui-textbox-unit-prefix');
+                });
+
+                it('should accept runtime change of `unit`', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = input.nextSibling;
+                    expect(unitLabel.innerHTML).toBe('px');
+                    textbox.set('unit', 'test');
+                    expect(unitLabel.innerHTML).toBe('test');
+                });
+
+                it('should accept runtime change of `unitType`', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = input.nextSibling;
+                    textbox.set('unitType', 'prefix');
+                    expect(input.previousSibling).toBe(unitLabel);
+                });
+
+                it('should be removed when `unit` is set to falsy', function () {
+                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var unitLabel = input.nextSibling;
+                    textbox.set('unit', '');
+                    expect(unitLabel.parentNode).toBe(null);
+                });
+            });
+
             describe('placeholder', function () {
                 it('should appear when `<input>` is not focused and its value is empty', function () {
                     var textbox = new TextBox({ placeholder: 'test' });

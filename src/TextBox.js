@@ -321,7 +321,7 @@ define(
                         ('oninput' in input) ? 'input' : 'propertychange';
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
                     helper.removeDOMEvent(textbox, input, eventName);
-                    input.value = rawValue;
+                    input.value = textbox.stringifyValue(rawValue);
                     helper.addDOMEvent(
                         textbox,
                         input,
@@ -348,6 +348,38 @@ define(
                         var label = 
                             lib.g(helper.getId(textbox, 'placeholder'));
                         label.innerHTML = lib.encodeHTML(placeholder || '');
+                    }
+                }
+            },
+            {
+                name: ['unit', 'unitType'],
+                paint: function (textbox, unit, unitType) {
+                    var label = lib.g(helper.getId(textbox, 'unit'));
+
+                    textbox.removeState('unit-prefix');
+                    textbox.removeState('unit-suffix');
+
+                    if (!unit && label) {
+                        lib.removeNode(label);
+                    }
+
+                    if (unit) {
+                        if (!label) {
+                            label = document.createElement('label');
+                            label.id = helper.getId(textbox, 'unit');
+                            helper.addPartClasses(textbox, 'unit', label);
+                            lib.setAttribute(label, 'for', textbox.inputId);
+                        }
+
+                        label.innerHTML = lib.encodeHTML(unit);
+                        unitType = unitType === 'prefix' ? 'prefix' : 'suffix';
+                        var method = unitType === 'prefix'
+                            ? 'insertBefore'
+                            : 'insertAfter';
+                        var input = lib.g(textbox.inputId);
+                        lib[method](label, input);
+
+                        textbox.addState('unit-' + unitType);
                     }
                 }
             }
