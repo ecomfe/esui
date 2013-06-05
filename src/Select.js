@@ -162,6 +162,34 @@ define(
         };
 
         /**
+         * 显示选中值的模板
+         *
+         * @type {string}
+         * @public
+         */
+        Select.prototype.displayTemplate = '${text}';
+
+        /**
+         * 获取选中值的内容
+         *
+         * @param {Object | null} item 选中节点的数据，如果有`emptyText`且未选节点，
+         * 则传递`null`
+         * @return {string} 显示的HTML
+         * @public
+         */
+        Select.prototype.getDisplayHTML = function (item) {
+            if (!item) {
+                return lib.encodeHTML(this.emptyText || '');
+            }
+
+            var data = {
+                text: lib.encodeHTML(item.name || item.text),
+                value: lib.encodeHTML(item.value)
+            };
+            return lib.format(this.displayTemplate, data);
+        };
+
+        /**
          * 获取下拉弹层的HTML
          *
          * @param {Select} select Select控件实例
@@ -414,16 +442,10 @@ define(
 
             // 同步显示的文字
             var textHolder = select.main.getElementsByTagName('span')[0];
-            if (select.selectedIndex === -1) {
-                textHolder.innerHTML = lib.encodeHTML(select.emptyText);
-            }
-            else {
-                var selectedItem = select.datasource[select.selectedIndex];
-                var displayText = selectedItem 
-                    ? (selectedItem.name || selectedItem.text)
-                    : '';
-                textHolder.innerHTML = lib.encodeHTML(displayText);
-            }
+            var selectedItem = select.selectedIndex === -1
+                ? null
+                : select.datasource[select.selectedIndex];
+            textHolder.innerHTML = select.getDisplayHTML(selectedItem);
 
             syncSelectedItem(select);
         }

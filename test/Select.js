@@ -300,6 +300,45 @@ define(function (require) {
                 expect(select.main.getElementsByTagName('input')[0].value).toBe('');
             });
 
+            it('should utilize `displayTemplate` when display selected value text', function () {
+                var select = new Select({ datasource: datasource, selectedIndex: 0 });
+                select.displayTemplate = '${text} test ${value}';
+                select.appendTo(container);
+                expect(select.main.firstChild.innerHTML).toBe('a test 1');
+            });
+
+            it('should not utilize `displayTemplate` if `emptyText` is set and used', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                select.appendTo(container);
+                expect(select.main.firstChild.innerHTML).toBe('test');
+            });
+
+            it('should call `getDisplayHTML` when display selected value text', function () {
+                var select = new Select({ datasource: datasource, selectedIndex: 0 });
+                select.getDisplayHTML = function (item) {
+                    return 'test';
+                };
+                spyOn(select, 'getDisplayHTML').andCallThrough();
+                select.appendTo(container);
+                expect(select.getDisplayHTML).toHaveBeenCalled();
+                expect(select.getDisplayHTML.mostRecentCall.args.length).toBe(1);
+                expect(select.getDisplayHTML.mostRecentCall.args[0]).toBe(datasource[0]);
+                expect(select.main.firstChild.innerHTML).toBe('test');
+            });
+
+            it('should call `getDisplayHTML` with null when `emptyText` is set and used', function () {
+                var select = new Select({ datasource: datasource, emptyText: 'test' });
+                select.getDisplayHTML = function (item) {
+                    return 'changed';
+                };
+                spyOn(select, 'getDisplayHTML').andCallThrough();
+                select.appendTo(container);
+                expect(select.getDisplayHTML).toHaveBeenCalled();
+                expect(select.getDisplayHTML.mostRecentCall.args.length).toBe(1);
+                expect(select.getDisplayHTML.mostRecentCall.args[0]).toBe(null);
+                expect(select.main.firstChild.innerHTML).toBe('changed');
+            });
+
             it('should sync `selectedIndex` after `value` is changed', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);
