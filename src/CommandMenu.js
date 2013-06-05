@@ -43,6 +43,8 @@ define(
         }
 
         function selectItem(menu, e) {
+            hideLayer(menu);
+
             var target = e.target;
             while (target !== e.currentTarget
                 && !lib.hasAttribute(target, 'data-index')
@@ -77,6 +79,21 @@ define(
                 lib.curry(selectItem, menu)
             );
             document.body.appendChild(layer);
+
+            var close = lib.curry(hideLayer, menu);
+            lib.on(document, 'mousedown', close);
+            menu.on(
+                'afterdispose',
+                function () {
+                    lib.un(document, 'mousedown', close);
+                }
+            );
+            helper.addDOMEvent(
+                menu, 
+                layer,
+                'mousedown',
+                function (e) { e.stopPropagation(); }
+            );
         }
 
         /**

@@ -349,9 +349,9 @@ define(
                     select, 
                     layer, 
                     'click', 
-                    lib.bind(selectValue, null, select)
+                    lib.curry(selectValue, select)
                 );
-                var close = lib.bind(closeLayer, null, select);
+                var close = lib.curry(closeLayer, select);
                 lib.on(document, 'mousedown', close);
                 select.on(
                     'afterdispose',
@@ -366,7 +366,7 @@ define(
                 // 则会因为选择一个子控件的内容导致父控件的弹层消失，
                 // 因此这里要取消掉`mousedown`的冒泡来避免这问题的出现
                 helper.addDOMEvent(
-                    this, 
+                    select, 
                     layer,
                     'mousedown',
                     function (e) { e.stopPropagation(); }
@@ -426,7 +426,7 @@ define(
             );
 
             helper.addDOMEvent(
-                this, this.main, 'click', lib.bind(toggleLayer, null, this));
+                this, this.main, 'click', lib.curry(toggleLayer, this));
         };
 
         /**
