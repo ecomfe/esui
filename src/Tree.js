@@ -133,7 +133,11 @@ define(
                 ? 'empty'
                 : (expanded ? 'expanded' : 'collapsed');
             var html = getIndicatorHTML(tree, node, indicatorType);
-            html += tree.getItemHTML(node);
+            var itemWrapperClasses =
+                helper.getPartClasses(tree, 'item-content');
+            html += '<div class="' + itemWrapperClasses.join(' ') + '">'
+                + tree.getItemHTML(node)
+                + '</div>';
 
             if (expanded && !tree.strategy.isLeafNode(node)) {
                 var classes = [].concat(
