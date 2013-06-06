@@ -28,6 +28,7 @@
             {id:6, name: '铮哥', sex: 1}
         ];
         data = data.concat(data);
+        //data = [{id:6, name: '铮哥', sex: 1}];
         var myTable = null;
 
         require(
@@ -48,11 +49,11 @@
                             datasource: data,
                             sortable: true,
                             columnResizable: true,
-                            subrow:true,
+                            //subrow:true,
                             select:'multi',
-                            subrowMutex: 1,
+                            //subrowMutex: 1,
                             selectMode :'line',
-                            bodyHeight : 400,
+                            bodyMaxHeight : 400,
                             fields: [
                                 {
                                     title: '编号',
@@ -60,7 +61,7 @@
                                     sortable: true,
                                     tip :'编号',
                                     resizable: true,
-                                    subEntry: 1,
+                                    //subEntry: 1,
                                     width: 50,
                                     content: function (item) {
                                         return item.id;

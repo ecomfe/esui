@@ -10,6 +10,7 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
+
         /**
          * 表格控件类
          * 
@@ -420,7 +421,8 @@ define(
                 lib.format(
                     tplTablePrefix, 
                     { width: '100%', controlTableId : table.id }
-                )
+                ),
+                '<tr>'
             );
 
             for (var i = 0, len = footArray.length; i < len; i++) {
@@ -571,9 +573,9 @@ define(
                 lib.format(
                     tplTablePrefix, 
                     { width: '100%' , controlTableId: table.id }
-                )
+                ),
+                '<tr>'
             );
-            html.push('<tr>'); 
 
             for (var i = 0, len = fields.length; i < len; i++) {
                 var thClass = [thCellClass];
@@ -1109,9 +1111,12 @@ define(
                 table.main.appendChild(tBody);
             }
 
-            tBody.style.width = table.realWidth + 'px';
-            tBody.innerHTML = getBodyHtml(table);
+            var style = tBody.style;
+            style.overflowX = 'hidden';
+            style.overflowY = 'auto';
+            style.width = table.realWidth + 'px';
 
+            tBody.innerHTML = getBodyHtml(table);
         }
 
          /**
@@ -1119,21 +1124,30 @@ define(
          * 
          * @private
          */
-        function updateBodyHeight(table, tBody) {
+        function updateBodyMaxHeight(table, tBody) {
             var style = tBody.style;
-            style.overflowX = 'hidden';
-            style.overflowY = 'auto';
+            var dataLen = table.datasource.length;
+            var bodyMaxHeight = table.bodyMaxHeight;
             // 如果设置了表格体高度
-            // 表格需要出现横向滚动条
-            if (table.bodyHeight) {
-                style.height = table.bodyHeight + 'px';
-            } else {
-                style.height = 'auto';
+            // 表格需要出现纵向滚动条
+            if (bodyMaxHeight > 0 && dataLen > 0) {
+                var totalHeight = bodyMaxHeight;
+                var bodyContainer = lib.g(getId(table, 'body-container'));
+
+                if (bodyContainer) {
+                    totalHeight = bodyContainer.offsetHeight;
+                }
+                
+                if (totalHeight >= bodyMaxHeight){
+                    style.height = bodyMaxHeight + 'px';
+                    return;
+                }
             }
+
+            style.height = 'auto';
         }
         
-        var noDataHtmlTpl = '<div style="${style}" class="${className}">'
-                            + '${html}</div>';
+        var noDataHtmlTpl = '<div class="${className}">${html}</div>';
         /**
          * 获取表格主体的html
          * 
@@ -1144,12 +1158,16 @@ define(
             var data = table.datasource || [];
             var dataLen = data.length;
             var html = [];
-            
+            html.push(
+                lib.format(
+                    '<div id="${id}">',
+                    { id: getId(table, 'body-container')}
+                )
+            );
             if (!dataLen) {
                 return lib.format(
                     noDataHtmlTpl,
                     {
-                        style: 'height:' + (table.bodyHeight - 1) + 'px;',
                         className: getClass(table, 'body-nodata'),
                         html: table.noDataHtml
                     }
@@ -1158,16 +1176,13 @@ define(
 
             for (var i = 0; i < dataLen; i++) {
                 var item = data[i];
-                html[i] = getRowHtml(table, item, i, dataLen);
+                html.push(getRowHtml(table, item, i, dataLen));
             }
-            
+
+            html.push('</div>');
+
             return html.join('');  
         }
-        
-        var tplRowPrefix = '<div '
-                        + 'id="${id}" '
-                        + 'class="${className}" '
-                        + 'data-index="${index}">';
 
         /**
          * 获取表格体的单元格id
@@ -1181,6 +1196,12 @@ define(
             return getId(table, 'cell') + rowIndex + '-' + fieldIndex;
         }
         
+
+         var tplRowPrefix = '<div '
+                        + 'id="${id}" '
+                        + 'class="${className}" '
+                        + 'data-index="${index}">';
+
         /**
          * 获取表格行的html
          * 
@@ -1215,7 +1236,8 @@ define(
                 lib.format(
                     tplTablePrefix, 
                     { width: '100%' , controlTableId: table.id }
-                )
+                ),
+                '<tr>'
             );
 
             for (var i = 0, fieldLen = fields.length; i < fieldLen; i++) {
@@ -1374,7 +1396,7 @@ define(
          * @private
          */
         var tplSubEntry = '<div '
-                        +  'class="${className}" '
+                        + 'class="${className}" '
                         + 'id="${id}" '
                         + 'title="${title}" '
                         + 'data-index="${index}">'
@@ -2237,7 +2259,7 @@ define(
                 var table = this;
 
                 var allProperities = {
-                    bodyHeight: false,
+                    bodyMaxHeight: false,
                     breakLine: false,
                     datasource: false,
                     columnResizable: false,
@@ -2300,8 +2322,9 @@ define(
                     renderBody(table);
                     tbodyChange = true;
                 }
-                if (allProperities['bodyHeight']) {
-                    updateBodyHeight(table, getBody(table));
+                if (tbodyChange
+                    || allProperities['bodyMaxHeight']) {
+                    updateBodyMaxHeight(table, getBody(table));
                 }
                 if (fieldsChanged
                     || colsWidthChanged
@@ -2340,6 +2363,7 @@ define(
                 if (table.realWidth != getWidth(table)) {
                     handleResize(table);
                 }
+
             },
 
              /**
