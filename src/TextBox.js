@@ -314,6 +314,13 @@ define(
                 }
             },
             {
+                name: 'maxLength',
+                paint: function (textbox, maxLength) {
+                    var input = lib.g(textbox.inputId);
+                    input.maxLength = parseInt(maxLength, 10);
+                }
+            },
+            {
                 name: 'rawValue',
                 paint: function (textbox, rawValue) {
                     var input = lib.g(textbox.inputId);
