@@ -159,6 +159,8 @@ define(
 
         CommandMenu.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
+            paint.style('width'),
+            paint.style('height'),
             paint.html('datasource', 'layer', getLayerHTML),
             paint.text('displayText'),
             {
