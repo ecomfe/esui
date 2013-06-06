@@ -388,12 +388,12 @@ define(
                 return false;
             }
 
-            if (!pool.type) {
-                pool.type = [];
+            if (!pool[type]) {
+                pool[type] = [];
                 lib.on(element, type, triggerGlobalDOMEvent);
             }
 
-            var controls = pool.type;
+            var controls = pool[type];
             for (var i = 0; i < controls.length; i++) {
                 if (controls[i] === control) {
                     return true;
@@ -411,11 +411,11 @@ define(
                 return false;
             }
 
-            if (!pool.type) {
+            if (!pool[type]) {
                 return true;
             }
 
-            var controls = pool.type;
+            var controls = pool[type];
             for (var i = 0; i < controls.length; i++) {
                 if (controls[i] === control) {
                     controls.splice(i, 1);

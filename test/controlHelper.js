@@ -377,7 +377,6 @@ define(function (require) {
                     expect(handlerB).toHaveBeenCalled();
                 });
 
-
                 it('should call event listeners with attach order', function () {
                     var control = {};
                     var element = document.createElement('div');
@@ -390,6 +389,29 @@ define(function (require) {
                     helper.addDOMEvent(control, element, 'click', handlerB);
                     dispatchEvent(element, 'click');
                     expect(queue.join('')).toBe('ab');
+                });
+
+                it('should be able to add event handler to global DOM object', function () {
+                    var control = {};
+                    var handler = jasmine.createSpy();
+                    helper.addDOMEvent(control, document, 'click', handler);
+                    dispatchEvent(document, 'click');
+                    expect(handler).toHaveBeenCalled();
+                    helper.clearDOMEvents(control);
+                });
+
+                it('should be able to call event handlers on different control for global DOM object', function () {
+                    var controlA = {};
+                    var controlB = {};
+                    var handlerA = jasmine.createSpy('A');
+                    var handlerB = jasmine.createSpy('B');
+                    helper.addDOMEvent(controlA, document, 'click', handlerA);
+                    helper.addDOMEvent(controlB, document, 'click', handlerB);
+                    dispatchEvent(document, 'click');
+                    expect(handlerA).toHaveBeenCalled();
+                    expect(handlerB).toHaveBeenCalled();
+                    helper.clearDOMEvents(controlA);
+                    helper.clearDOMEvents(controlB);
                 });
             });
 
@@ -443,6 +465,18 @@ define(function (require) {
                     helper.addDOMEvent(control, element, 'focus', function () {});
                     expect(function () { helper.removeDOMEvent(control, element, 'click'); }).not.toThrow();
                 });
+
+                it('should not call remvoed event listeners for global DOM object', function () {
+                    var control = {};
+                    var handlerA = jasmine.createSpy('A');
+                    var handlerB = jasmine.createSpy('B');
+                    helper.addDOMEvent(control, document, 'click', handlerA);
+                    helper.addDOMEvent(control, document, 'click', handlerB);
+                    helper.removeDOMEvent(control, document, 'click', handlerA);
+                    dispatchEvent(document, 'click');
+                    expect(handlerA).not.toHaveBeenCalled();
+                    expect(handlerB).toHaveBeenCalled();
+                });
             });
 
             describe('`clearDOMEvents` method', function () {
@@ -487,6 +521,19 @@ define(function (require) {
                     document.getElementById('container').appendChild(element);
                     var handler = jasmine.createSpy();
                     expect(function () { helper.clearDOMEvents(control); }).not.toThrow();
+                });
+
+                it('should not call listeners from a cleared control for global DOM object', function () {
+                    var controlA = {}; 
+                    var controlB = {}; 
+                    var handlerA = jasmine.createSpy('A');
+                    var handlerB = jasmine.createSpy('B');
+                    helper.addDOMEvent(controlA, document, 'click', handlerA);
+                    helper.addDOMEvent(controlB, document, 'click', handlerB);
+                    helper.clearDOMEvents(controlA);
+                    dispatchEvent(document, 'click');
+                    expect(handlerA).not.toHaveBeenCalled();
+                    expect(handlerB).toHaveBeenCalled();
                 });
             });
 
