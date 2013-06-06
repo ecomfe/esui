@@ -62,32 +62,58 @@ define(function (require) {
                 expect(helper.getPartClasses).toBeOfType('function');
             });
 
-            it('should return the correct part class list', function () {
-                var control = {
-                    type: 'TyPe',
-                    skin: 'default'
-                };
-                var classes = helper.getPartClasses(control, 'test');
-                var expectResult = [
-                    'ui-type-test',
-                    'skin-default-type-test'
-                ];
-                expect(classes).toEqual(expectResult);
+            describe('with skin defined', function () {
+                it('should return the correct part class list', function () {
+                    var control = {
+                        type: 'TyPe',
+                        skin: 'default'
+                    };
+                    var classes = helper.getPartClasses(control, 'test');
+                    var expectResult = [
+                        'ui-type-test',
+                        'skin-default-type-test'
+                    ];
+                    expect(classes).toEqual(expectResult);
+                });
+
+                it('should return the correct class list for control itself', function () {
+                    var control = {
+                        type: 'TyPe',
+                        skin: 'default'
+                    };
+                    var classes = helper.getPartClasses(control);
+                    var expectResult = [
+                        'ui-type',
+                        'skin-default',
+                        'skin-default-type'
+                    ];
+                    expect(classes).toEqual(expectResult);
+                });
             });
 
-            it('should return the correct class list for control itself', function () {
-                var control = {
-                    type: 'TyPe',
-                    skin: 'default'
-                };
-                var classes = helper.getPartClasses(control);
-                var expectResult = [
-                    'ui-type',
-                    'skin-default',
-                    'skin-default-type'
-                ];
-                expect(classes).toEqual(expectResult);
-            })
+            describe('without skin defined', function () {
+                it('should return the correct part class list', function () {
+                    var control = {
+                        type: 'TyPe'
+                    };
+                    var classes = helper.getPartClasses(control, 'test');
+                    var expectResult = [
+                        'ui-type-test'
+                    ];
+                    expect(classes).toEqual(expectResult);
+                });
+
+                it('should return the correct class list for control itself', function () {
+                    var control = {
+                        type: 'TyPe'
+                    };
+                    var classes = helper.getPartClasses(control);
+                    var expectResult = [
+                        'ui-type'
+                    ];
+                    expect(classes).toEqual(expectResult);
+                });
+            });
         });
 
         describe('addPartClasses method', function () {
@@ -185,7 +211,7 @@ define(function (require) {
                 expect(helper.getStateClasses).toBeOfType('function');
             });
 
-            it('should get correct class list', function () {
+            it('should get correct class list with skin defined', function () {
                 var control = {
                     type: 'TyPe',
                     skin: 'default'
@@ -196,6 +222,18 @@ define(function (require) {
                     'state-test',
                     'skin-default-test',
                     'skin-default-type-test'
+                ];
+                expect(classes).toEqual(expectResult);
+            });
+
+            it('should get correct class list without skin defined', function () {
+                var control = {
+                    type: 'TyPe'
+                };
+                var classes = helper.getStateClasses(control, 'test');
+                var expectResult = [
+                    'ui-type-test',
+                    'state-test'
                 ];
                 expect(classes).toEqual(expectResult);
             });
