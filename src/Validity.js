@@ -45,20 +45,28 @@ define(
          * @inner
          */
         function getClasses(label, state) {
+            var targetContext = null;
+            if (label.target || label.targetType) {
+                targetContext = {
+                    type: label.targetType || label.target.type,
+                    skin: label.target && label.target.skin
+                };
+            }
+
             var classes = helper.getPartClasses(label);
-            if (label.target) {
+            if (targetContext) {
                 classes = classes.concat(
-                    helper.getPartClasses(label.target, 'validity-label')
+                    helper.getPartClasses(targetContext, 'validity-label')
                 );
             }
             if (state) {
                 classes = classes.concat(
                     helper.getPartClasses(label, state)
                 );
-                if (label.target) {
+                if (targetContext) {
                     classes = classes.concat(
                         helper.getPartClasses(
-                            label.target, 'validity-label-' + state
+                            targetContext, 'validity-label-' + state
                         )
                     );
                 }
@@ -96,8 +104,8 @@ define(
         Validity.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
             {
-                name: 'target',
-                paint: function (label, target) {
+                name: ['target', 'targetType'],
+                paint: function (label) {
                     var validState = label.validity
                         ? label.validity.getValidState()
                         : '';

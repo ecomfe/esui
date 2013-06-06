@@ -393,6 +393,26 @@ define(
             }
         );
 
+        /**
+         * 获取验证信息控件
+         *
+         * @return {Validity}
+         * @override
+         * @public
+         */
+        TextBox.prototype.getValidityLabel = function () {
+            // `TextBox`根据`mode`来分配具体的类型
+            var label = 
+                InputControl.prototype.getValidityLabel.apply(this, arguments);
+            if (label) {
+                label.set(
+                    'targetType', 
+                    this.mode === 'textarea' ? 'TextArea' : 'TextBox'
+                );
+            }
+            return label;
+        };
+
         require('./lib').inherits(TextBox, InputControl);
         require('./main').register(TextBox);
         return TextBox;
