@@ -341,6 +341,88 @@ define(
         };
 
         var domEventsKey = '_esuiDOMEvent';
+        var globalEvents = {
+            window: {},
+            document: {},
+            documentElement: {},
+            body: {}
+        };
+
+        function getGlobalEventPool(element) {
+            if (element === window) {
+                return globalEvents.window;
+            }
+            if (element === document) {
+                return globalEvents.document;
+            }
+            if (element === document.documentElement) {
+                return globalEvents.documentElement;
+            }
+            if (element === document.body) {
+                return globalEvents.body;
+            }
+
+            return null;
+        }
+
+        function triggerGlobalDOMEvent(e) {
+            e = e || window.event;
+            var target = e.target || e.srcElement;
+
+            var pool = getGlobalEventPool(target);
+            if (!pool) {
+                return;
+            }
+
+            var queue = pool[e.type];
+            for (var i = 0; i < queue.length; i++) {
+                var control = queue[i];
+                triggerDOMEvent(control, target, e);
+            }
+        }
+
+        function addGlobalDOMEvent(control, type, element) {
+            var pool = getGlobalEventPool(element);
+
+            if (!pool) {
+                return false;
+            }
+
+            if (!pool.type) {
+                pool.type = [];
+                lib.on(element, type, triggerGlobalDOMEvent);
+            }
+
+            var controls = pool.type;
+            for (var i = 0; i < controls.length; i++) {
+                if (controls[i] === control) {
+                    return true;
+                }
+            }
+
+            controls.push(control);
+            return true;
+        }
+
+        function removeGlobalDOMEvent(control, type, element) {
+            var pool = getGlobalEventPool(element);
+
+            if (!pool) {
+                return false;
+            }
+
+            if (!pool.type) {
+                return true;
+            }
+
+            var controls = pool.type;
+            for (var i = 0; i < controls.length; i++) {
+                if (controls[i] === control) {
+                    controls.splice(i, 1);
+                    return true;
+                }
+            }
+        }
 
         function triggerDOMEvent(control, element, e) {
             e = e || window.event;
@@ -402,15 +484,15 @@ define(
                 events = control.domEvents[guid] = { element: element };
             }
 
+            var isGlobal = addGlobalDOMEvent(control, type, element);
             var queue = events[type];
             if (!queue) {
                 queue = events[type] = [];
-                queue.handler = lib.curry(triggerDOMEvent, control, element);
-                if (element.addEventListener) {
-                    element.addEventListener(type, queue.handler, false);
-                }
-                else {
-                    element.attachEvent('on' + type, queue.handler);
+                // 非全局事件是需要自己管理一个处理函数的，以便到时候解除事件绑定
+                if (!isGlobal) {
+                    queue.handler = 
+                        lib.curry(triggerDOMEvent, control, element);
+                    lib.on(element, type, queue.handler);
                 }
             }
 
@@ -438,11 +520,7 @@ define(
             }
 
             if (!handler) {
-                var oldQueue = events[type];
-                events[type] = [];
-                if (oldQueue) {
-                    events[type].handler = oldQueue.handler;
-                }
+                events[type].length = 0;
             }
             else {
                 var queue = events[type];
@@ -480,18 +558,19 @@ define(
 
             var guid = element[domEventsKey];
             var events = control.domEvents[guid];
+
             // `events`中存放着各事件类型，只有`element`属性是一个DOM对象，
             // 因此要删除`element`这个键，
             // 以避免`for... in`的时候碰到一个不是数组类型的值
             delete events.element;
             for (var type in events) {
                 if (events.hasOwnProperty(type)) {
-                    var handler = events[type].handler;
-                    if (element.removeEventListener) {
-                        element.removeEventListener(type, handler, false);
-                    }
-                    else {
-                        element.detachEvent('on' + type, handler);
+                    // 全局事件只要清掉在`globalEvents`那边的注册关系
+                    var isGlobal = removeGlobalDOMEvent(control, type, element);
+                    if (!isGlobal) {
+                        var handler = events[type].handler;
+                        events[type].handler = null; // 防内存泄露
+                        lib.un(element, type, handler);
                     }
                 }
             }
