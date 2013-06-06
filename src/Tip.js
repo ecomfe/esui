@@ -14,9 +14,6 @@ define(
         var ui = require('./main');
         var paint = require('./painters');
 
-        // css
-        require('css!./css/Tip.css');
-
         /**
          * 提示控件类
          * 
@@ -144,7 +141,7 @@ define(
             helper.layer.attachTo(
                 layer, 
                 tip.main, 
-                { top: 'bottom', left: 'left'}
+                { top: 'bottom', left: 'left', spaceDetection: 'both'}
             );
 
             tip.repaint();

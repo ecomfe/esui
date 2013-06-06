@@ -159,7 +159,7 @@ define(
                     name: 'readOnly',
                     paint: function (control, value) {
                         var method = value ? 'addState' : 'removeState';
-                        control[method]('readOnly');
+                        control[method]('read-only');
                         var nodeName = control.main.nodeName.toLowerCase();
                         if (nodeName === 'input'
                             || nodeName === 'select'
@@ -221,7 +221,7 @@ define(
              */
             setReadOnly: function (readOnly) {
                 readOnly = !!readOnly;
-                this[readOnly ? 'addState' : 'removeState']('readOnly');
+                this[readOnly ? 'addState' : 'removeState']('read-only');
             },
 
             /**
@@ -230,7 +230,7 @@ define(
              * @return {boolean}
              */
             isReadOnly: function () {
-                return this.hasState('readOnly');
+                return this.hasState('read-only');
             },
 
             /**

@@ -1,3 +1,10 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 下拉选择样式
+ * @author dbear
+ */
 @import "mixin.less";
 @import "variable.less";
 
@@ -12,7 +19,8 @@
     height: 17px;
     line-height: 17px;
     padding: 3px 3px 3px 5px;
-    width: 100px;
+    min-width: 50px;
+    padding-right: 20px;
 }
 
 .ui-select:hover,
@@ -75,4 +83,25 @@
 
 .ui-select-layer-hidden {
     display: none;
+}
+
+.ui-select-disabled,
+.ui-select-read-only {
+    color: #999;
+    border-color: #D8D8D8;
+}
+
+/** 验证 */
+.ui-select-validity-invalid {
+    border: 1px solid red;
+}
+.ui-select-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.ui-select-validity-label-invalid {
+    .background('esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
 }

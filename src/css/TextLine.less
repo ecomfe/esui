@@ -7,7 +7,6 @@
   */
 @import "mixin.less";
 @import "variable.less";
-@import "common.less";
 
 .ui-textline {
     position: relative;
@@ -45,6 +44,11 @@
     &:hover {
         border: 1px solid #6e8ab8;
     }
+}
+.ui-textline-disabled,
+.ui-textline-read-only {
+    color: #999;
+    border-color: #D8D8D8;
 }
 
 /** 验证 */

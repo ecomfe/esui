@@ -116,6 +116,7 @@ define(
          */
         helper.getPartClasses = function (control, part) {
             // main:
+            //   ui-ctrl 为了定义有限全局的normalize
             //   ui-{type}
             //   skin-{skinname}
             //   skin-{skinname}-{type}
@@ -128,7 +129,7 @@ define(
             var prefix = ui.getConfig('uiClassPrefix');
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
-
+            
             if (part) {
                 classes.push(joinByStrike(prefix, type, part));
                 if (skin) {
@@ -136,6 +137,7 @@ define(
                 }
             }
             else {
+                classes.push('ui-ctrl');
                 classes.push(joinByStrike(prefix, type));
                 if (skin) {
                     classes.push(
@@ -602,7 +604,7 @@ define(
                 if (main.readOnly 
                     && (options.readOnly === null
                         || options.readOnly === undefined)) {
-                    options.readOnly = main.readonly;
+                    options.readOnly = main.readonly || main.readOnly;
                 }
             }
         };

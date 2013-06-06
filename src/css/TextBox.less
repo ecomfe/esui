@@ -5,8 +5,8 @@
  * @file 单行、文本框样式
  * @author erik, zhaolei
  */
-
-@import "common.less";
+@import "mixin.less";
+@import "variable.less";
 
 .ui-textbox {
     position: relative;
@@ -48,8 +48,7 @@
 }
 
 .ui-textbox-disabled,
-.ui-textbox-disabled,
-.ui-textbox-readonly {
+.ui-textbox-read-only {
     input, textarea {
         border: 1px solid #7E9DB9;
         background: #f6f6f6;

@@ -11,9 +11,6 @@ define(
         require('./TextBox');
         require('./Panel');
 
-        // 仅在调试的时候打开
-        //require('css!./css/TextLine.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
@@ -256,7 +253,7 @@ define(
                         // 输入区
                         var textArea = textLine.getChild('text');
                         if (value) {
-                            if (typeof value === 'array') {
+                            if (lib.isArray(value)) {
                                 textLine.value =
                                     lib.decodeHTML(value.join('\n'));
                             }

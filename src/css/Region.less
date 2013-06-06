@@ -7,7 +7,6 @@
  */
 @import "mixin.less";
 @import "variable.less";
-@import "common.less";
 .ui-region {
     text-align: left;
     margin: 0;
@@ -147,4 +146,25 @@
     width: auto;
     font-size:12px;
     border: none;
+}
+
+.ui-region-disabled,
+.ui-region-read-only {
+    color: #999;
+    border-color: #D8D8D8;
+}
+
+/** 验证 */
+.ui-region-validity-invalid {
+    border: 1px solid red;
+}
+.ui-region-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.ui-region-validity-label-invalid {
+    .background('esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
 }

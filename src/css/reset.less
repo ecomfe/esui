@@ -1,0 +1,66 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 重置样式
+  * @author DBear
+  */
+.ui-ctrl {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+
+    table {
+        border-collapse: collapse;
+        table-layout:fixed;
+    }
+
+    fieldset, iframe, img {
+        border: 0;
+    }
+
+    a img {
+        display:block;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    address, caption, cite, code, dfn, em, strong, th, var, i {  
+        font-style:normal;   
+        font-weight:normal;
+    }
+}
+
+table {
+    &.ui-ctrl {
+        border-collapse: collapse;
+        table-layout:fixed;
+    }
+}
+
+fieldset, iframe, img {
+    &.ui-ctrl {
+        border: 0;
+    }
+}
+
+a img {
+    &.ui-ctrl {
+        display:block;
+    }
+}
+
+
+li {
+    &.ui-ctrl {
+        list-style: none;
+    }
+}
+
+address, caption, cite, code, dfn, em, strong, th, var, i {
+    &.ui-ctrl {
+        font-style:normal;
+    }
+}

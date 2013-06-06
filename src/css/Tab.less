@@ -1,6 +1,12 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 切换面板样式
+ * @author dbear
+ */
 @import "mixin.less";
 @import "variable.less";
-@import "common.less";
 
 .ui-tab {
     .ui-tab-navigator {
@@ -24,7 +30,7 @@
 
 /** 纵向tab */
 .ui-tab-vertical {
-    .skin-default-tab-navigator {
+    .ui-tab-navigator {
         padding-top: 10px;
         border-right: 1px solid #DDD;
         float: left;
@@ -61,7 +67,7 @@
 
     }
 
-    .skin-default-tab-navigator {
+    .ui-tab-navigator {
         @tabPadding: 10px;
 
         padding-left:10px;

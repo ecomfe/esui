@@ -1,6 +1,12 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 区间日历样式
+ * @author dbear
+ */
 @import "mixin.less";
 @import "variable.less";
-@import "common.less";
 .ui-rangecalendar {
     border:1px solid #a9adb6;/*border:1px solid #dde0e9;*/
     width:235px;
@@ -88,5 +94,26 @@
 .ui-rangecalendar-foot {
     clear: both;
     padding-top: 8px;
+}
+
+.ui-rangecalendar-disabled,
+.ui-rangecalendar-read-only {
+    color: #999;
+    border-color: #D8D8D8;
+}
+
+/** 验证 */
+.ui-rangecalendar-validity-invalid {
+    border: 1px solid red;
+}
+.ui-rangecalendar-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.ui-rangecalendar-validity-label-invalid {
+    .background('esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
 }
 

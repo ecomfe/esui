@@ -1,6 +1,12 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 输入日历样式
+ * @author dbear
+ */
 @import "mixin.less";
 @import "variable.less";
-@import "common.less";
 .ui-calendar {
     border: 1px solid #a9adb6;/*border:1px solid #dde0e9;*/
     width: 110px;
@@ -42,3 +48,10 @@
 .ui-calendar-layer-hidden {
     display: none;    
 }
+
+.ui-calendar-disabled,
+.ui-calendar-read-only {
+    color: #999;
+    border-color: #D8D8D8;
+}
+
