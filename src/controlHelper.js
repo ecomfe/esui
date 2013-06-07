@@ -363,11 +363,8 @@ define(
             return null;
         }
 
-        function triggerGlobalDOMEvent(e) {
-            e = e || window.event;
-            var target = e.target || e.srcElement;
-
-            var pool = getGlobalEventPool(target);
+        function triggerGlobalDOMEvent(element, e) {
+            var pool = getGlobalEventPool(element);
             if (!pool) {
                 return;
             }
@@ -375,7 +372,7 @@ define(
             var queue = pool[e.type];
             for (var i = 0; i < queue.length; i++) {
                 var control = queue[i];
-                triggerDOMEvent(control, target, e);
+                triggerDOMEvent(control, element, e);
             }
         }
 
@@ -386,12 +383,13 @@ define(
                 return false;
             }
 
-            if (!pool[type]) {
-                pool[type] = [];
-                lib.on(element, type, triggerGlobalDOMEvent);
+            var controls = pool[type];
+            if (!controls) {
+                controls = pool[type] = [];
+                controls.handler = lib.curry(triggerGlobalDOMEvent, element);
+                lib.on(element, type, controls.handler);
             }
 
-            var controls = pool[type];
             for (var i = 0; i < controls.length; i++) {
                 if (controls[i] === control) {
                     return true;
