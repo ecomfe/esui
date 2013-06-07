@@ -93,7 +93,7 @@ define(
                 if (body) {
                     sidebar._bodyEl = body;
                     lib.addClasses(
-                        head, 
+                        body, 
                         helper.getPartClasses(sidebar, 'body')
                     );
                 }
