@@ -43,34 +43,40 @@ define(
          * @inner
          */
         function adjustValueProperties(context) {
-            // 如果给了`selectedIndex`，且没有`value`和`rawValue`来覆盖，
-            // 则以`selectedIndex`为准设定`rawValue`
-            if (context.selectedIndex != null
-                && context.value == null
-                && context.rawValue == null
-            ) {
-                var selectedItem = context.datasource[context.selectedIndex];
-                context.rawValue = selectedItem ? selectedItem.value : null;
-            }
-            else {
-                // 如果给了`value`，则需要从其产生`rawValue`的值：
-                // 
-                // - 如果同时给了`rawValue`，以`rawValue`为准
-                // - 否则使用`value`作为`rawValue`
-                if (context.value != null) {
-                    if (context.rawValue == null) {
-                        context.rawValue = context.value; 
-                    }
-                    delete context.value;
-                }
+            // 因为`value`可能多个项是相同的，所以必须一切以`selectedIndex`为准
 
-                // 当以`value`或`rawValue`为基准时，要同步一次`selectedIndex`
+            // 如果3个值都没有，就搞出默认值来
+            if (context.selectedIndex == null
+                && context.rawValue == null
+                && context.value == null
+            ) {
                 context.selectedIndex = -1;
+            }
+
+            // 按`rawValue` > `value` > `selectedIndex`的顺序处理一下
+            if (context.rawValue != null) {
+                context.value = null;
+                context.selectedIndex = null;
+            }
+            else if (context.value != null) {
+                context.selectedIndex = null;
+            }
+
+            // 如果没给`selectedIndex`，那么就用`value`或`rawValue`来找第一个对上的
+            if (context.selectedIndex == null
+                && (context.value != null || context.rawValue != null)
+            ) {
+                // 以`rawValue`为优先
+                context.selectedIndex = -1;
+                var value = context.rawValue || context.value;
                 for (var i = 0; i < context.datasource.length; i++) {
-                    if (context.datasource[i].value == context.rawValue) {
+                    if (context.datasource[i].value == value) {
                         context.selectedIndex = i;
+                        break;
                     }
                 }
+                delete context.value;
+                delete context.rawValue;
             }
 
             // 有可能更换过`datasource`，或者给了一个不存在的`value`，
@@ -81,13 +87,9 @@ define(
             ) {
                 if (context.emptyText) {
                     context.selectedIndex = -1;
-                    context.rawValue = null;
                 }
                 else {
                     context.selectedIndex = 0;
-                    context.rawValue = context.datasource[0]
-                        ? context.datasource[0].value
-                        : '';
                 }
             }
         }
@@ -128,7 +130,6 @@ define(
                         && properties.value == null
                         && properties.rawValue == null
                     ) {
-                        properties.rawValue = item.value;
                         // 无值的话肯定是在最前面
                         properties.selectedIndex = item.value ? i : 0;
                     }
@@ -199,7 +200,7 @@ define(
             var html = '';
             for (var i = 0; i < select.datasource.length; i++) {
                 var item = select.datasource[i];
-                html += '<li data-value="' + lib.encodeHTML(item.value) + '">';
+                html += '<li data-index="' + i + '">';
                 if (item.value == select.value) {
                     select.selectedIndex = i;
                 }
@@ -256,13 +257,13 @@ define(
             var target = lib.event.getTarget(e);
             var layer = getSelectionLayer(select);
             while (target && target !== layer
-                && !lib.hasAttribute(target, 'data-value')
+                && !lib.hasAttribute(target, 'data-index')
             ) {
                 target = target.parentNode;
             }
             if (target) {
-                var value = target.getAttribute('data-value');
-                select.setRawValue(value);
+                var index = target.getAttribute('data-index');
+                select.set('selectedIndex', +index);
             }
             hideLayer(select);
         }
@@ -338,10 +339,10 @@ define(
             }
 
             var classes = helper.getPartClasses(select, 'layer-selected');
-            var items = layer.children;
+            var items = lib.getChildren(layer);
             for (var i = items.length - 1; i >= 0; i--) {
                 var item = items[i];
-                if (item.getAttribute('data-value') == select.rawValue) {
+                if (i === select.selectedIndex) {
                     lib.addClasses(item, classes);
                 }
                 else {
@@ -459,7 +460,8 @@ define(
         function updateValue(select) {
             // 同步`value`
             var hidden = select.main.getElementsByTagName('input')[0];
-            hidden.value = select.rawValue == null ? '' : select.rawValue;
+            var value = select.getRawValue();
+            hidden.value = value == null ? '' : value;
 
             // 同步显示的文字
             var textHolder = select.main.getElementsByTagName('span')[0];
@@ -470,6 +472,23 @@ define(
 
             syncSelectedItem(select);
         }
+
+        /**
+         * 获取原始值
+         *
+         * @return {*}
+         * @override
+         * @public
+         */
+        Select.prototype.getRawValue = function () {
+            if (this.selectedIndex < 0) {
+                return null;
+            }
+            
+            var item = this.datasource[this.selectedIndex];
+
+            return item ? item.value : null;
+        };
 
         var paint = require('./painters');
 
@@ -486,7 +505,7 @@ define(
             paint.style('height'),
             paint.html('datasource', 'layer', getLayerHTML),
             {
-                name: ['rawValue', 'emptyText'],
+                name: ['selectedIndex', 'emptyText'],
                 paint: updateValue
             },
             {
@@ -515,8 +534,9 @@ define(
             if (properties.value == null
                 && properties.rawValue == null
                 && properties.selectedIndex == null
+                && properties.datasource === this.datasource
             ) {
-                properties.rawValue = this.rawValue;
+                properties.selectedIndex = this.selectedIndex;
             }
             if (!properties.hasOwnProperty('emptyText')) {
                 properties.emptyText = this.emptyText;
@@ -526,7 +546,7 @@ define(
             var changes = 
                 InputControl.prototype.setProperties.apply(this, arguments);
 
-            if (changes.hasOwnProperty('rawValue')) {
+            if (changes.hasOwnProperty('selectedIndex')) {
                 this.fire('change');
             }
 
