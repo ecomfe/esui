@@ -861,6 +861,79 @@ define(
             // 
             // 这两种情况下，要计算出宽和高来，且覆盖掉提供的宽高
             var config = lib.clone(options);
+
+            // 如果要靠住某一边，且要检测剩余空间，则那个边空间不够，就要移到另一边
+            if (config.spaceDetection === 'vertical'
+                || config.spaceDetection === 'both') {
+                // 对纵向的策略如下：
+                // 
+                // - 如果指定`top === 'bottm'`，则尝试放下面，放不了就放上面
+                // - 如果指定`bottom === 'top'`，则尝试放上面，放不下就放下面
+                // - 如果指定`top === 'top'`，则尝试上边对齐，不行就下边对齐
+                // - 如果指定`bottom === 'bottom`'，则尝试下边对齐，不行就上边对齐
+                if (config.top === 'bottom') {
+                    var pageHeight = lib.page.getHeight();
+                    if (pageHeight - offset.bottom <= elementHeight) {
+                        config.top = null;
+                        config.bottom = 'top';
+                    }
+                }
+                else if (config.bottom === 'top') {
+                    if (offset.top <= elementHeight) {
+                        config.top = 'bottom';
+                        config.bottom = null;
+                    }
+                }
+                else if (config.top === 'top') {
+                    var pageHeight = lib.page.getHeight();
+                    if (pageHeight - offset.top <= elementHeight) {
+                        config.top = null;
+                        config.bottom = 'bottom';
+                    }
+                }
+                else if (config.bottom === 'bottom') {
+                    if (offset.bottom <= elementHeight) {
+                        config.top = 'top';
+                        config.bottom = null;
+                    }
+                }
+            }
+            if (config.spaceDetection === 'horizontal'
+                || config.spaceDetection === 'both') {
+                // 对横向的策略如下：
+                // 
+                // - 如果指定`left === 'right'`，则尝试放右边，放不了就放左边
+                // - 如果指定`right === 'left'`，则尝试放左边，放不下就放右边
+                // - 如果指定`left === 'left'`，则尝试左边对齐，不行就右边对齐
+                // - 如果指定`right === 'right`'，则尝试右边对齐，不行就左边对齐
+                if (config.left === 'right') {
+                    var pageWidth = lib.page.getWidth();
+                    if (pageWidth - offset.right <= elementWidth) {
+                        config.left = null;
+                        config.right = 'left';
+                    }
+                }
+                else if (config.right === 'left') {
+                    if (offset.left <= elementWidth) {
+                        config.left = 'right';
+                        config.right = null;
+                    }
+                }
+                else if (config.left === 'left') {
+                    var pageWidth = lib.page.getWidth();
+                    if (pageWidth - offset.left <= elementWidth) {
+                        config.left = null;
+                        config.right = 'right';
+                    }
+                }
+                else if (config.right === 'right') {
+                    if (offset.right <= elementWidth) {
+                        config.left = 'left';
+                        config.right = null;
+                    }
+                }
+            }
+
             if (config.top === 'top' && config.bottom === 'bottom') {
                 config.height = offset.height;
                 config.bottom = null;
@@ -868,44 +941,6 @@ define(
             if (config.left === 'left' && config.right === 'right') {
                 config.width = offset.width;
                 config.right = null;
-            }
-
-            // 如果要靠住某一边，且要检测剩余空间，则那个边空间不够，就要移到另一边
-            if (config.spaceDetection === 'vertical'
-                || config.spaceDetection === 'both') {
-                // 默认放上边
-                if (config.top === 'bottom') {
-                    var pageHeight = lib.page.getHeight();
-                    if (pageHeight - offset.bottom < elementHeight) {
-                        config.top = null;
-                        config.bottom = 'top';
-                    }
-                }
-                // 默认放下边
-                else if (config.bottom === 'top') {
-                    if (offset.top < elementHeight) {
-                        config.top = 'bottom';
-                        config.bottom = null;
-                    }
-                }
-            }
-            if (config.spaceDetection === 'horizontal'
-                || config.spaceDetection === 'both') {
-                // 默认放右边
-                if (config.left === 'right') {
-                    var pageWidth = lib.page.getWidth();
-                    if (pageWidth - offset.right < element.offsetWidth) {
-                        config.left = null;
-                        config.right = 'left';
-                    }
-                }
-                // 默认放下边
-                else if (config.right === 'left') {
-                    if (offset.left < element.offsetWidth) {
-                        config.left = 'right';
-                        config.right = null;
-                    }
-                }
             }
 
             var properties = {};
