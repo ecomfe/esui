@@ -503,15 +503,15 @@ define(
          *
          * @inner
          * @param {{begin:Date,end:Date}=} value 外部设置的日期
-         * @return {string} 20110301222222,20110401235959
+         * @return {string} 2011-03-01 22:22:22,2011-04-01 23:59:59
          */
         function convertToParam(value) {
             var beginTime = value.begin;
             var endTime = value.end;
             var beginTail = ' 00:00:00';
             var endTail = ' 23:59:59';
-            return lib.date.format(beginTime, 'yyyy-MM-dd') + beginTail + ',' +
-                lib.date.format(endTime, 'yyyy-MM-dd') + endTail;
+            return lib.date.format(beginTime, 'YYYY-MM-DD') + beginTail + ',' +
+                lib.date.format(endTime, 'YYYY-MM-DD') + endTail;
         }
 
         /**
@@ -642,8 +642,8 @@ define(
                         begin: now,
                         end: now
                     }),
-                    dateFormat: 'yyyy-MM-dd',
-                    paramFormat: 'yyyy-MM-dd'
+                    dateFormat: 'YYYY-MM-DD',
+                    paramFormat: 'YYYY-MM-DD'
                 };
 
                 helper.extractValueFromInput(this, options);
@@ -697,17 +697,17 @@ define(
 
                 helper.addDOMEvent(
                     this, this.main, 'mousedown',
-                    lib.bind(mainClick, null, this)
+                    lib.curry(mainClick, this)
                 );
 
-                var close = lib.bind(closeLayer, null, this);
-                lib.on(document, 'mousedown', close);
-                this.on(
-                    'afterdispose',
-                    function () {
-                        lib.un(document, 'mousedown', close);
-                    }
-                );
+                //var close = lib.bind(closeLayer, null, this);
+                helper.addDOMEvent(this, document, 'mousedown', closeLayer);
+                // this.on(
+                //     'afterdispose',
+                //     function () {
+                //         lib.un(document, 'mousedown', close);
+                //     }
+                // );
 
             },
 

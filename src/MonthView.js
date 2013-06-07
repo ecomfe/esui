@@ -623,8 +623,8 @@ define(
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
                     },
-                    dateFormat: 'yyyy-MM-dd',
-                    paramFormat: 'yyyy-MM-dd',
+                    dateFormat: 'YYYY-MM-DD',
+                    paramFormat: 'YYYY-MM-DD',
                     rawValue: new Date()
                 };
                 lib.extend(properties, options);

@@ -312,12 +312,12 @@ define(function () {
      * m: 不带 0 补齐分表示<br>
      * ss: 带 0 补齐两位秒表示<br>
      * s: 不带 0 补齐秒表示<br>
-     * yyyy: 带 0 补齐的四位年表示<br>
-     * yy: 带 0 补齐的两位年表示<br>
+     * YYYY: 带 0 补齐的四位年表示<br>
+     * YY: 带 0 补齐的两位年表示<br>
      * MM: 带 0 补齐的两位月表示<br>
      * M: 不带 0 补齐的月表示<br>
-     * dd: 带 0 补齐的两位日表示<br>
-     * d: 不带 0 补齐的日表示     
+     * DD: 带 0 补齐的两位日表示<br>
+     * D: 不带 0 补齐的日表示     
      *             
      * @returns {string} 格式化后的字符串
      */
@@ -342,12 +342,12 @@ define(function () {
         var minutes = source.getMinutes();
         var seconds = source.getSeconds();
 
-        replacer(/yyyy/g, pad(year, 4));
-        replacer(/yy/g, pad(parseInt(year.toString().slice(2), 10), 2));
+        replacer(/YYYY/g, pad(year, 4));
+        replacer(/YY/g, pad(parseInt(year.toString().slice(2), 10), 2));
         replacer(/MM/g, pad(month, 2));
         replacer(/M/g, month);
-        replacer(/dd/g, pad(date2, 2));
-        replacer(/d/g, date2);
+        replacer(/DD/g, pad(date2, 2));
+        replacer(/D/g, date2);
 
         replacer(/HH/g, pad(hours, 2));
         replacer(/H/g, hours);

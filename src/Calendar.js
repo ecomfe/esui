@@ -250,8 +250,8 @@ define(
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
                     },
-                    dateFormat: 'yyyy-MM-dd',
-                    paramFormat: 'yyyy-MM-dd',
+                    dateFormat: 'YYYY-MM-DD',
+                    paramFormat: 'YYYY-MM-DD',
                     rawValue: now,
                     calType: 'sel' // 日历类型，另外还支持'input' 'label'
                 };

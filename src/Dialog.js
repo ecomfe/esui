@@ -248,9 +248,10 @@ define(
             getDialogHeadMoveHandler = lib.bind(dialogHeadMoveHandler, me);
             getDialogHeadUpHandler = lib.bind(dialogHeadUpHandler, me);
 
-            lib.on(doc, 'mousemove', getDialogHeadMoveHandler);
-            lib.on(doc, 'mouseup', getDialogHeadUpHandler);
-
+            //lib.on(doc, 'mousemove', getDialogHeadMoveHandler);
+            helper.addDOMEvent(me, doc, 'mousemove', dialogHeadMoveHandler);
+            //lib.on(doc, 'mouseup', getDialogHeadUpHandler);
+            helper.addDOMEvent(me, doc, 'mouseup', dialogHeadUpHandler);
             //记录鼠标位置
             lib.event.getMousePosition(e);
             me.dragStartPos = {x: e.pageX, y: e.pageY};
@@ -261,6 +262,7 @@ define(
          */
         function dialogHeadMoveHandler(e) {
             var me = this;
+            console.log(me);
 
             //记录鼠标位置
             lib.event.getMousePosition(e);
@@ -315,8 +317,11 @@ define(
          */
         function dialogHeadUpHandler(e) {
             //卸载事件
-            lib.un(document, 'mousemove', getDialogHeadMoveHandler);
-            lib.un(document, 'mouseup', getDialogHeadUpHandler);
+            //lib.un(document, 'mousemove', getDialogHeadMoveHandler);
+            //lib.un(document, 'mouseup', getDialogHeadUpHandler);
+
+            helper.removeDOMEvent(this, doc, 'mousemove', dialogHeadMoveHandler);
+            helper.removeDOMEvent(this, doc, 'mouseup', dialogHeadUpHandler);
         }
 
 
@@ -676,7 +681,7 @@ define(
 
                 // 要把dialog置顶
                 var zIndex = 1203;
-                if (this.alwaysTop) {
+                //if (this.alwaysTop) {
                     // 查找当前dialog个数
                     var rawElements = document.body.children;
                     var dialogNum = 0;
@@ -688,8 +693,8 @@ define(
                         }
                     }
 
-                    zIndex += 2*dialogNum;
-                }
+                    zIndex += dialogNum * 10;
+                //}
                 this.main.style.zIndex = zIndex;
 
                 if (mask) {
