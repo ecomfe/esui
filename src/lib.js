@@ -156,7 +156,6 @@ define(function () {
      * @return {function} 封装后的函数
      */
     lib.bind = function (func, scope) {
-        // by Tangram 1.x: baidu.fn.bind
         var xargs = arguments.length > 2 ? [].slice.call(arguments, 2) : null;
         return function () {
             var args = xargs 
@@ -191,12 +190,12 @@ define(function () {
      * @return {string}
      */
     lib.format = function (template, data) {
-        if (data == null) {
-            return template;
-        }
-
         if (!template) {
             return '';
+        }
+
+        if (data == null) {
+            return template;
         }
         
         return template.replace(
@@ -323,6 +322,10 @@ define(function () {
      * @returns {string} 格式化后的字符串
      */
     lib.date.format = function (source, pattern) {
+        if (!source) {
+            return '';
+        }
+
         if ('string' != typeof pattern) {
             return source.toString();
         }
@@ -397,6 +400,10 @@ define(function () {
      * @returns {Date} 转换后的日期对象
      */
     lib.date.parse = function (source) {
+        if (!source) {
+            return new Date(0);
+        }
+
         // by Tangram 1.x: baidu.date.parse
         var reg = new RegExp('^\\d+(\\-|\\/)\\d+(\\-|\\/)\\d+\x24');
         if ('string' == typeof source) {
@@ -476,19 +483,6 @@ define(function () {
     };
 
     /**
-     * 判断一个元素是否块形元素
-     *
-     * @param {HTMLElement} element 目标元素
-     * @return {boolean}
-     */
-    lib.isBlock = function (element) {
-        var nodeName = element.nodeName.toLowerCase();
-        return nodeName === 'div'
-            || nodeName === 'article'
-            || nodeName === 'section';
-    };
-
-    /**
      * 判断元素是否拥有指定的className
      * 
      * @param {HTMLElement} element 目标元素或目标元素的id
@@ -497,6 +491,14 @@ define(function () {
      * @return {boolean} 是否拥有指定的className
      */
     lib.hasClass = function (element, className) {
+        if (!element) {
+            return false;
+        }
+
+        if (!className) {
+            return true;
+        }
+
         var classes = element.className.split(/\s+/);
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -516,6 +518,10 @@ define(function () {
      * @return {HTMLElement} 目标元素
      */
     lib.addClass = function (element, className) {
+        if (!element || !className) {
+            return element;
+        }
+        
         var classes = element.className ? element.className.split(/\s+/) : [];
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -538,6 +544,10 @@ define(function () {
      * @return {HTMLElement} 目标元素
      */
     lib.addClasses = function (element, classes) {
+        if (!element || !classes) {
+            return element;
+        }
+
         var originalClasses = 
             element.className ? element.className.split(/\s+/) : [];
         var map = {};
@@ -570,6 +580,10 @@ define(function () {
      * @return {HTMLElement} 目标元素
      */
     lib.removeClass = function (element, className) {
+        if (!element || !className) {
+            return element;
+        }
+        
         var classes = element.className ? element.className.split(/\s+/) : [];
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -591,6 +605,10 @@ define(function () {
      * @return {HTMLElement} 目标元素
      */
     lib.removeClasses = function (element, classes) {
+        if (!element || !classes) {
+            return element;
+        }
+        
         var map = {};
         for (var i = 0; i < classes.length; i++) {
             map[classes[i]] = true;
@@ -622,6 +640,10 @@ define(function () {
      * @return {HTMLElement} 目标元素
      */
     lib.toggleClass = function (element, className) {
+        if (!element || !className) {
+            return element;
+        }
+        
         var classes = element.className ? element.className.split(/\s+/) : [];
         var containsClass = false;
         for (var i = 0; i < classes.length; i++) {
@@ -647,9 +669,14 @@ define(function () {
      * 
      */
     lib.removeNode = function (element) {
-        if ( typeof element === 'string') {
+        if (typeof element === 'string') {
             element = lib.g(element);
         }
+
+        if (!element) {
+            return;
+        }
+
         var parent = element.parentNode;
         if (parent) {
             parent.removeChild(element);
@@ -665,7 +692,6 @@ define(function () {
      * @return {HTMLElement} 被添加的目标元素
      */
     lib.insertAfter = function (newElement, existElement) {
-        // by Tangram 1.x: baidu.dom.insertAfter
         var existParent = existElement.parentNode;
         
         if (existParent) {
@@ -682,7 +708,6 @@ define(function () {
      * @return {HTMLElement} 被添加的目标元素
      */
     lib.insertBefore = function (newElement, existElement) {
-        // by Tangram 1.x: baidu.dom.insertBefore
         var existParent = existElement.parentNode;
 
         if (existParent) {
@@ -722,7 +747,7 @@ define(function () {
         if (!element) {
             return '';
         }
-        
+
         var doc = element.nodeType == 9 
             ? element 
             : element.ownerDocument || element.document;
@@ -806,7 +831,6 @@ define(function () {
     };
 
     lib.getText = function (element) {
-        // by Tangram 1.x: baidu.dom.getText
         var ret = '';
         var childs;
         var i = 0;
@@ -1152,7 +1176,6 @@ define(function () {
      * @returns {boolean} contained元素是否被包含于container元素的DOM节点上
      */
     lib.dom.contains = function (container, contained) {
-
         var g = lib.g;
         container = g(container);
         contained = g(contained);
