@@ -138,7 +138,7 @@
 
 
 // 圆角
-.border-radius (@top, @right, @bottom, @left) {
+.border-radius (...) {
     border-radius: @arguments;        
     -moz-border-radius: @arguments;
     -webkit-border-radius: @arguments;
@@ -231,7 +231,7 @@
 }
 
 // Opacity
-.opacity(@opacity) {
+.opacity (@opacity) {
   opacity: @opacity / 100;
   filter: ~"alpha(opacity=@{opacity})";
 }
