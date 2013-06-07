@@ -202,10 +202,6 @@ define(
             main.style.top = page.getScrollTop() + top + 'px';
         }
 
-        var getDialogHeadDownHandler; //drag mousedown的句柄
-        var getDialogHeadMoveHandler; //drag mousemove的句柄
-        var getDialogHeadUpHandler; //drag mouseup的句柄
-
         /**
          * 绑定拖动drag事件
          * @param {ui.Dialog} 控件对象
@@ -214,8 +210,6 @@ define(
         function initDragHandler(dialog, unbind) {
             var me = dialog;
             var head = dialog.getChild('head').main;
-            
-            getDialogHeadDownHandler = lib.bind(dialogHeadDownHandler, me);
 
             if (unbind === true) {
                 helper.removeDOMEvent(
