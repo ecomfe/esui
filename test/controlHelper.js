@@ -83,6 +83,7 @@ define(function (require) {
                     };
                     var classes = helper.getPartClasses(control);
                     var expectResult = [
+                        'ui-ctrl',
                         'ui-type',
                         'skin-default',
                         'skin-default-type'
@@ -109,6 +110,7 @@ define(function (require) {
                     };
                     var classes = helper.getPartClasses(control);
                     var expectResult = [
+                        'ui-ctrl',
                         'ui-type'
                     ];
                     expect(classes).toEqual(expectResult);
@@ -144,6 +146,7 @@ define(function (require) {
                 var element = document.createElement('div');
                 helper.addPartClasses(control, null, element);
                 var expectResult = [
+                    'ui-ctrl',
                     'ui-type',
                     'skin-default',
                     'skin-default-type'
@@ -159,6 +162,7 @@ define(function (require) {
                 };
                 helper.addPartClasses(control);
                 var expectResult = [
+                    'ui-ctrl',
                     'ui-type',
                     'skin-default',
                     'skin-default-type'
