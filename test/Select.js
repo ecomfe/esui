@@ -182,7 +182,7 @@ define(function (require) {
                 expect(select.main.firstChild.innerHTML).toBe('test');
             });
 
-            it('should select the first item if `datasource` is changed in runtime which causes value to be unsynced and no `emptyText` is given', function () {
+            it('should select the first item if `datasource` is changed in runtime when no `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, value: '6' });
                 select.appendTo(container);
                 select.setProperties({ datasource: datasource.slice(0, 3) });
@@ -190,15 +190,7 @@ define(function (require) {
                 expect(select.getRawValue()).toBe('1');
             });
 
-            it('should select the first item if `datasource` is changed in runtime which causes value to be unsynced but `selectedIndex` is still in range and no `emptyText` is given', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                select.appendTo(container);
-                select.setProperties({ datasource: datasource.slice(3) });
-                expect(select.get('selectedIndex')).toBe(0);
-                expect(select.getRawValue()).toBe('4');
-            });
-
-            it('should select `emptyText` if `datasource` is change in runtime which causes value to be unsynced when `emptyText` is given', function () {
+            it('should select `emptyText` if `datasource` is change in runtime when `emptyText` is given', function () {
                 var select = new Select({ datasource: datasource, value: '6', emptyText: 'test' });
                 select.appendTo(container);
                 select.setProperties({ datasource: datasource.slice(0, 3) });
@@ -206,20 +198,12 @@ define(function (require) {
                 expect(select.getRawValue()).toBe(null);
             });
 
-            it('should select `emptyText` if `datasource` is changed in runtime which causes value to be unsynced but `selectedIndex` is still in range when `emptyText` is given', function () {
-                var select = new Select({ datasource: datasource, value: '2', emptyText: 'test' });
-                select.appendTo(container);
-                select.setProperties({ datasource: datasource.slice(3, 3) });
-                expect(select.get('selectedIndex')).toBe(-1);
-                expect(select.getRawValue()).toBe(null);
-            });
-
-            it('should not adjust value related properties if `datasource` is changed but value is still in sync', function () {
+            it('should select the first item if `datasource` is changed even value is still in sync', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);
                 select.setProperties({ datasource: datasource.slice(0, 3) });
-                expect(select.get('selectedIndex')).toBe(1);
-                expect(select.getRawValue()).toBe('2');
+                expect(select.get('selectedIndex')).toBe(0);
+                expect(select.getRawValue()).toBe('1');
             });
 
             it('should adjust value related properties if `value` is change in runtime and is given a non-exist value', function () {
@@ -598,6 +582,15 @@ define(function (require) {
                 expect(spy).toHaveBeenCalled();
             });
 
+            it('should fire if `datasource` is changed even value is still available as previous', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                var spy = jasmine.createSpy();
+                select.on('change', spy);
+                select.appendTo(container);
+                select.set('datasource', datasource.slice(0, 3));
+                expect(spy).toHaveBeenCalled();
+            });
+
             it('should not fire if `value` is given the same as previous', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 var spy = jasmine.createSpy();
@@ -622,15 +615,6 @@ define(function (require) {
                 select.on('change', spy);
                 select.appendTo(container);
                 select.setProperties({ selectedIndex: 1 });
-                expect(spy).not.toHaveBeenCalled();
-            });
-
-            it('should not fire if `datasource` is changed but value is still available as previous', function () {
-                var select = new Select({ datasource: datasource, value: '2' });
-                var spy = jasmine.createSpy();
-                select.on('change', spy);
-                select.appendTo(container);
-                select.set('datasource', datasource.slice(0, 3));
                 expect(spy).not.toHaveBeenCalled();
             });
         });
