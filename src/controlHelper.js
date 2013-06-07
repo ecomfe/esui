@@ -346,6 +346,7 @@ define(
         var globalEvents = {
             window: {},
             document: {},
+            documentElement: {},
             body: {}
         };
 
@@ -353,8 +354,11 @@ define(
             if (element === window) {
                 return globalEvents.window;
             }
-            if (element === document || element === document.documentElement) {
+            if (element === document) {
                 return globalEvents.document;
+            }
+            if (element === document.documentElement) {
+                return globalEvents.documentElement;
             }
             if (element === document.body) {
                 return globalEvents.body;
@@ -415,9 +419,17 @@ define(
             for (var i = 0; i < controls.length; i++) {
                 if (controls[i] === control) {
                     controls.splice(i, 1);
-                    return true;
+                    break;
                 }
             }
+            // 尽早移除事件
+            if (!controls.length) {
+                var handler = controls.handler;
+                lib.un(element, type, handler);
+                pool[type] = null;
+            }
+
+            return true;
         }
 
         function triggerDOMEvent(control, element, e) {
@@ -526,6 +538,13 @@ define(
                         // 可能有重复注册的，所以要继续循环
                         i--;
                     }
+                }
+
+                // 全局元素上的事件很容易冒泡到后执行，
+                // 在上面的又都是`mousemove`这种不停执行的，
+                // 因此对全局事件做一下处理，尽早移除
+                if (!queue.length) {
+                    removeGlobalDOMEvent(control, type, element);
                 }
             }
         };
