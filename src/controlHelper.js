@@ -346,7 +346,6 @@ define(
         var globalEvents = {
             window: {},
             document: {},
-            documentElement: {},
             body: {}
         };
 
@@ -354,11 +353,8 @@ define(
             if (element === window) {
                 return globalEvents.window;
             }
-            if (element === document) {
+            if (element === document || element === document.documentElement) {
                 return globalEvents.document;
-            }
-            if (element === document.documentElement) {
-                return globalEvents.documentElement;
             }
             if (element === document.body) {
                 return globalEvents.body;

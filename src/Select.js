@@ -224,14 +224,14 @@ define(
         /**
          * 关闭下拉弹层
          *
-         * @param {Select} select Select控件实例
          * @param {Event} 触发事件的事件对象
          * @inner
          */
-        function closeLayer(select, e) {
+        function closeLayer(e) {
+            console.log(1);
             var target = e.target;
-            var layer = getSelectionLayer(select);
-            var main = select.main;
+            var layer = getSelectionLayer(this);
+            var main = this.main;
 
             if (!layer) {
                 return;
@@ -242,7 +242,7 @@ define(
             }
 
             if (target !== layer && target !== main) {
-                hideLayer(select);
+                hideLayer(this);
             }
         }
 
@@ -373,14 +373,7 @@ define(
                     'click', 
                     lib.curry(selectValue, select)
                 );
-                var close = lib.curry(closeLayer, select);
-                lib.on(document, 'mousedown', close);
-                select.on(
-                    'afterdispose',
-                    function () {
-                        lib.un(document, 'mousedown', close);
-                    }
-                );
+                helper.addDOMEvent(select, document, 'mousedown', closeLayer);
 
                 // 当`Select`作为别的控件的子控件时，
                 // 别的控件也可能注册`document`上的`mousedown`关掉自己的弹层，
