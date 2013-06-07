@@ -760,6 +760,23 @@ define(
         };
 
         /**
+         * 获取层应当使用的`z-index`的值
+         *
+         * @param {HTMLElement=} owner 层的所有者元素
+         * @return {number}
+         */
+        layer.getZIndex = function (owner) {
+            var zIndex = 0;
+            while (!zIndex && owner) {
+                zIndex = 
+                    parseInt(lib.getComputedStyle(owner, 'z-index'), 10);
+                owner = owner.parentNode;
+            }
+            zIndex = zIndex || 0;
+            return zIndex + 1;
+        };
+
+        /**
          * 将当前层移到最前
          *
          * @param {HTMLElement} element 目标层元素

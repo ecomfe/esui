@@ -277,6 +277,7 @@ define(
             var layer = getSelectionLayer(select);
             var classes = helper.getPartClasses(select, 'layer-hidden');
 
+            layer.style.zIndex = helper.layer.getZIndex(select.main);
             // 先计算需要的尺寸，浮层必须显示出来才能真正计算里面的内容，
             // 而页面必须没有浮层才能计算尺寸，这里直接3次reflow省不掉了
             layer.style.display = 'block';
