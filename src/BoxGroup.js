@@ -135,12 +135,14 @@ define(
             group.fire('change');
         }
 
-        var itemTemplate = '<div class="${wrapperClass}">'
-            + '<input type="${type}" name="${name}" id="${id}" title="${title}"'
-                + 'value="${value}"${checked} />'
-            + '<label for="${id}" id="${labelId}" '
-                + 'title="${title}">${title}</label>'
-            + '</div>';
+        var itemTemplate = [
+            '<label title="${title}" class="${wrapperClass}">',
+                '<input type="${type}" name="${name}" id="${id}"'
+                    + ' title="${title}" value="${value}"${checked} />',
+                '<span>${title}</span>',
+            '</label>'
+        ];
+        itemTemplate = itemTemplate.join('');
 
         /**
          * 渲染控件
@@ -179,10 +181,9 @@ define(
                 var data = {
                     wrapperClass: classes.join(' '),
                     id: helper.getId(group, 'box-' + i),
-                    labelId: helper.getId(group, 'label-' + i),
                     type: group.boxType,
                     name: name,
-                    title: item.title || item.name || item.text,
+                    title: lib.trim(item.title || item.name || item.text),
                     value: item.value,
                     checked: valueIndex[item.value] ? ' checked="checked"' : ''
                 };

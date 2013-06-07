@@ -17,7 +17,7 @@ define(
                 || box.main.title 
                 || ( box.getValue() === 'on' ? '' : box.getValue());
             title = lib.encodeHTML(title);
-            lib.g(helper.getId(box, 'label')).innerHTML = title;
+            lib.g(helper.getId(box, 'text')).innerHTML = title;
             lib.g(box.boxId).setAttribute('title', title);
         }
 
@@ -51,7 +51,7 @@ define(
              * @return {HTMLInputElement}
              */
             createMain: function () {
-                return document.createElement('div');
+                return document.createElement('label');
             },
 
             initOptions: function (options) {
@@ -115,13 +115,13 @@ define(
                 }
 
                 var html = '<input type="checkbox" name="${name}" id="${id}" />'
-                    + '<label for="${id}" id="${labelId}"></label>';
+                    + '<span id="${textId}"></span>';
                 this.main.innerHTML = lib.format(
                     html,
                     {
                         name: this.name,
                         id: this.boxId,
-                        labelId: helper.getId(this, 'label')
+                        textId: helper.getId(this, 'text')
                     }
                 );
 
