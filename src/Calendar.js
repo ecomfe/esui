@@ -40,7 +40,7 @@ define(
                     top: 'bottom',
                     left: 'left',
                     right: 'right',
-                    spaceDetection: 'vertical'
+                    spaceDetection: 'both'
                 }
             );
             helper.removePartClasses(calendar, 'layer-hidden', layer);

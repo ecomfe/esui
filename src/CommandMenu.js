@@ -172,7 +172,12 @@ define(
             helper.layer.attachTo(
                 layer, 
                 menu.main, 
-                { top: 'bottom', left: 'left', right: 'right' }
+                {
+                    top: 'bottom',
+                    left: 'left',
+                    right: 'right',
+                    spaceDetection: 'vertical'
+                }
             );
             lib.removeClasses(layer, classes);
             menu.addState('active');
