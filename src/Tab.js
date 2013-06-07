@@ -58,17 +58,19 @@ define(
             // 而如果有子元素且没有`[data-role="navigator"]`元素，
             // 同时构造控件的时候没给`tabs`选项，
             // 则认为每个子元素是一个标签页，从`title`属性中找出对应的`title`
-            if (this.main.children.length) {
+            var children = lib.getChildren(this.main);
+            if (children.length) {
                 var tabs = [];
-                for (var i = 0; i < this.main.children.length; i++) {
-                    var element = this.main.children[i];
+                for (var i = 0; i < children.length; i++) {
+                    var element = children[i];
                     if (element.getAttribute('data-role') === 'navigator') {
                         // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
                         // 且这个配置会覆盖用户传入的`tabs`选项
                         properties.tabs = [];
                         element.id = helper.getId(this, 'navigator');
-                        for (var i = 0; i < element.children.length; i++) {
-                            var tab = element.children[i];
+                        var children = lib.getChildren(element);
+                        for (var i = 0; i < children.length; i++) {
+                            var tab = children[i];
                             var config = {
                                 title: lib.getText(tab),
                                 panel: tab.getAttribute('data-for')
@@ -114,8 +116,9 @@ define(
 
             if (tabElement && tabElement.nodeName.toLowerCase() === 'li') {
                 var parent = tabElement.parentNode;
-                for (var i = 0; i < parent.children.length; i++) {
-                    if (parent.children[i] === tabElement) {
+                var children = lib.getChildren(parent);
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i] === tabElement) {
                         // 如果点在关闭区域上，则移除这个元素，
                         // 其它情况为激活该元素
                         var className = helper.getPartClasses(tab, 'close')[0];
@@ -300,7 +303,8 @@ define(
                 }
 
                 var navigator = lib.g(helper.getId(tab, 'navigator'));
-                var tabElement = navigator.children[i];
+                var children = lib.getChildren(navigator);
+                var tabElement = children[i];
                 var methodName = 
                     i === index ? 'addPartClasses' : 'removePartClasses';
                 helper[methodName](tab, 'item-active', tabElement);
@@ -384,8 +388,9 @@ define(
             var tabElement = 
                 createTabElement(this, config, false, this.allowClose);
             var navigator = lib.g(helper.getId(this, 'navigator'));
+            var children = lib.getChildren(navigator);
             navigator.insertBefore(
-                tabElement, navigator.children[index] || null);
+                tabElement, children[index] || null);
 
             // 如果原来是没有标签页的，则新加的这个默认激活
             if (this.tabs.length === 1) {
@@ -433,7 +438,8 @@ define(
             var removed = this.tabs.splice(index, 1)[0];
             var navigator = lib.g(helper.getId(this, 'navigator'));
             if (removed) {
-                var tabElement = navigator.children[index];
+                var children = lib.getChildren(navigator);
+                var tabElement = children[index];
                 tabElement.parentNode.removeChild(tabElement);
 
                 // 如果删的标签在当前激活的标签的前面，

@@ -719,6 +719,10 @@ define(function () {
      * @return {string}
      */
     lib.getComputedStyle = function (element, key) {
+        if (!element) {
+            return '';
+        }
+        
         var doc = element.nodeType == 9 
             ? element 
             : element.ownerDocument || element.document;
