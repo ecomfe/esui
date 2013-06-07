@@ -73,7 +73,7 @@ define(
              * @type {Array.<string>}
              * @protected
              */
-            ignoreStates: Control.prototype.ignoreStates.concat('readOnly'),
+            ignoreStates: Control.prototype.ignoreStates.concat('read-only'),
 
             /**
              * 获得应当获取焦点的元素

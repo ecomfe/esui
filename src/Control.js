@@ -384,7 +384,11 @@ define(
                     this.states[state] = 1;
                     helper.addStateClasses(this, state);
                     var properties = {};
-                    properties[state] = true;
+                    var statePropertyName = state.replace(
+                        /-(\w)/, 
+                        function (m, c) { return c.toUpperCase(); }
+                    );
+                    properties[statePropertyName] = true;
                     this.setProperties(properties);
                 }
             },
@@ -399,7 +403,11 @@ define(
                     delete this.states[state];
                     helper.removeStateClasses(this, state);
                     var properties = {};
-                    properties[state] = false;
+                    var statePropertyName = state.replace(
+                        /-(\w)/, 
+                        function (m, c) { return c.toUpperCase(); }
+                    );
+                    properties[statePropertyName] = false;
                     this.setProperties(properties);
                 }
             },
