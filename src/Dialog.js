@@ -219,12 +219,12 @@ define(
 
             if (unbind === true) {
                 helper.removeDOMEvent(
-                    me, head, 'mousedown', getDialogHeadDownHandler
+                    me, head, 'mousedown', dialogHeadDownHandler
                 );
             }
             else {
                 helper.addDOMEvent(
-                    me, head, 'mousedown', getDialogHeadDownHandler
+                    me, head, 'mousedown', dialogHeadDownHandler
                 );
             }
         }
@@ -245,12 +245,7 @@ define(
             }
             var doc = document;
 
-            getDialogHeadMoveHandler = lib.bind(dialogHeadMoveHandler, me);
-            getDialogHeadUpHandler = lib.bind(dialogHeadUpHandler, me);
-
-            //lib.on(doc, 'mousemove', getDialogHeadMoveHandler);
             helper.addDOMEvent(me, doc, 'mousemove', dialogHeadMoveHandler);
-            //lib.on(doc, 'mouseup', getDialogHeadUpHandler);
             helper.addDOMEvent(me, doc, 'mouseup', dialogHeadUpHandler);
             //记录鼠标位置
             lib.event.getMousePosition(e);
@@ -262,7 +257,6 @@ define(
          */
         function dialogHeadMoveHandler(e) {
             var me = this;
-            console.log(me);
 
             //记录鼠标位置
             lib.event.getMousePosition(e);
@@ -317,11 +311,12 @@ define(
          */
         function dialogHeadUpHandler(e) {
             //卸载事件
-            //lib.un(document, 'mousemove', getDialogHeadMoveHandler);
-            //lib.un(document, 'mouseup', getDialogHeadUpHandler);
-
-            helper.removeDOMEvent(this, doc, 'mousemove', dialogHeadMoveHandler);
-            helper.removeDOMEvent(this, doc, 'mouseup', dialogHeadUpHandler);
+            helper.removeDOMEvent(
+                this, document, 'mousemove', dialogHeadMoveHandler
+            );
+            helper.removeDOMEvent(
+                this, document, 'mouseup', dialogHeadUpHandler
+            );
         }
 
 
