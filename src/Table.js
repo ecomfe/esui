@@ -765,10 +765,10 @@ define(
                         order = 'desc';
                     }
 
-                    table.order = order;
-                    table.orderBy = field.field;
-
-                    renderHead(table);
+                    table.setProperties({
+                        order: order,
+                        orderBy: field.field
+                    });
 
                     table.fire('sort', {field: field, order: order});
                 }
@@ -1124,7 +1124,8 @@ define(
          * 
          * @private
          */
-        function updateBodyMaxHeight(table, tBody) {
+        function updateBodyMaxHeight(table) {
+            var tBody = getBody(table);
             var style = tBody.style;
             var dataLen = table.datasource.length;
             var bodyMaxHeight = table.bodyMaxHeight;
@@ -1137,13 +1138,11 @@ define(
                 if (bodyContainer) {
                     totalHeight = bodyContainer.offsetHeight;
                 }
-                
-                if (totalHeight >= bodyMaxHeight){
+                if (totalHeight >= bodyMaxHeight) {
                     style.height = bodyMaxHeight + 'px';
                     return;
                 }
             }
-
             style.height = 'auto';
         }
         
@@ -2261,6 +2260,8 @@ define(
                 var allProperities = {
                     bodyMaxHeight: false,
                     breakLine: false,
+                    order: false,
+                    orderBy: false,
                     datasource: false,
                     columnResizable: false,
                     fields: false,
@@ -2270,7 +2271,10 @@ define(
                     select: false,
                     selectMode: false,
                     sortable:false,
-                    foot: false
+                    foot: false,
+                    //实际上用户不应设置该字段，只是作为table程序内部交互使用
+                    //如果用户设置了selectedIndex，也能够正常显示
+                    selectedIndex: false
                 };
 
                 if (!changes) {
@@ -2299,16 +2303,23 @@ define(
                     initFields(table);
                     fieldsChanged = true;
                 }
-                if (fieldsChanged
-                    || allProperities['noHead']
+                 if (fieldsChanged
                     || allProperities['breakLine']
                     || allProperities['colPadding']
                     || allProperities['fontSize']
                 ) {
                     initMinColsWidth(table);
                     initColsWidth(table);
-                    renderHead(table);
                     colsWidthChanged = true;
+                }
+                if (fieldsChanged
+                    || colsWidthChanged
+                    || allProperities['noHead']
+                    || allProperities['order']
+                    || allProperities['orderBy']
+                    || allProperities['selectedIndex']
+                ) {
+                    renderHead(table);
                 }
                 if (allProperities['followHead']) {
                     cachingFollowHead(table);
@@ -2318,13 +2329,14 @@ define(
                     || colsWidthChanged
                     || allProperities['noDataHtml']
                     || allProperities['datasource']
+                    || allProperities['selectedIndex']
                 ) {
                     renderBody(table);
                     tbodyChange = true;
                 }
                 if (tbodyChange
                     || allProperities['bodyMaxHeight']) {
-                    updateBodyMaxHeight(table, getBody(table));
+                    updateBodyMaxHeight(table);
                 }
                 if (fieldsChanged
                     || colsWidthChanged
@@ -2363,7 +2375,6 @@ define(
                 if (table.realWidth != getWidth(table)) {
                     handleResize(table);
                 }
-
             },
 
              /**
@@ -2393,9 +2404,20 @@ define(
              */
             setDatasource: function(datasource){
                 this.datasource = datasource;
-                var record = { name: 'datasource' };
+                this.selectedIndex = [];
+                var record = {
+                    name: 'datasource'
+                };
+                var record2 = {
+                    name: 'selectedIndex'
+                };
 
-                this.repaint([record], { datasource: record });
+                this.repaint([record, record2],
+                    {
+                        datasource: record,
+                        selectedIndex: record2
+                    }
+                );
             },
 
             /**

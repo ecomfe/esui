@@ -16,6 +16,7 @@
             <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>&nbsp;
             <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
             <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
+            <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
             <div data-ui="type:Table;id:myTable;"></div>
         </div>
         <script>
@@ -28,6 +29,7 @@
             {id:6, name: '铮哥', sex: 1}
         ];
         data = data.concat(data);
+        data = data.concat(data);
         //data = [{id:6, name: '铮哥', sex: 1}];
         var myTable = null;
 
@@ -37,7 +39,9 @@
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',
-                'css!esui/css/main.css'
+                'css!esui/css/main.css',
+                'css!esui/css/Table.css',
+                'css!esui/css/Tip.css'
             ],
             function (ui) {
                 var lib = require('esui/lib');
@@ -51,7 +55,7 @@
                             select:'multi',
                             //subrowMutex: 1,
                             selectMode :'line',
-                            bodyMaxHeight : 400,
+                            bodyMaxHeight : 300,
                             fields: [
                                 {
                                     title: '编号',
@@ -136,8 +140,11 @@
                 ui.get('ColumnResizableBtn').onclick = function () {
                     myTable.set( 'columnResizable', !myTable.get('columnResizable'));
                 };
-                
 
+                ui.get('SetDataSourceBtn').onclick = function(){
+                     myTable.setDatasource(data.concat(data));
+                }
+                
                 ui.get('changeWidthBtn').onclick = function () {
                    var container = document.getElementById('container');
                    var width = container.style.width;
