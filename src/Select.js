@@ -228,7 +228,6 @@ define(
          * @inner
          */
         function closeLayer(e) {
-            console.log(1);
             var target = e.target;
             var layer = getSelectionLayer(this);
             var main = this.main;
