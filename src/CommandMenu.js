@@ -111,14 +111,13 @@ define(
         /**
          * 关闭下拉弹层
          *
-         * @param {Select} select Select控件实例
          * @param {Event} 触发事件的事件对象
          * @inner
          */
-        function closeLayer(menu, e) {
+        function closeLayer(e) {
             var target = e.target;
-            var layer = lib.g(helper.getId(menu, 'layer'));
-            var main = menu.main;
+            var layer = lib.g(helper.getId(this, 'layer'));
+            var main = this.main;
 
             if (!layer) {
                 return;
@@ -129,7 +128,7 @@ define(
             }
 
             if (target !== layer && target !== main) {
-                hideLayer(menu);
+                hideLayer(this);
             }
         }
 
@@ -152,14 +151,7 @@ define(
             );
             document.body.appendChild(layer);
 
-            var close = lib.curry(closeLayer, menu);
-            lib.on(document, 'mousedown', close);
-            menu.on(
-                'afterdispose',
-                function () {
-                    lib.un(document, 'mousedown', close);
-                }
-            );
+            helper.addDOMEvent(menu, document, 'mousedown', closeLayer);
             helper.addDOMEvent(
                 menu, 
                 layer,
