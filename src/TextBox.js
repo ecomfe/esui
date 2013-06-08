@@ -372,34 +372,34 @@ define(
                 }
             },
             {
-                name: ['unit', 'unitType'],
-                paint: function (textbox, unit, unitType) {
-                    var label = lib.g(helper.getId(textbox, 'unit'));
+                name: ['hint', 'hintType'],
+                paint: function (textbox, hint, hintType) {
+                    var label = lib.g(helper.getId(textbox, 'hint'));
 
-                    textbox.removeState('unit-prefix');
-                    textbox.removeState('unit-suffix');
+                    textbox.removeState('hint-prefix');
+                    textbox.removeState('hint-suffix');
 
-                    if (!unit && label) {
+                    if (!hint && label) {
                         lib.removeNode(label);
                     }
 
-                    if (unit) {
+                    if (hint) {
                         if (!label) {
                             label = document.createElement('label');
-                            label.id = helper.getId(textbox, 'unit');
-                            helper.addPartClasses(textbox, 'unit', label);
+                            label.id = helper.getId(textbox, 'hint');
+                            helper.addPartClasses(textbox, 'hint', label);
                             lib.setAttribute(label, 'for', textbox.inputId);
                         }
 
-                        label.innerHTML = lib.encodeHTML(unit);
-                        unitType = unitType === 'prefix' ? 'prefix' : 'suffix';
-                        var method = unitType === 'prefix'
+                        label.innerHTML = lib.encodeHTML(hint);
+                        hintType = hintType === 'prefix' ? 'prefix' : 'suffix';
+                        var method = hintType === 'prefix'
                             ? 'insertBefore'
                             : 'insertAfter';
                         var input = lib.g(textbox.inputId);
                         lib[method](label, input);
 
-                        textbox.addState('unit-' + unitType);
+                        textbox.addState('hint-' + hintType);
                     }
                 }
             }

@@ -113,6 +113,43 @@
         data-ui-mode=&quot;textarea&quot;&gt;&lt;/textarea&gt;
 &lt;/div&gt;</pre>
             </section>
+            <h2>前后缀提示</h2>
+            <section class="intro">
+                <p>使用<code>hint</code>和<code>hintType</code>属性灵活定义前后缀式的提示信息。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div>
+                    <label for="text-box-prefix">您的博客：</label>
+                    <input id="text-box-prefix"
+                        data-ui-type="TextBox"
+                        data-ui-hint="http://"
+                        data-ui-hint-type="prefix" />
+                </div>
+                <div>
+                    <label for="text-box-suffix">宽度</label>
+                    <input id="text-box-suffix"
+                        data-ui-type="TextBox"
+                        data-ui-hint="px"
+                        data-ui-hint-type="suffix" />
+                </div>
+                <pre class="source source-markup">&lt;div&gt;
+    &lt;label for=&quot;text-box-prefix&quot;&gt;&#x60a8;&#x7684;&#x535a;&#x5ba2;&#xff1a;&lt;/label&gt;
+    &lt;input id=&quot;text-box-prefix&quot;
+        data-ui-type=&quot;TextBox&quot;
+        data-ui-hint=&quot;http://&quot;
+        data-ui-hint-type=&quot;prefix&quot; /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+    &lt;label for=&quot;text-box-suffix&quot;&gt;&#x5bbd;&#x5ea6;&lt;/label&gt;
+    &lt;input id=&quot;text-box-suffix&quot;
+        data-ui-type=&quot;TextBox&quot;
+        data-ui-hint=&quot;px&quot;
+        data-ui-hint-type=&quot;suffix&quot; /&gt;
+&lt;/div&gt;</pre>
+            </section>
             <h2>输入提示</h2>
             <section class="intro">
                 <p>使用<code>placeholder</code>属性为文本框加上输入提示信息。</p>
