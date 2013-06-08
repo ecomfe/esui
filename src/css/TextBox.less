@@ -35,6 +35,15 @@
         resize: none;
     }
 
+    .ui-textbox-hint {
+        .inline-block ();
+        .box-sizing (border-box);
+        background-color: #f2f2f2;
+        padding: 0 12px;
+        border: 1px solid #a8adb6;
+        vertical-align: top;
+    }
+
     .ui-textbox-placeholder {
         color: #999;
         position: absolute;
@@ -44,6 +53,17 @@
 
     .ui-textbox-placeholder-hidden {
         display: none;
+    }
+}
+
+.ui-textbox-hint-suffix {
+    input {
+        border-right: 0;
+    }
+}
+.ui-textbox-hint-prefix {
+    input {
+        border-left: 0;
     }
 }
 

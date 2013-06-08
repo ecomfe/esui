@@ -49,6 +49,8 @@ define(
                 mode: 'text',
                 value: '',
                 placeholder: '',
+                width: 200,
+                height: 25,
                 autoSelect: false
             };
             lib.extend(properties, options);
@@ -75,6 +77,10 @@ define(
 
                 if (!properties.value) {
                     properties.value = this.main.value;
+                }
+
+                if (!properties.maxLength) {
+                    properties.maxLength = this.main.maxLength;
                 }
             }
 
@@ -262,36 +268,6 @@ define(
         TextBox.prototype.repaint = helper.createRepaint(
             InputControl.prototype.repaint,
             {
-                name: 'width',
-                paint: function (textbox, width) {
-                    if (!width) {
-                        return;
-                    }
-                    var input = lib.g(textbox.inputId);
-                    input.style.width = width + 'px';
-                    var placeholder = 
-                        lib.g(helper.getId(textbox, 'placeholder'));
-                    if (placeholder) {
-                        placeholder.style.maxWidth = width + 'px';
-                    }
-                }
-            },
-            {
-                name: 'height',
-                paint: function (textbox, height) {
-                    if (!height) {
-                        return;
-                    }
-                    var input = lib.g(textbox.inputId);
-                    input.style.height = height + 'px';
-                    var placeholder = 
-                        lib.g(helper.getId(textbox, 'placeholder'));
-                    if (placeholder) {
-                        placeholder.style.height = height + 'px';
-                    }
-                }
-            },
-            {
                 name: 'title',
                 paint: function (textbox, title) {
                     var input = lib.g(textbox.inputId);
@@ -318,7 +294,13 @@ define(
                 paint: function (textbox, maxLength) {
                     var input = lib.g(textbox.inputId);
                     if (!maxLength) {
-                        delete input.maxLength;
+                        try {
+                            input.maxLength = undefined;
+                            delete input.maxLength;
+                        }
+                        catch (badErrorForIE) {
+                        }
+                        lib.removeAttribute(input, 'maxlength');
                     }
                     else {
                         input.maxLength = parseInt(maxLength, 10);
@@ -400,6 +382,47 @@ define(
                         lib[method](label, input);
 
                         textbox.addState('hint-' + hintType);
+                    }
+                }
+            },
+            {
+                name: ['width', 'hint', 'hidden'],
+                paint: function (textbox, width, hint, hidden) {
+                    if (hidden) {
+                        return;
+                    }
+
+                    if (hint) {
+                        var hintLabel = lib.g(helper.getId(textbox, 'hint'));
+                        if (hintLabel) {
+                            width -= hintLabel.offsetWidth;
+                        }
+                    }
+
+                    var input = lib.g(textbox.inputId);
+                    input.style.width = width + 'px';
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.style.maxWidth = width + 'px';
+                    }
+                }
+            },
+            {
+                name: 'height',
+                paint: function (textbox, height) {
+                    var hintLabel = lib.g(helper.getId(textbox, 'hint'));
+                    if (hintLabel) {
+                        hintLabel.style.height = height + 'px';
+                        hintLabel.style.lineHeight = height + 'px';
+                    }
+
+                    var input = lib.g(textbox.inputId);
+                    input.style.height = height + 'px';
+                    var placeholder = 
+                        lib.g(helper.getId(textbox, 'placeholder'));
+                    if (placeholder) {
+                        placeholder.style.height = height + 'px';
                     }
                 }
             }
