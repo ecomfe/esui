@@ -135,6 +135,7 @@ define(
          */
         function showLayer(calendar) {
             var layer = calendar.layer;
+            layer.style.zIndex = helper.layer.getZIndex(calendar.main);
             helper.layer.attachTo(
                 layer, 
                 calendar.main, 

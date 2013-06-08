@@ -124,37 +124,6 @@ define(
 
         }
 
-        /**
-         * 构建对话框主内容和底部内容
-         *
-         * @param {ui.Dialog} 控件对象
-         * @param {string} type foot | body
-         * @param {HTMLElement} mainDOM body或foot主元素
-         * @inner
-         */
-        function createBF(control, type, mainDOM) {
-            if (mainDOM) {
-                control.content = mainDOM.innerHTML;
-            }
-            else {
-                mainDOM = document.createElement('div');
-                control.main.appendChild(mainDOM);
-            }
-
-            lib.addClasses(
-                mainDOM,
-                helper.getPartClasses(control, type + '-panel')
-            );
-            var properties = {
-                main: mainDOM
-            };
-
-            var panel = ui.create('Panel', properties);
-            panel.render();
-            control.addChild(panel, type);
-            return panel;
-        }
-
 
         /**
          * 点击头部关闭按钮时事件处理函数
@@ -491,9 +460,9 @@ define(
                 // 设置样式
                 this.main.style.left = '-10000px';
                 createHead(this, this.roles['title']);
-                createBF(this, 'body', this.roles['content']);
+                this.createBF('body', this.roles['content']);
                 if (this.needFoot) {
-                    createBF(this, 'foot', this.roles['foot']);
+                    this.createBF('foot', this.roles['foot']);
                 }
 
                 // 初始化控件主元素上的行为
@@ -508,6 +477,35 @@ define(
                         );
                     }
                 }
+            },
+            /**
+             * 构建对话框主内容和底部内容
+             *
+             * @param {string} type foot | body
+             * @param {HTMLElement} mainDOM body或foot主元素
+             * @inner
+             */
+            createBF: function (type, mainDOM) {
+                if (mainDOM) {
+                    this.content = mainDOM.innerHTML;
+                }
+                else {
+                    mainDOM = document.createElement('div');
+                    this.main.appendChild(mainDOM);
+                }
+
+                lib.addClasses(
+                    mainDOM,
+                    helper.getPartClasses(this, type + '-panel')
+                );
+                var properties = {
+                    main: mainDOM
+                };
+
+                var panel = ui.create('Panel', properties);
+                panel.render();
+                this.addChild(panel, type);
+                return panel;
             },
 
             /**
