@@ -278,16 +278,37 @@ define(
             var classes = helper.getPartClasses(select, 'layer-hidden');
 
             layer.style.zIndex = helper.layer.getZIndex(select.main);
-            helper.layer.attachTo(
-                layer, 
-                select.main,
-                {
-                    left: 'left',
-                    right: 'right',
-                    top: 'bottom',
-                    spaceDetection: 'both'
-                }
-            );
+
+            // 先计算需要的尺寸，浮层必须显示出来才能真正计算里面的内容，
+            // 而页面必须没有浮层才能计算尺寸，这里直接3次reflow省不掉了
+            layer.style.display = 'block';
+            layer.style.width = '';
+            layer.style.height = '';
+            var layerWidth = layer.offsetWidth;
+            var layerHeight = layer.offsetHeight;
+            layer.style.display = 'none';
+            var pageWidth = lib.page.getWidth();
+            var pageHeight = lib.page.getHeight();
+            layer.style.display = '';
+            var offset = lib.getOffset(select.main);
+
+            layer.style.minWidth = offset.width + 'px';
+            // 然后看下靠左放能不能放下，不能就靠右
+            if (pageWidth - offset.left > layerWidth) {
+                layer.style.left = offset.left + 'px';
+            }
+            else {
+                layer.style.left = (offset.right - layerWidth) + 'px';
+            }
+
+            // 再看看放下面能不能放下，不能就放上面去
+            if (pageHeight - offset.bottom > layerHeight) {
+                layer.style.top = offset.bottom + 'px';
+            }
+            else {
+                layer.style.top = (offset.top - layerHeight) + 'px';
+            }
+
 
             lib.removeClasses(layer, classes);
             select.addState('active');
