@@ -480,7 +480,7 @@ define(
             paint.style('height'),
             paint.html('datasource', 'layer', getLayerHTML),
             {
-                name: ['selectedIndex', 'emptyText'],
+                name: ['selectedIndex', 'emptyText', 'datasource'],
                 paint: updateValue
             },
             {

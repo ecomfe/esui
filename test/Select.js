@@ -188,6 +188,7 @@ define(function (require) {
                 select.setProperties({ datasource: datasource.slice(0, 3) });
                 expect(select.get('selectedIndex')).toBe(0);
                 expect(select.getRawValue()).toBe('1');
+                expect(select.main.firstChild.innerHTML).toBe('a');
             });
 
             it('should select `emptyText` if `datasource` is change in runtime when `emptyText` is given', function () {
