@@ -293,7 +293,8 @@ define(
                 name: 'maxLength',
                 paint: function (textbox, maxLength) {
                     var input = lib.g(textbox.inputId);
-                    if (!maxLength) {
+                    maxlength = parseInt(maxLength, 10);
+                    if (!maxLength || maxLength <= 0) {
                         try {
                             input.maxLength = undefined;
                             delete input.maxLength;
@@ -303,7 +304,7 @@ define(
                         lib.removeAttribute(input, 'maxlength');
                     }
                     else {
-                        input.maxLength = parseInt(maxLength, 10);
+                        input.maxLength = maxLength, 10;
                     }
                 }
             },
