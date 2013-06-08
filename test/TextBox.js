@@ -197,100 +197,100 @@ define(function () {
                 }
             });
 
-            describe('unit label', function () {
-                it('should appear when `unit` is set', function () {
-                    var textbox = new TextBox({ unit: 'px' });
+            describe('hint label', function () {
+                it('should appear when `hint` is set', function () {
+                    var textbox = new TextBox({ hint: 'px' });
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = textbox.main.getElementsByTagName('label');
-                    for (var i = 0; i < unitLabel.length; i++) {
-                        if (unitLabel[i].className.indexOf('unit') >= 0) {
-                            unitLabel = unitLabel[i];
+                    var hintLabel = textbox.main.getElementsByTagName('label');
+                    for (var i = 0; i < hintLabel.length; i++) {
+                        if (hintLabel[i].className.indexOf('hint') >= 0) {
+                            hintLabel = hintLabel[i];
                             break;
                         }
                     }
-                    expect(unitLabel).toBeDefined();
-                    expect(unitLabel.nodeName.toLowerCase()).toBe('label');
-                    expect(unitLabel.getAttribute('for') || unitLabel.getAttribute('htmlFor')).toBe(input.id);
-                    expect(unitLabel.className).toContain('ui-textbox-unit');
-                    expect(unitLabel.innerHTML).toBe('px');
+                    expect(hintLabel).toBeDefined();
+                    expect(hintLabel.nodeName.toLowerCase()).toBe('label');
+                    expect(hintLabel.getAttribute('for') || hintLabel.getAttribute('htmlFor')).toBe(input.id);
+                    expect(hintLabel.className).toContain('ui-textbox-hint');
+                    expect(hintLabel.innerHTML).toBe('px');
                 });
 
-                it('should not appear when `unit` is not set or is a falsy value', function () {
+                it('should not appear when `hint` is not set or is a falsy value', function () {
                     var textbox = new TextBox();
                     textbox.appendTo(container);
                     var labels = textbox.main.getElementsByTagName('label');
-                    var unitLabel;
+                    var hintLabel;
                     for (var i = 0; i < labels.length; i++) {
-                        if (labels[i].className.indexOf('unit') >= 0) {
-                            unitLabel = labels[i];
+                        if (labels[i].className.indexOf('hint') >= 0) {
+                            hintLabel = labels[i];
                             break;
                         }
                     }
-                    expect(unitLabel).toBeUndefined();
+                    expect(hintLabel).toBeUndefined();
                 });
 
-                it('should appear before `<input>` element when `unitType` is set to `prefix`', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'prefix' });
+                it('should appear before `<input>` element when `hintType` is set to `prefix`', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'prefix' });
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = input.previousSibling;
-                    expect(unitLabel).toBeDefined();
-                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                    var hintLabel = input.previousSibling;
+                    expect(hintLabel).toBeDefined();
+                    expect(hintLabel.className).toContain('ui-textbox-hint');
                 });
 
-                it('should appear before `<input>` element when `unitType` is set to `suffix`', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                it('should appear before `<input>` element when `hintType` is set to `suffix`', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'suffix' });
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = input.nextSibling;
-                    expect(unitLabel).toBeDefined();
-                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                    var hintLabel = input.nextSibling;
+                    expect(hintLabel).toBeDefined();
+                    expect(hintLabel.className).toContain('ui-textbox-hint');
                 });
 
-                it('should appear after `<input>` element when `unitType` is not set', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                it('should appear after `<input>` element when `hintType` is not set', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'suffix' });
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = input.nextSibling;
-                    expect(unitLabel).toBeDefined();
-                    expect(unitLabel.className).toContain('ui-textbox-unit');
+                    var hintLabel = input.nextSibling;
+                    expect(hintLabel).toBeDefined();
+                    expect(hintLabel.className).toContain('ui-textbox-hint');
                 });
 
-                it('should add `ui-textbox-unit-{unitType}` class to main element', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                it('should add `ui-textbox-hint-{hintType}` class to main element', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'suffix' });
                     textbox.appendTo(container);
-                    expect(textbox.main.className).toContain('ui-textbox-unit-suffix');
-                    textbox.set('unitType', 'prefix');
-                    expect(textbox.main.className).toContain('ui-textbox-unit-prefix');
+                    expect(textbox.main.className).toContain('ui-textbox-hint-suffix');
+                    textbox.set('hintType', 'prefix');
+                    expect(textbox.main.className).toContain('ui-textbox-hint-prefix');
                 });
 
-                it('should accept runtime change of `unit`', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
-                    textbox.appendTo(container);
-                    var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = input.nextSibling;
-                    expect(unitLabel.innerHTML).toBe('px');
-                    textbox.set('unit', 'test');
-                    expect(unitLabel.innerHTML).toBe('test');
-                });
-
-                it('should accept runtime change of `unitType`', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                it('should accept runtime change of `hint`', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'suffix' });
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = input.nextSibling;
-                    textbox.set('unitType', 'prefix');
-                    expect(input.previousSibling).toBe(unitLabel);
+                    var hintLabel = input.nextSibling;
+                    expect(hintLabel.innerHTML).toBe('px');
+                    textbox.set('hint', 'test');
+                    expect(hintLabel.innerHTML).toBe('test');
                 });
 
-                it('should be removed when `unit` is set to falsy', function () {
-                    var textbox = new TextBox({ unit: 'px', unitType: 'suffix' });
+                it('should accept runtime change of `hintType`', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'suffix' });
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
-                    var unitLabel = input.nextSibling;
-                    textbox.set('unit', '');
-                    expect(unitLabel.parentNode).toBe(null);
+                    var hintLabel = input.nextSibling;
+                    textbox.set('hintType', 'prefix');
+                    expect(input.previousSibling).toBe(hintLabel);
+                });
+
+                it('should be removed when `hint` is set to falsy', function () {
+                    var textbox = new TextBox({ hint: 'px', hintType: 'suffix' });
+                    textbox.appendTo(container);
+                    var input = textbox.main.getElementsByTagName('input')[0];
+                    var hintLabel = input.nextSibling;
+                    textbox.set('hint', '');
+                    expect(hintLabel.parentNode).toBe(null);
                 });
             });
 
