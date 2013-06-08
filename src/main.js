@@ -377,7 +377,7 @@ define(
                     }
 
                     // 创建控件的插件
-                    var extensions = [];
+                    var extensions = controlOptions.extensions || [];
                     controlOptions.extensions = extensions;
                     for (var key in extensionOptions) {
                         var extOption = extensionOptions[key];
