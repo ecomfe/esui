@@ -146,15 +146,13 @@ define(
         /**
          * 页面resize时事件的处理函数
          *
-         * @param {ui.Dialog} 控件对象
          * @inner
          */
-        function resizeHandler(control) {
-            var me = control;
+        function resizeHandler() {
             var page = lib.page;
-            var main = me.main;
-            var left = me.left;
-            var top = me.top;
+            var main = this.main;
+            var left = this.left;
+            var top = this.top;
             if (!left) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
@@ -298,8 +296,7 @@ define(
             mask.className = clazz.join(' ');
             mask.style.display = 'block';
             mask.style.zIndex = zIndex;
-            dialog.curMaskListener = lib.curry(maskResizeHandler, dialog);
-            lib.on(window, 'resize', dialog.curMaskListener);            
+            helper.addDOMEvent(dialog, window, 'resize', maskResizeHandler);
         }
 
 
@@ -311,8 +308,11 @@ define(
             var mask = getMask(dialog);
             if ('undefined' != typeof mask) {
                 lib.removeNode(mask);
-                lib.un(window, 'resize', dialog.curMaskListener); 
-                dialog.curMaskListener = null;
+                helper.removeDOMEvent(
+                    dialog, window, 'resize', maskResizeHandler
+                );
+                //lib.un(window, 'resize', dialog.curMaskListener); 
+                //dialog.curMaskListener = null;
             }
         }
 
@@ -459,10 +459,10 @@ define(
 
                 // 设置样式
                 this.main.style.left = '-10000px';
-                createHead(this, this.roles['title']);
-                this.createBF('body', this.roles['content']);
+                createHead(this, this.roles.title);
+                this.createBF('body', this.roles.content);
                 if (this.needFoot) {
-                    this.createBF('foot', this.roles['foot']);
+                    this.createBF('foot', this.roles.foot);
                 }
 
                 // 初始化控件主元素上的行为
@@ -524,7 +524,7 @@ define(
                             dialog.main.style.height = value + 'px';
                         }
                         if (dialog.isShow) {
-                            resizeHandler(dialog);
+                            resizeHandler.apply(dialog);
                         }
                     }
                 },
@@ -535,7 +535,7 @@ define(
                             dialog.main.style.width = value + 'px';
                         }
                         if (dialog.isShow) {
-                            resizeHandler(dialog);
+                            resizeHandler.apply(dialog);
                         }
                     }
                 },
@@ -577,21 +577,23 @@ define(
                         var footId = helper.getId(dialog, 'foot');
                         var footClass = helper.getPartClasses(dialog, 'foot');
                         // 取消了foot
-                        if (value == null) {
+                        var foot = dialog.getFoot();
+                        if (value === null) {
                             dialog.needFoot = false;
-                            var foot = dialog.getFoot();
                             if (foot) {
                                 dialog.removeChild(foot);
                             }
                         }
                         else {
                             dialog.needFoot = true;
-                            var foot = dialog.getFoot();
                             var data = {
                                 'class': footClass.join(' '),
                                 'id': footId,
                                 'content': value 
                             };
+                            if (!foot) {
+                                foot = dialog.createBF('foot');
+                            }
                             foot.setContent(
                                 lib.format(bfTpl, data)
                             );
@@ -662,9 +664,10 @@ define(
 
                 getResizeHandler = lib.curry(resizeHandler, this);
                 // 浮动层自动定位功能初始化
-                lib.on(window, 'resize', getResizeHandler);
+                //lib.on(window, 'resize', getResizeHandler);
+                helper.addDOMEvent(this, window, 'resize', resizeHandler);
                 this.setWidth(this.width);
-                resizeHandler(this);
+                resizeHandler.apply(this);
 
                 // 要把dialog置顶
                 var zIndex = 1203;
@@ -699,7 +702,10 @@ define(
              */
             hide: function () {
                 if (this.isShow) {
-                    lib.un(window, 'resize', getResizeHandler);
+                    helper.removeDOMEvent(
+                        this, window, 'resize', resizeHandler
+                    );
+                    //lib.un(window, 'resize', getResizeHandler);
                     var main = this.main;
                     var mask = this.mask;
 

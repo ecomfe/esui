@@ -780,7 +780,7 @@ define(
          */
         layer.getZIndex = function (owner) {
             var zIndex = 0;
-            while (!zIndex && owner) {
+            while (!zIndex && owner && owner !== document) {
                 zIndex = 
                     parseInt(lib.getComputedStyle(owner, 'z-index'), 10);
                 owner = owner.parentNode;

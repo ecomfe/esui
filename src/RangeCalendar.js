@@ -164,19 +164,19 @@ define(
          * @param {RangeCalendar} calendar RangeCalendar控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function closeLayer(calendar, e) {
-            if (calendar.isHidePrevent) {
-                calendar.isHidePrevent = 0;
+        function closeLayer(e) {
+            if (this.isHidePrevent) {
+                this.isHidePrevent = 0;
                 return;
             }
             var tar = e.target || e.srcElement;
             while (tar && tar != document.body) {
-                if (tar == calendar.layer) {
+                if (tar == this.layer) {
                     return;
                 }
                 tar = tar.parentNode;
             }
-            hideLayer(calendar);
+            hideLayer(this);
         }
 
 
@@ -306,7 +306,7 @@ define(
             var shortcutItems = RangeCalendar.shortCutItems;
             var curMiniIndex = calendar.curMiniIndex;
             // 重置选择状态
-            if (curMiniIndex != null && curMiniIndex != index) {
+            if (curMiniIndex !== null && curMiniIndex !== index) {
                 helper.removePartClasses(
                     calendar,
                     'shortcut-item-selected',
@@ -701,15 +701,7 @@ define(
                     lib.curry(mainClick, this)
                 );
 
-                //var close = lib.bind(closeLayer, null, this);
                 helper.addDOMEvent(this, document, 'mousedown', closeLayer);
-                // this.on(
-                //     'afterdispose',
-                //     function () {
-                //         lib.un(document, 'mousedown', close);
-                //     }
-                // );
-
             },
 
             /**

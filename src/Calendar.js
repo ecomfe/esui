@@ -41,7 +41,7 @@ define(
                     top: 'bottom',
                     left: 'left',
                     right: 'right',
-                    spaceDetection: 'both'
+                    spaceDetection: 'vertical'
                 }
             );
             helper.removePartClasses(calendar, 'layer-hidden', layer);
@@ -65,22 +65,21 @@ define(
          * 点击自动隐藏的处理
          *
          * @inner
-         * @param {Calendar} calendar Calendar控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function closeLayer(calendar, e) {
-            if (calendar.isHidePrevent) {
-                calendar.isHidePrevent = 0;
+        function closeLayer(e) {
+            if (this.isHidePrevent) {
+                this.isHidePrevent = 0;
                 return;
             }
             var tar = lib.event.getTarget(e);
             while (tar && tar != document.body) {
-                if (tar == calendar.layer) {
+                if (tar == this.layer) {
                     return;
                 }
                 tar = tar.parentNode;
             }
-            hideLayer(calendar);
+            hideLayer(this);
         }
 
 
@@ -96,8 +95,8 @@ define(
                 layer = helper.layer.create('div');
                 layer.className = 
                     helper.getPartClasses(calendar, 'layer').join(' ');
-                layer.innerHTML = ''
-                    + '<div data-ui="type:MonthView;childName:monthView;"/>';
+                layer.innerHTML =
+                    '<div data-ui="type:MonthView;childName:monthView;"/>';
 
                 document.body.appendChild(layer);
                 calendar.layer = layer;
@@ -320,15 +319,7 @@ define(
                     lib.bind(mainClick, null, this)
                 );
 
-                var close = lib.bind(closeLayer, null, this);
-                lib.on(document, 'mousedown', close);
-                this.on(
-                    'afterdispose',
-                    function () {
-                        lib.un(document, 'mousedown', close);
-                    }
-                );
-
+                helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },
 
             /**
