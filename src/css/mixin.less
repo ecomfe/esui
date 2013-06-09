@@ -235,3 +235,16 @@
   opacity: @opacity / 100;
   filter: ~"alpha(opacity=@{opacity})";
 }
+
+// 文字选择
+.user-select (@type:none) {
+    // 火狐
+    -moz-user-select: @type;
+    // webkit浏览器
+    -webkit-user-select: @type;
+    // IE10
+    -ms-user-select: @type;
+    // 早期浏览器
+    -khtml-user-select: @type;
+    user-select: @type;
+}
