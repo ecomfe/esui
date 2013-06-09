@@ -194,7 +194,6 @@ define(
          * drag时 mousedown的事件处理函数
          */
         function dialogHeadDownHandler(e) {
-            var me = this;
             var button = e.button;
             // 只有左键点击时才触发
             var isLeft = false;
@@ -206,11 +205,14 @@ define(
             }
             var doc = document;
 
-            helper.addDOMEvent(me, doc, 'mousemove', dialogHeadMoveHandler);
-            helper.addDOMEvent(me, doc, 'mouseup', dialogHeadUpHandler);
+            // 禁掉选择功能
+            this.addState('dragging');
+
+            helper.addDOMEvent(this, doc, 'mousemove', dialogHeadMoveHandler);
+            helper.addDOMEvent(this, doc, 'mouseup', dialogHeadUpHandler);
             //记录鼠标位置
             lib.event.getMousePosition(e);
-            me.dragStartPos = {x: e.pageX, y: e.pageY};
+            this.dragStartPos = {x: e.pageX, y: e.pageY};
         }
 
         /**
@@ -278,6 +280,9 @@ define(
             helper.removeDOMEvent(
                 this, document, 'mouseup', dialogHeadUpHandler
             );
+
+            // 禁掉选择功能
+            this.removeState('dragging');
         }
 
 
