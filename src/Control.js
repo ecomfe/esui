@@ -149,6 +149,10 @@ define(
                     var method = this.disabled ? 'addState' : 'removeState';
                     this[method]('disabled');
                 }
+                if (!changesIndex || changesIndex.hasOwnProperty('hidden')) {
+                    var method = this.hidden ? 'addState' : 'removeState';
+                    this[method]('hidden');
+                }
             },
 
             /**
@@ -247,6 +251,14 @@ define(
                 if (properties.hasOwnProperty('viewContext')) {
                     this.setViewContext(properties.viewContext);
                     delete properties.viewContext;
+                }
+
+                // 几个状态选项是要转为`boolean`的
+                if (this.hasOwnProperty('disabled')) {
+                    this.disabled = !!this.disabled;
+                }
+                if (this.hasOwnProperty('hidden')) {
+                    this.hidden = !!this.hidden;
                 }
 
                 var changes = [];
