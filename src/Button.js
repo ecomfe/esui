@@ -8,9 +8,6 @@
 
 define(
     function (require) {
-        // css
-        require('css!./css/Button.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');

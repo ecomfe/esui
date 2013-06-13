@@ -12,8 +12,6 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
-        require('css!./css/Box.css');
-
         /**
          * 单选或复选框组
          */

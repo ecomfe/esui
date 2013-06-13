@@ -12,8 +12,6 @@ define(
         var helper = require('./controlHelper');
         var ui = require('./main');
 
-        require('css!./css/common.css');
-
         /**
          * 控件基类
          * 
