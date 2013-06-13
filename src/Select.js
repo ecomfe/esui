@@ -526,6 +526,20 @@ define(
         );
 
         /**
+         * 更新`datasource`属性，无论传递的值是否变化都会进行更新
+         *
+         * @param {Array.<Object>} datasource 新的数据源对象
+         */
+        Select.prototype.updateDatasource = function (datasource) {
+            if (!datasource) {
+                datasource = this.datasource;
+            }
+            this.datasource = datasource;
+            var record = { name: 'datasource' };
+            this.repaint([record], { datasource: record });
+        };
+
+        /**
          * 批量更新属性并重绘
          *
          * @param {Object} 需更新的属性

@@ -519,6 +519,44 @@ define(function (require) {
             });
         });
 
+        describe('updateDatasource method', function () {
+            it('should exists', function () {
+                var select = new Select();
+                expect(select.updateDatasource).toBeOfType('function');
+            });
+
+            it('should rerender selection layer when called with a new `datasource` object', function () {
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                select.updateDatasource(datasource.slice(0, 2));
+                var layer = findLayer();
+                expect(layer.children.length).toBe(2);
+            });
+
+            it('should rerender selection layer when no `datasource` argument is given', function () {
+                var ds = datasource.slice();
+                var select = new Select({ datasource: ds });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                ds.splice(2, 10);
+                select.updateDatasource();
+                var layer = findLayer();
+                expect(layer.children.length).toBe(2);
+            });
+
+            it('should rerender selection layer when same `datasource` is given', function () {
+                var ds = datasource.slice();
+                var select = new Select({ datasource: ds });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                ds.splice(2, 10);
+                select.updateDatasource(ds);
+                var layer = findLayer();
+                expect(layer.children.length).toBe(2);
+            });
+        });
+
         describe('when readOnly', function () {
             it('should not open the layer when clicked', function () {
                 var select = new Select({ datasource: datasource, readOnly: true });
