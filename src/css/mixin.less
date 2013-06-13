@@ -119,10 +119,10 @@
 // @y 纵轴偏移
 // @blur 阴影偏移
 // @color 阴影颜色
-.box-shadow (@x: 0, @y: 0, @blur: 1px, @color: #000) {
-    box-shadow: @arguments;
+.box-shadow (...) {
     -moz-box-shadow: @arguments;
     -webkit-box-shadow: @arguments;
+    box-shadow: @arguments;
 }
 
 
@@ -130,31 +130,31 @@
 // 盒模型计算模式
 // @type border-box | content-box
 .box-sizing (@type:border-box) {
-    box-sizing:@type;
-    -webkit-box-sizing:@type;
-    -moz-box-sizing:@type;
-    -ms-box-sizing:@type;
+    -webkit-box-sizing: @type;
+    -moz-box-sizing: @type;
+    -ms-box-sizing: @type;
+    box-sizing: @type;
 }
 
 
 // 圆角
-.border-radius (...) {
-    border-radius: @arguments;        
+.border-radius (...) {      
     -moz-border-radius: @arguments;
     -webkit-border-radius: @arguments;
+    border-radius: @arguments;
 }
 
 
 
 // 变换
-.transition (@time, @type, @property) {
-    transition: @arguments;
+.transition (...) {
     -moz-transition: @arguments;
     -webkit-transition: @arguments;
+    transition: @arguments;
 }
 
 // 解决input输入框在IE7下 
-// 显示height（width） = 设置height（width） + 上下（左右）padding和 + 上下（左右）border和
+// 显示height（width）= 设置height（width） + 上下（左右）padding和 + 上下（左右）border和
 // 的不一致
 
 
@@ -232,8 +232,8 @@
 
 // Opacity
 .opacity (@opacity) {
-  opacity: @opacity / 100;
-  filter: ~"alpha(opacity=@{opacity})";
+    opacity: @opacity / 100;
+    filter: ~"alpha(opacity=@{opacity})";
 }
 
 // 文字选择
