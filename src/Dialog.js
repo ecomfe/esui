@@ -324,11 +324,10 @@ define(
         /**
          * 页面大小发生变化的事件处理器
          *
-         * @param {ui.Dialog} 控件对象
          * @inner
          */
-        function maskResizeHandler(control) {
-            repaintMask(getMask(control));
+        function maskResizeHandler() {
+            repaintMask(getMask(this));
         }
 
         /**
@@ -355,8 +354,12 @@ define(
                             document.documentElement.clientWidth,
                             Math.max(
                                 document.body.scrollWidth,
-                                document.documentElement.scrollWidth)),
-                height = document.documentElement.clientHeight;
+                                document.documentElement.scrollWidth));
+            var height = Math.max(
+                            document.documentElement.clientHeight,
+                            Math.max(
+                                document.body.scrollHeight,
+                                document.documentElement.scrollHeight));
 
             mask.style.width = width + 'px';
             mask.style.height = height + 'px';
@@ -710,7 +713,6 @@ define(
                     helper.removeDOMEvent(
                         this, window, 'resize', resizeHandler
                     );
-                    //lib.un(window, 'resize', getResizeHandler);
                     var main = this.main;
                     var mask = this.mask;
 
