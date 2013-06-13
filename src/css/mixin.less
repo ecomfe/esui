@@ -208,9 +208,9 @@
 .indent-text () {
     text-indent: -500%;
    // IE6,7 下使用text-indent会导致内容消失，因此做下hack
-    _text-indent: 0;
-    _font-size: 0;
-    _line-height: 0;
+    *text-indent: 0;
+    *font-size: 0;
+    *line-height: 0;
 }
 
 .interactive-cursor () {
