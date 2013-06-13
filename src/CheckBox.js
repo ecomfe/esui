@@ -130,15 +130,22 @@ define(
                     this, 
                     box, 
                     'click', 
-                    function () { this.fire('click'); }
+                    function (e) {
+                        this.fire('click');
+                        if (!box.addEventListener) {
+                            syncChecked(this, e);
+                        }
+                    }
                 );
 
-                helper.addDOMEvent(
-                    this,
-                    box,
-                    'change',
-                    lib.curry(syncChecked, this)
-                );
+                if (box.addEventListener) {
+                    helper.addDOMEvent(
+                        this,
+                        box,
+                        'change',
+                        lib.curry(syncChecked, this)
+                    );
+                }
             },
 
             setProperties: function (properties) {

@@ -115,24 +115,24 @@ define(
         /**
          * 同步值
          *
-         * @param {BoxGroup} group 控件实例
+         * @param {BoxGroup} this 控件实例
          * @inner
          */
-        function syncValue(group) {
+        function syncValue() {
             var result = [];
-            var inputs = group.main.getElementsByTagName('input');
+            var inputs = this.main.getElementsByTagName('input');
             for (var i = inputs.length - 1; i >= 0; i--) {
                 var input = inputs[i];
-                if (input.type === group.boxType && input.checked) {
+                if (input.type === this.boxType && input.checked) {
                     result.push(input.value);
                 }
             }
 
-            group.rawValue = result;
-            var input = lib.g(helper.getId(group, 'value'));
-            input.value = group.getValue();
+            this.rawValue = result;
+            var input = lib.g(helper.getId(this, 'value'));
+            input.value = this.getValue();
 
-            group.fire('change');
+            this.fire('change');
         }
 
         var itemTemplate = [
@@ -194,11 +194,11 @@ define(
 
             // `change`事件不会冒泡的，所以在这里要给一个一个加上
             var inputs = group.main.getElementsByTagName('input');
-            var sync = lib.curry(syncValue, group);
+            var eventName = group.main.addEventListener ? 'change' : 'click';
             for (var i = inputs.length - 1; i >= 0; i--) {
                 var input = inputs[i];
                 if (input.type === group.boxType) {
-                    helper.addDOMEvent(group, input, 'change', sync);
+                    helper.addDOMEvent(group, input, eventName, syncValue);
                 }
             }
         }
