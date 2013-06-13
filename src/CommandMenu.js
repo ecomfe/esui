@@ -64,12 +64,12 @@ define(
         /**
          * 选中某一项
          *
-         * @param {Menu} menu 控件实例
+         * @param {Menu} this 控件实例
          * @parma {Event} e DOM事件对象
          * @inner
          */
-        function selectItem(menu, e) {
-            hideLayer(menu);
+        function selectItem(e) {
+            hideLayer(this);
 
             var target = e.target;
             while (target !== e.currentTarget
@@ -83,14 +83,14 @@ define(
             }
 
             var index = +target.getAttribute('data-index');
-            var item = menu.datasource[index];
+            var item = this.datasource[index];
             if (item) {
                 if (typeof item.handler === 'function') {
-                    item.handler.call(menu, item, index);
+                    item.handler.call(this, item, index);
                 }
             }
 
-            menu.fire('select', { item: item, index: index });
+            this.fire('select', { item: item, index: index });
         }
 
         /**
@@ -143,12 +143,7 @@ define(
             layer.id = helper.getId(menu, 'layer');
             layer.className = helper.getPartClasses(menu, 'layer').join(' ');
             layer.innerHTML = getLayerHTML(menu);
-            helper.addDOMEvent(
-                menu,
-                layer,
-                'click',
-                lib.curry(selectItem, menu)
-            );
+            helper.addDOMEvent(menu, layer, 'click', selectItem);
             document.body.appendChild(layer);
 
             helper.addDOMEvent(menu, document, 'mousedown', closeLayer);
@@ -186,22 +181,22 @@ define(
         /**
          * 根据当前状态显示或隐藏浮层
          *
-         * @param {CommandMenu} CommandMenu控件实例
+         * @param {CommandMenu} this 控件实例
          * @inner
          */
-        function toggleLayer(menu) {
-            var layer = lib.g(helper.getId(menu, 'layer'));
+        function toggleLayer() {
+            var layer = lib.g(helper.getId(this, 'layer'));
             if (!layer) {
-                createLayer(menu);
-                showLayer(menu);
+                createLayer(this);
+                showLayer(this);
             }
             else {
-                var classes = helper.getPartClasses(menu, 'layer-hidden');
+                var classes = helper.getPartClasses(this, 'layer-hidden');
                 if (lib.hasClass(layer, classes[0])) {
-                    showLayer(menu);
+                    showLayer(this);
                 }
                 else {
-                    hideLayer(menu);
+                    hideLayer(this);
                 }
             }
         }
@@ -213,12 +208,7 @@ define(
          * @protected
          */
         CommandMenu.prototype.initStructure = function () {
-            helper.addDOMEvent(
-                this,
-                this.main,
-                'click',
-                lib.curry(toggleLayer, this)
-            );
+            helper.addDOMEvent(this, this.main, 'click', toggleLayer, this);
         };
 
         var paint = require('./painters');

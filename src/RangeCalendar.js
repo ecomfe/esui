@@ -204,9 +204,7 @@ define(
                 //为mini日历绑定点击事件
                 var shortcutDom = lib.g(helper.getId(calendar, 'shortcut'));
                 helper.addDOMEvent(
-                    calendar, shortcutDom, 'click',
-                    lib.bind(shortcutClick, null, calendar)
-                );
+                    calendar, shortcutDom, 'click', shortcutClick);
 
                 // 渲染开始结束日历
                 paintCal(calendar, 'begin', calendar.view.begin, true);
@@ -354,13 +352,13 @@ define(
          * 主元素点击事件
          *
          * @inner
-         * @param {RangeCalendar} calendar RangeCalendar控件实例
+         * @param {RangeCalendar} this RangeCalendar控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function mainClick(calendar, e) {
-            if (!calendar.disabled) {
-                calendar.isHidePrevent = 1;
-                toggleLayer(calendar);
+        function mainClick(e) {
+            if (!this.disabled) {
+                this.isHidePrevent = 1;
+                toggleLayer(this);
             }
         }
 
@@ -368,17 +366,17 @@ define(
          * mini日历点击事件
          *
          * @inner
-         * @param {RangeCalendar} calendar RangeCalendar控件实例
+         * @param {RangeCalendar} this RangeCalendar控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function shortcutClick(calendar, e) {
+        function shortcutClick(e) {
             var tar = e.target || e.srcElement;
-            var classes = helper.getPartClasses(calendar, 'shortcut-item');
+            var classes = helper.getPartClasses(this, 'shortcut-item');
 
             while (tar && tar != document.body) {
                 if (lib.hasClass(tar, classes[0])) {
                     var index = tar.getAttribute('data-index');
-                    selectIndex(calendar, index);
+                    selectIndex(this, index);
                     return;
                 }
                 tar = tar.parentNode;
@@ -696,10 +694,7 @@ define(
                     }
                 );
 
-                helper.addDOMEvent(
-                    this, this.main, 'mousedown',
-                    lib.curry(mainClick, this)
-                );
+                helper.addDOMEvent(this, this.main, 'mousedown', mainClick);
 
                 helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },

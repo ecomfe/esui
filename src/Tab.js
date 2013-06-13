@@ -104,10 +104,10 @@ define(
         /*
          * 点击某个标签时的切换逻辑
          *
-         * @param {Tab} tab Tab控件实例
+         * @param {Tab} this Tab控件实例
          * @param {Event} e 触发事件的事件对象
          */
-        function clickTab(tab, e) {
+        function clickTab(e) {
             var target = e.target;
             var tabElement = target;
             while (tabElement && tabElement.nodeName.toLowerCase() !== 'li') {
@@ -121,12 +121,12 @@ define(
                     if (children[i] === tabElement) {
                         // 如果点在关闭区域上，则移除这个元素，
                         // 其它情况为激活该元素
-                        var className = helper.getPartClasses(tab, 'close')[0];
+                        var className = helper.getPartClasses(this, 'close')[0];
                         if (lib.hasClass(target, className)) {
-                            tab.removeAt(i);
+                            this.removeAt(i);
                         }
                         else {
-                            tab.set('activeIndex', i);
+                            this.set('activeIndex', i);
                         }
                         return;
                     }
@@ -150,8 +150,7 @@ define(
 
             helper.addPartClasses(this, 'navigator', navigator);
 
-            require('./controlHelper').addDOMEvent(
-                this, navigator, 'click', lib.bind(clickTab, null, this));
+            helper.addDOMEvent(this, navigator, 'click', clickTab);
         };
 
         /**

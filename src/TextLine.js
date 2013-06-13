@@ -58,13 +58,12 @@ define(
         /**
          * 滚动数字区域
          *
-         * @param {TextLine} textLine TextLine控件实例
+         * @param {TextLine} this TextLine控件实例
          * @inner
          */
-        function resetScrollByLine(textLine) {
-            var me = textLine;
-            me.getChild('text').main.firstChild.scrollTop =
-                me.lineNumBlock.scrollTop;
+        function resetScrollByLine() {
+            this.getChild('text').main.firstChild.scrollTop =
+                this.lineNumBlock.scrollTop;
         }
 
         /**
@@ -95,9 +94,8 @@ define(
          * @inner
          */
         function resetScroll(textLine) {
-            var me = textLine;
-            me.lineNumBlock.scrollTop =
-                me.getChild('text').main.firstChild.scrollTop;
+            textLine.lineNumBlock.scrollTop =
+                textLine.getChild('text').main.firstChild.scrollTop;
         }
 
         /**
@@ -178,7 +176,9 @@ define(
 
                 // 主体滚动监听
                 helper.addDOMEvent(
-                    textArea, textArea.main.firstChild, 'scroll',
+                    textArea, 
+                    textArea.main.firstChild, 
+                    'scroll', 
                     lib.curry(resetScroll, this)
                 );
 
@@ -187,9 +187,7 @@ define(
                 // 保存到控件对象，因为之后会一直用到
                 this.lineNumBlock = lineNumDiv;
                 helper.addDOMEvent(
-                    this, lineNumDiv, 'scroll',
-                    lib.curry(resetScrollByLine, this)
-                );
+                    this, lineNumDiv, 'scroll', resetScrollByLine);
 
             },
 

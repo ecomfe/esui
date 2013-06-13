@@ -50,20 +50,17 @@ define(
             region.main.innerHTML = html.join('');
 
             //点击事件
-            helper.addDOMEvent(
-                region, region.main, 'click',
-                lib.curry(mainClick, region)
-            );
+            helper.addDOMEvent(region, region.main, 'click', mainClick);
 
             //鼠标悬浮事件
             helper.addDOMEvent(
                 region, region.main, 'mouseover',
-                lib.curry(mainMouseHandler, region, 'show')
+                lib.curry(mainMouseHandler, 'show')
             );
             //鼠标悬浮事件
             helper.addDOMEvent(
                 region, region.main, 'mouseout',
-                lib.curry(mainMouseHandler, region, 'hide')
+                lib.curry(mainMouseHandler, 'hide')
             );
         }
 
@@ -199,12 +196,11 @@ define(
         function updateSelectedTip(region, selCityIdsLength, cLength, id) {
             var infoTag = lib.g(helper.getId(region, 'info-' + id));
             if (selCityIdsLength !== 0 && selCityIdsLength !== cLength) {
-                lib.removeClass(infoTag, 'ui-hidden');
-                infoTag.innerHTML =
-                    '' + selCityIdsLength + '/' + cLength + '';
+                lib.removeClass(infoTag, 'state-hidden');
+                infoTag.innerHTML = selCityIdsLength + '/' + cLength + '';
             }
             else {
-                lib.addClass(infoTag, 'ui-hidden');
+                lib.addClass(infoTag, 'state-hidden');
                 infoTag.innerHTML = '';
             }
         }
@@ -229,9 +225,9 @@ define(
         // 省级别下市弹出层
         var tplPopLayer = [
             '<div class="${popLayerClass}">',
-                '<div class="ui-hidden ${layerBoxClass}" id="${id}">',
+                '<div class="state-hidden ${layerBoxClass}" id="${id}">',
                 '${innerHTML}</div>',
-                '<b class="ui-hidden" id="${infoId}"></b>',
+                '<b class="state-hidden" id="${infoId}"></b>',
             '</div>'].join('');
         // 省外包
         var tplProvinceWrapper = '<div class="${classes}">${content}</div>';
@@ -489,24 +485,24 @@ define(
          * 地域元素点击事件
          *
          * @inner
-         * @param {Region} region Region控件实例
+         * @param {Region} this Region控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function mainClick(region, e) {
-            if (region.disabled || region.readOnly) {
+        function mainClick(e) {
+            if (this.disabled || this.readOnly) {
                 return;
             }
             var tar = e.target;
             while (tar && tar != document.body) {
                 if (tar.nodeName.toLowerCase() === 'input') {
-                    optionClick(region, tar);
-                    region.fire('change', region.rawValue);
+                    optionClick(this, tar);
+                    this.fire('change', this.rawValue);
                     return;
                 }
                 else if (tar.nodeName.toLowerCase() === 'label') {
                     var checkId = tar.getAttribute('for');
-                    optionClick(region, lib.g(checkId));
-                    region.fire('change', region.rawValue);
+                    optionClick(this, lib.g(checkId));
+                    this.fire('change', this.rawValue);
                     return;
                 }
                 tar = tar.parentNode;
@@ -573,19 +569,19 @@ define(
          * 地域元素鼠标悬浮事件
          *
          * @inner
-         * @param {Region} region Region控件实例
+         * @param {Region} this Region控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function mainMouseHandler(region, type, e) {
-            if (region.disabled || region.readOnly) {
+        function mainMouseHandler(type, e) {
+            if (this.disabled || this.readOnly) {
                 return;
             }
             var tar = e.target;
             var textClass = helper.getPartClasses(
-                region, 'text'
+                this, 'text'
             );
             var layerClass = helper.getPartClasses(
-                region, 'city-box');
+                this, 'city-box');
 
             var handler = showSubCity;
             if (type == 'hide') {
@@ -603,7 +599,7 @@ define(
                     optionChildLayer = tar;
                 }
                 if (optionChildLayer) {
-                    handler(region, optionChildLayer, itemId);
+                    handler(this, optionChildLayer, itemId);
                     return;
                 }
 
@@ -631,7 +627,7 @@ define(
                 selectMulti(region, region.rawValue);
             }
 
-            lib.removeClass(dom, 'ui-hidden');
+            lib.removeClass(dom, 'state-hidden');
             var wrapper = dom.parentNode.nextSibling;
             helper.addPartClasses(region, 'text-over', wrapper);
         }
@@ -645,7 +641,7 @@ define(
          * @param {string} itemId 弹出层对应的父城市id.
          */
         function hideSubCity(region, dom, itemId) {
-            lib.addClass(dom, 'ui-hidden');
+            lib.addClass(dom, 'state-hidden');
             var wrapper = dom.parentNode.nextSibling;
             helper.removePartClasses(region, 'text-over', wrapper);
         }

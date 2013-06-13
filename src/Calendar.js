@@ -120,14 +120,14 @@ define(
         /**
          * 主元素点击事件
          *
-         * @param {Calendar} calendar Calendar控件实例
-         * @param {Event} 触发事件的事件对象
+         * @param {Calendar} this Calendar控件实例
+         * @param {Event} e 触发事件的事件对象
          * @inner
          */
-        function mainClick(calendar, e) {
-            if (!calendar.disabled) {
-                calendar.isHidePrevent = 1;
-                toggleLayer(calendar);
+        function mainClick(e) {
+            if (!this.disabled) {
+                this.isHidePrevent = 1;
+                toggleLayer(this);
             }
         }
 
@@ -314,10 +314,7 @@ define(
                     }
                 );
 
-                helper.addDOMEvent(
-                    this, this.main, 'mousedown',
-                    lib.bind(mainClick, null, this)
-                );
+                helper.addDOMEvent(this, this.main, 'mousedown', mainClick);
 
                 helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },

@@ -208,11 +208,11 @@ define(
         /**
          * 根据节点的当前状态展开或收起节点
          *
-         * @param {Tree} tree 控件实例
+         * @param {Tree} this 控件实例
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function toggleNode(tree, e) {
+        function toggleNode(e) {
             // 无论点在哪，往上找肯定能找到一个子树（或树本身）的节点元素，
             // 但我们要知道的是，接受点击事件的是这个根下面的哪个直接子元素。
             // 
@@ -228,8 +228,8 @@ define(
             var target = null;
 
             // 直接往根上找
-            var nodeClass = helper.getPartClasses(tree, 'node')[0];
-            while (parent && parent !== tree.main 
+            var nodeClass = helper.getPartClasses(this, 'node')[0];
+            while (parent && parent !== this.main 
                 && !lib.hasClass(parent, nodeClass)
             ) {
                 target = parent;
@@ -237,7 +237,7 @@ define(
             }
 
             // 如果直接就找到主元素或者找没了，那就点在不知所谓的地方了
-            if (!parent || parent === tree.main || !target) {
+            if (!parent || parent === this.main || !target) {
                 return;
             }
 
@@ -245,13 +245,13 @@ define(
             // 如果是提示元素，那肯定是要触发事件的，
             // 此外如果配了`wideToggleArea`属性，那么只要不是点在子树上都有效
             var indicatorClass = 
-                helper.getPartClasses(tree, 'node-indicator')[0];
+                helper.getPartClasses(this, 'node-indicator')[0];
             var validEvent = lib.hasClass(target, indicatorClass);
             if (!validEvent) {
-                var rootClass = helper.getPartClasses(tree, 'root')[0];
-                var subRootClass = helper.getPartClasses(tree, 'sub-root')[0];
+                var rootClass = helper.getPartClasses(this, 'root')[0];
+                var subRootClass = helper.getPartClasses(this, 'sub-root')[0];
 
-                validEvent = tree.wideToggleArea
+                validEvent = this.wideToggleArea
                     && !lib.hasClass(target, subRootClass)
                     && !lib.hasClass(target, rootClass);
             }
@@ -260,7 +260,7 @@ define(
                 // 上一层就是节点的容器元素，上面有`data-id`等有用的属性
                 var id = parent.getAttribute('data-id');
 
-                tree.triggerToggleStrategy(id);
+                this.triggerToggleStrategy(id);
             }
         }
 
@@ -271,12 +271,7 @@ define(
          * @protected
          */
         Tree.prototype.initStructure = function () {
-            helper.addDOMEvent(
-                this,
-                this.main,
-                'click',
-                lib.curry(toggleNode, this)
-            );
+            helper.addDOMEvent(this, this.main, 'click', toggleNode);
             this.strategy.attachTo(this);
         };
 

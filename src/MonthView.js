@@ -272,22 +272,22 @@ define(
          * 日历元素点击事件
          *
          * @inner
-         * @param {MonthView} monthView MonthView控件实例
+         * @param {MonthView} this MonthView控件实例
          * @param {Event} 触发事件的事件对象
          */
-        function monthViewClick(monthView, e) {
+        function monthViewClick(e) {
             var tar = e.target || e.srcElement;
-            var classes = helper.getPartClasses(monthView, 'month-item');
+            var classes = helper.getPartClasses(this, 'month-item');
 
             var virClasses =
-                helper.getPartClasses(monthView, 'month-item-virtual');
+                helper.getPartClasses(this, 'month-item-virtual');
             var disabledClasses =
-                helper.getPartClasses(monthView, 'month-item-disabled');
+                helper.getPartClasses(this, 'month-item-disabled');
             while (tar && tar != document.body) {
                 if (lib.hasClass(tar, classes[0])
                     && !lib.hasClass(tar, virClasses[0])
                     && !lib.hasClass(tar, disabledClasses[0])) {
-                    selectByItem(monthView, tar);
+                    selectByItem(this, tar);
                     return;
                 }
                 tar = tar.parentNode;
@@ -684,10 +684,7 @@ define(
                 var monthMain = lib.g(monthMainId);
 
                 //为日期绑定点击事件
-                helper.addDOMEvent(
-                    this, monthMain, 'click',
-                    lib.curry(monthViewClick, this)
-                );
+                helper.addDOMEvent(this, monthMain, 'click', monthViewClick);
             },
 
             /**

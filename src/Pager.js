@@ -308,16 +308,16 @@ define(
          * 页码点击事件触发
          *
          * @inner
-         * @param {Pager} pager Pager控件实例
+         * @param {Pager} this Pager控件实例
          * @param {Event} e 事件对象
          */
-        function pagerClick(pager, e) {
+        function pagerClick(e) {
             var target = e.target;
-            var classes = helper.getPartClasses(pager, 'item');
-            var extendClasses = helper.getPartClasses(pager, 'item-extend');
-            var backId = helper.getId(pager, 'page-back');
-            var forwardId = helper.getId(pager, 'page-forward');
-            var page = pager.page;
+            var classes = helper.getPartClasses(this, 'item');
+            var extendClasses = helper.getPartClasses(this, 'item-extend');
+            var backId = helper.getId(this, 'page-back');
+            var forwardId = helper.getId(this, 'page-forward');
+            var page = this.page;
 
             if (lib.hasClass(target, classes[0])
                 || lib.hasClass(target, extendClasses[0])
@@ -333,9 +333,9 @@ define(
                 }
 
                 // 跳转至某页码
-                pager.set('page', page);
+                this.set('page', page);
                 // 触发页码变更事件
-                pager.fire('changepage');
+                this.fire('changepage');
             }
         }
 
@@ -492,10 +492,7 @@ define(
 
                 // pager主元素绑定事件
                 var pagerMain = lib.g(helper.getId(this, 'main'));
-                helper.addDOMEvent(
-                    this, pagerMain, 'click',
-                    lib.curry(pagerClick, this)
-                );
+                helper.addDOMEvent(this, pagerMain, 'click', pagerClick);
             },
 
             /**

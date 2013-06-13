@@ -94,15 +94,15 @@ define(
         /**
          * 将特殊的按键分发为事件
          *
-         * @param {TextBox} textbox 控件实例
+         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function dispatchSpecialKey(textbox, e) {
+        function dispatchSpecialKey(e) {
             var keyCode = e.keyCode || e.which;
             
             if (keyCode === 13) {
-                textbox.fire('enter');
+                this.fire('enter');
             }
         }
 
@@ -137,45 +137,45 @@ define(
         /**
          * 获得焦点的逻辑
          *
-         * @param {TextBox} textbox 控件实例
+         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function focus(textbox, e) {
-            togglePlaceholder(textbox, true);
+        function focus(e) {
+            togglePlaceholder(this, true);
 
-            if (textbox.autoSelect) {
+            if (this.autoSelect) {
                 input.select();
             }
 
-            textbox.fire('focus');
+            this.fire('focus');
         }
 
         /**
          * 失去焦点的逻辑
          *
-         * @param {TextBox} textbox 控件实例
+         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function blur(textbox, e) {
-            togglePlaceholder(textbox, false);
+        function blur(e) {
+            togglePlaceholder(this, false);
 
-            textbox.fire('blur');
+            this.fire('blur');
         }
 
         /**
          * 同步DOM的值与控件的属性
          *
-         * @param {TextBox} textbox 控件实例
+         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function syncValue(textbox, e) {
-            var input = lib.g(textbox.inputId);
+        function syncValue(e) {
+            var input = lib.g(this.inputId);
             if (e.type === 'input' || e.propertyName === 'value') {
-                textbox.rawValue = input.value;
-                textbox.fire('input');
+                this.rawValue = input.value;
+                this.fire('input');
             }
         }
 
@@ -220,33 +220,13 @@ define(
             }
 
             var input = lib.g(this.inputId);
-            helper.addDOMEvent(
-                this,
-                input,
-                'keypress',
-                lib.curry(dispatchSpecialKey, this)
-            );
-            helper.addDOMEvent(
-                this,
-                input,
-                'focus',
-                lib.curry(focus, this)
-            );
-            helper.addDOMEvent(
-                this,
-                input,
-                'blur',
-                lib.curry(blur, this)
-            );
+            helper.addDOMEvent(this, input, 'keypress', dispatchSpecialKey);
+            helper.addDOMEvent(this, input, 'focus', focus);
+            helper.addDOMEvent(this, input, 'blur', blur);
             var inputEventName = ('oninput' in input) 
                 ? 'input' 
                 : 'propertychange';
-            helper.addDOMEvent(
-                this,
-                input,
-                inputEventName,
-                lib.curry(syncValue, this)
-            );
+            helper.addDOMEvent(this, input, inputEventName, syncValue);
 
             if (!supportPlaceholder) {
                 var placeholder = document.createElement('label');
@@ -317,12 +297,7 @@ define(
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
                     helper.removeDOMEvent(textbox, input, eventName);
                     input.value = textbox.stringifyValue(rawValue);
-                    helper.addDOMEvent(
-                        textbox,
-                        input,
-                        eventName,
-                        lib.curry(syncValue, textbox)
-                    );
+                    helper.addDOMEvent(textbox, input, eventName, syncValue);
 
                     togglePlaceholder(textbox);
                 }
