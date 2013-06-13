@@ -62,6 +62,23 @@ define(function (require) {
                 expect(container.getElementsByTagName('select').length).toBe(0);
                 expect(select.get('main').nodeName.toLowerCase()).toBe('div');
             });
+
+            it('should read `disabled` attribute from `<option>` element', function () {
+                var html = [
+                    '<select data-ui-type="Select" data-ui-id="test">',
+                        '<option value="1">a</option>',
+                        '<option value="2" disabled="disabled">b</option>',
+                    '</select>'
+                ];
+                container.innerHTML = html.join('');
+                require('esui/main').init(container);
+                var datasource = [
+                    { name: 'a', value: '1' },
+                    { name: 'b', value: '2', disabled: true }
+                ];
+                var select = require('esui/main').get('test');
+                expect(select.get('datasource')).toEqual(datasource);
+            });
         });
 
         describe('generally', function () {
@@ -341,31 +358,31 @@ define(function (require) {
                 expect(layer.className).not.toMatch(/ui-select-layer-hidden/);
             });
 
-            it('should add a className `ui-select-layer-selected` to the selected option in layer', function () {
+            it('should add a className `ui-select-item-selected` to the selected option in layer', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);
                 dispatchEvent(select.main, 'click');
                 var layer = findLayer();
-                expect(layer.children[0].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[1].className).toMatch(/ui-select-layer-selected/);
-                expect(layer.children[2].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[3].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[4].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[5].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[0].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[1].className).toMatch(/ui-select-item-selected/);
+                expect(layer.children[2].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[3].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[4].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[5].className).not.toMatch(/ui-select-item-selected/);
             });
 
-            it('should change the element with `ui-select-layer-selected` class when value is changed', function () {
+            it('should change the element with `ui-select-item-selected` class when value is changed', function () {
                 var select = new Select({ datasource: datasource, value: '2' });
                 select.appendTo(container);
                 dispatchEvent(select.main, 'click');
                 select.setValue('3');
                 var layer = findLayer();
-                expect(layer.children[0].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[1].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[2].className).toMatch(/ui-select-layer-selected/);
-                expect(layer.children[3].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[4].className).not.toMatch(/ui-select-layer-selected/);
-                expect(layer.children[5].className).not.toMatch(/ui-select-layer-selected/);
+                expect(layer.children[0].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[1].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[2].className).toMatch(/ui-select-item-selected/);
+                expect(layer.children[3].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[4].className).not.toMatch(/ui-select-item-selected/);
+                expect(layer.children[5].className).not.toMatch(/ui-select-item-selected/);
             });
 
             it('should select the correct item if an option element in layer is clicked', function () {
@@ -468,6 +485,75 @@ define(function (require) {
                 dispatchEvent(select.main, 'click');
                 var layer = findLayer();
                 expect(layer).toBeDefined();
+            });
+        });
+
+        describe('disabled option item', function () {
+            var datasource = [
+                { name: 'a', value: '1', disabled: true },
+                { name: 'b', value: '2' },
+                { name: 'c', value: '3' },
+                { name: 'd', value: '4' },
+                { name: 'e', value: '5' },
+                { name: 'f', value: '6' }
+            ];
+
+            it('should not accept click event', function () {
+                var select = new Select({ datasource: datasource, value: '2' });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                var layer = findLayer();
+                var option = layer.children[0];
+                dispatchEvent(option, 'click');
+                expect(select.get('selectedIndex')).toBe(1);
+                expect(select.getValue()).toBe('2');
+                expect(select.getRawValue()).toBe('2');
+            });
+
+            it('should not be selected when no explicit `value`, `rawValue` or `selectedIndex` is given', function () {
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                expect(select.get('selectedIndex')).toBe(1);
+                expect(select.getValue()).toBe('2');
+                expect(select.getRawValue()).toBe('2');
+            });
+        });
+
+        describe('updateDatasource method', function () {
+            it('should exists', function () {
+                var select = new Select();
+                expect(select.updateDatasource).toBeOfType('function');
+            });
+
+            it('should rerender selection layer when called with a new `datasource` object', function () {
+                var select = new Select({ datasource: datasource });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                select.updateDatasource(datasource.slice(0, 2));
+                var layer = findLayer();
+                expect(layer.children.length).toBe(2);
+            });
+
+            it('should rerender selection layer when no `datasource` argument is given', function () {
+                var ds = datasource.slice();
+                var select = new Select({ datasource: ds });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                ds.splice(2, 10);
+                select.updateDatasource();
+                var layer = findLayer();
+                expect(layer.children.length).toBe(2);
+            });
+
+            it('should rerender selection layer when same `datasource` is given', function () {
+                var ds = datasource.slice();
+                var select = new Select({ datasource: ds });
+                select.appendTo(container);
+                dispatchEvent(select.main, 'click');
+                ds.splice(2, 10);
+                select.updateDatasource(ds);
+                var layer = findLayer();
+                expect(layer.children.length).toBe(2);
             });
         });
 

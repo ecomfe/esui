@@ -89,7 +89,14 @@ define(
                     context.selectedIndex = -1;
                 }
                 else {
+                    // 找最近的一个未禁用的项
                     context.selectedIndex = 0;
+                    for (var i = 0; i < context.datasource.length; i++) {
+                        if (!context.datasource[i].disabled) {
+                            context.selectedIndex = i;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -120,6 +127,9 @@ define(
                         name: item.name || item.text, 
                         value: item.value
                     };
+                    if (item.disabled) {
+                        dataItem.disabled = true;
+                    }
 
                     properties.datasource.push(dataItem);
 
@@ -200,7 +210,13 @@ define(
             var html = '';
             for (var i = 0; i < select.datasource.length; i++) {
                 var item = select.datasource[i];
-                html += '<li data-index="' + i + '">';
+                var classes = helper.getPartClasses(select, 'item');
+                if (item.disabled) {
+                    classes = classes.concat(
+                        helper.getPartClasses(select, 'item-disabled'));
+                }
+                html += '<li data-index="' + i + '" '
+                    + 'class="' + classes.join(' ') + '">';
                 if (item.value == select.value) {
                     select.selectedIndex = i;
                 }
@@ -248,23 +264,24 @@ define(
         /**
          * 根据下拉弹层的`click`事件设置值
          *
-         * @param {Select} select Select控件实例
+         * @param {Select} this Select控件实例
          * @param {Event} 触发事件的事件对象
          * @inner
          */
-        function selectValue(select, e) {
+        function selectValue(e) {
             var target = lib.event.getTarget(e);
-            var layer = getSelectionLayer(select);
+            var layer = getSelectionLayer(this);
+            var disabledClass = helper.getPartClasses(this, 'item-disabled');
             while (target && target !== layer
                 && !lib.hasAttribute(target, 'data-index')
             ) {
                 target = target.parentNode;
             }
-            if (target) {
+            if (target && !lib.hasClass(target, disabledClass[0])) {
                 var index = target.getAttribute('data-index');
-                select.set('selectedIndex', +index);
+                this.set('selectedIndex', +index);
+                hideLayer(this);
             }
-            hideLayer(select);
         }
 
         /**
@@ -341,7 +358,7 @@ define(
                 return;
             }
 
-            var classes = helper.getPartClasses(select, 'layer-selected');
+            var classes = helper.getPartClasses(select, 'item-selected');
             var items = lib.getChildren(layer);
             for (var i = items.length - 1; i >= 0; i--) {
                 var item = items[i];
@@ -370,12 +387,7 @@ define(
                 layer.innerHTML = getLayerHTML(select);
                 document.body.appendChild(layer);
 
-                helper.addDOMEvent(
-                    select, 
-                    layer, 
-                    'click', 
-                    lib.curry(selectValue, select)
-                );
+                helper.addDOMEvent(select, layer, 'click', selectValue);
                 helper.addDOMEvent(select, document, 'mousedown', closeLayer);
 
                 // 当`Select`作为别的控件的子控件时，
@@ -400,22 +412,22 @@ define(
         /**
          * 根据下拉弹层当前状态打开或关闭之
          *
-         * @param {Select} select Select控件实例
+         * @param {Select} this Select控件实例
          * @param {Event} e 触发事件的事件对象
          * @inner
          */
-        function toggleLayer(select, e) {
-            var layer = getSelectionLayer(select);
+        function toggleLayer(e) {
+            var layer = getSelectionLayer(this);
             if (!layer) {
-                layer = openLayer(select);
+                layer = openLayer(this);
             }
             else {
-                var classes = helper.getPartClasses(select, 'layer-hidden');
+                var classes = helper.getPartClasses(this, 'layer-hidden');
                 if (lib.hasClass(layer, classes[0])) {
-                    showLayer(select);
+                    showLayer(this);
                 }
                 else {
-                    hideLayer(select);
+                    hideLayer(this);
                 }
             }
         }
@@ -443,8 +455,7 @@ define(
                 { name: this.name }
             );
 
-            helper.addDOMEvent(
-                this, this.main, 'click', lib.curry(toggleLayer, this));
+            helper.addDOMEvent(this, this.main, 'click', toggleLayer);
         };
 
         /**
@@ -513,6 +524,20 @@ define(
                 }
             }
         );
+
+        /**
+         * 更新`datasource`属性，无论传递的值是否变化都会进行更新
+         *
+         * @param {Array.<Object>} datasource 新的数据源对象
+         */
+        Select.prototype.updateDatasource = function (datasource) {
+            if (!datasource) {
+                datasource = this.datasource;
+            }
+            this.datasource = datasource;
+            var record = { name: 'datasource' };
+            this.repaint([record], { datasource: record });
+        };
 
         /**
          * 批量更新属性并重绘

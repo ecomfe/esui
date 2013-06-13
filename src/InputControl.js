@@ -138,6 +138,10 @@ define(
                     properties.rawValue = this.parseValue(value);
                 }
 
+                if (this.hasOwnProperty('readOnly')) {
+                    this.readOnly = !!this.readOnly;
+                }
+
                 return Control.prototype.setProperties.call(this, properties);
             },
 

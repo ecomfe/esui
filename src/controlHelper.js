@@ -380,6 +380,22 @@ define(
             }
         }
 
+        function debounce(fn, interval) {
+            interval = interval || 150;
+
+            var timer = 0;
+
+            return function () {
+                clearTimeout(timer);
+                var self = this;
+                var args = arguments;
+                timer = setTimeout(
+                    function () { fn.apply(self, args); },
+                    interval
+                );
+            };
+        }
+
         function addGlobalDOMEvent(control, type, element) {
             var pool = getGlobalEventPool(element);
 
@@ -390,7 +406,11 @@ define(
             var controls = pool[type];
             if (!controls) {
                 controls = pool[type] = [];
-                controls.handler = lib.curry(triggerGlobalDOMEvent, element);
+                var handler = lib.curry(triggerGlobalDOMEvent, element);
+                if (type === 'resize' || type === 'scroll') {
+                    handler = debounce(handler);
+                }
+                controls.handler = handler;
                 lib.on(element, type, controls.handler);
             }
 
