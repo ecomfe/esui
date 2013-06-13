@@ -57,7 +57,7 @@
     z-index: @layer-z-index;
 }
 
-.ui-select-layer li {
+.ui-select-item {
     .ellipse-overflow ();
     color: #333333;
     .interactive-cursor ();
@@ -67,16 +67,20 @@
     padding: 0 4px;
 }
 
-.ui-select-layer .ui-select-layer-selected {
+.ui-select-item-disabled {
+    color: #999;
+}
+
+.ui-select-item-selected {
     background-color: #E0E0E0;
     border: 1px solid #DDDDDD;
 }
 
-.ui-select-layer li:hover {
+.ui-select-item:hover {
     background-color: #F1F1F1;
 }
 
-.ui-select-layer span {
+.ui-select-item span {
     display: block;
 }
 
