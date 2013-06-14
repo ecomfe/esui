@@ -192,8 +192,9 @@ define(
 
         /**
          * 禁止用户选择
+         * @param {ui.Dialog} dialog 控件对象
          * @param {HTMLElement} node 需要禁止的元素
-         * @param {boolean} 启用或禁止
+         * @param {boolean} unselected 启用或禁止
          */
         function makeUnselectable(dialog, node, unselected) {
             if (unselected) {
