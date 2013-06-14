@@ -70,29 +70,37 @@ define(
             var tplItem = ''
                 + '<span data-index="${shortIndex}" class="${shortClass}"'
                 + ' id="${shortId}">${shortName}</span>';
-            var shortItems = RangeCalendar.shortCutItems;
+            var shortItems = calendar.shortCutItems;
             var len = shortItems.length;
             var html = [];
 
+            var showedShortCut = calendar.showedShortCut.split(',');
+            var showedShortCutHash = {};
+            for (var k = 0; k < showedShortCut.length; k++) {
+                showedShortCutHash[showedShortCut[k]] = true;
+            }
             for (var i = 0; i < len; i++) {
                 var shortItem = shortItems[i];
-                var shortName = shortItem.name;
-                var shortClass =
-                    helper.getPartClasses(calendar, 'shortcut-item').join(' ');
-                var shortId = helper.getId(calendar, 'shortcutItem' + i);
+
+                if (showedShortCutHash[shortItem.name]) {
+                    var shortName = shortItem.name;
+                    var shortClass =
+                        helper.getPartClasses(calendar, 'shortcut-item').join(' ');
+                    var shortId = helper.getId(calendar, 'shortcut-item' + i);
 
 
-                html.push(
-                    lib.format(
-                        tplItem, 
-                        {
-                            shortIndex: i,
-                            shortClass: shortClass,
-                            shortId: shortId,
-                            shortName: shortName
-                        }
-                    )
-                );
+                    html.push(
+                        lib.format(
+                            tplItem, 
+                            {
+                                shortIndex: i,
+                                shortClass: shortClass,
+                                shortId: shortId,
+                                shortName: shortName
+                            }
+                        )
+                    );
+                }
             }
             return html.join('&nbsp;|&nbsp;');
         }
@@ -212,14 +220,14 @@ define(
 
                 //绑定提交和取消按钮
                 var okBtn = calendar.getChild('okBtn');
-                okBtn.on('click', lib.bind(commitValue, null, calendar));
+                okBtn.on('click', lib.curry(commitValue, calendar));
 
                 var cancelBtn = calendar.getChild('cancelBtn');
-                cancelBtn.on('click', lib.bind(hideLayer, null, calendar));
+                cancelBtn.on('click', lib.curry(hideLayer, calendar));
 
                 //关闭按钮
                 var closeBtn = calendar.getChild('closeBtn');
-                closeBtn.on('click', lib.bind(hideLayer, null, calendar));
+                closeBtn.on('click', lib.curry(hideLayer, calendar));
             }
 
             showLayer(calendar);
@@ -253,7 +261,7 @@ define(
          * @return {number}
          */
         function getSelectedIndex(calendar, value) {
-            var shortcutItems = RangeCalendar.shortCutItems;
+            var shortcutItems = calendar.shortCutItems;
             var len = shortcutItems.length;
 
             for (var i = 0; i < len; i++) {
@@ -278,7 +286,7 @@ define(
          */
         function selectIndex(calendar, index) {
             var me = calendar;
-            var shortcutItems = RangeCalendar.shortCutItems;
+            var shortcutItems = calendar.shortCutItems;
 
             if (index < 0 || index >= shortcutItems.length) {
                 return;
@@ -301,14 +309,14 @@ define(
          * @param {number} index 选择的索引
          */
         function paintMiniCal(calendar, index) {
-            var shortcutItems = RangeCalendar.shortCutItems;
+            var shortcutItems = calendar.shortCutItems;
             var curMiniIndex = calendar.curMiniIndex;
             // 重置选择状态
             if (curMiniIndex !== null && curMiniIndex !== index) {
                 helper.removePartClasses(
                     calendar,
                     'shortcut-item-selected',
-                    lib.g(helper.getId(calendar, 'shortcutItem'+curMiniIndex))
+                    lib.g(helper.getId(calendar, 'shortcut-item'+curMiniIndex))
                 );
             }
             calendar.curMiniIndex = index;
@@ -316,7 +324,7 @@ define(
                 helper.addPartClasses(
                     calendar,
                     'shortcut-item-selected',
-                    lib.g(helper.getId(calendar, 'shortcutItem'+index))
+                    lib.g(helper.getId(calendar, 'shortcut-item'+index))
                 );
                 calendar.curMiniName = shortcutItems[index].name;
             }
@@ -603,6 +611,134 @@ define(
             return '';
         }
 
+        RangeCalendar.defaultProperties = {
+            dateFormat: 'YYYY-MM-DD',
+            paramFormat: 'YYYY-MM-DD',
+            /**
+             * 日期区间快捷选项列表配置
+             */
+            shortCutItems: [
+                {
+                    name: '昨天',
+                    value: 0,
+                    getValue: function () {
+                        var yesterday = new Date(this.now.getTime());
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        return {
+                            begin: yesterday,
+                            end: yesterday
+                        };
+                    }
+                },
+                {
+                    name: '最近7天',
+                    value: 1,
+                    getValue: function () {
+                        var begin = new Date(this.now.getTime());
+                        var end = new Date(this.now.getTime());
+
+                        end.setDate(end.getDate() - 1);
+                        begin.setDate(begin.getDate() - 7);
+
+                        return {
+                            begin: begin,
+                            end: end
+                        };
+                    }
+                },
+                {
+                    name: '上周',
+                    value: 2,
+                    getValue: function () {
+                        var now = this.now;
+                        var begin = new Date(now.getTime());
+                        var end = new Date(now.getTime());
+                        var _wd = 1; //周一为第一天;
+
+                        if (begin.getDay() < _wd % 7) {
+                            begin.setDate(
+                                begin.getDate() - 14 + _wd - begin.getDay()
+                            );
+                        } else {
+                            begin.setDate(
+                                begin.getDate() - 7 - begin.getDay() + _wd % 7
+                            );
+                        }
+                        begin.setHours(0, 0, 0, 0);
+                        end.setFullYear(
+                            begin.getFullYear(),
+                            begin.getMonth(),
+                            begin.getDate() + 6
+                        );
+                        end.setHours(0, 0, 0, 0);
+
+                        return {
+                            begin: begin,
+                            end: end
+                        };
+                    }
+                },
+                {
+                    name: '本月',
+                    value: 3,
+                    getValue: function () {
+                        var now = this.now;
+                        var begin = new Date(now.getTime());
+                        var end = new Date(now.getTime());
+                        begin.setDate(1);
+                        return {
+                            begin: begin,
+                            end: end
+                        };
+                    }
+                },
+                {
+                    name: '上个月',
+                    value: 4,
+                    getValue: function () {
+                        var now = this.now;
+                        var begin = new Date(
+                            now.getFullYear(),
+                            now.getMonth() - 1,
+                            1
+                        );
+                        var end = new Date(
+                            now.getFullYear(),
+                            now.getMonth(),
+                            1
+                        );
+                        end.setDate(end.getDate() - 1);
+                        return {
+                            begin: begin,
+                            end: end
+                        };
+                    }
+                },
+                {
+                    name: '上个季度',
+                    value: 5,
+                    getValue: function () {
+                        var now = this.now;
+                        var begin = new Date(
+                            now.getFullYear(),
+                            now.getMonth() - now.getMonth() % 3 - 3,
+                            1
+                        );
+                        var end = new Date(
+                            now.getFullYear(),
+                            now.getMonth() - now.getMonth() % 3,
+                            1
+                        );
+                        end.setDate(end.getDate() - 1);
+                        return {
+                            begin: begin,
+                            end: end
+                        };
+                    }
+                }
+            ]
+        };
+
         RangeCalendar.prototype = {
             /**
              * 控件类型
@@ -641,8 +777,7 @@ define(
                         begin: now,
                         end: now
                     }),
-                    dateFormat: 'YYYY-MM-DD',
-                    paramFormat: 'YYYY-MM-DD'
+                    showedShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
                 };
 
                 helper.extractValueFromInput(this, options);
@@ -658,7 +793,9 @@ define(
                     options.range = convertToRaw(options.range);
                 }
 
-                lib.extend(properties, options);
+                lib.extend(
+                    properties, RangeCalendar.defaultProperties, options
+                );
                 this.setProperties(properties);
             },
 
@@ -782,130 +919,6 @@ define(
                 return convertToRaw(value);
             }
         };
-
-        /**
-         * 日期区间快捷选项列表配置
-         */
-        RangeCalendar.shortCutItems = [
-            {
-                name: '昨天',
-                value: 0,
-                getValue: function () {
-                    var yesterday = new Date(this.now.getTime());
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    return {
-                        begin: yesterday,
-                        end: yesterday
-                    };
-                }
-            },
-            {
-                name: '最近7天',
-                value: 1,
-                getValue: function () {
-                    var begin = new Date(this.now.getTime());
-                    var end = new Date(this.now.getTime());
-
-                    end.setDate(end.getDate() - 1);
-                    begin.setDate(begin.getDate() - 7);
-
-                    return {
-                        begin: begin,
-                        end: end
-                    };
-                }
-            },
-            {
-                name: '上周',
-                value: 2,
-                getValue: function () {
-                    var now = this.now;
-                    var begin = new Date(now.getTime());
-                    var end = new Date(now.getTime());
-                    var _wd = 1; //周一为第一天;
-
-                    if (begin.getDay() < _wd % 7) {
-                        begin.setDate(
-                            begin.getDate() - 14 + _wd - begin.getDay()
-                        );
-                    } else {
-                        begin.setDate(
-                            begin.getDate() - 7 - begin.getDay() + _wd % 7
-                        );
-                    }
-                    begin.setHours(0, 0, 0, 0);
-                    end.setFullYear(
-                        begin.getFullYear(),
-                        begin.getMonth(),
-                        begin.getDate() + 6
-                    );
-                    end.setHours(0, 0, 0, 0);
-
-                    return {
-                        begin: begin,
-                        end: end
-                    };
-                }
-            },
-            {
-                name: '本月',
-                value: 3,
-                getValue: function () {
-                    var now = this.now;
-                    var begin = new Date(now.getTime());
-                    var end = new Date(now.getTime());
-                    begin.setDate(1);
-                    return {
-                        begin: begin,
-                        end: end
-                    };
-                }
-            },
-            {
-                name: '上个月',
-                value: 4,
-                getValue: function () {
-                    var now = this.now;
-                    var begin = new Date(
-                        now.getFullYear(),
-                        now.getMonth() - 1,
-                        1
-                    );
-                    var end = new Date(
-                        now.getFullYear(),
-                        now.getMonth(),
-                        1
-                    );
-                    end.setDate(end.getDate() - 1);
-                    return {
-                        begin: begin,
-                        end: end
-                    };
-                }
-            },
-            {
-                name: '上个季度',
-                value: 5,
-                getValue: function () {
-                    var now = this.now;
-                    var begin = new Date(
-                        now.getFullYear(),
-                        now.getMonth() - now.getMonth() % 3 - 3,
-                        1
-                    );
-                    var end = new Date(
-                        now.getFullYear(),
-                        now.getMonth() - now.getMonth() % 3,
-                        1
-                    );
-                    end.setDate(end.getDate() - 1);
-                    return {
-                        begin: begin,
-                        end: end
-                    };
-                }
-            }
-        ];
 
         lib.inherits(RangeCalendar, InputControl);
         ui.register(RangeCalendar);

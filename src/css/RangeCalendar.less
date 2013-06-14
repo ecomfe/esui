@@ -26,8 +26,8 @@
     float:left;
 }
 
-.ui-calendar:hover,
-.ui-calendar:active {
+.ui-rangecalendar:hover,
+.ui-rangecalendar:active {
     border-color:#a9adb6;
 }
 
@@ -50,51 +50,53 @@
     border-width: 2px 1px 1px;
     padding: 8px;
     width: 430px;
-}
 
+    .ui-rangecalendar-shortcut {
+        font-size: 12px;
+        height: 20px;
+        line-height: 20px;
+        padding-right: 10px;
+    }
+
+    .ui-rangecalendar-shortcut-item {
+        color: #3377AA;
+        .interactive-cursor ();
+        text-decoration: underline;
+    }
+
+    .ui-rangecalendar-shortcut-item-selected {
+        color: #666666;
+        cursor: default;
+        text-decoration: none;
+    }
+
+    .ui-rangecalendar-begin,
+    .ui-rangecalendar-end {
+        float: left;
+        width: 210px;
+    }
+
+    .ui-rangecalendar-begin {
+        margin-right: 10px;
+    }
+
+    .ui-rangecalendar-label {
+        font-size: 12px;
+        height: 18px;
+        padding-top: 7px;
+    }
+
+    .ui-rangecalendar-foot {
+        clear: both;
+        padding-top: 8px;
+        .ui-button {
+            margin-right: 5px;
+        }
+    }
+}
 
 .ui-rangecalendar-layer-hidden {
     display: none;    
-}
-
-.ui-rangecalendar-shortcut {
-    font-size: 12px;
-    height: 20px;
-    line-height: 20px;
-    padding-right: 10px;
-}
-
-.ui-rangecalendar-shortcut-item {
-    color: #3377AA;
-    .interactive-cursor ();
-    text-decoration: underline;
-}
-
-.ui-rangecalendar-shortcut-item-selected {
-    color: #666666;
-    cursor: default;
-    text-decoration: none;
-}
-
-.ui-rangecalendar-begin,
-.ui-rangecalendar-end {
-    float: left;
-    width: 210px;
-}
-
-.ui-rangecalendar-begin {
-    margin-right: 10px;
-}
-
-.ui-rangecalendar-label {
-    font-size: 12px;
-    height: 18px;
-    padding-top: 7px;
-}
-
-.ui-rangecalendar-foot {
-    clear: both;
-    padding-top: 8px;
 }
 
 .ui-rangecalendar-disabled,
