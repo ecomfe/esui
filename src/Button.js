@@ -24,6 +24,10 @@ define(
             Control.apply(this, arguments);
         }
 
+        function dispathClickEvent() {
+            this.fire('click');
+        }
+
         Button.prototype = {
             /**
              * 控件类型
@@ -81,13 +85,9 @@ define(
              */
             initStructure: function () {
                 // 初始化状态事件
-                helper.addDOMEvent(
-                    this,
-                    this.main,
-                    'click',
-                    lib.bind(this.fire, this, 'click')
-                );
+                helper.addDOMEvent(this, this.main, 'click', dispathClickEvent);
             },
+            
             /**
              * 重新渲染视图
              * 仅当生命周期处于RENDER时，该方法才重新渲染
