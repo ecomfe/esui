@@ -21,6 +21,16 @@ define(
             Control.apply(this, arguments);
         }
 
+        /**
+         * 默认属性值
+         *
+         * @type {Object}
+         * @public
+         */
+        Crumb.defaultProperties = {
+            separator: '>'
+        };
+
         Crumb.prototype.type = 'Crumb';
 
         /**
@@ -43,10 +53,9 @@ define(
          */
         Crumb.prototype.initOptions = function (options) {
             var properties = {
-                path: [],
-                separator: '>'
+                path: []
             };
-            lib.extend(properties, options);
+            lib.extend(properties, Crumb.defaultProperties, options);
             this.setProperties(properties);
         };
 

@@ -24,6 +24,17 @@ define(
             InputControl.apply(this, arguments);
         }
 
+        /**
+         * 默认属性值
+         *
+         * @type {Object}
+         * @public
+         */
+        TextBox.defaultProperties = {
+            width: 200,
+            height: 25
+        };
+
         TextBox.prototype.type = 'TextBox';
 
         /**
@@ -49,11 +60,9 @@ define(
                 mode: 'text',
                 value: '',
                 placeholder: '',
-                width: 200,
-                height: 25,
                 autoSelect: false
             };
-            lib.extend(properties, options);
+            lib.extend(properties, TextBox.defaultProperties, options);
 
             if (!properties.name) {
                 properties.name = this.main.getAttribute('name');
