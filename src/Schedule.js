@@ -405,8 +405,12 @@ define(
                 parent.appendChild(coverDiv);
 
                 //挂载事件
-                helper.addDOMEvent(me, coverDiv, 'mouseover', 
-                lib.bind(coverTipOverHandler, me, coverDiv));
+                helper.addDOMEvent(
+                    me, 
+                    coverDiv, 
+                    'mouseover', 
+                    lib.curry(coverTipOverHandler, coverDiv)
+                );
             }
         }
 
@@ -774,52 +778,36 @@ define(
             var timebody = lib.g( getId(me, 'time-body') );
             //绑定拖动drag事件
             helper.addDOMEvent(
-                schedule, 
-                timebody, 
-                'mousedown', 
-                lib.bind(timeBodyDownHandler, me)
-            );
+                schedule, timebody, 'mousedown', timeBodyDownHandler);
 
             //绑定timebody mouseover事件
             helper.addDOMEvent(
-                schedule, 
-                timebody, 
-                'mouseover', 
-                lib.bind(timeOverHandler, me)
-            );
+                schedule, timebody, 'mouseover', timeOverHandler);
 
             //绑定timebody mouseout事件
             helper.addDOMEvent(
-                schedule, 
-                timebody, 
-                'mouseout', 
-                lib.bind(timeOutHandler, me)
-            );
+                schedule, timebody, 'mouseout', timeOutHandler);
 
             //绑定选择星期事件
             helper.addDOMEvent(
                 schedule, 
                 lib.g( getId(me, 'day-head') ), 
                 'click', 
-                lib.bind(dayClickHandler, me)
+                dayClickHandler
             );
 
 
             var shortcut = lib.g( getId(me, 'shortcut') );
             //绑定点击shortcut事件
             helper.addDOMEvent(
-                schedule, 
-                shortcut, 
-                'click', 
-                lib.bind(shortcutClickHandler, me)
-            );
+                schedule, shortcut, 'click', shortcutClickHandler);
 
             //shortcut mouseover
             helper.addDOMEvent(
                 schedule, 
                 lib.g( getId(me, 'shortcut') ), 
                 'mouseover', 
-                lib.bind(shortcutOverOutHandler, me, 1)
+                lib.curry(shortcutOverOutHandler, true)
             );
 
             //shortover mouseout
@@ -827,16 +815,12 @@ define(
                 schedule, 
                 shortcut, 
                 'mouseout', 
-                lib.bind(shortcutOverOutHandler, me, 0)
+                lib.curry(shortcutOverOutHandler, false)
             );
 
             //shortcut mousemove
             helper.addDOMEvent(
-                schedule, 
-                shortcut, 
-                'mousemove', 
-                lib.bind(shortcutMoveHandler, me)
-            );
+                schedule, shortcut, 'mousemove', shortcutMoveHandler);
         }
 
         /**

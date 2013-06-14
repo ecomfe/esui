@@ -84,8 +84,10 @@ define(
             initStructure: function () {
 
                 helper.addDOMEvent(
-                    this, this.main, 'click',
-                    function () { this.fire('click'); }
+                    this, 
+                    this.main, 
+                    'click', 
+                    lib.bind(this.fire, this, 'click')
                 );
             },
 

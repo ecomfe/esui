@@ -24,14 +24,6 @@ define(
             Control.apply(this, arguments);
         }
 
-        /**
-         * 鼠标点击事件处理函数
-         * @param {Button} button Button控件实例
-         */
-        function clickHandler(button) {
-            button.fire('click');
-        }
-
         Button.prototype = {
             /**
              * 控件类型
@@ -93,7 +85,7 @@ define(
                     this,
                     this.main,
                     'click',
-                    lib.curry(clickHandler, this)
+                    lib.bind(this.fire, this, 'click')
                 );
             },
             /**

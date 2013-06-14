@@ -380,17 +380,24 @@ define(
             }
         }
 
+        // 事件模块专用，无通用性
         function debounce(fn, interval) {
             interval = interval || 150;
 
             var timer = 0;
 
-            return function () {
+            return function (e) {
                 clearTimeout(timer);
                 var self = this;
-                var args = arguments;
+                e = e || window.event;
+                e = {
+                    type: e.type,
+                    srcElement: e.srcElement,
+                    target: e.target,
+                    currentTarget: e.currentTarget
+                };
                 timer = setTimeout(
-                    function () { fn.apply(self, args); },
+                    function () { fn.call(self, e); },
                     interval
                 );
             };
