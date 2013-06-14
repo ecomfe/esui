@@ -70,21 +70,21 @@ define(
                 {
                     text: '全周投放',
                     tip: '周一到周日全天投放',
-                    getVal: function () {
+                    getValue: function () {
                         return selectByDayStates([1, 1, 1, 1, 1, 1, 1]);
                     }
                 },
                 {
                     text: '周一到周五投放',
                     tip: '周一到周五全天投放',
-                    getVal: function () {
+                    getValue: function () {
                         return selectByDayStates([1, 1, 1, 1, 1, 0, 0]);
                     }
                 },
                 {
                     text: '周末投放',
                     tip: '周六、周日全天投放',
-                    getVal: function () {
+                    getValue: function () {
                         return selectByDayStates([0, 0, 0, 0, 0, 1, 1]);
                     }
                 }
@@ -141,7 +141,7 @@ define(
             var html = [];
 
             var tpl = ''
-                + '<span class="${clazz}" item="${index}"'
+                + '<span class="${clazz}" data-item="${index}"'
                 + ' >${text}</span>';
 
             //说明标题拼接
@@ -202,7 +202,7 @@ define(
             for (var i = 0; i <= 24; i = i + 2) {
                 html.push(
                     '<div class="', timeHClass, 
-                    '" time="', i, '" id="', getId(me, 'time-head' + i), '">',
+                    '" data-time="', i, '" id="', getId(me, 'time-head' + i), '">',
                      i + ':00', 
                      '</div>'
                 );
@@ -265,7 +265,7 @@ define(
             var timeTpl = ''
                 + '<div class="${timeClass}"'
                     + ' id="${itemId}"'
-                    + ' day="${dayIndex}" timeitem="1" time="${timeIndex}">'
+                    + ' data-day="${dayIndex}" data-time-item="1" data-time="${timeIndex}">'
                 + '</div>';
 
             var timeBClass = getClass(me, 'time-body');
@@ -385,9 +385,9 @@ define(
                 //设置星期checkbox的选中值
                 checkInput.checked = length == 24 ? true : false;
 
-                coverDiv.setAttribute('starttime', start);
-                coverDiv.setAttribute('endtime', end);
-                coverDiv.setAttribute('day', i);
+                coverDiv.setAttribute('data-start-time', start);
+                coverDiv.setAttribute('data-end-time', end);
+                coverDiv.setAttribute('data-day', i);
                 coverDiv.className = coverClass;
                 coverDiv.style.cssText += cssStyle;
 
@@ -437,7 +437,7 @@ define(
             while (len) {
                 var item = removeDiv[0];
 
-                if (item.getAttribute('day') != null) {
+                if (item.getAttribute('data-day') != null) {
                     helper.clearDOMEvents(schedule, item);
                     parent.removeChild(item);
                 }
@@ -521,7 +521,7 @@ define(
 
             var me = this;
             var dom = target;
-            var dayIndex = parseInt(dom.getAttribute('value'), 10);
+            var dayIndex = parseInt(dom.value, 10);
             var dayState = dom.checked;
 
             var rawValueCopy = rawValueClone(me.rawValue);
@@ -547,13 +547,13 @@ define(
         function shortcutClickHandler(e) {
             var target = lib.event.getTarget(e);
 
-            if (!target || !lib.hasAttribute(target, 'item')) {
+            if (!target || !lib.hasAttribute(target, 'data-item')) {
                 return;
             }
 
-            var index = target.getAttribute('item');
+            var index = target.getAttribute('data-item');
 
-            var func = this.shortcut[index].getVal;
+            var func = this.shortcut[index].getValue;
             typeof func == 'function' && func.call(this);
 
             var rawValue;
@@ -579,7 +579,7 @@ define(
         function shortcutMoveHandler(e) {
             var target = lib.event.getTarget(e);
 
-            if (!target || !target.getAttribute('item')) {
+            if (!target || !target.getAttribute('data-item')) {
 
                 return;
             }
@@ -597,7 +597,7 @@ define(
 
             var dom = element;
 
-            var index = dom.getAttribute('item');
+            var index = dom.getAttribute('data-item');
             var tipId = getId(me, 'shortcut-item') + index;
 
             setTimeout(function () {
@@ -620,7 +620,7 @@ define(
         function shortcutOverOutHandler(isOver, e) {
             var target = lib.event.getTarget(e);
 
-            if (!target || !target.getAttribute('item')) {
+            if (!target || !target.getAttribute('data-item')) {
 
                 return;
             }
@@ -640,7 +640,7 @@ define(
 
             var dom = element;
 
-            var index = dom.getAttribute('item');
+            var index = dom.getAttribute('data-item');
             var tipId = getId(me, 'shortcut-item') + index;
 
             //构建并获取tip
@@ -671,7 +671,7 @@ define(
 
             var target = lib.event.getTarget(e);
 
-            if (!target || !target.getAttribute('timeitem')) {
+            if (!target || !target.getAttribute('data-time-item')) {
 
                 return;
             }
@@ -694,8 +694,8 @@ define(
             var me = this;
             
             //获取当前元素所代表的时间
-            var time = parseInt(element.getAttribute('time'), 10);
-            var day  = parseInt(element.getAttribute('day'), 10);
+            var time = parseInt(element.getAttribute('data-time'), 10);
+            var day  = parseInt(element.getAttribute('data-day'), 10);
 
 
             //创立并显示提示tip
@@ -722,9 +722,9 @@ define(
 
             for (var i = 0, len = timeCovers.length; i < len; i++) {
                 var item = timeCovers[i];
-                var startCT = parseInt(item.getAttribute('starttime'), 10);
-                var endCT = parseInt(item.getAttribute('endtime'), 10);
-                var CoverDay = parseInt(item.getAttribute('day'), 10);
+                var startCT = parseInt(item.getAttribute('data-start-time'), 10);
+                var endCT = parseInt(item.getAttribute('data-end-time'), 10);
+                var CoverDay = parseInt(item.getAttribute('data-day'), 10);
 
                 if (time >= startCT
                     && time < endCT
@@ -748,12 +748,12 @@ define(
 
             var target = lib.event.getTarget(e);
 
-            if (!target || !target.getAttribute('timeitem')) {
+            if (!target || !target.getAttribute('data-time-item')) {
 
                 return;
             }
 
-            var element = target;
+            element = target;
 
             //移除hover效果
             lib.removeClasses(
