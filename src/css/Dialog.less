@@ -116,9 +116,14 @@
 
 .ui-dialog-mask {
     position: fixed;
-    *position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
+    // 兼容IE6
+    _position: absolute;
+    _width: 100%;
+    _height: 100%;
     background: #333;
     opacity: .2;
     filter: alpha(opacity=20);

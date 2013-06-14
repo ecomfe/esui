@@ -296,12 +296,10 @@ define(
             var maskClass = helper.getPartClasses(dialog, 'mask').join(' ');
 
             clazz.push(maskClass);
-            repaintMask(mask);
 
             mask.className = clazz.join(' ');
             mask.style.display = 'block';
             mask.style.zIndex = zIndex;
-            helper.addDOMEvent(dialog, window, 'resize', maskResizeHandler);
         }
 
 
@@ -313,21 +311,7 @@ define(
             var mask = getMask(dialog);
             if ('undefined' != typeof mask) {
                 lib.removeNode(mask);
-                helper.removeDOMEvent(
-                    dialog, window, 'resize', maskResizeHandler
-                );
-                //lib.un(window, 'resize', dialog.curMaskListener); 
-                //dialog.curMaskListener = null;
             }
-        }
-
-        /**
-         * 页面大小发生变化的事件处理器
-         *
-         * @inner
-         */
-        function maskResizeHandler() {
-            repaintMask(getMask(this));
         }
 
         /**
@@ -342,28 +326,6 @@ define(
             document.body.appendChild(el);
         }
 
-
-        /**
-         * 重新绘制遮盖层的位置
-         *
-         * @inner
-         * @param {HTMLElement} mask 遮盖层元素.
-         */
-        function repaintMask(mask) {
-            var width = Math.max(
-                            document.documentElement.clientWidth,
-                            Math.max(
-                                document.body.scrollWidth,
-                                document.documentElement.scrollWidth));
-            var height = Math.max(
-                            document.documentElement.clientHeight,
-                            Math.max(
-                                document.body.scrollHeight,
-                                document.documentElement.scrollHeight));
-
-            mask.style.width = width + 'px';
-            mask.style.height = height + 'px';
-        }
 
         /**
          * 获取遮盖层dom元素
@@ -586,7 +548,7 @@ define(
                         var footClass = helper.getPartClasses(dialog, 'foot');
                         // 取消了foot
                         var foot = dialog.getFoot();
-                        if (value === null) {
+                        if (value == null) {
                             dialog.needFoot = false;
                             if (foot) {
                                 dialog.removeChild(foot);
