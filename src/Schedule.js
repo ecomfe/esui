@@ -547,7 +547,7 @@ define(
         function shortcutClickHandler(e) {
             var target = lib.event.getTarget(e);
 
-            if (!target || !target.hasAttribute('item')) {
+            if (!target || !lib.hasAttribute(target, 'item')) {
                 return;
             }
 

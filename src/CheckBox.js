@@ -18,7 +18,7 @@ define(
                 || ( box.getValue() === 'on' ? '' : box.getValue());
             title = lib.encodeHTML(title);
             lib.g(helper.getId(box, 'text')).innerHTML = title;
-            lib.g(box.boxId).setAttribute('title', title);
+            lib.setAttribute(box.boxId, 'title', title);
         }
 
         /**
