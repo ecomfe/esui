@@ -84,8 +84,16 @@ define(
 
                 if (showedShortCutHash[shortItem.name]) {
                     var shortName = shortItem.name;
-                    var shortClass =
-                        helper.getPartClasses(calendar, 'shortcut-item').join(' ');
+                    var shortClasses = helper.getPartClasses(
+                        calendar, 'shortcut-item'
+                    );
+                    if (i == 0) {
+                        shortClasses = shortClasses.concat(
+                            helper.getPartClasses(
+                                calendar, 'shortcut-item-first'
+                            )
+                        );
+                    }
                     var shortId = helper.getId(calendar, 'shortcut-item' + i);
 
 
@@ -94,7 +102,7 @@ define(
                             tplItem, 
                             {
                                 shortIndex: i,
-                                shortClass: shortClass,
+                                shortClass: shortClasses.join(' '),
                                 shortId: shortId,
                                 shortName: shortName
                             }
@@ -102,7 +110,7 @@ define(
                     );
                 }
             }
-            return html.join('&nbsp;|&nbsp;');
+            return html.join('');
         }
 
         /**
