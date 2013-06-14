@@ -206,8 +206,8 @@ define(
                 // 因此这里需要复制一个用，好在`cloneNode(false)`没兼容问题
                 var input = main.cloneNode(false);
                 // `helper.replaceMain`会给加上`data-ctrl-id`，要重新去掉
-                input.removeAttribute(
-                    require('./main').getConfig('instanceAttr'));
+                lib.removeAttribute(
+                    input, require('./main').getConfig('instanceAttr'));
                 input.id = this.inputId;
                 // 把原来的`<input>`或`<textarea>`放进去
                 this.main.appendChild(input);
@@ -263,17 +263,17 @@ define(
                     var placeholder = 
                         lib.g(helper.getId(textbox, 'placeholder'));
                     if (title) {
-                        textbox.main.setAttribute('title', title);
-                        input.setAttribute('title', title);
+                        lib.setAttribute(textbox.main, 'title', title);
+                        lib.setAttribute(input, 'title', title);
                         if (placeholder) {
-                            placeholder.setAttribute('title', title);
+                            lib.setAttribute(placeholder, 'title', title);
                         }
                     }
                     else {
-                        textbox.main.removeAttribute('title');
-                        input.removeAttribute('title');
+                        lib.removeAttribute(textbox.main, 'title');
+                        lib.removeAttribute(input, 'title');
                         if (placeholder) {
-                            placeholder.removeAttribute('title');
+                            lib.removeAttribute(placeholder, 'title');
                         }
                     }
                 }
@@ -325,10 +325,10 @@ define(
                     var input = lib.g(textbox.inputId);
                     if (supportPlaceholder) {
                         if (placeholder) {
-                            input.setAttribute('placeholder', placeholder);
+                            lib.setAttribute(input, 'placeholder', placeholder);
                         }
                         else {
-                            input.removeAttribute('placeholder');
+                            lib.removeAttribute(input, 'placeholder');
                         }
                     }
                     else {

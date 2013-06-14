@@ -22,6 +22,10 @@ define(
             Control.apply(this, arguments);
         }
 
+        function dispathClickEvent() {
+            this.fire('click');
+        }
+
         Link.prototype = {
 
             constructor: Link,
@@ -82,13 +86,7 @@ define(
              * @protected
              */
             initStructure: function () {
-
-                helper.addDOMEvent(
-                    this, 
-                    this.main, 
-                    'click', 
-                    lib.bind(this.fire, this, 'click')
-                );
+                helper.addDOMEvent(this, this.main, 'click', dispathClickEvent);
             },
 
             /**
