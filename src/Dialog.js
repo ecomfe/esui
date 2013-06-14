@@ -195,22 +195,16 @@ define(
          * @param {HTMLElement} node 需要禁止的元素
          * @param {boolean} 启用或禁止
          */
-        function makeUnselectable(node, unselected) {
-            if (node.nodeType == 1) {
-                if (unselected) {
-                    node.setAttribute('unselectable', 'on');
-                }
-                else {
-                    node.removeAttribute('unselectable');
-                }
+        function makeUnselectable(dialog, node, unselected) {
+            if (unselected) {
+                helper.addDOMEvent(dialog, node, 'selectstart', function(e){
+                    e.preventDefault();
+                });
             }
-            var child = node.firstChild;
-            while (child) {
-                makeUnselectable(child, unselected);
-                child = child.nextSibling;
+            else {
+                helper.removeDOMEvent(dialog, node, 'selectstart');
             }
         }
-
 
         /**
          * drag时 mousedown的事件处理函数
@@ -229,7 +223,7 @@ define(
 
             // 禁掉选择功能
             this.addState('dragging');
-            makeUnselectable(this.main, true);
+            makeUnselectable(this, this.main, true);
 
             helper.addDOMEvent(this, doc, 'mousemove', dialogHeadMoveHandler);
             helper.addDOMEvent(this, doc, 'mouseup', dialogHeadUpHandler);
@@ -306,7 +300,7 @@ define(
 
             // 禁掉选择功能
             this.removeState('dragging');
-            makeUnselectable(this.main, false);
+            makeUnselectable(this, this.main, false);
         }
 
 
