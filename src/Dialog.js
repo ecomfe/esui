@@ -108,7 +108,12 @@ define(
             }
             else {
                 mainDOM = document.createElement('div');
-                control.main.appendChild(mainDOM);
+                if (lib.dom.first(control.main)) {
+                    lib.insertBefore(mainDOM, lib.dom.first(control.main));
+                }
+                else {
+                    control.main.appendChild(mainDOM);
+                }
             }
 
             mainDOM.innerHTML = headHtml;
@@ -481,7 +486,26 @@ define(
                 }
                 else {
                     mainDOM = document.createElement('div');
-                    this.main.appendChild(mainDOM);
+
+                    if (type == 'body') {
+                        // 找到head
+                        var head = this.getChild('head');
+                        if (head) {
+                            lib.insertAfter(mainDOM, head.main);
+                        }
+                        // 放到第一个
+                        else if (lib.dom.first(this.main)) {
+                            lib.insertBefore(
+                                mainDOM, head, lib.dom.first(this.main)
+                            );
+                        }
+                        else {
+                            this.main.appendChild(mainDOM);
+                        }
+                    }
+                    else {
+                        this.main.appendChild(mainDOM);
+                    }
                 }
 
                 lib.addClasses(
