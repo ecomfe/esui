@@ -114,7 +114,8 @@ define(
             mainDOM.innerHTML = headHtml;
             lib.addClasses(mainDOM, headClasses);
             var properties = {
-                main: mainDOM
+                main: mainDOM,
+                renderOptions: this.renderOptions
             };
 
             var panel = ui.create('Panel', properties);
@@ -488,7 +489,8 @@ define(
                     helper.getPartClasses(this, type + '-panel')
                 );
                 var properties = {
-                    main: mainDOM
+                    main: mainDOM,
+                    renderOptions: this.renderOptions
                 };
 
                 var panel = ui.create('Panel', properties);
