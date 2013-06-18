@@ -108,8 +108,8 @@ define(
             }
             else {
                 mainDOM = document.createElement('div');
-                if (lib.dom.first(control.main)) {
-                    lib.insertBefore(mainDOM, lib.dom.first(control.main));
+                if (control.main.firstChild) {
+                    lib.insertBefore(mainDOM, control.main.firstChild);
                 }
                 else {
                     control.main.appendChild(mainDOM);
@@ -494,9 +494,9 @@ define(
                             lib.insertAfter(mainDOM, head.main);
                         }
                         // 放到第一个
-                        else if (lib.dom.first(this.main)) {
+                        else if (this.main.firstChild) {
                             lib.insertBefore(
-                                mainDOM, head, lib.dom.first(this.main)
+                                mainDOM, head, this.main.firstChild
                             );
                         }
                         else {

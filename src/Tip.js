@@ -42,9 +42,8 @@ define(
                 title: '',
                 content: '',
                 arrow: false,
-                mode: 'over',
-                hideDelay: '100',
-                showDelay: '100'
+                showMode: 'over',
+                delayTime: 500
             };
             lib.extend(properties, options);
             this.setProperties(properties);
@@ -59,7 +58,9 @@ define(
         function getDomProperties(options) {
             var main = options.main;
             options.title = options.title || main.getAttribute('title');
+            main.removeAttribute('title');
             options.content = options.content || main.innerHTML;
+            main.innerHTML = '';
         }
         /**
          * 创建主元素
@@ -80,130 +81,23 @@ define(
          * @protected
          */
         Tip.prototype.initStructure = function () {
-            if (this.mode === 'auto') {
-                this.show();
-            }
-            else {
-                var showEvent = this.mode === 'click' ? 'click' : 'mouseover';
-                var hideEvent = 'mouseout';
-                tipEvent(this, this.main, showEvent, hideEvent);
-            }
-        };
-
-        /**
-         * 为DOM元素绑定tip控件显示隐藏触发事件
-         * @param  {Object} tip Tip控件实例
-         * @param  {Object} element 需要绑定事件的元素
-         * @param  {string} showEvent 触发显示的事件
-         * @param  {string} hideEvent 触发隐藏的事件
-         */
-        function tipEvent(tip, element, showEvent, hideEvent) {
-            helper.addDOMEvent(
-                    tip, element, showEvent,
-                    lib.bind(tip.show, tip)
-                );
-                helper.addDOMEvent(
-                    tip, element, hideEvent,
-                    lib.bind(tip.hide, tip)
-                );
-        }
-        /**
-         * 创建layer
-         *
-         * @param {Tip} tip Tip控件实例
-         * @param {Event} e 触发事件的事件对象
-         */
-        function createLayer(tip, e) {
-            layer = helper.layer.create('div');
-            layer.id = helper.getId(tip, 'layer');
-            layer.className = helper.getPartClasses(tip, 'layer').join(' ');
-
-            var title = document.createElement('h3');
-            var body = document.createElement('div');
-            var arrow = helper.layer.create('div');
-
-            // 初始化提示标题
-            title.id = helper.getId(tip, 'title');
-            title.className = helper.getPartClasses(tip, 'title').join(' ');
-            layer.appendChild(title);
-
-            // 初始化提示体
-            body.id = helper.getId(tip, 'body');
-            body.className = helper.getPartClasses(tip, 'body').join(' ');
-            layer.appendChild(body);
-
-            // 初始化箭头
-            arrow.id = helper.getId(tip, 'arrow');
-            arrow.className = helper.getPartClasses(tip, 'arrow').join(' ');
-            layer.appendChild(arrow);
-
-            document.body.appendChild(layer);
-            helper.layer.attachTo(
-                layer, 
-                tip.main, 
-                { top: 'bottom', left: 'left', spaceDetection: 'both'}
-            );
-
-            tip.repaint();
-            return layer;
-        }
-
-        /**
-         * 修改箭头位置
-         *
-         * @param {Tip} tip Tip控件实例
-         * @param {string} value 箭头位置变量
-         */
-        function positionArrow(tip, value) {
-            // 箭头的class形如`ui-tip-arrow ui-tip-arrow-tl`
-            var classes = helper.getPartClasses(tip, 'arrow');
-            if (typeof value === 'string') {
-                classes = classes.concat(
-                    helper.getPartClasses(tip, 'arrow-' + value));
-            }
-            var arrowElement = lib.g(helper.getId(tip, 'arrow'));
-            arrowElement.className = classes.join(' ');
-        }
-
-        /**
-         * 显示弹层
-         *
-         * @public
-         */
-        Tip.prototype.show = function () {
-            clearTimeout(this.hideTime); //清除隐藏定时器
-            clearTimeout(this.showTime);
-
-            function show () {
-                var layer = lib.g(helper.getId(this, 'layer'));
-                if (!layer) {
-                    layer = createLayer(this);
-                }
-                tipEvent(this, layer, 'mouseover', 'mouseout');
-                helper.removePartClasses(this, 'layer-hidden', layer);
-            }
-
-            this.showTime = setTimeout(lib.bind(show, this), this.showDelay);
-        };
-        /**
-         * 隐藏弹层
-         *
-         * @public
-         */
-        Tip.prototype.hide = function () {
-            // 先清除各种定时器。
-            clearTimeout(this.hideTime);
-            clearTimeout(this.showTime);
-            var layer = lib.g(helper.getId(this, 'layer'));
-
-            function hide() {
-                helper.addPartClasses(this, 'layer-hidden', layer);
-            }
-
-            if (layer) {
-                this.hideTime = 
-                    setTimeout(lib.bind(hide, this), this.hideDelay);
-            }
+            //创建main
+            var main = document.createElement('div');
+            document.body.appendChild(main);
+            var tipLayer = ui.create('TipLayer', {
+                content: this.content,
+                title: this.title,
+                main: main
+            });
+            tipLayer.render();
+            this.tipLayer = tipLayer;
+            tipLayer.attachedTo({
+                showMode: this.mode,
+                arrow: this.arrow,
+                delayTime: this.delayTime,
+                nodeOrControl: this.main,
+                positionOpt: {top: 'top', right: 'left'}
+            });
         };
 
         /**
@@ -213,14 +107,21 @@ define(
          */
         Tip.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
-            paint.html('title', 'title'),
-            paint.html('content', 'body'),
             {
-                name: 'arrow',
+                name: 'title',
                 paint: function (tip, value) {
-                    var layer = lib.g(helper.getId(tip, 'layer'));
+                    var layer = tip.tipLayer;
                     if (layer) {
-                        positionArrow(tip, value);
+                        layer.setTitle(value);
+                    }
+                }
+            },
+            {
+                name: 'content',
+                paint: function (tip, value) {
+                    var layer = tip.tipLayer;
+                    if (layer) {
+                        layer.setContent(value);
                     }
                 }
             }
@@ -237,9 +138,9 @@ define(
                 return;
             }
             
-            var layer = lib.g(helper.getId(this, 'layer'));
+            var layer = this.tipLayer;
             if (layer) {
-                layer.parentNode.removeChild(layer);
+                layer.dispose();
             }
 
             Control.prototype.dispose.apply(this, arguments);
