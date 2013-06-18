@@ -11,6 +11,7 @@ define(
         var lib     = require('./lib');
         var Control = require('./Control');
         var ui      = require('./main');
+        var Panel   = require('./Panel');
         var helper  = require('./controlHelper');
 
         /**
@@ -76,6 +77,22 @@ define(
         };
 
         /**
+         * 获取mat元素
+         *
+         */
+        function getMat(sidebar) {
+            return lib.g(helper.getId(sidebar, 'mat'));
+        }
+
+        /**
+         * 获取miniBar元素
+         *
+         */
+        function getMiniBar(sidebar) {
+            return lib.g(helper.getId(sidebar, 'minibar'));
+        }
+
+        /**
          * 初始化内容区域head和body
          * @param  {Sidebar} sidebar Sidebar实例
          * @inner
@@ -96,6 +113,18 @@ define(
                         body, 
                         helper.getPartClasses(sidebar, 'body')
                     );
+
+                    //添加panel，以便控制子元素
+                    var panel = new Panel({
+                        main: body,
+                        renderOptions: sidebar.renderOptions
+                    });
+
+                    //将面板添加到sidebar
+                    sidebar.addChild(panel, 'content');
+
+                    //渲染面板
+                    panel.render();
                 }
             }
         }
@@ -227,8 +256,8 @@ define(
             }
 
             var main        = me.main;
-            var mat         = me.getMat();
-            var mini        = me.getMiniBar();
+            var mat         = getMat(me);
+            var mini        = getMiniBar(me);
 
             mat.style.top       = curTop - marginTop + 'px';
             main.style.top      = curTop + 'px';
@@ -276,8 +305,8 @@ define(
             me.height     = height;
 
             var main        = me.main;
-            var mat         = me.getMat();
-            var mini        = me.getMiniBar();
+            var mat         = getMat(me);
+            var mini        = getMiniBar(me);
 
             mat.style.height  = height + me.marginTop + me.marginBottom + 'px';
             main.style.height = height + 'px';
@@ -294,7 +323,7 @@ define(
          * @inner
          */
         function hideMat(sidebar) {
-            sidebar.getMat().style.left = '-10000px';
+            getMat(sidebar).style.left = '-10000px';
         }
 
         /**
@@ -304,10 +333,10 @@ define(
          */
         function show(sidebar) {
                     
-            sidebar.getMat().style.left = 0;
+            getMat(sidebar).style.left = 0;
             sidebar.main.style.left = 10 + 'px';
 
-            sidebar.getMiniBar().style.left = -30 + 'px';
+            getMiniBar(sidebar).style.left = -30 + 'px';
 
             if (!sidebar.isAutoHide()) {
                 hideMat(sidebar);               
@@ -324,7 +353,7 @@ define(
             hideMat(sidebar);
             sidebar.main.style.left = -220 + 'px';
 
-            sidebar.getMiniBar().style.left = 0 + 'px';
+            getMiniBar(sidebar).style.left = 0 + 'px';
         }
 
         /**
@@ -403,18 +432,6 @@ define(
             }
 
             me.mode = mode;
-            
-            var neighbor        = me.getNeighbor();
-            var neighborHideClass = helper.getPartClasses(me, 'neighbor-hide');
-
-            // 更新neighbor视图
-            if (me.isAutoHide()) {
-
-                lib.addClasses(neighbor, neighborHideClass);
-            } else {
-
-                lib.removeClasses(neighbor, neighborHideClass);
-            }
         }
 
         /**
@@ -456,10 +473,6 @@ define(
          * @protected
          */
         Sidebar.prototype.initStructure = function () {
-
-            // 设置邻居元素得样式
-            var classes = helper.getPartClasses(this, 'neighbor');
-            lib.addClasses(this.getNeighbor(), classes);
             
             // 初始化控制按钮，内容区域，mat和minibar
             initContent(this);
@@ -539,31 +552,28 @@ define(
          */
         Sidebar.prototype.getMode = function () {
             return this.mode;
-        };        
-
-        /**
-         * 获取mat元素
-         *
-         */
-        Sidebar.prototype.getMat = function () {
-            return lib.g(helper.getId(this, 'mat'));
         };
 
         /**
-         * 获取miniBar元素
-         *
+         * 获取当前panel
+         * @return {ui.Panle} 当前panel
          */
-        Sidebar.prototype.getMiniBar = function () {
-            return lib.g(helper.getId(this, 'minibar'));
+        Sidebar.prototype.getPanel = function () {
+            return this.getChild('content');
         };
 
         /**
-         * 获取邻居main元素
-         * @return {HTMLElement}  邻居main元素
+         * 更新sidebar内容
+         * @param  {string} content html内容
          */
-        Sidebar.prototype.getNeighbor = function () {
-            return lib.dom.next(this.main);
-        };
+        Sidebar.prototype.setContent = function (content) {
+
+            var panel = this.getPanel();
+
+            if (panel) {
+                panel.setProperties({content: content}); 
+            }
+        },
 
         /**
          * 判断当前模式
@@ -598,8 +608,8 @@ define(
                 this.topReseter = null;
             }
 
-            var mat = this.getMat();
-            var miniBar = this.getMiniBar();
+            var mat = getMat(this);
+            var miniBar = getMiniBar(this);
             document.body.removeChild(miniBar);
             document.body.removeChild(mat);
 
