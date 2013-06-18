@@ -120,7 +120,7 @@ define(
             lib.addClasses(mainDOM, headClasses);
             var properties = {
                 main: mainDOM,
-                renderOptions: this.renderOptions
+                renderOptions: control.renderOptions
             };
 
             var panel = ui.create('Panel', properties);
