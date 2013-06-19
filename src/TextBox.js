@@ -108,10 +108,25 @@ define(
          * @inner
          */
         function dispatchSpecialKey(e) {
-            var keyCode = e.keyCode || e.which;
-            
+            var keyCode = e.which || e.keyCode;
+
             if (keyCode === 13) {
                 this.fire('enter');
+            }
+
+            var isDefaultPrevented = false;
+            var event = {
+                keyCode: keyCode,
+                key: String.fromCharCode(keyCode),
+                ctrlKey: e.ctrlKey,
+                altKey: e.altKey,
+                preventDefault: function () {
+                    isDefaultPrevented = true;
+                }
+            };
+            this.fire('keypress', event);
+            if (isDefaultPrevented) {
+                e.preventDefault();
             }
         }
 
