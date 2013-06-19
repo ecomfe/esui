@@ -47,10 +47,10 @@ define(
         Sidebar.prototype.initOptions = function (options) {
             var properties = {
 
-                headHeight:   37,
-                marginTop:    10,
-                marginLeft:   10,
-                marginBottom: 10,
+                headHeight:   37, //head的高度
+                marginTop:    10, //离页面顶部的空隙
+                marginLeft:   10, //离页面左边的空隙
+                marginBottom: 10, //离页面底部的空隙
                 autoDelay:    300, //自动隐藏和自动显示的延迟
                 mode:         'fixed', //初始化状态
                 _autoTimer:    0
@@ -103,12 +103,12 @@ define(
             if (head) {
 
                 lib.addClasses(head, helper.getPartClasses(sidebar, 'head'));
-                sidebar._headEl = head;
+                sidebar.headEl = head;
 
                 var body = lib.dom.next(head);
                 
                 if (body) {
-                    sidebar._bodyEl = body;
+                    sidebar.bodyEl = body;
                     lib.addClasses(
                         body, 
                         helper.getPartClasses(sidebar, 'body')
@@ -158,9 +158,9 @@ define(
             // 构建minibar的html
             // 以主sidebar的标题为标题
             var textClasses = helper.getPartClasses(me, 'minibar-text');
-            me._headEl && html.push(''
+            me.headEl && html.push(''
                 + '<div class="' + textClasses.join(' ') + '">'
-                     + me._headEl.innerHTML 
+                     + me.headEl.innerHTML 
                 + '</div>');
 
             var arrowClasses = helper.getPartClasses(me, 'minibar-arrow');
@@ -174,8 +174,6 @@ define(
             div.innerHTML   = html.join('');
             div.id          = helper.getId(me, 'minibar');
             div.className   = helper.getPartClasses(me, 'minibar').join(' ');
-            div.style.left  = '-10000px';
-            div.style.top   = me.top + 'px';
             
             // 挂载行为
             helper.addDOMEvent(me, div, 'mouseover', 
@@ -225,96 +223,53 @@ define(
          */
         function resetTop(sidebar) {
             var me          = sidebar;
-            var marginTop   = me.marginTop;
             var scrollTop   = lib.page.getScrollTop();
-            var top         = me.top; 
-            var curPos      = 'absolute';
-            var curTop;
-            
-            //好想要删掉的冲动
-            if (lib.ie && lib.ie < 7) {
 
-                if (scrollTop > top - marginTop) {
-                    curTop = scrollTop + marginTop;
-
-                }
-                else {
-                    curTop = top;
-                    resetHeight(me);
-                }
-            } 
-            else {
-
-                if (scrollTop > top - marginTop) {
-                    curPos = 'fixed';
-                    curTop = marginTop;    
-                } 
-                else {
-                    curTop = top;
-                    resetHeight(me);
-                }
-            }
+            var marginTop = me.marginTop || 0;
+            var curTop = Math.max(me.top + marginTop - scrollTop, marginTop);
 
             var main        = me.main;
             var mat         = getMat(me);
             var mini        = getMiniBar(me);
 
-            mat.style.top       = curTop - marginTop + 'px';
-            main.style.top      = curTop + 'px';
-            mat.style.position  = curPos;
-            main.style.position = curPos;
-            mini.style.top      = curTop + 'px';
-            mini.style.position = curPos;
-            setTimeout(function () {
-                //移动过快时修补最后一次调整
-                resetHeight(me);
-            }, 200);            
+            main.style.top  = curTop + 'px';
+            mini.style.top  = curTop + 'px';
+            mat.style.top   = curTop - marginTop + 'px';          
         }
 
-
         /**
-         * 重设控件高度
-         * @param  {Sidebar} sidebar Sidebar实例
-         * @inner
+         * 初始化控件位置
+         * @param  {ui.Sidebar} sidebar
          */
-        function resetHeight(sidebar) {
-            var me          = sidebar;
-            var bodyHeight;
+        function initPosition(sidebar) {
+            var me   = sidebar;
 
-            var page        = lib.page;
-            var height      = page.getViewHeight();
+            //ie7不支持box-sizing，由于border,这里先去掉，用户在css里自定义吧
+            //设置head的高度
+            //var head = me.headEl;
+            //head.style.height = me.headHeight ? me.headHeight + 'px' : 0;
 
-            if (height) {
+            //计算main位置
+            var main = me.main;
+            main.style.cssText += ';'
+                + 'left: '  + (me.marginLeft ? me.marginLeft + 'px' : 0) + ';'
+                + 'bottom:' + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
 
-                var scrollTop = page.getScrollTop();
-                var pos       = lib.getOffset(me.main);
+            //计算body位置
+            var body = me.bodyEl;
+            body.style.cssText += ';'
+                + 'top: ' + (me.headHeight ? me.headHeight + 'px' : 0) + ';';
 
-                height = height - pos.top + scrollTop - me.marginBottom;
+            //计算minibar的位置
+            var minibar = getMiniBar(me);
+            minibar.style.cssText += ';'
+                + 'bottom:' + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
 
-            } 
-            else {
-                height = 300;
-            }
-
-            if (height < 0) {
-                height = 300;
-            }
+            //计算mat的位置
+            //var mat         = getMat(me);
             
-            bodyHeight    = height - me.headHeight;
-            me.bodyHeight = bodyHeight;
-            me.height     = height;
-
-            var main        = me.main;
-            var mat         = getMat(me);
-            var mini        = getMiniBar(me);
-
-            mat.style.height  = height + me.marginTop + me.marginBottom + 'px';
-            main.style.height = height + 'px';
-            mini.style.height = height + 'px';
-
-            me._bodyEl && (me._bodyEl.style.height = bodyHeight + 'px');
-
-            me.fire('resize');
+            //初始化top
+            resetTop(me);
         }
         
         /**
@@ -323,7 +278,7 @@ define(
          * @inner
          */
         function hideMat(sidebar) {
-            getMat(sidebar).style.left = '-10000px';
+            getMat(sidebar).style.display = 'none';
         }
 
         /**
@@ -333,10 +288,11 @@ define(
          */
         function show(sidebar) {
                     
-            getMat(sidebar).style.left = 0;
-            sidebar.main.style.left = 10 + 'px';
+            //
+            getMat(sidebar).style.display = 'block';
+            sidebar.main.style.display = 'block';
 
-            getMiniBar(sidebar).style.left = -30 + 'px';
+            getMiniBar(sidebar).style.display = 'none';
 
             if (!sidebar.isAutoHide()) {
                 hideMat(sidebar);               
@@ -351,9 +307,12 @@ define(
         function hide(sidebar) {
             
             hideMat(sidebar);
-            sidebar.main.style.left = -220 + 'px';
 
-            getMiniBar(sidebar).style.left = 0 + 'px';
+            //隐藏主区域
+            sidebar.main.style.display = 'none';
+
+            //minibar
+            getMiniBar(sidebar).style.display = 'block';
         }
 
         /**
@@ -480,10 +439,8 @@ define(
             renderMiniBar(this);
             initCtrlBtn(this);
             
-            // 挂载resize和scorll的listener
-            this.heightReset = lib.curry(resetHeight, this);
+            // 挂载scorll的listener
             this.topReset    = lib.curry(resetTop, this);
-            lib.on(window, 'resize', this.heightReset);
             lib.on(window, 'scroll', this.topReset);
 
             // 给主元素添加over和out的事件handler
@@ -496,9 +453,8 @@ define(
                 lib.bind(mainOutHandler, null, this)
             );
 
-            // 初始化高度和位置
-            resetTop(this);
-            resetHeight(this); 
+            // 初始化位置
+            initPosition(this);
             
             // 初始化显示状态
             if (this.isAutoHide()) {
@@ -596,12 +552,6 @@ define(
             
             helper.beforeDispose(this);
 
-            // remove resize事件listener
-            if (this.heightReset) {
-                lib.un(window, 'resize', this.heightReset);
-                this.heightReset = null;
-            }
-
             // remove scroll事件listener
             if (this.topReset) {
                 lib.un(window, 'scroll', this.topReset);
@@ -614,8 +564,8 @@ define(
             document.body.removeChild(mat);
 
             // 释放dom引用
-            this._headEl  = null;
-            this._bodyEl  = null;
+            this.headEl  = null;
+            this.bodyEl  = null;
 
             helper.dispose(this);
             helper.afterDispose(this);
