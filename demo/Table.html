@@ -17,7 +17,7 @@
             <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
             <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
             <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
-            <div data-ui="type:Table;id:myTable;"></div>
+            <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
         </div>
         <script>
         var data = [
@@ -32,15 +32,21 @@
         data = data.concat(data);
         //data = [{id:6, name: '铮哥', sex: 1}];
         var myTable = null;
-
+        var testFuns = {}
         require(
             [
-                'esui', 
+                'esui',
+                'esui/Panel',
+                'esui/extension/TableEdit', 
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',
+                'esui/TextBox',
+                'esui/Select',
                 'css!esui/css/main.css',
                 'css!esui/css/Table.css',
+                'css!esui/css/Select.css',
+                'css!esui/css/TextBox.css',
                 'css!esui/css/Tip.css'
             ],
             function (ui) {
@@ -51,11 +57,15 @@
                             datasource: data,
                             sortable: true,
                             columnResizable: true,
-                            //subrow:true,
+                            followHead: true,
+                            subrow:true,
                             select:'multi',
-                            //subrowMutex: 1,
-                            selectMode :'line',
-                            bodyMaxHeight : 300,
+                            breakLine: 1,
+                            //edit: 'multi',
+                            subrowMutex: 1,
+                            //bodyMaxHeight: 300,
+                            //selectMode :'line',
+                            noDataHtml: '<p style="margin:0;">nothing</p>',
                             fields: [
                                 {
                                     title: '编号',
@@ -63,7 +73,8 @@
                                     sortable: true,
                                     tip :'编号',
                                     resizable: true,
-                                    //subEntry: 1,
+                                    subEntry: 1,
+                                    editable: 1,
                                     width: 50,
                                     content: function (item) {
                                         return item.id;
@@ -73,6 +84,7 @@
                                     title: '姓名',
                                     field: 'name' ,
                                     tip :'姓名',
+                                    editable: 1,
                                     comparer : function( a,b ){
                                         return a.name.localeCompare( b.name );
                                     },
@@ -87,6 +99,14 @@
                                     title: '性别',
                                     field: 'sex' ,
                                     tip :'性别',
+                                    editable: 1,
+                                    editOptions: {
+                                        type: 'select',
+                                        datasource: [
+                                            { text: '男', value: 1 },
+                                            { text: '女', value: 0 }
+                                        ]
+                                    },
                                     comparer : function( a,b ){
                                         return a.sex - b.sex;
                                     },
@@ -104,14 +124,16 @@
                                     resizable : true,
                                     width: 100,
                                     content: function (item, index) {
-                                        return '<a href="#">操作</a>';
+                                        return '<a href="#" onclick="testFuns.editFun('+ index +')">编辑</a>&nbsp;'
+                                                + '<a href="#" onclick="testFuns.cancelFun('+ index +')">撤销</a>&nbsp;'
+                                                + '<a href="#" onclick="testFuns.saveFun('+ index +')">保存</a>&nbsp;' ;
                                     }
                                 }
                             ]
                         }
                     }   
                 });
-
+                
                 myTable = ui.get('myTable');
                 myTable.onsubrowopen = function ( arg ) {
                     this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
@@ -194,13 +216,32 @@
                     myTable.setDatasource(data);
                 };
 
-                function linkClickHandler(arg) {
-                    alert('link:' + arg.args.index);
-                }
+                myTable.onstartedit = function(arg) {
+                    //alert(arg.data);
+                };
 
-                function buttonClickHandler(arg) {
-                    alert('button:' + arg.args.index);
-                }
+                myTable.oncanceledit = function(arg) {
+                    //alert(arg.index);
+                };
+
+                myTable.onsaveedit = function(arg) {
+                    if (arg.data.name.length > 10 ) {
+                        arg.returnResult = false;
+                        alert('中国人有这么长的名字么？');
+                    }
+                };
+
+                testFuns.editFun = function(index){
+                    myTable.startEdit(index);
+                };
+
+                testFuns.cancelFun = function(index){
+                    myTable.cancelEdit(index);
+                };
+
+                testFuns.saveFun = function(index){
+                    myTable.saveEdit(index);
+                };
             }
         );
         </script>
