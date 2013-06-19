@@ -52,8 +52,7 @@ define(
                 marginLeft:   10, //离页面左边的空隙
                 marginBottom: 10, //离页面底部的空隙
                 autoDelay:    300, //自动隐藏和自动显示的延迟
-                mode:         'fixed', //初始化状态
-                _autoTimer:    0
+                mode:         'fixed' //初始化状态
             };
 
             lib.extend(properties, options);
@@ -257,16 +256,12 @@ define(
 
             //计算body位置
             var body = me.bodyEl;
-            body.style.cssText += ';'
-                + 'top: ' + (me.headHeight ? me.headHeight + 'px' : 0) + ';';
+            body.style.top = me.headHeight ? me.headHeight + 'px' : 0;
 
             //计算minibar的位置
             var minibar = getMiniBar(me);
-            minibar.style.cssText += ';'
-                + 'bottom:' + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
-
-            //计算mat的位置
-            //var mat         = getMat(me);
+            minibar.style.bottom = me.marginBottom ? me.marginBottom + 'px' : 0;
+            
             
             //初始化top
             resetTop(me);
