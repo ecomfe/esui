@@ -605,6 +605,7 @@ define(
                  */
                 function callListeners(listeners) {
                     if (listeners instanceof Array) {
+                        listeners = listeners.slice();
                         for (var i = 0, len = listeners.length; i < len; i++) {
                             var listener = listeners[i];
                             if (typeof listener == 'function') {
