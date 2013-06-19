@@ -14,6 +14,8 @@ define(
         var ui = require('./main');
         var paint = require('./painters');
 
+        require('./TipLayer');
+
         /**
          * 提示控件类
          * 
