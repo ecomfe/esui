@@ -587,7 +587,17 @@ define(
                     targetElement = lib.g(options.targetDOM);
                 }
                 else if (options.targetControl) {
-                    targetElement = options.targetControl.main;
+                    var targetControl;
+                    if (typeof options.targetControl == 'string') {
+                        targetControl =
+                            this.viewContext.get(options.targetControl);
+                    }
+                    else {
+                        targetControl = options.targetControl;
+                    }
+                    if (targetControl) {
+                        targetElement = targetControl.main;
+                    }
                 }
 
                 if (!targetElement) {
