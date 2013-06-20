@@ -383,6 +383,8 @@ define(
          */
         function delayShow(tipLayer, delayTime, targetElement, options) {
             if (delayTime) {
+                clearTimeout(tipLayer.showTimeout);
+                clearTimeout(tipLayer.hideTimeout);
                 tipLayer.showTimeout = setTimeout(
                     lib.bind(tipLayer.show, tipLayer, targetElement, options),
                     delayTime
@@ -401,6 +403,8 @@ define(
          * @inner
          */
         function delayHide(tipLayer, delayTime) {
+            clearTimeout(tipLayer.showTimeout);
+            clearTimeout(tipLayer.hideTimeout);
             tipLayer.hideTimeout = 
                 setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
         }
