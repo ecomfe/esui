@@ -559,11 +559,12 @@ define(
              * 
              * @param {Object=} options 绑定参数
              *    {string} showMode 展示触发模式
-             *    {HTMLElement | ui.Control} nodeOrControl 绑定元素或控件
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
              *    {number} delayTime 延迟展示时间
              *    {Object=} positionOpt 层布局参数
              */
-            attachedTo: function (options) {
+            attachTo: function (options) {
                 var showMode = options.showMode || 'over';
                 var showEvent;
                 var hideEvent;
@@ -578,15 +579,16 @@ define(
 
 
                 var targetElement;
-                if (options.nodeOrControl) {
-                    if (options.nodeOrControl.nodeType === 1) {
-                        targetElement = options.nodeOrControl;
-                    }
-                    else if (options.nodeOrControl.main) {
-                        targetElement = options.nodeOrControl.main;
-                    }
+                if (options.targetDOM) {
+                    targetElement = lib.g(options.targetDOM);
+                }
+                else if (options.targetControl) {
+                    targetElement = options.targetControl.main;
                 }
 
+                if (!targetElement) {
+                    return;
+                }
 
                 if (showMode === 'auto') {
                     this.show(targetElement, options);
@@ -819,8 +821,9 @@ define(
                 'click',
                 lib.curry(btnClickHandler, tipLayer, 'ok')
             );
-            tipLayer.attachedTo({
-                nodeOrControl: args.attachedNode,
+            tipLayer.attachTo({
+                targetDOM: args.targetDOM,
+                targetControl: args.targetControl,
                 showMode: 'auto',
                 positionOpt: { top: 'top', right: 'left' }
             });

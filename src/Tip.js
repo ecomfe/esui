@@ -93,11 +93,11 @@ define(
             });
             tipLayer.render();
             this.tipLayer = tipLayer;
-            tipLayer.attachedTo({
+            tipLayer.attachTo({
                 showMode: this.mode,
                 arrow: this.arrow,
                 delayTime: this.delayTime,
-                nodeOrControl: this.main,
+                targetControl: this,
                 positionOpt: {top: 'top', right: 'left'}
             });
         };
