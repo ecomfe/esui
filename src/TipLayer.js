@@ -687,6 +687,8 @@ define(
                     lib.curry(resizeHandler, this, targetElement, options)
                 );
 
+                this.removeState('hidden');
+
                 // 定位，八种。。
                 autoPosition(
                     this,
@@ -708,7 +710,7 @@ define(
             hide: function () {
                 if (this.isShow) {
                     var main = this.main;
-                    main.style.left = main.style.top = '-10000px';
+                    this.addState('hidden');
                 }
 
                 this.fire('hide');
