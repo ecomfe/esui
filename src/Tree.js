@@ -114,7 +114,9 @@ define(
                     ? helper.getPartClasses(tree, 'node-indicator-' + type)
                     : []
             );
-            var html = '<span class="' + classes.join(' ') + '">'
+            var html = '<span '
+                + 'id="' + helper.getId(tree, 'indicator-' + node.id) + '" '
+                + 'class="' + classes.join(' ') + '">'
                 + indicatorTextMapping[type || 'collapsed'] + '</span>';
             return html;
         }
@@ -227,52 +229,45 @@ define(
          * @inner
          */
         function toggleNode(e) {
-            // 无论点在哪，往上找肯定能找到一个子树（或树本身）的节点元素，
-            // 但我们要知道的是，接受点击事件的是这个根下面的哪个直接子元素。
+            // 对于树控件来说，只有点在`.content-wrapper`上才是有效的，
+            // 而`.content-wrapper`下只有2类元素：
             // 
-            // 一个根下面只有3类直接子元素：
+            // - 提示元素，有`ui-tree-node-indicator`这个class，且没有子元素
+            // - 内容元素，有`ui-tree-item-content`这个class，内容未知
             // 
-            // - 提示元素，有`ui-tree-node-indicator`这个class
-            // - 下级子树的根，有`ui-tree-sub-root`或`ui-tree-root`这个class
-            // - 其它内容，均属于树的节点内容
-            // 
-            // 因此，只要不是下级子树的根，就算点击正常了。
-            // 为了实现这点，要在向上查节点的同时，记下前一个节点，向上查直接到根就行。
-            var parent = e.target;
-            var target = null;
+            // 因此，首先判断是否点在提示元素上，如果不是则向上找看是不是能到wrapper
+            var target = e.target;
 
-            // 直接往根上找
-            var nodeClass = helper.getPartClasses(this, 'node')[0];
-            while (parent && parent !== this.main 
-                && !lib.hasClass(parent, nodeClass)
-            ) {
-                target = parent;
-                parent = parent.parentNode;
-            }
 
-            // 如果直接就找到主元素或者找没了，那就点在不知所谓的地方了
-            if (!parent || parent === this.main || !target) {
-                return;
-            }
-
-            // 然后就看下一层接收事件的是哪个元素了，
-            // 如果是提示元素，那肯定是要触发事件的，
-            // 此外如果配了`wideToggleArea`属性，那么只要不是点在子树上都有效
             var indicatorClass = 
                 helper.getPartClasses(this, 'node-indicator')[0];
-            var validEvent = lib.hasClass(target, indicatorClass);
-            if (!validEvent) {
-                var rootClass = helper.getPartClasses(this, 'root')[0];
-                var subRootClass = helper.getPartClasses(this, 'sub-root')[0];
+            var isValidEvent = lib.hasClass(target, indicatorClass);
 
-                validEvent = this.wideToggleArea
-                    && !lib.hasClass(target, subRootClass)
-                    && !lib.hasClass(target, rootClass);
+
+            var wrapperClass = 
+                helper.getPartClasses(this, 'content-wrapper')[0];
+            if (!isValidEvent && this.wideToggleArea) {
+                while (target 
+                    && target !== this.main 
+                    && !lib.hasClass(target, wrapperClass)
+                ) {
+                    target = target.parentNode;
+                }
+
+                if (lib.hasClass(target, wrapperClass)) {
+                    isValidEvent = true;
+                }
             }
 
-            if (validEvent) {
-                // 上一层就是节点的容器元素，上面有`data-id`等有用的属性
-                var id = parent.getAttribute('data-id');
+            if (isValidEvent) {
+                // 往上找到树的节点，有`data-id`等有用的属性
+                while (target 
+                    && target !== this.main
+                    && !lib.hasAttribute(target, 'data-id')
+                ) {
+                    target = target.parentNode;
+                }
+                var id = target.getAttribute('data-id');
 
                 this.triggerToggleStrategy(id);
             }
@@ -364,7 +359,7 @@ define(
             }
             else {
                 // 需要修改`indicator`的字样和class
-                var indicator = nodeElement.firstChild;
+                var indicator = lib.g(helper.getId(this, 'indicator-' + id));
                 indicator.innerHTML = indicatorTextMapping.expanded;
                 var indicatorClasses = [].concat(
                     helper.getPartClasses(this, 'node-indicator'),
@@ -417,7 +412,7 @@ define(
             var level = +lib.getAttribute(nodeElement, 'data-level');
             var nodeClasses = getNodeClasses(this, node, level, false);
             nodeElement.className = nodeClasses.join(' ');
-            var indicator = nodeElement.firstChild;
+            var indicator = lib.g(helper.getId(this, 'indicator-' + id));
             var indicatorClasses = [].concat(
                 helper.getPartClasses(this, 'node-indicator'),
                 helper.getPartClasses(this, 'node-indicator-collapsed')
