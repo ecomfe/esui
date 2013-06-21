@@ -2,7 +2,7 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
- * @file 区间日历
+ * @file 无限区间日历
  * @author dbear
  */
 
@@ -10,6 +10,9 @@ define(
     function (require) {
         require('./Button');
         require('./MonthView');
+        require('./CheckBox');
+        require('./Label');
+
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
@@ -87,7 +90,7 @@ define(
                     var shortClasses = helper.getPartClasses(
                         calendar, 'shortcut-item'
                     );
-                    if (i === 0) {
+                    if (i == 0) {
                         shortClasses = shortClasses.concat(
                             helper.getPartClasses(
                                 calendar, 'shortcut-item-first'
@@ -121,10 +124,19 @@ define(
          * @return {string}
          */
         function getCalendarHtml(calendar, type) {
+            var endlessCheckDOM = '';
+            // 可以无限
+            if (calendar.endlessCheck && type === 'end') {
+                endlessCheckDOM = ''
+                    + '<input type="checkbox" title="不限结束" '
+                    + 'data-ui-type="CheckBox" '
+                    + 'data-ui-child-name="endlessCheck" />';
+            }
             var tpl = ''
                 + '<div class="${frameClass}">'
                 +   '<div class="${labelClass}">'
-                +     '<b>${labelTitle}</b><span id="${titleId}"></span>'
+                +     '<b>${labelTitle}</b>'
+                +     endlessCheckDOM
                 +   '</div>'
                 +   '<div class="${calClass}">'
                 +     '<div data-ui="type:MonthView;'
@@ -217,7 +229,7 @@ define(
                 var selectedIndex = getSelectedIndex(calendar, calendar.view);
                 paintMiniCal(calendar, selectedIndex);
 
-                //为mini日历绑定点击事件
+                // 为mini日历绑定点击事件
                 var shortcutDom = lib.g(helper.getId(calendar, 'shortcut'));
                 helper.addDOMEvent(
                     calendar, shortcutDom, 'click', shortcutClick);
@@ -226,19 +238,58 @@ define(
                 paintCal(calendar, 'begin', calendar.view.begin, true);
                 paintCal(calendar, 'end', calendar.view.begin, true);
 
-                //绑定提交和取消按钮
+                // 绑定“无限结束”勾选事件
+                var endlessCheck = calendar.getChild('endlessCheck');
+                if (endlessCheck) {
+                    endlessCheck.on(
+                        'change',
+                        lib.curry(makeCalendarEndless, calendar)
+                    );
+                    // 设置endless
+                    if (calendar.isEndless) {
+                        endlessCheck.setChecked(true);
+                    }
+                }
+
+
+                // 绑定提交和取消按钮
                 var okBtn = calendar.getChild('okBtn');
                 okBtn.on('click', lib.curry(commitValue, calendar));
 
                 var cancelBtn = calendar.getChild('cancelBtn');
                 cancelBtn.on('click', lib.curry(hideLayer, calendar));
 
-                //关闭按钮
+                // 关闭按钮
                 var closeBtn = calendar.getChild('closeBtn');
                 closeBtn.on('click', lib.curry(hideLayer, calendar));
             }
 
             showLayer(calendar);
+        }
+
+        /**
+         * 将日历置为无结束时间
+         *
+         * @param {RangeCalendar} calendar RangeCalendar控件实例
+         * @param {CheckBox} checkbox CheckBox控件实例
+         */
+        function makeCalendarEndless(calendar) {
+            var endCalendar = calendar.getChild('endCal');
+            var selectedIndex;
+            if (this.isChecked()) {
+                calendar.isEndless = true;
+                endCalendar.disable();
+                selectedIndex = -1;
+                calendar.view.end = null;
+                // 清除mini日历的选择状态
+                paintMiniCal(calendar, selectedIndex);
+            }
+            else {
+                calendar.isEndless = false;
+                endCalendar.enable();
+                // 恢复结束日历的选择值
+                updateView(calendar, endCalendar, 'end');
+            }
         }
 
         /**
@@ -250,6 +301,18 @@ define(
          * @return {boolean}
          */
         function isSameDate(date1, date2) {
+            if (!date1 && date2) {
+                return false;
+            }
+
+            if (date1 && !date2) {
+                return false;
+            }
+
+            if (!date1 && !date2) {
+                return true;
+            }
+
             if (date2 !== '' && date1 !== '') {
               if (date1.getFullYear() == date2.getFullYear() &&
                   date1.getMonth() == date2.getMonth() &&
@@ -386,6 +449,10 @@ define(
          * @param {Event} 触发事件的事件对象
          */
         function shortcutClick(e) {
+            if (this.isEndless) {
+                return;
+            }
+
             var tar = e.target || e.srcElement;
             var classes = helper.getPartClasses(this, 'shortcut-item');
 
@@ -431,15 +498,20 @@ define(
 
             var begin = view.begin;
             var end = view.end;
+            if (calendar.isEndless) {
+                end = null;
+            }
             var dvalue = end - begin;
+            if (!end) {
+                dvalue = begin;
+            }
             var value;
-
             if (dvalue > 0) {
                 value = {
                     'begin': begin,
                     'end': end
                 };
-            } else {
+            } else if (end !== null) {
                 value = {
                     'begin': end,
                     'end': begin
@@ -491,9 +563,7 @@ define(
                     hideLayer(calendar);
                 }
             }
-            if (calendar.view != calendar.rawValue) {
-                paintLayer(calendar, calendar.rawValue);
-            }
+            paintLayer(calendar, calendar.rawValue);
         }
 
         /**
@@ -511,6 +581,14 @@ define(
             paintMiniCal(calendar, selectedIndex);
             paintCal(calendar, 'begin', value.begin);
             paintCal(calendar, 'end', value.end);
+            var isEndless;
+            if (!value.end) {
+                isEndless = true;
+            }
+            else {
+                isEndless = false;
+            }
+            calendar.setProperties({isEndless: isEndless});
         }
 
         /**
@@ -525,8 +603,17 @@ define(
             var endTime = value.end;
             var beginTail = ' 00:00:00';
             var endTail = ' 23:59:59';
-            return lib.date.format(beginTime, 'YYYY-MM-DD') + beginTail + ',' +
-                lib.date.format(endTime, 'YYYY-MM-DD') + endTail;
+
+            var timeResult = [];
+            timeResult.push(
+                lib.date.format(beginTime, 'YYYY-MM-DD') + beginTail
+            );
+            if (endTime) {
+                timeResult.push(
+                    lib.date.format(endTime, 'YYYY-MM-DD') + endTail
+                );
+            }
+            return  timeResult.join(',');
         }
 
         /**
@@ -563,6 +650,9 @@ define(
                 return null;
             }
 
+            if (!dateStr) {
+                return null;
+            }
             dateStr = dateStr + '';
             var dateAndHour =  dateStr.split(' ');
             var date = parse(dateAndHour[0]);
@@ -584,6 +674,9 @@ define(
          */
         function getValueText(calendar, value) {
             var dateText = getDateValueText(calendar, value);
+            if (calendar.isEndless && dateText) {
+                return dateText;
+            }
             var shortcut = '';
             if (calendar.curMiniName) {
                 shortcut = calendar.curMiniName + '&nbsp;&nbsp;';
@@ -615,13 +708,16 @@ define(
                     + ' 至 '
                     + formatter(end, format);
             }
-
+            else if (!end) {
+                return formatter(begin, format) + ' 起 ';
+            }
             return '';
         }
 
         RangeCalendar.defaultProperties = {
             dateFormat: 'YYYY-MM-DD',
             paramFormat: 'YYYY-MM-DD',
+            endlessCheck: false,
             /**
              * 日期区间快捷选项列表配置
              */
@@ -801,6 +897,33 @@ define(
                     options.range = convertToRaw(options.range);
                 }
 
+                if (options.endlessCheck === 'false') {
+                    options.endlessCheck = false;
+                }
+
+                if (options.endlessCheck) {
+                    if (options.isEndless === 'false') {
+                        options.isEndless = false;
+                    }
+                }
+                else {
+                    // 如果值中没有end，则默认日历是无限型的
+                    if (!options.rawValue.end) {
+                        options.endlessCheck = true;
+                        options.isEndless = true;
+                    }
+                }
+
+                // 如果是无限的，结束时间无需默认值
+                if (options.isEndless) {
+                    properties.rawValue.end = null;
+                    properties.view.end = null;
+                    properties.view.value = convertToParam({
+                        begin: now,
+                        end: null
+                    });
+                }
+
                 lib.extend(
                     properties, RangeCalendar.defaultProperties, options
                 );
@@ -883,6 +1006,22 @@ define(
                     paint: function (calendar, disabled, hidden, readOnly) {
                         if (disabled || hidden || readOnly) {
                             hideLayer(calendar);
+                        }
+                    }
+                },
+                {
+                    name: 'isEndless',
+                    paint: function (calendar, isEndless) {
+                        // 不是无限日历，不能置为无限
+                        if (!calendar.endlessCheck) {
+                            calendar.isEndless = false;
+                        }
+                        else {
+                            var endlessCheck =
+                                calendar.getChild('endlessCheck');
+                            if (endlessCheck) {
+                                endlessCheck.setChecked(isEndless);
+                            }
                         }
                     }
                 }

@@ -12,14 +12,19 @@
         <div class="container">
             <div data-ui-type="RangeCalendar" data-ui-name="test"
                 data-ui-id="test"
-                data-ui-value="2013-03-02 00:00:00,2013-04-02 23:59:59"
-                data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59"/>
+                data-ui-value="2013-03-02 00:00:00"
+                data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59",
+                data-ui-showed-short-cut="昨天,最近7天,上周"></div>
+            <input data-ui-type="RangeCalendar" name="test2"
+                data-ui-id="test2"
+                value="2013-03-02 00:00:00,2013-04-02 23:59:59"
+                data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59"></input>
         </div>
         <script>
         require(
             [
                 'esui',
-                'esui/RangeCalendar',
+                'esui/EndlessRangeCalendar',
                 'css!esui/css/main.css'
             ],
             function (ui) {

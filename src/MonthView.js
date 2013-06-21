@@ -226,8 +226,12 @@ define(
 
                 // 构建date的css class
                 var currentClass = itemClass;
-                virtual && (currentClass += ' ' + virClass);
-                disabled && (currentClass += ' ' + disabledClass);
+                if (virtual) {
+                    currentClass += ' ' + virClass;
+                }
+                if (disabled) {
+                    currentClass += ' ' + disabledClass;
+                }
 
                 html.push(
                     lib.format(
@@ -432,10 +436,12 @@ define(
             var me = monthView;
             if (date) {
                 var item = lib.g(getItemId(me, date));
-                item && lib.removeClasses(
-                    item,
-                    helper.getPartClasses(me, 'month-item-selected')
-                );
+                if (item) {
+                    lib.removeClasses(
+                        item,
+                        helper.getPartClasses(me, 'month-item-selected')
+                    );
+                }
             }
         }
 
@@ -449,11 +455,13 @@ define(
             var me = monthView;
             if (me.rawValue) {
                 var item = lib.g(getItemId(me, me.rawValue));
-                item && helper.addPartClasses(
-                    me,
-                    'month-item-selected',
-                    item
-                );
+                if (item) {
+                    helper.addPartClasses(
+                        me,
+                        'month-item-selected',
+                        item
+                    );
+                }
             }
         }
 
@@ -713,17 +721,63 @@ define(
                         if (range) {
                             monthView.range = rangeAdapter(range);
                         }
-                        monthView.month = monthView.rawValue.getMonth();
-                        monthView.year = monthView.rawValue.getFullYear();
+                        var viewValue = new Date();
+                        if (rawValue) {
+                            viewValue = rawValue;
+                        }
+                        else {
+                            monthView.rawValue = viewValue;
+                        }
+                        monthView.month = viewValue.getMonth();
+                        monthView.year = viewValue.getFullYear();
                         repaintMonthView(
                             monthView,
-                            monthView.rawValue.getFullYear(),
-                            monthView.rawValue.getMonth()
+                            viewValue.getFullYear(),
+                            viewValue.getMonth()
                         );
 
                     }
+                },
+                {
+                    name: 'disabled',
+                    paint: function (monthView, disabled) {
+                        // 向后按钮
+                        var monthBack = monthView.getChild('monthBack');
+                        monthBack.setProperties({disabled: disabled});
+                        // 向前按钮
+                        var monthForward = monthView.getChild('monthForward');
+                        monthForward.setProperties({disabled: disabled});
+    
+                        // 月份选择
+                        var monthSel = monthView.getChild('monthSel');
+                        monthSel.setProperties({disabled: disabled});
+                        // 月份选择
+                        var yearSel = monthView.getChild('yearSel');
+                        yearSel.setProperties({disabled: disabled});
+                    }
                 }
             ),
+
+
+            /**
+             * 设置控件状态为禁用
+             */
+            disable: function () {
+                this.setProperties({
+                    disabled: true
+                });
+                this.addState('disabled');
+            },
+
+            /**
+             * 设置控件状态为启用
+             */
+            enable: function () {
+                this.setProperties({
+                    disabled: false
+                });
+                this.removeState('disabled');
+            },
 
             /**
              * 设置可选中的日期区间

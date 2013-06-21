@@ -16,8 +16,33 @@
         background: none repeat scroll 0 0 #CCCED4;
         height: 27px;
         padding: 2px 5px;
-    }
-    .ui-monthview-head table {width:200px;}
+
+        table {width:200px;}
+
+        /** 先前向后按钮 */
+        .ui-monthview-month-forward,
+        .ui-monthview-month-back {
+            .background("esui.png", repeat, 0px, -200px);
+            font-size: 1px;
+            height: 20px;
+            width: 20px;
+            padding: 0;
+            float: left;
+            &:active {
+                .background("esui.png", repeat, 0px, -200px);
+                height: 20px;
+            }
+        }
+
+
+        .ui-monthview-month-forward {
+            background-position: -20px -200px;
+            margin-left: 15px;
+            &:active {
+                background-position: -20px -200px;
+            }
+        }
+    } 
 
     .ui-monthview-month {
         border:1px solid #ccced4;
@@ -71,27 +96,39 @@
         }
     }
 
-    /** 先前向后按钮 */
-    .ui-monthview-month-forward,
-    .ui-monthview-month-back {
-        .background("esui.png", repeat, 0px, -200px);
-        font-size: 1px;
-        height: 20px;
-        width: 20px;
-        padding: 0;
-        float: left;
-        &:active {
-            .background("esui.png", repeat, 0px, -200px);
-            height: 20px;
+    
+}
+
+.ui-monthview-disabled {
+    .ui-monthview-head {
+        /** 先前向后按钮 */
+        .ui-monthview-month-forward,
+        .ui-monthview-month-back {
+            background-position: 0 -240px; 
+            &:active {
+                .background("esui.png", repeat, 0px, -240px);
+                height: 20px;
+                border-color: #CFCFCF;
+            }
         }
-    }
 
 
-    .ui-monthview-month-forward {
-        background-position: -20px -200px;
-        margin-left: 15px;
-        &:active {
-            background-position: -20px -200px;
+        .ui-monthview-month-forward {
+            background-position: -20px -240px; 
+            &:active {
+                background-position: -20px -240px;
+                border-color: #CFCFCF;
+            }
+        }
+    } 
+
+    .ui-monthview-month {
+        .ui-monthview-month-item {
+            background: #ddd;
+            cursor:default;
+            &:hover {
+                background:#ddd;
+            }
         }
     }
 }
