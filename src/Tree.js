@@ -130,15 +130,21 @@ define(
          * @inner
          */
         function getNodeContentHTML(tree, node, level, expanded) {
+            var wrapperClasses = helper.getPartClasses(tree, 'content-wrapper');
+            var html = '<div class="' + wrapperClasses.join(' ') + '">';
+
             var indicatorType = tree.strategy.isLeafNode(node)
                 ? 'empty'
                 : (expanded ? 'expanded' : 'collapsed');
-            var html = getIndicatorHTML(tree, node, indicatorType);
+            html += getIndicatorHTML(tree, node, indicatorType);
+
             var itemWrapperClasses =
                 helper.getPartClasses(tree, 'item-content');
             html += '<div class="' + itemWrapperClasses.join(' ') + '">'
                 + tree.getItemHTML(node)
                 + '</div>';
+
+            html += '</div>';
 
             if (expanded && !tree.strategy.isLeafNode(node)) {
                 var classes = [].concat(
