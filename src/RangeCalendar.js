@@ -135,7 +135,7 @@ define(
             var tpl = ''
                 + '<div class="${frameClass}">'
                 +   '<div class="${labelClass}">'
-                +     '<b>${labelTitle}</b>'
+                +     '<h3>${labelTitle}</h3>'
                 +     endlessCheckDOM
                 +   '</div>'
                 +   '<div class="${calClass}">'
