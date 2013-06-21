@@ -1289,7 +1289,7 @@ define(
                     (colResult.colAttr) && (colAttr.push(colResult.colAttr));
                     (colResult.textAttr) && (textAttr.push(colResult.textAttr));
 
-                    if (colHtml) {
+                    if (hasValue(colHtml)) {
                         if (colResult.notInText) {
                             otherHtml.push(colResult);
                         } else {
