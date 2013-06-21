@@ -164,6 +164,9 @@ define(
         function showLayer(menu) {
             var layer = lib.g(helper.getId(menu, 'layer'));
             var classes = helper.getPartClasses(menu, 'layer-hidden');
+
+            layer.style.zIndex = helper.layer.getZIndex(select.main);
+            
             helper.layer.attachTo(
                 layer, 
                 menu.main, 
