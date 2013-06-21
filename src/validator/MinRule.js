@@ -33,7 +33,7 @@ define(
          * @type {string}
          */
         MinRule.prototype.errorMessage = 
-            '${title}不能小于${max}';
+            '${title}不能小于${min}';
 
         /**
          * 验证控件的验证状态
