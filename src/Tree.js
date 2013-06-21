@@ -124,11 +124,12 @@ define(
          *
          * @param {Tree} tree 控件实例
          * @param {Object} node 节点数据
+         * @param {number} level 节点的层级，根是0层
          * @param {boolean} expanded 是否处于展开状态
          * @return {string}
          * @inner
          */
-        function getNodeContentHTML(tree, node, expanded) {
+        function getNodeContentHTML(tree, node, level, expanded) {
             var indicatorType = tree.strategy.isLeafNode(node)
                 ? 'empty'
                 : (expanded ? 'expanded' : 'collapsed');
@@ -148,7 +149,11 @@ define(
                 for (var i = 0; i < node.children.length; i++) {
                     var child = node.children[i];
                     html += getNodeHTML(
-                        tree, child, tree.strategy.shouldExpand(child));
+                        tree, 
+                        child, 
+                        level + 1, 
+                        tree.strategy.shouldExpand(child)
+                    );
                 }
                 html += '</ul>';
             }
@@ -161,17 +166,19 @@ define(
          *
          * @param {Tree} tree 控件实例
          * @param {Object} node 对应的节点数据
+         * @param {number} level 节点的层极，根是0层
          * @param {boolean} expanded 是否处于展开状态
          * @param {Array.<string>} 对应的节点元素应有的class
          * @inner
          */
-        function getNodeClasses(tree, node, expanded) {
+        function getNodeClasses(tree, node, level, expanded) {
             var state = tree.strategy.isLeafNode(node)
                 ? 'empty'
                 : (expanded ? 'expanded' : 'collapsed');
             var classes = [].concat(
                 helper.getPartClasses(tree, 'node'),
-                helper.getPartClasses(tree, 'node-' + state)
+                helper.getPartClasses(tree, 'node-' + state),
+                helper.getPartClasses(tree, 'node-level-' + level)
             );
             // 根节点再加2个类
             if (node === tree.datasource) {
@@ -189,18 +196,19 @@ define(
          *
          * @param {Tree} tree 控件实例
          * @param {Object} node 节点数据
+         * @param {number} level 节点的层级，根是0层
          * @param {boolean} expanded 是否处于展开状态
          * @parma {string} nodeName 使用节点的类型，默认为li
          * @return {string}
          * @inner
          */
-        function getNodeHTML(tree, node, expanded, nodeName) {
+        function getNodeHTML(tree, node, level, expanded, nodeName) {
             nodeName = nodeName || 'li';
-            var classes = getNodeClasses(tree, node, expanded);
+            var classes = getNodeClasses(tree, node, level, expanded);
             var html = '<' + nodeName + ' class="' + classes.join(' ') + '" '
                 + 'id="' + helper.getId(tree, 'node-' + node.id) + '" '
-                + 'data-id="' + node.id + '">';
-            html += getNodeContentHTML(tree, node, expanded);
+                + 'data-id="' + node.id + '" data-level="' + level + '">';
+            html += getNodeContentHTML(tree, node, level, expanded);
             html += '</' + nodeName + '>';
             return html;
         }
@@ -309,7 +317,7 @@ define(
                 paint: function (tree, datasource) {
                     tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
-                        getNodeHTML(tree, datasource, true, 'div');
+                        getNodeHTML(tree, datasource, 0, true, 'div');
                 }
             }
         );
@@ -331,6 +339,7 @@ define(
                 return;
             }
 
+            var level = +lib.getAttribute(nodeElement, 'data-level');
             // 更新过数据或者原本没有子树的情况下重绘
             if (children 
                 || nodeElement.lastChild.nodeName.toLowerCase() !== 'ul'
@@ -344,7 +353,8 @@ define(
                 }
 
                 // 为了效率，直接刷掉原来的HTML
-                nodeElement.innerHTML = getNodeContentHTML(this, node, true);
+                nodeElement.innerHTML = 
+                    getNodeContentHTML(this, node, level, true);
             }
             else {
                 // 需要修改`indicator`的字样和class
@@ -365,7 +375,7 @@ define(
 
             // CSS3动画可以通过这个class来操作
             var node = this.nodeIndex[id];
-            var nodeClasses = getNodeClasses(this, node, true);
+            var nodeClasses = getNodeClasses(this, node, level, true);
             nodeElement.className = nodeClasses.join(' ');
         };
 
@@ -398,7 +408,8 @@ define(
             }
 
             var node = this.nodeIndex[id];
-            var nodeClasses = getNodeClasses(this, node, false);
+            var level = +lib.getAttribute(nodeElement, 'data-level');
+            var nodeClasses = getNodeClasses(this, node, level, false);
             nodeElement.className = nodeClasses.join(' ');
             var indicator = nodeElement.firstChild;
             var indicatorClasses = [].concat(
