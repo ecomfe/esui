@@ -12,7 +12,6 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ui = require('./main');
-        var paint = require('./painters');
 
         require('./TipLayer');
 

@@ -63,7 +63,8 @@ define(
                 for (var i = fields.length - 1; i >= 0; i--) {
                     var field = fields[i];
                     if (field.editable) {
-                        var inputId = table.getId('edit-input-' + index + '-'+ i);
+                        var inputId = 
+                            table.getId('edit-input-' + index + '-'+ i);
                         var input = viewContext.get(inputId);
                         if (input) {
                             input.setValue(data[field.field].toString());
@@ -149,7 +150,9 @@ define(
          * 生成每单元格内容
          * @private
          */
-        function getColHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
+        function getColHtml(
+            table, data, field, rowIndex, fieldIndex, extraArgs
+        ) {
             if (!field.editable || table.edit == 'dialog') {
                 return;
             }
@@ -159,12 +162,15 @@ define(
                         && editOptions.type == 'select'
                         && editOptions.datasource;
             var format = lib.format;
-            var contentTpl = '<input data-ui="type:TextBox;id:${id};value:${value};"/>';
-            var inputId = table.getId('edit-input-' + rowIndex + '-'+ fieldIndex);
+            var contentTpl = 
+                '<input data-ui="type:TextBox;id:${id};value:${value};"/>';
+            var inputId = 
+                table.getId('edit-input-' + rowIndex + '-'+ fieldIndex);
             var inputValue = table.datasource[rowIndex][field.field];
 
             if (isSelect) {
-                var selectTpl = '<select data-ui="type:Select;id:${id};value:${value};">';
+                var selectTpl = 
+                    '<select data-ui="type:Select;id:${id};value:${value};">';
                 if (!editOptions.datasourceText) {
                     var datasource = editOptions.datasource;
                     var textTpl = '<option value="${value}">${text}</option>';

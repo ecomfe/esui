@@ -265,12 +265,6 @@ define(
             // right —— left
             var gapRL = viewWidth - targetPosition.right - elementWidth;
 
-            // left —— left
-            var gapLL = viewWidth - targetPosition.left - elementWidth;
-            // right —— right
-            var gapRR = targetPosition.right - elementWidth;
-
-
             // top —— top
             var gapTT = viewHeight - targetPosition.top - elementHeight;
             // bottom —— bottom
@@ -709,7 +703,6 @@ define(
              */
             hide: function () {
                 if (this.isShow) {
-                    var main = this.main;
                     this.addState('hidden');
                 }
 
@@ -812,7 +805,6 @@ define(
             properties.id = tipLayerId;
             properties.main = main;
 
-            var type = properties.type;
             properties.type = null;
 
             var tipLayer = ui.create('TipLayer', properties);

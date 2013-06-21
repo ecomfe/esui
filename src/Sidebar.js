@@ -251,8 +251,10 @@ define(
             //计算main位置
             var main = me.main;
             main.style.cssText += ';'
-                + 'left: '  + (me.marginLeft ? me.marginLeft + 'px' : 0) + ';'
-                + 'bottom:' + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
+                + 'left: '  
+                    + (me.marginLeft ? me.marginLeft + 'px' : 0) + ';'
+                + 'bottom:' 
+                    + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
 
             //计算body位置
             var body = me.bodyEl;

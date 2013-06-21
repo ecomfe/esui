@@ -202,7 +202,8 @@ define(
             for (var i = 0; i <= 24; i = i + 2) {
                 html.push(
                     '<div class="', timeHClass, 
-                    '" data-time="', i, '" id="', getId(me, 'time-head' + i), '">',
+                    '" data-time="', i, '" ',
+                    'id="', getId(me, 'time-head' + i), '">',
                      i + ':00', 
                      '</div>'
                 );
@@ -265,7 +266,9 @@ define(
             var timeTpl = ''
                 + '<div class="${timeClass}"'
                     + ' id="${itemId}"'
-                    + ' data-day="${dayIndex}" data-time-item="1" data-time="${timeIndex}">'
+                    + ' data-day="${dayIndex}"'
+                    + ' data-time-item="1"' 
+                    + ' data-time="${timeIndex}">'
                 + '</div>';
 
             var timeBClass = getClass(me, 'time-body');
@@ -722,9 +725,12 @@ define(
 
             for (var i = 0, len = timeCovers.length; i < len; i++) {
                 var item = timeCovers[i];
-                var startCT = parseInt(item.getAttribute('data-start-time'), 10);
-                var endCT = parseInt(item.getAttribute('data-end-time'), 10);
-                var CoverDay = parseInt(item.getAttribute('data-day'), 10);
+                var startCT = 
+                    parseInt(item.getAttribute('data-start-time'), 10);
+                var endCT = 
+                    parseInt(item.getAttribute('data-end-time'), 10);
+                var CoverDay = 
+                    parseInt(item.getAttribute('data-day'), 10);
 
                 if (time >= startCT
                     && time < endCT
