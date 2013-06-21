@@ -377,7 +377,9 @@ define(
 
                     if (minWidth < table.colsWidth[index]) {
                         var offset = table.colsWidth[canExpand[i]] - minWidth;
-                        offset = offset > Math.abs(leftWidth) ? leftWidth : -offset;
+                        offset = offset > Math.abs(leftWidth) 
+                                ? leftWidth 
+                                : -offset;
                         leftWidth += Math.abs(offset);
                         table.colsWidth[index] += offset;
                     }
@@ -494,9 +496,9 @@ define(
                     '<div id="${id}" data-ui="type:Panel;id:${id};"></div>',
                     {id: headPanelId}
                 );
-                table.headPanel = table.viewContext.get(headPanelId);
-
+                
                 table.initChildren(head);
+                table.headPanel = table.viewContext.get(headPanelId);
 
                 helper.addDOMEvent(
                     table, 
@@ -548,7 +550,8 @@ define(
         //表格头提示信息模版
         var tplTitleTip = '<div id="${id}" '
                         + 'class="${className}" '
-                        + 'data-ui="type:Tip;id:${id};content:${content}"></div>';
+                        + 'data-ui="type:Tip;id:${id};content:${content}">'
+                        + '</div>';
 
         /**
          * 获取表格头的html
@@ -670,11 +673,14 @@ define(
                 
                                             
                 html.push(
-                    '<th id="' + getTitleCellId(table, i) + '" data-index="' + i + '"',
+                    '<th id="' + getTitleCellId(table, i) + '"',
+                    ' data-index="' + i + '"',
                     ' class="' + thClass.join(' ') + '"',
                     sortable ? ' data-sortable="1"' : '',
-                    (i >= canDragBegin && i < canDragEnd ? ' data-dragright="1"' : ''),
-                    (i <= canDragEnd && i > canDragBegin ? ' data-dragleft="1"' : ''),
+                    (i >= canDragBegin && i < canDragEnd 
+                        ? ' data-dragright="1"' : ''),
+                    (i <= canDragEnd && i > canDragBegin 
+                        ? ' data-dragleft="1"' : ''),
                     ' style="width:' + (table.colsWidth[i] + rowWidthOffset) + 'px;',
                     (table.colsWidth[i] ? '' : 'display:none') + '">',
                     '<div class="' + realThTextClass +
@@ -1228,7 +1234,7 @@ define(
                 if (plugin.getColHtml) {
                     result.push(plugin);
                 }
-            };
+            }
             return result;
         }
         /**
@@ -1256,11 +1262,10 @@ define(
 
                 (rowArgs.rowClass) && (rowClass.push(rowArgs.rowClass));
                 (rowArgs.rowAttr) && (rowAttr.push(rowArgs.rowAttr));
-            };
+            }
             
             for (var i = 0, l = fields.length; i < l; i++) {
                 var field = fields[i];
-                var content = field.content;
                 var colWidth = table.colsWidth[i];
                 var colClass = [];
                 var textClass = [];
@@ -1284,15 +1289,15 @@ define(
                     (colResult.colAttr) && (colAttr.push(colResult.colAttr));
                     (colResult.textAttr) && (textAttr.push(colResult.textAttr));
 
-                    if (colHtml) {
+                    if (hasValue(colHtml)) {
                         if (colResult.notInText) {
                             otherHtml.push(colResult);
                         } else {
                             textHtml.push(colHtml);
-                            (textStartIndex == 0) && (textStartIndex = s);
+                            (textStartIndex === 0) && (textStartIndex = s);
                         }
                     }
-                };
+                }
 
                 var contentHtml = '';
                 textHtml = [
@@ -1325,7 +1330,7 @@ define(
                                     oHtml.html,
                             '</td>'
                         ].join(''));
-                    };
+                    }
 
                     if (textStartIndex >= otherHtml.length) {
                         contentHtml.push(textHtml);
@@ -1375,12 +1380,12 @@ define(
                         subrowBuilder(table, index, extraArgsList[i])
                     );
                 }
-            };
+            }
 
             return html.join('');
         }
 
-        function getRowBaseArgs(table, rowIndex){
+        function getRowBaseArgs(table, rowIndex) {
            return {
                 tdCellClass : getClass(table, 'cell'),
                 tdBreakClass : getClass(table, 'cell-break'),
@@ -1393,16 +1398,13 @@ define(
             };
         }
 
-        function getColBaseHtml(table, data, field, rowIndex, fieldIndex, extraArgs){
-            var html = [];
+        function getColBaseHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
             var tdCellClass = extraArgs.tdCellClass;
             var tdBreakClass = extraArgs.tdBreakClass;
             var tdTextClass = extraArgs.tdTextClass;
-            var rowWidthOffset = table.rowWidthOffset;
             var tdClass = [tdCellClass];
             var textClass = [tdTextClass];
             var content = field.content;
-            var colWidth = table.colsWidth[fieldIndex];
 
             if (fieldIndex === 0) {
                 textClass.push(getClass(table, 'cell-text-first'));
@@ -1461,7 +1463,7 @@ define(
                         + 'data-index="${index}">'
                         + '</div>';
 
-        function getSubEntryHtml(table, data, field, rowIndex, fieldIndex, extraArgs){
+        function getSubEntryHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
             var subrow = extraArgs.subrow;
             var subentry = subrow && field.subEntry;
             var result = {
@@ -1472,8 +1474,8 @@ define(
 
             if (subentry) {
                 var isSubEntryShown = typeof field.isSubEntryShow === 'function'
-                        ? field.isSubEntryShow.call(table, data, rowIndex, fieldIndex)
-                        : true;
+                    ? field.isSubEntryShow.call(table, data, rowIndex, fieldIndex)
+                    : true;
                 if (isSubEntryShown !== false) {
                     result.html = lib.format(
                         tplSubEntry,
@@ -1850,7 +1852,6 @@ define(
                 if (!table.followHead) {
                     return ;
                 }
-                var main = table.main;
                 var scrollTop = lib.page.getScrollTop();
                 var posStyle = lib.ie && lib.ie < 7 ? 'absolute' : 'fixed';
                 var mainHeight = table.main.offsetHeight;
@@ -1867,7 +1868,9 @@ define(
                     var fhLen = fhArr.length;
                     
                     initTableOffset(table);
-                    var curLeft = absolutePosition ? table.left : table.left - scrollLeft;
+                    var curLeft = absolutePosition 
+                                ? table.left 
+                                : table.left - scrollLeft;
 
                     placeHolder.style.height = fhArr[fhLen - 1]
                                                 + domHead.offsetHeight + 'px';
@@ -2238,7 +2241,7 @@ define(
                 var elClassName = ' ' + element.className + ' ';
                 return  elClassName.replace(rclass, ' ').indexOf(cssClass) >= 0;
             };
-        };
+        }
 
         function getHandlers(table, el, eventType){
             var realId = el.id;
@@ -2271,13 +2274,6 @@ define(
             };
         }
 
-        function addHandler(table, el, eventType, handler, matchFn){
-            var handlers = getHandlers(table, el, eventType);
-            handlers.push(
-                createHandlerItem(handler, matchFn)
-            );
-        }
-
         function addHandlers(table, el, eventType, handlers){
             var handlerQueue = getHandlers(table, el, eventType);
             for (var i = 0, l = handlers.length; i < l ; i++) {
@@ -2285,7 +2281,7 @@ define(
                 handlerQueue.push(
                     createHandlerItem(item.handler, item.matchFn)
                 );
-            };
+            }
         }
 
         /**
