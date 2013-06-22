@@ -88,7 +88,12 @@ define(
                     properties.value = this.main.value;
                 }
 
-                if (!properties.maxLength) {
+                if (!properties.maxLength
+                    && (
+                        lib.hasAttribute(this.main, 'maxlength')
+                        || this.main.maxLength > 0
+                    )
+                ) {
                     properties.maxLength = this.main.maxLength;
                 }
             }
@@ -297,7 +302,7 @@ define(
                 name: 'maxLength',
                 paint: function (textbox, maxLength) {
                     var input = lib.g(textbox.inputId);
-                    maxlength = parseInt(maxLength, 10);
+                    maxLength = parseInt(maxLength, 10);
                     if (!maxLength || maxLength <= 0) {
                         try {
                             input.maxLength = undefined;
@@ -308,7 +313,7 @@ define(
                         lib.removeAttribute(input, 'maxlength');
                     }
                     else {
-                        input.maxLength = maxLength, 10;
+                        input.maxLength = maxLength;
                     }
                 }
             },
