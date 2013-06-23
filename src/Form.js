@@ -192,6 +192,12 @@ define(
         function Form(options) {
             Panel.apply(this, arguments);
         }
+
+        Form.defaultProperties = {
+            autoValidate: false
+        };
+
+        Form.prototype.type = 'Form';
         
         /**
          * 进行提交逻辑，根据`autoValidate`属性有不同行为
@@ -227,8 +233,6 @@ define(
             this.performSubmit = lib.curry(performSubmit, this);
         };
 
-        Form.prototype.type = 'Form';
-
         /**
          * 创建主元素
          *
@@ -250,14 +254,21 @@ define(
          * @protected
          */
         Form.prototype.initOptions = function (options) {
-            Panel.prototype.initOptions.call(this, options);
+            var properties = lib.extend({}, Form.defaultProperties, options);
             if (this.main.nodeName.toLowerCase() === 'form') {
-                this.action = this.main.getAttribute('action');
-                this.method = this.main.getAttribute('method');
+                properties.action = this.main.getAttribute('action');
+                properties.method = this.main.getAttribute('method');
             }
             else {
-                this.method = this.method || 'POST';
+                properties.method = this.method || 'POST';
             }
+            if (options.autoValidate === 'false') {
+                properties.autoValidate = false;
+            }
+            else {
+                properties.autoValidate = !!properties.autoValidate;
+            }
+            Panel.prototype.initOptions.call(this, properties);
         };
 
         var InputControl = require('./InputControl');
