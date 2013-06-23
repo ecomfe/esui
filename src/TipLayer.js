@@ -153,6 +153,10 @@ define(
          * @inner
          */
         function resizeHandler(tipLayer, targetElement, options) {
+            // 隐藏状态不触发
+            if (!tipLayer.isShow) {
+                return;
+            }
             autoPosition(
                 tipLayer,
                 tipLayer.main, 
