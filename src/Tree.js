@@ -104,20 +104,33 @@ define(
          * @param {Tree} tree 控件实例
          * @param {Object} node 节点数据
          * @param {string} type 指示器的类型，为`empty`、`expanded`或`collapsed`
+         * @param {number} currentLevel 当前指示器代表的层级
+         * @param {number} sourceLevel 节点所在的层级
          * @return {string}
          * @inner
          */
-        function getIndicatorHTML(tree, node, type) {
+        function getIndicatorHTML(tree, node, type, currentLevel, sourceLevel) {
+            var diff = sourceLevel - currentLevel;
+            var diffType = diff === 0 
+                ? 'current'
+                : (diff === 1 ? 'previous' : 'far-previous');
             var classes = [].concat(
-                helper.getPartClasses(tree, 'node-indicator'),
-                type 
-                    ? helper.getPartClasses(tree, 'node-indicator-' + type)
-                    : []
+                helper.getPartClasses(
+                    tree, 'node-indicator'),
+                helper.getPartClasses(
+                    tree, 'node-indicator-' + type),
+                helper.getPartClasses(
+                    tree, 'node-indicator-level-' + currentLevel),
+                helper.getPartClasses(
+                    tree, 'node-indicator-' + diffType)
             );
+            var text = diff === 0
+                ? indicatorTextMapping[type || 'collapsed']
+                : '第' + currentLevel + '级';
             var html = '<span '
                 + 'id="' + helper.getId(tree, 'indicator-' + node.id) + '" '
                 + 'class="' + classes.join(' ') + '">'
-                + indicatorTextMapping[type || 'collapsed'] + '</span>';
+                + text + '</span>';
             return html;
         }
 
@@ -138,7 +151,9 @@ define(
             var indicatorType = tree.strategy.isLeafNode(node)
                 ? 'empty'
                 : (expanded ? 'expanded' : 'collapsed');
-            html += getIndicatorHTML(tree, node, indicatorType);
+            for (var i = 0; i <= level; i++) {
+                html += getIndicatorHTML(tree, node, indicatorType, i, level);
+            }
 
             var itemWrapperClasses =
                 helper.getPartClasses(tree, 'item-content');

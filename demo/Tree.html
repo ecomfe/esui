@@ -15,8 +15,7 @@
             [
                 'esui/Tree',
                 'esui/TreeStrategy',
-                'css!esui/css/main.css',
-                'css!esui/css/Tree.css'
+                'css!esui/css/main.css'
             ],
             function (Tree, TreeStrategy) {
                 var datasource = {
@@ -50,7 +49,7 @@
                     ]
                 };
 
-                var tree = new Tree({ datasource: datasource, strategy: new TreeStrategy() });
+                var tree = new Tree({ id: 'normal', datasource: datasource, strategy: new TreeStrategy() });
                 var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), skin: 'folder'});
                 tree.appendTo(document.getElementById('container'));
                 tree2.appendTo(document.getElementById('container'));
