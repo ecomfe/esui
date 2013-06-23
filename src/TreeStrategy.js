@@ -54,6 +54,11 @@ define(
          * @public
          */
         TreeStrategy.prototype.attachTo = function (tree) {
+            this.enableToggleStrategy(tree);
+            this.enableSelectStrategy(tree);
+        };
+
+        TreeStrategy.prototype.enableToggleStrategy = function (tree) {
             tree.on(
                 'expand',
                 function (e) {
@@ -65,6 +70,21 @@ define(
                 'collapse',
                 function (e) {
                     this.collapseNode(e.node.id, false);
+                }
+            );
+        };
+
+        TreeStrategy.prototype.enableSelectStrategy = function (tree) {
+            tree.on(
+                'select',
+                function (e) {
+                    this.selectNode(e.node.id);
+                }
+            );
+            tree.on(
+                'unselect',
+                function (e) {
+                    tree.unselectNode(e.node.id);
                 }
             );
         };

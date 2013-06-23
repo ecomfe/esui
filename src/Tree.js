@@ -51,6 +51,10 @@ define(
             return document.createElement('div');
         };
 
+        Tree.defaultProperties = {
+            selectMode: 'single'
+        };
+
         /**
          * 初始化参数
          *
@@ -63,7 +67,13 @@ define(
                 datasource: {},
                 strategy: new NullTreeStrategy()
             };
-            var properties = lib.extend(defaults, options);
+            var properties = 
+                lib.extend(defaults, Tree.defaultProperties, options);
+            if (properties.allowUnselectNode == null) {
+                // 默认单选模式下不允许取消选择，多选则可以取消
+                properties.allowUnselectNode = 
+                    (properties.selectMode !== 'single');
+            }
             this.setProperties(properties);
         };
 
@@ -221,7 +231,7 @@ define(
          * @param {Object} node 节点数据
          * @param {number} level 节点的层级，根是0层
          * @param {boolean} expanded 是否处于展开状态
-         * @parma {string} nodeName 使用节点的类型，默认为li
+         * @param {string} nodeName 使用节点的类型，默认为li
          * @return {string}
          * @inner
          */
@@ -243,7 +253,7 @@ define(
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function toggleNode(e) {
+        function toggleAndSelectNode(e) {
             // 对于树控件来说，只有点在`.content-wrapper`上才是有效的，
             // 而`.content-wrapper`下只有2类元素：
             // 
@@ -256,12 +266,13 @@ define(
 
             var indicatorClass = 
                 helper.getPartClasses(this, 'node-indicator')[0];
-            var isValidEvent = lib.hasClass(target, indicatorClass);
+            var isValidToggleEvent = lib.hasClass(target, indicatorClass);
+            // 点在`indicator`上时不触发选中逻辑，只负责展开/收起
+            var isValidSelectEvent = !isValidToggleEvent;
 
-
-            var wrapperClass = 
-                helper.getPartClasses(this, 'content-wrapper')[0];
-            if (!isValidEvent && this.wideToggleArea) {
+            if (!isValidToggleEvent) {
+                var wrapperClass = 
+                    helper.getPartClasses(this, 'content-wrapper')[0];
                 while (target 
                     && target !== this.main 
                     && !lib.hasClass(target, wrapperClass)
@@ -270,21 +281,30 @@ define(
                 }
 
                 if (lib.hasClass(target, wrapperClass)) {
-                    isValidEvent = true;
+                    isValidToggleEvent = this.wideToggleArea;
+                    isValidSelectEvent = isValidSelectEvent && true;
                 }
             }
 
-            if (isValidEvent) {
-                // 往上找到树的节点，有`data-id`等有用的属性
-                while (target 
-                    && target !== this.main
-                    && !lib.hasAttribute(target, 'data-id')
-                ) {
-                    target = target.parentNode;
-                }
-                var id = target.getAttribute('data-id');
+            if (!isValidToggleEvent && !isValidSelectEvent) {
+                return;
+            }
 
+            // 往上找到树的节点，有`data-id`等有用的属性
+            while (target 
+                && target !== this.main
+                && !lib.hasAttribute(target, 'data-id')
+            ) {
+                target = target.parentNode;
+            }
+            var id = target.getAttribute('data-id');
+
+            if (isValidToggleEvent) {
                 this.triggerToggleStrategy(id);
+            }
+
+            if (isValidSelectEvent) {
+                this.triggerSelectStrategy(id);
             }
         }
 
@@ -295,7 +315,7 @@ define(
          * @protected
          */
         Tree.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', toggleNode);
+            helper.addDOMEvent(this, this.main, 'click', toggleAndSelectNode);
             this.strategy.attachTo(this);
         };
 
@@ -334,9 +354,177 @@ define(
                     tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
                         getNodeHTML(tree, datasource, 0, true, 'div');
+
+                    tree.selectedNodes = [];
+                    tree.selectedNodeIndex = {};
                 }
             }
         );
+
+        /**
+         * 触发选中或取消选中节点的策略
+
+         * @param {string} id 节点的id
+         * @public
+         */
+        Tree.prototype.triggerSelectStrategy = function (id) {
+            var node = this.nodeIndex[id];
+
+            if (!node) {
+                return;
+            }
+
+            var mode = this.selectedNodeIndex[id] ? 'unselect' : 'select';
+            this.fire(mode, { node: node });
+        };
+
+        /**
+         * 获取选中的节点集合
+         *
+         * @return {Array.<Object>}
+         * @public
+         */
+        Tree.prototype.getSelectedNodes = function () {
+            return this.selectedNodes.slice();
+        };
+
+        /**
+         * 添加选中节点
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Object} node 节点数据项
+         * @return {boolean} 添加是否成功
+         * @inner
+         */
+        function addSelectedNode(tree, node) {
+            if (tree.selectedNodeIndex[node.id]) {
+                return false;
+            }
+
+            tree.selectedNodes.push(node);
+            tree.selectedNodeIndex[node.id] = node;
+            return true;
+        }
+
+        /**
+         * 移除选中节点
+         *
+         * @param {Tree} tree 控件实例
+         * @param {Object} node 节点数据项
+         * @return {boolean} 移除是否成功
+         * @inner
+         */
+        function removeSelectedNode(tree, node) {
+            if (tree.selectedNodeIndex[node.id]) {
+                delete tree.selectedNodeIndex[node.id];
+                for (var i = 0; i < tree.selectedNodes.length; i++) {
+                    if (tree.selectedNodes[i] === node) {
+                        tree.selectedNodes.splice(i, 1);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * 更换节点的选中状态
+         *
+         * @param {string} id 节点的id
+         * @public
+         */
+        Tree.prototype.toggleNodeSelection = function (id) {
+            var method = this.selectedNodeIndex[id]
+                ? 'unselectNode'
+                : 'selectNode';
+            this[method](id);
+        };
+
+        /**
+         * 取消节点选中
+         *
+         * @param {Tree} tree 控件实例
+         * @param {string} id 节点id
+         * @param {Object} options 相关配置项
+         * @param {boolean} options.force 强制移除（无视`allowUnselectNode`配置）
+         * @param {boolean} options.silent 是否静默处理（不触发事件）
+         * @param {boolean} options.modifyDOM 是否对DOM节点做处理
+         * @inner
+         */
+        function unselectNode(tree, id, options) {
+            if (!options.force && !tree.allowUnselectNode) {
+                return;
+            }
+
+            var node = tree.nodeIndex[id];
+
+            if (!node) {
+                return;
+            }
+
+            var removed = removeSelectedNode(tree, node);
+
+            if (removed) {
+                if (options.modifyDOM) {
+                    var nodeElement =
+                        lib.g(helper.getId(tree, 'node-' + id));
+                    helper.removePartClasses(
+                        tree, 'node-selected', nodeElement);
+                }
+
+                if (!options.silent) {
+                    tree.fire('unselectnode', { node: node });
+                    tree.fire('selectionchange');
+                }
+            }
+        }
+
+        /**
+         * 选中一个节点
+         *
+         * @param {string} id 节点id
+         * @public
+         */
+        Tree.prototype.selectNode = function (id) {
+            var node = this.nodeIndex[id];
+
+            if (!node) {
+                return;
+            }
+
+            var added = addSelectedNode(this, node);
+            if (!added) {
+                return;
+            }
+
+            // 只能选一个的话，新选中的肯定在后面，因此把第1个删掉就行
+            if (this.selectMode === 'single' && this.selectedNodes.length > 1) {
+                unselectNode(
+                    this, 
+                    this.selectedNodes[0].id, 
+                    { force: true, silent: true, modifyDOM: true }
+                );
+            }
+            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
+            helper.addPartClasses(this, 'node-selected', nodeElement);
+
+            this.fire('selectnode', { node: node });
+            this.fire('selectionchange');
+        };
+
+        /**
+         * 取消一个节点的选中状态
+         *
+         * @param {string} id 节点id
+         * @public
+         */
+        Tree.prototype.unselectNode = function (id) {
+            unselectNode(
+                this, 
+                id, 
+                { force: false, silent: false, modifyDOM: true }
+            );
+        };
 
         /**
          * 向指定节点填充子节点并展开节点
@@ -409,10 +597,21 @@ define(
                 return;
             }
 
+            var node = this.nodeIndex[id];
             var childRoot = nodeElement.getElementsByTagName('ul')[0];
             if (childRoot) {
                 if (removeChild) {
                     childRoot.parentNode.removeChild(childRoot);
+                    // 同时如果有选中的节点，要从选中集合中移除
+                    if (node.children) {
+                        for (var i = 0; i < node.children.length; i++) {
+                            unselectNode(
+                                this, 
+                                node.children[i].id, 
+                                { force: true, silent: false, modifyDOM: false }
+                            );
+                        }
+                    }
                 }
                 else {
                     var rootClasses = [].concat(
@@ -423,7 +622,6 @@ define(
                 }
             }
 
-            var node = this.nodeIndex[id];
             var level = +lib.getAttribute(nodeElement, 'data-level');
             var nodeClasses = getNodeClasses(this, node, level, false);
             nodeElement.className = nodeClasses.join(' ');
@@ -544,6 +742,19 @@ define(
                 helper.getPartClasses(this, 'node-indicator-busy')
             );
             indicator.className = classes.join(' ');
+        };
+
+        /**
+         * 销毁控件
+         *
+         * @override
+         * @protected
+         */
+        Tree.prototype.dispose = function () {
+            Control.prototype.dispose.apply(this, arguments);
+            this.nodeIndex = null;
+            this.selectedNodes = null;
+            this.selectedNodeIndex = null;
         };
 
         require('./main').register(Tree);

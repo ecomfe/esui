@@ -27,9 +27,9 @@
                             text: '联盟研发部',
                             children: [
                                 { id: '21', text: 'RD' },
-                                { id: '21', text: 'FE' },
-                                { id: '21', text: 'QA' },
-                                { id: '21', text: 'PM' }
+                                { id: '22', text: 'FE' },
+                                { id: '23', text: 'QA' },
+                                { id: '24', text: 'PM' }
                             ]
                         },
                         {
@@ -37,9 +37,9 @@
                             text: '贴吧事业部',
                             children: [
                                 { id: '31', text: 'RD' },
-                                { id: '31', text: 'FE' },
-                                { id: '31', text: 'QA' },
-                                { id: '31', text: 'PM' }
+                                { id: '32', text: 'FE' },
+                                { id: '33', text: 'QA' },
+                                { id: '34', text: 'PM' }
                             ]
                         },
                         {
@@ -49,8 +49,8 @@
                     ]
                 };
 
-                var tree = new Tree({ id: 'normal', datasource: datasource, strategy: new TreeStrategy() });
-                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), skin: 'folder'});
+                var tree = new Tree({ id: 'normal', datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true });
+                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), skin: 'folder', selectMode: 'multiple'});
                 tree.appendTo(document.getElementById('container'));
                 tree2.appendTo(document.getElementById('container'));
             }
