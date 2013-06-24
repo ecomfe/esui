@@ -137,10 +137,12 @@ define(
             var text = diff === 0
                 ? indicatorTextMapping[type || 'collapsed']
                 : '第' + currentLevel + '级';
-            var html = '<span '
-                + 'id="' + helper.getId(tree, 'indicator-' + node.id) + '" '
-                + 'class="' + classes.join(' ') + '">'
-                + text + '</span>';
+            var html = '<span ';
+            if (diff === 0) {
+                html += 
+                    'id="' + helper.getId(tree, 'indicator-' + node.id) + '" ';
+            }
+            html += 'class="' + classes.join(' ') + '">' + text + '</span>';
             return html;
         }
 
