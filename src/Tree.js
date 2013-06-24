@@ -567,8 +567,14 @@ define(
                 var indicator = lib.g(helper.getId(this, 'indicator-' + id));
                 indicator.innerHTML = indicatorTextMapping.expanded;
                 var indicatorClasses = [].concat(
-                    helper.getPartClasses(this, 'node-indicator'),
-                    helper.getPartClasses(this, 'node-indicator-expanded')
+                    helper.getPartClasses(
+                        this, 'node-indicator'),
+                    helper.getPartClasses(
+                        this, 'node-indicator-level-' + level),
+                    helper.getPartClasses(
+                        this, 'node-indicator-current'),
+                    helper.getPartClasses(
+                        this, 'node-indicator-expanded')
                 );
                 indicator.className = indicatorClasses.join(' ');
                 // 子树的class要改掉
@@ -629,8 +635,14 @@ define(
             nodeElement.className = nodeClasses.join(' ');
             var indicator = lib.g(helper.getId(this, 'indicator-' + id));
             var indicatorClasses = [].concat(
-                helper.getPartClasses(this, 'node-indicator'),
-                helper.getPartClasses(this, 'node-indicator-collapsed')
+                helper.getPartClasses(
+                    this, 'node-indicator'),
+                    helper.getPartClasses(
+                        this, 'node-indicator-level-' + level),
+                helper.getPartClasses(
+                    this, 'node-indicator-current'),
+                helper.getPartClasses(
+                    this, 'node-indicator-collapsed')
             );
             indicator.className = indicatorClasses.join(' ');
             indicator.innerHTML = indicatorTextMapping.collapsed;
@@ -740,8 +752,14 @@ define(
             var indicator = nodeElement.firstChild;
             indicator.innerHTML = indicatorTextMapping.busy;
             var classes = [].concat(
-                helper.getPartClasses(this, 'node-indicator'),
-                helper.getPartClasses(this, 'node-indicator-busy')
+                helper.getPartClasses(
+                    this, 'node-indicator'),
+                    helper.getPartClasses(
+                        this, 'node-indicator-level-' + level),
+                helper.getPartClasses(
+                    this, 'node-indicator-current'),
+                helper.getPartClasses(
+                    this, 'node-indicator-busy')
             );
             indicator.className = classes.join(' ');
         };
