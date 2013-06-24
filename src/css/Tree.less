@@ -23,6 +23,7 @@
 
         .ui-tree-content-wrapper {
             border-left: 4px solid #fff;
+            padding-left: 15px;
 
             // 图标
             .ui-tree-node-indicator {
@@ -67,6 +68,23 @@
         }
         .ui-tree-sub-root-collapsed {
             display: none;
+        }
+
+    }
+
+    &.ui-tree-hide-root {
+        .ui-tree-root {
+            .ui-tree-content-wrapper {
+                display: none;
+                .ui-tree-node-indicator-level-0 {
+                    width: 0;
+                }
+            }
+            .ui-tree-sub-root {
+                .ui-tree-content-wrapper {
+                    display: block;
+                }
+            }
         }
 
     }
