@@ -52,7 +52,8 @@ define(
         };
 
         Tree.defaultProperties = {
-            selectMode: 'single'
+            selectMode: 'single',
+            hideRoot: false
         };
 
         /**
@@ -363,6 +364,13 @@ define(
 
                     tree.selectedNodes = [];
                     tree.selectedNodeIndex = {};
+                }
+            },
+            {
+                name: 'hideRoot',
+                paint: function (tree, hideRoot) {
+                    var method = hideRoot ? 'addState' : 'removeState';
+                    tree[method]('hide-root');
                 }
             }
         );
