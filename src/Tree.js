@@ -157,8 +157,12 @@ define(
          * @inner
          */
         function getNodeContentHTML(tree, node, level, expanded) {
-            var wrapperClasses = helper.getPartClasses(tree, 'content-wrapper');
-            var html = '<div class="' + wrapperClasses.join(' ') + '">';
+            var wrapperClasses =
+                helper.getPartClasses(tree, 'content-wrapper').join(' ');
+            var wrapperId = 
+                helper.getId(tree, 'content-wrapper-' + node.id);
+            var html = 
+                '<div id="' + wrapperId + '" class="' + wrapperClasses + '">';
 
             var indicatorType = tree.strategy.isLeafNode(node)
                 ? 'empty'
@@ -469,9 +473,9 @@ define(
             if (removed) {
                 if (options.modifyDOM) {
                     var nodeElement =
-                        lib.g(helper.getId(tree, 'node-' + id));
+                        lib.g(helper.getId(tree, 'content-wrapper-' + id));
                     helper.removePartClasses(
-                        tree, 'node-selected', nodeElement);
+                        tree, 'content-wrapper-selected', nodeElement);
                 }
 
                 if (!options.silent) {
@@ -507,8 +511,9 @@ define(
                     { force: true, silent: true, modifyDOM: true }
                 );
             }
-            var nodeElement = lib.g(helper.getId(this, 'node-' + id));
-            helper.addPartClasses(this, 'node-selected', nodeElement);
+            var nodeElement = 
+                lib.g(helper.getId(this, 'content-wrapper-' + id));
+            helper.addPartClasses(this, 'content-wrapper-selected', nodeElement);
 
             this.fire('selectnode', { node: node });
             this.fire('selectionchange');
