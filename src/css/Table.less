@@ -80,11 +80,11 @@
 /* 表格内容单元格容器 */
 .ui-table-cell-text,
 .ui-table-body-nodata {
-    line-height:32px;
-    height:32px;
-    overflow:hidden;
-    padding:0 8px;
-    text-align:left;
+  line-height: 32px;
+  height: 32px;
+  overflow: hidden;
+  margin: 0 8px;
+  text-align: left;
 }
 
 .ui-table-cell-text-first,.ui-table-hcell-text-first {
@@ -94,11 +94,12 @@
     padding-right: 12px;
 }
 
-.ui-table-cell-sel,.ui-table-hcell-sel {
-    padding-top: 3px;
-    padding-left: 8px;  
-    height:25px;
-    line-height:25px;
+.ui-table-cell-sel,
+.ui-table-hcell-sel {
+  margin: 0;
+  padding:3px 8px 0;
+  height: 25px;
+  line-height: 25px;
 }
 
 .ui-table-scroll-x {
@@ -186,12 +187,33 @@
     background:#FFF9EE;
 }
 
-.ui-table-row-hover .ui-table-cell-editable {
-    border:1px solid #a8adb6;
-    margin:2px;
-    padding:1px;
-    background:#fcfcfc;
-    position:relative;
+.ui-table-cell-editing .ui-table-cell-editable{
+  text-indent: -3000px;
+  position: relative;
+}
+.ui-table-cell-editing .ui-table-cell-sel{
+  text-indent: 0;
+}
+
+.ui-table-cell-editfield {
+  text-indent: 0;
+  position: absolute;
+  top: -10000px;
+  left: -10000px;
+  width: 100%;
+}
+
+.ui-table-cell-editing .ui-table-cell-editfield {
+  top: 0;
+  left: 0;
+}
+
+.ui-table-cell-editfield .ui-select {
+  margin-top: 3px;
+}
+.ui-table-cell-editfield .ui-textbox, 
+.ui-table-cell-editfield .ui-textbox input{
+  width: 100%;
 }
 
 /* 行表格选中 */
