@@ -1386,6 +1386,8 @@ define(
         }
 
         function getRowBaseArgs(table, rowIndex) {
+            var datasource = table.datasource || [];
+            var dataLen = datasource.length;
            return {
                 tdCellClass : getClass(table, 'cell'),
                 tdBreakClass : getClass(table, 'cell-break'),
@@ -1393,7 +1395,10 @@ define(
                 fieldLen: table.realFields.length,
                 rowClass: [
                     getClass(table, 'row'),
-                    getClass(table, 'row-' + ((rowIndex % 2) ? 'odd' : 'even'))
+                    getClass(table, 'row-' + ((rowIndex % 2) ? 'odd' : 'even')),
+                    dataLen - 1 == rowIndex 
+                        ? getClass(table, 'row-last')
+                        : '' 
                 ].join(' ')
             };
         }
