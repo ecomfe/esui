@@ -542,6 +542,10 @@ define(
             var monthMainId = helper.getId(monthView, 'monthMain');
             var monthMain = lib.g(monthMainId);
             monthMain.innerHTML = getMonthMainHTML(monthView);
+            // 找到最后一行，增加一个class
+            var rowElements = monthMain.getElementsByTagName('tr');
+            var lastRow = rowElements[rowElements.length - 1];
+            helper.addPartClasses(monthView, 'last-row', lastRow);
 
             //选择日期 
             updateSelectState(monthView);
