@@ -521,7 +521,8 @@ define(
             }
             var nodeElement = 
                 lib.g(helper.getId(this, 'content-wrapper-' + id));
-            helper.addPartClasses(this, 'content-wrapper-selected', nodeElement);
+            helper.addPartClasses(
+                this, 'content-wrapper-selected', nodeElement);
 
             this.fire('selectnode', { node: node });
             this.fire('selectionchange');
