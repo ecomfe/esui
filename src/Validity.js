@@ -38,6 +38,19 @@ define(
         };
 
         /**
+         * 初始化参数
+         *
+         * @param {Object=} options 输入的参数
+         * @override
+         * @protected
+         */
+        Validity.prototype.initOptions = function (options) {
+            var properties = 
+                lib.extend({}, Validity.defaultProperties, options);
+            Control.prototype.initOptions.call(this, properties);
+        };
+
+        /**
          * 获取元素的全部class
          *
          * @param {Validity} label 控件实例
@@ -148,9 +161,16 @@ define(
                         }
                         label.display(validState, message || '', validity);
                         label.initChildren();
+                        if (message) {
+                            label.show();
+                        }
+                        else {
+                            label.hide();
+                        }
                     }
                     else {
                         label.main.innerHTML = '';
+                        label.hide();
                     }
                 }
             }
