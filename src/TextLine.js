@@ -36,8 +36,9 @@ define(
         function getMainHTML(textLine) {
             var tpl = [
                 '<div id="${numLineId}" class="${numLineClass}">1</div>',
-                '<textarea name="${name}" ',
-                'data-ui="type:TextBox;childName:text;mode:textarea" >',
+                '<textarea ',
+                'data-ui="type:TextBox;childName:text;mode:textarea" ',
+                'name="${name}" wrap="off">',
                 '</textarea>',
                 '<input type="hidden" id="${inputId}" name="${name}"/>'
             ].join('');
