@@ -56,16 +56,6 @@ define(
             );
         }
 
-        /**
-         * 滚动数字区域
-         *
-         * @param {TextLine} this TextLine控件实例
-         * @inner
-         */
-        function resetScrollByLine() {
-            this.getChild('text').main.firstChild.scrollTop =
-                this.lineNumBlock.scrollTop;
-        }
 
         /**
          * 重置行号，增加内容和keyup时可调用
@@ -95,6 +85,10 @@ define(
          * @inner
          */
         function resetScroll(textLine) {
+            var textArea = textLine.getChild('text').main.firstChild;
+            var lineNumber = textLine.lineNumBlock;
+            // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
+            lineNumber.style.height = textArea.clientHeight + 'px';
             textLine.lineNumBlock.scrollTop =
                 textLine.getChild('text').main.firstChild.scrollTop;
         }
@@ -187,8 +181,6 @@ define(
                 var lineNumDiv = lib.g(helper.getId(this, 'num-line'));
                 // 保存到控件对象，因为之后会一直用到
                 this.lineNumBlock = lineNumDiv;
-                helper.addDOMEvent(
-                    this, lineNumDiv, 'scroll', resetScrollByLine);
 
             },
 
