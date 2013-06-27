@@ -875,15 +875,23 @@ define(
             // 一但层出现，可能造成滚动条出现，导致页面尺寸变小
             var pageWidth = lib.page.getWidth();
             var pageHeight = lib.page.getHeight();
-            var offset = lib.getOffset(target);
 
             // 浮层的存在会影响页面高度计算，必须先让它消失，
             // 但在消失前，又必须先计算到浮层的正确高度
             var previousDisplayValue = element.style.display;
             element.style.display = 'block';
+            element.style.top = '-5000px';
+            element.style.left = '-5000px';
+            // IE7下，如果浮层隐藏着反而会影响offset的获取，
+            // 但浮层显示出来又可能造成滚动条出现，
+            // 因此显示浮层显示后移到屏幕外面，然后计算坐标
+            var offset = lib.getOffset(target);
+            // 用完改回来再计算后面的
+            element.style.top = '';
+            element.style.left = '';
             var elementHeight = element.offsetHeight;
             var elementWidth = element.offsetWidth;
-            element.style.display = 'none';
+            element.style.display = previousDisplayValue;
 
             // 有2种特殊的情况：
             // 
