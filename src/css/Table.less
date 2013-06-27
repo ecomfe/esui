@@ -20,6 +20,7 @@
 }
 .ui-table-head {
     background:#fbfbfb;
+    *z-index: 10;
 }
 .ui-table-foot {
     background:#fbfbfb;
@@ -83,7 +84,7 @@
   line-height: 32px;
   height: 32px;
   overflow: hidden;
-  margin: 0 8px;
+  padding: 0 8px;
   text-align: left;
 }
 
@@ -96,10 +97,10 @@
 
 .ui-table-cell-sel,
 .ui-table-hcell-sel {
-  margin: 0;
   padding:3px 8px 0;
-  height: 25px;
-  line-height: 25px;
+  *padding:0 5px 0;
+  height: 32px;
+  line-height: 32px;
 }
 
 .ui-table-scroll-x {
@@ -164,6 +165,7 @@
 .ui-table-body {
     background:#FFF;
     border-bottom:1px solid #ddd;
+    *position: relative;
 }
 
 .ui-table-body-nodata{

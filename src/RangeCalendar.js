@@ -90,7 +90,7 @@ define(
                     var shortClasses = helper.getPartClasses(
                         calendar, 'shortcut-item'
                     );
-                    if (i == 0) {
+                    if (i === 0) {
                         shortClasses = shortClasses.concat(
                             helper.getPartClasses(
                                 calendar, 'shortcut-item-first'

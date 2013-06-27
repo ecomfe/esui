@@ -314,6 +314,7 @@ define(
                     }
                     else {
                         input.maxLength = maxLength;
+                        lib.setAttribute(input, 'maxLength', maxLength);
                     }
                 }
             },
