@@ -871,6 +871,10 @@ define(
         layer.attachTo = function (element, target, options) {
             options = options || { left: 'left', top: 'top' };
             var lib = require('./lib');
+            // 虽然这2个变量下面不一定用得到，但是不能等层出来了再取，
+            // 一但层出现，可能造成滚动条出现，导致页面尺寸变小
+            var pageWidth = lib.page.getWidth();
+            var pageHeight = lib.page.getHeight();
             var offset = lib.getOffset(target);
 
             // 浮层的存在会影响页面高度计算，必须先让它消失，
@@ -899,7 +903,6 @@ define(
                 // - 如果指定`top === 'top'`，则尝试上边对齐，不行就下边对齐
                 // - 如果指定`bottom === 'bottom`'，则尝试下边对齐，不行就上边对齐
                 if (config.top === 'bottom') {
-                    var pageHeight = lib.page.getHeight();
                     if (pageHeight - offset.bottom <= elementHeight) {
                         config.top = null;
                         config.bottom = 'top';
@@ -912,7 +915,6 @@ define(
                     }
                 }
                 else if (config.top === 'top') {
-                    var pageHeight = lib.page.getHeight();
                     if (pageHeight - offset.top <= elementHeight) {
                         config.top = null;
                         config.bottom = 'bottom';
@@ -934,7 +936,6 @@ define(
                 // - 如果指定`left === 'left'`，则尝试左边对齐，不行就右边对齐
                 // - 如果指定`right === 'right`'，则尝试右边对齐，不行就左边对齐
                 if (config.left === 'right') {
-                    var pageWidth = lib.page.getWidth();
                     if (pageWidth - offset.right <= elementWidth) {
                         config.left = null;
                         config.right = 'left';
@@ -947,7 +948,6 @@ define(
                     }
                 }
                 else if (config.left === 'left') {
-                    var pageWidth = lib.page.getWidth();
                     if (pageWidth - offset.left <= elementWidth) {
                         config.left = null;
                         config.right = 'right';

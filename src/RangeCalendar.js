@@ -220,8 +220,9 @@ define(
                 layer = helper.layer.create('div');
                 helper.addPartClasses(calendar, 'layer', layer);
                 layer.innerHTML = getLayerHtml(calendar);
-                document.body.appendChild(layer);
                 calendar.layer = layer;
+                hideLayer(calendar);
+                document.body.appendChild(layer);
                 // 创建控件树
                 calendar.initChildren(layer);
 
