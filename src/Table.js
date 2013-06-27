@@ -412,7 +412,10 @@ define(
                 }
 
                 foot.style.display = '';
-                foot.style.width = table.realWidth + 'px';
+                if (table.realWidth) {
+                    foot.style.width = table.realWidth + 'px';
+                }
+                
                 foot.innerHTML = getFootHtml(table);
             }
         }
@@ -520,7 +523,10 @@ define(
             }
 
             head.style.display = '';
-            head.style.width = table.realWidth + 'px';
+            if (table.realWidth) {
+                head.style.width = table.realWidth + 'px';
+            }
+
             lib.g(headPanelId).innerHTML = getHeadHtml(table);
 
             //初始化表头子控件
@@ -1143,7 +1149,9 @@ define(
             var style = tBody.style;
             style.overflowX = 'hidden';
             style.overflowY = 'auto';
-            style.width = table.realWidth + 'px';
+            if (table.realWidth) {
+                style.width = table.realWidth + 'px';
+            }
 
             table.bodyPanel.disposeChildren();
             lib.g(tBodyPanelId).innerHTML = getBodyHtml(table);
@@ -1320,7 +1328,7 @@ define(
                         }
 
                         contentHtml.push(
-                            ['<td ',
+                            '<td ',
                                 hasValue(oHtml.width)
                                 ? 'width="' + oHtml.width + '" '
                                 : '',
@@ -1329,7 +1337,7 @@ define(
                                 : '>',
                                     oHtml.html,
                             '</td>'
-                        ].join(''));
+                        );
                     }
 
                     if (textStartIndex >= otherHtml.length) {
@@ -1414,7 +1422,7 @@ define(
             if (fieldIndex === 0) {
                 textClass.push(getClass(table, 'cell-text-first'));
             }
-            else if (fieldIndex === extraArgs.fieldLen - 1) {
+            if (fieldIndex === extraArgs.fieldLen - 1) {
                 textClass.push(getClass(table, 'cell-text-last'));
             }
 
@@ -1446,7 +1454,7 @@ define(
             return {
                 colClass: tdClass.join(' '),
                 textClass: textClass.join(' '),
-                html: contentHtml
+                html: contentHtml || '&nbsp;'
             };
         }
 
@@ -1505,10 +1513,12 @@ define(
          * @private
          * @return {string}
          */
-        function getSubrowHtml(table, index) {
-            return '<div id="' + getSubrowId(table, index)
-                +  '" class="' + getClass(table, 'subrow') + '"'
-                +  ' style="display:none"></div>';
+        function getSubrowHtml(table, index, extraArgs) {
+            return extraArgs.subrow
+                    ? '<div id="' + getSubrowId(table, index)
+                    +  '" class="' + getClass(table, 'subrow') + '"'
+                    +  ' style="display:none"></div>'
+                    : '';
         }
 
 
@@ -1780,10 +1790,12 @@ define(
             var widthStr = table.realWidth + 'px';
             
             // 设置主区域宽度
-            table.main.style.width = widthStr;
-            getBody(table).style.width = widthStr;
-            head && (head.style.width = widthStr);
-            foot && (foot.style.width = widthStr);
+            if (table.realWidth) {
+                table.main.style.width = widthStr;
+                getBody(table).style.width = widthStr;
+                head && (head.style.width = widthStr);
+                foot && (foot.style.width = widthStr);
+            }
             
             // 重新绘制每一列  
             initColsWidth(table);
@@ -2430,8 +2442,10 @@ define(
 
             initStructure: function() {
                 this.realWidth = getWidth(this);
-                this.main.style.width = this.realWidth + 'px';   
-
+                if (this.realWidth) {
+                   this.main.style.width = this.realWidth + 'px'; 
+                }
+                   
                 initDelegate(this);
                 initResizeHandler(this);
                 initMainEventhandler(this);
@@ -2446,6 +2460,13 @@ define(
                 Control.prototype.repaint.apply(this, arguments);
                  // 初始化控件主元素上的行为
                 var table = this;
+
+                if (!table.realWidth) {
+                    table.realWidth = getWidth(table);
+                    if (table.realWidth) {
+                        table.main.style.width = table.realWidth + 'px'; 
+                    }
+                }
 
                 var allProperities = {
                     bodyMaxHeight: false,
