@@ -418,17 +418,19 @@ define(
                 name: 'height',
                 paint: function (textbox, height) {
                     var hintLabel = lib.g(helper.getId(textbox, 'hint'));
+                    var heightWithUnit = height + 'px';
                     if (hintLabel) {
-                        hintLabel.style.height = height + 'px';
-                        hintLabel.style.lineHeight = height + 'px';
+                        hintLabel.style.height = heightWithUnit;
+                        hintLabel.style.lineHeight = heightWithUnit;
                     }
 
                     var input = lib.g(textbox.inputId);
-                    input.style.height = height + 'px';
+                    input.style.height = heightWithUnit;
                     var placeholder = 
                         lib.g(helper.getId(textbox, 'placeholder'));
                     if (placeholder) {
-                        placeholder.style.height = height + 'px';
+                        placeholder.style.height = heightWithUnit;
+                        placeholder.style.lineHeight = heightWithUnit;
                     }
                 }
             }
