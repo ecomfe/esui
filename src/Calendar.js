@@ -414,6 +414,20 @@ define(
              */
             parseValue: function (value) {
                 return parseToDate(value);
+            },
+
+            dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
+                var layer = this.layer;
+                if (layer) {
+                    layer.parentNode.removeChild(layer);
+                    this.layer = null;
+                }
+
+                InputControl.prototype.dispose.apply(this, arguments);
             }
         };
 

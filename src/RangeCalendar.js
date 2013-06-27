@@ -64,6 +64,33 @@ define(
         }
 
         /**
+         * 判断是否不在可选范围内
+         *
+         * @param {RangeCalendar} calendar RangeCalendar控件实例
+         * @param {object} shortItem 快捷对象
+         * @return {boolean}
+         */
+        function isOutOfRange(calendar, shortItem) {
+            var range = calendar.range;
+
+            var itemValue = shortItem.getValue.call(calendar);
+            
+            if (range.begin > itemValue.begin
+                || range.end < itemValue.end) {
+                return true;
+            }
+
+            // 方案2
+            // if (range.begin > itemValue.end
+            //     || range.end < itemValue.begin) {
+            //     return true;
+            // }            
+
+
+            return false;
+        }
+
+        /**
          * 搭建快捷迷你日历
          *
          * @param {RangeCalendar} calendar RangeCalendar控件实例
@@ -94,6 +121,14 @@ define(
                         shortClasses = shortClasses.concat(
                             helper.getPartClasses(
                                 calendar, 'shortcut-item-first'
+                            )
+                        );
+                    }
+                    var disabled = isOutOfRange(calendar, shortItem);
+                    if (disabled) {
+                        shortClasses = shortClasses.concat(
+                            helper.getPartClasses(
+                                calendar, 'shortcut-item-disabled'
                             )
                         );
                     }
@@ -368,9 +403,20 @@ define(
             paintMiniCal(me, index);
 
             var value = shortcutItems[index].getValue.call(me);
-            calendar.view = value;
-            paintCal(calendar, 'begin', value.begin);
-            paintCal(calendar, 'end', value.end);
+            var begin = value.begin;
+            var end = value.end;
+
+            // 方案2逻辑
+            // if (begin < calendar.range.begin) {
+            //     begin = calendar.range.begin
+            // }
+            // if (end > calendar.range.end) {
+            //     end = calendar.range.end;
+            // }
+
+            calendar.view = { begin: begin, end: end };
+            paintCal(calendar, 'begin', begin);
+            paintCal(calendar, 'end', end);
         }
 
         /**
@@ -456,9 +502,13 @@ define(
 
             var tar = e.target || e.srcElement;
             var classes = helper.getPartClasses(this, 'shortcut-item');
+            var disableClasses = helper.getPartClasses(
+                this, 'shortcut-item-disabled'
+            );
 
             while (tar && tar != document.body) {
-                if (lib.hasClass(tar, classes[0])) {
+                if (lib.hasClass(tar, classes[0])
+                    && !lib.hasClass(tar, disableClasses[0])) {
                     var index = tar.getAttribute('data-index');
                     selectIndex(this, index);
                     return;
@@ -1065,6 +1115,20 @@ define(
              */
             parseValue: function (value) {
                 return convertToRaw(value);
+            },
+
+            dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
+                var layer = this.layer;
+                if (layer) {
+                    layer.parentNode.removeChild(layer);
+                    this.layer = null;
+                }
+
+                InputControl.prototype.dispose.apply(this, arguments);
             }
         };
 
