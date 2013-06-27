@@ -453,7 +453,7 @@ define(
                 }
 
                 // 设置样式
-                this.main.style.left = '-10000px';
+                this.addState('hidden');
                 createHead(this, this.roles.title);
                 this.createBF('body', this.roles.content);
                 if (this.needFoot) {
@@ -682,6 +682,7 @@ define(
                 //lib.on(window, 'resize', getResizeHandler);
                 helper.addDOMEvent(this, window, 'resize', resizeHandler);
                 this.setWidth(this.width);
+                this.removeState('hidden');
                 resizeHandler.apply(this);
 
                 // 要把dialog置顶
@@ -692,7 +693,10 @@ define(
                     var dialogNum = 0;
                     for (var i = 0, len = rawElements.length; i < len; i++) {
                         if (rawElements[i].nodeType === 1) {
-                            if (lib.hasClass(rawElements[i], 'ui-dialog')) {
+                            if (lib.hasClass(rawElements[i], 'ui-dialog')
+                                && !lib.hasClass(
+                                    rawElements[i], 'ui-dialog-hidden')
+                            ) {
                                 dialogNum ++;
                             }
                         }
@@ -701,6 +705,7 @@ define(
                     zIndex += dialogNum * 10;
                 //}
                 this.main.style.zIndex = zIndex;
+
 
                 if (mask) {
                     showMask(this, zIndex - 1);
@@ -723,8 +728,8 @@ define(
                     var main = this.main;
                     var mask = this.mask;
 
-                    main.style.left = main.style.top = '-10000px';
-
+                    this.addState('hidden');
+ 
                     if (mask) {
                         hideMask(this);
                     }

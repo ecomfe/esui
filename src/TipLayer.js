@@ -685,6 +685,9 @@ define(
                     lib.curry(resizeHandler, this, targetElement, options)
                 );
 
+                // 动态计算layer的zIndex
+                this.main.style.zIndex = helper.layer.getZIndex(targetElement);
+
                 this.removeState('hidden');
 
                 // 定位，八种。。
