@@ -750,7 +750,7 @@ define(
          * 时间的mouseout的处理函数
          * 
          */
-        function timeOutHandler(element, e) {
+        function timeOutHandler(e) {
 
             var target = lib.event.getTarget(e);
 
