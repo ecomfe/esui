@@ -28,6 +28,30 @@ define(
             this.fire('click');
         }
 
+        /**
+         * 获取元素border信息
+         * 
+         * @param {HTMLElement} dom 目标元素
+         * @return {object}
+         */
+        function getBorderInfo(dom) {
+            var result = {};
+            if (dom.currentStyle) {
+                result.borderTop =
+                    parseInt(dom.currentStyle.borderTopWidth);
+                result.borderBottom =
+                    parseInt(dom.currentStyle.borderBottomWidth);
+            }
+            else if (window.getComputedStyle(bdom, null)) {
+                var style = window.getComputedStyle(dom, null);
+                result.borderTop =
+                    Math.ceil(parseFloat(style.borderTopWidth));
+                result.borderBottom =
+                    Math.ceil(parseFloat(style.borderBottomWidth));
+            }
+            return result;
+        }
+
         Button.prototype = {
             /**
              * 控件类型
@@ -48,6 +72,7 @@ define(
                  * 默认选项配置
                  */
                 var properties = {
+                    height: 23,
                     content: '',         // 按钮的显示文字
                     disabled: false     // 控件是否禁用
                 };
@@ -106,7 +131,18 @@ define(
                         }
                         var main = button.main;
                         main.style.height = value + 'px';
-                        main.style.lineHeight = value + 'px';
+                        var lineHeight = value;
+                        main.style.lineHeight = lineHeight + 'px';
+
+                        var offsetHeight = main.offsetHeight;
+                        // 说明是border-box模式
+                        if (offsetHeight === value) {
+                            var borderInfo = getBorderInfo(main);
+                            height = value
+                                + borderInfo.borderTop
+                                + borderInfo.borderBottom;
+                            main.style.height = height + 'px';
+                        }
                     } 
                 },
                 {
