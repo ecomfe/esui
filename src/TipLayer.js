@@ -20,6 +20,7 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ui = require('./main');
+        var paint = require('./painters');
 
         /**
          * 提示层控件类
@@ -484,6 +485,7 @@ define(
              */
             repaint: helper.createRepaint(
                 Control.prototype.repaint,
+                paint.style('width'),
                 {
                     name: 'title',
                     paint: function (tipLayer, value) {

@@ -88,6 +88,7 @@ define(
             var tipLayer = ui.create('TipLayer', {
                 content: this.content,
                 title: this.title,
+                width: this.layerWidth || 200,
                 main: main
             });
             tipLayer.render();
