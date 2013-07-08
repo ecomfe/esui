@@ -36,19 +36,10 @@ define(
          */
         function getBorderInfo(dom) {
             var result = {};
-            if (dom.currentStyle) {
-                result.borderTop =
-                    parseInt(dom.currentStyle.borderTopWidth);
-                result.borderBottom =
-                    parseInt(dom.currentStyle.borderBottomWidth);
-            }
-            else if (window.getComputedStyle(bdom, null)) {
-                var style = window.getComputedStyle(dom, null);
-                result.borderTop =
-                    Math.ceil(parseFloat(style.borderTopWidth));
-                result.borderBottom =
-                    Math.ceil(parseFloat(style.borderBottomWidth));
-            }
+            result.borderTop =
+                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'));
+            result.borderBottom =
+                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'));
             return result;
         }
 
