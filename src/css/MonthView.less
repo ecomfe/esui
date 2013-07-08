@@ -5,8 +5,8 @@
  * @file 单日历样式
  * @author dbear
  */
-@import "mixin.less";
-@import "variable.less";
+@import-once "mixin.less";
+@import-once "variable.less";
 .ui-monthview {
     background:#fff;
     width:210px;
@@ -61,15 +61,19 @@
         color:#666;
         text-align:center;
     }
- 
+
+    .ui-monthview-month-title-selected {
+        background: #CCCED4;
+    }
+
     .ui-monthview-month-item {
-        width:30px;
-        height:21px;
-        line-height:21px;
-        cursor:pointer;
-        color:#03c;
-        text-align:center;
-        border-bottom:1px solid #f1f1f1;
+        width: 19px;
+        height: 21px;
+        line-height: 21px;
+        cursor: pointer;
+        color: #03c;
+        text-align: center;
+        border-bottom: 1px solid #f1f1f1;
     }
 
 
@@ -106,6 +110,42 @@
     }
 
     
+}
+
+// 多选模式
+.ui-monthview-multi-select {
+    width: 220px;
+    .ui-monthview-head {
+        table {width:215px;}
+    }
+
+    .ui-monthview-month-select-all {
+        width: 15px;
+        height:21px;
+        line-height: 21px;
+        background: #f1f1f1;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+            background: #f1f1f1;
+        }
+    }
+
+    .ui-monthview-month-select-all-selected {
+        background: #CCCED4;
+    }
+ 
+    .ui-monthview-month-row-select {
+        background: #f1f1f1;
+        height: 21px;
+        line-height: 21px;
+        text-align: center;
+        border-bottom: 1px solid #f1f1f1;
+        cursor: pointer;
+    }
+    .ui-monthview-month-row-select-selected {
+        background: #CCCED4;
+    }
 }
 
 .ui-monthview-disabled {
