@@ -1046,7 +1046,7 @@ define(function () {
     lib.event = {};
 
     /**
-     * 组织事件默认行为
+     * 阻止事件默认行为
      * @param event 事件对象
      * @return void
      */
@@ -1060,7 +1060,7 @@ define(function () {
     };
 
     /**
-     * 组织事件冒泡
+     * 阻止事件冒泡
      * @param event 事件对象
      * @return void
      */
@@ -1096,7 +1096,7 @@ define(function () {
     };
 
     /**
-     * 组织事件冒泡
+     * 获取事件源对象 
      * @param e 事件对象
      * @return {object} 获取事件目标对象
      */
