@@ -809,7 +809,7 @@ define(
             var zIndex = 0;
             while (!zIndex && owner && owner !== document) {
                 zIndex = 
-                    parseInt(lib.getComputedStyle(owner, 'z-index'), 10);
+                    parseInt(lib.getComputedStyle(owner, 'zIndex'), 10);
                 owner = owner.parentNode;
             }
             zIndex = zIndex || 0;
