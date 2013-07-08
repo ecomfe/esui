@@ -83,8 +83,11 @@ define(
             var tpl = [
                 '<div class="${headClass}"><table><tr>',
                     '<td width="40" align="left">',
-                        '<div class="${monthBackClass}" data-ui="type:Button;',
-                        'childName:monthBack;id:${monthBackId};"></div>',
+                        '<div class="${monthBackClass}"',
+                        ' data-ui-type="Button"',
+                        ' data-ui-child-name="monthBack"',
+                        ' data-ui-id="${monthBackId}"',
+                        ' data-ui-height="20"></div>',
                     '</td>',
                     '<td>',
                         '<div data-ui="type:Select;childName:yearSel;',
@@ -95,8 +98,11 @@ define(
                         'id:${monthSelId};width:20;"></div>',
                     '</td>',
                     '<td width="40" align="right">',
-                        '<div class="${monthForClass}" data-ui="type:Button;',
-                        'childName:monthForward;id:${monthForwardId};"></div>',
+                        '<div class="${monthForClass}"',
+                        ' data-ui-type="Button"',
+                        ' data-ui-child-name="monthForward"',
+                        ' data-ui-id="${monthForwardId}"',
+                        ' data-ui-height="20"></div>',
                     '</td>',
                 '</tr></table></div>',
                 '<div id="${monthMainId}" class="${monthMainClass}"></div>'
@@ -653,7 +659,6 @@ define(
                 this.year = parseInt(this.year, 10)
                     || this.rawValue.getFullYear();
             },
-
 
             /**
              * 初始化DOM结构

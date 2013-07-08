@@ -47,7 +47,7 @@ define(
                 +   '<div data-ui="type:Button;childName:cancelBtn;">取消</div>'
                 + '</div>'
                 + '<div data-ui="type:Button;childName:'
-                + 'closeBtn;skin:layerClose"></div>';
+                + 'closeBtn;skin:layerClose;height:12;"></div>';
 
             return lib.format(tpl, {
                 bodyClass:
