@@ -11,12 +11,15 @@
         <header>Table</header>
         <div id="console" style="text-align:center;"></div>
         <div class="container" id="container" style="margin:0 auto;">
-            <h3>普通</h3>
-            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
-            <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>&nbsp;
-            <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
-            <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
-            <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
+            <div data-follow-thead="myTable" style="background:#fff;padding:1px 0;">
+                <h3>普通</h3>
+                <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
+                <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>&nbsp;
+                <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
+                <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
+                <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
+            </div>
+            <div data-follow-thead="myTable2">I am not</div>
             <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
         </div>
         <script>
@@ -70,12 +73,13 @@
                                 {
                                     title: '编号',
                                     field: 'id' ,
-                                    sortable: true,
                                     tip :'编号',
                                     resizable: true,
                                     subEntry: 1,
                                     editable: 1,
-                                    width: 50,
+                                    stable: 1,
+                                    width: 200,
+                                    sortable: true,
                                     content: function (item) {
                                         return item.id;
                                     }
@@ -88,9 +92,10 @@
                                     comparer : function( a,b ){
                                         return a.name.localeCompare( b.name );
                                     },
-                                    sortable: true,
                                     resizable : true,
-                                    width: 300,
+                                    stable: 1,
+                                    width: 200,
+                                    sortable: true,
                                     content: function (item) {
                                         return item.name;
                                     }
@@ -112,7 +117,8 @@
                                     },
                                     sortable: true,
                                     resizable : true,
-                                    width: 300,
+                                    stable: 1,
+                                    width: 200,
                                     content: function (item) {
                                         return item.sex ? '男' : '女';
                                     }
@@ -122,7 +128,8 @@
                                     field: 'sex',
                                     tip :'操作',
                                     resizable : true,
-                                    width: 100,
+                                    stable: 1,
+                                    width: 200,
                                     content: function (item, index) {
                                         return '<a href="#" onclick="testFuns.editFun('+ index +')">编辑</a>&nbsp;'
                                                 + '<a href="#" onclick="testFuns.cancelFun('+ index +')">撤销</a>&nbsp;'
