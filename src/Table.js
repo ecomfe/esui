@@ -80,19 +80,19 @@ define(
         }
 
         /**
-         * 获取dom子部件的id
+         * 元素属性 自动加上data-前缀
          * 
-         * @private
-         * @return {string}
+         * @protected
          */
         function getAttr(element, key){
             return lib.getAttribute(element, 'data-' + key);
         }
 
          /**
-         * 元素属性 自动加上data-前缀
+         * 获取dom子部件的id
          * 
-         * @protected
+         * @private
+         * @return {string}
          */
         function getId(table, name) {
             return helper.getId(table, name);
@@ -244,7 +244,7 @@ define(
 
             function getStyleNum(dom, styleName) {
                 var result = lib.getStyle(dom, styleName);
-                return (result === '' ? 0 : parseInt(result, 10));
+                return (result === '' ? 0 : (parseInt(result, 10) || 0));
             }
 
             if (!followDoms) {
@@ -254,11 +254,11 @@ define(
                 var walker = table.main.parentNode.firstChild;
                 var followWidths = table.followWidthArr;
                 var followHeights = table.followHeightArr;
-
+                var tableId = table.id;
                 // 缓存表格跟随的dom元素
                 while (walker) {
-                    if (walker.nodeType == 1
-                     && getAttr(walker, 'follow-thead')) {
+                    if (walker.nodeType === 1
+                     && (getAttr(walker, 'follow-thead') === tableId)) {
                         followDoms.push(walker);
                     }
                     walker = walker.nextSibling;
@@ -266,12 +266,13 @@ define(
 
                 // 读取height和width的值缓存
                 followHeights[0] = 0;
-                for (var i = 0, len = followDoms.length; i < len; i++) {
+                var i = 0;
+                for (var len = followDoms.length; i < len; i++) {
                     var dom = followDoms[i];
                     followWidths[i] = getStyleNum(dom, 'padding-left') 
                                       + getStyleNum(dom, 'padding-right')  
-                                      + getStyleNum(dom, 'border-left') 
-                                      + getStyleNum(dom, 'border-right'); 
+                                      + getStyleNum(dom, 'border-left-width') 
+                                      + getStyleNum(dom, 'border-right-width'); 
                     followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
                 }
                 followHeights[i + 1] = followHeights[i];
@@ -1803,10 +1804,11 @@ define(
 
             if (table.followHead) {
                 var walker = table.main.parentNode.firstChild;
+                var tableId = table.id;
                 var i = 0;
                 while (walker) {
-                    if (walker.nodeType == 1 
-                        && getAttr(walker, 'follow-thead')
+                    if (walker.nodeType === 1 
+                        && getAttr(walker, 'follow-thead') === tableId
                     ) {
                         walker.style.width = table.realWidth
                                             - table.followWidthArr[i++] + 'px';
