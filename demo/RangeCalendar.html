@@ -40,8 +40,6 @@
             </p>
             <ul>
                 <li>value超出range：无高亮日期显示，但并不会自动纠正value</li>
-                <li>year或month超出range，自动纠错为最近的正确值</li>
-                <li>range的开始值大于结束值，自动调整顺序</li>
                 <li>如果没有设置endlessCheck，但是value没有结束时间，那么自动默认日历为无限日历，且已置为结束时间无限</li>
                 <li>如果设置了isEndless，value中又包含结束时间，则删除value中的结束时间信息</li>
                 <li>如果设置了isEndless，endlessCheck设置为false，则isEndless优先级高，即endlessCheck纠正为true</li>
