@@ -90,7 +90,7 @@ define(
                 }
                 else {
                     // 找最近的一个未禁用的项
-                    context.selectedIndex = 0;
+                    context.selectedIndex = -1;
                     for (var i = 0; i < context.datasource.length; i++) {
                         if (!context.datasource[i].disabled) {
                             context.selectedIndex = i;
