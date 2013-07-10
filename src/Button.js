@@ -24,6 +24,16 @@ define(
             Control.apply(this, arguments);
         }
 
+        /**
+         * 默认属性
+         *
+         * @type {Object}
+         * @public
+         */
+        Button.defaultProperties = {
+            height: 23
+        };
+
         function dispathClickEvent() {
             this.fire('click');
         }
@@ -63,11 +73,10 @@ define(
                  * 默认选项配置
                  */
                 var properties = {
-                    height: 23,
                     content: '',         // 按钮的显示文字
                     disabled: false     // 控件是否禁用
                 };
-                lib.extend(properties, options);
+                lib.extend(properties, Button.defaultProperties, options);
                 properties.tagName = this.main.nodeName.toLowerCase();
                 if (properties.text == null) {
                     properties.text = lib.getText(this.main);
