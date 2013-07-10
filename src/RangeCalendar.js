@@ -124,6 +124,7 @@ define(
                             )
                         );
                     }
+                    // 超出范围或者日历是无限结束
                     var disabled = isOutOfRange(calendar, shortItem);
                     if (disabled) {
                         shortClasses = shortClasses.concat(
@@ -269,10 +270,9 @@ define(
                 var shortcutDom = lib.g(helper.getId(calendar, 'shortcut'));
                 helper.addDOMEvent(
                     calendar, shortcutDom, 'click', shortcutClick);
-
                 // 渲染开始结束日历
                 paintCal(calendar, 'begin', calendar.view.begin, true);
-                paintCal(calendar, 'end', calendar.view.begin, true);
+                paintCal(calendar, 'end', calendar.view.end, true);
 
                 // 绑定“无限结束”勾选事件
                 var endlessCheck = calendar.getChild('endlessCheck');
@@ -284,6 +284,11 @@ define(
                     // 设置endless
                     if (calendar.isEndless) {
                         endlessCheck.setChecked(true);
+                        var shortCutItems =
+                            lib.g(helper.getId(calendar, 'shortcut'));
+                        helper.addPartClasses(
+                            calendar, 'shortcut-disabled', shortCutItems
+                        );
                     }
                 }
 
@@ -311,20 +316,25 @@ define(
          */
         function makeCalendarEndless(calendar) {
             var endCalendar = calendar.getChild('endCal');
+            var shortCutItems = lib.g(helper.getId(calendar, 'shortcut'));
             var selectedIndex;
             if (this.isChecked()) {
                 calendar.isEndless = true;
                 endCalendar.disable();
                 selectedIndex = -1;
                 calendar.view.end = null;
-                // 清除mini日历的选择状态
-                paintMiniCal(calendar, selectedIndex);
+                helper.addPartClasses(
+                    calendar, 'shortcut-disabled', shortCutItems
+                );
             }
             else {
                 calendar.isEndless = false;
                 endCalendar.enable();
                 // 恢复结束日历的选择值
                 updateView(calendar, endCalendar, 'end');
+                helper.removePartClasses(
+                    calendar, 'shortcut-disabled', shortCutItems
+                );
             }
         }
 
@@ -944,29 +954,34 @@ define(
                     options.view.end = options.rawValue.end;
                 }
 
-                if (options.range && typeof options.range === 'string') {
-                    options.range = convertToRaw(options.range);
+                lib.extend(
+                    properties, RangeCalendar.defaultProperties, options
+                );
+
+
+                if (properties.range && typeof properties.range === 'string') {
+                    properties.range = convertToRaw(properties.range);
                 }
 
-                if (options.endlessCheck === 'false') {
-                    options.endlessCheck = false;
+                if (properties.endlessCheck === 'false') {
+                    properties.endlessCheck = false;
                 }
 
-                if (options.endlessCheck) {
-                    if (options.isEndless === 'false') {
-                        options.isEndless = false;
+                if (properties.endlessCheck) {
+                    if (properties.isEndless === 'false') {
+                        properties.isEndless = false;
                     }
                 }
                 else {
                     // 如果值中没有end，则默认日历是无限型的
-                    if (!options.rawValue.end) {
-                        options.endlessCheck = true;
-                        options.isEndless = true;
+                    if (!properties.rawValue.end) {
+                        properties.endlessCheck = true;
+                        properties.isEndless = true;
                     }
                 }
-
                 // 如果是无限的，结束时间无需默认值
-                if (options.isEndless) {
+                if (properties.isEndless) {
+                    properties.endlessCheck = true;
                     properties.rawValue.end = null;
                     properties.view.end = null;
                     properties.view.value = convertToParam({
@@ -974,10 +989,6 @@ define(
                         end: null
                     });
                 }
-
-                lib.extend(
-                    properties, RangeCalendar.defaultProperties, options
-                );
                 this.setProperties(properties);
             },
 

@@ -56,33 +56,43 @@
         height: 20px;
         line-height: 20px;
         padding-right: 10px;
+
+        .ui-rangecalendar-shortcut-item {
+            color: #3377AA;
+            .interactive-cursor ();
+            text-decoration: underline;
+            border-left: 1px solid #3377AA;
+            margin-left: 5px;
+            padding-left: 5px;
+            &.ui-rangecalendar-shortcut-item-first {
+                border-left: none;
+                margin-left: 0;
+                padding-left: 0;
+            }
+        }
+
+        .ui-rangecalendar-shortcut-item-selected {
+            color: #666666;
+            cursor: default;
+            text-decoration: none;
+        }
+
+        .ui-rangecalendar-shortcut-item-disabled {
+            color: #999999;
+            cursor: default;
+            text-decoration: none;
+        }
+
     }
 
-    .ui-rangecalendar-shortcut-item {
-        color: #3377AA;
-        .interactive-cursor ();
-        text-decoration: underline;
-        border-left: 1px solid #3377AA;
-        margin-left: 5px;
-        padding-left: 5px;
-        &.ui-rangecalendar-shortcut-item-first {
-            border-left: none;
-            margin-left: 0;
-            padding-left: 0;
+    .ui-rangecalendar-shortcut-disabled {
+        .ui-rangecalendar-shortcut-item {
+            color: #999999;
+            cursor: default;
+            text-decoration: none;
         }
     }
 
-    .ui-rangecalendar-shortcut-item-selected {
-        color: #666666;
-        cursor: default;
-        text-decoration: none;
-    }
-
-    .ui-rangecalendar-shortcut-item-disabled {
-        color: #999999;
-        cursor: default;
-        text-decoration: none;
-    }
 
     .ui-rangecalendar-begin,
     .ui-rangecalendar-end {
