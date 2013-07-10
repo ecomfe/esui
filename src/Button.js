@@ -84,7 +84,7 @@ define(
                 var innerDiv = this.main.firstChild;
                 if (!properties.content 
                     && innerDiv 
-                    && innerDiv.tagName != 'DIV'
+                    && innerDiv.nodeName.toLowerCase() !== 'div'
                 ) {
                     properties.content = this.main.innerHTML;
                 }
@@ -100,7 +100,7 @@ define(
              * @override
              */
             createMain: function (options) {
-                return document.createElement('BUTTON');
+                return document.createElement('button');
             },
 
             /**
