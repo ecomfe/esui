@@ -47,9 +47,9 @@ define(
         function getBorderInfo(dom) {
             var result = {};
             result.borderTop =
-                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'));
+                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
             result.borderBottom =
-                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'));
+                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
             return result;
         }
 
