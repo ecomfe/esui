@@ -217,9 +217,6 @@ define(
                 }
                 html += '<li data-index="' + i + '" '
                     + 'class="' + classes.join(' ') + '">';
-                if (item.value == select.value) {
-                    select.selectedIndex = i;
-                }
                 html += select.getItemHTML(item);
                 html += '</li>';
             }

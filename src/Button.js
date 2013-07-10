@@ -24,6 +24,16 @@ define(
             Control.apply(this, arguments);
         }
 
+        /**
+         * 默认属性
+         *
+         * @type {Object}
+         * @public
+         */
+        Button.defaultProperties = {
+            height: 23
+        };
+
         function dispathClickEvent() {
             this.fire('click');
         }
@@ -37,9 +47,9 @@ define(
         function getBorderInfo(dom) {
             var result = {};
             result.borderTop =
-                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'));
+                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
             result.borderBottom =
-                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'));
+                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
             return result;
         }
 
@@ -63,11 +73,10 @@ define(
                  * 默认选项配置
                  */
                 var properties = {
-                    height: 23,
                     content: '',         // 按钮的显示文字
                     disabled: false     // 控件是否禁用
                 };
-                lib.extend(properties, options);
+                lib.extend(properties, Button.defaultProperties, options);
                 properties.tagName = this.main.nodeName.toLowerCase();
                 if (properties.text == null) {
                     properties.text = lib.getText(this.main);
@@ -75,7 +84,7 @@ define(
                 var innerDiv = this.main.firstChild;
                 if (!properties.content 
                     && innerDiv 
-                    && innerDiv.tagName != 'DIV'
+                    && innerDiv.nodeName.toLowerCase() !== 'div'
                 ) {
                     properties.content = this.main.innerHTML;
                 }
@@ -91,7 +100,7 @@ define(
              * @override
              */
             createMain: function (options) {
-                return document.createElement('BUTTON');
+                return document.createElement('button');
             },
 
             /**
