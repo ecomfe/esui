@@ -2,8 +2,8 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
- * @file 表格自动排序扩展
- * @author otakustay
+ * @file 表格行内编辑扩展
+ * @author wurongyao
  */
 
 define(
@@ -25,7 +25,7 @@ define(
         }
 
         /**
-         * 隐藏编辑区域
+         * 显示编辑区域
          * @param {number} index 行序号
          * @private
          */
@@ -40,7 +40,7 @@ define(
         }
 
         /**
-         * 隐藏编辑区域
+         * 开始某行的编辑逻辑，初始化子控件
          * @param {number} index 行序号
          * @public
          */
@@ -89,7 +89,7 @@ define(
         }
 
         /**
-         * 开始编辑
+         * 保存编辑
          * @param {number} index 行序号
          * @public
          */
@@ -258,6 +258,7 @@ define(
             delete target.startEdit;
             delete target.saveEdit;
             delete target.cancelEdit;
+            delete target.tableEditStatus;
 
             target.un('bodyChange', iniEditOptions);
 
