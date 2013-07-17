@@ -947,7 +947,7 @@ define(
                         begin: now,
                         end: now
                     }),
-                    showedShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
+                    shownShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
                 };
                 lib.extend(properties, RangeCalendar.defaultProperties);
 
