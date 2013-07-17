@@ -438,16 +438,16 @@ define(
          */
         function paintMiniCal(calendar, index) {
             var shortcutItems = calendar.shortCutItems;
-            var curMiniIndex = calendar.curMiniIndex;
+            var miniMode = calendar.miniMode;
             // 重置选择状态
-            if (curMiniIndex !== null && curMiniIndex !== index) {
+            if (miniMode !== null && miniMode !== index) {
                 helper.removePartClasses(
                     calendar,
                     'shortcut-item-selected',
-                    lib.g(helper.getId(calendar, 'shortcut-item'+curMiniIndex))
+                    lib.g(helper.getId(calendar, 'shortcut-item'+miniMode))
                 );
             }
-            calendar.curMiniIndex = index;
+            calendar.miniMode = index;
             if (index >= 0) {
                 helper.addPartClasses(
                     calendar,
@@ -739,6 +739,10 @@ define(
                 return dateText;
             }
             var shortcut = '';
+            if (!calendar.curMiniName && calendar.miniMode) {
+                calendar.curMiniName =
+                    calendar.shortCutItems[calendar.miniMode].name;
+            }
             if (calendar.curMiniName) {
                 shortcut = calendar.curMiniName + '&nbsp;&nbsp;';
             }
@@ -798,9 +802,10 @@ define(
                 {
                     name: '最近7天',
                     value: 1,
-                    getValue: function () {
-                        var begin = new Date(this.now.getTime());
-                        var end = new Date(this.now.getTime());
+                    getValue: function (now) {
+                        now = now || this.now;
+                        var begin = new Date(now.getTime());
+                        var end = new Date(now.getTime());
 
                         end.setDate(end.getDate() - 1);
                         begin.setDate(begin.getDate() - 7);
@@ -944,6 +949,7 @@ define(
                     }),
                     showedShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
                 };
+                lib.extend(properties, RangeCalendar.defaultProperties);
 
                 helper.extractValueFromInput(this, options);
 
@@ -952,12 +958,27 @@ define(
                     options.view = {};
                     options.view.begin = options.rawValue.begin;
                     options.view.end = options.rawValue.end;
+                    options.miniMode = null;
+                }
+                // 设置了rawValue，以rawValue为准，外部设置的miniMode先清空
+                else if (options.rawValue) {
+                    options.miniMode = null;
+                }
+                // 没有设置rawValue，设置了‘miniMode’，rawValue按照miniMode计算
+                else if (!options.rawValue && options.miniMode != null) {
+                    var shortcutItem =
+                        properties.shortCutItems[options.miniMode];
+                    if (shortcutItem) {
+                        options.rawValue =
+                            shortcutItem.getValue.call(this, now);
+                        options.miniMode = parseInt(options.miniMode, 10);
+                    }
+                    else {
+                        options.miniMode = null;
+                    }
                 }
 
-                lib.extend(
-                    properties, RangeCalendar.defaultProperties, options
-                );
-
+                lib.extend(properties, options);
 
                 if (properties.range && typeof properties.range === 'string') {
                     properties.range = convertToRaw(properties.range);
