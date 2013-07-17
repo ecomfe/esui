@@ -104,15 +104,15 @@ define(
             var len = shortItems.length;
             var html = [];
 
-            var showedShortCut = calendar.showedShortCut.split(',');
-            var showedShortCutHash = {};
-            for (var k = 0; k < showedShortCut.length; k++) {
-                showedShortCutHash[showedShortCut[k]] = true;
+            var shownShortCut = calendar.shownShortCut.split(',');
+            var shownShortCutHash = {};
+            for (var k = 0; k < shownShortCut.length; k++) {
+                shownShortCutHash[shownShortCut[k]] = true;
             }
             for (var i = 0; i < len; i++) {
                 var shortItem = shortItems[i];
 
-                if (showedShortCutHash[shortItem.name]) {
+                if (shownShortCutHash[shortItem.name]) {
                     var shortName = shortItem.name;
                     var shortClasses = helper.getPartClasses(
                         calendar, 'shortcut-item'
