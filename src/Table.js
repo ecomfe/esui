@@ -24,13 +24,13 @@ define(
                 handlers: [],
                 plugins: [
                     {
-                        getRowArgs: getRowBaseArgs,
-                        getColHtml: getColBaseHtml
-                    },
-                    {
                         getRowArgs: getSubrowArgs,
                         getColHtml: getSubEntryHtml,
                         getSubrowHtml : getSubrowHtml
+                    },
+                    {
+                        getRowArgs: getRowBaseArgs,
+                        getColHtml: getColBaseHtml
                     }
                 ]
             };
@@ -451,7 +451,9 @@ define(
                 if ('function' == typeof contentHtml) {
                     contentHtml = contentHtml.call(table);
                 }
-                contentHtml = contentHtml || '&nbsp;';
+                if (!hasValue(contentHtml)) {
+                    contentHtml = '&nbsp;'
+                }
 
                 for (var j = 1; j < colspan; j++) {
                     colWidth += colsWidth[fieldIndex + j];
@@ -671,7 +673,9 @@ define(
                 } else {
                     contentHtml = title;
                 }
-                contentHtml = contentHtml || '&nbsp;';
+                if (!hasValue(contentHtml)) {
+                    contentHtml = '&nbsp;'
+                }
                 
                                             
                 html.push(
@@ -1239,6 +1243,7 @@ define(
             }
             return result;
         }
+
         /**
          * 获取表格行的html
          * 
@@ -1310,14 +1315,14 @@ define(
 
                 if (otherHtml.length > 0) {
                     var contentHtml = [
-                        '<table width="100%" collpadding="0" collspacing="0">',
+                        '<table width="100%" cellpadding="0" cellspacing="0">',
                             '<tr>'
                     ];
                     textHtml = '<td>' + textHtml + '</td>';
 
                     for (var s = 0, t = otherHtml.length; s < t; s++) {
                         var oHtml = otherHtml[s];
-                        if (s == textStartIndex) {
+                        if (s === textStartIndex) {
                             contentHtml.push(textHtml);
                         }
 
@@ -1387,6 +1392,11 @@ define(
             return html.join('');
         }
 
+        /**
+         * base行绘制每行基本参数
+         *
+         * @private
+         */
         function getRowBaseArgs(table, rowIndex) {
             var datasource = table.datasource || [];
             var dataLen = datasource.length;
@@ -1405,6 +1415,13 @@ define(
             };
         }
 
+        var baseColTextTpl = '<span id="${colTextId}">${content}</span>';
+
+        /**
+         * base列
+         *
+         * @private
+         */
         function getColBaseHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
             var tdCellClass = extraArgs.tdCellClass;
             var tdBreakClass = extraArgs.tdBreakClass;
@@ -1444,14 +1461,31 @@ define(
             contentHtml = 'function' == typeof content
                             ? content.call(table, data, rowIndex, fieldIndex)
                             : data[content];
+            if (!hasValue(contentHtml)) {
+                contentHtml = '&nbsp;'
+            }
 
             return {
                 colClass: tdClass.join(' '),
                 textClass: textClass.join(' '),
-                html: contentHtml
+                html: lib.format(
+                    baseColTextTpl,
+                    {
+                        colTextId: getId(
+                            table,
+                            'cell-textfield-' + rowIndex + '-'+ fieldIndex
+                        ),
+                        content: contentHtml
+                    }
+                )
             };
         }
 
+        /**
+         * subrow行绘制每行基本参数
+         *
+         * @private
+         */
         function getSubrowArgs(table, rowIndex){
             return {
                 subrow : table.subrow && table.subrow != 'false'
@@ -2622,6 +2656,34 @@ define(
                 return getId(this, id);
             },
 
+
+            getBodyCellId: function(rowIndex, fieldIndex){
+                return getBodyCellId(this, rowIndex, fieldIndex);
+            },
+
+
+            /**
+             * 设置单元格的文字
+             *
+             * @public
+             * @param {string} text 要设置的文字
+             * @param {string} rowIndex 行序号
+             * @param {string} columnIndex 列序号
+             * @param {boolean} opt_isEncodeHtml 是否需要进行html转义
+             */
+            setCellText: function (text, rowIndex, columnIndex, opt_isEncodeHtml) {
+                if ( opt_isEncodeHtml ) {
+                    text = lib.encodeHTML( text );
+                }
+                text = hasValue(text) && text.length > 0 ? text : '&nbsp';
+                
+                lib.g(
+                    getId(
+                        this, 'cell-textfield-' + rowIndex + '-' + columnIndex
+                    )
+                ).innerHTML = text;
+            },
+
             /**
              * 获取表格相关ClassName
              *
@@ -2631,17 +2693,6 @@ define(
              */
             getClass: function(name) {
                 return getClass(this, name);
-            },
-
-            /**
-             * 初始化表格体子控件
-             *
-             * @protected
-             * @param {HTMLElement} wrap
-             * @param {Object} options
-             */
-            initBodyChildren: function(wrap, options) {
-                this.bodyPanel.initChildren(wrap, options);
             },
 
             /**

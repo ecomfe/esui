@@ -11,16 +11,15 @@
         <header>Table</header>
         <div id="console" style="text-align:center;"></div>
         <div class="container" id="container" style="margin:0 auto;">
-            <div data-follow-thead="myTable" style="background:#fff;padding:1px 0;">
-                <h3>普通</h3>
-                <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
-                <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>&nbsp;
-                <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
-                <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
-                <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
-            </div>
-            <div data-follow-thead="myTable2">I am not</div>
+            <h3>普通</h3>
+            <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
+            <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>&nbsp;
+            <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
+            <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
+            <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
             <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
+            <br/>
+            <div data-ui="type:Table;id:myTable2;" data-ui-extension-tableedit-type="TableEdit"></div>
         </div>
         <script>
         var data = [
@@ -31,8 +30,8 @@
             {id:5, name: '樊总', sex: 1},
             {id:6, name: '铮哥', sex: 1}
         ];
-        data = data.concat(data);
-        data = data.concat(data);
+        //data = data.concat(data);
+        //data = data.concat(data);
         //data = [{id:6, name: '铮哥', sex: 1}];
         var myTable = null;
         var testFuns = {}
@@ -50,7 +49,8 @@
                 'css!esui/css/Table.css',
                 'css!esui/css/Select.css',
                 'css!esui/css/TextBox.css',
-                'css!esui/css/Tip.css'
+                'css!esui/css/Tip.css',
+                'css!esui/css/TipLayer.css'
             ],
             function (ui) {
                 var lib = require('esui/lib');
@@ -64,7 +64,7 @@
                             subrow:true,
                             select:'multi',
                             breakLine: 1,
-                            //edit: 'multi',
+                            editable: 1,
                             subrowMutex: 1,
                             //bodyMaxHeight: 300,
                             //selectMode :'line',
@@ -73,13 +73,75 @@
                                 {
                                     title: '编号',
                                     field: 'id' ,
+                                    sortable: true,
                                     tip :'编号',
                                     resizable: true,
                                     subEntry: 1,
                                     editable: 1,
-                                    stable: 1,
-                                    width: 200,
+                                    editRules: {
+                                        pattern: /\d/g,
+                                        min: 1
+                                    },
+                                    width: 50,
+                                    content: function (item) {
+                                        return item.id;
+                                    }
+                                },
+                                {
+                                    title: '姓名',
+                                    field: 'name' ,
+                                    tip :'姓名',
+                                    align: 'right',
+                                    editable: 1,
+                                    comparer : function( a,b ){
+                                        return a.name.localeCompare( b.name );
+                                    },
                                     sortable: true,
+                                    resizable : true,
+                                    width: 300,
+                                    content: function (item) {
+                                        return item.name;
+                                    }
+                                },
+                                {
+                                    title: '性别',
+                                    field: 'sex' ,
+                                    tip :'性别',
+                                    comparer : function( a,b ){
+                                        return a.sex - b.sex;
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 300,
+                                    content: function (item) {
+                                        return item.sex ? '男' : '女';
+                                    }
+                                }
+                            ]
+                        },
+                        myTable2: {
+                            datasource: data,
+                            sortable: true,
+                            columnResizable: true,
+                            followHead: true,
+                            subrow:true,
+                            select:'multi',
+                            breakLine: 1,
+                            //editable: 1,
+                            subrowMutex: 1,
+                            //bodyMaxHeight: 300,
+                            //selectMode :'line',
+                            noDataHtml: '<p style="margin:0;">nothing</p>',
+                            fields: [
+                                {
+                                    title: '编号',
+                                    field: 'id' ,
+                                    sortable: true,
+                                    tip :'编号',
+                                    resizable: true,
+                                    subEntry: 1,
+                                    editable: 1,
+                                    width: 50,
                                     content: function (item) {
                                         return item.id;
                                     }
@@ -92,10 +154,9 @@
                                     comparer : function( a,b ){
                                         return a.name.localeCompare( b.name );
                                     },
-                                    resizable : true,
-                                    stable: 1,
-                                    width: 200,
                                     sortable: true,
+                                    resizable : true,
+                                    width: 300,
                                     content: function (item) {
                                         return item.name;
                                     }
@@ -104,36 +165,14 @@
                                     title: '性别',
                                     field: 'sex' ,
                                     tip :'性别',
-                                    editable: 1,
-                                    editOptions: {
-                                        type: 'select',
-                                        datasource: [
-                                            { text: '男', value: 1 },
-                                            { text: '女', value: 0 }
-                                        ]
-                                    },
                                     comparer : function( a,b ){
                                         return a.sex - b.sex;
                                     },
                                     sortable: true,
                                     resizable : true,
-                                    stable: 1,
-                                    width: 200,
+                                    width: 300,
                                     content: function (item) {
                                         return item.sex ? '男' : '女';
-                                    }
-                                },
-                                {
-                                    title: '操作',
-                                    field: 'sex',
-                                    tip :'操作',
-                                    resizable : true,
-                                    stable: 1,
-                                    width: 200,
-                                    content: function (item, index) {
-                                        return '<a href="#" onclick="testFuns.editFun('+ index +')">编辑</a>&nbsp;'
-                                                + '<a href="#" onclick="testFuns.cancelFun('+ index +')">撤销</a>&nbsp;'
-                                                + '<a href="#" onclick="testFuns.saveFun('+ index +')">保存</a>&nbsp;' ;
                                     }
                                 }
                             ]
@@ -223,31 +262,38 @@
                     myTable.setDatasource(data);
                 };
 
-                myTable.onstartedit = function(arg) {
-                    //alert(arg.data);
-                };
-
-                myTable.oncanceledit = function(arg) {
-                    //alert(arg.index);
-                };
-
                 myTable.onsaveedit = function(arg) {
-                    if (arg.data.name.length > 10 ) {
+                    if ( arg.value.length > 3 ) {
                         arg.returnResult = false;
-                        alert('中国人有这么长的名字么？');
+                        arg.errorMsg = '亲，出错了哟';
+                    } else {
+                        myTable.setCellText(
+                            arg.value,
+                            arg.rowIndex, 
+                            arg.columnIndex
+                        );
                     }
                 };
 
-                testFuns.editFun = function(index){
-                    myTable.startEdit(index);
+                myTable.oncanceledit = function(arg) {
+                    
                 };
 
-                testFuns.cancelFun = function(index){
-                    myTable.cancelEdit(index);
+                myTable.onstartedit = function(arg) {
+                    //alert(arg.rowIndex);
                 };
 
-                testFuns.saveFun = function(index){
-                    myTable.saveEdit(index);
+                myTable2 = ui.get('myTable2');
+                myTable2.onsaveedit = function(arg) {
+                    //alert('table2'+ arg.value);
+                };
+
+                myTable2.oncanceledit = function(arg) {
+                    
+                };
+
+                myTable2.onstartedit = function(arg) {
+                    //alert('table2'+ arg.rowIndex);
                 };
             }
         );
