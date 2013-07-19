@@ -200,10 +200,9 @@ define(
          * @param {Event} e DOM事件对象
          * @inner
          */
-        function syncValue(e) {
+        function dispatchInputEvent(e) {
             var input = lib.g(this.inputId);
             if (e.type === 'input' || e.propertyName === 'value') {
-                this.rawValue = input.value;
                 this.fire('input');
             }
         }
@@ -255,7 +254,7 @@ define(
             var inputEventName = ('oninput' in input) 
                 ? 'input' 
                 : 'propertychange';
-            helper.addDOMEvent(this, input, inputEventName, syncValue);
+            helper.addDOMEvent(this, input, inputEventName, dispatchInputEvent);
 
             if (!supportPlaceholder) {
                 var placeholder = document.createElement('label');
@@ -327,7 +326,7 @@ define(
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
                     helper.removeDOMEvent(textbox, input, eventName);
                     input.value = textbox.stringifyValue(rawValue);
-                    helper.addDOMEvent(textbox, input, eventName, syncValue);
+                    helper.addDOMEvent(textbox, input, eventName, dispatchInputEvent);
 
                     togglePlaceholder(textbox);
                 }
@@ -437,6 +436,30 @@ define(
         );
 
         /**
+         * 批量设置属性
+         *
+         * @param {Object} 属性值
+         * @return {Object} 切实修改过的属性
+         */
+        TextBox.prototype.setProperties = function (properties) {
+            properties = lib.extend({}, properties);
+
+            // 因为IE9在有些时候（退格等删除文字）不会触发事件，无法同步值，
+            // 因此这里把真正的值（文本框中的）拿出来当`rawValue`，
+            // 这样如果没有外部显示地设置值，就会使用真正的值同步，
+            // 但是在`render`以前就调用`setProperties`的话，从DOM元素上拿东西是错的，
+            // 因此只在`render`之后，才会从DOM元素上同步值
+            if (!properties.hasOwnProperty('value')
+                && !properties.hasOwnProperty('rawValue')
+                && helper.isInStage(this, 'RENDERED')
+            ) {
+                properties.rawValue = this.getRawValue();
+            } 
+
+            InputControl.prototype.setProperties.call(this, properties);
+        };
+
+        /**
          * 获取验证信息控件
          *
          * @return {Validity}
@@ -454,6 +477,16 @@ define(
                 );
             }
             return label;
+        };
+
+        /**
+         * 获取值
+         *
+         * @return {string}
+         */
+        TextBox.prototype.getRawValue = function () {
+            var input = lib.g(this.inputId);
+            return input ? input.value : (this.rawValue || this.value || '');
         };
 
         require('./lib').inherits(TextBox, InputControl);
