@@ -72,6 +72,17 @@ define(
             return !(typeof obj == 'undefined' || obj === null);
         }
 
+
+        /**
+         * 判断值是否为空,包括空字符串
+         * 
+         * @private
+         * @return {bool}
+         */
+        function IsNullOrEmpty(obj) {
+            return !hasValue(obj) || !obj.toString().length;
+        }
+
         /**
          * 设置元素属性 自动加上data-前缀
          * 
@@ -451,7 +462,7 @@ define(
                 if ('function' == typeof contentHtml) {
                     contentHtml = contentHtml.call(table);
                 }
-                if (!hasValue(contentHtml)) {
+                if (IsNullOrEmpty(contentHtml)) {
                     contentHtml = '&nbsp;'
                 }
 
@@ -673,7 +684,7 @@ define(
                 } else {
                     contentHtml = title;
                 }
-                if (!hasValue(contentHtml)) {
+                if (IsNullOrEmpty(contentHtml)) {
                     contentHtml = '&nbsp;'
                 }
                 
@@ -1461,7 +1472,7 @@ define(
             contentHtml = 'function' == typeof content
                             ? content.call(table, data, rowIndex, fieldIndex)
                             : data[content];
-            if (!hasValue(contentHtml)) {
+            if (IsNullOrEmpty(contentHtml)) {
                 contentHtml = '&nbsp;'
             }
 
@@ -2671,11 +2682,11 @@ define(
              * @param {string} columnIndex 列序号
              * @param {boolean} opt_isEncodeHtml 是否需要进行html转义
              */
-            setCellText: function (text, rowIndex, columnIndex, opt_isEncodeHtml) {
-                if ( opt_isEncodeHtml ) {
-                    text = lib.encodeHTML( text );
+            setCellText: function (text, rowIndex, columnIndex, isEncodeHtml) {
+                if (isEncodeHtml) {
+                    text = lib.encodeHTML(text);
                 }
-                text = hasValue(text) && text.length > 0 ? text : '&nbsp';
+                text = IsNullOrEmpty(text) ? '&nbsp' : text;
                 
                 lib.g(
                     getId(
