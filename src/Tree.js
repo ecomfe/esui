@@ -569,7 +569,15 @@ define(
                     return;
                 }
                 if (children) {
+                    // 如果是用来替换原来的子节点，那要先把原来的子节点从索引中去掉
+                    if (node.children) {
+                        for (var i = 0; i < node.children.length; i++) {
+                            this.nodeIndex[node.children[i].id] = undefined;
+                        }
+                    }
                     node.children = children;
+                    // 重新索引
+                    buildNodeIndex(node, this.nodeIndex);
                 }
 
                 // 为了效率，直接刷掉原来的HTML
