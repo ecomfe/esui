@@ -144,6 +144,7 @@ define(
          */
         Tab.prototype.initStructure = function () {
             var navigator = this.navigatorElement;
+            this.navigatorElement = null;
             if (!navigator) {
                 navigator = document.createElement('ul');
 
