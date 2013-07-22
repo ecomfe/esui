@@ -67,7 +67,10 @@ define(
                         // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
                         // 且这个配置会覆盖用户传入的`tabs`选项
                         properties.tabs = [];
-                        element.id = helper.getId(this, 'navigator');
+                        // 在`initOptions`时没有`viewContext`，
+                        // 因此不能计算DOM元素的id，
+                        // 所以在这里临时保留一下，到`initStructure`里去给id
+                        this.navigatorElement = element;
                         var children = lib.getChildren(element);
                         for (var i = 0; i < children.length; i++) {
                             var tab = children[i];
@@ -140,13 +143,14 @@ define(
          * @protected
          */
         Tab.prototype.initStructure = function () {
-            var navigator = lib.g(helper.getId(this, 'navigator'));
+            var navigator = this.navigatorElement;
             if (!navigator) {
                 navigator = document.createElement('ul');
-                navigator.id = helper.getId(this, 'navigator');
 
                 this.main.insertBefore(navigator, this.main.firstChild || null);
             }
+
+            navigator.id = helper.getId(this, 'navigator');
 
             helper.addPartClasses(this, 'navigator', navigator);
 
