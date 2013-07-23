@@ -294,7 +294,7 @@ define(
         /**
          * 停止编辑功能
          *
-         * @public
+         * @private
          */
         function stop(table) {
             hideLayer();
@@ -304,7 +304,7 @@ define(
         /**
          * 启动编辑功能
          *
-         * @public
+         * @private
          * @param {Object} table 表格控件实例
          * @param {Object} options 启动参数表
          */
@@ -341,7 +341,7 @@ define(
         /**
          * 设置当前编辑器的值
          *
-         * @public
+         * @private
          * @param {string} value 值内容
          */
         function setValue(value) {
@@ -351,13 +351,21 @@ define(
         /**
          * 获取当前编辑器所编辑的值
          *
-         * @public
+         * @private
          * @return {Any} 
          */
         function getValue() { 
             return inputCtrl.getValue();
         }
 
+        /**
+         * 编辑按钮单击事件处理函数
+         *
+         * @param {object} element 事件元素
+         * @param {object} e 事件元素
+         *
+         * @private
+         */
         function entranceClickHandler(element, e) {
             var table = this;
             if (table.startEdit) {
@@ -370,7 +378,7 @@ define(
         /**
          * 开始某行的编辑逻辑，初始化子控件
          * @param {number} index 行序号
-         * @public
+         * @private
          */
         function startEdit(rowIndex, columnIndex, element) {
             if (this.editable) {
@@ -383,10 +391,8 @@ define(
                 if (eventArgs.returnResult !== false) {
                     var field = this.realFields[columnIndex];
                     var data = this.datasource[rowIndex];
-                    var content = field.content;
-                    var value = 'function' == typeof content
-                                ? content.call(this, data, rowIndex, columnIndex)
-                                : data[content];
+                    var value = data[field.field];
+
                     start(
                         this,
                         {
@@ -404,7 +410,6 @@ define(
 
         /**
          * 取消编辑
-         * @param {number} index 行序号
          * @public
          */
         function cancelEdit() {
@@ -468,22 +473,21 @@ define(
             target.startEdit = startEdit;
             target.cancelEdit = cancelEdit;
 
-            target.addPlugins([
+            target.addRowBuilders([
                 {
+                    index: 3,
                     getColHtml: getColHtml
                 }
             ]);
 
             target.addHandlers(
                 'click',
-                [
-                    {
-                        handler: entranceClickHandler,
-                        matchFn: helper.getPartClasses(
-                            target, 'cell-editentry'
-                        )[0]
-                    }
-                ]
+                {
+                    handler: entranceClickHandler,
+                    matchFn: helper.getPartClasses(
+                        target, 'cell-editentry'
+                    )[0]
+                }
             );
 
             Extension.prototype.activate.apply(this, arguments);

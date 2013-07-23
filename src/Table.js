@@ -22,17 +22,7 @@ define(
                 followHeightArr: [0, 0],
                 followWidthArr: [],
                 handlers: [],
-                plugins: [
-                    {
-                        getRowArgs: getSubrowArgs,
-                        getColHtml: getSubEntryHtml,
-                        getSubrowHtml : getSubrowHtml
-                    },
-                    {
-                        getRowArgs: getRowBaseArgs,
-                        getColHtml: getColBaseHtml
-                    }
-                ]
+                plugins: []
             };
 
             Control.call(this, lib.extend({}, options, protectedProperties));
@@ -1216,11 +1206,11 @@ define(
                 );
             }
 
-            rowPluginsList = getRowPluginsList(table);
+            rowBuilderList = table.rowBuilderList;
 
             for (var i = 0; i < dataLen; i++) {
                 var item = data[i];
-                html.push(getRowHtml(table, item, i, rowPluginsList));
+                html.push(getRowHtml(table, item, i, rowBuilderList));
             }
 
             return html.join('');  
@@ -1241,18 +1231,63 @@ define(
          var tplRowPrefix = '<div '
                         + 'id="${id}" '
                         + 'class="${className}" '
-                        + 'data-index="${index}">';
+                        + 'data-index="${index}" ${attr}>';
 
-        function getRowPluginsList(table) {
+         /**
+         * 批量添加rowBuilder
+         * 
+         * @private
+         * @param {Object} table
+         * @param {Array} builderList rowBuilder数组
+         */
+        function addRowBuilderList(table, builderList) {
             var plugins = table.plugins;
-            var result = [];
-            for (var i = 0, l = plugins.length; i < l; i++) {
-                var plugin = plugins[i];
-                if (plugin.getColHtml) {
-                    result.push(plugin);
+            var rowBuilderList = table.rowBuilderList || [];
+            for (var i = 0, l = builderList.length; i <l; i++) {
+                var builder = builderList[i];
+                if (!builder.getColHtml) {
+                    continue;
                 }
+
+                if(!hasValue(builder.index)) {
+                    builder.index = 1000;
+                }
+
+                plugins.push(builder);
+                rowBuilderList.push(builder);
             }
-            return result;
+
+            rowBuilderList.sort(function(a, b) {
+                return a.index - b.index;
+            });
+
+            table.rowBuilderList = rowBuilderList;
+        }
+
+        /**
+         * 初始化基础Builder
+         * 
+         * @private
+         * @param {Object} table
+         *
+         */
+        function initBaseBuilderList(table) {
+            addRowBuilderList(
+                table,
+                [
+                    {
+                        index: 0,
+                        getRowArgs: getSubrowArgs,
+                        getColHtml: getSubEntryHtml,
+                        getSubrowHtml : getSubrowHtml
+                    },
+                    {
+                        index: 1,
+                        getRowArgs: getRowBaseArgs,
+                        getColHtml: getColBaseHtml
+                    }
+                ]
+            );
         }
 
         /**
@@ -1263,7 +1298,7 @@ define(
          * @param {number} index 当前行的序号
          * @return {string}
          */
-        function getRowHtml(table, data, index, plugins) {
+        function getRowHtml(table, data, index, builderList) {
             var html = [];
             var fields = table.realFields;
             var rowWidthOffset = table.rowWidthOffset;
@@ -1271,11 +1306,13 @@ define(
             var extraArgsList = [];
             var rowClass = [];
             var rowAttr = [];
-            for (var i = 0, l = plugins.length; i < l; i++) {
-                var plugin = plugins[i];
-                var rowArgs = plugin.getRowArgs
-                            ? plugin.getRowArgs(table, index) || {}
+
+            for (var i = 0, l = builderList.length; i < l; i++) {
+                var builder = builderList[i];
+                var rowArgs = builder.getRowArgs
+                            ? builder.getRowArgs(table, index) || {}
                             : {};
+
                 extraArgsList.push(rowArgs);
 
                 (rowArgs.rowClass) && (rowClass.push(rowArgs.rowClass));
@@ -1290,11 +1327,11 @@ define(
                 var colAttr = [];
                 var textAttr = [];
                 var textHtml = [];
-                var otherHtml = [];
-                var textStartIndex = 0;
+                var allHtml = [];
+                var textStartIndex = -1;
 
-                for (var s = 0, t = plugins.length; s < t; s++) {
-                    var colResult = plugins[s].getColHtml(
+                for (var s = 0, t = builderList.length; s < t; s++) {
+                    var colResult = builderList[s].getColHtml(
                         table, data, field, index, i, extraArgsList[s]
                     );
                     if (!colResult) {
@@ -1309,50 +1346,49 @@ define(
 
                     if (hasValue(colHtml)) {
                         if (colResult.notInText) {
-                            otherHtml.push(colResult);
+                            colResult.index = s;
+                            allHtml.push(colResult);
                         } else {
                             textHtml.push(colHtml);
-                            (textStartIndex === 0) && (textStartIndex = s);
+                            (textStartIndex < 0) && (textStartIndex = s);
                         }
                     }
                 }
 
                 var contentHtml = '';
                 textHtml = [
-                    '<div class="' + textClass.join(' ') + '">',
+                    '<div class="' + textClass.join(' ') + '" ',
+                    textAttr.join(' ') + '>',
                         textHtml.join(''),
                     '</div>'
                 ].join('');
 
-                if (otherHtml.length > 0) {
+                allHtml.push({html: textHtml, index: textStartIndex});
+                allHtml.sort(function(a, b){
+                    return a.index - b.index;
+                });
+
+                if (allHtml.length > 1) {
                     var contentHtml = [
                         '<table width="100%" cellpadding="0" cellspacing="0">',
                             '<tr>'
                     ];
-                    textHtml = '<td>' + textHtml + '</td>';
 
-                    for (var s = 0, t = otherHtml.length; s < t; s++) {
-                        var oHtml = otherHtml[s];
-                        if (s === textStartIndex) {
-                            contentHtml.push(textHtml);
-                        }
-
+                    for (var s = 0, t = allHtml.length; s < t; s++) {
+                        var aHtml = allHtml[s];
                         contentHtml.push(
                             ['<td ',
-                                hasValue(oHtml.width)
-                                ? 'width="' + oHtml.width + '" '
+                                hasValue(aHtml.width)
+                                ? ' width="' + aHtml.width + '" '
                                 : '',
-                                oHtml.align
-                                ? 'align="' + oHtml.align + '">'
+                                aHtml.align
+                                ? ' align="' + aHtml.align + '">'
                                 : '>',
-                                    oHtml.html,
+                                    aHtml.html,
                             '</td>'
                         ].join(''));
                     }
 
-                    if (textStartIndex >= otherHtml.length) {
-                        contentHtml.push(textHtml);
-                    }
                     contentHtml.push('</tr></table>');
 
                     contentHtml = contentHtml.join('');
@@ -1367,7 +1403,7 @@ define(
                     'style="width:' + (colWidth + rowWidthOffset) + 'px;',
                     (colWidth ? '' : 'display:none') + '" ',
                     'data-control-table="' + table.id + '" ',
-                    'row="' + index + '" col="' + i + '">',
+                    'data-row="' + index + '" data-col="' + i + '">',
                     contentHtml,
                     '</td>'
                 );
@@ -1375,7 +1411,7 @@ define(
 
             html.unshift(
                 lib.format(
-                    tplRowPrefix + '${attr}',
+                    tplRowPrefix,
                     {
                         id: getId(table, 'row') + index,
                         className: rowClass.join(' '),
@@ -1391,8 +1427,8 @@ define(
 
             html.push('</tr></table></div>');
             
-            for (var i = 0, l = plugins.length; i <l; i++) {
-                var subrowBuilder = plugins[i].getSubrowHtml;
+            for (var i = 0, l = builderList.length; i <l; i++) {
+                var subrowBuilder = builderList[i].getSubrowHtml;
                 if (subrowBuilder) {
                     html.push(
                         subrowBuilder(table, index, extraArgsList[i])
@@ -2285,8 +2321,12 @@ define(
             }
         }
 
+        /**
+         * 根据单个className的元素匹配函数
+         * 
+         * @private
+         */
         var rclass = /[\t\r\n]/g;
-
         function getClassMatch(className){
             var cssClass= ' ' + className + ' ';
             return function (element) {
@@ -2295,6 +2335,30 @@ define(
             };
         }
 
+        /**
+         * 创建委托的Handler
+         * 
+         * @private
+         */
+        function createHandlerItem(handler, matchFn){
+            var fn = null;
+            if (matchFn) {
+                fn = 'function' == typeof matchFn
+                     ? matchFn
+                     : getClassMatch(matchFn);
+            }
+
+            return {
+                handler : handler,
+                matchFn : fn
+            };
+        }
+
+        /**
+         * 根据单个className的元素匹配函数
+         * 
+         * @private
+         */
         function getHandlers(table, el, eventType){
             var realId = el.id;
             var handlers = table.handlers[realId];
@@ -2312,33 +2376,62 @@ define(
             return handlers;
         }
 
-        function createHandlerItem(handler, matchFn){
-            var fn = null;
-            if (matchFn) {
-                fn = 'function' == typeof matchFn
-                     ? matchFn
-                     : getClassMatch(matchFn);
-            }
-
-            return {
-                handler : handler,
-                matchFn : fn
-            };
-        }
-
+        /**
+         * 批量添加handlers
+         * 
+         * @private
+         *
+         * @return {Array} 事件委托处理函数数组
+         */
         function addHandlers(table, el, eventType, handlers){
             var handlerQueue = getHandlers(table, el, eventType);
+            var addedHandlers = [];
+
+            //若从未在该el元素上添加过该eventType的事件委托，
+            //则初次则自动添加该委托
+            if (!handlerQueue.length) {
+                addDelegate(table, el, eventType);
+            }
+
             for (var i = 0, l = handlers.length; i < l ; i++) {
                 var item = handlers[i];
-                handlerQueue.push(
-                    createHandlerItem(item.handler, item.matchFn)
-                );
+                var hanlderItem = createHandlerItem(item.handler, item.matchFn);
+                handlerQueue.push(hanlderItem);
+                addedHandlers.push(hanlderItem);
+            }
+
+            return addedHandlers;
+        }
+
+        /**
+         * 批量删除handlers
+         * 
+         * @private
+         */
+        function removeHandlers(table, el, eventType, handlers) {
+            var handlerQueue = getHandlers(table, el, eventType);
+            for (var i = 0, len = handlers.length; i < len ; i++) {
+                var handler = handlers[i];
+
+                for (var j = 0, l = handlerQueue.length; j < l ; j++) {
+                    if (handlerQueue[j] == handler) {
+                        handlerQueue.splice(j, 1);
+                        j--;
+                    }
+                }
+            }
+
+            //若handlerQueue为空则移除该事件委托，
+            //与addHandlers中添加事件委托的逻辑相呼应
+            if (!handlerQueue.length) {
+                removeDelegate(table, el, eventType);
             }
         }
 
         /**
         * 生成委托处理函数
         *
+        * @private
         */
         function getDelegateHandler(element, handlerQueue, scrope) {
             return function(e) {
@@ -2364,9 +2457,9 @@ define(
         }
 
         /**
-        * 事件委托
+        * 添加事件委托
         */
-        function delegate(control, element, eventType) {
+        function addDelegate(control, element, eventType) {
             var handlerQueue = getHandlers(control, element, eventType);
             helper.addDOMEvent(
                 control, 
@@ -2374,6 +2467,13 @@ define(
                 eventType, 
                 getDelegateHandler(element, handlerQueue, control)
             );
+        }
+
+        /**
+        * 移除事件委托
+        */
+        function removeDelegate(control, element, eventType) {
+            helper.removeDOMEvent(control, element, eventType);
         }
 
         /**
@@ -2461,12 +2561,6 @@ define(
             );
         }
 
-        function initDelegate(table){
-            delegate(table, table.main, 'mouseover');
-            delegate(table, table.main, 'mouseout');
-            delegate(table, table.main, 'click');
-        }
-
         Table.prototype = {
             /**
              * 控件类型
@@ -2506,9 +2600,9 @@ define(
              */
             initStructure: function() {
                 this.realWidth = getWidth(this);
-                this.main.style.width = this.realWidth + 'px';   
+                this.main.style.width = this.realWidth + 'px';
 
-                initDelegate(this);
+                initBaseBuilderList(this);
                 initResizeHandler(this);
                 initMainEventhandler(this);
             },
@@ -2721,22 +2815,43 @@ define(
              * 添加表格插件
              *
              * @protected
-             * @param {Array} plugins
+             * @param {Array} builders
              */
-            addPlugins: function(plugins) {
-                this.plugins = this.plugins.concat(plugins);
+            addRowBuilders: function(builders) {
+                addRowBuilderList(this, builders);
             },
 
 
             /**
              * 添加table主元素上事件委托
              *
-             * @protected
+             * @public
              * @param {string} eventType 事件类型
-             * @param {Array} eventType 处理函数数组
+             * @param {Array} handlers 处理函数数组或单个函数
+             *
+             * @return {Array} 事件委托处理函数数组
              */
             addHandlers: function(eventType, handlers) {
-                addHandlers(this, this.main, eventType, handlers);
+                if (!handlers.length) {
+                    handlers = [handlers];
+                }
+
+                return addHandlers(this, this.main, eventType, handlers);
+            },
+
+            /**
+             * 删除table主元素上事件委托
+             *
+             * @public
+             * @param {string} eventType 事件类型
+             * @param {Array} handlers 处理函数数组或单个函数
+             */
+            removeHandlers: function(eventType, handlers) {
+                if (!handlers.length) {
+                    handlers = [handlers];
+                }
+
+                removeHandlers(this, this.main, eventType, handlers);
             },
 
              /**
@@ -2800,6 +2915,7 @@ define(
                 }
 
                 this.plugins = null;
+                this.rowBuilderList =  null;
 
                 this.headPanel.disposeChildren();
                 this.bodyPanel.disposeChildren();
