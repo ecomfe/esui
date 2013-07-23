@@ -247,7 +247,7 @@ define(
 
             function getStyleNum(dom, styleName) {
                 var result = lib.getStyle(dom, styleName);
-                return (result === '' ? 0 : parseInt(result, 10));
+                return (result === '' ? 0 : (parseInt(result, 10) || 0));
             }
 
             if (!followDoms) {
@@ -258,10 +258,11 @@ define(
                 var followWidths = table.followWidthArr;
                 var followHeights = table.followHeightArr;
 
+                var tableId = table.id;
                 // 缓存表格跟随的dom元素
                 while (walker) {
-                    if (walker.nodeType == 1
-                     && getAttr(walker, 'follow-thead')) {
+                    if (walker.nodeType === 1
+                     && (getAttr(walker, 'follow-thead') === tableId)) {
                         followDoms.push(walker);
                     }
                     walker = walker.nextSibling;
@@ -269,13 +270,14 @@ define(
 
                 // 读取height和width的值缓存
                 followHeights[0] = 0;
-                for (var i = 0, len = followDoms.length; i < len; i++) {
-                    var dom = followDoms[i];
-                    followWidths[i] = getStyleNum(dom, 'padding-left') 
-                                      + getStyleNum(dom, 'padding-right')  
-                                      + getStyleNum(dom, 'border-left') 
-                                      + getStyleNum(dom, 'border-right'); 
-                    followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
+                var i = 0;
+                for (var len = followDoms.length; i < len; i++) {
+                     var dom = followDoms[i];
+                     followWidths[i] = getStyleNum(dom, 'padding-left') 
+                                       + getStyleNum(dom, 'padding-right')  
+                                       + getStyleNum(dom, 'border-left-width') 
+                                       + getStyleNum(dom, 'border-right-width'); 
+                     followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
                 }
                 followHeights[i + 1] = followHeights[i];
                 followHeights.lenght = i + 2;
@@ -415,7 +417,9 @@ define(
                 }
 
                 foot.style.display = '';
-                foot.style.width = table.realWidth + 'px';
+                 if (table.realWidth) {
+                    foot.style.width = table.realWidth + 'px';
+                }
                 foot.innerHTML = getFootHtml(table);
             }
         }
@@ -525,7 +529,9 @@ define(
             }
 
             head.style.display = '';
-            head.style.width = table.realWidth + 'px';
+            if (table.realWidth) {
+                head.style.width = table.realWidth + 'px';
+            }
             lib.g(headPanelId).innerHTML = getHeadHtml(table);
 
             //初始化表头子控件
@@ -1150,7 +1156,9 @@ define(
             var style = tBody.style;
             style.overflowX = 'hidden';
             style.overflowY = 'auto';
-            style.width = table.realWidth + 'px';
+            if (table.realWidth) {
+                style.width = table.realWidth + 'px';
+            }
 
             table.bodyPanel.disposeChildren();
             lib.g(tBodyPanelId).innerHTML = getBodyHtml(table);
@@ -1377,7 +1385,7 @@ define(
                     for (var s = 0, t = allHtml.length; s < t; s++) {
                         var aHtml = allHtml[s];
                         contentHtml.push(
-                            ['<td ',
+                            '<td ',
                                 hasValue(aHtml.width)
                                 ? ' width="' + aHtml.width + '" '
                                 : '',
@@ -1386,7 +1394,7 @@ define(
                                 : '>',
                                     aHtml.html,
                             '</td>'
-                        ].join(''));
+                        );
                     }
 
                     contentHtml.push('</tr></table>');
@@ -1480,7 +1488,7 @@ define(
             if (fieldIndex === 0) {
                 textClass.push(getClass(table, 'cell-text-first'));
             }
-            else if (fieldIndex === extraArgs.fieldLen - 1) {
+            if (fieldIndex === extraArgs.fieldLen - 1) {
                 textClass.push(getClass(table, 'cell-text-last'));
             }
 
@@ -1588,10 +1596,12 @@ define(
          * @private
          * @return {string}
          */
-        function getSubrowHtml(table, index) {
-            return '<div id="' + getSubrowId(table, index)
-                +  '" class="' + getClass(table, 'subrow') + '"'
-                +  ' style="display:none"></div>';
+        function getSubrowHtml(table, index, extraArgs) {
+            return extraArgs.subrow
+                    ? '<div id="' + getSubrowId(table, index)
+                    +  '" class="' + getClass(table, 'subrow') + '"'
+                    +  ' style="display:none"></div>'
+                    : '';
         }
 
 
@@ -1863,21 +1873,23 @@ define(
             var widthStr = table.realWidth + 'px';
             
             // 设置主区域宽度
-            table.main.style.width = widthStr;
-            getBody(table).style.width = widthStr;
-            head && (head.style.width = widthStr);
-            foot && (foot.style.width = widthStr);
-            
+            if (table.realWidth) {
+                table.main.style.width = widthStr;
+                getBody(table).style.width = widthStr;
+                head && (head.style.width = widthStr);
+                foot && (foot.style.width = widthStr);
+            }
             // 重新绘制每一列  
             initColsWidth(table);
             resetColumns(table);
 
             if (table.followHead) {
                 var walker = table.main.parentNode.firstChild;
+                var tableId = table.id;
                 var i = 0;
                 while (walker) {
                     if (walker.nodeType == 1 
-                        && getAttr(walker, 'follow-thead')
+                        && getAttr(walker, 'follow-thead') === tableId
                     ) {
                         walker.style.width = table.realWidth
                                             - table.followWidthArr[i++] + 'px';
@@ -2600,7 +2612,9 @@ define(
              */
             initStructure: function() {
                 this.realWidth = getWidth(this);
-                this.main.style.width = this.realWidth + 'px';
+                if (this.realWidth) {
+                   this.main.style.width = this.realWidth + 'px'; 
+                }
 
                 initBaseBuilderList(this);
                 initResizeHandler(this);
@@ -2617,6 +2631,12 @@ define(
                 Control.prototype.repaint.apply(this, arguments);
                  // 初始化控件主元素上的行为
                 var table = this;
+                if (!table.realWidth) {
+                    table.realWidth = getWidth(table);
+                    if (table.realWidth) {
+                        table.main.style.width = table.realWidth + 'px'; 
+                    }
+                }
 
                 var allProperities = {
                     bodyMaxHeight: false,
