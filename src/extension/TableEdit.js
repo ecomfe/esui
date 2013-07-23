@@ -47,6 +47,7 @@ define(
 
         var currentRowIndex = -1;
         var currentColIndex = -1;
+        var currentState = 0;
 
         var layer = null;
         var inputCtrl = null;
@@ -257,22 +258,24 @@ define(
          */
         function getOkHandler() {
             return function () {
-                doOk();
+                saveEdit();
             };
         }
 
-        function doOk() {
+        function saveEdit() {
             if (inputCtrl.validate()) {
                 var eventArgs = {
                     value: getValue(),
                     rowIndex: currentRowIndex,
-                    columnIndex: currentColIndex
+                    columnIndex: currentColIndex,
+                    field: currentTable.realFields[currentColIndex]
                 };
 
                 currentTable.fire('saveedit', eventArgs);
 
                 if (eventArgs.returnResult !== false) {
-                    stop();
+                    hideLayer();
+                    currentState = 0;
                 } else if (eventArgs.errorMsg) {
                     showErrorMsg(eventArgs.errorMsg);
                 } 
@@ -296,9 +299,16 @@ define(
          *
          * @private
          */
-        function stop(table) {
+        function stop() {
+            currentState = 0;
             hideLayer();
             setButtonDisabled(1);
+            var eventArgs = {
+                rowIndex: currentRowIndex,
+                columnIndex: currentColIndex,
+                field: currentTable.realFields[currentColIndex]
+            };
+            currentTable.fire('canceledit', eventArgs);
         }
 
         /**
@@ -309,6 +319,11 @@ define(
          * @param {Object} options 启动参数表
          */
         function start(table, options) {
+            if (currentState && currentTable) {
+                stop();
+            }
+            currentState = 1;
+
             init(table, options);
             setButtonDisabled(0);
             showLayer();
@@ -382,14 +397,15 @@ define(
          */
         function startEdit(rowIndex, columnIndex, element) {
             if (this.editable) {
+                var field = this.realFields[columnIndex];
                 var eventArgs = {
                     rowIndex: rowIndex,
-                    columnIndex: columnIndex
+                    columnIndex: columnIndex,
+                    field: field
                 };
                 this.fire('startedit',eventArgs);
 
                 if (eventArgs.returnResult !== false) {
-                    var field = this.realFields[columnIndex];
                     var data = this.datasource[rowIndex];
                     var value = data[field.field];
 
@@ -413,13 +429,9 @@ define(
          * @public
          */
         function cancelEdit() {
-            var eventArgs = {
-                rowIndex: currentRowIndex,
-                columnIndex: currentColIndex
-            };
-
-            this.fire('canceledit', eventArgs);
-            stop();
+            if (this == currentTable) {
+                stop();
+            }
         }
 
         var editentryTpl = '<div class="${className}" '

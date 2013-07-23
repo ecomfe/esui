@@ -22,16 +22,16 @@
             <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
             <br/>
             <div data-follow-thead="myTable2">I am not</div>
-            <div data-ui="type:Table;id:myTable2;"></div>
+            <div data-ui="type:Table;id:myTable2;"  data-ui-extension-tableedit-type="TableEdit"></div>
         </div>
         <script>
         var data = [
             {id:1, name: 'erik', sex: 1},
-            {id:2, name: '庞飞帅', sex: 0},
-            {id:3, name: '曹特磊', sex: 1},
-            {id:4, name: '欧阳先伟', sex: 1},
-            {id:5, name: '樊总', sex: 1},
-            {id:6, name: '铮哥', sex: 1}
+            {id:2, name: '', sex: 0},
+            {id:3, name: null, sex: 1},
+            {id:4, sex: 1},
+            {id:5, name: false, sex: 1},
+            {id:6, name: 0, sex: 1}
         ];
         //data = data.concat(data);
         //data = data.concat(data);
@@ -129,7 +129,7 @@
                             followHead: true,
                             select:'multi',
                             breakLine: 1,
-                            //editable: 1,
+                            editable: 1,
                             //bodyMaxHeight: 300,
                             //selectMode :'line',
                             noDataHtml: '<p style="margin:0;">nothing</p>',
@@ -264,7 +264,7 @@
                 };
 
                 myTable.onsaveedit = function(arg) {
-                    if ( arg.value.length > 3 ) {
+                    if ( arg.value.length > 4 ) {
                         arg.returnResult = false;
                         arg.errorMsg = '亲，出错了哟';
                     } else {
@@ -274,23 +274,24 @@
                             arg.columnIndex
                         );
                     }
+                    alert(arg.field.field);
                 };
 
                 myTable.oncanceledit = function(arg) {
-                    
+                    //alert(arg.field.field);
                 };
 
                 myTable.onstartedit = function(arg) {
-                    //alert(arg.rowIndex);
+                    alert(arg.field.field);
                 };
 
                 myTable2 = ui.get('myTable2');
                 myTable2.onsaveedit = function(arg) {
-                    //alert('table2'+ arg.value);
+                   //alert('table2'+ arg.field.field);
                 };
 
                 myTable2.oncanceledit = function(arg) {
-                    
+                    //alert('table2'+ arg.rowIndex);
                 };
 
                 myTable2.onstartedit = function(arg) {
