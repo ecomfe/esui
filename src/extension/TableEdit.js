@@ -153,18 +153,22 @@ define(
          *
          * @private
          */
-        function disposeEditorControl() {
-            layer.dispose();
-            inputCtrl.dispose();
-            okButton.dispose();
-            cancelButton.dispose();
+        function disposeEditorControl(table) {
+            if (table == currentTable) {
+                hideLayer();
 
-            layer = null;
-            inputCtrl = null;
-            okButton = null;
-            cancelButton = null;
-            currentTable = null;
-            currentField = null;
+                layer.dispose();
+                inputCtrl.dispose();
+                okButton.dispose();
+                cancelButton.dispose();
+
+                layer = null;
+                inputCtrl = null;
+                okButton = null;
+                cancelButton = null;
+                currentTable = null;
+                currentField = null;
+            }
         }
         
         /**
@@ -208,7 +212,7 @@ define(
          * @private
          */
         function hideLayer(argument) {
-            layer.style.display = 'none';
+            (layer) && (layer.style.display = 'none');
         }
 
         /**
@@ -217,7 +221,7 @@ define(
          * @private
          */
         function showLayer(argument) {
-            layer.style.display = 'block';
+            (layer) && (layer.style.display = '');
         }
 
         /**
