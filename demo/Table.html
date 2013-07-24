@@ -85,6 +85,9 @@
                                         pattern: /\d/g,
                                         min: 1
                                     },
+                                    editContent: function(item){
+                                        return item.id;
+                                    },
                                     width: 50,
                                     content: function (item) {
                                         return item.id;

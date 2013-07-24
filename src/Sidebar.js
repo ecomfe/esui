@@ -437,8 +437,11 @@ define(
             initCtrlBtn(this);
             
             // 挂载scorll的listener
-            this.topReset    = lib.curry(resetTop, this);
-            lib.on(window, 'scroll', this.topReset);
+            // ie6下不做滚动
+            if (!lib.ie || lib.ie >= 7) {
+                this.topReset    = lib.curry(resetTop, this);
+                lib.on(window, 'scroll', this.topReset);   
+            }
 
             // 给主元素添加over和out的事件handler
             helper.addDOMEvent(

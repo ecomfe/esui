@@ -12,7 +12,9 @@
     border: 1px solid #ccc;
     background: #fff;
     position: fixed;
+    _position: absolute;
     z-index: 100;
+    overflow: hidden;
     .border-radius(5px);
 }
 
@@ -26,6 +28,7 @@
 
 .ui-sidebar-mat {
     position: fixed;
+    _display: none;
     width: 218px;
     z-index: 50;
     background: #fff;
@@ -35,6 +38,8 @@
 
 .ui-sidebar-minibar {
     position: fixed;
+    _position: absolute;
+    _padding-bottom: 10px;
     background: #eaeaea;
     border: 1px solid #d1d1d1;
     border-left: 0;
@@ -55,7 +60,8 @@
     font-size: 0;
     background: url(img/esui.png) -54px -88px;
     position: absolute;
-    top: 50%;
+    bottom: 50%;
+    _bottom: 5px;
     left: 50%;
 }
 
@@ -78,15 +84,18 @@
 
 .ui-sidebar-body {
     position: absolute;
+    _position: static;
     overflow-x: hidden;
     overflow-y: auto;
     bottom: 0;
+    width: 100%;
 }
 
-.skin-autohide-button {
-    height: 13px;
+.skin-autohide-button,
+.skin-fixed-button {
+    height: 13px !important;
     width: 14px;
-    background: url(img/esui.png) -59px -167px;
+    background: url(img/esui.png);
     font-size: 0;
     border: 1px solid #aeaeae;
     position: absolute;
@@ -103,16 +112,14 @@
     height: 13px;
 }
 
+.skin-autohide-button {
+    background-position: -59px -167px;
+    *background-position: -61px -169px;
+}
+
 .skin-fixed-button {
-    padding: 0;
-    height: 13px;
-    width: 14px;
-    background: url(img/esui.png) -45px -167px;
-    font-size: 0;
-    border: 1px solid #aeaeae;
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    background-position: -45px -167px;
+    *background-position: -47px -169px;
 }
 
 .skin-fixed-button:hover {
