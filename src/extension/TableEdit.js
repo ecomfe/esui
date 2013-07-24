@@ -411,7 +411,10 @@ define(
 
                 if (eventArgs.returnResult !== false) {
                     var data = this.datasource[rowIndex];
-                    var value = data[field.field];
+                    var content = field.editContent; 
+                    var value = 'function' == typeof content
+                                ? content.call(this, data, rowIndex, columnIndex)
+                                : data[field.field];
 
                     start(
                         this,
