@@ -15,9 +15,7 @@
     .user-select();
     overflow:hidden;
     cursor:pointer;
-}
 
-.ui-button {
     .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
     border: 1px solid #CCC;
     font-size: 12px;
@@ -34,8 +32,16 @@
         content: '.';
         visibility: hidden;
     }
+
+    height: 23px;
+    line-height: 23px;
 }
 
+button.ui-button {
+    // IE7下不支持设置box-sizing，且显示属性是按照border-box的
+    // 所以这里做下兼容
+    *height: 25px;
+}
 
 /**
  * 基础按钮样式状态
@@ -73,7 +79,18 @@
 .skin-spring-button {
     .linear-gradient-background (top, #6cbb4c, #519c30, #65b445);
     padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
 }
+
+
+button.skin-spring-button {
+    // IE7下不支持设置box-sizing，且显示属性是按照border-box的
+    // 所以这里做下兼容
+    *height: 32px;
+}
+
+
 .skin-spring-add-button {
     .linear-gradient-background-with-image (
         top, #6cbb4c, #519c30, "esui-button-plus.gif", 9px, center, #65b445);
@@ -139,6 +156,11 @@
     line-height: 26px;
     overflow: hidden;
 }
+
+button.skin-link-button {
+    *height: 28px;
+}
+
 .skin-link-button:active,
 .skin-link-button:hover {
     background: none;
@@ -148,3 +170,9 @@
     overflow: hidden;
     color: blue;
 }
+
+button..skin-link-button:active,
+button..skin-link-button:hover {
+    height: 28px;
+}
+
