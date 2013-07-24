@@ -340,7 +340,7 @@ define(
              *
              * @return {number}
              */
-            getRowsNmuber: function() {
+            getRowsNumber: function() {
                var items = this.getValue().split('\n');
                var len = items.length;
                return len;
