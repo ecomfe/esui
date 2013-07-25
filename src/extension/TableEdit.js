@@ -299,6 +299,53 @@ define(
         }
 
         /**
+         * table开始列拖拽事件处理函数
+         *
+         * @private
+         * @return {Function} 
+         */
+        function tableStartDragHandler() {
+            if (this == currentTable) {
+                hideLayer();
+            }
+        }
+
+        /**
+         * table结束列拖拽事件处理函数
+         *
+         * @private
+         */
+        function tableEndDragHandler() {
+            if (this == currentTable) {
+                layerFollow(this);
+                showLayer();
+            }
+        }
+
+        /**
+         * 让浮层跟随编辑单元格
+         *
+         * @private
+         */
+        function layerFollow(table) {
+            if (layer) {
+                var entrance = lib.g(
+                    table.getBodyCellId(
+                        currentRowIndex,
+                        currentColIndex
+                    )
+                );
+
+                if (entrance) {
+                   helper.layer.attachTo(
+                        layer,
+                        entrance
+                    );   
+                }
+            }
+        }
+
+        /**
          * 停止编辑功能
          *
          * @private
@@ -509,6 +556,9 @@ define(
                 }
             );
 
+            target.on('startdrag', tableStartDragHandler);
+            target.on('enddrag', tableEndDragHandler);
+
             Extension.prototype.activate.apply(this, arguments);
         };
 
@@ -526,6 +576,9 @@ define(
 
             delete target.startEdit;
             delete target.cancelEdit;
+
+            target.un('startdrag', tableStartDragHandler);
+            target.un('enddrag', tableEndDragHandler);
 
             disposeEditorControl();
 

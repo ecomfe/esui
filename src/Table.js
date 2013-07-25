@@ -38,8 +38,11 @@ define(
             noDataHtml: '没有数据',
             followHead: false,
             sortable: false,
+            encode: false,
             columnResizable: false,
             rowWidthOffset: -1,
+            select: 'multi',
+            selectMode: 'box',
             subrowMutex: 1,
             subEntryOpenTip: '点击展开',
             subEntryCloseTip: '点击收起',
@@ -891,6 +894,8 @@ define(
             if(!table.columnResizable){
                 return;
             }
+
+            table.fire('startdrag');
             
             var dragClass = getClass(table, 'startdrag');
             var tar = e.target;
@@ -1124,6 +1129,8 @@ define(
 
             table.isDraging = false;
             hideDragMark(table);
+            
+            table.fire('enddrag');
             
             lib.event.preventDefault(e);
             return false;
@@ -1515,7 +1522,9 @@ define(
             // 构造内容html
             contentHtml = 'function' == typeof content
                             ? content.call(table, data, rowIndex, fieldIndex)
-                            : data[content];
+                            : ( table.encode 
+                              ? lib.encodeHTML(data[content]) : data[content]);
+
             if (IsNullOrEmpty(contentHtml)) {
                 contentHtml = '&nbsp;'
             }
@@ -2639,6 +2648,7 @@ define(
                 }
 
                 var allProperities = {
+                    encode: false,
                     bodyMaxHeight: false,
                     breakLine: false,
                     order: false,
@@ -2679,6 +2689,7 @@ define(
 
                 if (allProperities['fields']
                     || allProperities['select']
+                    || allProperities['selectMode']
                     || allProperities['sortable']
                 ) {
                     initFields(table);
@@ -2708,6 +2719,7 @@ define(
                 }
                 if (fieldsChanged
                     || colsWidthChanged
+                    || allProperities['encode']
                     || allProperities['noDataHtml']
                     || allProperities['datasource']
                     || allProperities['selectedIndex']

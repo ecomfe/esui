@@ -27,11 +27,11 @@
         <script>
         var data = [
             {id:1, name: 'erik', sex: 1},
-            {id:2, name: '', sex: 0},
-            {id:3, name: null, sex: 1},
-            {id:4, sex: 1},
-            {id:5, name: false, sex: 1},
-            {id:6, name: 0, sex: 1}
+            {id:2, name: '<span style="color:red;">luck</span>', sex: 0},
+            {id:3, name: 'null', sex: 1},
+            {id:4, name: 'tony',sex: 1},
+            {id:5, name: 'false', sex: 1},
+            {id:6, name: '0', sex: 1}
         ];
         //data = data.concat(data);
         //data = data.concat(data);
@@ -61,6 +61,7 @@
                     properties : {
                         myTable: {
                             datasource: data,
+                            encode: true,
                             sortable: true,
                             columnResizable: true,
                             followHead: true,
@@ -105,9 +106,7 @@
                                     sortable: true,
                                     resizable : true,
                                     width: 300,
-                                    content: function (item) {
-                                        return item.name;
-                                    }
+                                    content: 'name'
                                 },
                                 {
                                     title: '性别',
