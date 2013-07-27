@@ -93,7 +93,8 @@ define(
          * @return {string}
          */
         function getControlClassType(control) {
-            return control.type.toLowerCase();
+            var type = control.styleType || control.type;
+            return type.toLowerCase();
         }
 
         /**
