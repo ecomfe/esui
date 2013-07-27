@@ -310,10 +310,19 @@ define(
             // 移除自身行为
             helper.clearDOMEvents(control);
 
+            // 移除所有扩展
+            if (control.extensions) {
+                for (var i = 0; i < control.extensions.length; i++) {
+                    var extension = control.extensions[i];
+                    extension.dispose();
+                }
+            }
+
             // 从控件树中移除
             if (control.parent) {
                 control.parent.removeChild(control);
             }
+
 
             // 从视图环境移除
             if (control.viewContext) {
