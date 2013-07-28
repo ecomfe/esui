@@ -66,7 +66,9 @@ define(
         Tree.prototype.initOptions = function (options) {
             var defaults = {
                 datasource: {},
-                strategy: new NullTreeStrategy()
+                strategy: new NullTreeStrategy(),
+                selectedNodes: [],
+                selectedNodeIndex: {}
             };
             var properties = 
                 lib.extend(defaults, Tree.defaultProperties, options);
@@ -159,7 +161,14 @@ define(
          */
         function getNodeContentHTML(tree, node, level, expanded) {
             var wrapperClasses =
-                helper.getPartClasses(tree, 'content-wrapper').join(' ');
+                helper.getPartClasses(tree, 'content-wrapper');
+            if (tree.selectedNodeIndex[node.id]) {
+                wrapperClasses = wrapperClasses.concat(
+                    helper.getPartClasses(tree, 'content-wrapper-selected')
+                );
+            }
+            wrapperClasses = wrapperClasses.join(' ');
+
             var wrapperId = 
                 helper.getId(tree, 'content-wrapper-' + node.id);
             var html = 
