@@ -156,8 +156,7 @@ define(
         function disposeEditorControl(table) {
             if (table == currentTable) {
                 hideLayer();
-
-                layer.dispose();
+                
                 inputCtrl.dispose();
                 okButton.dispose();
                 cancelButton.dispose();
