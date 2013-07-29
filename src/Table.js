@@ -36,6 +36,7 @@ define(
          */
         Table.defaultProperties = {
             noDataHtml: '没有数据',
+            noFollowHeadCache: false,
             followHead: false,
             sortable: false,
             encode: false,
@@ -52,7 +53,8 @@ define(
             tipWidth: 18,
             sortWidth: 9,
             fontSize: 13,
-            colPadding: 8
+            colPadding: 8,
+            headZIndex: 1
         };
 
         /**
@@ -93,6 +95,17 @@ define(
          */
         function getAttr(element, key){
             return lib.getAttribute(element, 'data-' + key);
+        }
+
+        /**
+         * 获取dom的样式
+         * 
+         * @private
+         * @return {string}
+         */
+        function getStyleNum(dom, styleName) {
+            var result = lib.getStyle(dom, styleName);
+            return (result === '' ? 0 : (parseInt(result, 10) || 0));
         }
 
          /**
@@ -237,54 +250,102 @@ define(
                             + 'data-control-table="${controlTableId}">';
         
         /**
-         * 缓存表头跟随所用的数据
+         * 初始化FollowHead
+         * 
+         * @private
+         */
+        function initFollowHead(table){
+            cachingFollowDoms(table);
+            if (!table.noFollowHeadCache) {
+                resetFollowOffset(table);
+            }
+        }
+
+        /**
+         *  刷新FollowHead设置
+         * 
+         * @private
+         */
+        function resetFollowHead(table){
+            cachingFollowDoms(table);
+            resetFollowOffset(table);
+        }
+
+         /**
+         * 缓存表头跟随的Dom元素
          *
          * @private
          */
-        function cachingFollowHead(table) {
+        function cachingFollowDoms(table) {
             if (!table.followHead) {
                 return;
             }
 
+            var followDoms = table.followDoms = [];
+            var walker = table.main.parentNode.firstChild;
+            var tableId = table.id;
+            // 缓存表格跟随的dom元素
+            while (walker) {
+                if (walker.nodeType === 1
+                 && (getAttr(walker, 'follow-thead') === tableId)) {
+                    followDoms.push(walker);
+                }
+                walker = walker.nextSibling;
+            }
+
+            resetFollowDomsWidth(table);
+            resetFollowHeight(table);
+        }
+
+        /**
+         * 重置FollowDoms的Heights
+         *
+         * @private
+         */
+        function resetFollowHeight(table) {
             var followDoms = table.followDoms;
+            var followHeights = table.followHeightArr;
 
-            function getStyleNum(dom, styleName) {
-                var result = lib.getStyle(dom, styleName);
-                return (result === '' ? 0 : (parseInt(result, 10) || 0));
+            // 读取height和width的值缓存
+            followHeights[0] = 0;
+            var i = 0;
+            for (var len = followDoms.length; i < len; i++) {
+                 var dom = followDoms[i];
+                 followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
             }
+            followHeights[i + 1] = followHeights[i];
+            followHeights.lenght = i + 2;
+        }
 
-            if (!followDoms) {
-                followDoms = [];
-                table.followDoms = followDoms;
+        /**
+         * 重置followDoms元素的宽度
+         *
+         * @private
+         */
+        function resetFollowDomsWidth(table){
+            var followDoms = table.followDoms;
+            var followWidths = table.followWidthArr;
 
-                var walker = table.main.parentNode.firstChild;
-                var followWidths = table.followWidthArr;
-                var followHeights = table.followHeightArr;
+            for (var i = 0, len = followDoms.length; i < len; i++) {
+                var dom =  followDoms[i];
+                var followWidth = getStyleNum(dom, 'padding-left') 
+                                   + getStyleNum(dom, 'padding-right')  
+                                   + getStyleNum(dom, 'border-left-width') 
+                                   + getStyleNum(dom, 'border-right-width'); 
+                followWidths[i] = followWidth;
 
-                var tableId = table.id;
-                // 缓存表格跟随的dom元素
-                while (walker) {
-                    if (walker.nodeType === 1
-                     && (getAttr(walker, 'follow-thead') === tableId)) {
-                        followDoms.push(walker);
-                    }
-                    walker = walker.nextSibling;
-                }
-
-                // 读取height和width的值缓存
-                followHeights[0] = 0;
-                var i = 0;
-                for (var len = followDoms.length; i < len; i++) {
-                     var dom = followDoms[i];
-                     followWidths[i] = getStyleNum(dom, 'padding-left') 
-                                       + getStyleNum(dom, 'padding-right')  
-                                       + getStyleNum(dom, 'border-left-width') 
-                                       + getStyleNum(dom, 'border-right-width'); 
-                     followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
-                }
-                followHeights[i + 1] = followHeights[i];
-                followHeights.lenght = i + 2;
+                followDoms[i].style.width = table.realWidth
+                                            - followWidth + 'px';
             }
+        }
+
+        /**
+         * 重置FollowDoms的offset
+         *
+         * @private
+         */
+        function resetFollowOffset(table) {
+            var followDoms = table.followDoms;
 
             // 读取跟随的高度，缓存
             var followOffest = lib.getOffset(followDoms[0] || table.main);
@@ -526,6 +587,8 @@ define(
                 );
             }
 
+            head.style.zIndex = table.headZIndex || 1;
+
             if (table.noHead) {
                 head.style.display = 'none';
                 return;
@@ -535,6 +598,7 @@ define(
             if (table.realWidth) {
                 head.style.width = table.realWidth + 'px';
             }
+
             lib.g(headPanelId).innerHTML = getHeadHtml(table);
 
             //初始化表头子控件
@@ -1860,14 +1924,7 @@ define(
                 handleResize(table);
             };
 
-            // 在dispose的时候释放
-            lib.on(window, 'resize', resizeHandler);
-            table.on(
-                'afterdispose',
-                function () {
-                    lib.un(window, 'resize', resizeHandler);
-                }
-            );
+            helper.addDOMEvent(table, window, 'resize', resizeHandler);
         }
         
         /**
@@ -1893,18 +1950,10 @@ define(
             resetColumns(table);
 
             if (table.followHead) {
-                var walker = table.main.parentNode.firstChild;
-                var tableId = table.id;
-                var i = 0;
-                while (walker) {
-                    if (walker.nodeType == 1 
-                        && getAttr(walker, 'follow-thead') === tableId
-                    ) {
-                        walker.style.width = table.realWidth
-                                            - table.followWidthArr[i++] + 'px';
-                    }
-                    walker = walker.nextSibling;
-                }
+                resetFollowDomsWidth(table);
+                
+                //宽度的改变是会影响高度的，所以高度信息放在后面
+                resetFollowHeight(table);
             }
 
             // 重新获取Table位置
@@ -1949,13 +1998,6 @@ define(
 
             lib.insertBefore(domPlaceholder, table.main);
             domPlaceholder = null;
-            
-            // 写入表头跟随元素的宽度样式
-            for (var i = 0, len = table.followDoms.length; i < len; i++) {
-                table.followDoms[i].style.width = table.realWidth
-                                                - followWidths[i] + 'px';
-            }
-            domHead && (domHead.style.width = table.realWidth + 'px');
 
             table.topReseter = function() {
                 if (!table.followHead) {
@@ -1967,6 +2009,14 @@ define(
                 var absolutePosition = posStyle == 'absolute';
                 var placeHolder = lib.g(placeHolderId);
                 var followDoms = table.followDoms;
+
+                //如果不启用缓存，则需要每次滚动都做判断并获取了
+                if (table.noFollowHeadCache) {
+                    var position = domHead.style.position;
+                    if ((position !== 'fixed' && position !== 'absolute')) {
+                        resetFollowOffset(table);
+                    }
+                }
 
                 if (scrollTop > table.followTop
                     && (absolutePosition
@@ -2022,7 +2072,7 @@ define(
 
             };
 
-            lib.on(window, 'scroll', table.topReseter);
+            helper.addDOMEvent(table, window, 'scroll', table.topReseter);
         }
         
         /**
@@ -2646,31 +2696,12 @@ define(
                         table.main.style.width = table.realWidth + 'px'; 
                     }
                 }
-
-                var allProperities = {
-                    encode: false,
-                    bodyMaxHeight: false,
-                    breakLine: false,
-                    order: false,
-                    orderBy: false,
-                    datasource: false,
-                    columnResizable: false,
-                    fields: false,
-                    followHead: false,
-                    noDataHtml: false,
-                    noHead: false,
-                    select: false,
-                    selectMode: false,
-                    sortable:false,
-                    foot: false,
-                    //实际上用户不应设置该字段，只是作为table程序内部交互使用
-                    //如果用户设置了selectedIndex，也能够正常显示
-                    selectedIndex: false
-                };
+                var defaultProperties = Table.defaultProperties;
+                var allProperities = {};
 
                 if (!changes) {
-                    for (var property in allProperities) {
-                        if (allProperities.hasOwnProperty(property)) {
+                    for (var property in defaultProperties) {
+                        if (defaultProperties.hasOwnProperty(property)) {
                             allProperities[property] = true;
                         }
                     }
@@ -2706,6 +2737,7 @@ define(
                 }
                 if (fieldsChanged
                     || colsWidthChanged
+                    || allProperities['headZIndex']
                     || allProperities['noHead']
                     || allProperities['order']
                     || allProperities['orderBy']
@@ -2713,8 +2745,9 @@ define(
                 ) {
                     renderHead(table);
                 }
-                if (allProperities['followHead']) {
-                    cachingFollowHead(table);
+                if (allProperities['followHead']
+                    || allProperities['noFollowHeadCache']) {
+                    initFollowHead(table);
                     initTopResetHandler(table);
                 }
                 if (fieldsChanged
@@ -2919,6 +2952,15 @@ define(
             },
 
             /**
+             * 重置表头跟随设置
+             * 
+             * @public
+             */
+            resetFollowHead: function(){
+                resetFollowHead(this);
+            },
+
+            /**
              * 销毁释放控件
              * 
              * @override
@@ -2938,11 +2980,6 @@ define(
                     // 移除拖拽基准线
                     if (mark) {
                         document.body.removeChild(mark);
-                    }
-                    // remove scroll事件listener
-                    if (this.topReseter) {
-                        lib.un(window, 'scroll', this.topReseter);
-                        this.topReseter = null;
                     }
                 }
 

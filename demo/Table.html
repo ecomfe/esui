@@ -9,7 +9,8 @@
     </head>
     <body>
         <header>Table</header>
-        <div id="console" style="text-align:center;"></div>
+        <div id="console"></div>
+        <div id="HeadTopDiv" style="text-align:center;height:100px;">&nbsp;</div>
         <div class="container" id="container" style="margin:0 auto;">
             <h3>普通</h3>
             <div data-follow-thead="myTable" style="background:#fff;padding:1px 0;z-index:100;">
@@ -18,21 +19,31 @@
                 <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
                 <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
                 <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
+                <button  id="changeHeadPositionBtn" data-ui="id:changeHeadPositionBtn;type:Button;">changeHeadPosition</button>
+                <button  id="resetFollowHeadBtn" data-ui="id:resetFollowHeadBtn;type:Button;">resetFollowHead</button>
             </div>
             <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
             <br/>
-            <div data-follow-thead="myTable2">I am not</div>
-            <div data-ui="type:Table;id:myTable2;"  data-ui-extension-tableedit-type="TableEdit"></div>
+
+            <div style="width:1024px;margin: 0 auto;overflow:hidden;">
+                <div data-follow-thead="myTable2">I am not</div>
+                <div data-ui="type:Table;id:myTable2;"  data-ui-extension-tableedit-type="TableEdit"></div>
+            </div>
         </div>
         <script>
         var data = [
             {id:1, name: 'erik', sex: 1},
-            {id:2, name: '<span style="color:red;">luck</span>', sex: 0},
-            {id:3, name: 'null', sex: 1},
-            {id:4, name: 'tony',sex: 1},
+            {id:2, name: 'tony', sex: 0},
+            {id:3, name: 'frank', sex: 1},
+            {id:4, name: 'meimei', sex: 1},
             {id:5, name: 'false', sex: 1},
             {id:6, name: '0', sex: 1}
         ];
+        data = data.concat(data);
+        data = data.concat(data);
+        //data = data.concat(data);
+        //data = data.concat(data);
+        //data = data.concat(data);
         //data = data.concat(data);
         //data = data.concat(data);
         //data = [{id:6, name: '铮哥', sex: 1}];
@@ -61,16 +72,15 @@
                     properties : {
                         myTable: {
                             datasource: data,
-                            encode: true,
                             sortable: true,
                             columnResizable: true,
                             followHead: true,
                             subrow:true,
                             select:'multi',
-                            breakLine: 1,
                             editable: 1,
                             subrowMutex: 1,
-                            //bodyMaxHeight: 300,
+                            contentEncode: 1,
+                            noFollowHeadCache: true,//默认为false,如无必要也最好设置为false,效率更高。
                             //selectMode :'line',
                             noDataHtml: '<p style="margin:0;">nothing</p>',
                             fields: [
@@ -89,7 +99,7 @@
                                     editContent: function(item){
                                         return item.id;
                                     },
-                                    width: 50,
+                                    width: 100,
                                     content: function (item) {
                                         return item.id;
                                     }
@@ -105,8 +115,10 @@
                                     },
                                     sortable: true,
                                     resizable : true,
-                                    width: 300,
-                                    content: 'name'
+                                    width: 100,
+                                    content: function (item) {
+                                        return item.name;
+                                    }
                                 },
                                 {
                                     title: '性别',
@@ -117,7 +129,7 @@
                                     },
                                     sortable: true,
                                     resizable : true,
-                                    width: 300,
+                                    width: 200,
                                     content: function (item) {
                                         return item.sex ? '男' : '女';
                                     }
@@ -125,6 +137,7 @@
                             ]
                         },
                         myTable2: {
+                            noScroll: true,
                             datasource: data,
                             sortable: true,
                             columnResizable: true,
@@ -132,6 +145,7 @@
                             select:'multi',
                             breakLine: 1,
                             editable: 1,
+                            noFollowHeadCache: true,
                             //bodyMaxHeight: 300,
                             //selectMode :'line',
                             noDataHtml: '<p style="margin:0;">nothing</p>',
@@ -214,7 +228,7 @@
 
                 ui.get('SetDataSourceBtn').onclick = function(){
                      myTable.setDatasource(data.concat(data));
-                }
+                };
                 
                 ui.get('changeWidthBtn').onclick = function () {
                    var container = document.getElementById('container');
@@ -236,6 +250,17 @@
                    container.style.width = width + 'px';
                    myTable.adjustWidth();
                    //myTable.set('width', width);
+                };
+
+                ui.get('changeHeadPositionBtn').onclick = function(){
+                    var headTopDiv = document.getElementById('HeadTopDiv');
+                    var height = parseInt(headTopDiv.style.height) || 0;
+                    height = height > 0 ? height - 50 : height + 50;
+                    headTopDiv.style.height = height + 'px';
+                };
+
+                ui.get('resetFollowHeadBtn').onclick = function(){
+                    myTable.resetFollowHead();
                 };
 
                 myTable.onsort = function ( arg ) {
@@ -287,6 +312,7 @@
                     alert(arg.field.field);
                 };
 
+                /*
                 myTable2 = ui.get('myTable2');
                 myTable2.onsaveedit = function(arg) {
                    //alert('table2'+ arg.field.field);
@@ -299,6 +325,7 @@
                 myTable2.onstartedit = function(arg) {
                     //alert('table2'+ arg.rowIndex);
                 };
+                */
             }
         );
         </script>
