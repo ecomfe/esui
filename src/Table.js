@@ -255,9 +255,11 @@ define(
          * @private
          */
         function initFollowHead(table){
-            cachingFollowDoms(table);
-            if (!table.noFollowHeadCache) {
-                resetFollowOffset(table);
+            if (table.followHead) {
+                cachingFollowDoms(table);
+                if (!table.noFollowHeadCache) {
+                    resetFollowOffset(table);
+                }
             }
         }
 
@@ -267,8 +269,10 @@ define(
          * @private
          */
         function resetFollowHead(table){
-            cachingFollowDoms(table);
-            resetFollowOffset(table);
+            if (table.followHead) {
+                cachingFollowDoms(table);
+                resetFollowOffset(table);
+            }
         }
 
          /**
