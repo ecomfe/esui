@@ -579,7 +579,7 @@ define(
             target.un('startdrag', tableStartDragHandler);
             target.un('enddrag', tableEndDragHandler);
 
-            disposeEditorControl();
+            disposeEditorControl(target);
 
             Extension.prototype.inactivate.apply(this, arguments);
         };
