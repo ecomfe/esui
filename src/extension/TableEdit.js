@@ -161,7 +161,11 @@ define(
                 okButton.dispose();
                 cancelButton.dispose();
 
-                layer = null;
+                try{
+                    layer && document.body.removeChild(layer);
+                    layer = null;
+                } catch (ex){}
+                
                 inputCtrl = null;
                 okButton = null;
                 cancelButton = null;
