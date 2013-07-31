@@ -581,12 +581,12 @@ define(
                     // 如果是用来替换原来的子节点，那要先把原来的子节点从索引中去掉
                     if (node.children) {
                         for (var i = 0; i < node.children.length; i++) {
-                            this.nodeIndex[node.children[i].id] = undefined;
                             unselectNode(
                                 this, 
                                 node.children[i].id, 
                                 { force: true, silent: true, modifyDOM: false }
                             );
+                            this.nodeIndex[node.children[i].id] = undefined;
                         }
                     }
                     node.children = children;
