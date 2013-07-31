@@ -739,7 +739,10 @@ define(
                 return dateText;
             }
             var shortcut = '';
-            if (!calendar.curMiniName && calendar.miniMode) {
+            if (!calendar.curMiniName
+                && calendar.miniMode !== null
+                && calendar.miniMode >= 0
+                && calendar.miniMode < calendar.shortCutItems.length) {
                 calendar.curMiniName =
                     calendar.shortCutItems[calendar.miniMode].name;
             }
