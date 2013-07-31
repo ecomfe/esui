@@ -582,6 +582,11 @@ define(
                     if (node.children) {
                         for (var i = 0; i < node.children.length; i++) {
                             this.nodeIndex[node.children[i].id] = undefined;
+                            unselectNode(
+                                this, 
+                                node.children[i].id, 
+                                { force: true, silent: true, modifyDOM: false }
+                            );
                         }
                     }
                     node.children = children;
