@@ -163,9 +163,9 @@ define(
                 html.push(segment);
             }
 
-            var page = pager.page;
-            var backCount = pager.backCount;
-            var forwardCount = pager.forwardCount;
+            var page = +pager.page;
+            var backCount = +pager.backCount;
+            var forwardCount = +pager.forwardCount;
             // 计算得到的总页码数
             var totalPage = Math.ceil(pager.count / pager.pageSize);
             // 数组html用于存储页码区域的元素代码
@@ -317,7 +317,7 @@ define(
             var extendClasses = helper.getPartClasses(this, 'item-extend');
             var backId = helper.getId(this, 'page-back');
             var forwardId = helper.getId(this, 'page-forward');
-            var page = this.page;
+            var page = +this.page;
 
             if (lib.hasClass(target, classes[0])
                 || lib.hasClass(target, extendClasses[0])
@@ -335,7 +335,7 @@ define(
                 // 跳转至某页码
                 this.set('page', page);
                 // 触发页码变更事件
-                this.fire('changepage');
+                this.fire('pagechange');
             }
         }
 
@@ -373,7 +373,7 @@ define(
             // 重绘页码
             repaintPager(pager);
             // 触发每页显示变更的事件
-            pager.fire('changepagesize');
+            pager.fire('pagesizechange');
         }
 
         /**
