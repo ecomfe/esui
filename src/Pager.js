@@ -507,6 +507,15 @@ define(
              * @protected
              */
             setProperties: function (properties) {
+                properties = lib.extend({}, properties);
+
+                // `pageIndex`提供从0开始的页码，但是以`page`为准
+                if (properties.hasOwnProperty('pageIndex')
+                    && !properties.hasOwnProperty('page')
+                ) {
+                    properties.page = +properties.pageIndex + 1;
+                }
+
                 var digitalProperties = [
                     'count', 'page', 'backCount',
                     'forwardCount', 'pageSize'
@@ -559,7 +568,16 @@ define(
                     ],
                     paint: repaintPager
                 }
-            )
+            ),
+
+            /**
+             * 获取从0开始的页码
+             *
+             * @return {number}
+             */
+            getPageIndex: function () {
+                return this.get('page') - 1;
+            }
         };
 
         lib.inherits(Pager, Control);
