@@ -50,6 +50,23 @@ define(
             );
         };
 
+        MaxLengthRule.prototype.getErrorMessage = function (control) {
+            var lib = require('../lib');
+            var errorMessage =
+                control.get(this.type + 'ErrorMessage') || this.errorMessage;
+            var maxLength = this.getLimitCondition(control);
+            var data = {
+                title: control.get('title'),
+                maxLength: maxLength,
+                length: maxLength
+            };
+            return lib.format(errorMessage, data);
+        };
+
+        MaxLengthRule.prototype.getLimitCondition = function (control) {
+            return control.get('length') || control.get('maxLength');
+        };
+
         require('../lib').inherits(MaxLengthRule, Rule);
         require('../main').registerRule(MaxLengthRule, 100);
         return MaxLengthRule;
