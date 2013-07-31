@@ -335,6 +335,8 @@ define(
                 // 跳转至某页码
                 this.set('page', page);
                 // 触发页码变更事件
+                // 保持向后兼容，待大版本再去除changepage事件
+                this.fire('changepage');
                 this.fire('pagechange');
             }
         }
@@ -373,6 +375,8 @@ define(
             // 重绘页码
             repaintPager(pager);
             // 触发每页显示变更的事件
+            // 保持向后兼容，待大版本再去除changepagesize事件
+            pager.fire('changepagesize');
             pager.fire('pagesizechange');
         }
 
@@ -493,6 +497,22 @@ define(
                 // pager主元素绑定事件
                 var pagerMain = lib.g(helper.getId(this, 'main'));
                 helper.addDOMEvent(this, pagerMain, 'click', pagerClick);
+            },
+
+            setProperties: function (properties) {
+                var digitalProperties = [
+                    'count', 'page', 'backCount',
+                    'forwardCount', 'pageSize'
+                ];
+
+                for (var i = 0; i < digitalProperties.length; i++) {
+                    var value = properties[digitalProperties[i]];
+                    if (typeof value === 'string') {
+                        properties[digitalProperties[i]] = +value;
+                    }
+                }
+
+                Control.prototype.setProperties.apply(this, arguments);
             },
 
             /**
