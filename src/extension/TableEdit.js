@@ -163,9 +163,9 @@ define(
 
                 try{
                     layer && document.body.removeChild(layer);
-                    layer = null;
                 } catch (ex){}
                 
+                layer = null;
                 inputCtrl = null;
                 okButton = null;
                 cancelButton = null;
@@ -322,6 +322,17 @@ define(
             if (this == currentTable) {
                 layerFollow(this);
                 showLayer();
+            }
+        }
+
+        /**
+         * table尺寸改变事件处理函数
+         *
+         * @private
+         */
+        function tableResizeHandler() {
+            if (this == currentTable) {
+                layerFollow(this);
             }
         }
 
@@ -561,6 +572,7 @@ define(
 
             target.on('startdrag', tableStartDragHandler);
             target.on('enddrag', tableEndDragHandler);
+            target.on('resize', tableResizeHandler);
 
             Extension.prototype.activate.apply(this, arguments);
         };
@@ -582,6 +594,7 @@ define(
 
             target.un('startdrag', tableStartDragHandler);
             target.un('enddrag', tableEndDragHandler);
+            target.un('resize', tableResizeHandler);
 
             disposeEditorControl(target);
 

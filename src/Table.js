@@ -1963,6 +1963,8 @@ define(
             // 重新获取Table位置
             initTableOffset(table);
 
+            table.fire('resize');
+
             table.topReseter && table.topReseter();
         }
 
