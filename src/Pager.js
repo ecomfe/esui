@@ -334,10 +334,6 @@ define(
 
                 // 跳转至某页码
                 this.set('page', page);
-                // 触发页码变更事件
-                // 保持向后兼容，待大版本再去除changepage事件
-                this.fire('changepage');
-                this.fire('pagechange');
             }
         }
 
@@ -528,7 +524,15 @@ define(
                     }
                 }
 
-                Control.prototype.setProperties.apply(this, arguments);
+                var changes = 
+                    Control.prototype.setProperties.apply(this, arguments);
+
+                if (changes.hasOwnProperty('page')) {
+                    // 触发页码变更事件
+                    // 保持向后兼容，待大版本再去除changepage事件
+                    this.fire('changepage');
+                    this.fire('pagechange');
+                }
             },
 
             /**
