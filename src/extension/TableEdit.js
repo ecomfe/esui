@@ -302,18 +302,6 @@ define(
         }
 
         /**
-         * table开始列拖拽事件处理函数
-         *
-         * @private
-         * @return {Function} 
-         */
-        function tableStartDragHandler() {
-            if (this == currentTable) {
-                hideLayer();
-            }
-        }
-
-        /**
          * table结束列拖拽事件处理函数
          *
          * @private
@@ -321,7 +309,6 @@ define(
         function tableEndDragHandler() {
             if (this == currentTable) {
                 layerFollow(this);
-                showLayer();
             }
         }
 
@@ -570,7 +557,6 @@ define(
                 }
             );
 
-            target.on('startdrag', tableStartDragHandler);
             target.on('enddrag', tableEndDragHandler);
             target.on('resize', tableResizeHandler);
 
@@ -592,7 +578,6 @@ define(
             delete target.startEdit;
             delete target.cancelEdit;
 
-            target.un('startdrag', tableStartDragHandler);
             target.un('enddrag', tableEndDragHandler);
             target.un('resize', tableResizeHandler);
 
