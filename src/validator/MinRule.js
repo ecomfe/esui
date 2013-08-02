@@ -44,6 +44,7 @@ define(
          * @return {validator/ValidityState}
          */
         MinRule.prototype.check = function (value, control) {
+            value = parseInt(value, 10);
             return new ValidityState(
                 !isNaN(value) && value >= this.getLimitCondition(control), 
                 this.getErrorMessage(control)
