@@ -223,7 +223,7 @@ define(
                     this.main,
                     'submit',
                     function (e) {
-                        this.fire('submit');
+                        this.performSubmit();
                         e.preventDefault();
                         return false;
                     }
