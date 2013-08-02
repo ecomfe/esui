@@ -46,6 +46,27 @@ define(function (require) {
                 panel.setContent('<span>Hello World</span>');
                 expect(container.getElementsByTagName('span').length).toBeGreaterThan(0);
             });
+
+            it('should be abled to set custom style', function () {
+                var panel = new Panel();
+                panel.appendTo(container);
+                panel.setStyle('backgroundColor', 'red');
+                expect(panel.main.style.backgroundColor).toBe('red');
+            });
+
+            it('should be abled to set custom style with dashed name', function () {
+                var panel = new Panel();
+                panel.appendTo(container);
+                panel.setStyle('background-color', 'red');
+                expect(panel.main.style.backgroundColor).toBe('red');
+            });
+
+            it('should be abled to get custom style', function () {
+                var panel = new Panel();
+                panel.appendTo(container);
+                panel.setStyle('background-color', 'red');
+                expect(panel.getStyle('backgroundColor')).toBe('red');
+            });
         });
     });
 });
