@@ -384,6 +384,11 @@ define(
             }
 
             var queue = pool[e.type];
+
+            if (!queue) {
+                return;
+            }
+
             for (var i = 0; i < queue.length; i++) {
                 var control = queue[i];
                 triggerDOMEvent(control, element, e);
@@ -499,6 +504,11 @@ define(
             }
             var queue = 
                 control.domEvents[e.currentTarget[domEventsKey]][e.type];
+
+            if (!queue) {
+                return;
+            }
+
             for (var i = 0; i < queue.length; i++) {
                 queue[i].call(control, e);
             }
