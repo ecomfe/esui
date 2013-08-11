@@ -130,4 +130,4 @@ define(function (require) {
             });
         });
     });
-})
+});

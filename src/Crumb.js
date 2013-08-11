@@ -135,7 +135,7 @@ define(
                     text: this.separator
                 }
             );
-        }
+        };
 
         /**
          * 获取导航HTML
