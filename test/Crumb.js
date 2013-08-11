@@ -23,6 +23,33 @@ define(function (require) {
             });
         });
 
+        describe('created via HTML', function () {
+            var main = document.createElement('div');
+            main.innerHTML = '<a href="#1">test1</a><a href="#2">test2</a><span>test3</span>';
+            var crumb = new Crumb({ main: main });
+            crumb.appendTo(container);
+
+            it('should get `path` option from existing DOM structure', function () {
+                var path = [
+                    { href: '#1', text: 'test1' },
+                    { href: '#2', text: 'test2' },
+                    { text: 'test3' },
+                ];
+                expect(crumb.get('path')).toEqual(path);
+            });
+
+            it('should add separators to DOM', function () {
+                expect(main.children.length).toBe(5);
+                expect(main.children[0].className).toContain('ui-crumb-node');
+                expect(main.children[0].className).toContain('ui-crumb-node-first');
+                expect(main.children[1].className).toContain('ui-crumb-separator');
+                expect(main.children[2].className).toContain('ui-crumb-node');
+                expect(main.children[3].className).toContain('ui-crumb-separator');
+                expect(main.children[4].className).toContain('ui-crumb-node');
+                expect(main.children[4].className).toContain('ui-crumb-node-last');
+            });
+        });
+
         describe('generally', function () {
             it('should create a `<a>` element if a node have both `text` and `href` properties', function () {
                 var path = [

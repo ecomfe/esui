@@ -56,6 +56,23 @@ define(
                 path: []
             };
             lib.extend(properties, Crumb.defaultProperties, options);
+
+            var children = lib.getChildren(this.main);
+            if (!options.path && children.length) {
+                // 从HTML中拿到数据，HTML中不要写separator
+                properties.path = [];
+                for (var i = 0; i < children.length; i++) {
+                    var element = children[i];
+                    var node = {
+                        text: lib.getText(element)
+                    };
+                    if (element.nodeName.toLowerCase() === 'a') {
+                        node.href = lib.getAttribute(element, 'href');
+                    }
+                    properties.path.push(node);
+                }
+            }
+
             this.setProperties(properties);
         };
 

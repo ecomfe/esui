@@ -9,14 +9,24 @@
     </style>
 </head>
 <body>
-    <div id="container"></div>
+    <div id="container">
+        <div data-ui-type="Crumb">
+            <a href="#1">Node1</a>
+            <a href="#2">Node2</a>
+            <a href="#3">Node3</a>
+            <a href="#4">Node4</a>
+            <span>Node5</span>
+        </div>
+    </div>
     <script>
         require(
             [
+                'esui',
                 'esui/Crumb',
                 'css!esui/css/main.css'
             ],
-            function (Crumb) {
+            function (ui, Crumb) {
+                ui.init(document.getElementById('container'));
                 var path = [
                     { text: 'test', href: 'http://test.com' },
                     { text: 'test2', href: 'http://test2.com' },
