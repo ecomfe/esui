@@ -20,7 +20,7 @@ define(
         var Control = require('./Control');
         var ui = require('./main');
 
-        var maskIdPrefix = 'ctrlMask';
+        var maskIdPrefix = 'ctrl-mask';
 
         /**
          * 弹出框控件类
