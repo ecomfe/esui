@@ -201,7 +201,6 @@ define(
          * @inner
          */
         function dispatchInputEvent(e) {
-            var input = lib.g(this.inputId);
             if (e.type === 'input' || e.propertyName === 'value') {
                 this.fire('input');
             }
@@ -274,6 +273,28 @@ define(
          * @protected
          */
         TextBox.prototype.repaint = helper.createRepaint(
+            // `TextBox`对`value`有一个同步处理（详见`setProperties`方法），
+            // 这导致`setProperties`调用时，就算没有`value`和`rawValue`，
+            // 也会去`<input>`元素上同步值。
+            // 但是调用`setProperties`时如果同时给了`value`和`disabled`之类的的，
+            // 因为`disabled`会在父类实现中再次调用`setProperties`，
+            // 导致`value`去同步`<input>`元素上的值，变回旧值，传入的`value`无效。
+            // 因此，要把对`value`的处理放在父类调用之前，这是一个特化的例子
+            {
+                name: 'rawValue',
+                paint: function (textbox, rawValue) {
+                    var input = lib.g(textbox.inputId);
+                    var eventName = 
+                        ('oninput' in input) ? 'input' : 'propertychange';
+                    // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
+                    helper.removeDOMEvent(textbox, input, eventName);
+                    input.value = textbox.stringifyValue(rawValue);
+                    helper.addDOMEvent(
+                        textbox, input, eventName, dispatchInputEvent);
+
+                    togglePlaceholder(textbox);
+                }
+            },
             InputControl.prototype.repaint,
             {
                 name: 'title',
@@ -315,20 +336,6 @@ define(
                         input.maxLength = maxLength;
                         lib.setAttribute(input, 'maxLength', maxLength);
                     }
-                }
-            },
-            {
-                name: 'rawValue',
-                paint: function (textbox, rawValue) {
-                    var input = lib.g(textbox.inputId);
-                    var eventName = 
-                        ('oninput' in input) ? 'input' : 'propertychange';
-                    // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
-                    helper.removeDOMEvent(textbox, input, eventName);
-                    input.value = textbox.stringifyValue(rawValue);
-                    helper.addDOMEvent(textbox, input, eventName, dispatchInputEvent);
-
-                    togglePlaceholder(textbox);
                 }
             },
             {

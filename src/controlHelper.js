@@ -696,28 +696,25 @@ define(
         /**
          * 通过`painter`对象创建`repaint`方法
          *
-         * @param {function=} supterRepaint 父类的`repaint`方法
-         * @param {...Object} args `painter`对象
+         * @param {...Object | function} args `painter`对象
          * @return {function} `repaint`方法的实现
          */
-        helper.createRepaint = function (superRepaint) {
-            var hasSuperRepaint = typeof superRepaint === 'function';
-            var painters = [].concat.apply(
-                [], [].slice.call(arguments, hasSuperRepaint ? 1 : 0));
-            var map = {};
-            for (var i = 0; i < painters.length; i++) {
-                map[painters[i].name] = painters[i];
-            }
+        helper.createRepaint = function () {
+            var painters = [].concat.apply([], [].slice.call(arguments));
 
             return function (changes, changesIndex) {
-                if (hasSuperRepaint) {
-                    superRepaint.apply(this, arguments);
-                }
-
                 // 临时索引，不能直接修改`changesIndex`，会导致子类的逻辑错误
                 var index = lib.extend({}, changesIndex);
                 for (var i = 0; i < painters.length; i++) {
                     var painter = painters[i];
+
+                    // 如果是一个函数，就认为这个函数处理所有的变化，直接调用一下
+                    if (typeof painter === 'function') {
+                        painter.apply(this, arguments);
+                        continue;
+                    }
+
+                    // 其它情况下，走的是`painter`的自动化属性->函数映射机制
                     var propertyNames = [].concat(painter.name);
 
                     // 以下2种情况下要调用：
