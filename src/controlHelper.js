@@ -265,7 +265,7 @@ define(
             var prefix = control.domIDPrefix
                 ? control.domIDPrefix+ '-'
                 : '';
-            return 'ctrl-' + prefix + control.id +　part;
+            return 'ctrl-' + prefix + control.id + part;
         };
 
         /**
