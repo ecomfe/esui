@@ -21,6 +21,7 @@
                 <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
                 <button  id="changeHeadPositionBtn" data-ui="id:changeHeadPositionBtn;type:Button;">changeHeadPosition</button>
                 <button  id="resetFollowHeadBtn" data-ui="id:resetFollowHeadBtn;type:Button;">resetFollowHead</button>
+                <button  id="getSelectedItemsBtn" data-ui="id:getSelectedItemsBtn;type:Button;">getSelectedItems</button>
             </div>
             <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
             <br/>
@@ -261,6 +262,11 @@
 
                 ui.get('resetFollowHeadBtn').onclick = function(){
                     myTable.resetFollowHead();
+                };
+
+                ui.get('getSelectedItemsBtn').onclick =function() {
+                    var items= myTable.getSelectedItems();
+                    alert(items[0].name);
                 };
 
                 myTable.onsort = function ( arg ) {

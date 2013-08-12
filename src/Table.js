@@ -332,10 +332,10 @@ define(
 
             for (var i = 0, len = followDoms.length; i < len; i++) {
                 var dom =  followDoms[i];
-                var followWidth = getStyleNum(dom, 'padding-left') 
-                                   + getStyleNum(dom, 'padding-right')  
-                                   + getStyleNum(dom, 'border-left-width') 
-                                   + getStyleNum(dom, 'border-right-width'); 
+                var followWidth = getStyleNum(dom, 'padding-left')
+                                + getStyleNum(dom, 'padding-right')
+                                + getStyleNum(dom, 'border-left-width')
+                                + getStyleNum(dom, 'border-right-width');
                 followWidths[i] = followWidth;
 
                 followDoms[i].style.width = table.realWidth
@@ -2206,7 +2206,7 @@ define(
                     var id =  getId(table, 'single-select');
                     var data = {
                         id: id + index,
-                        name: id ,
+                        name: id,
                         className: getClass(table, 'single-select'),
                         index: index
                     };
@@ -2955,6 +2955,25 @@ define(
                         selectedIndex: record2
                     }
                 );
+            },
+
+             /**
+             * 获取Table的选中数据项
+             *
+             * @public
+             */
+            getSelectedItems: function() {
+                var selectedIndex = this.selectedIndex;
+                var result = [];
+                if(selectedIndex) {
+                    var datasource = this.datasource;
+                    if (datasource) {
+                        for (var i = 0, len = selectedIndex.length; i < len; i++) {
+                            result.push(datasource[selectedIndex[i]]);
+                        }
+                    }
+                }
+                return result;
             },
 
             /**
