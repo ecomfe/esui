@@ -9,6 +9,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -50,6 +51,25 @@ define(
                 properties.text = lib.getText(this.main);
             }
             lib.extend(this, properties);
+        };
+
+        /**
+         * 分发点击事件
+         *
+         * @inner
+         */
+        function dispatchClickEvent () {
+            this.fire('click');
+        }
+
+        /**
+         * 初始化DOM结构
+         *
+         * @override
+         * @protected
+         */
+        Label.prototype.initStructure = function () {
+            helper.addDOMEvent(this, this.main, 'click', dispatchClickEvent);
         };
 
         var allProperties = [
