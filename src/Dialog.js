@@ -803,8 +803,7 @@ define(
          *
          */
         Dialog.confirm = function (args) {
-            var dialogPrefix    = 'dialog-confirm';
-            var ui = require('./main');
+            var dialogPrefix = 'dialog-confirm';
 
             /**
              * 获取按钮点击的处理函数
@@ -891,8 +890,6 @@ define(
             var dialogPrefix = 'dialog-alert';
             var okPrefix = 'dialog-alert-ok';
 
-            var ui = require('./main');
-
             /**
              * 获取按钮点击的处理函数
              * 
@@ -965,8 +962,8 @@ define(
             return dialog;
         }; 
 
-        require('./lib').inherits(Dialog, Control);
-        require('./main').register(Dialog);
+        lib.inherits(Dialog, Control);
+        ui.register(Dialog);
 
         return Dialog;
     }
