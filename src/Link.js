@@ -124,7 +124,7 @@ define(
 
         };
 
-        require('./lib').inherits(Link, Control);
+        lib.inherits(Link, Control);
         require('./main').register(Link);
         return Link;
     }
