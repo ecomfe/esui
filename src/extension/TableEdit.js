@@ -586,8 +586,8 @@ define(
             Extension.prototype.inactivate.apply(this, arguments);
         };
 
-        require('../lib').inherits(TableEdit, Extension);
-        require('../main').registerExtension(TableEdit);
+        lib.inherits(TableEdit, Extension);
+        main.registerExtension(TableEdit);
         
         return TableEdit;
     }

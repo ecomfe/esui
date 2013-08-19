@@ -71,7 +71,7 @@ define(
             }
             Array.prototype.push.apply(
                 extensions, 
-                require('./main').createGlobalExtensions()
+                ui.createGlobalExtensions()
             );
 
             // 同类型扩展去重
@@ -764,7 +764,7 @@ define(
 
         // 统一方法
         function render(element, options) {
-            var properties = require('./lib').clone(options || {});
+            var properties = lib.clone(options || {});
 
             // 如果同时有`top`和`bottom`，则计算出`height`来
             if (properties.hasOwnProperty('top')
@@ -887,7 +887,6 @@ define(
          */
         layer.attachTo = function (element, target, options) {
             options = options || { left: 'left', top: 'top' };
-            var lib = require('./lib');
             // 虽然这2个变量下面不一定用得到，但是不能等层出来了再取，
             // 一但层出现，可能造成滚动条出现，导致页面尺寸变小
             var pageWidth = lib.page.getWidth();
@@ -1035,7 +1034,6 @@ define(
          * @public
          */
         layer.centerToView = function (element, options) {
-            var lib = require('./lib');
             var properties = options ? lib.clone(options) : {};
 
             if (typeof properties.width !== 'number') {

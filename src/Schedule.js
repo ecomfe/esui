@@ -1449,7 +1449,7 @@ define(
             }
         };
 
-        require('./lib').inherits(Schedule, InputControl);
+        lib.inherits(Schedule, InputControl);
         require('./main').register(Schedule);
         return Schedule;
     }

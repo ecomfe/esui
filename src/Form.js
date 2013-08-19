@@ -10,7 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var helper = require('./controlHelper');
-        var main = require('./main');
+        var ui = require('./main');
         var Panel = require('./Panel');
         var CheckBox = require('./CheckBox');
 
@@ -295,7 +295,7 @@ define(
                 lib.toArray(this.main.getElementsByTagName('select')),
                 lib.toArray(this.main.getElementsByTagName('textarea'))
             );
-            var instanceAttribute = require('./main').getConfig('instanceAttr');
+            var instanceAttribute = ui.getConfig('instanceAttr');
             var result = [];
             
             for (var i = 0; i < elements.length; i++) {
@@ -315,7 +315,7 @@ define(
                     }
                 }
 
-                var control = main.getControlByDOM(element);
+                var control = ui.getControlByDOM(element);
                 if (control
                     && control instanceof InputControl
                     && control.viewContext === this.viewContext
@@ -435,7 +435,7 @@ define(
         };
 
         lib.inherits(Form, Panel);
-        require('./main').register(Form);
+        ui.register(Form);
         return Form;
     }
 );

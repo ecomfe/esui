@@ -9,6 +9,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var ui = require('./main');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var supportPlaceholder = 
@@ -225,7 +226,7 @@ define(
                 var input = main.cloneNode(false);
                 // `helper.replaceMain`会给加上`data-ctrl-id`，要重新去掉
                 lib.removeAttribute(
-                    input, require('./main').getConfig('instanceAttr'));
+                    input, ui.getConfig('instanceAttr'));
                 input.id = this.inputId;
                 // 把原来的`<input>`或`<textarea>`放进去
                 this.main.appendChild(input);
@@ -496,8 +497,8 @@ define(
             return input ? input.value : (this.rawValue || this.value || '');
         };
 
-        require('./lib').inherits(TextBox, InputControl);
-        require('./main').register(TextBox);
+        lib.inherits(TextBox, InputControl);
+        ui.register(TextBox);
         return TextBox;
     }
 );

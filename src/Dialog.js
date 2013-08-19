@@ -808,8 +808,7 @@ define(
          *
          */
         Dialog.confirm = function (args) {
-            var dialogPrefix    = 'dialog-confirm';
-            var ui = require('./main');
+            var dialogPrefix = 'dialog-confirm';
 
             /**
              * 获取按钮点击的处理函数
@@ -819,18 +818,7 @@ define(
              * @param {string} 事件类型
              */
             function btnClickHandler(dialog, type) {
-                // 有可能在参数里设置了处理函数
-                var handler;
-                if (type === 'ok') {
-                    handler = dialog.onok;
-                }
-                else {
-                    handler = dialog.oncancel;
-                }
-                var isFunc = (typeof handler == 'function');
-                if (isFunc) {
-                    handler(dialog);
-                }
+                // 如果在参数里设置了处理函数，会在fire时执行
                 dialog.fire(type);
                 dialog.dispose();
             }
@@ -896,8 +884,6 @@ define(
             var dialogPrefix = 'dialog-alert';
             var okPrefix = 'dialog-alert-ok';
 
-            var ui = require('./main');
-
             /**
              * 获取按钮点击的处理函数
              * 
@@ -906,12 +892,7 @@ define(
              * @param {string} 事件类型
              */
             function btnClickHandler(dialog, okBtn) {
-                // 有可能在参数里设置了处理函数
-                var handler = dialog.onok;
-                var isFunc = (typeof handler == 'function');
-                if (isFunc) {
-                    handler(dialog);
-                }
+                // 如果在参数里设置了处理函数，会在fire时执行
                 dialog.fire('ok');
                 okBtn.dispose();
                 dialog.dispose();
@@ -970,8 +951,8 @@ define(
             return dialog;
         }; 
 
-        require('./lib').inherits(Dialog, Control);
-        require('./main').register(Dialog);
+        lib.inherits(Dialog, Control);
+        ui.register(Dialog);
 
         return Dialog;
     }

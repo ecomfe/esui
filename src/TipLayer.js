@@ -175,7 +175,7 @@ define(
          * @inner
          */
         function renderLayer(element, options) {
-            var properties = require('./lib').clone(options || {});
+            var properties = lib.clone(options || {});
 
             // 如果同时有`top`和`bottom`，则计算出`height`来
             if (properties.hasOwnProperty('top')
@@ -236,7 +236,6 @@ define(
          */
         function autoPosition(tipLayer, element, target, options) {
             options = options || { left: 'right', top: 'top' };
-            var lib = require('./lib');
 
             var rect = target.getBoundingClientRect();
             var offset = lib.getOffset(target);
@@ -776,7 +775,6 @@ define(
         TipLayer.onceNotice = function (args) {
             var tipLayerPrefix = 'tipLayer-once-notice';
             var okPrefix = 'tipLayer-notice-ok';
-            var ui = require('./main');
 
             /**
              * 获取按钮点击的处理函数
@@ -849,8 +847,8 @@ define(
         };
 
 
-        require('./lib').inherits(TipLayer, Control);
-        require('./main').register(TipLayer);
+        lib.inherits(TipLayer, Control);
+        ui.register(TipLayer);
 
         return TipLayer;
     }

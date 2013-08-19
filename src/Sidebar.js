@@ -571,8 +571,8 @@ define(
             helper.afterDispose(this);
         };
 
-        require('./lib').inherits(Sidebar, Control);
-        require('./main').register(Sidebar);
+        lib.inherits(Sidebar, Control);
+        ui.register(Sidebar);
         return Sidebar;
     }
 );
