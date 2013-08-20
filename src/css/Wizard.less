@@ -14,6 +14,21 @@ ol {
     zoom: 1;
 }
 .ui-wizard {
+    .clear-float();
+
+    li {
+        list-style :none;
+        padding: 0;
+        float: left;
+    }
+}
+
+.ui-wizard-panel-hidden {
+    display: none;
+}
+
+
+.skin-default-wizard {
     @commonColor: #E4E4E4;
     @doneColor: #ccf9b8;
     @activeColor: #44ba0f;
@@ -21,12 +36,6 @@ ol {
     @arrowHeight: 24px;
 
     @arrowGap: 4px;
-
-    li {
-        list-style :none;
-        padding: 0;
-        float: left;
-    }
     .ui-wizard-node {
         color: #404040;
         font-size: 14px;
@@ -111,9 +120,5 @@ ol {
         }
 
     }
-
-}
-
-.ui-wizard-panel-hidden {
-    display: none;
+    
 }
