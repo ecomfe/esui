@@ -398,7 +398,7 @@ define(
                  */
                 var properties = {
                     closeButton: true,    // 是否具有关闭按钮
-                    closeOnHide: true, // 右上角关闭按钮是隐藏还是移除
+                    closeOnHide: true,    // 右上角关闭按钮是隐藏还是移除
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
                     width: 600,           // 对话框的宽度
@@ -866,6 +866,17 @@ define(
             var cancelBtn = dialog.getFoot().getChild('btnCancel');
             okBtn.setContent(Dialog.OK_TEXT);
             cancelBtn.setContent(Dialog.CANCEL_TEXT);
+
+            // 也可以改宽高
+            if (properties.btnHeight) {
+                okBtn.set('height', properties.btnHeight);
+                cancelBtn.set('height', properties.btnHeight);
+            }
+            if (properties.btnWidth) {
+                okBtn.set('width', properties.btnWidth);
+                cancelBtn.set('width', properties.btnWidth);
+            }
+
             okBtn.on(
                 'click',
                 lib.curry(btnClickHandler, dialog, 'ok')
@@ -948,6 +959,16 @@ define(
                 'click',
                 lib.curry(btnClickHandler, dialog, okBtn)
             );
+
+            // 也可以改宽高
+            if (properties.btnHeight) {
+                okBtn.set('height', properties.btnHeight);
+            }
+
+            if (properties.btnwidth) {
+                okBtn.set('width', properties.btnwidth);
+            }
+
             return dialog;
         }; 
 
