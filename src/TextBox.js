@@ -284,6 +284,12 @@ define(
             {
                 name: 'rawValue',
                 paint: function (textbox, rawValue) {
+                    // 某些浏览器（实测OSX Chrome）开着输入法的时候，事件会混乱，
+                    // 因此要在这里额外再判断一次是否相等，相等就不要处理
+                    if (rawValue === textbox.getRawValue()) {
+                        return;
+                    }
+
                     var input = lib.g(textbox.inputId);
                     var eventName = 
                         ('oninput' in input) ? 'input' : 'propertychange';
@@ -424,6 +430,10 @@ define(
             {
                 name: 'height',
                 paint: function (textbox, height) {
+                    if (isNaN(height)) {
+                        return;
+                    }
+
                     var hintLabel = lib.g(helper.getId(textbox, 'hint'));
                     var heightWithUnit = height + 'px';
                     if (hintLabel) {
