@@ -407,7 +407,7 @@ define(
             {
                 name: ['width', 'hint', 'hidden'],
                 paint: function (textbox, width, hint, hidden) {
-                    if (hidden) {
+                    if (hidden || isNaN(width)) {
                         return;
                     }
 
