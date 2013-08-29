@@ -32,8 +32,7 @@ define(
          * @public
          */
         TextBox.defaultProperties = {
-            width: 200,
-            height: 25
+            width: 200
         };
 
         TextBox.prototype.type = 'TextBox';

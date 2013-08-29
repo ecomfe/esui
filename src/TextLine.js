@@ -74,23 +74,8 @@ define(
                 }
                 me.lineNumBlock.innerHTML = html.join('<br />');
             }
-            resetScroll(me);
+            me.resetScroll();
             textLine.fire('change');
-        }
-
-        /**
-         * 滚动文本输入框
-         *
-         * @param {TextLine} textLine TextLine控件实例
-         * @inner
-         */
-        function resetScroll(textLine) {
-            var textArea = textLine.getChild('text').main.firstChild;
-            var lineNumber = textLine.lineNumBlock;
-            // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
-            lineNumber.style.height = textArea.clientHeight + 'px';
-            textLine.lineNumBlock.scrollTop =
-                textLine.getChild('text').main.firstChild.scrollTop;
         }
 
         /**
@@ -174,7 +159,7 @@ define(
                     textArea, 
                     textArea.main.firstChild, 
                     'scroll', 
-                    lib.curry(resetScroll, this)
+                    lib.bind(this.resetScroll, this)
                 );
 
                 // 行码条滚动监听
@@ -268,6 +253,23 @@ define(
                     }
                 }
             ),
+
+
+            /**
+             * 滚动文本输入框
+             *
+             * @param {TextLine} textLine TextLine控件实例
+             * @public
+             */
+            resetScroll: function () {
+                console.log(this);
+                var textArea = this.getChild('text').main.firstChild;
+                var lineNumber = this.lineNumBlock;
+                // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
+                lineNumber.style.height = textArea.clientHeight + 'px';
+                this.lineNumBlock.scrollTop =
+                    this.getChild('text').main.firstChild.scrollTop;
+            },
 
             /**
              * 将value从原始格式转换成string
