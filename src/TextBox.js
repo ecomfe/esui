@@ -153,7 +153,7 @@ define(
                     focused = document.activeElement === input;
                 }
                 // 只有没焦点且没值的时候才显示placeholder
-                if (!focused && !textbox.rawValue) {
+                if (!focused && !textbox.getRawValue()) {
                     helper.removePartClasses(
                         textbox, 'placeholder-hidden', placeholder);
                 }
@@ -177,7 +177,6 @@ define(
             if (this.autoSelect) {
                 input.select();
             }
-
             this.fire('focus');
         }
 
@@ -370,6 +369,7 @@ define(
                             lib.g(helper.getId(textbox, 'placeholder'));
                         label.innerHTML = lib.encodeHTML(placeholder || '');
                     }
+                    togglePlaceholder(textbox);
                 }
             },
             {
