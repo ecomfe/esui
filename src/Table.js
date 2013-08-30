@@ -42,7 +42,7 @@ define(
             encode: false,
             columnResizable: false,
             rowWidthOffset: -1,
-            select: 'multi',
+            select: '',
             selectMode: 'box',
             subrowMutex: 1,
             subEntryOpenTip: '点击展开',
