@@ -5,8 +5,8 @@
  * @file 组合框样式
  * @author dbear
  */
-@import-once "mixin.less";
-@import-once "variable.less";
+@import "mixin.less";
+@import "variable.less";
 .ui-checkbox,
 .ui-radio,
 .ui-boxgroup-checkbox,
@@ -34,6 +34,7 @@
     display: block;
 }
 
+
 /** 验证 */
 .ui-checkbox-validity-label {
     zoom:1;
@@ -51,10 +52,6 @@
 
 .ui-checkbox-validity-label-invalid {
     color: #CC0000;
-}
-
-.ui-checkbox-validity-invalid input {
-    border: 1px solid red;
 }
 
 .ui-boxgroup-validity-label-invalid {

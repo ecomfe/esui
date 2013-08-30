@@ -461,6 +461,7 @@ define(
                     createBF(this, 'foot', this.roles.foot);
                 }
 
+
                 if (this.arrow) {
                     var arrow = document.createElement('div');
                     // 初始化箭头
