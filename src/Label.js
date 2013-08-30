@@ -48,7 +48,7 @@ define(
             lib.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             if (options.text == null) {
-                properties.text = lib.getText(this.main);
+                properties.text = lib.trim(lib.getText(this.main));
             }
             lib.extend(this, properties);
         };
