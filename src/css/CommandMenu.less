@@ -84,3 +84,41 @@
 .ui-commandmenu-layer-hidden {
     display: none;
 }
+
+.skin-spring-add-commandmenu {
+    border: 1px solid #519D30;
+    color: white;
+    font-weight: bold;
+    .linear-gradient-background-with-image (
+        top, #6cbb4c, #519c30, "esui-white-arrow.png", right, -14px, #65b445);
+    padding: 0 13px 0 27px;
+    height: 28px;
+    line-height: 28px;
+
+    &:hover,
+    &:focus {
+        .linear-gradient-background-with-image (
+            top, #6cbb4c, #519c30, "esui-white-arrow.png", right, -14px, #65b445);
+        border: 1px solid #157106;
+    }
+
+    &:active {
+        .linear-gradient-background-with-image (
+            top, #6cbb4c, #519c30, "esui-white-arrow.png", right, 6px, #65b445);
+    }
+
+    &::before {
+        content: url("./../img/esui-button-plus.gif");
+        width: 18px;
+        height: 18px;
+        margin-left: -18px;
+    }
+}
+
+.skin-spring-add-commandmenu-active,
+.skin-spring-add-commandmenu-active:hover,
+.skin-spring-add-commandmenu-active:focus {
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "esui-white-arrow.png",
+        right, 6px, #f3f3f3);
+}
