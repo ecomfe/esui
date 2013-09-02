@@ -21,17 +21,17 @@
     width: 100px;
 
     &:hover,
-	&:focus {
-    	.linear-gradient-background-with-image (
-       		top, #ffffff, #f6f6f6, "esui-combo-arrow.png",
+    &:focus {
+        .linear-gradient-background-with-image (
+            top, #ffffff, #f6f6f6, "esui-combo-arrow.png",
             right, -36px, #f3f3f3);
-	}
+    }
 
-	&:active {
-    	.linear-gradient-background-with-image (
-       		top, #f6f6f6, #ffffff, "esui-combo-arrow.png",
+    &:active {
+        .linear-gradient-background-with-image (
+            top, #f6f6f6, #ffffff, "esui-combo-arrow.png",
             right, -36px, #f3f3f3);
-	}
+    }
 }
 
 .ui-commandmenu-active,
@@ -56,28 +56,28 @@
     text-align: left;
     z-index: 1002;
 
-	span {
-	    display: block;
-	}
+    span {
+        display: block;
+    }
 
     li {
-	    color: #333333;
-	    .interactive-cursor ();
-	    height: 22px;
-	    line-height: 22px;
-	    margin: 0 0 1px;
-	    padding: 0 4px;
-	    overflow: hidden;
+        color: #333333;
+        .interactive-cursor ();
+        height: 22px;
+        line-height: 22px;
+        margin: 0 0 1px;
+        padding: 0 4px;
+        overflow: hidden;
 
-	    &:hover {
-		    background-color: #F1F1F1;
-		}
-	}
+        &:hover {
+            background-color: #F1F1F1;
+        }
+    }
 
-	.ui-commandmenu-layer-selected {
-	    background-color: #E0E0E0;
-	    border: 1px solid #DDDDDD;
-	}
+    .ui-commandmenu-layer-selected {
+        background-color: #E0E0E0;
+        border: 1px solid #DDDDDD;
+    }
 
 }
 
@@ -85,15 +85,17 @@
     display: none;
 }
 
+
 .skin-spring-add-commandmenu {
-    border: 1px solid #519D30;
-    color: white;
-    font-weight: bold;
     .linear-gradient-background-with-image (
         top, #6cbb4c, #519c30, "esui-white-arrow.png", right, -14px, #65b445);
-    padding: 0 13px 0 27px;
+    border: 1px solid #519D30;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: bold;
     height: 28px;
     line-height: 28px;
+    padding: 0 17px 0 0;
 
     &:hover,
     &:focus {
@@ -109,16 +111,25 @@
 
     &::before {
         content: url("./../img/esui-button-plus.gif");
-        width: 18px;
         height: 18px;
-        margin-left: -18px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 0;
+        width: 18px;
     }
 }
 
-.skin-spring-add-commandmenu-active,
-.skin-spring-add-commandmenu-active:hover,
-.skin-spring-add-commandmenu-active:focus {
-    .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-white-arrow.png",
-        right, 6px, #f3f3f3);
+.skin-spring-add-commandmenu-layer {
+    li {
+        height: 28px;
+        line-height: 28px;
+        &:hover {
+            background-color: #f8f9fc;
+        }
+    }
+
+    .ui-commandmenu-layer-selected {
+        background-color: #f8f9fc;
+    }
+
 }
