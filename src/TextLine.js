@@ -262,7 +262,6 @@ define(
              * @public
              */
             resetScroll: function () {
-                console.log(this);
                 var textArea = this.getChild('text').main.firstChild;
                 var lineNumber = this.lineNumBlock;
                 // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
