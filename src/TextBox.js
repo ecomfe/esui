@@ -473,7 +473,18 @@ define(
                 properties.rawValue = this.getRawValue();
             } 
 
-            InputControl.prototype.setProperties.call(this, properties);
+            var changed = 
+                InputControl.prototype.setProperties.call(this, properties);
+
+            // 因为`rawValue`有一个getter，因此不保存`rawValue`属性。
+            // 如果保存了这个属性，则可能出这样的事：
+            // 
+            // 1. `set('rawValue', '123');`
+            // 2. 用户输入成`abc`
+            // 3. `set('rawValue', '123'); // 没反应`
+            this.rawValue = undefined;
+            
+            return changed;
         };
 
         /**
