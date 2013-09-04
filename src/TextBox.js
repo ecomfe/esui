@@ -482,7 +482,9 @@ define(
             // 1. `set('rawValue', '123');`
             // 2. 用户输入成`abc`
             // 3. `set('rawValue', '123'); // 没反应`
-            this.rawValue = undefined;
+            if (helper.isInStage(this, 'RENDERED')) {
+                this.rawValue = undefined;
+            }
             
             return changed;
         };
