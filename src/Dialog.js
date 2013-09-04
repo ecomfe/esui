@@ -401,16 +401,13 @@ define(
                     closeOnHide: true,    // 右上角关闭按钮是隐藏还是移除
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
-                    width: 600,           // 对话框的宽度
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     defaultFoot: ''
                         + '<div data-ui="type:Button;id:btnFootOk;'
-                        + 'childName:btnOk;'
-                        + 'skin:spring;height:26;width:50;">确定</div>'
+                        + 'childName:btnOk;skin:spring;">确定</div>'
                         + '<div data-ui="type:Button;'
-                        + 'id:btnFootCancel;childName:btnCancel;'
-                        + 'height:26;">取消</div>',
+                        + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
                     needFoot: true,
                     roles: {}
                 };
@@ -828,7 +825,6 @@ define(
 
             var properties = {
                 type: 'confirm',
-                width: 300,
                 skin: 'confirm',
                 title: ''
             };
@@ -914,7 +910,6 @@ define(
 
             var properties = {
                 type: 'warning',
-                width: 300,
                 skin: 'alert',
                 title: ''
             };
