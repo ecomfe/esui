@@ -238,12 +238,23 @@ define(
              */
             setProperties: function (properties) {
                 // 只有在渲染以前（就是`initOptions`调用的那次）才允许设置id
-                if (properties.hasOwnProperty('id')) {
-                    if (!this.stage) {
+                if (!this.stage) {
+                    if (properties.hasOwnProperty('id')) {
                         this.id = properties.id;
                     }
-                    delete properties.id;
+
+                    if (properties.hasOwnProperty('group')) {
+                        this.group = properties.group;
+                    }
+
+                    if (properties.hasOwnProperty('skin')) {
+                        this.skin = properties.skin;
+                    }
                 }
+
+                delete properties.id;
+                delete properties.group;
+                delete properties.skin;
 
                 // 吞掉`viewContext`的设置，逻辑都在`setViewContext`中
                 if (properties.hasOwnProperty('viewContext')) {
