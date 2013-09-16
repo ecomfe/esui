@@ -46,7 +46,7 @@ define(
         PatternRule.prototype.check = function (value, control) {
             var regex = new RegExp(this.getLimitCondition(control));
             return new ValidityState(
-                regex.test(value),
+                !value || regex.test(value),
                 this.getErrorMessage(control)
             );
         };
