@@ -111,7 +111,9 @@ define(
                 paint: function (control, value) {
                     var element = typeof this.element === 'function'
                         ? this.element(control)
-                        : lib.g(helper.getId(control, this.element));
+                        : this.element
+                            ? lib.g(helper.getId(control, this.element))
+                            : control.main;
                     if (element) {
                         var html = typeof this.generate === 'function'
                             ? this.generate(control, value)
@@ -138,7 +140,9 @@ define(
                 paint: function (control, value) {
                     var element = typeof this.element === 'function'
                         ? this.element(control)
-                        : lib.g(helper.getId(control, this.element));
+                        : this.element
+                            ? lib.g(helper.getId(control, this.element))
+                            : control.main;
                     if (element) {
                         var html = typeof this.generate === 'function'
                             ? this.generate(control, value)
