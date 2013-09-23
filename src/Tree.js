@@ -506,9 +506,10 @@ define(
          * 选中一个节点
          *
          * @param {string} id 节点id
+         * @param {boolean} silent 是否禁止触发事件
          * @public
          */
-        Tree.prototype.selectNode = function (id) {
+        Tree.prototype.selectNode = function (id, silent) {
             var node = this.nodeIndex[id];
 
             if (!node) {
@@ -533,8 +534,10 @@ define(
             helper.addPartClasses(
                 this, 'content-wrapper-selected', nodeElement);
 
-            this.fire('selectnode', { node: node });
-            this.fire('selectionchange');
+            if (!silent) {
+                this.fire('selectnode', { node: node });
+                this.fire('selectionchange');
+            }
         };
 
         /**
