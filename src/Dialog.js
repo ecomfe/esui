@@ -790,8 +790,6 @@ define(
                 resizeHandler.apply(this);
             },
 
-
-
             /**
              * 销毁控件
              */
