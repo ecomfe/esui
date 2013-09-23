@@ -782,6 +782,15 @@ define(
                 this.setProperties({'width': width});
             },
 
+            /**
+             * 提供一个可以手动调用的resize接口
+             *
+             */
+            resize: function () {
+                resizeHandler.apply(this);
+            },
+
+
 
             /**
              * 销毁控件
