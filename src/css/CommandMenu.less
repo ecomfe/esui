@@ -21,17 +21,17 @@
     width: 100px;
 
     &:hover,
-	&:focus {
-    	.linear-gradient-background-with-image (
-       		top, #ffffff, #f6f6f6, "esui-combo-arrow.png",
+    &:focus {
+        .linear-gradient-background-with-image (
+            top, #ffffff, #f6f6f6, "esui-combo-arrow.png",
             right, -36px, #f3f3f3);
-	}
+    }
 
-	&:active {
-    	.linear-gradient-background-with-image (
-       		top, #f6f6f6, #ffffff, "esui-combo-arrow.png",
+    &:active {
+        .linear-gradient-background-with-image (
+            top, #f6f6f6, #ffffff, "esui-combo-arrow.png",
             right, -36px, #f3f3f3);
-	}
+    }
 }
 
 .ui-commandmenu-active,
@@ -55,31 +55,41 @@
     text-align: left;
     z-index: 1002;
 
-	span {
-	    display: block;
-	}
+    span {
+        display: block;
+    }
 
     li {
-	    color: #333333;
-	    .interactive-cursor ();
-	    height: 22px;
-	    line-height: 22px;
-	    margin: 0 0 1px;
-	    padding: 0 4px;
-	    overflow: hidden;
+        color: #333333;
+        .interactive-cursor ();
+        height: 22px;
+        line-height: 22px;
+        margin: 0 0 1px;
+        padding: 0 4px;
+        overflow: hidden;
 
-	    &:hover {
-		    background-color: #F1F1F1;
-		}
-	}
+        &:hover {
+            background-color: #F1F1F1;
+        }
+    }
 
-	.ui-commandmenu-layer-selected {
-	    background-color: #E0E0E0;
-	    border: 1px solid #DDDDDD;
-	}
+    .ui-commandmenu-layer-selected {
+        background-color: #E0E0E0;
+        border: 1px solid #DDDDDD;
+    }
 
 }
 
 .ui-commandmenu-layer-hidden {
     display: none;
+}
+
+.ui-commandmenu-disabled {
+    color: #999999;
+    &:hover,
+    &:focus,
+    &:active {
+        .linear-gradient-background-with-image (
+            top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #fff);
+    }
 }
