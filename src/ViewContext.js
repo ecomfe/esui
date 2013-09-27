@@ -127,7 +127,7 @@ define(
              */
             this.groups = {};
 
-            id = id || getGUID;
+            id = id || getGUID();
             // 如果已经有同名的，就自增长一下
             if (pool.hasOwnProperty(id)) {
                 var i = 1;
