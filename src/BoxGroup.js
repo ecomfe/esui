@@ -57,6 +57,7 @@ define(
             }
 
             var datasource = [];
+            var itemStates = [];
             var values = [];
             for (var i = 0, length = boxes.length; i < length; i++) {
                 var box = boxes[i];
@@ -69,21 +70,34 @@ define(
                     item.title = label ? lib.getText(label) : '';
                     if (!item.title) {
                         item.title = 
-                            box.title || (box.value === 'on' ? box.value : '');
+                            box.title || (box.value === 'on' ? '' : box.value);
                     }
                     datasource.push(item);
 
-                    // firefox下的autocomplete机制在reload页面时,
-                    // 可能导致box.checked属性不符合预期,
-                    // 所以这里采用getAttribute
-                    // 参考：http://www.ryancramer.com/journal/entries/radio_buttons_firefox
-                    if (box.getAttribute('checked') !== null) {
+                    // 提取相关状态
+                    var state = {
+                        /* jshint maxlen: 120 */
+                        // firefox下的autocomplete机制在reload页面时,
+                        // 可能导致box.checked属性不符合预期,
+                        // 所以这里采用getAttribute
+                        // 参考：http://www.ryancramer.com/journal/entries/radio_buttons_firefox
+                        /* jshint maxlen: 80 */
+                        checked: box.getAttribute('checked') !== null,
+                        disabled: box.disabled
+                    };
+                    itemStates.push(state);
+
+                    // 在这里，一个复选框即便是禁用状态，也会加入到值中，
+                    // 这样可以保证在`rawValue`的`painter`运行时不会去掉复选框的勾选，
+                    // 因为重写了`getRawValue`，所以这个值不会影响到最终获取的控件值
+                    if (state.checked) {
                         values.push(box.value);
                     }
                 }
             }
 
             options.datasource = datasource;
+            options.itemStates = itemStates;
             if (!options.rawValue && !options.value) {
                 options.rawValue = values;
             }
@@ -118,29 +132,32 @@ define(
          * 同步值
          *
          * @param {BoxGroup} this 控件实例
+         * @param {boolean=} ignoreEvent 是否路过触发事件的阶段
          * @inner
          */
-        function syncValue() {
-            var result = [];
-            var inputs = this.main.getElementsByTagName('input');
-            for (var i = inputs.length - 1; i >= 0; i--) {
-                var input = inputs[i];
-                if (input.type === this.boxType && input.checked) {
-                    result.push(input.value);
-                }
+        function syncValue(ignoreEvent) {
+            var rawValue = this.getRawValue();
+
+            // 同步`itemStates`
+            for (var i = 0; i < this.itemStates.length; i++) {
+                var input = lib.g(helper.getId(this, 'box-' + i));
+                this.itemStates[i].checked = input.checked;
             }
 
-            this.rawValue = result;
+            this.rawValue = rawValue;
             var input = lib.g(helper.getId(this, 'value'));
             input.value = this.getValue();
 
-            this.fire('change');
+            if (ignoreEvent !== true) {
+                this.fire('change');
+            }
         }
 
         var itemTemplate = [
             '<label title="${title}" class="${wrapperClass}">',
                 '<input type="${type}" name="${name}" id="${id}"'
-                    + ' title="${title}" value="${value}"${checked} />',
+                    + ' title="${title}" value="${value}"'
+                    + '${checked}${disabled} />',
                 '<span>${title}</span>',
             '</label>'
         ];
@@ -171,15 +188,11 @@ define(
                 helper.getPartClasses(group, 'wrapper')
             );
 
-            var valueIndex = {};
-            for (var i = 0; i < group.rawValue.length; i++) {
-                valueIndex[group.rawValue[i]] = true;
-            }
-
             // 分组的选择框必须有相同的`name`属性，所以哪怕没有也给造一个
             var name = group.name || helper.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
+                var state = group.itemStates[i];
                 var data = {
                     wrapperClass: classes.join(' '),
                     id: helper.getId(group, 'box-' + i),
@@ -187,8 +200,14 @@ define(
                     name: name,
                     title: lib.trim(item.title || item.name || item.text),
                     value: item.value,
-                    checked: valueIndex[item.value] ? ' checked="checked"' : ''
+                    disabled: state.disabled ? ' disabled="disabled"' : '',
+                    checked: state.checked ? ' checked="checked"' : ''
                 };
+
+                // 由于`datasource`修改引起的重绘，`itemStates`可能是一个全新的对象，
+                // 此时里面的`checked`属性是不同步的，在此处同步回来
+                state.checked = data.checked;
+
                 html += lib.format(itemTemplate, data);
             }
 
@@ -223,6 +242,22 @@ define(
                 properties.rawValue = [];
             }
 
+            // 修改了`datasource`时，需要重置`itemStates`
+            if (properties.datasource
+                && this.datasource !== properties.datasource
+                && !properties.itemStates
+            ) {
+                properties.itemStates = [];
+                for (var i = 0; i < properties.datasource; i++) {
+                    var item = properties.datasource[i];
+                    properties.itemStates[i] = {
+                        // 预留false，后面的`render`会同步
+                        checked: false,
+                        disabled: !!item.disabled
+                    };
+                }
+            }
+
             var changes = 
                 InputControl.prototype.setProperties.apply(this, arguments);
             if (changes.hasOwnProperty('rawValue')) {
@@ -245,10 +280,10 @@ define(
             {
                 name: ['disabled', 'readOnly'],
                 paint: function (group, disabled, readOnly) {
-                    var inputs = group.main.getElementsByTagName('input');
-                    for (var i = inputs.length - 1; i >= 0; i--) {
-                        var input = inputs[i];
-                        input.disabled = disabled;
+                    for (var i = 0; i < group.datasource.length; i++) {
+                        var state = group.itemStates[i];
+                        var input = lib.g(helper.getId(group, 'box-' + i));
+                        input.disabled = disabled || state.disabled;
                         input.readOnly = readOnly;
                     }
                 }
@@ -264,11 +299,14 @@ define(
                         map[rawValue[i]] = true;
                     }
 
-                    var inputs = group.main.getElementsByTagName('input');
-                    for (var i = inputs.length - 1; i >= 0; i--) {
-                        var input = inputs[i];
-                        if (input.type === group.boxType) {
-                            input.checked = map.hasOwnProperty(input.value);
+                    for (var i = 0; i < group.datasource.length; i++) {
+                        var input = lib.g(helper.getId(group, 'box-' + i));
+                        var isChecked = map.hasOwnProperty(input.value);
+                        input.checked = isChecked;
+
+                        var state = group.itemStates[i];
+                        if (state) {
+                            state.checked = isChecked;
                         }
                     }
 
@@ -287,6 +325,24 @@ define(
             }
         );
 
+        BoxGroup.prototype.getRawValue = function () {
+            // 渲染之前无DOM结构拿不到`value`
+            if (!helper.isInStage(this, 'RENDERED')) {
+                return this.rawValue;
+            }
+
+            var result = [];
+            for (var i = 0; i < this.datasource.length; i++) {
+                var input = lib.g(helper.getId(this, 'box-' + i));
+
+                if (input.checked && !input.disabled) {
+                    result.push(input.value);
+                }
+            }
+
+            return result;
+        };
+
         /**
          * 将string类型的value转换成原始格式
          * 
@@ -297,6 +353,26 @@ define(
          */
         BoxGroup.prototype.parseValue = function (value) {
             return value.split(',');
+        };
+
+        function setItemState(index, disabled) {
+            var item = this.datasource[index];
+            if (item) {
+                item.disabled = disabled;
+            }
+            var box = lib.g(helper.getId(this, 'box-' + index));
+            if (box) {
+                box.disabled = disabled || this.isDisabled();
+            }
+            syncValue.call(this, true);
+        }
+
+        BoxGroup.prototype.disableItemAt = function (index) {
+            setItemState.call(this, index, true);
+        };
+
+        BoxGroup.prototype.enableItemAt = function (index) {
+            setItemState.call(this, index, false);
         };
 
         lib.inherits(BoxGroup, InputControl);
