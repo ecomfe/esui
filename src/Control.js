@@ -274,7 +274,7 @@ define(
                 var changesIndex = {};
                 for (var key in properties) {
                     if (properties.hasOwnProperty(key)) {
-                        var oldValue = this.get(key);
+                        var oldValue = this[key];
                         var newValue = properties[key];
                         if (oldValue !== newValue) {
                             this[key] = newValue;
