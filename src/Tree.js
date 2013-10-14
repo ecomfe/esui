@@ -485,6 +485,7 @@ define(
          * @inner
          */
         function unselectNode(tree, id, options) {
+            // 虽然这个`force`所有调用地方都是`true`了，但可能以后还会有用吧，先留着算了
             if (!options.force && !tree.allowUnselectNode) {
                 return;
             }
@@ -560,7 +561,7 @@ define(
             unselectNode(
                 this, 
                 id, 
-                { force: false, silent: false, modifyDOM: true }
+                { force: true, silent: false, modifyDOM: true }
             );
         };
 
