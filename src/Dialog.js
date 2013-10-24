@@ -159,6 +159,9 @@ define(
             var main = this.main;
             var left = this.left;
             var top = this.top;
+            var right = this.right;
+            var bottom = this.bottom;
+
             if (!left) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
@@ -173,6 +176,26 @@ define(
 
             main.style.left = left + 'px';
             main.style.top = page.getScrollTop() + top + 'px';
+
+            // 如果设置right，就用
+            if (right) {
+                main.style.right = right + 'px';
+            }
+            // 如果设置bottom，就用
+            if (bottom !== undefined) {
+                main.style.bottom = bottom + 'px';
+            }
+            // 设置的height是auto时的逻辑是
+            // 对话框自动延展到底部
+            // 到顶部的距离由top决定
+            if (this.height === 'auto') {
+                var height = page.getViewHeight() - top;
+                main.style.height = height + 'px';
+                var body = this.getBody().main;
+                var header = this.getHead().main;
+                var headerHeight = parseInt(lib.getStyle(header, 'height'), 10);
+                body.style.height = height - headerHeight + 'px';
+            }
         }
 
         /**
@@ -532,7 +555,10 @@ define(
                 {
                     name: 'height',
                     paint: function (dialog, value) {
-                        if (value) {
+                        if (value === 'auto') {
+                            dialog.main.style.height = 'auto';
+                        }
+                        else if (value) {
                             dialog.main.style.height = value + 'px';
                         }
                         if (dialog.isShow) {
@@ -543,7 +569,10 @@ define(
                 {
                     name: 'width',
                     paint: function (dialog, value) {
-                        if (value) {
+                        if (value === 'auto') {
+                            dialog.main.style.width = 'auto';
+                        }
+                        else if (value) {
                             dialog.main.style.width = value + 'px';
                         }
                         if (dialog.isShow) {
@@ -561,6 +590,9 @@ define(
                 {
                     name: 'content',
                     paint: function (dialog, value) {
+                        if (!value) {
+                            return;
+                        }
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
@@ -678,6 +710,9 @@ define(
                 // 浮动层自动定位功能初始化
                 //lib.on(window, 'resize', getResizeHandler);
                 helper.addDOMEvent(this, window, 'resize', resizeHandler);
+//                helper.addDOMEvent(
+//                        this, window, 'scroll', resizeHandler
+//                    );
                 this.setWidth(this.width);
                 this.removeState('hidden');
                 resizeHandler.apply(this);
