@@ -325,13 +325,23 @@ define(
         }
 
         /**
+         * 点击节点事件处理函数
+         *
+         * @param {Event} e DOM事件对象
+         * @protected
+         */
+        Tree.prototype.clickNode = function (e) {
+            toggleAndSelectNode.apply(this, arguments);
+        };
+
+        /**
          * 初始化DOM结构
          *
          * @override
          * @protected
          */
         Tree.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', toggleAndSelectNode);
+            helper.addDOMEvent(this, this.main, 'click', this.clickNode);
             this.strategy.attachTo(this);
         };
 
@@ -475,6 +485,7 @@ define(
          * @inner
          */
         function unselectNode(tree, id, options) {
+            // 虽然这个`force`所有调用地方都是`true`了，但可能以后还会有用吧，先留着算了
             if (!options.force && !tree.allowUnselectNode) {
                 return;
             }
@@ -550,7 +561,7 @@ define(
             unselectNode(
                 this, 
                 id, 
-                { force: false, silent: false, modifyDOM: true }
+                { force: true, silent: false, modifyDOM: true }
             );
         };
 

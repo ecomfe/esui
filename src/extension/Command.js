@@ -40,7 +40,10 @@ define(
          */
         Command.prototype.handleCommand = function (e) {
             var target = e.target;
-            while (target && target !== this.main) {
+            // 为了让`main`上的点击也能触发，要一直追溯到`main`的父节点
+            var endpoint = this.main && this.main.parentNode;
+            
+            while (target && target !== endpoint) {
                 if (target.nodeType === 1 
                     && (target.disabled !== true || e.type !== 'click')
                 ) {

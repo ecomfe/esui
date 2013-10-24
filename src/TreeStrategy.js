@@ -84,7 +84,9 @@ define(
             tree.on(
                 'unselect',
                 function (e) {
-                    tree.unselectNode(e.node.id);
+                    if (tree.get('allowUnselectNode')) {
+                        tree.unselectNode(e.node.id);
+                    }
                 }
             );
         };
