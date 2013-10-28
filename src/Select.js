@@ -295,8 +295,8 @@ define(
 
             // 获取的浮层一定是隐藏的，必须此时获得页面尺寸，
             // 一但让浮层显示出来，就可能导致滚动条出现，无法获得正确的尺寸了
-            var pageWidth = lib.page.getWidth();
-            var pageHeight = lib.page.getHeight();
+            var pageWidth = lib.page.getViewWidth();
+            var pageHeight = lib.page.getViewHeight();
             // 先计算需要的尺寸，浮层必须显示出来才能真正计算里面的内容
             layer.style.display = 'block';
             layer.style.top = '-5000px';
