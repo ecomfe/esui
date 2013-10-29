@@ -12,7 +12,7 @@ define(
         var controlHelper = require('./controlHelper');
 
         function Helper(control) {
-            this.control = this;
+            this.control = control;
         }
 
         /**
