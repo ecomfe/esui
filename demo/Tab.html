@@ -28,6 +28,14 @@
             ],
             function (ui, Tab) {
                 var tab = ui.init()[0];
+                var a = {title: 'test'};
+                tab.add(a);
+                tab.add(a);
+                tab.add(a);
+                tab.add(a);
+                setTimeout(function() {
+                    tab.remove(a);
+                }, 1000);
             }
         );
     </script>

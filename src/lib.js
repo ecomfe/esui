@@ -217,6 +217,29 @@ define(function () {
     };
 
     /**
+     * 查询数组中指定元素的索引位置
+     * 
+     * @param {Array} source 需要查询的数组
+     * @param {*} item 查询项
+     * @param {number=} from 初始的查询位置
+     * @return {number} 指定元素的索引位置，查询不到时返回-1
+     */
+    lib.indexOf = Array.prototype.indexOf
+        ? function (source, item, from) {
+            return source.indexOf(item, from);
+        }
+        : function (source, item, from) {
+            var length = source.length >>> 0;
+            var i = (from < 0) ? Math.max(0, length + from) : from || 0;
+            for (; i < length; i++){
+                if (source[i] === item) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+    /**
      * 对目标字符串进行html解码
      * 
      * @param {string} source 目标字符串

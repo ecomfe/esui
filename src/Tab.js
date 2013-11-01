@@ -426,10 +426,13 @@ define(
          * @param {Object} config 标签页的配置
          */
         Tab.prototype.remove = function (config) {
-            for (var i = 0; i < this.tabs.length; i++) {
-                if (this.tabs[i] === config) {
-                    this.removeAt(i);
-                }
+            // 这里使用`while`是解决`this.tabs`在嵌套循环里被修改带来的问题
+            // 若这里使用`for`循环来处理，则会因为`removeAt`里
+            // 直接`this.tabs.slice`而发生的变量不同步错误
+            // 此坑很隐晦，修改需谨慎
+            var index;
+            while ((index = lib.indexOf(this.tabs, config)) >= 0) {
+                this.removeAt(index);
             }
         };
 
