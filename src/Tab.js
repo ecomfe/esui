@@ -430,8 +430,8 @@ define(
             // 若这里使用`for`循环来处理，则会因为`removeAt`里
             // 直接`this.tabs.slice`而发生的变量不同步错误
             // 此坑很隐晦，修改需谨慎
-            var index;
-            while ((index = lib.indexOf(this.tabs, config)) >= 0) {
+            var index = 0;
+            while ((index = lib.indexOf(this.tabs, config, index)) >= 0) {
                 this.removeAt(index);
             }
         };

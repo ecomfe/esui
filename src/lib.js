@@ -226,7 +226,7 @@ define(function () {
      */
     lib.indexOf = Array.prototype.indexOf
         ? function (source, item, from) {
-            return source.indexOf(item, from);
+            return Array.prototype.indexOf.call(source, item, from);
         }
         : function (source, item, from) {
             var length = source.length >>> 0;
