@@ -12,15 +12,6 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
-        function updateTitle( box ) {
-            var title = box.title 
-                || box.main.title 
-                || ( box.getValue() === 'on' ? '' : box.getValue());
-            title = lib.encodeHTML(title);
-            lib.g(helper.getId(box, 'text')).innerHTML = title;
-            lib.setAttribute(box.boxId, 'title', title);
-        }
-
         /**
          * 同步选中状态
          *
@@ -161,6 +152,15 @@ define(
                 return box;
             },
 
+            updateTitle: function (title) {
+                var title = this.title 
+                    || this.main.title 
+                    || ( this.getValue() === 'on' ? '' : this.getValue());
+                title = lib.encodeHTML(title);
+                lib.g(helper.getId(this, 'text')).innerHTML = title;
+                lib.setAttribute(this.boxId, 'title', title);
+            },
+
             repaint: helper.createRepaint(
                 InputControl.prototype.repaint,
                 {
@@ -182,7 +182,9 @@ define(
                 },
                 {
                     name: 'title',
-                    paint: updateTitle
+                    paint: function (box, title) {
+                        box.updateTitle(title);
+                    }
                 }
             ),
 
