@@ -36,6 +36,34 @@ define(
         };
 
         /**
+         * 添加部件class
+         *
+         * @param {string} part 部件名称
+         * @param {HTMLElement|string} element 部件元素或部件名称
+         */
+        Helper.prototype.addPartClasses = function (part, element) {
+            if (typeof element === 'string') {
+                element = this.getPart(element);
+            }
+
+            controlHelper.addPartClasses(this.control, part, element);
+        };
+
+        /**
+         * 移除部件class
+         *
+         * @param {string} part 部件名称
+         * @param {HTMLElement|string} element 部件元素或部件名称
+         */
+        Helper.prototype.removePartClasses = function (part, element) {
+            if (typeof element === 'string') {
+                element = this.getPart(element);
+            }
+
+            controlHelper.removePartClasses(this.control, part, element);
+        };
+
+        /**
          * 获取用于控件DOM元素的id
          * 
          * @param {string=} part 部件名称
@@ -65,6 +93,73 @@ define(
         Helper.prototype.isPart = function (element, part) {
             var className = this.getPartClasses(part)[0];
             return lib.hasClass(element, className);
+        };
+
+        /**
+         * 获取部件的起始标签
+         *
+         * @param {string} part 部件名称
+         * @param {string} nodeName 部件使用的元素类型
+         * @return {string}
+         */
+        Helper.prototype.getPartBeginTag = function (part, nodeName) {
+            var html = '<' + nodeName + ' id="' + this.getId(part) + '" '
+                + 'class="' + this.getPartClassName(part) + '">';
+            return html;
+        };
+
+        /**
+         * 获取部件的结束标签
+         *
+         * @param {string} part 部件名称
+         * @param {string} nodeName 部件使用的元素类型
+         * @return {string}
+         */
+        Helper.prototype.getPartEndTag = function (part, nodeName) {
+            var html = '</' + nodeName + '>';
+            return html;
+        };
+
+        /**
+         * 获取部件的HTML模板
+         *
+         * @param {string} part 部件名称
+         * @param {string} nodeName 部件使用的元素类型
+         * @return {string}
+         */
+        Helper.prototype.getPartHTML = function (part, nodeName) {
+            return this.getPartBeginTag(part, nodeName)
+                + this.getPartEndTag(part, nodeName);
+        };
+
+        /**
+         * 为控件管理的DOM元素添加DOM事件
+         *
+         * @param {HTMLElement|string} element 需要添加事件的DOM元素或部件名称
+         * @param {string} type 事件的类型
+         * @param {function} handler 事件处理函数
+         */
+        Helper.prototype.addDOMEvent = function (element, type, handler) {
+            if (typeof element === 'string') {
+                element = this.getPart(element);
+            }
+
+            controlHelper.addDOMEvent(this.control, element, type, handler);
+        };
+
+        /**
+         * 为控件管理的DOM元素移除DOM事件
+         *
+         * @param {HTMLElement|string} element 需要添加事件的DOM元素或部件名称
+         * @param {string} type 事件的类型
+         * @param {function} handler 事件处理函数
+         */
+        Helper.prototype.removeDOMEvent = function (element, type, handler) {
+            if (typeof element === 'string') {
+                element = this.getPart(element);
+            }
+
+            controlHelper.removeDOMEvent(this.control, element, type, handler);
         };
 
         return Helper;
