@@ -173,21 +173,26 @@ define(
 
         function updateYear(calendar, index) {
             // 要把其他的日历也同步为相同的值
-            var rawValue = this.getRawValue();
             var displayNum = calendar.displayNum;
             for (var i = 0; i < displayNum; i++) {
                 if (i !== index) {
                     var monthView = calendar.getChild('monthView' + i);
                     // 这里要先解绑那些yearchange事件，防止死循环
+                    monthView.un('changemonth');
                     monthView.un('changeyear');
+
                     monthView.setProperties({
-                        year: this.year,
-                        month: monthView.month
+                        year: this.year
                     });
+
                     // 再绑回来
                     monthView.on(
                         'changeyear',
                         lib.curry(updateYear, calendar, i)
+                    );
+                    monthView.on(
+                        'changemonth',
+                        lib.curry(updateMonth, calendar, i)
                     );
                 }
             }
@@ -196,19 +201,22 @@ define(
 
         function updateMonth(calendar, index) {
             // 要把其他的日历也同步为相同的值
-            var rawValue = this.getRawValue();
             var displayNum = calendar.displayNum;
             for (var i = 0; i < displayNum; i++) {
                 if (i !== index) {
                     var monthView = calendar.getChild('monthView' + i);
                     // 这里要先解绑那些yearchange事件，防止死循环
                     monthView.un('changemonth');
+                    monthView.un('changeyear');
                     monthView.setProperties({
-                        year: monthView.year,
                         month: this.month + 1 - (index - i)
                     });
 
                     // 再绑回来
+                    monthView.on(
+                        'changeyear',
+                        lib.curry(updateYear, calendar, i)
+                    );
                     monthView.on(
                         'changemonth',
                         lib.curry(updateMonth, calendar, i)
@@ -216,6 +224,7 @@ define(
                 }
             }
         }
+
 
         function paintCals(calendar, bindEvent) {
             var displayNum = calendar.displayNum;
@@ -292,28 +301,14 @@ define(
                     'change',
                     lib.curry(syncValueOfMonthViews, calendar, index)
                 );
-                // monthView.on(
-                //     'changeyear',
-                //     lib.curry(updateYear, calendar, index)
-                // );
+                monthView.on(
+                    'changeyear',
+                    lib.curry(updateYear, calendar, index)
+                );
                 monthView.on(
                     'changemonth',
                     lib.curry(updateMonth, calendar, index)
                 );
-            }
-        }
-
-        /**
-         * 主元素点击事件
-         *
-         * @inner
-         * @param {RichCalendar} this RichCalendar控件实例
-         * @param {Event} 触发事件的事件对象
-         */
-        function mainClick(e) {
-            if (!this.disabled) {
-                this.isHidePrevent = 1;
-                toggleLayer(this);
             }
         }
 
@@ -332,6 +327,24 @@ define(
             textInput.setProperties({
                 rawValue: textValue
             });
+            // 更新总日期数信息
+            updateTotalInfo(calendar, value);
+            calendar.fire('change');
+        }
+
+        function updateTotalInfo(calendar, rawValue) {
+            var totalNum = lib.g(helper.getId(calendar, 'total-num'));
+            totalNum.innerHTML = rawValue.length;
+        }
+
+        /**
+         * 清空数据
+         *
+         * @inner         
+         * @param {RichCalendar} calendar RichCalendar控件实例
+         */
+        function deleteAll(calendar) {
+            calendar.set('rawValue', []);
         }
 
         /**
@@ -361,32 +374,6 @@ define(
             }
         }
 
-
-        /**
-         * 将对象型rawValue转换成字符串
-         *
-         * @inner
-         * @param {{begin:Date,end:Date}=} value 外部设置的日期
-         * @return {string} 2011-03-01 22:22:22,2011-04-01 23:59:59
-         */
-        function convertToParam(value) {
-            var beginTime = value.begin;
-            var endTime = value.end;
-            var beginTail = ' 00:00:00';
-            var endTail = ' 23:59:59';
-
-            var timeResult = [];
-            timeResult.push(
-                lib.date.format(beginTime, 'YYYY-MM-DD') + beginTail
-            );
-            if (endTime) {
-                timeResult.push(
-                    lib.date.format(endTime, 'YYYY-MM-DD') + endTail
-                );
-            }
-            return  timeResult.join(',');
-        }
-
         /**
          * 将字符串转换成对象型rawValue
          *
@@ -396,6 +383,19 @@ define(
          */
         function convertToRaw(value) {            
             var strDates = value.split(',');
+            // 可能会只输入一个，默认是begin
+            if (strDates.length === 1) {
+                strDates.push('2046-11-04');
+            }
+            // 第一个是空的
+            else if (strDates[0] === ''){
+                strDates[0] = '1983-09-03';
+            }
+            // 第二个是空的
+            else if (strDates[1] === ''){
+                strDates[1] = '2046-11-04';
+            }
+            
             return {
                 begin: parseToDate(strDates[0]),
                 end: parseToDate(strDates[1])
@@ -506,10 +506,10 @@ define(
             var items = textInputValue.replace(/\n{2,}/g, '\n').split('\n');
             var result = [];
             var container = {};
-
+            var invalid = false;
             for (var i = 0, len = items.length; i < len; i++) {
                 var item = lib.trim(items[i]);
-                if (value.length === 0 || container[item]) {
+                if (item.length === 0 || container[item]) {
                     continue;
                 }
                 container[item] = 1;
@@ -524,9 +524,17 @@ define(
                     result.push(begin);
                     result.push(end);
                 }
+                else {
+                    invalid = true;
+                }
             }
             var value = result.join(',');
             calendar.rawValue = calendar.parseValue(value);
+            // 有可能有需要合并或修正的
+            this.setProperties({
+                rawValue: getValueText(calendar, calendar.rawValue)
+            });
+            calendar.fire('change');
         }
 
         /**
@@ -598,8 +606,6 @@ define(
 
             setProperties: function (properties) {
                 // 如果么设置rawValue
-                var now = new Date();
-                var mode = properties.mode || this.mode;
                 if (properties.rawValue == null
                     || properties.rawValue.length == 0) {
                     // 从value转
@@ -610,7 +616,7 @@ define(
 
                 // 初始化显示年月
                 // 如果设置rawValue，则取rawValue的第一个为起始年月
-                if (properties.rawValue) {
+                if (properties.rawValue && properties.rawValue.length) {
                     var startDate = properties.rawValue[0];
                     properties.startYear = startDate.getFullYear();
                     properties.startMonth = startDate.getMonth() + 1;
@@ -640,21 +646,32 @@ define(
                       ' data-ui-mode="textarea"',
                       ' data-ui-height="100"',
                       ' data-ui-child-name="textInput"></textarea>',
-                      '<button data-ui-type="Button"',
-                      ' data-ui-child-name="modifyBtn">修改时间</button>',
+                      '<div data-ui-type="Panel" class="${generalPanelClass}"',
+                      ' data-ui-child-name="generalPanel">',
+                          '共<span id="${totalNumId}" ',
+                          'class="${totalNumClass}"></span>天,',
+                          '<span data-ui-type="Button" data-ui-skin="link"',
+                          ' data-ui-child-name="deleteBtn">全部删除</span>',
+                      '</div>',
+                      '<div data-ui-type="Button" data-ui-skin="calendar"',
+                      ' data-ui-child-name="modifyBtn">修改时间</div>',
                     '</div>',
                     '<input type="hidden" id="${inputId}" name="${name}"',
                     ' value="" />'
                 ];
 
+                var getClass = helper.getPartClasses;
                 this.main.innerHTML = lib.format(
                     tpl.join('\n'),
                     {
-                        className:
-                            helper.getPartClasses(this, 'text').join(' '),
+                        className: getClass(this, 'text').join(' '),
                         id: helper.getId(this, 'text'),
                         name: this.name,
-                        inputId: helper.getId(this, 'param-value')
+                        inputId: helper.getId(this, 'param-value'),
+                        generalPanelClass:
+                            getClass(this, 'general-info').join(' '),
+                        totalNumId: helper.getId(this, 'total-num'),
+                        totalNumClass: getClass(this, 'total-num').join(' ')
                     }
                 );
 
@@ -662,10 +679,17 @@ define(
                 var modifyBtn = this.getChild('modifyBtn');
                 modifyBtn.on('click', lib.curry(toggleLayer, this));
 
-                //helper.addDOMEvent(this, this.main, 'mousedown', mainClick);
+                var deleteAllBtn = 
+                    this.getChild('generalPanel').getChild('deleteBtn');
+                deleteAllBtn.on('click', lib.curry(deleteAll, this));
+
                 var textInput = this.getChild('textInput');
+                // textInput.on(
+                //     'input',
+                //     lib.curry(updateRawValueByTyping, this)
+                // );
                 textInput.on(
-                    'input',
+                    'blur',
                     lib.curry(updateRawValueByTyping, this)
                 );
 
@@ -695,8 +719,20 @@ define(
                 {
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (range && typeof range === 'string') {
-                            calendar.range = convertToRaw(range);
+                        if (range) {
+                            if (typeof range === 'string') {
+                                range = convertToRaw(range);
+                            }
+                            // 还要支持只设置begin或只设置end的情况
+                            if (!range.begin) {
+                                // 设置一个特别远古的年
+                                range.begin = new Date(1983, 8, 3);
+                            }
+                            else if (!range.end) {
+                                // 设置一个特别未来的年
+                                range.end = new Date(2046, 10, 4);
+                            }
+                            calendar.range = range;
                         }
                         if (rawValue) {
                             updateMain(calendar, rawValue);
@@ -779,27 +815,48 @@ define(
             },
 
             /**
-             * 将string类型的value转换成原始格式
+             * 获得
+             * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
+             * 形式的数据
              * 
-             * @param {string} value 字符串值
-             * @return {Array}
+             * @return {array}
              */
-            parseValue: function (value) {             
-                var dateStrs = value.split(',');
-                var dates = [];
+            getRanges: function () {
+                var rawValue = this.rawValue;
+                var dateStrs = this.stringifyValue(rawValue).split(',');
+                var range = [];
                 for (var i = 0; i < dateStrs.length - 1; i += 2) {
                     var begin = parseToDate(dateStrs[i]);
                     var end = parseToDate(dateStrs[i + 1]);
+                    range.push({
+                        begin: begin,
+                        end: end
+                    });
+                }
+                return range;
+            },
+
+            /**
+             * 将
+             * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
+             * 型值转成raw形式
+             * @param {Array} rangeValue
+             */
+            setRanges: function (rangeValue) {
+                var dates = {};
+                for (var i = 0; i < rangeValue.length; i ++) {
+                    var begin = rangeValue[i].begin;
+                    var end = rangeValue[i].end;
                     var temp;
                     if (!begin || !end) {
                         continue;
                     }
                     if (begin - end === 0) {
-                        dates.push(begin);
+                        dates[begin] = begin;
                     } else {
                         temp = begin;
                         while (temp <= end) {
-                            dates.push(temp);
+                            dates[temp] = temp;
                             temp = new Date(
                                 temp.getFullYear(),
                                 temp.getMonth(),
@@ -808,7 +865,55 @@ define(
                         }
                     }
                 }
-                return dates;
+                var rawDates = [];
+                for(var key in dates) {
+                    rawDates.push(dates[key]);
+                }
+                rawDates.sort(function (a, b) {
+                    return a - b;
+                });
+                
+                this.set('rawValue', rawDates);
+            },
+
+            /**
+             * 将string类型的value转换成原始格式
+             * 
+             * @param {string} value 字符串值
+             * @return {Array}
+             */
+            parseValue: function (value) {             
+                var dateStrs = value.split(',');
+                var dates = {};
+                for (var i = 0; i < dateStrs.length - 1; i += 2) {
+                    var begin = parseToDate(dateStrs[i]);
+                    var end = parseToDate(dateStrs[i + 1]);
+                    var temp;
+                    if (!begin || !end) {
+                        continue;
+                    }
+                    if (begin - end === 0) {
+                        dates[begin] = begin;
+                    } else {
+                        temp = begin;
+                        while (temp <= end) {
+                            dates[temp] = temp;
+                            temp = new Date(
+                                temp.getFullYear(),
+                                temp.getMonth(),
+                                temp.getDate() + 1
+                            );
+                        }
+                    }
+                }
+                var rawDates = [];
+                for(var key in dates) {
+                    rawDates.push(dates[key]);
+                }
+                rawDates.sort(function (a, b) {
+                    return a - b;
+                });
+                return rawDates;
             },
 
             dispose: function () {
