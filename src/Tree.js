@@ -11,7 +11,7 @@ define(
         var Control = require('./Control');
         var lib = require('./lib');
         var helper = require('./controlHelper');
-        
+
         var TreeStrategy = require('./TreeStrategy');
 
         /**
@@ -377,12 +377,12 @@ define(
             {
                 name: 'datasource',
                 paint: function (tree, datasource) {
+                    tree.selectedNodes = [];
+                    tree.selectedNodeIndex = {};
                     tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
                         getNodeHTML(tree, datasource, 0, true, 'div');
 
-                    tree.selectedNodes = [];
-                    tree.selectedNodeIndex = {};
                 }
             },
             {

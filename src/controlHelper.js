@@ -889,8 +889,8 @@ define(
             options = options || { left: 'left', top: 'top' };
             // 虽然这2个变量下面不一定用得到，但是不能等层出来了再取，
             // 一但层出现，可能造成滚动条出现，导致页面尺寸变小
-            var pageWidth = lib.page.getWidth();
-            var pageHeight = lib.page.getHeight();
+            var pageWidth = lib.page.getViewWidth();
+            var pageHeight = lib.page.getViewHeight();
 
             // 浮层的存在会影响页面高度计算，必须先让它消失，
             // 但在消失前，又必须先计算到浮层的正确高度

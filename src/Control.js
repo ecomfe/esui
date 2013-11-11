@@ -10,6 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var helper = require('./controlHelper');
+        var Helper = require('./Helper');
         var ui = require('./main');
 
         /**
@@ -25,6 +26,7 @@ define(
             this.states = {};
             this.events = {};
             this.domEvents = {};
+            this.helper = new Helper(this);
             options = options || {};
 
             this.main = options.main ? options.main : this.createMain(options);

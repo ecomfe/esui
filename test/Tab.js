@@ -299,6 +299,25 @@ define(function (require) {
                 expect(getText(navigator.children[1])).toBe('tab3');
             });
 
+            it('should remove many tab config & element when `remove` is called', function () {
+                var a = {title: 'test'};
+                var tab = new Tab({ tabs: tabs.slice().concat([a, a]) });
+                tab.appendTo(container);
+                tab.add(a);
+                tab.add(a);
+                tab.add(a);
+                tab.remove(a);
+                expect(tab.get('tabs').length).toBe(3);
+                expect(tab.get('tabs')[0]).toEqual({ title: 'tab1', panel: 'a' });
+                expect(tab.get('tabs')[1]).toEqual({ title: 'tab2', panel: 'b' });
+                expect(tab.get('tabs')[2]).toEqual({ title: 'tab3', panel: 'c' });
+                var navigator = container.getElementsByTagName('ul')[0];
+                expect(navigator.children.length).toBe(3);
+                expect(getText(navigator.children[0])).toBe('tab1');
+                expect(getText(navigator.children[1])).toBe('tab2');
+                expect(getText(navigator.children[2])).toBe('tab3');
+            });
+
             it('should remove a tab config & element when `removeAt` is called', function () {
                 var tab = new Tab({ tabs: tabs.slice() });
                 tab.appendTo(container);
