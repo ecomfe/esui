@@ -686,6 +686,19 @@ define(
          */
         function convertToRaw(value) {            
             var strDates = value.split(',');
+            // 可能会只输入一个，默认是begin
+            if (strDates.length === 1) {
+                strDates.push('2046-11-04');
+            }
+            // 第一个是空的
+            else if (strDates[0] === ''){
+                strDates[0] = '1983-09-03';
+            }
+            // 第二个是空的
+            else if (strDates[1] === ''){
+                strDates[1] = '2046-11-04';
+            }
+            
             return {
                 begin: parseToDate(strDates[0]),
                 end: parseToDate(strDates[1])
@@ -1076,8 +1089,20 @@ define(
                 {
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (range && typeof range === 'string') {
-                            calendar.range = convertToRaw(range);
+                         if (range) {
+                            if (typeof range === 'string') {
+                                range = convertToRaw(range);
+                            }
+                            // 还要支持只设置begin或只设置end的情况
+                            if (!range.begin) {
+                                // 设置一个特别远古的年
+                                range.begin = new Date(1983, 8, 3);
+                            }
+                            else if (!range.end) {
+                                // 设置一个特别未来的年
+                                range.end = new Date(2046, 10, 4);
+                            }
+                            calendar.range = range;
                         }
                         if (rawValue) {
                             updateMain(calendar, rawValue);
