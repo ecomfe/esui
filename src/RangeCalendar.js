@@ -579,10 +579,15 @@ define(
                 };
             }
 
-            me.fire('beforechange', value);
+            var prevented = false;
+            var event = {
+                preventDefault: function () { prevented = true; },
+                value: value
+            };
+
+            me.fire('beforechange', event);
             // 阻止事件，则不继续运行
-            if (me.stopEvent) {
-                me.stopEvent = false;
+            if (prevented) {
                 return false;
             }
             me.rawValue = value;
@@ -1184,14 +1189,6 @@ define(
              */
             parseValue: function (value) {
                 return convertToRaw(value);
-            },
-
-            /**
-             * 阻止执行与事件关联的默认动作
-             * 
-             */
-            preventDefault: function () {
-                this.stopEvent = true;
             },
 
             dispose: function () {
