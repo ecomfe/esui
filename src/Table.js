@@ -74,7 +74,7 @@ define(
          * @private
          * @return {bool}
          */
-        function IsNullOrEmpty(obj) {
+        function isNullOrEmpty(obj) {
             return !hasValue(obj) || !obj.toString().length;
         }
 
@@ -524,8 +524,8 @@ define(
                 if ('function' == typeof contentHtml) {
                     contentHtml = contentHtml.call(table);
                 }
-                if (IsNullOrEmpty(contentHtml)) {
-                    contentHtml = '&nbsp;'
+                if (isNullOrEmpty(contentHtml)) {
+                    contentHtml = '&nbsp;';
                 }
 
                 for (var j = 1; j < colspan; j++) {
@@ -751,8 +751,8 @@ define(
                 } else {
                     contentHtml = title;
                 }
-                if (IsNullOrEmpty(contentHtml)) {
-                    contentHtml = '&nbsp;'
+                if (isNullOrEmpty(contentHtml)) {
+                    contentHtml = '&nbsp;';
                 }
                 
                                             
@@ -765,7 +765,8 @@ define(
                         ? ' data-dragright="1"' : ''),
                     (i <= canDragEnd && i > canDragBegin 
                         ? ' data-dragleft="1"' : ''),
-                    ' style="width:' + (table.colsWidth[i] + rowWidthOffset) + 'px;',
+                    ' style="',
+                    'width:' + (table.colsWidth[i] + rowWidthOffset) + 'px;',
                     (table.colsWidth[i] ? '' : 'display:none') + '">',
                     '<div class="' + realThTextClass +
                     (field.select ? ' ' + selClass : '') + '">',
@@ -1401,6 +1402,10 @@ define(
                 (rowArgs.rowClass) && (rowClass.push(rowArgs.rowClass));
                 (rowArgs.rowAttr) && (rowAttr.push(rowArgs.rowAttr));
             }
+
+            function sortByIndex(a, b) {
+                return a.index - b.index;
+            }
             
             for (var i = 0, l = fields.length; i < l; i++) {
                 var field = fields[i];
@@ -1422,10 +1427,18 @@ define(
                     }
 
                     var colHtml = colResult.html;
-                    (colResult.colClass) && (colClass.push(colResult.colClass));
-                    (colResult.textClass) && (textClass.push(colResult.textClass));
-                    (colResult.colAttr) && (colAttr.push(colResult.colAttr));
-                    (colResult.textAttr) && (textAttr.push(colResult.textAttr));
+                    if (colResult.colClass) {
+                        colClass.push(colResult.colClass);
+                    }
+                    if (colResult.textClass) {
+                        textClass.push(colResult.textClass);
+                    }
+                    if (colResult.colAttr) {
+                        colAttr.push(colResult.colAttr);
+                    }
+                    if (colResult.textAttr) {
+                        textAttr.push(colResult.textAttr);
+                    }
 
                     if (hasValue(colHtml)) {
                         if (colResult.notInText) {
@@ -1447,9 +1460,7 @@ define(
                 ].join('');
 
                 allHtml.push({html: textHtml, index: textStartIndex});
-                allHtml.sort(function(a, b){
-                    return a.index - b.index;
-                });
+                allHtml.sort(sortByIndex);
 
                 if (allHtml.length > 1) {
                     var contentHtml = [
@@ -1552,7 +1563,9 @@ define(
          *
          * @private
          */
-        function getColBaseHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
+        function getColBaseHtml(
+            table, data, field, rowIndex, fieldIndex, extraArgs
+        ) {
             var tdCellClass = extraArgs.tdCellClass;
             var tdBreakClass = extraArgs.tdBreakClass;
             var tdTextClass = extraArgs.tdTextClass;
@@ -1589,12 +1602,14 @@ define(
 
             // 构造内容html
             contentHtml = 'function' == typeof content
-                            ? content.call(table, data, rowIndex, fieldIndex)
-                            : ( table.encode 
-                              ? lib.encodeHTML(data[content]) : data[content]);
+                ? content.call(table, data, rowIndex, fieldIndex)
+                : (table.encode 
+                    ? lib.encodeHTML(data[content])
+                    : data[content]
+                );
 
-            if (IsNullOrEmpty(contentHtml)) {
-                contentHtml = '&nbsp;'
+            if (isNullOrEmpty(contentHtml)) {
+                contentHtml = '&nbsp;';
             }
 
             return {
@@ -1636,7 +1651,9 @@ define(
                         + 'data-index="${index}">'
                         + '</div>';
 
-        function getSubEntryHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
+        function getSubEntryHtml(
+            table, data, field, rowIndex, fieldIndex, extraArgs
+        ) {
             var subrow = extraArgs.subrow;
             var subentry = subrow && field.subEntry;
             var result = {
@@ -1647,7 +1664,8 @@ define(
 
             if (subentry) {
                 var isSubEntryShown = typeof field.isSubEntryShow === 'function'
-                    ? field.isSubEntryShow.call(table, data, rowIndex, fieldIndex)
+                    ? field.isSubEntryShow.call(
+                        table, data, rowIndex, fieldIndex)
                     : true;
                 if (isSubEntryShown !== false) {
                     result.html = lib.format(
@@ -1993,7 +2011,6 @@ define(
             }
 
             var domHead = getHead(table);
-            var followWidths = table.followWidthArr;
             var placeHolderId = getId(table, 'top-placeholder');
             var domPlaceholder = document.createElement('div');
             // 占位元素
@@ -2133,7 +2150,10 @@ define(
             for (var i = 0; i < tdsLen; i++) {
                 var td = tds[i];
                 if (getAttr(td, 'control-table') == id) {
-                    var width = Math.max(colsWidth[j % len] + rowWidthOffset, 0);
+                    var width = Math.max(
+                        colsWidth[j % len] + rowWidthOffset, 
+                        0
+                    );
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
                     j++;
@@ -2798,7 +2818,10 @@ define(
                     switch (table.select) {
                         case 'multi':
                             table.selectedIndex = [];
-                            table.fire('select',{ selectedIndex: table.selectedIndex });
+                            table.fire(
+                                'select',
+                                { selectedIndex: table.selectedIndex }
+                            );
                             break;
                     }
                 }
@@ -2851,7 +2874,7 @@ define(
                 if (isEncodeHtml) {
                     text = lib.encodeHTML(text);
                 }
-                text = IsNullOrEmpty(text) ? '&nbsp' : text;
+                text = isNullOrEmpty(text) ? '&nbsp' : text;
                 
                 lib.g(
                     getId(
@@ -2968,7 +2991,7 @@ define(
                 if(selectedIndex) {
                     var datasource = this.datasource;
                     if (datasource) {
-                        for (var i = 0, len = selectedIndex.length; i < len; i++) {
+                        for (var i = 0; i < selectedIndex.length; i++) {
                             result.push(datasource[selectedIndex[i]]);
                         }
                     }
