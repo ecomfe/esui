@@ -12,6 +12,7 @@ define(
         var helper = require('./controlHelper');
         var ui = require('./main');
         var Panel = require('./Panel');
+        var InputControl = require('./InputControl');
         var CheckBox = require('./CheckBox');
 
         /**
@@ -306,7 +307,7 @@ define(
 
                     var control = ui.getControlByDOM(element);
                     if (control
-                        && control.isInputControl()
+                        && control instanceof InputControl
                         && control.viewContext === form.viewContext
                         && control.get('name')
                         && (!name || control.get('name') === name)
