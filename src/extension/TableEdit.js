@@ -26,12 +26,15 @@ define(
         var Validity = require('../validator/Validity');
 
         var layContentTpl = [
-                '<div class="${optClass}">',
+            '<div class="${optClass}">',
                 '<div id="${inputFieldId}"></div>',
                 '<div data-ui="id:${okId};type:Button;">${okText}</div>',
-                '<div data-ui="id:${cancelId};type:Button;">${cancelText}</div></div>',
-                '<div class="${errorClass}" id="${errorId}"></div>'
-            ].join('');
+                '<div data-ui="id:${cancelId};type:Button;">',
+                    '${cancelText}',
+                '</div>',
+            '</div>',
+            '<div class="${errorClass}" id="${errorId}"></div>'
+        ].join('');
 
         var inputFieldId = 'ctrl-table-editor-inputField';
         var inputId = 'ctrl-table-editorInput';
@@ -207,7 +210,7 @@ define(
                     return control;
                 }
             }
-        };
+        }
         
         /**
          * 隐藏浮层
@@ -460,9 +463,9 @@ define(
                 if (eventArgs.returnResult !== false) {
                     var data = this.datasource[rowIndex];
                     var content = field.editContent; 
-                    var value = 'function' == typeof content
-                                ? content.call(this, data, rowIndex, columnIndex)
-                                : data[field.field];
+                    var value = 'function' === typeof content
+                        ? content.call(this, data, rowIndex, columnIndex)
+                        : data[field.field];
 
                     start(
                         this,
@@ -471,7 +474,6 @@ define(
                             rowIndex: rowIndex,
                             columnIndex: columnIndex,
                             element: element,
-                            field: field,
                             value: value
                         }
                     );

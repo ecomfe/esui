@@ -474,7 +474,7 @@ define(
                 }
                 dateItem = dateItem.nextSibling;
             }
-            if (selectableNum == 0) {
+            if (selectableNum === 0) {
                 isAllSelected = false;
             }
             setRowTagSelected(monthView, rowTag, isAllSelected);
@@ -489,8 +489,6 @@ define(
          */
         function selectByColumn(monthView, columnTag) {
             var index = columnTag.getAttribute('data-index');
-            var columnClasses =
-                helper.getPartClasses(monthView, 'month-title');
             var columnSelectedClasses = 
                 helper.getPartClasses(monthView, 'month-title-selected');
 
@@ -592,9 +590,6 @@ define(
             var rowTagNum = monthView.rowTagNum;
             var rowTagId = helper.getId(monthView, 'row-select');
 
-            var viewValue = monthView.viewValue;
-            var changedDates = [];
-
             for (var i = 0; i < rowTagNum; i++) {
                 var rowTag = lib.g(rowTagId + '-' + i);
                 // 找到第index个节点，置为选择状态
@@ -608,7 +603,7 @@ define(
                 }
             }
 
-            if (selectableNum == 0) {
+            if (selectableNum === 0) {
                 isAllSelected = false;
             }
 
@@ -718,10 +713,6 @@ define(
             // 获取横向选择状态
             var rowTagNum = monthView.rowTagNum;
             var rowTagId = helper.getId(monthView, 'row-select');
-            var selectAllTag = lib.g(helper.getId(monthView, 'month-title-0'));
-            var rowSelectedClasses =
-                helper.getPartClasses(monthView, 'month-row-select-selected');
-            var selectedRowNum = 0;
             for (var i = 0; i < rowTagNum; i++) {
                 var rowTag = lib.g(rowTagId + '-' + i);
                 // 先移除所有的选择
@@ -863,7 +854,6 @@ define(
                     return;
                 }
                 var newDate = new Date(year, month, date);
-                var oldDate = monthView.rawValue;
                 updateSingleSelectState(monthView, monthView.rawValue, newDate);
                 monthView.rawValue = newDate;
                 monthView.fire('change');
@@ -1215,23 +1205,6 @@ define(
             }
         }
 
-        function computeYearAndMonthByRawValue(monthView, rawValue) {
-            if (monthView.mode === 'single') {
-                // 有一个没设置就当都没设置
-                if (!properties.year || properties.month == null ) {
-                    year = properties.rawValue.getFullYear();
-                    month = properties.rawValue.getMonth() + 1;
-                }
-            }
-            else {
-                // 有一个没设置就当都没设置
-                if (!properties.year || properties.month == null ) {
-                    year = now.getFullYear();
-                    month = now.getMonth() + 1;
-                }
-            }
-        }
-
         MonthView.prototype = {
             /**
              * 控件类型
@@ -1261,7 +1234,6 @@ define(
                     viewValue: {},
                     mode: 'single'
                 };
-                var now = new Date();
                 lib.extend(properties, options);
                 this.setProperties(properties);
             },
@@ -1521,7 +1493,7 @@ define(
                     var dateStrs = [];
                     var oneDay = 86400000;
                     for (var i = 0; i < rawValue.length; i ++) {
-                        if (i == 0) {
+                        if (i === 0) {
                             dateStrs.push(
                                 lib.date.format(rawValue[i], this.paramFormat)
                             );

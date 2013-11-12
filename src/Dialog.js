@@ -757,7 +757,6 @@ define(
                     helper.removeDOMEvent(
                         this, window, 'resize', resizeHandler
                     );
-                    var main = this.main;
                     var mask = this.mask;
 
                     this.addState('hidden');

@@ -242,7 +242,7 @@ define(
                 var trueRange;
                 var realEnd;
                 var realBegin;
-                if (i == 0) {
+                if (i === 0) {
                     realEnd = new Date(
                         rangeEndYear, rangeEndMonth - displayNum + 2, 0
                     );
@@ -449,7 +449,7 @@ define(
             var tempIndex = 0;
             var oneDay = 86400000;
             for (var i = 0; i < rawValue.length; i ++) {
-                if (i == 0) {
+                if (i === 0) {
                     dateStrs.push(
                         lib.date.format(rawValue[i], calendar.paramFormat)
                     );
@@ -607,7 +607,7 @@ define(
             setProperties: function (properties) {
                 // 如果么设置rawValue
                 if (properties.rawValue == null
-                    || properties.rawValue.length == 0) {
+                    || properties.rawValue.length === 0) {
                     // 从value转
                     if (properties.value) {
                         properties.rawValue = this.parseValue(properties.value);
@@ -781,7 +781,7 @@ define(
                 var dateStrs = [];
                 var oneDay = 86400000;
                 for (var i = 0; i < rawValue.length; i ++) {
-                    if (i == 0) {
+                    if (i === 0) {
                         dateStrs.push(
                             lib.date.format(rawValue[i], this.paramFormat)
                         );
