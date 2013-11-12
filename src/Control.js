@@ -243,6 +243,20 @@ define(
             },
 
             /**
+             * 判断属性新值是否有变化，内部用于`setProperties`方法
+             *
+             * @param {string} propertyName 属性名称
+             * @param {Mixed} newValue 新值
+             * @param {Mixed} oldValue 旧值
+             * @return {boolean}
+             * @protected
+             */
+            isPropertyChanged: function (propertyName, newValue, oldValue) {
+                // 默认实现将值和当前新值进行简单比对
+                return oldValue !== newValue;
+            },
+
+            /**
              * 批量设置控件的属性值
              * 
              * @param {Object} properties 属性值集合
@@ -285,9 +299,16 @@ define(
                 var changesIndex = {};
                 for (var key in properties) {
                     if (properties.hasOwnProperty(key)) {
-                        var oldValue = this[key];
                         var newValue = properties[key];
-                        if (oldValue !== newValue) {
+                        var getterMethodName = 
+                            'get' + lib.pascalize(key) + 'Property';
+                        var oldValue = this[getterMethodName]
+                            ? this[getterMethodName]()
+                            : this[key];
+
+                        var isChanged = 
+                            this.isPropertyChanged(key, newValue, oldValue);
+                        if (isChanged) {
                             this[key] = newValue;
                             var record = {
                                 name: key,
@@ -305,6 +326,7 @@ define(
                 }
 
                 return changesIndex;
+
             },
 
             /**
