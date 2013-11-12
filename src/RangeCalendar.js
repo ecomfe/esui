@@ -578,12 +578,21 @@ define(
                     'end': begin
                 };
             }
+
+            me.fire('beforechange', value);
+            // 阻止事件，则不继续运行
+            if (me.stopEvent) {
+                me.stopEvent = false;
+                return false;
+            }
             me.rawValue = value;
             me.value = convertToParam(value);
             updateMain(me, value);
             hideLayer(me);
             me.fire('change', value);
         }
+
+
 
         /**
          * 更新主显示
@@ -1175,6 +1184,14 @@ define(
              */
             parseValue: function (value) {
                 return convertToRaw(value);
+            },
+
+            /**
+             * 阻止执行与事件关联的默认动作
+             * 
+             */
+            preventDefault: function () {
+                this.stopEvent = true;
             },
 
             dispose: function () {
