@@ -11,7 +11,7 @@ define(
         var Control = require('./Control');
         var lib = require('./lib');
         var helper = require('./controlHelper');
-        
+
         var TreeStrategy = require('./TreeStrategy');
 
         /**
@@ -66,7 +66,9 @@ define(
         Tree.prototype.initOptions = function (options) {
             var defaults = {
                 datasource: {},
-                strategy: new NullTreeStrategy()
+                strategy: new NullTreeStrategy(),
+                selectedNodes: [],
+                selectedNodeIndex: {}
             };
             var properties = 
                 lib.extend(defaults, Tree.defaultProperties, options);
@@ -159,7 +161,14 @@ define(
          */
         function getNodeContentHTML(tree, node, level, expanded) {
             var wrapperClasses =
-                helper.getPartClasses(tree, 'content-wrapper').join(' ');
+                helper.getPartClasses(tree, 'content-wrapper');
+            if (tree.selectedNodeIndex[node.id]) {
+                wrapperClasses = wrapperClasses.concat(
+                    helper.getPartClasses(tree, 'content-wrapper-selected')
+                );
+            }
+            wrapperClasses = wrapperClasses.join(' ');
+
             var wrapperId = 
                 helper.getId(tree, 'content-wrapper-' + node.id);
             var html = 
@@ -316,13 +325,23 @@ define(
         }
 
         /**
+         * 点击节点事件处理函数
+         *
+         * @param {Event} e DOM事件对象
+         * @protected
+         */
+        Tree.prototype.clickNode = function (e) {
+            toggleAndSelectNode.apply(this, arguments);
+        };
+
+        /**
          * 初始化DOM结构
          *
          * @override
          * @protected
          */
         Tree.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', toggleAndSelectNode);
+            helper.addDOMEvent(this, this.main, 'click', this.clickNode);
             this.strategy.attachTo(this);
         };
 
@@ -358,12 +377,12 @@ define(
             {
                 name: 'datasource',
                 paint: function (tree, datasource) {
+                    tree.selectedNodes = [];
+                    tree.selectedNodeIndex = {};
                     tree.nodeIndex = buildNodeIndex(datasource);
                     tree.main.innerHTML = 
                         getNodeHTML(tree, datasource, 0, true, 'div');
 
-                    tree.selectedNodes = [];
-                    tree.selectedNodeIndex = {};
                 }
             },
             {
@@ -466,6 +485,7 @@ define(
          * @inner
          */
         function unselectNode(tree, id, options) {
+            // 虽然这个`force`所有调用地方都是`true`了，但可能以后还会有用吧，先留着算了
             if (!options.force && !tree.allowUnselectNode) {
                 return;
             }
@@ -497,9 +517,10 @@ define(
          * 选中一个节点
          *
          * @param {string} id 节点id
+         * @param {boolean} silent 是否禁止触发事件
          * @public
          */
-        Tree.prototype.selectNode = function (id) {
+        Tree.prototype.selectNode = function (id, silent) {
             var node = this.nodeIndex[id];
 
             if (!node) {
@@ -521,10 +542,13 @@ define(
             }
             var nodeElement = 
                 lib.g(helper.getId(this, 'content-wrapper-' + id));
-            helper.addPartClasses(this, 'content-wrapper-selected', nodeElement);
+            helper.addPartClasses(
+                this, 'content-wrapper-selected', nodeElement);
 
-            this.fire('selectnode', { node: node });
-            this.fire('selectionchange');
+            if (!silent) {
+                this.fire('selectnode', { node: node });
+                this.fire('selectionchange');
+            }
         };
 
         /**
@@ -537,7 +561,7 @@ define(
             unselectNode(
                 this, 
                 id, 
-                { force: false, silent: false, modifyDOM: true }
+                { force: true, silent: false, modifyDOM: true }
             );
         };
 
@@ -568,7 +592,20 @@ define(
                     return;
                 }
                 if (children) {
+                    // 如果是用来替换原来的子节点，那要先把原来的子节点从索引中去掉
+                    if (node.children) {
+                        for (var i = 0; i < node.children.length; i++) {
+                            unselectNode(
+                                this, 
+                                node.children[i].id, 
+                                { force: true, silent: true, modifyDOM: false }
+                            );
+                            this.nodeIndex[node.children[i].id] = undefined;
+                        }
+                    }
                     node.children = children;
+                    // 重新索引
+                    buildNodeIndex(node, this.nodeIndex);
                 }
 
                 // 为了效率，直接刷掉原来的HTML

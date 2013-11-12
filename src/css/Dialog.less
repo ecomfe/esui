@@ -8,72 +8,140 @@
 @import "mixin.less";
 @import "variable.less";
 
-.ui-dialog {
+// 这是一个Dialog的基类mixin，方便子类继承
+.ui-dialog-mixin {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 2px solid #394459;
     .border-radius(3px, 3px, 3px, 3px);
     position: absolute;
-    width: 660px;
+    width: 600px;
     z-index: @dialog-z-index;
+}
 
+.ui-dialog-head-mixin {
+    .background("esui-dialog-head-bg.png", repeat);
+    color: #FFFFFF;
+    font-weight: bold;
+    height: 26px;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    .user-select();
+}
+
+.ui-dialog-close-icon-mixin {
+    .background("esui-dialog-head-close.png");
+    height: 13px;
+    width: 13px;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    .interactive-cursor();
+}
+
+.ui-dialog-title-mixin {
+    padding-left: 12px;
+    line-height: 28px;
+    font-size: 15px;
+    line-height: 26px;
+}
+
+.ui-dialog-body-mixin {
+    padding: 10px 8px 8px;
+    overflow: hidden;
+    zoom: 1;
+}
+
+.ui-dialog-foot-panel-mixin {
+    .user-select();
+    margin: 0px 8px 3px;
+    padding: 15px 0 20px 25px;
+    border-top: 1px solid #F0F0F0;
+    overflow: hidden;
+    zoom: 1;
+}
+
+
+.ui-dialog-foot-mixin {
+    float: right;
+    .ui-button {
+        margin-right: 6px;
+    }
+}
+
+.ui-dialog-draggable-mixin {  
     .ui-dialog-head {
-        .background("esui-dialog-head-bg.png", repeat);
-        color: #FFFFFF;
-        font-weight: bold;
-        height: 26px;
-        position: relative;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        .user-select();
+        cursor: move;
+    }
+}
+
+.ui-dialog-dragging-mixin {
+    .user-select();
+}
+
+
+.ui-dialog-mask-mixin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // 兼容IE6
+    _position: absolute;
+    _width: 100%;
+    _height: 100%;
+    background: #333;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    z-index: @mask-z-index;
+}
+
+
+// mixin end
+
+.ui-dialog {
+    .ui-dialog-mixin();
+    .ui-dialog-head {
+        .ui-dialog-head-mixin();
         .ui-dialog-close-icon {
-            .background("esui-dialog-head-close.png");
-            height: 13px;
-            width: 13px;
-            position: absolute;
-            right: 10px;
-            top: 5px;
-            .interactive-cursor ();
+            .ui-dialog-close-icon-mixin();
         }
 
         .ui-dialog-title {
-            padding-left: 12px;
-            line-height: 28px;
-            font-size: 15px;
-            line-height: 26px;
+            .ui-dialog-title-mixin();
         }
     }
 
     .ui-dialog-body {
-        padding: 10px 8px 8px;
-        overflow: hidden;
-        zoom: 1;
+        .ui-dialog-body-mixin();
     }
     .ui-dialog-foot-panel {
-        .user-select();
-        margin:0px 8px 3px;
-        padding: 15px 0 20px 25px;
-        border-top:1px solid #F0F0F0;
-        overflow: hidden;
-        zoom: 1;
+        .ui-dialog-foot-panel-mixin();
         .ui-dialog-foot {
-            float: right;
+            .ui-dialog-foot-mixin();
             .ui-button {
-                margin-right:6px;
+                margin-right: 6px;
+                height: 26px;
+                line-height: 26px;
+                margin-right: 6px;
+                width: 50px;
             }
         }
     }
 
 }
 
-.ui-dialog-draggable {  
-    .ui-dialog-head {
-        cursor: move;
-    }
+.ui-dialog-draggable {
+    .ui-dialog-draggable-mixin();
 }
 
 .ui-dialog-dragging {
-    .user-select();
+    .ui-dialog-dragging-mixin();
+}
+
+.ui-dialog-mask {
+    .ui-dialog-mask-mixin();
 }
 
 /** 警告框，确认框 */
@@ -106,26 +174,10 @@
         }
 
         .ui-dialog-text {
-            float: left;
             margin-top: 20px;
             line-height: 18px;
-            width: 265px;
+            margin-right: 40px;
+            overflow: hidden;
         }
     }
-}
-
-.ui-dialog-mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    // 兼容IE6
-    _position: absolute;
-    _width: 100%;
-    _height: 100%;
-    background: #333;
-    opacity: .2;
-    filter: alpha(opacity=20);
-    z-index: @mask-z-index;
 }

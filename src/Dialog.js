@@ -20,7 +20,7 @@ define(
         var Control = require('./Control');
         var ui = require('./main');
 
-        var maskIdPrefix = 'ctrlMask';
+        var maskIdPrefix = 'ctrl-mask';
 
         /**
          * 弹出框控件类
@@ -159,6 +159,9 @@ define(
             var main = this.main;
             var left = this.left;
             var top = this.top;
+            var right = this.right;
+            var bottom = this.bottom;
+
             if (!left) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
@@ -173,6 +176,26 @@ define(
 
             main.style.left = left + 'px';
             main.style.top = page.getScrollTop() + top + 'px';
+
+            // 如果设置right，就用
+            if (right) {
+                main.style.right = right + 'px';
+            }
+            // 如果设置bottom，就用
+            if (bottom !== undefined) {
+                main.style.bottom = bottom + 'px';
+            }
+            // 设置的height是auto时的逻辑是
+            // 对话框自动延展到底部
+            // 到顶部的距离由top决定
+            if (this.height === 'auto') {
+                var height = page.getViewHeight() - top;
+                main.style.height = height + 'px';
+                var body = this.getBody().main;
+                var header = this.getHead().main;
+                var headerHeight = parseInt(lib.getStyle(header, 'height'), 10);
+                body.style.height = height - headerHeight + 'px';
+            }
         }
 
         /**
@@ -398,19 +421,16 @@ define(
                  */
                 var properties = {
                     closeButton: true,    // 是否具有关闭按钮
-                    closeOnHide: true, // 右上角关闭按钮是隐藏还是移除
+                    closeOnHide: true,    // 右上角关闭按钮是隐藏还是移除
                     draggable: false,     // 是否可拖拽
                     mask: true,           // 是否具有遮挡层
-                    width: 600,           // 对话框的宽度
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     defaultFoot: ''
                         + '<div data-ui="type:Button;id:btnFootOk;'
-                        + 'childName:btnOk;'
-                        + 'skin:spring;height:26;width:50;">确定</div>'
+                        + 'childName:btnOk;skin:spring;">确定</div>'
                         + '<div data-ui="type:Button;'
-                        + 'id:btnFootCancel;childName:btnCancel;'
-                        + 'height:26;">取消</div>',
+                        + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
                     needFoot: true,
                     roles: {}
                 };
@@ -453,7 +473,7 @@ define(
                 }
 
                 // 设置样式
-                this.main.style.left = '-10000px';
+                this.addState('hidden');
                 createHead(this, this.roles.title);
                 this.createBF('body', this.roles.content);
                 if (this.needFoot) {
@@ -535,7 +555,10 @@ define(
                 {
                     name: 'height',
                     paint: function (dialog, value) {
-                        if (value) {
+                        if (value === 'auto') {
+                            dialog.main.style.height = 'auto';
+                        }
+                        else if (value) {
                             dialog.main.style.height = value + 'px';
                         }
                         if (dialog.isShow) {
@@ -546,7 +569,10 @@ define(
                 {
                     name: 'width',
                     paint: function (dialog, value) {
-                        if (value) {
+                        if (value === 'auto') {
+                            dialog.main.style.width = 'auto';
+                        }
+                        else if (value) {
                             dialog.main.style.width = value + 'px';
                         }
                         if (dialog.isShow) {
@@ -564,6 +590,9 @@ define(
                 {
                     name: 'content',
                     paint: function (dialog, value) {
+                        if (!value) {
+                            return;
+                        }
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
@@ -681,7 +710,11 @@ define(
                 // 浮动层自动定位功能初始化
                 //lib.on(window, 'resize', getResizeHandler);
                 helper.addDOMEvent(this, window, 'resize', resizeHandler);
+//                helper.addDOMEvent(
+//                        this, window, 'scroll', resizeHandler
+//                    );
                 this.setWidth(this.width);
+                this.removeState('hidden');
                 resizeHandler.apply(this);
 
                 // 要把dialog置顶
@@ -692,7 +725,10 @@ define(
                     var dialogNum = 0;
                     for (var i = 0, len = rawElements.length; i < len; i++) {
                         if (rawElements[i].nodeType === 1) {
-                            if (lib.hasClass(rawElements[i], 'ui-dialog')) {
+                            if (lib.hasClass(rawElements[i], 'ui-dialog')
+                                && !lib.hasClass(
+                                    rawElements[i], 'ui-dialog-hidden')
+                            ) {
                                 dialogNum ++;
                             }
                         }
@@ -701,6 +737,7 @@ define(
                     zIndex += dialogNum * 10;
                 //}
                 this.main.style.zIndex = zIndex;
+
 
                 if (mask) {
                     showMask(this, zIndex - 1);
@@ -720,11 +757,10 @@ define(
                     helper.removeDOMEvent(
                         this, window, 'resize', resizeHandler
                     );
-                    var main = this.main;
                     var mask = this.mask;
 
-                    main.style.left = main.style.top = '-10000px';
-
+                    this.addState('hidden');
+ 
                     if (mask) {
                         hideMask(this);
                     }
@@ -780,6 +816,13 @@ define(
                 this.setProperties({'width': width});
             },
 
+            /**
+             * 提供一个可以手动调用的resize接口
+             *
+             */
+            resize: function () {
+                resizeHandler.apply(this);
+            },
 
             /**
              * 销毁控件
@@ -823,7 +866,6 @@ define(
 
             var properties = {
                 type: 'confirm',
-                width: 300,
                 skin: 'confirm',
                 title: ''
             };
@@ -861,6 +903,17 @@ define(
             var cancelBtn = dialog.getFoot().getChild('btnCancel');
             okBtn.setContent(Dialog.OK_TEXT);
             cancelBtn.setContent(Dialog.CANCEL_TEXT);
+
+            // 也可以改宽高
+            if (properties.btnHeight) {
+                okBtn.set('height', properties.btnHeight);
+                cancelBtn.set('height', properties.btnHeight);
+            }
+            if (properties.btnWidth) {
+                okBtn.set('width', properties.btnWidth);
+                cancelBtn.set('width', properties.btnWidth);
+            }
+
             okBtn.on(
                 'click',
                 lib.curry(btnClickHandler, dialog, 'ok')
@@ -898,7 +951,6 @@ define(
 
             var properties = {
                 type: 'warning',
-                width: 300,
                 skin: 'alert',
                 title: ''
             };
@@ -943,6 +995,16 @@ define(
                 'click',
                 lib.curry(btnClickHandler, dialog, okBtn)
             );
+
+            // 也可以改宽高
+            if (properties.btnHeight) {
+                okBtn.set('height', properties.btnHeight);
+            }
+
+            if (properties.btnwidth) {
+                okBtn.set('width', properties.btnwidth);
+            }
+
             return dialog;
         }; 
 

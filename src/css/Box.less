@@ -5,10 +5,8 @@
  * @file 组合框样式
  * @author dbear
  */
-
 @import "mixin.less";
 @import "variable.less";
-
 .ui-checkbox,
 .ui-radio,
 .ui-boxgroup-checkbox,
@@ -18,6 +16,12 @@
 
     input {
         margin-right: .2em;
+        vertical-align: middle;;
+        margin-bottom: -.01em;
+    }
+
+    span {
+        vertical-align: middle;
     }
 }
 
@@ -28,4 +32,28 @@
 
 .ui-boxgroup-vertical label {
     display: block;
+}
+
+
+/** 验证 */
+.ui-checkbox-validity-label {
+    zoom:1;
+    color: #CC0000;
+    padding-left: 10px;
+}
+
+.ui-checkbox-validity-label-notice {
+    color: #FF0000;
+}
+
+.ui-checkbox-validity-label-warn {
+    color: red;
+}
+
+.ui-checkbox-validity-label-invalid {
+    color: #CC0000;
+}
+
+.ui-boxgroup-validity-label-invalid {
+    color: #CC0000;
 }

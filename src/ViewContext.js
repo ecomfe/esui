@@ -8,6 +8,84 @@
  
 define(
     function () {
+        function ControlGroup(name) {
+            this.length = 0;
+            this.name = name;
+        }
+
+        // 为了让Firebug认为这是个数组
+        ControlGroup.prototype.splice = Array.prototype.splice;
+
+        /**
+         * 对分组内每个控件调用指定函数
+         *
+         * @param {function} callback 调用的函数，函数中的`this`为控件对象
+         */
+        ControlGroup.prototype.each = function (callback) {
+            for (var i = 0; i < this.length; i++) {
+                var control = this[i];
+                callback.call(control);
+            }
+        };
+
+        /**
+         * 激活分组内所有控件
+         */
+        ControlGroup.prototype.enable = function () {
+            this.each(function () { this.enable(); });
+        };
+
+        /**
+         * 禁用分组内所有控件
+         */
+        ControlGroup.prototype.disable = function () {
+            this.each(function () { this.disable(); });
+        };
+
+        /**
+         * 显示分组内所有控件
+         */
+        ControlGroup.prototype.show = function () {
+            this.each(function () { this.show(); });
+        };
+
+        /**
+         * 隐藏分组内所有控件
+         */
+        ControlGroup.prototype.hide = function () {
+            this.each(function () { this.hide(); });
+        };
+
+        /**
+         * 销毁当前实例
+         */
+        ControlGroup.prototype.dispose = function () {
+            for (var i = 0; i < this.length; i++) {
+                delete this[i];
+            }
+            this.length = 0;
+        };
+
+        function addToGroup(control, group) {
+            group[group.length] = control;
+            group.length++;
+        }
+
+        function removeFromGroup(control, group) {
+            for (var i = 0; i < group.length; i++) {
+                if (group[i] === control) {
+                    delete group[i];
+                    group.length--;
+                    return;
+                }
+            }
+        }
+
+        function getGroupNames(control) {
+            var group = control.get('group');
+            return group ? group.split(/[\t\r\n ]/) : [];
+        }
+
         var counter = 0x830903;
 
         /**
@@ -42,7 +120,14 @@ define(
              */
             this.controls = {};
 
-            id = id || getGUID;
+            /**
+             * 视图环境控件分组集合
+             *
+             * @type {Object}
+             */
+            this.groups = {};
+
+            id = id || getGUID();
             // 如果已经有同名的，就自增长一下
             if (pool.hasOwnProperty(id)) {
                 var i = 1;
@@ -95,6 +180,19 @@ define(
             }
 
             this.controls[control.id] = control;
+
+            var groups = getGroupNames(control);
+            for (var i = 0; i < groups.length; i++) {
+                var groupName = groups[i];
+
+                if (!groupName) {
+                    continue;
+                }
+
+                var group = this.getGroup(groupName);
+                addToGroup(control, group);
+            }
+
             control.setViewContext(this);
 
         };
@@ -107,6 +205,19 @@ define(
          */
         ViewContext.prototype.remove = function (control) {
             delete this.controls[control.id];
+
+            var groups = getGroupNames(control);
+            for (var i = 0; i < groups.length; i++) {
+                var groupName = groups[i];
+
+                if (!groupName) {
+                    continue;
+                }
+
+                var group = this.getGroup(groupName);
+                removeFromGroup(control, group);
+            }
+
             control.setViewContext(null);
 
         };
@@ -123,6 +234,24 @@ define(
         };
 
         /**
+         * 获取一个控件分组
+         *
+         * @param {string} name 分组名称
+         * @return {ControlGroup}
+         */
+        ViewContext.prototype.getGroup = function (name) {
+            if (!name) {
+                throw new Error('name is unspecified');
+            }
+
+            var group = this.groups[name];
+            if (!group) {
+                group = this.groups[name] = new ControlGroup(name);
+            }
+            return group;
+        };
+
+        /**
          * 清除视图环境中所有控件。 
          *
          * @public
@@ -136,6 +265,13 @@ define(
                     if (control.viewContext && control.viewContext === this) {
                         this.remove(control);
                     }
+                }
+            }
+
+            for (var name in this.groups) {
+                if (this.groups.hasOwnProperty(name)) {
+                    this.groups[name].dispose();
+                    this.groups[name] = undefined;
                 }
             }
         };

@@ -6,35 +6,43 @@
   * @author dbear
   */
 
-@import "mixin.less";
-@import "variable.less";
-
 /**
  * 基础按钮样式
  */
+@import "mixin.less";
+@import "variable.less";
 .ui-button {
     .user-select();
     overflow:hidden;
     cursor:pointer;
-}
 
-.ui-button {
     .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
     border: 1px solid #CCC;
-    .interactive-cursor ();
     font-size: 12px;
     text-align: center;
     color: #333;
-    height: 23px;
-    line-height: 23px;
     padding: 0 10px;
     vertical-align: top;
-    display: inline-block;
-    *display: inline;
-    *margin-bottom: 8px;
-    zoom: 1;
     .border-radius(2px, 2px, 2px, 2px);
+    .interactive-cursor ();
+    .inline-block();
     .box-sizing(content-box);
+
+    &:before {
+        content: '.';
+        visibility: hidden;
+        display: inline-block; 
+        width: 0;
+    }
+
+    height: 23px;
+    line-height: 23px;
+}
+
+button.ui-button {
+    // IE7下不支持设置box-sizing，且显示属性是按照border-box的
+    // 所以这里做下兼容
+    *height: 25px;
 }
 
 /**
@@ -45,7 +53,6 @@
  }
 .ui-button:active {
     border: 1px solid #BEBEBE;
-    height: 23px;
     .linear-gradient-background (top, #f6f6f6, #ffffff, #f6f6f6);
 }
 
@@ -67,33 +74,40 @@
 .skin-spring-button,
 .skin-spring-add-button {
     border: 1px solid #519D30;
-    height: 26px;
-    line-height: 26px;
     color: white;
     font-weight: bold;
 }
 .skin-spring-button {
     .linear-gradient-background (top, #6cbb4c, #519c30, #65b445);
     padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
 }
+
+
+button.skin-spring-button {
+    // IE7下不支持设置box-sizing，且显示属性是按照border-box的
+    // 所以这里做下兼容
+    *height: 32px;
+}
+
+
 .skin-spring-add-button {
     .linear-gradient-background-with-image (
-        top, #6cbb4c, #519c30, "esui-button-plus.gif", 9px, 7px, #65b445);
-    width: 40px;
+        top, #6cbb4c, #519c30, "esui-button-plus.gif", 9px, center, #65b445);
     padding: 0 13px 0 27px;
 }
 
 .skin-spring-button:active,
 .skin-spring-add-button:active {
     border: 1px solid #509c2f;
-    height: 26px;
 }
 .skin-spring-button:active {
     .linear-gradient-background (top, #519c30, #6cbb4c, #65b445);
 }
 .skin-spring-add-button:active {
     .linear-gradient-background-with-image (
-        top, #519c30, #6cbb4c, "esui-button-plus.gif", 9px, 7px, #65b445);
+        top, #519c30, #6cbb4c, "esui-button-plus.gif", 9px, center, #65b445);
 }
 
 .skin-spring-button:hover,
@@ -106,12 +120,8 @@
 .skin-download-button {
     .linear-gradient-background-with-image (
         top, #FFF, #f6f6f6, "esui-btn-download.png", 40px, center, #65b445);
-    height: 23px;
-    line-height: 24px;
-    margin: 3px 10px;
     padding-left: 12px;
     padding-right: 25px;
-    width: 25px;
 }
 .skin-download-button:active {
     .linear-gradient-background-with-image (
@@ -147,6 +157,11 @@
     line-height: 26px;
     overflow: hidden;
 }
+
+button.skin-link-button {
+    *height: 28px;
+}
+
 .skin-link-button:active,
 .skin-link-button:hover {
     background: none;
@@ -155,4 +170,9 @@
     line-height: 26px;
     overflow: hidden;
     color: blue;
+}
+
+button.skin-link-button:active,
+button.skin-link-button:hover {
+    height: 28px;
 }

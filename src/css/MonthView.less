@@ -47,6 +47,10 @@
     .ui-monthview-month {
         border:1px solid #ccced4;
         font-size:13px;
+
+        table {
+            width: 100%;
+        }
     }
 
     .ui-monthview-month-title {
@@ -58,14 +62,23 @@
         text-align:center;
     }
 
+    .ui-monthview-month-title-selected {
+        background: #CCCED4;
+    }
+
     .ui-monthview-month-item {
-        width:30px;
-        height:21px;
-        line-height:21px;
-        cursor:pointer;
-        color:#03c;
-        text-align:center;
-        border-bottom:1px solid #f1f1f1;
+        width: 19px;
+        height: 21px;
+        line-height: 21px;
+        cursor: pointer;
+        color: #03c;
+        text-align: center;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+
+    .ui-monthview-last-row .ui-monthview-month-item {
+        border-bottom: none;
     }
 
     .ui-monthview-month-item:hover {
@@ -97,6 +110,42 @@
     }
 
     
+}
+
+// 多选模式
+.ui-monthview-multi-select {
+    width: 220px;
+    .ui-monthview-head {
+        table {width:215px;}
+    }
+
+    .ui-monthview-month-select-all {
+        width: 15px;
+        height:21px;
+        line-height: 21px;
+        background: #f1f1f1;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+            background: #f1f1f1;
+        }
+    }
+
+    .ui-monthview-month-select-all-selected {
+        background: #CCCED4;
+    }
+ 
+    .ui-monthview-month-row-select {
+        background: #f1f1f1;
+        height: 21px;
+        line-height: 21px;
+        text-align: center;
+        border-bottom: 1px solid #f1f1f1;
+        cursor: pointer;
+    }
+    .ui-monthview-month-row-select-selected {
+        background: #CCCED4;
+    }
 }
 
 .ui-monthview-disabled {

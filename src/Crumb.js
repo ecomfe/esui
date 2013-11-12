@@ -56,6 +56,23 @@ define(
                 path: []
             };
             lib.extend(properties, Crumb.defaultProperties, options);
+
+            var children = lib.getChildren(this.main);
+            if (!options.path && children.length) {
+                // 从HTML中拿到数据，HTML中不要写separator
+                properties.path = [];
+                for (var i = 0; i < children.length; i++) {
+                    var element = children[i];
+                    var node = {
+                        text: lib.getText(element)
+                    };
+                    if (element.nodeName.toLowerCase() === 'a') {
+                        node.href = lib.getAttribute(element, 'href');
+                    }
+                    properties.path.push(node);
+                }
+            }
+
             this.setProperties(properties);
         };
 
@@ -66,7 +83,8 @@ define(
          * @type {string}
          * @public
          */
-        Crumb.prototype.textNodeTemplate = '<span>${text}</span>';
+        Crumb.prototype.textNodeTemplate = 
+            '<span class="${classes}">${text}</span>';
 
         /**
          * 链接节点的内容HTML模板
@@ -74,7 +92,11 @@ define(
          * @type {string}
          * @public
          */
-        Crumb.prototype.linkNodeTemplate = '<a href="${href}">${text}</a>';
+        Crumb.prototype.linkNodeTemplate = 
+            '<a class="${classes}" href="${href}">${text}</a>';
+
+        Crumb.prototype.separatorTemplate = 
+            '<span class="${classes}">${text}</span>';
 
         /**
          * 获取节点的HTML内容
@@ -82,18 +104,37 @@ define(
          * @param {Object} node 节点数据项
          * @param {string=} node.href 链接地址
          * @param {string} node.text 显示文字
+         * @param {string} classes 节点上的css类
          * @return {string}
          * @public
          */
-        Crumb.prototype.getNodeHTML = function (node) {
+        Crumb.prototype.getNodeHTML = function (node, classes) {
             var template = node.href
                 ? this.linkNodeTemplate
                 : this.textNodeTemplate;
             var data = {
                 href: lib.encodeHTML(node.href),
-                text: lib.encodeHTML(node.text)
+                text: lib.encodeHTML(node.text),
+                classes: classes
             };
             return lib.format(template, data);
+        };
+
+        /**
+         * 获取分隔元素HTML内容
+         *
+         * @param {string} classes 节点上的css类
+         * @return {string}
+         * @public
+         */
+        Crumb.prototype.getSeparatorHTML = function (classes) {
+            return lib.format(
+                this.separatorTemplate,
+                {
+                    classes: classes,
+                    text: this.separator
+                }
+            );
         };
 
         /**
@@ -106,17 +147,11 @@ define(
          * @inner
          */
         function getHTML(crumb, path) {
-            var html = '<ol>';
+            var html = '';
 
             var separatorClasses =
                 helper.getPartClasses(crumb, 'separator').join(' ');
-            var separator = lib.format(
-                '<li class="${classes}">${text}</li>',
-                {
-                    classes: separatorClasses, 
-                    text: lib.encodeHTML(crumb.separator)
-                }
-            );
+            var separator = crumb.getSeparatorHTML(separatorClasses);
 
             for (var i = 0; i < path.length; i++) {
                 var node = path[i];
@@ -134,13 +169,9 @@ define(
                     separator = '';
                 }
 
-                html += '<li class="' + classes.join(' ') + '">';
-                html += crumb.getNodeHTML(node);
-                html += '</li>';
+                html += crumb.getNodeHTML(node, classes.join(' '));
                 html += separator;
             }
-
-            html += '</ol>';
 
             return html;
         }

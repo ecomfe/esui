@@ -28,6 +28,21 @@ define(
             this.fire('click');
         }
 
+        /**
+         * 获取元素border信息
+         * 
+         * @param {HTMLElement} dom 目标元素
+         * @return {object}
+         */
+        function getBorderInfo(dom) {
+            var result = {};
+            result.borderTop =
+                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
+            result.borderBottom =
+                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
+            return result;
+        }
+
         Button.prototype = {
             /**
              * 控件类型
@@ -59,7 +74,7 @@ define(
                 var innerDiv = this.main.firstChild;
                 if (!properties.content 
                     && innerDiv 
-                    && innerDiv.tagName != 'DIV'
+                    && innerDiv.nodeName.toLowerCase() !== 'div'
                 ) {
                     properties.content = this.main.innerHTML;
                 }
@@ -75,7 +90,10 @@ define(
              * @override
              */
             createMain: function (options) {
-                return document.createElement('BUTTON');
+                // IE创建带`type`属性的元素很麻烦，干脆这么来
+                var div = document.createElement('div');
+                div.innerHTML = '<button type="button"></button>';
+                return div.firstChild;
             },
 
             /**
@@ -106,7 +124,18 @@ define(
                         }
                         var main = button.main;
                         main.style.height = value + 'px';
-                        main.style.lineHeight = value + 'px';
+                        var lineHeight = value;
+                        main.style.lineHeight = lineHeight + 'px';
+
+                        var offsetHeight = main.offsetHeight;
+                        // 说明是border-box模式
+                        if (offsetHeight === value) {
+                            var borderInfo = getBorderInfo(main);
+                            height = value
+                                + borderInfo.borderTop
+                                + borderInfo.borderBottom;
+                            main.style.height = height + 'px';
+                        }
                     } 
                 },
                 {

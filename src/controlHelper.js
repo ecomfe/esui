@@ -71,7 +71,7 @@ define(
             }
             Array.prototype.push.apply(
                 extensions, 
-                require('./main').createGlobalExtensions()
+                ui.createGlobalExtensions()
             );
 
             // 同类型扩展去重
@@ -93,7 +93,8 @@ define(
          * @return {string}
          */
         function getControlClassType(control) {
-            return control.type.toLowerCase();
+            var type = control.styleType || control.type;
+            return type.toLowerCase();
         }
 
         /**
@@ -310,10 +311,19 @@ define(
             // 移除自身行为
             helper.clearDOMEvents(control);
 
+            // 移除所有扩展
+            if (control.extensions) {
+                for (var i = 0; i < control.extensions.length; i++) {
+                    var extension = control.extensions[i];
+                    extension.dispose();
+                }
+            }
+
             // 从控件树中移除
             if (control.parent) {
                 control.parent.removeChild(control);
             }
+
 
             // 从视图环境移除
             if (control.viewContext) {
@@ -374,6 +384,11 @@ define(
             }
 
             var queue = pool[e.type];
+
+            if (!queue) {
+                return;
+            }
+
             for (var i = 0; i < queue.length; i++) {
                 var control = queue[i];
                 triggerDOMEvent(control, element, e);
@@ -489,6 +504,11 @@ define(
             }
             var queue = 
                 control.domEvents[e.currentTarget[domEventsKey]][e.type];
+
+            if (!queue) {
+                return;
+            }
+
             for (var i = 0; i < queue.length; i++) {
                 queue[i].call(control, e);
             }
@@ -676,28 +696,25 @@ define(
         /**
          * 通过`painter`对象创建`repaint`方法
          *
-         * @param {function=} supterRepaint 父类的`repaint`方法
-         * @param {...Object} args `painter`对象
+         * @param {...Object | function} args `painter`对象
          * @return {function} `repaint`方法的实现
          */
-        helper.createRepaint = function (superRepaint) {
-            var hasSuperRepaint = typeof superRepaint === 'function';
-            var painters = [].concat.apply(
-                [], [].slice.call(arguments, hasSuperRepaint ? 1 : 0));
-            var map = {};
-            for (var i = 0; i < painters.length; i++) {
-                map[painters[i].name] = painters[i];
-            }
+        helper.createRepaint = function () {
+            var painters = [].concat.apply([], [].slice.call(arguments));
 
             return function (changes, changesIndex) {
-                if (hasSuperRepaint) {
-                    superRepaint.apply(this, arguments);
-                }
-
                 // 临时索引，不能直接修改`changesIndex`，会导致子类的逻辑错误
                 var index = lib.extend({}, changesIndex);
                 for (var i = 0; i < painters.length; i++) {
                     var painter = painters[i];
+
+                    // 如果是一个函数，就认为这个函数处理所有的变化，直接调用一下
+                    if (typeof painter === 'function') {
+                        painter.apply(this, arguments);
+                        continue;
+                    }
+
+                    // 其它情况下，走的是`painter`的自动化属性->函数映射机制
                     var propertyNames = [].concat(painter.name);
 
                     // 以下2种情况下要调用：
@@ -747,7 +764,7 @@ define(
 
         // 统一方法
         function render(element, options) {
-            var properties = require('./lib').clone(options || {});
+            var properties = lib.clone(options || {});
 
             // 如果同时有`top`和`bottom`，则计算出`height`来
             if (properties.hasOwnProperty('top')
@@ -809,7 +826,7 @@ define(
             var zIndex = 0;
             while (!zIndex && owner && owner !== document) {
                 zIndex = 
-                    parseInt(lib.getComputedStyle(owner, 'z-index'), 10);
+                    parseInt(lib.getComputedStyle(owner, 'zIndex'), 10);
                 owner = owner.parentNode;
             }
             zIndex = zIndex || 0;
@@ -870,16 +887,27 @@ define(
          */
         layer.attachTo = function (element, target, options) {
             options = options || { left: 'left', top: 'top' };
-            var lib = require('./lib');
-            var offset = lib.getOffset(target);
+            // 虽然这2个变量下面不一定用得到，但是不能等层出来了再取，
+            // 一但层出现，可能造成滚动条出现，导致页面尺寸变小
+            var pageWidth = lib.page.getViewWidth();
+            var pageHeight = lib.page.getViewHeight();
 
             // 浮层的存在会影响页面高度计算，必须先让它消失，
             // 但在消失前，又必须先计算到浮层的正确高度
             var previousDisplayValue = element.style.display;
             element.style.display = 'block';
+            element.style.top = '-5000px';
+            element.style.left = '-5000px';
+            // IE7下，如果浮层隐藏着反而会影响offset的获取，
+            // 但浮层显示出来又可能造成滚动条出现，
+            // 因此显示浮层显示后移到屏幕外面，然后计算坐标
+            var offset = lib.getOffset(target);
+            // 用完改回来再计算后面的
+            element.style.top = '';
+            element.style.left = '';
             var elementHeight = element.offsetHeight;
             var elementWidth = element.offsetWidth;
-            element.style.display = 'none';
+            element.style.display = previousDisplayValue;
 
             // 有2种特殊的情况：
             // 
@@ -899,7 +927,6 @@ define(
                 // - 如果指定`top === 'top'`，则尝试上边对齐，不行就下边对齐
                 // - 如果指定`bottom === 'bottom`'，则尝试下边对齐，不行就上边对齐
                 if (config.top === 'bottom') {
-                    var pageHeight = lib.page.getHeight();
                     if (pageHeight - offset.bottom <= elementHeight) {
                         config.top = null;
                         config.bottom = 'top';
@@ -912,7 +939,6 @@ define(
                     }
                 }
                 else if (config.top === 'top') {
-                    var pageHeight = lib.page.getHeight();
                     if (pageHeight - offset.top <= elementHeight) {
                         config.top = null;
                         config.bottom = 'bottom';
@@ -934,7 +960,6 @@ define(
                 // - 如果指定`left === 'left'`，则尝试左边对齐，不行就右边对齐
                 // - 如果指定`right === 'right`'，则尝试右边对齐，不行就左边对齐
                 if (config.left === 'right') {
-                    var pageWidth = lib.page.getWidth();
                     if (pageWidth - offset.right <= elementWidth) {
                         config.left = null;
                         config.right = 'left';
@@ -947,7 +972,6 @@ define(
                     }
                 }
                 else if (config.left === 'left') {
-                    var pageWidth = lib.page.getWidth();
                     if (pageWidth - offset.left <= elementWidth) {
                         config.left = null;
                         config.right = 'right';
@@ -1010,7 +1034,6 @@ define(
          * @public
          */
         layer.centerToView = function (element, options) {
-            var lib = require('./lib');
             var properties = options ? lib.clone(options) : {};
 
             if (typeof properties.width !== 'number') {

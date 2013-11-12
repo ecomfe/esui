@@ -336,7 +336,7 @@ define(
             }
         };
 
-        require('./lib').inherits(InputControl, Control);
+        lib.inherits(InputControl, Control);
         return InputControl;
     }
 );

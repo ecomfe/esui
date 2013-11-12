@@ -18,47 +18,44 @@ define(
          * @param {Object} options 初始化参数
          */
         function Table(options) {
-            /**
-             * 默认Table选项配置
-             * 
-             * @const
-             * @inner
-             * @type {Object}
-             */
-            var DEFAULT_OPTION = {
-                noDataHtml: '没有数据',
-                followHead: false,
-                sortable: false,
-                columnResizable: false,
-                rowWidthOffset: -1,
-                subrowMutex: 1,
-                subEntryOpenTip: '点击展开',
-                subEntryCloseTip: '点击收起',
-                subEntryWidth: 18,
-                breakLine: false,
+            var protectedProperties = {
                 followHeightArr: [0, 0],
                 followWidthArr: [],
-                hasTip: false,
-                tipWidth: 18,
-                sortWidth: 9,
-                fontSize: 13,
-                colPadding: 8,
                 handlers: [],
-                plugins: [
-                    {
-                        getRowArgs: getRowBaseArgs,
-                        getColHtml: getColBaseHtml
-                    },
-                    {
-                        getRowArgs: getSubrowArgs,
-                        getColHtml: getSubEntryHtml,
-                        getSubrowHtml : getSubrowHtml
-                    }
-                ]
+                plugins: []
             };
 
-            Control.call(this, lib.extend(DEFAULT_OPTION, options));
+            Control.call(this, lib.extend({}, options, protectedProperties));
         }
+
+        /**
+         * 默认属性值
+         *
+         * @type {Object}
+         * @public
+         */
+        Table.defaultProperties = {
+            noDataHtml: '没有数据',
+            noFollowHeadCache: false,
+            followHead: false,
+            sortable: false,
+            encode: false,
+            columnResizable: false,
+            rowWidthOffset: -1,
+            select: '',
+            selectMode: 'box',
+            subrowMutex: 1,
+            subEntryOpenTip: '点击展开',
+            subEntryCloseTip: '点击收起',
+            subEntryWidth: 18,
+            breakLine: false,
+            hasTip: false,
+            tipWidth: 18,
+            sortWidth: 9,
+            fontSize: 13,
+            colPadding: 8,
+            headZIndex: 1
+        };
 
         /**
          * 判断值是否为空
@@ -68,6 +65,17 @@ define(
          */
         function hasValue(obj) {
             return !(typeof obj == 'undefined' || obj === null);
+        }
+
+
+        /**
+         * 判断值是否为空,包括空字符串
+         * 
+         * @private
+         * @return {bool}
+         */
+        function isNullOrEmpty(obj) {
+            return !hasValue(obj) || !obj.toString().length;
         }
 
         /**
@@ -87,6 +95,17 @@ define(
          */
         function getAttr(element, key){
             return lib.getAttribute(element, 'data-' + key);
+        }
+
+        /**
+         * 获取dom的样式
+         * 
+         * @private
+         * @return {string}
+         */
+        function getStyleNum(dom, styleName) {
+            var result = lib.getStyle(dom, styleName);
+            return (result === '' ? 0 : (parseInt(result, 10) || 0));
         }
 
          /**
@@ -231,52 +250,106 @@ define(
                             + 'data-control-table="${controlTableId}">';
         
         /**
-         * 缓存表头跟随所用的数据
+         * 初始化FollowHead
+         * 
+         * @private
+         */
+        function initFollowHead(table){
+            if (table.followHead) {
+                cachingFollowDoms(table);
+                if (!table.noFollowHeadCache) {
+                    resetFollowOffset(table);
+                }
+            }
+        }
+
+        /**
+         *  刷新FollowHead设置
+         * 
+         * @private
+         */
+        function resetFollowHead(table){
+            if (table.followHead) {
+                cachingFollowDoms(table);
+                resetFollowOffset(table);
+            }
+        }
+
+         /**
+         * 缓存表头跟随的Dom元素
          *
          * @private
          */
-        function cachingFollowHead(table) {
+        function cachingFollowDoms(table) {
             if (!table.followHead) {
                 return;
             }
 
+            var followDoms = table.followDoms = [];
+            var walker = table.main.parentNode.firstChild;
+            var tableId = table.id;
+            // 缓存表格跟随的dom元素
+            while (walker) {
+                if (walker.nodeType === 1
+                 && (getAttr(walker, 'follow-thead') === tableId)) {
+                    followDoms.push(walker);
+                }
+                walker = walker.nextSibling;
+            }
+
+            resetFollowDomsWidth(table);
+            resetFollowHeight(table);
+        }
+
+        /**
+         * 重置FollowDoms的Heights
+         *
+         * @private
+         */
+        function resetFollowHeight(table) {
             var followDoms = table.followDoms;
+            var followHeights = table.followHeightArr;
 
-            function getStyleNum(dom, styleName) {
-                var result = lib.getStyle(dom, styleName);
-                return (result === '' ? 0 : parseInt(result, 10));
+            // 读取height和width的值缓存
+            followHeights[0] = 0;
+            var i = 0;
+            for (var len = followDoms.length; i < len; i++) {
+                 var dom = followDoms[i];
+                 followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
             }
+            followHeights[i + 1] = followHeights[i];
+            followHeights.lenght = i + 2;
+        }
 
-            if (!followDoms) {
-                followDoms = [];
-                table.followDoms = followDoms;
+        /**
+         * 重置followDoms元素的宽度
+         *
+         * @private
+         */
+        function resetFollowDomsWidth(table){
+            var followDoms = table.followDoms;
+            var followWidths = table.followWidthArr;
 
-                var walker = table.main.parentNode.firstChild;
-                var followWidths = table.followWidthArr;
-                var followHeights = table.followHeightArr;
+            for (var i = 0, len = followDoms.length; i < len; i++) {
+                var dom =  followDoms[i];
+                var followWidth = getStyleNum(dom, 'padding-left')
+                                + getStyleNum(dom, 'padding-right')
+                                + getStyleNum(dom, 'border-left-width')
+                                + getStyleNum(dom, 'border-right-width');
+                followWidths[i] = followWidth;
 
-                // 缓存表格跟随的dom元素
-                while (walker) {
-                    if (walker.nodeType == 1
-                     && getAttr(walker, 'follow-thead')) {
-                        followDoms.push(walker);
-                    }
-                    walker = walker.nextSibling;
-                }
-
-                // 读取height和width的值缓存
-                followHeights[0] = 0;
-                for (var i = 0, len = followDoms.length; i < len; i++) {
-                    var dom = followDoms[i];
-                    followWidths[i] = getStyleNum(dom, 'padding-left') 
-                                      + getStyleNum(dom, 'padding-right')  
-                                      + getStyleNum(dom, 'border-left') 
-                                      + getStyleNum(dom, 'border-right'); 
-                    followHeights[i + 1] = followHeights[i] + dom.offsetHeight;
-                }
-                followHeights[i + 1] = followHeights[i];
-                followHeights.lenght = i + 2;
+                followDoms[i].style.width = table.realWidth
+                                            - followWidth + 'px';
             }
+        }
+
+        /**
+         * 重置FollowDoms的offset
+         *
+         * @private
+         */
+        function resetFollowOffset(table) {
+            var followDoms = table.followDoms;
 
             // 读取跟随的高度，缓存
             var followOffest = lib.getOffset(followDoms[0] || table.main);
@@ -412,7 +485,9 @@ define(
                 }
 
                 foot.style.display = '';
-                foot.style.width = table.realWidth + 'px';
+                 if (table.realWidth) {
+                    foot.style.width = table.realWidth + 'px';
+                }
                 foot.innerHTML = getFootHtml(table);
             }
         }
@@ -449,7 +524,9 @@ define(
                 if ('function' == typeof contentHtml) {
                     contentHtml = contentHtml.call(table);
                 }
-                contentHtml = contentHtml || '&nbsp;';
+                if (isNullOrEmpty(contentHtml)) {
+                    contentHtml = '&nbsp;';
+                }
 
                 for (var j = 1; j < colspan; j++) {
                     colWidth += colsWidth[fieldIndex + j];
@@ -514,13 +591,18 @@ define(
                 );
             }
 
+            head.style.zIndex = table.headZIndex || 1;
+
             if (table.noHead) {
                 head.style.display = 'none';
                 return;
             }
 
             head.style.display = '';
-            head.style.width = table.realWidth + 'px';
+            if (table.realWidth) {
+                head.style.width = table.realWidth + 'px';
+            }
+
             lib.g(headPanelId).innerHTML = getHeadHtml(table);
 
             //初始化表头子控件
@@ -669,7 +751,9 @@ define(
                 } else {
                     contentHtml = title;
                 }
-                contentHtml = contentHtml || '&nbsp;';
+                if (isNullOrEmpty(contentHtml)) {
+                    contentHtml = '&nbsp;';
+                }
                 
                                             
                 html.push(
@@ -681,7 +765,8 @@ define(
                         ? ' data-dragright="1"' : ''),
                     (i <= canDragEnd && i > canDragBegin 
                         ? ' data-dragleft="1"' : ''),
-                    ' style="width:' + (table.colsWidth[i] + rowWidthOffset) + 'px;',
+                    ' style="',
+                    'width:' + (table.colsWidth[i] + rowWidthOffset) + 'px;',
                     (table.colsWidth[i] ? '' : 'display:none') + '">',
                     '<div class="' + realThTextClass +
                     (field.select ? ' ' + selClass : '') + '">',
@@ -878,6 +963,8 @@ define(
             if(!table.columnResizable){
                 return;
             }
+
+            table.fire('startdrag');
             
             var dragClass = getClass(table, 'startdrag');
             var tar = e.target;
@@ -1112,6 +1199,8 @@ define(
             table.isDraging = false;
             hideDragMark(table);
             
+            table.fire('enddrag');
+            
             lib.event.preventDefault(e);
             return false;
         }
@@ -1143,7 +1232,9 @@ define(
             var style = tBody.style;
             style.overflowX = 'hidden';
             style.overflowY = 'auto';
-            style.width = table.realWidth + 'px';
+            if (table.realWidth) {
+                style.width = table.realWidth + 'px';
+            }
 
             table.bodyPanel.disposeChildren();
             lib.g(tBodyPanelId).innerHTML = getBodyHtml(table);
@@ -1199,11 +1290,11 @@ define(
                 );
             }
 
-            rowPluginsList = getRowPluginsList(table);
+            rowBuilderList = table.rowBuilderList;
 
             for (var i = 0; i < dataLen; i++) {
                 var item = data[i];
-                html.push(getRowHtml(table, item, i, rowPluginsList));
+                html.push(getRowHtml(table, item, i, rowBuilderList));
             }
 
             return html.join('');  
@@ -1224,19 +1315,65 @@ define(
          var tplRowPrefix = '<div '
                         + 'id="${id}" '
                         + 'class="${className}" '
-                        + 'data-index="${index}">';
+                        + 'data-index="${index}" ${attr}>';
 
-        function getRowPluginsList(table) {
+         /**
+         * 批量添加rowBuilder
+         * 
+         * @private
+         * @param {Object} table
+         * @param {Array} builderList rowBuilder数组
+         */
+        function addRowBuilderList(table, builderList) {
             var plugins = table.plugins;
-            var result = [];
-            for (var i = 0, l = plugins.length; i < l; i++) {
-                var plugin = plugins[i];
-                if (plugin.getColHtml) {
-                    result.push(plugin);
+            var rowBuilderList = table.rowBuilderList || [];
+            for (var i = 0, l = builderList.length; i <l; i++) {
+                var builder = builderList[i];
+                if (!builder.getColHtml) {
+                    continue;
                 }
+
+                if(!hasValue(builder.index)) {
+                    builder.index = 1000;
+                }
+
+                plugins.push(builder);
+                rowBuilderList.push(builder);
             }
-            return result;
+
+            rowBuilderList.sort(function(a, b) {
+                return a.index - b.index;
+            });
+
+            table.rowBuilderList = rowBuilderList;
         }
+
+        /**
+         * 初始化基础Builder
+         * 
+         * @private
+         * @param {Object} table
+         *
+         */
+        function initBaseBuilderList(table) {
+            addRowBuilderList(
+                table,
+                [
+                    {
+                        index: 0,
+                        getRowArgs: getSubrowArgs,
+                        getColHtml: getSubEntryHtml,
+                        getSubrowHtml : getSubrowHtml
+                    },
+                    {
+                        index: 1,
+                        getRowArgs: getRowBaseArgs,
+                        getColHtml: getColBaseHtml
+                    }
+                ]
+            );
+        }
+
         /**
          * 获取表格行的html
          * 
@@ -1245,7 +1382,7 @@ define(
          * @param {number} index 当前行的序号
          * @return {string}
          */
-        function getRowHtml(table, data, index, plugins) {
+        function getRowHtml(table, data, index, builderList) {
             var html = [];
             var fields = table.realFields;
             var rowWidthOffset = table.rowWidthOffset;
@@ -1253,15 +1390,21 @@ define(
             var extraArgsList = [];
             var rowClass = [];
             var rowAttr = [];
-            for (var i = 0, l = plugins.length; i < l; i++) {
-                var plugin = plugins[i];
-                var rowArgs = plugin.getRowArgs
-                            ? plugin.getRowArgs(table, index) || {}
+
+            for (var i = 0, l = builderList.length; i < l; i++) {
+                var builder = builderList[i];
+                var rowArgs = builder.getRowArgs
+                            ? builder.getRowArgs(table, index) || {}
                             : {};
+
                 extraArgsList.push(rowArgs);
 
                 (rowArgs.rowClass) && (rowClass.push(rowArgs.rowClass));
                 (rowArgs.rowAttr) && (rowAttr.push(rowArgs.rowAttr));
+            }
+
+            function sortByIndex(a, b) {
+                return a.index - b.index;
             }
             
             for (var i = 0, l = fields.length; i < l; i++) {
@@ -1272,11 +1415,11 @@ define(
                 var colAttr = [];
                 var textAttr = [];
                 var textHtml = [];
-                var otherHtml = [];
-                var textStartIndex = 0;
+                var allHtml = [];
+                var textStartIndex = -1;
 
-                for (var s = 0, t = plugins.length; s < t; s++) {
-                    var colResult = plugins[s].getColHtml(
+                for (var s = 0, t = builderList.length; s < t; s++) {
+                    var colResult = builderList[s].getColHtml(
                         table, data, field, index, i, extraArgsList[s]
                     );
                     if (!colResult) {
@@ -1284,57 +1427,62 @@ define(
                     }
 
                     var colHtml = colResult.html;
-                    (colResult.colClass) && (colClass.push(colResult.colClass));
-                    (colResult.textClass) && (textClass.push(colResult.textClass));
-                    (colResult.colAttr) && (colAttr.push(colResult.colAttr));
-                    (colResult.textAttr) && (textAttr.push(colResult.textAttr));
+                    if (colResult.colClass) {
+                        colClass.push(colResult.colClass);
+                    }
+                    if (colResult.textClass) {
+                        textClass.push(colResult.textClass);
+                    }
+                    if (colResult.colAttr) {
+                        colAttr.push(colResult.colAttr);
+                    }
+                    if (colResult.textAttr) {
+                        textAttr.push(colResult.textAttr);
+                    }
 
                     if (hasValue(colHtml)) {
                         if (colResult.notInText) {
-                            otherHtml.push(colResult);
+                            colResult.index = s;
+                            allHtml.push(colResult);
                         } else {
                             textHtml.push(colHtml);
-                            (textStartIndex === 0) && (textStartIndex = s);
+                            (textStartIndex < 0) && (textStartIndex = s);
                         }
                     }
                 }
 
                 var contentHtml = '';
                 textHtml = [
-                    '<div class="' + textClass.join(' ') + '">',
+                    '<div class="' + textClass.join(' ') + '" ',
+                    textAttr.join(' ') + '>',
                         textHtml.join(''),
                     '</div>'
                 ].join('');
 
-                if (otherHtml.length > 0) {
+                allHtml.push({html: textHtml, index: textStartIndex});
+                allHtml.sort(sortByIndex);
+
+                if (allHtml.length > 1) {
                     var contentHtml = [
-                        '<table width="100%" collpadding="0" collspacing="0">',
+                        '<table width="100%" cellpadding="0" cellspacing="0">',
                             '<tr>'
                     ];
-                    textHtml = '<td>' + textHtml + '</td>';
 
-                    for (var s = 0, t = otherHtml.length; s < t; s++) {
-                        var oHtml = otherHtml[s];
-                        if (s == textStartIndex) {
-                            contentHtml.push(textHtml);
-                        }
-
+                    for (var s = 0, t = allHtml.length; s < t; s++) {
+                        var aHtml = allHtml[s];
                         contentHtml.push(
-                            ['<td ',
-                                hasValue(oHtml.width)
-                                ? 'width="' + oHtml.width + '" '
+                            '<td ',
+                                hasValue(aHtml.width)
+                                ? ' width="' + aHtml.width + '" '
                                 : '',
-                                oHtml.align
-                                ? 'align="' + oHtml.align + '">'
+                                aHtml.align
+                                ? ' align="' + aHtml.align + '">'
                                 : '>',
-                                    oHtml.html,
+                                    aHtml.html,
                             '</td>'
-                        ].join(''));
+                        );
                     }
 
-                    if (textStartIndex >= otherHtml.length) {
-                        contentHtml.push(textHtml);
-                    }
                     contentHtml.push('</tr></table>');
 
                     contentHtml = contentHtml.join('');
@@ -1349,7 +1497,7 @@ define(
                     'style="width:' + (colWidth + rowWidthOffset) + 'px;',
                     (colWidth ? '' : 'display:none') + '" ',
                     'data-control-table="' + table.id + '" ',
-                    'row="' + index + '" col="' + i + '">',
+                    'data-row="' + index + '" data-col="' + i + '">',
                     contentHtml,
                     '</td>'
                 );
@@ -1357,7 +1505,7 @@ define(
 
             html.unshift(
                 lib.format(
-                    tplRowPrefix + '${attr}',
+                    tplRowPrefix,
                     {
                         id: getId(table, 'row') + index,
                         className: rowClass.join(' '),
@@ -1373,8 +1521,8 @@ define(
 
             html.push('</tr></table></div>');
             
-            for (var i = 0, l = plugins.length; i <l; i++) {
-                var subrowBuilder = plugins[i].getSubrowHtml;
+            for (var i = 0, l = builderList.length; i <l; i++) {
+                var subrowBuilder = builderList[i].getSubrowHtml;
                 if (subrowBuilder) {
                     html.push(
                         subrowBuilder(table, index, extraArgsList[i])
@@ -1385,6 +1533,11 @@ define(
             return html.join('');
         }
 
+        /**
+         * base行绘制每行基本参数
+         *
+         * @private
+         */
         function getRowBaseArgs(table, rowIndex) {
             var datasource = table.datasource || [];
             var dataLen = datasource.length;
@@ -1403,7 +1556,16 @@ define(
             };
         }
 
-        function getColBaseHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
+        var baseColTextTpl = '<span id="${colTextId}">${content}</span>';
+
+        /**
+         * base列
+         *
+         * @private
+         */
+        function getColBaseHtml(
+            table, data, field, rowIndex, fieldIndex, extraArgs
+        ) {
             var tdCellClass = extraArgs.tdCellClass;
             var tdBreakClass = extraArgs.tdBreakClass;
             var tdTextClass = extraArgs.tdTextClass;
@@ -1414,7 +1576,7 @@ define(
             if (fieldIndex === 0) {
                 textClass.push(getClass(table, 'cell-text-first'));
             }
-            else if (fieldIndex === extraArgs.fieldLen - 1) {
+            if (fieldIndex === extraArgs.fieldLen - 1) {
                 textClass.push(getClass(table, 'cell-text-last'));
             }
 
@@ -1440,16 +1602,37 @@ define(
 
             // 构造内容html
             contentHtml = 'function' == typeof content
-                            ? content.call(table, data, rowIndex, fieldIndex)
-                            : data[content];
+                ? content.call(table, data, rowIndex, fieldIndex)
+                : (table.encode 
+                    ? lib.encodeHTML(data[content])
+                    : data[content]
+                );
+
+            if (isNullOrEmpty(contentHtml)) {
+                contentHtml = '&nbsp;';
+            }
 
             return {
                 colClass: tdClass.join(' '),
                 textClass: textClass.join(' '),
-                html: contentHtml
+                html: lib.format(
+                    baseColTextTpl,
+                    {
+                        colTextId: getId(
+                            table,
+                            'cell-textfield-' + rowIndex + '-'+ fieldIndex
+                        ),
+                        content: contentHtml
+                    }
+                )
             };
         }
 
+        /**
+         * subrow行绘制每行基本参数
+         *
+         * @private
+         */
         function getSubrowArgs(table, rowIndex){
             return {
                 subrow : table.subrow && table.subrow != 'false'
@@ -1468,7 +1651,9 @@ define(
                         + 'data-index="${index}">'
                         + '</div>';
 
-        function getSubEntryHtml(table, data, field, rowIndex, fieldIndex, extraArgs) {
+        function getSubEntryHtml(
+            table, data, field, rowIndex, fieldIndex, extraArgs
+        ) {
             var subrow = extraArgs.subrow;
             var subentry = subrow && field.subEntry;
             var result = {
@@ -1479,7 +1664,8 @@ define(
 
             if (subentry) {
                 var isSubEntryShown = typeof field.isSubEntryShow === 'function'
-                    ? field.isSubEntryShow.call(table, data, rowIndex, fieldIndex)
+                    ? field.isSubEntryShow.call(
+                        table, data, rowIndex, fieldIndex)
                     : true;
                 if (isSubEntryShown !== false) {
                     result.html = lib.format(
@@ -1505,10 +1691,12 @@ define(
          * @private
          * @return {string}
          */
-        function getSubrowHtml(table, index) {
-            return '<div id="' + getSubrowId(table, index)
-                +  '" class="' + getClass(table, 'subrow') + '"'
-                +  ' style="display:none"></div>';
+        function getSubrowHtml(table, index, extraArgs) {
+            return extraArgs.subrow
+                    ? '<div id="' + getSubrowId(table, index)
+                    +  '" class="' + getClass(table, 'subrow') + '"'
+                    +  ' style="display:none"></div>'
+                    : '';
         }
 
 
@@ -1758,14 +1946,7 @@ define(
                 handleResize(table);
             };
 
-            // 在dispose的时候释放
-            lib.on(window, 'resize', resizeHandler);
-            table.on(
-                'afterdispose',
-                function () {
-                    lib.un(window, 'resize', resizeHandler);
-                }
-            );
+            helper.addDOMEvent(table, window, 'resize', resizeHandler);
         }
         
         /**
@@ -1780,31 +1961,27 @@ define(
             var widthStr = table.realWidth + 'px';
             
             // 设置主区域宽度
-            table.main.style.width = widthStr;
-            getBody(table).style.width = widthStr;
-            head && (head.style.width = widthStr);
-            foot && (foot.style.width = widthStr);
-            
+            if (table.realWidth) {
+                table.main.style.width = widthStr;
+                getBody(table).style.width = widthStr;
+                head && (head.style.width = widthStr);
+                foot && (foot.style.width = widthStr);
+            }
             // 重新绘制每一列  
             initColsWidth(table);
             resetColumns(table);
 
             if (table.followHead) {
-                var walker = table.main.parentNode.firstChild;
-                var i = 0;
-                while (walker) {
-                    if (walker.nodeType == 1 
-                        && getAttr(walker, 'follow-thead')
-                    ) {
-                        walker.style.width = table.realWidth
-                                            - table.followWidthArr[i++] + 'px';
-                    }
-                    walker = walker.nextSibling;
-                }
+                resetFollowDomsWidth(table);
+                
+                //宽度的改变是会影响高度的，所以高度信息放在后面
+                resetFollowHeight(table);
             }
 
             // 重新获取Table位置
             initTableOffset(table);
+
+            table.fire('resize');
 
             table.topReseter && table.topReseter();
         }
@@ -1834,7 +2011,6 @@ define(
             }
 
             var domHead = getHead(table);
-            var followWidths = table.followWidthArr;
             var placeHolderId = getId(table, 'top-placeholder');
             var domPlaceholder = document.createElement('div');
             // 占位元素
@@ -1845,13 +2021,6 @@ define(
 
             lib.insertBefore(domPlaceholder, table.main);
             domPlaceholder = null;
-            
-            // 写入表头跟随元素的宽度样式
-            for (var i = 0, len = table.followDoms.length; i < len; i++) {
-                table.followDoms[i].style.width = table.realWidth
-                                                - followWidths[i] + 'px';
-            }
-            domHead && (domHead.style.width = table.realWidth + 'px');
 
             table.topReseter = function() {
                 if (!table.followHead) {
@@ -1863,6 +2032,14 @@ define(
                 var absolutePosition = posStyle == 'absolute';
                 var placeHolder = lib.g(placeHolderId);
                 var followDoms = table.followDoms;
+
+                //如果不启用缓存，则需要每次滚动都做判断并获取了
+                if (table.noFollowHeadCache) {
+                    var position = domHead.style.position;
+                    if ((position !== 'fixed' && position !== 'absolute')) {
+                        resetFollowOffset(table);
+                    }
+                }
 
                 if (scrollTop > table.followTop
                     && (absolutePosition
@@ -1918,7 +2095,7 @@ define(
 
             };
 
-            lib.on(window, 'scroll', table.topReseter);
+            helper.addDOMEvent(table, window, 'scroll', table.topReseter);
         }
         
         /**
@@ -1973,7 +2150,10 @@ define(
             for (var i = 0; i < tdsLen; i++) {
                 var td = tds[i];
                 if (getAttr(td, 'control-table') == id) {
-                    var width = Math.max(colsWidth[j % len] + rowWidthOffset, 0);
+                    var width = Math.max(
+                        colsWidth[j % len] + rowWidthOffset, 
+                        0
+                    );
                     td.style.width = width + 'px';
                     td.style.display = width ? '' : 'none';
                     j++;
@@ -2046,7 +2226,7 @@ define(
                     var id =  getId(table, 'single-select');
                     var data = {
                         id: id + index,
-                        name: id ,
+                        name: id,
                         className: getClass(table, 'single-select'),
                         index: index
                     };
@@ -2238,8 +2418,12 @@ define(
             }
         }
 
+        /**
+         * 根据单个className的元素匹配函数
+         * 
+         * @private
+         */
         var rclass = /[\t\r\n]/g;
-
         function getClassMatch(className){
             var cssClass= ' ' + className + ' ';
             return function (element) {
@@ -2248,6 +2432,30 @@ define(
             };
         }
 
+        /**
+         * 创建委托的Handler
+         * 
+         * @private
+         */
+        function createHandlerItem(handler, matchFn){
+            var fn = null;
+            if (matchFn) {
+                fn = 'function' == typeof matchFn
+                     ? matchFn
+                     : getClassMatch(matchFn);
+            }
+
+            return {
+                handler : handler,
+                matchFn : fn
+            };
+        }
+
+        /**
+         * 根据单个className的元素匹配函数
+         * 
+         * @private
+         */
         function getHandlers(table, el, eventType){
             var realId = el.id;
             var handlers = table.handlers[realId];
@@ -2265,33 +2473,62 @@ define(
             return handlers;
         }
 
-        function createHandlerItem(handler, matchFn){
-            var fn = null;
-            if (matchFn) {
-                fn = 'function' == typeof matchFn
-                     ? matchFn
-                     : getClassMatch(matchFn);
-            }
-
-            return {
-                handler : handler,
-                matchFn : fn
-            };
-        }
-
+        /**
+         * 批量添加handlers
+         * 
+         * @private
+         *
+         * @return {Array} 事件委托处理函数数组
+         */
         function addHandlers(table, el, eventType, handlers){
             var handlerQueue = getHandlers(table, el, eventType);
+            var addedHandlers = [];
+
+            //若从未在该el元素上添加过该eventType的事件委托，
+            //则初次则自动添加该委托
+            if (!handlerQueue.length) {
+                addDelegate(table, el, eventType);
+            }
+
             for (var i = 0, l = handlers.length; i < l ; i++) {
                 var item = handlers[i];
-                handlerQueue.push(
-                    createHandlerItem(item.handler, item.matchFn)
-                );
+                var hanlderItem = createHandlerItem(item.handler, item.matchFn);
+                handlerQueue.push(hanlderItem);
+                addedHandlers.push(hanlderItem);
+            }
+
+            return addedHandlers;
+        }
+
+        /**
+         * 批量删除handlers
+         * 
+         * @private
+         */
+        function removeHandlers(table, el, eventType, handlers) {
+            var handlerQueue = getHandlers(table, el, eventType);
+            for (var i = 0, len = handlers.length; i < len ; i++) {
+                var handler = handlers[i];
+
+                for (var j = 0, l = handlerQueue.length; j < l ; j++) {
+                    if (handlerQueue[j] == handler) {
+                        handlerQueue.splice(j, 1);
+                        j--;
+                    }
+                }
+            }
+
+            //若handlerQueue为空则移除该事件委托，
+            //与addHandlers中添加事件委托的逻辑相呼应
+            if (!handlerQueue.length) {
+                removeDelegate(table, el, eventType);
             }
         }
 
         /**
         * 生成委托处理函数
         *
+        * @private
         */
         function getDelegateHandler(element, handlerQueue, scrope) {
             return function(e) {
@@ -2317,9 +2554,9 @@ define(
         }
 
         /**
-        * 事件委托
+        * 添加事件委托
         */
-        function delegate(control, element, eventType) {
+        function addDelegate(control, element, eventType) {
             var handlerQueue = getHandlers(control, element, eventType);
             helper.addDOMEvent(
                 control, 
@@ -2327,6 +2564,13 @@ define(
                 eventType, 
                 getDelegateHandler(element, handlerQueue, control)
             );
+        }
+
+        /**
+        * 移除事件委托
+        */
+        function removeDelegate(control, element, eventType) {
+            helper.removeDOMEvent(control, element, eventType);
         }
 
         /**
@@ -2414,12 +2658,6 @@ define(
             );
         }
 
-        function initDelegate(table){
-            delegate(table, table.main, 'mouseover');
-            delegate(table, table.main, 'mouseout');
-            delegate(table, table.main, 'click');
-        }
-
         Table.prototype = {
             /**
              * 控件类型
@@ -2428,14 +2666,46 @@ define(
              */
             type: 'Table',
 
+
+            /**
+             * 初始化参数
+             *
+             * @param {Object} options 构造函数传入的参数
+             * @override
+             * @protected
+             */
+            initOptions: function (options) {
+                /**
+                 * 默认Table选项配置
+                 * 
+                 * @const
+                 * @inner
+                 * @type {Object}
+                 */
+                var properties = {};
+                
+                lib.extend(properties, Table.defaultProperties, options);
+
+                this.setProperties(properties);
+            },
+
+            /**
+             * 初始化DOM结构
+             *
+             * @override
+             * @protected
+             */
             initStructure: function() {
                 this.realWidth = getWidth(this);
-                this.main.style.width = this.realWidth + 'px';   
+                if (this.realWidth) {
+                   this.main.style.width = this.realWidth + 'px'; 
+                }
 
-                initDelegate(this);
+                initBaseBuilderList(this);
                 initResizeHandler(this);
                 initMainEventhandler(this);
             },
+
 
             /**
              * 渲染控件
@@ -2446,30 +2716,18 @@ define(
                 Control.prototype.repaint.apply(this, arguments);
                  // 初始化控件主元素上的行为
                 var table = this;
-
-                var allProperities = {
-                    bodyMaxHeight: false,
-                    breakLine: false,
-                    order: false,
-                    orderBy: false,
-                    datasource: false,
-                    columnResizable: false,
-                    fields: false,
-                    followHead: false,
-                    noDataHtml: false,
-                    noHead: false,
-                    select: false,
-                    selectMode: false,
-                    sortable:false,
-                    foot: false,
-                    //实际上用户不应设置该字段，只是作为table程序内部交互使用
-                    //如果用户设置了selectedIndex，也能够正常显示
-                    selectedIndex: false
-                };
+                if (!table.realWidth) {
+                    table.realWidth = getWidth(table);
+                    if (table.realWidth) {
+                        table.main.style.width = table.realWidth + 'px'; 
+                    }
+                }
+                var defaultProperties = Table.defaultProperties;
+                var allProperities = {};
 
                 if (!changes) {
-                    for (var property in allProperities) {
-                        if (allProperities.hasOwnProperty(property)) {
+                    for (var property in defaultProperties) {
+                        if (defaultProperties.hasOwnProperty(property)) {
                             allProperities[property] = true;
                         }
                     }
@@ -2488,6 +2746,7 @@ define(
 
                 if (allProperities['fields']
                     || allProperities['select']
+                    || allProperities['selectMode']
                     || allProperities['sortable']
                 ) {
                     initFields(table);
@@ -2504,6 +2763,7 @@ define(
                 }
                 if (fieldsChanged
                     || colsWidthChanged
+                    || allProperities['headZIndex']
                     || allProperities['noHead']
                     || allProperities['order']
                     || allProperities['orderBy']
@@ -2511,12 +2771,14 @@ define(
                 ) {
                     renderHead(table);
                 }
-                if (allProperities['followHead']) {
-                    cachingFollowHead(table);
+                if (allProperities['followHead']
+                    || allProperities['noFollowHeadCache']) {
+                    initFollowHead(table);
                     initTopResetHandler(table);
                 }
                 if (fieldsChanged
                     || colsWidthChanged
+                    || allProperities['encode']
                     || allProperities['noDataHtml']
                     || allProperities['datasource']
                     || allProperities['selectedIndex']
@@ -2556,7 +2818,10 @@ define(
                     switch (table.select) {
                         case 'multi':
                             table.selectedIndex = [];
-                            table.fire('select',{ selectedIndex: table.selectedIndex });
+                            table.fire(
+                                'select',
+                                { selectedIndex: table.selectedIndex }
+                            );
                             break;
                     }
                 }
@@ -2590,6 +2855,34 @@ define(
                 return getId(this, id);
             },
 
+
+            getBodyCellId: function(rowIndex, fieldIndex){
+                return getBodyCellId(this, rowIndex, fieldIndex);
+            },
+
+
+            /**
+             * 设置单元格的文字
+             *
+             * @public
+             * @param {string} text 要设置的文字
+             * @param {string} rowIndex 行序号
+             * @param {string} columnIndex 列序号
+             * @param {boolean} opt_isEncodeHtml 是否需要进行html转义
+             */
+            setCellText: function (text, rowIndex, columnIndex, isEncodeHtml) {
+                if (isEncodeHtml) {
+                    text = lib.encodeHTML(text);
+                }
+                text = isNullOrEmpty(text) ? '&nbsp' : text;
+                
+                lib.g(
+                    getId(
+                        this, 'cell-textfield-' + rowIndex + '-' + columnIndex
+                    )
+                ).innerHTML = text;
+            },
+
             /**
              * 获取表格相关ClassName
              *
@@ -2599,17 +2892,6 @@ define(
              */
             getClass: function(name) {
                 return getClass(this, name);
-            },
-
-            /**
-             * 初始化表格体子控件
-             *
-             * @protected
-             * @param {HTMLElement} wrap
-             * @param {Object} options
-             */
-            initBodyChildren: function(wrap, options) {
-                this.bodyPanel.initChildren(wrap, options);
             },
 
             /**
@@ -2627,10 +2909,43 @@ define(
              * 添加表格插件
              *
              * @protected
-             * @param {Array} plugins
+             * @param {Array} builders
              */
-            addPlugins: function(plugins) {
-                this.plugins = this.plugins.concat(plugins);
+            addRowBuilders: function(builders) {
+                addRowBuilderList(this, builders);
+            },
+
+
+            /**
+             * 添加table主元素上事件委托
+             *
+             * @public
+             * @param {string} eventType 事件类型
+             * @param {Array} handlers 处理函数数组或单个函数
+             *
+             * @return {Array} 事件委托处理函数数组
+             */
+            addHandlers: function(eventType, handlers) {
+                if (!handlers.length) {
+                    handlers = [handlers];
+                }
+
+                return addHandlers(this, this.main, eventType, handlers);
+            },
+
+            /**
+             * 删除table主元素上事件委托
+             *
+             * @public
+             * @param {string} eventType 事件类型
+             * @param {Array} handlers 处理函数数组或单个函数
+             */
+            removeHandlers: function(eventType, handlers) {
+                if (!handlers.length) {
+                    handlers = [handlers];
+                }
+
+                removeHandlers(this, this.main, eventType, handlers);
             },
 
              /**
@@ -2665,6 +2980,34 @@ define(
                 );
             },
 
+             /**
+             * 获取Table的选中数据项
+             *
+             * @public
+             */
+            getSelectedItems: function() {
+                var selectedIndex = this.selectedIndex;
+                var result = [];
+                if(selectedIndex) {
+                    var datasource = this.datasource;
+                    if (datasource) {
+                        for (var i = 0; i < selectedIndex.length; i++) {
+                            result.push(datasource[selectedIndex[i]]);
+                        }
+                    }
+                }
+                return result;
+            },
+
+            /**
+             * 重置表头跟随设置
+             * 
+             * @public
+             */
+            resetFollowHead: function(){
+                resetFollowHead(this);
+            },
+
             /**
              * 销毁释放控件
              * 
@@ -2686,14 +3029,10 @@ define(
                     if (mark) {
                         document.body.removeChild(mark);
                     }
-                    // remove scroll事件listener
-                    if (this.topReseter) {
-                        lib.un(window, 'scroll', this.topReseter);
-                        this.topReseter = null;
-                    }
                 }
 
                 this.plugins = null;
+                this.rowBuilderList =  null;
 
                 this.headPanel.disposeChildren();
                 this.bodyPanel.disposeChildren();

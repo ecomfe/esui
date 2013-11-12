@@ -1,15 +1,16 @@
 /**
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file UI基础库适配层
  * @author otakustay, firede(firede@firede.us), erik
  */
 define(function () {
     /**
      * lib命名空间
-     * 
+     *
      * @namespace
+     * @exports  module:lib
      */
     var lib = {};
 
@@ -19,24 +20,25 @@ define(function () {
 
     /**
      * 删除目标字符串两端的空白字符
-     * 
+     *
      * @param {string} source 目标字符串
+     *
      * @return {string} 删除两端空白字符后的字符串
      */
     lib.trim = function (source) {
         if (!source) {
             return '';
         }
-        
+
         return String(source).replace(whitespace, '');
     };
 
     /**
-     * 判断值是否为Array类型
-     * 
-     * @public
-     * @param {object} source
-     * @param {boolean}
+     * 判断值是否为 Array 类型
+     *
+     * @param {Object} source
+     *
+     * @return {boolean} 判断结果
      */
     lib.isArray = function (source) {
         return '[object Array]' == Object.prototype.toString.call(source);
@@ -45,9 +47,9 @@ define(function () {
     /**
      * 将对象转换为数组
      *
-     * @public
      * @param {*} source 任意对象
-     * @return {Array}
+     *
+     * @return {Array} 数组化后的对象
      */
     lib.toArray = function (source) {
         var length = source.length;
@@ -65,17 +67,18 @@ define(function () {
 
     /**
      * 为类型构造器建立继承关系
-     * 
-     * @param {function} subClass 子类构造器
-     * @param {function} superClass 父类构造器
+     *
+     * @param {Function} subClass 子类构造器
+     * @param {Function} superClass 父类构造器
      */
     lib.inherits = function (subClass, superClass) {
         // by Tangram 1.x: baidu.lang.inherits
-        var Empty = function () {};
+        var Empty = function () {
+        };
         Empty.prototype = superClass.prototype;
         var selfPrototype = subClass.prototype;
         var proto = subClass.prototype = new Empty();
-        
+
         for (var key in selfPrototype) {
             proto[key] = selfPrototype[key];
         }
@@ -87,10 +90,11 @@ define(function () {
 
     /**
      * 将源对象属性拷贝到目标对象
-     * 
+     *
      * @param {Object} target 目标对象
      * @param {Object} source 源对象
-     * @return {Object} `target`对象
+     *
+     * @return {Object} 扩展后的 `target` 对象
      */
     lib.extend = function (target, source) {
         for (var i = 1, len = arguments.length; i < len; i++) {
@@ -111,10 +115,11 @@ define(function () {
     };
 
     /**
-     * 对一个object进行深度拷贝
-     * 
-     * @param {Object} source 需要进行拷贝的对象
-     * @return {Object} 拷贝后的新对象
+     * 对一个 object 进行深度复制
+     *
+     * @param {Object} source 需要进行复制的对象
+     *
+     * @return {Object} 复制出来的新对象
      */
     lib.clone = function (source) {
         if (!source || typeof source !== 'object') {
@@ -134,7 +139,7 @@ define(function () {
             // 因此所有的字面量都应该会有这个属性
             // 对于在`window`上挂了`isPrototypeOf`属性的情况，直接忽略不考虑
             && ('isPrototypeOf' in source)
-        ) {
+            ) {
             result = {};
             for (var key in source) {
                 if (source.hasOwnProperty(key)) {
@@ -146,48 +151,49 @@ define(function () {
         return result;
     };
 
-    /** 
+    /**
      * 为对象绑定方法和作用域
-     * 
-     * @param {function} handler 要绑定的函数
-     * @param {Object} obj 执行运行时this，如果不传入则运行时this为函数本身
-     * @param {...args=} args 函数执行时附加到执行时函数前面的参数
      *
-     * @return {function} 封装后的函数
+     * @param {Function} fn 要绑定的函数
+     * @param {Object} scope 执行运行时 this，如果不传入则运行时 this 为函数本身
+     * @param {...*=} args 函数执行时附加到执行时函数前面的参数
+     *
+     * @return {Function} 封装后的函数
      */
-    lib.bind = function (func, scope) {
+    lib.bind = function (fn, scope) {
         var xargs = arguments.length > 2 ? [].slice.call(arguments, 2) : null;
         return function () {
-            var args = xargs 
-                ? xargs.concat([].slice.call(arguments)) 
+            var args = xargs
+                ? xargs.concat([].slice.call(arguments))
                 : arguments;
-            return func.apply(scope, args);
+            return fn.apply(scope, args);
         };
     };
 
-    /** 
-     * 为函数添加额外参数
-     * 
-     * @param {function} handler 要绑定的函数
-     * @param {...args=} args 函数执行时附加到执行时函数前面的参数
+    /**
+     * 为函数提前绑定前置参数（柯里化）
      *
-     * @return {function} 封装后的函数
+     * @see http://en.wikipedia.org/wiki/Currying
+     * @param {Function} fn 要绑定的函数
+     * @param {...*=} args 函数执行时附加到执行时函数前面的参数
+     *
+     * @return {Function} 柯里化后的新函数
      */
-    lib.curry = function (func) {
+    lib.curry = function (fn) {
         var xargs = [].slice.call(arguments, 1);
         return function () {
             var args = xargs.concat([].slice.call(arguments));
-            return func.apply(this, args);
+            return fn.apply(this, args);
         };
     };
 
     /**
      * 字符串格式化
-     * 
+     *
      * @param {string} template 原字符串
      * @param {Object.<string, *>} data 参数
-     * 
-     * @return {string}
+     *
+     * @return {string} 格式化后的字符串
      */
     lib.format = function (template, data) {
         if (!template) {
@@ -197,7 +203,7 @@ define(function () {
         if (data == null) {
             return template;
         }
-        
+
         return template.replace(
             /\$\{(.+?)\}/g,
             function (match, key) {
@@ -212,9 +218,33 @@ define(function () {
     };
 
     /**
-     * 对目标字符串进行html解码
+     * 查询数组中指定元素的索引位置
      * 
+     * @param {Array} source 需要查询的数组
+     * @param {*} item 查询项
+     * @param {number=} from 初始的查询位置
+     * @return {number} 指定元素的索引位置，查询不到时返回-1
+     */
+    lib.indexOf = Array.prototype.indexOf
+        ? function (source, item, from) {
+            return Array.prototype.indexOf.call(source, item, from);
+        }
+        : function (source, item, from) {
+            var length = source.length >>> 0;
+            var i = (from < 0) ? Math.max(0, length + from) : from || 0;
+            for (; i < length; i++){
+                if (source[i] === item) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+    /**
+     * 对目标字符串进行html解码
+     *
      * @param {string} source 目标字符串
+     *
      * @return {string} html解码后的字符串
      */
     lib.decodeHTML = function (source) {
@@ -229,7 +259,7 @@ define(function () {
             .replace(/&amp;/g, '&');
         //处理转义的中文和实体字符
         return str.replace(
-            /&#([\d]+);/g, 
+            /&#([\d]+);/g,
             function (match, code) {
                 return String.fromCharCode(parseInt(code, 10));
             }
@@ -237,9 +267,10 @@ define(function () {
     };
 
     /**
-     * 对目标字符串进行html编码
-     * 
+     * 对目标字符串进行 html 编码
+     *
      * @param {string} source 目标字符串
+     *
      * @return {string} html编码后的字符串
      */
     lib.encodeHTML = function (source) {
@@ -252,13 +283,15 @@ define(function () {
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+            .replace(/'/g, '&#39;')
+            .replace(/ /g, '&nbsp;');
     };
 
     /**
-     * 将字符串转换成camel格式
-     * 
+     * 将字符串转换成 camel 格式
+     *
      * @param {string} source 源字符串
+     *
      * @return {string}
      */
     lib.camelize = function (source) {
@@ -266,8 +299,8 @@ define(function () {
             return '';
         }
 
-        return source.replace( 
-            /-([a-z])/g, 
+        return source.replace(
+            /-([a-z])/g,
             function (alpha) {
                 return alpha.toUpperCase();
             }
@@ -275,9 +308,10 @@ define(function () {
     };
 
     /**
-     * 将字符串转换成pascal格式
-     * 
+     * 将字符串转换成 pascal 格式
+     *
      * @param {string} source 源字符串
+     *
      * @return {string}
      */
     lib.pascalize = function (source) {
@@ -289,20 +323,21 @@ define(function () {
     };
 
     /**
-     * @namespace lib.date 操作日期的方法。
+     * 操作日期的方法
+     * @namespace
      */
     lib.date = lib.date || {};
 
     /**
      * 对目标日期对象进行格式化
-     * @name baidu.date.format
-     * @function
-     * @grammar baidu.date.format(source, pattern)
+     *
+     * @method module:lib.date.format
+     * @grammar lib.date.format(source, pattern)
      * @param {Date} source 目标日期对象
      * @param {string} pattern 日期格式化规则
-     * 
+     *
      * @remark
-     * 
+     *
      * <b>格式表达式，变量含义：</b><br><br>
      * hh: 带 0 补齐的两位 12 进制时表示<br>
      * h: 不带 0 补齐的 12 进制时表示<br>
@@ -317,9 +352,9 @@ define(function () {
      * MM: 带 0 补齐的两位月表示<br>
      * M: 不带 0 补齐的月表示<br>
      * DD: 带 0 补齐的两位日表示<br>
-     * D: 不带 0 补齐的日表示     
-     *             
-     * @returns {string} 格式化后的字符串
+     * D: 不带 0 补齐的日表示
+     *
+     * @return {string} 格式化后的字符串
      */
     lib.date.format = function (source, pattern) {
         if (!source) {
@@ -333,7 +368,7 @@ define(function () {
         function replacer(patternPart, result) {
             pattern = pattern.replace(patternPart, result);
         }
-        
+
         var pad = lib.number.pad;
         var year = source.getFullYear();
         var month = source.getMonth() + 1;
@@ -363,14 +398,14 @@ define(function () {
 
     /**
      * 将目标字符串转换成日期对象
-     * @name baidu.date.parse
-     * @function
-     * @grammar baidu.date.parse(source)
+     *
+     * @method module:lib.date.parse
+     * @grammar lib.date.parse(source)
      * @param {string} source 目标字符串
      * @remark
-     * 
+     *
      * 对于目标字符串，下面这些规则决定了 parse 方法能够成功地解析：
-     * 
+     *
      * - 短日期可以使用“/”或“-”作为日期分隔符，
      * 但是必须用月/日/年的格式来表示，例如"7/20/96"。
      * - 以 "July 10 1995" 形式表示的长日期中的年、月、日可以按任何顺序排列，
@@ -396,8 +431,8 @@ define(function () {
      * 那么为中午 12 点之后的时间指定"PM"是错误的。例如 "23:15 PM" 就是错误的。
      * - 包含无效日期的字符串是错误的。
      * 例如，一个包含有两个年份或两个月份的字符串就是错误的。
-     *             
-     * @returns {Date} 转换后的日期对象
+     *
+     * @return {Date} 转换后的日期对象
      */
     lib.date.parse = function (source) {
         if (!source) {
@@ -409,12 +444,12 @@ define(function () {
         if ('string' == typeof source) {
             if (reg.test(source) || isNaN(Date.parse(source))) {
                 var d = source.split(/ |T/);
-                var d1 = d.length > 1 
-                    ? d[1].split(/[^\d]/) 
+                var d1 = d.length > 1
+                    ? d[1].split(/[^\d]/)
                     : [0, 0, 0];
                 var d0 = d[0].split(/[^\d]/);
                 return new Date(
-                    d0[0] - 0, d0[1] - 1, d0[2] - 0, 
+                    d0[0] - 0, d0[1] - 1, d0[2] - 0,
                     d1[0] - 0, d1[1] - 0, d1[2] - 0
                 );
             }
@@ -422,24 +457,26 @@ define(function () {
                 return new Date(source);
             }
         }
-        
+
         return new Date();
     };
 
     /**
-     * @namespace lib.number 操作number的方法。
+     * 操作 number 的方法
+     *
+     * @namespace
      */
     lib.number = lib.number || {};
 
     /**
      * 对目标数字进行0补齐处理
-     * @name lib.number.pad
-     * @function
+     *
+     * @method module:lib.number.pad
      * @grammar lib.number.pad(source, length)
      * @param {number} source 需要处理的数字
      * @param {number} length 需要输出的长度
-     *             
-     * @returns {string} 对目标数字进行0补齐处理后的结果
+     *
+     * @return {string} 对目标数字进行0补齐处理后的结果
      */
     lib.number.pad = function (source, length) {
         var pre = '';
@@ -450,16 +487,17 @@ define(function () {
             pre = (new Array(length - string.length + 1)).join('0');
         }
 
-        return (negative ?  '-' : '') + pre + string;
+        return (negative ? '-' : '') + pre + string;
     };
 
     /* ========================== DOM部分 ========================== */
 
     /**
-     * 从文档中获取指定的DOM元素
-     * 
-     * @param {string|HTMLElement} id 元素的id或DOM元素
-     * @return {HTMLElement|null} 获取的元素，查找不到时返回null
+     * 从文档中获取指定的 DOM 元素
+     *
+     * @param {string|HTMLElement} id 元素的 id 或 DOM 元素
+     *
+     * @return {?HTMLElement} 获取的元素，查找不到时返回null
      */
     lib.g = function (id) {
         if (!id) {
@@ -473,6 +511,7 @@ define(function () {
      * 判断一个元素是否输入元素
      *
      * @param {HTMLElement} element 目标元素
+     *
      * @return {boolean}
      */
     lib.isInput = function (element) {
@@ -483,11 +522,11 @@ define(function () {
     };
 
     /**
-     * 判断元素是否拥有指定的className
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
+     * 判断元素是否拥有指定的 className
+     *
+     * @param {HTMLElement} element 目标元素
      * @param {string} className 要判断的className
-     * 
+     *
      * @return {boolean} 是否拥有指定的className
      */
     lib.hasClass = function (element, className) {
@@ -510,18 +549,18 @@ define(function () {
     };
 
     /**
-     * 为目标元素添加className
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
-     * @param {string} className 要添加的className
-     * 
+     * 为目标元素添加 className
+     *
+     * @param {HTMLElement} element 目标元素或目标元素的 id
+     * @param {string} className 要添加的 className
+     *
      * @return {HTMLElement} 目标元素
      */
     lib.addClass = function (element, className) {
         if (!element || !className) {
             return element;
         }
-        
+
         var classes = element.className ? element.className.split(/\s+/) : [];
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -536,10 +575,10 @@ define(function () {
     };
 
     /**
-     * 批量添加className
+     * 批量添加 className
      *
      * @param {HTMLElement} element 目标元素
-     * @param {Array.<string>} 需添加的className
+     * @param {Array.<string>} classes 需添加的 className
      *
      * @return {HTMLElement} 目标元素
      */
@@ -548,7 +587,7 @@ define(function () {
             return element;
         }
 
-        var originalClasses = 
+        var originalClasses =
             element.className ? element.className.split(/\s+/) : [];
         var map = {};
         for (var i = 0; i < originalClasses.length; i++) {
@@ -572,18 +611,18 @@ define(function () {
     };
 
     /**
-     * 移除目标元素的className
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
-     * @param {string} className 要移除的className
-     * 
+     * 移除目标元素的 className
+     *
+     * @param {HTMLElement} element 目标元素或目标元素的 id
+     * @param {string} className 要移除的 className
+     *
      * @return {HTMLElement} 目标元素
      */
     lib.removeClass = function (element, className) {
         if (!element || !className) {
             return element;
         }
-        
+
         var classes = element.className ? element.className.split(/\s+/) : [];
         for (var i = 0; i < classes.length; i++) {
             if (classes[i] === className) {
@@ -597,10 +636,10 @@ define(function () {
     };
 
     /**
-     * 批量移除className
+     * 批量移除 className
      *
      * @param {HTMLElement} element 目标元素
-     * @param {Array.<string>} 需移除的className
+     * @param {Array.<string>} 需移除的 className
      *
      * @return {HTMLElement} 目标元素
      */
@@ -608,13 +647,13 @@ define(function () {
         if (!element || !classes) {
             return element;
         }
-        
+
         var map = {};
         for (var i = 0; i < classes.length; i++) {
             map[classes[i]] = true;
         }
 
-        var originalClasses = 
+        var originalClasses =
             element.className ? element.className.split(/\s+/) : [];
         var finalClasses = [];
         for (var i = 0; i < originalClasses.length; i++) {
@@ -632,18 +671,18 @@ define(function () {
     };
 
     /**
-     * 切换目标元素的className
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
-     * @param {string} className 要切换的className
-     * 
+     * 切换目标元素的 className
+     *
+     * @param {HTMLElement} element 目标元素或目标元素的 id
+     * @param {string} className 要切换的 className
+     *
      * @return {HTMLElement} 目标元素
      */
     lib.toggleClass = function (element, className) {
         if (!element || !className) {
             return element;
         }
-        
+
         var classes = element.className ? element.className.split(/\s+/) : [];
         var containsClass = false;
         for (var i = 0; i < classes.length; i++) {
@@ -664,9 +703,9 @@ define(function () {
 
     /**
      * 移除目标元素
-     * 
-     * @param {HTMLElement} element 目标元素或目标元素的id
-     * 
+     *
+     * @param {HTMLElement} element 目标元素或目标元素的 id
+     *
      */
     lib.removeNode = function (element) {
         if (typeof element === 'string') {
@@ -685,15 +724,15 @@ define(function () {
 
     /**
      * 将目标元素添加到基准元素之后
-     * 
+     *
      * @param {HTMLElement} newElement 被添加的目标元素
      * @param {HTMLElement} existElement 基准元素
-     * 
+     *
      * @return {HTMLElement} 被添加的目标元素
      */
     lib.insertAfter = function (newElement, existElement) {
         var existParent = existElement.parentNode;
-        
+
         if (existParent) {
             existParent.insertBefore(newElement, existElement.nextSibling);
         }
@@ -702,9 +741,10 @@ define(function () {
 
     /**
      * 将目标元素添加到基准元素之前
+     *
      * @param {HTMLElement} newElement 被添加的目标元素
      * @param {HTMLElement} existElement 基准元素
-     * 
+     *
      * @return {HTMLElement} 被添加的目标元素
      */
     lib.insertBefore = function (newElement, existElement) {
@@ -741,6 +781,7 @@ define(function () {
      *
      * @param {HTMLElement} element 目标元素
      * @param {string} key 样式名称
+     *
      * @return {string}
      */
     lib.getComputedStyle = function (element, key) {
@@ -748,8 +789,8 @@ define(function () {
             return '';
         }
 
-        var doc = element.nodeType == 9 
-            ? element 
+        var doc = element.nodeType == 9
+            ? element
             : element.ownerDocument || element.document;
 
         if (doc.defaultView && doc.defaultView.getComputedStyle) {
@@ -761,17 +802,18 @@ define(function () {
         else if (element && element.currentStyle) {
             return element.currentStyle[key];
         }
-        return ''; 
+        return '';
     };
 
-     /**
+    /**
      * 获取元素样式值
      *
      * @param {HTMLElement} element 目标元素
      * @param {string} key 样式名称
-     * @return {string}
+     *
+     * @return {string} 目标元素的指定样式值
      */
-    lib.getStyle = function(element, key){
+    lib.getStyle = function (element, key) {
         key = lib.camelize(key);
         return element.style[key]
             || (element.currentStyle ? element.currentStyle[key] : '')
@@ -782,6 +824,7 @@ define(function () {
      * 获取元素在页面中的位置和尺寸信息
      *
      * @param {HTMLElement} element 目标元素
+     *
      * @return {Object} 元素的尺寸和位置信息
      */
     lib.getOffset = function (element) {
@@ -840,8 +883,9 @@ define(function () {
         if (element.nodeType === 3 || element.nodeType === 4) {
 
             ret += element.nodeValue;
-        } 
-        else if (element.nodeType !== 8) {// 8 是 comment Node
+        }
+        // 8 是 comment Node
+        else if (element.nodeType !== 8) {
             childs = element.childNodes;
 
             for (l = childs.length; i < l; i++) {
@@ -857,6 +901,7 @@ define(function () {
      *
      * @param {HTMLElement} element 指定元素
      * @param {string} name 指定属性名称
+     *
      * @return {string}
      */
     lib.hasAttribute = function (element, name) {
@@ -871,8 +916,9 @@ define(function () {
     };
 
     /**
-     * 提供给setAttribute与getAttribute方法作名称转换使用
-     * ie6,7下class要转换成className
+     * 提供给 setAttribute 与 getAttribute 方法作名称转换使用
+     * ie6, 7 下 class 要转换成 className
+     *
      * @meta standard
      */
     lib.NAME_ATTRS = (function () {
@@ -903,14 +949,19 @@ define(function () {
         else {
             result['for'] = 'htmlFor';
         }
-        
+
         return result;
     })();
 
 
     /**
-     * 设置元素属性，会对某些值做转换            
-     * @returns {HTMLElement} 目标元素
+     * 设置元素属性，会对某些值做转换
+     *
+     * @param {(HTMLElement | string)} element 目标元素或目标元素 id
+     * @param {string} key 要设置的属性名
+     * @param {string} value 要设置的属性值
+     *
+     * @return {HTMLElement} 目标元素
      */
     lib.setAttribute = function (element, key, value) {
         element = lib.g(element);
@@ -928,32 +979,31 @@ define(function () {
 
     /**
      * 获取目标元素的属性值
-     * @name baidu.dom.getAttr
-     * @function
-     * @grammar baidu.dom.getAttr(element, key)
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     *
+     * @grammar lib.dom.getAttribute(element, key)
+     * @param {(HTMLElement | string)} element 目标元素或目标元素的id
      * @param {string} key 要获取的attribute键名
      * @shortcut getAttr
      * @meta standard
-     * @see baidu.dom.setAttr,baidu.dom.setAttrs
-     *             
-     * @returns {string|null} 目标元素的attribute值，获取不到时返回null
+     * @see lib.dom.setAttribute
+     *
+     * @return {?string} 目标元素的attribute值，获取不到时返回 null
      */
     lib.getAttribute = function (element, key) {
         element = lib.g(element);
 
-        if ('style' == key){
+        if ('style' == key) {
             return element.style.cssText;
         }
-        
+
         key = lib.NAME_ATTRS[key] || key;
         return element.getAttribute(key);
     };
 
     /**
-     * 移除一个属性
+     * 移除元素属性
      *
-     * @param {HTMLElement} element 目标元素
+     * @param {(HTMLElement | string)} element 目标元素或目标元素 id
      * @param {string} key 属性名称
      */
     lib.removeAttribute = function (element, key) {
@@ -965,7 +1015,7 @@ define(function () {
 
     /**
      * page命名空间
-     * 
+     *
      * @namespace
      */
     lib.page = {};
@@ -976,28 +1026,32 @@ define(function () {
 
     /**
      * 获取页面宽度
-     * 
+     *
+     * @method module:lib.page.getWidth
+     *
      * @return {number} 页面宽度
      */
     lib.page.getWidth = function () {
         // by Tangram 1.x: baidu.page.getWidth
         return Math.max(
-            documentElement.scrollWidth, 
-            body.scrollWidth, 
+            documentElement.scrollWidth,
+            body.scrollWidth,
             viewRoot.clientWidth
         );
     };
 
     /**
      * 获取页面高度
-     * 
+     *
+     * @method module:lib.page.getHeight
+     *
      * @return {number} 页面高度
      */
     lib.page.getHeight = function () {
         // by Tangram 1.x: baidu.page.getHeight
         return Math.max(
-            documentElement.scrollHeight, 
-            body.scrollHeight, 
+            documentElement.scrollHeight,
+            body.scrollHeight,
             viewRoot.clientHeight
         );
     };
@@ -1005,6 +1059,8 @@ define(function () {
 
     /**
      * 获取页面视觉区域宽度
+     *
+     * @method module:lib.page.getViewWidth
      *
      * @return {number} 页面视觉区域宽度
      */
@@ -1015,6 +1071,8 @@ define(function () {
     /**
      * 获取页面视觉区域高度
      *
+     * @method module:lib.page.getViewHeight
+     *
      * @return {number} 页面视觉区域高度
      */
     lib.page.getViewHeight = function () {
@@ -1024,33 +1082,43 @@ define(function () {
     /**
      * 获取纵向滚动量
      *
+     * @method module:lib.page.getScrollTop
+     *
      * @return {number} 纵向滚动量
      */
     lib.page.getScrollTop = function () {
-        return window.pageYOffset 
-            || document.documentElement.scrollTop 
+        return window.pageYOffset
+            || document.documentElement.scrollTop
             || document.body.scrollTop;
     };
 
     /**
      * 获取横向滚动量
      *
+     * @method module:lib.page.getScrollLeft
+     *
      * @return {number} 横向滚动量
      */
     lib.page.getScrollLeft = function () {
-        return window.pageXOffset 
+        return window.pageXOffset
             || document.documentElement.scrollLeft
             || document.body.scrollLeft;
     };
 
+    /**
+     * 事件处理
+     *
+     * @namespace
+     */
     lib.event = {};
 
     /**
      * 阻止事件默认行为
-     * @param event 事件对象
-     * @return void
+     *
+     * @method module:lib.event.preventDefault
+     * @param {Event} event 事件对象
      */
-    lib.event.preventDefault  = function (event) {
+    lib.event.preventDefault = function (event) {
         if (event.preventDefault) {
             event.preventDefault();
         }
@@ -1061,8 +1129,9 @@ define(function () {
 
     /**
      * 阻止事件冒泡
-     * @param event 事件对象
-     * @return void
+     *
+     * @method module:lib.event.stopPropagation
+     * @param {Event} event 事件对象
      */
     lib.event.stopPropagation = function (event) {
         if (event.stopPropagation) {
@@ -1075,30 +1144,34 @@ define(function () {
 
     /**
      * 获取鼠标位置
-     * @param event 事件对象
-     * @return void
+     *
+     * @method module:lib.event.getMousePosition
+     * @param {Event} event 事件对象
      */
-    lib.event.getMousePosition = function (e) {
+    lib.event.getMousePosition = function (event) {
         var doc = document.documentElement;
         var body = document.body;
 
-        e.pageX = e.pageX || (
-            e.clientX + 
-            (doc && doc.scrollLeft || body && body.scrollLeft || 0) - 
-            (doc && doc.clientLeft || body && body.clientLeft || 0)
-        );
+        event.pageX = event.pageX || (
+            event.clientX +
+                (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+                (doc && doc.clientLeft || body && body.clientLeft || 0)
+            );
 
-        e.pageY = e.pageY || (
-            e.clientY + 
-            (doc && doc.scrollTop  || body && body.scrollTop  || 0) - 
-            (doc && doc.clientTop  || body && body.clientTop  || 0)
-        );
+        event.pageY = event.pageY || (
+            event.clientY +
+                (doc && doc.scrollTop || body && body.scrollTop || 0) -
+                (doc && doc.clientTop || body && body.clientTop || 0)
+            );
     };
 
     /**
-     * 获取事件源对象 
-     * @param e 事件对象
-     * @return {object} 获取事件目标对象
+     * 阻止事件冒泡
+     *
+     * @method module:lib.event.getTarget
+     * @param {Event} e 事件对象
+     *
+     * @return {Object} 获取事件目标对象
      */
     lib.event.getTarget = function (e) {
         e = e || window.event;
@@ -1108,25 +1181,28 @@ define(function () {
     if (/msie (\d+\.\d+)/i.test(navigator.userAgent)) {
         /**
          * IE浏览器版本号
-         * 
+         *
          * @type {number}
          */
-        lib.ie =  document.documentMode || + RegExp.$1;
+        lib.ie = document.documentMode || +RegExp.$1;
     }
 
     /**
-     * @namespace lib.dom 操作dom的方法。
+     * 操作dom的方法
+     *
+     * @namespace
      */
     lib.dom = lib.dom || {};
 
     /**
      * 获取目标元素的第一个元素节点
-     * @name lib.dom.first
-     * @function
+     *
+     * @method module:lib.dom.first
      * @grammar lib.dom.first(element)
-     * @param {HTMLElement|String} element 目标元素或目标元素的id
+     * @param {(HTMLElement | string)} element 目标元素或目标元素的 id
      * @meta standard
-     * @returns {HTMLElement|null} 目标元素的第一个元素节点，查找不到时返回null
+     *
+     * @return {?HTMLElement} 目标元素的第一个元素节点，查找不到时返回 null
      */
     lib.dom.first = function (element) {
         element = lib.g(element);
@@ -1142,17 +1218,44 @@ define(function () {
     };
 
     /**
-     * 获取目标元素的下一个兄弟元素节点
-     * @name lib.dom.next
-     * @function
-     * @grammar lib.dom.next(element)
-     * @param {HTMLElement|string} element 目标元素或目标元素的id
+     * 获取目标元素的最后一个元素节点
+     *
+     * @method module:lib.dom.last
+     * @grammar lib.dom.last(element)
+     * @param {(HTMLElement | string)} element 目标元素或目标元素的 id
      * @meta standard
-     * @returns {HTMLElement|null} 目标元素的下一个兄弟元素节点，查找不到时返回null
+     *
+     * @return {?HTMLElement} 目标元素的第一个元素节点，查找不到时返回 null
+     */
+    lib.dom.last = function (element) {
+        element = lib.g(element);
+        if (element.lastElementChild) {
+            return element.lastElementChild;
+        }
+
+        var node = element.lastChild;
+        for (; node; node = node.previousSibling) {
+            if (node.nodeType === 1) {
+                return node;
+            }
+        }
+
+        return null;
+    };
+
+    /**
+     * 获取目标元素的下一个兄弟元素节点
+     *
+     * @method module:lib.dom.next
+     * @grammar lib.dom.next(element)
+     * @param {(HTMLElement | string)} element 目标元素或目标元素的 id
+     * @meta standard
+     *
+     * @return {?HTMLElement} 目标元素的下一个兄弟元素节点，查找不到时返回 null
      */
     lib.dom.next = function (element) {
         element = lib.g(element);
-        
+
         var node = element['nextSibling'];
         for (; node; node = node['nextSibling']) {
             if (node.nodeType == 1) {
@@ -1165,15 +1268,14 @@ define(function () {
 
     /**
      * 判断一个元素是否包含另一个元素
-     * @name  lib.dom.contains
-     * @function
+     *
+     * @method  module:lib.dom.contains
      * @grammar lib.dom.contains(container, contained)
-     * @param {HTMLElement|string} container 包含元素或元素的id
-     * @param {HTMLElement|string} contained 被包含元素或元素的id
+     * @param {(HTMLElement | string)} container 包含元素或元素的 id
+     * @param {(HTMLElement | string)} contained 被包含元素或元素的 id
      * @meta standard
-     * @see baidu.dom.intersect
-     *             
-     * @returns {boolean} contained元素是否被包含于container元素的DOM节点上
+     *
+     * @return {boolean} contained 元素是否被包含于 container 元素的 DOM 节点上
      */
     lib.dom.contains = function (container, contained) {
         var g = lib.g;

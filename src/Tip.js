@@ -42,10 +42,14 @@ define(
             var properties = {
                 title: '',
                 content: '',
-                arrow: false,
+                arrow: true,
                 showMode: 'over',
                 delayTime: 500
             };
+            if (options.arrow === 'false') {
+                options.arrow = false;
+            }
+
             lib.extend(properties, options);
             this.setProperties(properties);
         };
@@ -88,13 +92,14 @@ define(
             var tipLayer = ui.create('TipLayer', {
                 content: this.content,
                 title: this.title,
+                arrow: this.arrow,
+                width: this.layerWidth || 200,
                 main: main
             });
             tipLayer.render();
             this.tipLayer = tipLayer;
             tipLayer.attachTo({
                 showMode: this.mode,
-                arrow: this.arrow,
                 delayTime: this.delayTime,
                 targetControl: this,
                 positionOpt: {top: 'top', right: 'left'}

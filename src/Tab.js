@@ -67,7 +67,10 @@ define(
                         // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
                         // 且这个配置会覆盖用户传入的`tabs`选项
                         properties.tabs = [];
-                        element.id = helper.getId(this, 'navigator');
+                        // 在`initOptions`时没有`viewContext`，
+                        // 因此不能计算DOM元素的id，
+                        // 所以在这里临时保留一下，到`initStructure`里去给id
+                        this.navigatorElement = element;
                         var children = lib.getChildren(element);
                         for (var i = 0; i < children.length; i++) {
                             var tab = children[i];
@@ -140,13 +143,15 @@ define(
          * @protected
          */
         Tab.prototype.initStructure = function () {
-            var navigator = lib.g(helper.getId(this, 'navigator'));
+            var navigator = this.navigatorElement;
+            this.navigatorElement = null;
             if (!navigator) {
                 navigator = document.createElement('ul');
-                navigator.id = helper.getId(this, 'navigator');
 
                 this.main.insertBefore(navigator, this.main.firstChild || null);
             }
+
+            navigator.id = helper.getId(this, 'navigator');
 
             helper.addPartClasses(this, 'navigator', navigator);
 
@@ -421,10 +426,13 @@ define(
          * @param {Object} config 标签页的配置
          */
         Tab.prototype.remove = function (config) {
-            for (var i = 0; i < this.tabs.length; i++) {
-                if (this.tabs[i] === config) {
-                    this.removeAt(i);
-                }
+            // 这里使用`while`是解决`this.tabs`在嵌套循环里被修改带来的问题
+            // 若这里使用`for`循环来处理，则会因为`removeAt`里
+            // 直接`this.tabs.slice`而发生的变量不同步错误
+            // 此坑很隐晦，修改需谨慎
+            var index = 0;
+            while ((index = lib.indexOf(this.tabs, config, index)) >= 0) {
+                this.removeAt(index);
             }
         };
 

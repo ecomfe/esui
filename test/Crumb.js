@@ -23,21 +23,41 @@ define(function (require) {
             });
         });
 
-        describe('generally', function () {
-            it('should create an `<ol>` element in its main element', function () {
-                var crumb = new Crumb();
-                crumb.appendTo(container);
-                expect(container.getElementsByTagName('ol').length).toBeGreaterThan(0);
+        describe('created via HTML', function () {
+            var main = document.createElement('div');
+            main.innerHTML = '<a href="#1">test1</a><a href="#2">test2</a><span>test3</span>';
+            var crumb = new Crumb({ main: main });
+            crumb.appendTo(container);
+
+            it('should get `path` option from existing DOM structure', function () {
+                var path = [
+                    { href: '#1', text: 'test1' },
+                    { href: '#2', text: 'test2' },
+                    { text: 'test3' },
+                ];
+                expect(crumb.get('path')).toEqual(path);
             });
 
+            it('should add separators to DOM', function () {
+                expect(main.children.length).toBe(5);
+                expect(main.children[0].className).toContain('ui-crumb-node');
+                expect(main.children[0].className).toContain('ui-crumb-node-first');
+                expect(main.children[1].className).toContain('ui-crumb-separator');
+                expect(main.children[2].className).toContain('ui-crumb-node');
+                expect(main.children[3].className).toContain('ui-crumb-separator');
+                expect(main.children[4].className).toContain('ui-crumb-node');
+                expect(main.children[4].className).toContain('ui-crumb-node-last');
+            });
+        });
+
+        describe('generally', function () {
             it('should create a `<a>` element if a node have both `text` and `href` properties', function () {
                 var path = [
                     { text: 'test', href: 'http://test.com/' }
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
-                var ol = container.getElementsByTagName('ol')[0];
-                var node = ol.firstChild.firstChild;
+                var node = crumb.main.firstChild;
                 expect(node.nodeName.toLowerCase()).toBe('a');
                 expect(node.innerHTML).toBe('test');
                 expect(node.getAttribute('href', 2)).toBe('http://test.com/');
@@ -49,8 +69,7 @@ define(function (require) {
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
-                var ol = container.getElementsByTagName('ol')[0];
-                var node = ol.firstChild.firstChild;
+                var node = crumb.main.firstChild;
                 expect(node.nodeName.toLowerCase()).toBe('span');
                 expect(node.innerHTML).toBe('test');
             });
@@ -61,8 +80,7 @@ define(function (require) {
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
-                var ol = container.getElementsByTagName('ol')[0];
-                var node = ol.firstChild;
+                var node = crumb.main.firstChild;
                 expect(node.className).toMatch(/crumb-node/);
             });
 
@@ -73,8 +91,7 @@ define(function (require) {
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
-                var ol = container.getElementsByTagName('ol')[0];
-                var node = ol.firstChild;
+                var node = crumb.main.firstChild;
                 expect(node.className).toMatch(/crumb-node-first/);
             });
 
@@ -85,8 +102,7 @@ define(function (require) {
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
-                var ol = container.getElementsByTagName('ol')[0];
-                var node = ol.lastChild;
+                var node = crumb.main.lastChild;
                 expect(node.className).toMatch(/crumb-node-last/);
             });
 
@@ -96,8 +112,7 @@ define(function (require) {
                 ];
                 var crumb = new Crumb({ path: path });
                 crumb.appendTo(container);
-                var ol = container.getElementsByTagName('ol')[0];
-                var node = ol.firstChild;
+                var node = crumb.main.firstChild;
                 expect(node.className).toMatch(/crumb-node-first/);
                 expect(node.className).toMatch(/crumb-node-last/);
             });
@@ -111,8 +126,8 @@ define(function (require) {
                 crumb.appendTo(container);
                 crumb.set('path', path);
                 // 2 nodes + 1 separator
-                expect(container.getElementsByTagName('li').length).toBe(3);
+                expect(crumb.main.children.length).toBe(3);
             });
         });
     });
-})
+});

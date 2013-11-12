@@ -97,10 +97,11 @@ define(
          * 隐藏下拉弹层
          *
          * @param {CommandMenu} CommandMenu控件实例
+         * @param {HTMLElement=} layer 已经生成的浮层元素
          * @inner
          */
-        function hideLayer(menu) {
-            var layer = lib.g(helper.getId(menu, 'layer'));
+        function hideLayer(menu, layer) {
+            layer = layer || lib.g(helper.getId(menu, 'layer'));
             if (layer) {
                 var classes = helper.getPartClasses(menu, 'layer-hidden');
                 lib.addClasses(layer, classes);
@@ -144,6 +145,7 @@ define(
             layer.className = helper.getPartClasses(menu, 'layer').join(' ');
             layer.innerHTML = getLayerHTML(menu);
             helper.addDOMEvent(menu, layer, 'click', selectItem);
+            hideLayer(menu, layer);
             document.body.appendChild(layer);
 
             helper.addDOMEvent(menu, document, 'mousedown', closeLayer);

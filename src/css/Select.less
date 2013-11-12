@@ -7,10 +7,9 @@
  */
 @import "mixin.less";
 @import "variable.less";
-
 .ui-select {
     .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #f3f3f3);
+        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #fff);
     .ellipse-overflow ();
     .interactive-cursor ();
     border: 1px solid #D8D8D8;
@@ -21,24 +20,25 @@
     padding: 3px 3px 3px 5px;
     width: 50px;
     padding-right: 20px;
+    outline: none;
 }
 
 .ui-select:hover,
 .ui-select:focus {
     .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -36px, #f3f3f3);
+        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -36px, #fff);
 }
 
 .ui-select:active {
     .linear-gradient-background-with-image (
-        top, #f6f6f6, #ffffff, "esui-combo-arrow.png", right, -36px, #f3f3f3);
+        top, #f6f6f6, #ffffff, "esui-combo-arrow.png", right, -36px, #fff);
 }
 
 .ui-select-active,
 .ui-select-active:hover,
 .ui-select-active:focus {
     .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -69px, #f3f3f3);
+        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -67px, #fff);
 }
 
 .ui-select-layer {
@@ -58,10 +58,8 @@
 }
 
 .ui-select-item {
-    .ellipse-overflow ();
     color: #333333;
     .interactive-cursor ();
-    height: 22px;
     line-height: 22px;
     margin: 0 0 1px;
     padding: 0 4px;
@@ -82,6 +80,7 @@
 
 .ui-select-item span {
     display: block;
+    .ellipse-overflow ();
 }
 
 .ui-select-layer-hidden {
@@ -92,6 +91,11 @@
 .ui-select-read-only {
     color: #999;
     border-color: #D8D8D8;
+    &:hover,
+    &:focus {
+        .linear-gradient-background-with-image (
+            top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #f3f3f3);
+    }
 }
 
 /** 验证 */

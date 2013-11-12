@@ -163,9 +163,9 @@ define(
                 html.push(segment);
             }
 
-            var page = +pager.page;
-            var backCount = +pager.backCount;
-            var forwardCount = +pager.forwardCount;
+            var page = pager.page;
+            var backCount = pager.backCount;
+            var forwardCount = pager.forwardCount;
             // 计算得到的总页码数
             var totalPage = Math.ceil(pager.count / pager.pageSize);
             // 数组html用于存储页码区域的元素代码
@@ -317,7 +317,7 @@ define(
             var extendClasses = helper.getPartClasses(this, 'item-extend');
             var backId = helper.getId(this, 'page-back');
             var forwardId = helper.getId(this, 'page-forward');
-            var page = +this.page;
+            var page = this.page;
 
             if (lib.hasClass(target, classes[0])
                 || lib.hasClass(target, extendClasses[0])
@@ -334,10 +334,6 @@ define(
 
                 // 跳转至某页码
                 this.set('page', page);
-                // 触发页码变更事件
-                // 保持向后兼容，待大版本再去除changepage事件
-                this.fire('changepage');
-                this.fire('pagechange');
             }
         }
 
@@ -499,7 +495,23 @@ define(
                 helper.addDOMEvent(this, pagerMain, 'click', pagerClick);
             },
 
+            /**
+             * 转换对象的部分属性的数据类型
+             *
+             * @param {Object} 需要进行转换的对象
+             * @override
+             * @protected
+             */
             setProperties: function (properties) {
+                properties = lib.extend({}, properties);
+
+                // `pageIndex`提供从0开始的页码，但是以`page`为准
+                if (properties.hasOwnProperty('pageIndex')
+                    && !properties.hasOwnProperty('page')
+                ) {
+                    properties.page = +properties.pageIndex + 1;
+                }
+
                 var digitalProperties = [
                     'count', 'page', 'backCount',
                     'forwardCount', 'pageSize'
@@ -512,7 +524,15 @@ define(
                     }
                 }
 
-                Control.prototype.setProperties.apply(this, arguments);
+                var changes = 
+                    Control.prototype.setProperties.apply(this, arguments);
+
+                if (changes.hasOwnProperty('page')) {
+                    // 触发页码变更事件
+                    // 保持向后兼容，待大版本再去除changepage事件
+                    this.fire('changepage');
+                    this.fire('pagechange');
+                }
             },
 
             /**
@@ -552,7 +572,16 @@ define(
                     ],
                     paint: repaintPager
                 }
-            )
+            ),
+
+            /**
+             * 获取从0开始的页码
+             *
+             * @return {number}
+             */
+            getPageIndex: function () {
+                return this.get('page') - 1;
+            }
         };
 
         lib.inherits(Pager, Control);

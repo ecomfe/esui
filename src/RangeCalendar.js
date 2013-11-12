@@ -47,7 +47,7 @@ define(
                 +   '<div data-ui="type:Button;childName:cancelBtn;">取消</div>'
                 + '</div>'
                 + '<div data-ui="type:Button;childName:'
-                + 'closeBtn;skin:layerClose"></div>';
+                + 'closeBtn;skin:layerClose;height:12;"></div>';
 
             return lib.format(tpl, {
                 bodyClass:
@@ -64,6 +64,33 @@ define(
         }
 
         /**
+         * 判断是否不在可选范围内
+         *
+         * @param {RangeCalendar} calendar RangeCalendar控件实例
+         * @param {object} shortItem 快捷对象
+         * @return {boolean}
+         */
+        function isOutOfRange(calendar, shortItem) {
+            var range = calendar.range;
+
+            var itemValue = shortItem.getValue.call(calendar);
+            
+            if (range.begin > itemValue.begin
+                || range.end < itemValue.end) {
+                return true;
+            }
+
+            // 方案2
+            // if (range.begin > itemValue.end
+            //     || range.end < itemValue.begin) {
+            //     return true;
+            // }            
+
+
+            return false;
+        }
+
+        /**
          * 搭建快捷迷你日历
          *
          * @param {RangeCalendar} calendar RangeCalendar控件实例
@@ -77,23 +104,32 @@ define(
             var len = shortItems.length;
             var html = [];
 
-            var showedShortCut = calendar.showedShortCut.split(',');
-            var showedShortCutHash = {};
-            for (var k = 0; k < showedShortCut.length; k++) {
-                showedShortCutHash[showedShortCut[k]] = true;
+            var shownShortCut = calendar.shownShortCut.split(',');
+            var shownShortCutHash = {};
+            for (var k = 0; k < shownShortCut.length; k++) {
+                shownShortCutHash[shownShortCut[k]] = true;
             }
             for (var i = 0; i < len; i++) {
                 var shortItem = shortItems[i];
 
-                if (showedShortCutHash[shortItem.name]) {
+                if (shownShortCutHash[shortItem.name]) {
                     var shortName = shortItem.name;
                     var shortClasses = helper.getPartClasses(
                         calendar, 'shortcut-item'
                     );
-                    if (i == 0) {
+                    if (i === 0) {
                         shortClasses = shortClasses.concat(
                             helper.getPartClasses(
                                 calendar, 'shortcut-item-first'
+                            )
+                        );
+                    }
+                    // 超出范围或者日历是无限结束
+                    var disabled = isOutOfRange(calendar, shortItem);
+                    if (disabled) {
+                        shortClasses = shortClasses.concat(
+                            helper.getPartClasses(
+                                calendar, 'shortcut-item-disabled'
                             )
                         );
                     }
@@ -220,8 +256,9 @@ define(
                 layer = helper.layer.create('div');
                 helper.addPartClasses(calendar, 'layer', layer);
                 layer.innerHTML = getLayerHtml(calendar);
-                document.body.appendChild(layer);
                 calendar.layer = layer;
+                hideLayer(calendar);
+                document.body.appendChild(layer);
                 // 创建控件树
                 calendar.initChildren(layer);
 
@@ -233,10 +270,9 @@ define(
                 var shortcutDom = lib.g(helper.getId(calendar, 'shortcut'));
                 helper.addDOMEvent(
                     calendar, shortcutDom, 'click', shortcutClick);
-
                 // 渲染开始结束日历
                 paintCal(calendar, 'begin', calendar.view.begin, true);
-                paintCal(calendar, 'end', calendar.view.begin, true);
+                paintCal(calendar, 'end', calendar.view.end, true);
 
                 // 绑定“无限结束”勾选事件
                 var endlessCheck = calendar.getChild('endlessCheck');
@@ -248,6 +284,11 @@ define(
                     // 设置endless
                     if (calendar.isEndless) {
                         endlessCheck.setChecked(true);
+                        var shortCutItems =
+                            lib.g(helper.getId(calendar, 'shortcut'));
+                        helper.addPartClasses(
+                            calendar, 'shortcut-disabled', shortCutItems
+                        );
                     }
                 }
 
@@ -275,20 +316,25 @@ define(
          */
         function makeCalendarEndless(calendar) {
             var endCalendar = calendar.getChild('endCal');
+            var shortCutItems = lib.g(helper.getId(calendar, 'shortcut'));
             var selectedIndex;
             if (this.isChecked()) {
                 calendar.isEndless = true;
                 endCalendar.disable();
                 selectedIndex = -1;
                 calendar.view.end = null;
-                // 清除mini日历的选择状态
-                paintMiniCal(calendar, selectedIndex);
+                helper.addPartClasses(
+                    calendar, 'shortcut-disabled', shortCutItems
+                );
             }
             else {
                 calendar.isEndless = false;
                 endCalendar.enable();
                 // 恢复结束日历的选择值
                 updateView(calendar, endCalendar, 'end');
+                helper.removePartClasses(
+                    calendar, 'shortcut-disabled', shortCutItems
+                );
             }
         }
 
@@ -367,9 +413,20 @@ define(
             paintMiniCal(me, index);
 
             var value = shortcutItems[index].getValue.call(me);
-            calendar.view = value;
-            paintCal(calendar, 'begin', value.begin);
-            paintCal(calendar, 'end', value.end);
+            var begin = value.begin;
+            var end = value.end;
+
+            // 方案2逻辑
+            // if (begin < calendar.range.begin) {
+            //     begin = calendar.range.begin
+            // }
+            // if (end > calendar.range.end) {
+            //     end = calendar.range.end;
+            // }
+
+            calendar.view = { begin: begin, end: end };
+            paintCal(calendar, 'begin', begin);
+            paintCal(calendar, 'end', end);
         }
 
         /**
@@ -381,16 +438,16 @@ define(
          */
         function paintMiniCal(calendar, index) {
             var shortcutItems = calendar.shortCutItems;
-            var curMiniIndex = calendar.curMiniIndex;
+            var miniMode = calendar.miniMode;
             // 重置选择状态
-            if (curMiniIndex !== null && curMiniIndex !== index) {
+            if (miniMode !== null && miniMode !== index) {
                 helper.removePartClasses(
                     calendar,
                     'shortcut-item-selected',
-                    lib.g(helper.getId(calendar, 'shortcut-item'+curMiniIndex))
+                    lib.g(helper.getId(calendar, 'shortcut-item'+miniMode))
                 );
             }
-            calendar.curMiniIndex = index;
+            calendar.miniMode = index;
             if (index >= 0) {
                 helper.addPartClasses(
                     calendar,
@@ -455,9 +512,13 @@ define(
 
             var tar = e.target || e.srcElement;
             var classes = helper.getPartClasses(this, 'shortcut-item');
+            var disableClasses = helper.getPartClasses(
+                this, 'shortcut-item-disabled'
+            );
 
             while (tar && tar != document.body) {
-                if (lib.hasClass(tar, classes[0])) {
+                if (lib.hasClass(tar, classes[0])
+                    && !lib.hasClass(tar, disableClasses[0])) {
                     var index = tar.getAttribute('data-index');
                     selectIndex(this, index);
                     return;
@@ -517,12 +578,26 @@ define(
                     'end': begin
                 };
             }
+
+            var prevented = false;
+            var event = {
+                preventDefault: function () { prevented = true; },
+                value: value
+            };
+
+            me.fire('beforechange', event);
+            // 阻止事件，则不继续运行
+            if (prevented) {
+                return false;
+            }
             me.rawValue = value;
             me.value = convertToParam(value);
             updateMain(me, value);
             hideLayer(me);
             me.fire('change', value);
         }
+
+
 
         /**
          * 更新主显示
@@ -625,6 +700,19 @@ define(
          */
         function convertToRaw(value) {            
             var strDates = value.split(',');
+            // 可能会只输入一个，默认是begin
+            if (strDates.length === 1) {
+                strDates.push('2046-11-04');
+            }
+            // 第一个是空的
+            else if (strDates[0] === ''){
+                strDates[0] = '1983-09-03';
+            }
+            // 第二个是空的
+            else if (strDates[1] === ''){
+                strDates[1] = '2046-11-04';
+            }
+            
             return {
                 begin: parseToDate(strDates[0]),
                 end: parseToDate(strDates[1])
@@ -678,6 +766,13 @@ define(
                 return dateText;
             }
             var shortcut = '';
+            if (!calendar.curMiniName
+                && calendar.miniMode !== null
+                && calendar.miniMode >= 0
+                && calendar.miniMode < calendar.shortCutItems.length) {
+                calendar.curMiniName =
+                    calendar.shortCutItems[calendar.miniMode].name;
+            }
             if (calendar.curMiniName) {
                 shortcut = calendar.curMiniName + '&nbsp;&nbsp;';
             }
@@ -737,9 +832,10 @@ define(
                 {
                     name: '最近7天',
                     value: 1,
-                    getValue: function () {
-                        var begin = new Date(this.now.getTime());
-                        var end = new Date(this.now.getTime());
+                    getValue: function (now) {
+                        now = now || this.now;
+                        var begin = new Date(now.getTime());
+                        var end = new Date(now.getTime());
 
                         end.setDate(end.getDate() - 1);
                         begin.setDate(begin.getDate() - 7);
@@ -881,8 +977,9 @@ define(
                         begin: now,
                         end: now
                     }),
-                    showedShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
+                    shownShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
                 };
+                lib.extend(properties, RangeCalendar.defaultProperties);
 
                 helper.extractValueFromInput(this, options);
 
@@ -891,31 +988,51 @@ define(
                     options.view = {};
                     options.view.begin = options.rawValue.begin;
                     options.view.end = options.rawValue.end;
+                    options.miniMode = null;
+                }
+                // 设置了rawValue，以rawValue为准，外部设置的miniMode先清空
+                else if (options.rawValue) {
+                    options.miniMode = null;
+                }
+                // 没有设置rawValue，设置了‘miniMode’，rawValue按照miniMode计算
+                else if (!options.rawValue && options.miniMode != null) {
+                    var shortcutItem =
+                        properties.shortCutItems[options.miniMode];
+                    if (shortcutItem) {
+                        options.rawValue =
+                            shortcutItem.getValue.call(this, now);
+                        options.miniMode = parseInt(options.miniMode, 10);
+                    }
+                    else {
+                        options.miniMode = null;
+                    }
                 }
 
-                if (options.range && typeof options.range === 'string') {
-                    options.range = convertToRaw(options.range);
+                lib.extend(properties, options);
+
+                if (properties.range && typeof properties.range === 'string') {
+                    properties.range = convertToRaw(properties.range);
                 }
 
-                if (options.endlessCheck === 'false') {
-                    options.endlessCheck = false;
+                if (properties.endlessCheck === 'false') {
+                    properties.endlessCheck = false;
                 }
 
-                if (options.endlessCheck) {
-                    if (options.isEndless === 'false') {
-                        options.isEndless = false;
+                if (properties.endlessCheck) {
+                    if (properties.isEndless === 'false') {
+                        properties.isEndless = false;
                     }
                 }
                 else {
                     // 如果值中没有end，则默认日历是无限型的
-                    if (!options.rawValue.end) {
-                        options.endlessCheck = true;
-                        options.isEndless = true;
+                    if (!properties.rawValue.end) {
+                        properties.endlessCheck = true;
+                        properties.isEndless = true;
                     }
                 }
-
                 // 如果是无限的，结束时间无需默认值
-                if (options.isEndless) {
+                if (properties.isEndless) {
+                    properties.endlessCheck = true;
                     properties.rawValue.end = null;
                     properties.view.end = null;
                     properties.view.value = convertToParam({
@@ -923,10 +1040,6 @@ define(
                         end: null
                     });
                 }
-
-                lib.extend(
-                    properties, RangeCalendar.defaultProperties, options
-                );
                 this.setProperties(properties);
             },
 
@@ -990,8 +1103,20 @@ define(
                 {
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (range && typeof range === 'string') {
-                            calendar.range = convertToRaw(range);
+                         if (range) {
+                            if (typeof range === 'string') {
+                                range = convertToRaw(range);
+                            }
+                            // 还要支持只设置begin或只设置end的情况
+                            if (!range.begin) {
+                                // 设置一个特别远古的年
+                                range.begin = new Date(1983, 8, 3);
+                            }
+                            else if (!range.end) {
+                                // 设置一个特别未来的年
+                                range.end = new Date(2046, 10, 4);
+                            }
+                            calendar.range = range;
                         }
                         if (rawValue) {
                             updateMain(calendar, rawValue);
@@ -1064,6 +1189,20 @@ define(
              */
             parseValue: function (value) {
                 return convertToRaw(value);
+            },
+
+            dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
+                var layer = this.layer;
+                if (layer) {
+                    layer.parentNode.removeChild(layer);
+                    this.layer = null;
+                }
+
+                InputControl.prototype.dispose.apply(this, arguments);
             }
         };
 

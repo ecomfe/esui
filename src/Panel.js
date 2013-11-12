@@ -75,6 +75,51 @@ define(
             this.setProperties({ content: html });
         };
 
+        /**
+         * 统一化样式名
+         *
+         * @param {string} name 样式名称
+         * @return {string} 统一化后camelCase的样式名称
+         */
+        function normalizeStyleName(name) {
+            if (name.indexOf('-') >= 0) {
+                name = name.replace(
+                    /-\w/g, 
+                    function (word) {
+                        return word.charAt(1).toUpperCase();
+                    }
+                );
+            }
+
+            return name;
+        }
+
+        /**
+         * 获取样式，仅获取设置的样式，不包含外部CSS给定的
+         *
+         * @param {string} name 样式名称
+         * @return {string}
+         */
+        Panel.prototype.getStyle = function (name) {
+            name = normalizeStyleName(name);
+            return this.main
+                ? this.main.style[name]
+                : '';
+        };
+
+        /**
+         * 设置样式
+         *
+         * @param {string} name 样式名称，如果只有这一个参数，则表示为整串样式
+         * @param {string=} value 样式值
+         */
+        Panel.prototype.setStyle = function (name, value) {
+            name = normalizeStyleName(name);
+            if (this.main) {
+                this.main.style[name] = value;
+            }
+        };
+
         lib.inherits(Panel, Control);
         require('./main').register(Panel);
         return Panel;

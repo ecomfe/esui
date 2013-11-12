@@ -20,6 +20,7 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ui = require('./main');
+        var paint = require('./painters');
 
         /**
          * 提示层控件类
@@ -460,6 +461,7 @@ define(
                     createBF(this, 'foot', this.roles.foot);
                 }
 
+
                 if (this.arrow) {
                     var arrow = document.createElement('div');
                     // 初始化箭头
@@ -483,6 +485,7 @@ define(
              */
             repaint: helper.createRepaint(
                 Control.prototype.repaint,
+                paint.style('width'),
                 {
                     name: 'title',
                     paint: function (tipLayer, value) {
@@ -683,6 +686,9 @@ define(
                     this, window, 'resize', 
                     lib.curry(resizeHandler, this, targetElement, options)
                 );
+
+                // 动态计算layer的zIndex
+                this.main.style.zIndex = helper.layer.getZIndex(targetElement);
 
                 this.removeState('hidden');
 

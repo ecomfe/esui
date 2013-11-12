@@ -73,7 +73,11 @@ define(
                     }
                     datasource.push(item);
 
-                    if (box.checked) {
+                    // firefox下的autocomplete机制在reload页面时,
+                    // 可能导致box.checked属性不符合预期,
+                    // 所以这里采用getAttribute
+                    // 参考：http://t.cn/zRTdrVR
+                    if (box.getAttribute('checked') !== null) {
                         values.push(box.value);
                     }
                 }

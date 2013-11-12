@@ -36,8 +36,9 @@ define(
         function getMainHTML(textLine) {
             var tpl = [
                 '<div id="${numLineId}" class="${numLineClass}">1</div>',
-                '<textarea name="${name}" ',
-                'data-ui="type:TextBox;childName:text;mode:textarea" >',
+                '<textarea ',
+                'data-ui="type:TextBox;childName:text;mode:textarea" ',
+                'name="${name}" wrap="off">',
                 '</textarea>',
                 '<input type="hidden" id="${inputId}" name="${name}"/>'
             ].join('');
@@ -55,16 +56,6 @@ define(
             );
         }
 
-        /**
-         * 滚动数字区域
-         *
-         * @param {TextLine} this TextLine控件实例
-         * @inner
-         */
-        function resetScrollByLine() {
-            this.getChild('text').main.firstChild.scrollTop =
-                this.lineNumBlock.scrollTop;
-        }
 
         /**
          * 重置行号，增加内容和keyup时可调用
@@ -83,19 +74,8 @@ define(
                 }
                 me.lineNumBlock.innerHTML = html.join('<br />');
             }
-            resetScroll(me);
+            me.resetScroll();
             textLine.fire('change');
-        }
-
-        /**
-         * 滚动文本输入框
-         *
-         * @param {TextLine} textLine TextLine控件实例
-         * @inner
-         */
-        function resetScroll(textLine) {
-            textLine.lineNumBlock.scrollTop =
-                textLine.getChild('text').main.firstChild.scrollTop;
         }
 
         /**
@@ -179,15 +159,13 @@ define(
                     textArea, 
                     textArea.main.firstChild, 
                     'scroll', 
-                    lib.curry(resetScroll, this)
+                    lib.bind(this.resetScroll, this)
                 );
 
                 // 行码条滚动监听
                 var lineNumDiv = lib.g(helper.getId(this, 'num-line'));
                 // 保存到控件对象，因为之后会一直用到
                 this.lineNumBlock = lineNumDiv;
-                helper.addDOMEvent(
-                    this, lineNumDiv, 'scroll', resetScrollByLine);
 
             },
 
@@ -276,6 +254,22 @@ define(
                 }
             ),
 
+
+            /**
+             * 滚动文本输入框
+             *
+             * @param {TextLine} textLine TextLine控件实例
+             * @public
+             */
+            resetScroll: function () {
+                var textArea = this.getChild('text').main.firstChild;
+                var lineNumber = this.lineNumBlock;
+                // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
+                lineNumber.style.height = textArea.clientHeight + 'px';
+                this.lineNumBlock.scrollTop =
+                    this.getChild('text').main.firstChild.scrollTop;
+            },
+
             /**
              * 将value从原始格式转换成string
              * 
@@ -347,7 +341,7 @@ define(
              *
              * @return {number}
              */
-            getRowsNmuber: function() {
+            getRowsNumber: function() {
                var items = this.getValue().split('\n');
                var len = items.length;
                return len;

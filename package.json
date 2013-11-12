@@ -1,14 +1,32 @@
 {
     "name": "esui",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "maintainers": [
         {
             "name": "otakustay",
             "email": "otakustay@live.com"
-        }, 
+        }
+    ],
+    "contributors": [
         {
           "name": "erik",
           "email": "errorrik@gmail.com"
+        },
+        {
+            "name": "DDDBear"
+        },
+        {
+            "name": "wurongyao"
+        },
+        {
+            "name": "kitemao"
+        },
+        {
+            "name": "Shen Bin",
+            "email": "bobshenbin@gmail.com"
+        },
+        {
+            "name": "Li Sijin"
         }
     ],
     "main": "main",

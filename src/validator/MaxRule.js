@@ -44,8 +44,11 @@ define(
          * @return {validator/ValidityState}
          */
         MaxRule.prototype.check = function (value, control) {
+            var valueOfNumber = +value;
+            var isValidNumber = !isNaN(valueOfNumber)
+                && valueOfNumber <= this.getLimitCondition(control);
             return new ValidityState(
-                !isNaN(value) && value <= this.getLimitCondition(control), 
+                !value || isValidNumber, 
                 this.getErrorMessage(control)
             );
         };

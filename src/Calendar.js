@@ -97,9 +97,9 @@ define(
                     helper.getPartClasses(calendar, 'layer').join(' ');
                 layer.innerHTML =
                     '<div data-ui="type:MonthView;childName:monthView;"/>';
-
-                document.body.appendChild(layer);
                 calendar.layer = layer;
+                hideLayer(calendar);
+                document.body.appendChild(layer);
 
                 // 创建控件树
                 calendar.initChildren(layer);
@@ -414,6 +414,20 @@ define(
              */
             parseValue: function (value) {
                 return parseToDate(value);
+            },
+
+            dispose: function () {
+                if (helper.isInStage(this, 'DISPOSED')) {
+                    return;
+                }
+                
+                var layer = this.layer;
+                if (layer) {
+                    layer.parentNode.removeChild(layer);
+                    this.layer = null;
+                }
+
+                InputControl.prototype.dispose.apply(this, arguments);
             }
         };
 

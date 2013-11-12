@@ -90,7 +90,7 @@ define(
                 }
                 else {
                     // 找最近的一个未禁用的项
-                    context.selectedIndex = 0;
+                    context.selectedIndex = -1;
                     for (var i = 0; i < context.datasource.length; i++) {
                         if (!context.datasource[i].disabled) {
                             context.selectedIndex = i;
@@ -217,9 +217,6 @@ define(
                 }
                 html += '<li data-index="' + i + '" '
                     + 'class="' + classes.join(' ') + '">';
-                if (item.value == select.value) {
-                    select.selectedIndex = i;
-                }
                 html += select.getItemHTML(item);
                 html += '</li>';
             }
@@ -296,19 +293,23 @@ define(
 
             layer.style.zIndex = helper.layer.getZIndex(select.main);
 
-            // 先计算需要的尺寸，浮层必须显示出来才能真正计算里面的内容，
-            // 而页面必须没有浮层才能计算尺寸，这里直接3次reflow省不掉了
+            // 获取的浮层一定是隐藏的，必须此时获得页面尺寸，
+            // 一但让浮层显示出来，就可能导致滚动条出现，无法获得正确的尺寸了
+            var pageWidth = lib.page.getViewWidth();
+            var pageHeight = lib.page.getViewHeight();
+            // 先计算需要的尺寸，浮层必须显示出来才能真正计算里面的内容
             layer.style.display = 'block';
+            layer.style.top = '-5000px';
+            layer.style.left = '-5000px';
+            // IE7下，如果浮层隐藏着反而会影响offset的获取，
+            // 但浮层显示出来又可能造成滚动条出现，
+            // 因此显示浮层显示后移到屏幕外面，然后计算坐标
+            var offset = lib.getOffset(select.main);
             layer.style.width = '';
             layer.style.height = '';
             var layerWidth = layer.offsetWidth;
             var layerHeight = layer.offsetHeight;
-            layer.style.display = 'none';
-            var pageWidth = lib.page.getWidth();
-            var pageHeight = lib.page.getHeight();
             layer.style.display = '';
-            var offset = lib.getOffset(select.main);
-
             layer.style.minWidth = offset.width + 'px';
             // 然后看下靠左放能不能放下，不能就靠右
             if (pageWidth - offset.left > layerWidth) {
@@ -326,7 +327,6 @@ define(
                 layer.style.top = (offset.top - layerHeight) + 'px';
             }
 
-
             lib.removeClasses(layer, classes);
             select.addState('active');
         }
@@ -334,10 +334,12 @@ define(
         /**
          * 隐藏下拉弹层
          *
-         * @param {Select} Select控件实例
+         * @param {Select} select Select控件实例
+         * @param {HTMLElement=} layer 已经生成的浮层元素
+         * @inner
          */
-        function hideLayer(select) {
-            var layer = getSelectionLayer(select);
+        function hideLayer(select, layer) {
+            layer = layer || getSelectionLayer(select);
             if (layer) {
                 var classes = helper.getPartClasses(select, 'layer-hidden');
                 lib.addClasses(layer, classes);
@@ -385,6 +387,7 @@ define(
                 layer.className = 
                     helper.getPartClasses(select, 'layer').join(' ');
                 layer.innerHTML = getLayerHTML(select);
+                hideLayer(select, layer);   
                 document.body.appendChild(layer);
 
                 helper.addDOMEvent(select, layer, 'click', selectValue);

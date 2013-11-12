@@ -49,7 +49,7 @@ define(
             //如果状态名已存在
             if (this.stateIndex[name]) {
                 // 同样的状态对象，不处理
-                if (this.statesMap[name] === state) {
+                if (this.stateIndex[name] === state) {
                     return;
                 }
 

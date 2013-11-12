@@ -223,7 +223,7 @@ define(
                     this.main,
                     'submit',
                     function (e) {
-                        this.fire('submit');
+                        this.performSubmit();
                         e.preventDefault();
                         return false;
                     }
@@ -271,8 +271,6 @@ define(
             Panel.prototype.initOptions.call(this, properties);
         };
 
-        var InputControl = require('./InputControl');
-
         /**
          * 根据名称及可选的类型获取输入控件
          * 
@@ -290,49 +288,39 @@ define(
          * @public
          */
         Form.prototype.getInputControls = function (name, type) {
-            var elements = [].concat(
-                lib.toArray(this.main.getElementsByTagName('input')),
-                lib.toArray(this.main.getElementsByTagName('select')),
-                lib.toArray(this.main.getElementsByTagName('textarea'))
-            );
-            var instanceAttribute = ui.getConfig('instanceAttr');
             var result = [];
-            
-            for (var i = 0; i < elements.length; i++) {
-                var element = elements[i];
 
-                // 所有的`InputControl`必须有一个`<input type="hidden">`在主元素下，
-                // 则分为2种情况讨论：
-                // 
-                // - `InputControl`的主元素本身就是`<input>`类元素
-                // - `InputControl`的主元素下有一个`<input type="hidden">`元素
-                // 
-                // 因此需要找当前DOM元素和其父元素上有没有对应的`data-ctrl-id`属性
-                if (!element.getAttribute(instanceAttribute)) {
-                    element = element.parentNode;
-                    if (!element.getAttribute(instanceAttribute)) {
+            // 自上向下遍历整个子树，遇到任何输入控件就不再深入
+            function walk(form, root) {
+                // 不使用`lib.getChildren()`是考虑到这样会变成2次循环，树大的时候太慢
+                var children = root.children;
+                // 全树遍历东西还是有可能蛮多的，考虑IE的DOM性能，缓存一下相关变量
+                var length = children.length;
+                for (var i = 0; i < length; i++) {
+                    var element = children[i];
+
+                    // IE6-8会有注释节点，所以还是要有这个判断
+                    if (element.nodeType !== 1) {
                         continue;
                     }
-                }
 
-                var control = ui.getControlByDOM(element);
-                if (control
-                    && control instanceof InputControl
-                    && control.viewContext === this.viewContext
-                    && control.get('name')
-                    && (!name || control.get('name') === name)
-                    && (!type || control.get('type') === type)
-                ) {
-                    var parent = control.parent;
-                    // 如果一个输入控件是在另一个输入控件中的，则不需要它
-                    while (parent && !(parent instanceof InputControl)) {
-                        parent = parent.parent;
-                    }
-                    if (!(parent instanceof InputControl)) {
+                    var control = ui.getControlByDOM(element);
+                    if (control
+                        && control.isInputControl()
+                        && control.viewContext === form.viewContext
+                        && control.get('name')
+                        && (!name || control.get('name') === name)
+                        && (!type || control.get('type') === type)
+                    ) {
                         result.push(control);
+                    }
+                    else {
+                        walk(form, element);
                     }
                 }
             }
+
+            walk(this, this.main);
 
             return new InputCollection(result);
         };
