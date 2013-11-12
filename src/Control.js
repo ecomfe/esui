@@ -66,6 +66,15 @@ define(
             ignoreStates: ['disabled'],
 
             /**
+             * 获取控件的分类
+             *
+             * @return {string} 可以为`control`、`input`或`check`
+             */
+            getCategory: function () {
+                return 'control';
+            },
+
+            /**
              * 初始化控件需要使用的选项
              *
              * @param {Object=} options 构造函数传入的选项

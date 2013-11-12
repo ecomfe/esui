@@ -76,6 +76,15 @@ define(
             ignoreStates: Control.prototype.ignoreStates.concat('read-only'),
 
             /**
+             * 获取控件的分类
+             *
+             * @return {string}
+             */
+            getCategory: function () {
+                return 'input';
+            },
+
+            /**
              * 获得应当获取焦点的元素
              *
              * @return {HTMLElement}

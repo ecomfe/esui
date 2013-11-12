@@ -45,6 +45,15 @@ define(
                 return document.createElement('label');
             },
 
+            /**
+             * 获取控件的分类
+             *
+             * @return {string}
+             */
+            getCategory: function () {
+                return 'check';
+            },
+
             initOptions: function (options) {
                 var properties = {
                     value: 'on',
