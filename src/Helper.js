@@ -10,6 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var controlHelper = require('./controlHelper');
+        var u = require('underscore');
 
         function Helper(control) {
             this.control = control;
@@ -160,6 +161,39 @@ define(
             }
 
             controlHelper.removeDOMEvent(this.control, element, type, handler);
+        };
+
+        // 输入元素的属性映射关系
+        var INPUT_ATTRIBUTES = {
+            name: 'name', value: 'value',
+            autofocus: 'autoFocus',
+            disabled: 'disabled', readonly: 'readOnly',
+            inputmode: 'inputMode',
+            max: 'max', min: 'min',
+            maxlength: 'maxLength', minlength: 'minLength',
+            required: 'required', pattern: 'pattern'
+        };
+
+        /**
+         * 收集`<input>`元素上的属性
+         *
+         * @param {HTMLElement} input DOM元素
+         * @return {Object}
+         */
+        Helper.prototype.collectInputAttributes = function (input) {
+            var properties = {};
+
+            u.each(
+                INPUT_ATTRIBUTES,
+                function (propertyName, attributeName) {
+                    var attribute = lib.getAttributeNode(input, attributeName);
+                    if (attribute.specified) {
+                        properties[propertyName] = attribute.value;
+                    }
+                }
+            );
+
+            return properties;
         };
 
         return Helper;
