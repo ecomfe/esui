@@ -669,6 +669,20 @@ define(
             }
         };
 
+        // 这些属性是不复制的，多数是某些元素特有
+        var INPUT_SPECIFIED_ATTRIBUTES = {
+            type: true, name: true, alt: true, 
+            autocomplete: true, autofocus: true,
+            checked: true, dirname: true, disabled: true,
+            form: true, formaction: true, formenctype: true,
+            formmethod: true, formnovalidate: true, formtarget: true,
+            width: true, height: true, inputmode: true, list: true,
+            max: true, maxlength: true, min: true, minlength: true,
+            multiple: true, pattern: true, placeholder: true,
+            readonly: true, required: true, size: true, src: true,
+            step: true, value: true
+        };
+
         /**
          * 替换控件的主元素
          *
@@ -685,6 +699,22 @@ define(
                 ui.getConfig('instanceAttr'),
                 helper.getGUID()
             );
+
+            // 把能复制的属性全复制过去
+            var attributes = initialMain.attributes;
+            for (var i = 0; i < attributes.length; i++) {
+                var attribute = attributes[i];
+                var name = attribute.name;
+                if (attribute.specified
+                    && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
+                ) {
+                    lib.setAttribute(
+                        main,
+                        attribute.name,
+                        attribute.value
+                    );
+                }
+            }
             
             lib.insertBefore(main, initialMain);
             initialMain.parentNode.removeChild(initialMain);
