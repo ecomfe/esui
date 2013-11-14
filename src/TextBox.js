@@ -119,20 +119,14 @@ define(
                 this.fire('enter');
             }
 
-            var isDefaultPrevented = false;
-            var event = {
+            var args = {
                 keyCode: keyCode,
                 key: String.fromCharCode(keyCode),
                 ctrlKey: e.ctrlKey,
-                altKey: e.altKey,
-                preventDefault: function () {
-                    isDefaultPrevented = true;
-                }
+                altKey: e.altKey
             };
-            event = this.fire('keypress', event);
-            if (isDefaultPrevented) {
-                e.preventDefault();
-            }
+            var event = require('mini-event').fromDOMEvent(e, 'keypress', args);
+            this.fire('keypress', event);
         }
 
         /**
