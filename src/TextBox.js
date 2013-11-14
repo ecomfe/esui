@@ -129,7 +129,7 @@ define(
                     isDefaultPrevented = true;
                 }
             };
-            this.fire('keypress', event);
+            event = this.fire('keypress', event);
             if (isDefaultPrevented) {
                 e.preventDefault();
             }

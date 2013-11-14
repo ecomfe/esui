@@ -664,6 +664,8 @@ define(
                 
                 callListeners(events[type]);
                 callListeners(events['*']);
+
+                return eventArg;
             }
         };
 

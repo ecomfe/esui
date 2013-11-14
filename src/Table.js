@@ -878,7 +878,7 @@ define(
                         orderBy: field.field
                     });
 
-                    table.fire('sort', {field: field, order: order});
+                    table.fire('sort', { field: field, order: order });
                 }
             }
         }
@@ -1837,7 +1837,7 @@ define(
                     index:index, 
                     item: dataItem
                 };
-                table.fire('subrowopen', eventArgs);
+                eventArgs = table.fire('subrowopen', eventArgs);
                 if (eventArgs.returnResult !== false) {
                     openSubrow(table, index, el);
                 }
@@ -1860,7 +1860,7 @@ define(
                 item: table.datasource[index]
             };
 
-            table.fire('subrowclose', eventArgs);
+            eventArgs = table.fire('subrowclose', eventArgs);
 
             if (eventArgs.returnResult !== false) {
                 entryOut(table, entry);

@@ -585,7 +585,7 @@ define(
                 value: value
             };
 
-            me.fire('beforechange', event);
+            event = me.fire('beforechange');
             // 阻止事件，则不继续运行
             if (prevented) {
                 return false;

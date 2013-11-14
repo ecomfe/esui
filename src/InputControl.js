@@ -27,7 +27,7 @@ define(
             var eventArg = {
                 validity: validity
             };
-            control.fire('beforevalidate', eventArg);
+            eventArg = control.fire('beforevalidate', eventArg);
 
             // 验证合法性
             var rules = main.createRulesByControl(control);
@@ -43,7 +43,7 @@ define(
             // 这两个事件中用户可能会对validity进行修改操作
             // 所以validity.isValid()结果不能缓存
             if (!validity.isValid()) {
-                control.fire('invalid', eventArg);
+                eventArg = control.fire('invalid', eventArg);
             }
             control.fire('aftervalidate', eventArg);
 

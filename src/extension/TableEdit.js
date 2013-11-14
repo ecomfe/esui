@@ -281,7 +281,7 @@ define(
                     field: currentTable.realFields[currentColIndex]
                 };
 
-                currentTable.fire('saveedit', eventArgs);
+                eventArgs = currentTable.fire('saveedit', eventArgs);
 
                 if (eventArgs.returnResult !== false) {
                     hideLayer();
@@ -458,7 +458,7 @@ define(
                     columnIndex: columnIndex,
                     field: field
                 };
-                this.fire('startedit',eventArgs);
+                eventArgs = this.fire('startedit', eventArgs);
 
                 if (eventArgs.returnResult !== false) {
                     var data = this.datasource[rowIndex];
