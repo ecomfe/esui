@@ -579,17 +579,13 @@ define(
                 };
             }
 
-            var prevented = false;
-            var event = {
-                preventDefault: function () { prevented = true; },
-                value: value
-            };
-
-            event = me.fire('beforechange');
+            var event = me.fire('beforechange', { value: value });
+            
             // 阻止事件，则不继续运行
-            if (prevented) {
+            if (event.isDefaultPrevented()) {
                 return false;
             }
+
             me.rawValue = value;
             me.value = convertToParam(value);
             updateMain(me, value);
