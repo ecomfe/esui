@@ -24,7 +24,6 @@ define(
             this.children = [];
             this.childrenIndex = {};
             this.states = {};
-            this.events = {};
             this.domEvents = {};
             this.helper = new Helper(this);
             options = options || {};
@@ -576,98 +575,11 @@ define(
                 options.parent = this;
 
                 ui.init(wrap, options);
-            },
-
-            /**
-             * 添加事件监听器
-             * 
-             * @param {string} type 事件类型，`*`为所有事件 
-             * @param {Function} listener 事件监听器
-             */
-            on: function (type, listener) {
-                var listeners = this.events[type];
-                if (!listeners) {
-                    listeners = this.events[type] = [];
-                }
-
-                listeners.push(listener);
-            },
-
-            /**
-             * 移除事件监听器
-             * 
-             * @param {string} type 事件类型，`*`为所有事件 
-             * @param {Function=} listener 事件监听器
-             */
-            un: function (type, listener) {
-                var listeners = this.events[type];
-
-                if (listeners instanceof Array) {
-                    if (listener) {
-                        var len = listeners.length;
-                        while (len--) {
-                            if (listeners[len] === listener) {
-                                listeners.splice(len, 1);
-                            }
-                        }
-                    }
-                    else {
-                        listeners.length = 0;
-                    }
-                }
-            },
-
-            /**
-             * 派发事件
-             * 
-             * @param {string} type 事件类型
-             * @param {Object=} arg 事件对象
-             */
-            fire: function (type, arg) {
-                // 构造函数阶段不发送任何事件
-                if (helper.isInStage(this, 'NEW')) {
-                    return;
-                }
-
-                // 构造event argument
-                var eventArg = arg || {};
-                eventArg.type = type;
-                eventArg.target = this;
-
-                // 先调用直接写在实例上的"onxxx"
-                var me = this;
-                var handler = me['on' + type];
-                if (typeof handler == 'function') {
-                    handler.call(me, eventArg);
-                }
-
-                /**
-                 * 调用listeners
-                 * 
-                 * @inner
-                 * @param {Array.<Function>} listeners 监听器数组
-                 */
-                function callListeners(listeners) {
-                    if (listeners instanceof Array) {
-                        listeners = listeners.slice();
-                        for (var i = 0, len = listeners.length; i < len; i++) {
-                            var listener = listeners[i];
-                            if (typeof listener == 'function') {
-                                listener.call(me, eventArg);
-                            }
-                        }
-                    }
-                }
-
-                // 调用listeners
-                var events = me.events;
-                
-                callListeners(events[type]);
-                callListeners(events['*']);
-
-                return eventArg;
             }
         };
+
+        var EventTarget = require('mini-event/EventTarget');
+        lib.inherits(Control, EventTarget);
 
         return Control;
     }
