@@ -283,7 +283,7 @@ define(
 
                 eventArgs = currentTable.fire('saveedit', eventArgs);
 
-                if (eventArgs.returnResult !== false) {
+                if (eventArgs.isDefaultPrevented()) {
                     hideLayer();
                     currentState = 0;
                 } else if (eventArgs.errorMsg) {
@@ -460,7 +460,7 @@ define(
                 };
                 eventArgs = this.fire('startedit', eventArgs);
 
-                if (eventArgs.returnResult !== false) {
+                if (eventArgs.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
                     var content = field.editContent; 
                     var value = 'function' === typeof content

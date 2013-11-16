@@ -1838,7 +1838,7 @@ define(
                     item: dataItem
                 };
                 eventArgs = table.fire('subrowopen', eventArgs);
-                if (eventArgs.returnResult !== false) {
+                if (eventArgs.isDefaultPrevented()) {
                     openSubrow(table, index, el);
                 }
             } else {
@@ -1862,7 +1862,7 @@ define(
 
             eventArgs = table.fire('subrowclose', eventArgs);
 
-            if (eventArgs.returnResult !== false) {
+            if (eventArgs.isDefaultPrevented()) {
                 entryOut(table, entry);
                 table.subrowIndex = null;
                 
@@ -2784,7 +2784,9 @@ define(
                     || allProperities['selectedIndex']
                 ) {
                     renderBody(table);
+                    // TODO: @deprecated 移除
                     table.fire('bodyChange');
+                    table.fire('changebody');
                     tbodyChange = true;
                 }
                 if (tbodyChange
