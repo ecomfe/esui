@@ -29,21 +29,23 @@
             }
         };
 
-        /**
-         * 提供给 setAttribute 与 getAttribute 方法作名称转换使用
-         * ie6, 7 下 class 要转换成 className
-         *
-         * @meta standard
-         */
-        lib.NAME_ATTRS = (function () {
+        // 提供给 setAttribute 与 getAttribute 方法作名称转换使用
+        var ATTRIBUTE_NAME_MAPPING = (function () {
             var result = {
-                'cellpadding': 'cellPadding',
+                'tabindex': 'tabIndex',
+                'readonly': 'readOnly',
+                'for': 'htmlFor',
+                'class': 'className',
+                'maxlength': 'maxLength',
                 'cellspacing': 'cellSpacing',
-                'colspan': 'colSpan',
+                'cellpadding': 'cellPadding',
                 'rowspan': 'rowSpan',
-                'valign': 'vAlign',
+                'colspan': 'colSpan',
                 'usemap': 'useMap',
-                'frameborder': 'frameBorder'
+                'frameborder': 'frameBorder',
+                'contenteditable': 'contentEditable',
+                'valign': 'vAlign',
+                'enctype': 'encType'
             };
 
             var div = document.createElement('div');
@@ -65,13 +67,13 @@
             }
 
             return result;
-        })();
+        }());
 
 
         /**
          * 设置元素属性，会对某些值做转换
          *
-         * @param {(HTMLElement | string)} element 目标元素或目标元素 id
+         * @param {HTMLElement | string} element 目标元素或目标元素 id
          * @param {string} key 要设置的属性名
          * @param {string} value 要设置的属性值
          *
@@ -80,11 +82,11 @@
         lib.setAttribute = function (element, key, value) {
             element = dom.g(element);
 
-            if ('style' == key) {
+            if (key === 'style') {
                 element.style.cssText = value;
             }
             else {
-                key = lib.NAME_ATTRS[key] || key;
+                key = ATTRIBUTE_NAME_MAPPING[key] || key;
                 element.setAttribute(key, value);
             }
 
@@ -94,36 +96,32 @@
         /**
          * 获取目标元素的属性值
          *
-         * @grammar lib.dom.getAttribute(element, key)
-         * @param {(HTMLElement | string)} element 目标元素或目标元素的id
+         * @param {HTMLElement | string} element 目标元素或目标元素的id
          * @param {string} key 要获取的attribute键名
-         * @shortcut getAttr
-         * @meta standard
-         * @see lib.dom.setAttribute
          *
-         * @return {?string} 目标元素的attribute值，获取不到时返回 null
+         * @return {string | null} 目标元素的attribute值，获取不到时返回 null
          */
         lib.getAttribute = function (element, key) {
             element = dom.g(element);
 
-            if ('style' == key) {
+            if (key === 'style') {
                 return element.style.cssText;
             }
 
-            key = lib.NAME_ATTRS[key] || key;
+            key = ATTRIBUTE_NAME_MAPPING[key] || key;
             return element.getAttribute(key);
         };
 
         /**
          * 移除元素属性
          *
-         * @param {(HTMLElement | string)} element 目标元素或目标元素 id
+         * @param {HTMLElement | string} element 目标元素或目标元素 id
          * @param {string} key 属性名称
          */
         lib.removeAttribute = function (element, key) {
             element = dom.g(element);
 
-            key = lib.NAME_ATTRS[key] || key;
+            key = ATTRIBUTE_NAME_MAPPING[key] || key;
             element.removeAttribute(key);
         };
 
