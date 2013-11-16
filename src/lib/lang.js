@@ -30,9 +30,7 @@ define(
          * @param {Function} superClass 父类构造器
          */
         lib.inherits = function (subClass, superClass) {
-            // by Tangram 1.x: baidu.lang.inherits
-            var Empty = function () {
-            };
+            var Empty = function () {};
             Empty.prototype = superClass.prototype;
             var selfPrototype = subClass.prototype;
             var proto = subClass.prototype = new Empty();
