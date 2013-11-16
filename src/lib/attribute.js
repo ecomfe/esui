@@ -1,0 +1,132 @@
+/**
+ * ESUI (Enterprise Simple UI library)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file DOM属性相关基础库
+ * @author otakustay
+ */
+ define(
+    function (require) {
+        var dom = require('./dom');
+        var lib = {};
+
+        /**
+         * 检查元素是否有指定的属性
+         *
+         * @param {HTMLElement} element 指定元素
+         * @param {string} name 指定属性名称
+         *
+         * @return {string}
+         */
+        lib.hasAttribute = function (element, name) {
+            if (element.hasAttribute) {
+                return element.hasAttribute(name);
+            }
+            else {
+                return element.attributes
+                    && element.attributes[name]
+                    && element.attributes[name].specified;
+            }
+        };
+
+        /**
+         * 提供给 setAttribute 与 getAttribute 方法作名称转换使用
+         * ie6, 7 下 class 要转换成 className
+         *
+         * @meta standard
+         */
+        lib.NAME_ATTRS = (function () {
+            var result = {
+                'cellpadding': 'cellPadding',
+                'cellspacing': 'cellSpacing',
+                'colspan': 'colSpan',
+                'rowspan': 'rowSpan',
+                'valign': 'vAlign',
+                'usemap': 'useMap',
+                'frameborder': 'frameBorder'
+            };
+
+            var div = document.createElement('div');
+            div.innerHTML = '<label for="test" className="test"></label>';
+            var label = div.getElementsByTagName('label')[0];
+
+            if (label.getAttribute('class') === 'test') {
+                result['className'] = 'class';
+            }
+            else {
+                result['class'] = 'className';
+            }
+
+            if (label.getAttribute('for') === 'test') {
+                result['htmlFor'] = 'for';
+            }
+            else {
+                result['for'] = 'htmlFor';
+            }
+
+            return result;
+        })();
+
+
+        /**
+         * 设置元素属性，会对某些值做转换
+         *
+         * @param {(HTMLElement | string)} element 目标元素或目标元素 id
+         * @param {string} key 要设置的属性名
+         * @param {string} value 要设置的属性值
+         *
+         * @return {HTMLElement} 目标元素
+         */
+        lib.setAttribute = function (element, key, value) {
+            element = dom.g(element);
+
+            if ('style' == key) {
+                element.style.cssText = value;
+            }
+            else {
+                key = lib.NAME_ATTRS[key] || key;
+                element.setAttribute(key, value);
+            }
+
+            return element;
+        };
+
+        /**
+         * 获取目标元素的属性值
+         *
+         * @grammar lib.dom.getAttribute(element, key)
+         * @param {(HTMLElement | string)} element 目标元素或目标元素的id
+         * @param {string} key 要获取的attribute键名
+         * @shortcut getAttr
+         * @meta standard
+         * @see lib.dom.setAttribute
+         *
+         * @return {?string} 目标元素的attribute值，获取不到时返回 null
+         */
+        lib.getAttribute = function (element, key) {
+            element = dom.g(element);
+
+            if ('style' == key) {
+                return element.style.cssText;
+            }
+
+            key = lib.NAME_ATTRS[key] || key;
+            return element.getAttribute(key);
+        };
+
+        /**
+         * 移除元素属性
+         *
+         * @param {(HTMLElement | string)} element 目标元素或目标元素 id
+         * @param {string} key 属性名称
+         */
+        lib.removeAttribute = function (element, key) {
+            element = dom.g(element);
+
+            key = lib.NAME_ATTRS[key] || key;
+            element.removeAttribute(key);
+        };
+
+        return lib;
+    }
+);
