@@ -13,6 +13,7 @@ define(function () {
      * @exports  module:lib
      */
     var lib = {};
+    var u = require('underscore');
 
     /* ========================== 语言部分 ========================== */
 
@@ -46,37 +47,9 @@ define(function () {
         return String(source).replace(whitespace, '');
     };
 
-    /**
-     * 判断值是否为 Array 类型
-     *
-     * @param {Object} source
-     *
-     * @return {boolean} 判断结果
-     */
-    lib.isArray = function (source) {
-        return '[object Array]' == Object.prototype.toString.call(source);
-    };
+    lib.isArray = u.isArray;
 
-    /**
-     * 将对象转换为数组
-     *
-     * @param {*} source 任意对象
-     *
-     * @return {Array} 数组化后的对象
-     */
-    lib.toArray = function (source) {
-        var length = source.length;
-        if (typeof length === 'number') {
-            var result = [];
-            for (var i = 0; i < length; i++) {
-                result[i] = source[i];
-            }
-            return result;
-        }
-        else {
-            return [source];
-        }
-    };
+    lib.toArray = u.toArray;
 
     /**
      * 为类型构造器建立继承关系
@@ -101,31 +74,7 @@ define(function () {
         return subClass;
     };
 
-    /**
-     * 将源对象属性拷贝到目标对象
-     *
-     * @param {Object} target 目标对象
-     * @param {Object} source 源对象
-     *
-     * @return {Object} 扩展后的 `target` 对象
-     */
-    lib.extend = function (target, source) {
-        for (var i = 1, len = arguments.length; i < len; i++) {
-            source = arguments[i];
-
-            if (!source) {
-                continue;
-            }
-
-            for (var key in source) {
-                if (source.hasOwnProperty(key)) {
-                    target[key] = source[key];
-                }
-            }
-        }
-
-        return target;
-    };
+    lib.extend = u.extend;
 
     /**
      * 对一个 object 进行深度复制
@@ -164,41 +113,9 @@ define(function () {
         return result;
     };
 
-    /**
-     * 为对象绑定方法和作用域
-     *
-     * @param {Function} fn 要绑定的函数
-     * @param {Object} scope 执行运行时 this，如果不传入则运行时 this 为函数本身
-     * @param {...*=} args 函数执行时附加到执行时函数前面的参数
-     *
-     * @return {Function} 封装后的函数
-     */
-    lib.bind = function (fn, scope) {
-        var xargs = arguments.length > 2 ? [].slice.call(arguments, 2) : null;
-        return function () {
-            var args = xargs
-                ? xargs.concat([].slice.call(arguments))
-                : arguments;
-            return fn.apply(scope, args);
-        };
-    };
+    lib.bind = u.bind;
 
-    /**
-     * 为函数提前绑定前置参数（柯里化）
-     *
-     * @see http://en.wikipedia.org/wiki/Currying
-     * @param {Function} fn 要绑定的函数
-     * @param {...*=} args 函数执行时附加到执行时函数前面的参数
-     *
-     * @return {Function} 柯里化后的新函数
-     */
-    lib.curry = function (fn) {
-        var xargs = [].slice.call(arguments, 1);
-        return function () {
-            var args = xargs.concat([].slice.call(arguments));
-            return fn.apply(this, args);
-        };
-    };
+    lib.curry = u.partial;
 
     /**
      * 字符串格式化
@@ -230,75 +147,11 @@ define(function () {
         );
     };
 
-    /**
-     * 查询数组中指定元素的索引位置
-     * 
-     * @param {Array} source 需要查询的数组
-     * @param {*} item 查询项
-     * @param {number=} from 初始的查询位置
-     * @return {number} 指定元素的索引位置，查询不到时返回-1
-     */
-    lib.indexOf = Array.prototype.indexOf
-        ? function (source, item, from) {
-            return Array.prototype.indexOf.call(source, item, from);
-        }
-        : function (source, item, from) {
-            var length = source.length >>> 0;
-            var i = (from < 0) ? Math.max(0, length + from) : from || 0;
-            for (; i < length; i++){
-                if (source[i] === item) {
-                    return i;
-                }
-            }
-            return -1;
-        };
+    lib.indexOf = u.indexOf;
 
-    /**
-     * 对目标字符串进行html解码
-     *
-     * @param {string} source 目标字符串
-     *
-     * @return {string} html解码后的字符串
-     */
-    lib.decodeHTML = function (source) {
-        if (!source) {
-            return '';
-        }
+    lib.decodeHTML = u.unescape;
 
-        var str = String(source)
-            .replace(/&quot;/g, '"')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&amp;/g, '&');
-        //处理转义的中文和实体字符
-        return str.replace(
-            /&#([\d]+);/g,
-            function (match, code) {
-                return String.fromCharCode(parseInt(code, 10));
-            }
-        );
-    };
-
-    /**
-     * 对目标字符串进行 html 编码
-     *
-     * @param {string} source 目标字符串
-     *
-     * @return {string} html编码后的字符串
-     */
-    lib.encodeHTML = function (source) {
-        if (!source) {
-            return '';
-        }
-
-        return String(source)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/ /g, '&nbsp;');
-    };
+    lib.encodeHTML = u.escape;
 
     /**
      * 将字符串转换成 camel 格式
