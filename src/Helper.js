@@ -178,9 +178,10 @@ define(
          * 收集`<input>`元素上的属性
          *
          * @param {HTMLElement} input DOM元素
+         * @param {Object} [options] 已有的属性元素
          * @return {Object}
          */
-        Helper.prototype.collectInputAttributes = function (input) {
+        Helper.prototype.collectInputAttributes = function (input, options) {
             var properties = {};
 
             u.each(
@@ -193,7 +194,12 @@ define(
                 }
             );
 
-            return properties;
+            if (options) {
+                return u.defaults(options, properties);
+            }
+            else {
+                return properties;
+            }
         };
 
         return Helper;
