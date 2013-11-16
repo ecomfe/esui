@@ -83,6 +83,24 @@ define(
             return result;
         };
 
+        /**
+         * 将数组转换为字典
+         *
+         * @param {Array} array 数组
+         * @return {Object}
+         */
+        lib.toDictionary = function (array) {
+            var dictionary = {};
+            u.each(
+                array,
+                function (value) {
+                    dictionary[value] = true;
+                }
+            );
+
+            return dictionary;
+        };
+
         lib.isArray = u.isArray;
 
         lib.toArray = u.toArray;
