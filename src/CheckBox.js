@@ -109,6 +109,7 @@ define(
                 if (this.main.nodeName.toLowerCase() === 'input') {
                     this.boxId = this.main.id || helper.getId(this, 'box');
                     helper.replaceMain(this);
+                    this.main.id = this.helper.getId();
                 }
                 else {
                     this.boxId = helper.getId(this, 'box');

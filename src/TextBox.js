@@ -209,7 +209,12 @@ define(
             if (lib.isInput(this.main)) {
                 var main = helper.replaceMain(this);
                 
+                // `replaceMain`会复制`id`属性，但`TextBox`是特殊的，`id`要保留下来
                 this.inputId = main.id || helper.getId(this, 'input');
+
+                if (this.main.id) {
+                    this.main.id = this.helper.getId();
+                }
 
                 // TextBox上会有`maxlength`之类的属性，因此不能直接丢掉，
                 // 但保留下来就不能加`data-ctrl-id`属性，
