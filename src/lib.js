@@ -16,6 +16,19 @@ define(function () {
 
     /* ========================== 语言部分 ========================== */
 
+    var counter = 0x861005;
+    /**
+     * 获取唯一id
+     * 
+     * @inner
+     * @param {string} prefix 前缀
+     * @return {string}
+     */
+    lib.getGUID = function (prefix) {
+        prefix = prefix || 'esui';
+        return prefix + counter++;
+    };
+
     var whitespace = /^[\s\xa0\u3000]+|[\u3000\xa0\s]+$/g;
 
     /**
