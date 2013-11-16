@@ -16,6 +16,7 @@ define(
 
         u.extend(
             Helper.prototype,
+            require('./helper/children'),
             require('./helper/dom'),
             require('./helper/event'),
             require('./helper/html'),
