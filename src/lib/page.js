@@ -17,30 +17,28 @@ define(
         /**
          * 获取页面宽度
          *
-         * @method module:page.getWidth
-         *
          * @return {number} 页面宽度
          */
         page.getWidth = function () {
             return Math.max(
-                documentElement.scrollWidth,
-                body.scrollWidth,
-                viewRoot.clientWidth
+                (documentElement ? documentElement.scrollWidth : 0),
+                (body ? body.scrollWidth : 0),
+                (viewRoot ? viewRoot.clientWidth : 0),
+                0
             );
         };
 
         /**
          * 获取页面高度
          *
-         * @method module:page.getHeight
-         *
          * @return {number} 页面高度
          */
         page.getHeight = function () {
             return Math.max(
-                documentElement.scrollHeight,
-                body.scrollHeight,
-                viewRoot.clientHeight
+                (documentElement ? documentElement.scrollHeight : 0),
+                (body ? body.scrollHeight : 0),
+                (viewRoot ? viewRoot.clientHeight : 0),
+                0
             );
         };
 
@@ -48,49 +46,43 @@ define(
         /**
          * 获取页面视觉区域宽度
          *
-         * @method module:page.getViewWidth
-         *
          * @return {number} 页面视觉区域宽度
          */
         page.getViewWidth = function () {
-            return viewRoot.clientWidth;
+            return viewRoot ? viewRoot.clientWidth : 0;
         };
 
         /**
          * 获取页面视觉区域高度
          *
-         * @method module:page.getViewHeight
-         *
          * @return {number} 页面视觉区域高度
          */
         page.getViewHeight = function () {
-            return viewRoot.clientHeight;
+            return viewRoot ? viewRoot.clientHeight : 0;
         };
 
         /**
          * 获取纵向滚动量
-         *
-         * @method module:page.getScrollTop
          *
          * @return {number} 纵向滚动量
          */
         page.getScrollTop = function () {
             return window.pageYOffset
                 || document.documentElement.scrollTop
-                || document.body.scrollTop;
+                || document.body.scrollTop
+                || 0;
         };
 
         /**
          * 获取横向滚动量
-         *
-         * @method module:page.getScrollLeft
          *
          * @return {number} 横向滚动量
          */
         page.getScrollLeft = function () {
             return window.pageXOffset
                 || document.documentElement.scrollLeft
-                || document.body.scrollLeft;
+                || document.body.scrollLeft
+                || 0;
         };
 
         return { page: page };
