@@ -10,43 +10,39 @@ define(
         var date = {};
 
         function pad(source, length) {
-            var pre = '';
+            var prefix = '';
             var negative = (source < 0);
-            var string = String(Math.abs(source));
+            var string = Math.abs(source) + '';
 
             if (string.length < length) {
-                pre = (new Array(length - string.length + 1)).join('0');
+                prefix = (new Array(length - string.length + 1)).join('0');
             }
 
-            return (negative ? '-' : '') + pre + string;
+            return (negative ? '-' : '') + prefix + string;
         }
 
         /**
          * 对目标日期对象进行格式化
          *
-         * @method module:date.format
-         * @grammar date.format(source, pattern)
+         * 格式表达式，变量含义：
+         *
+         * - `hh`: 带 0 补齐的两位 12 进制时表示<br>
+         * - `h`: 不带 0 补齐的 12 进制时表示<br>
+         * - `HH`: 带 0 补齐的两位 24 进制时表示<br>
+         * - `H`: 不带 0 补齐的 24 进制时表示<br>
+         * - `mm`: 带 0 补齐两位分表示<br>
+         * - `m`: 不带 0 补齐分表示<br>
+         * - `ss`: 带 0 补齐两位秒表示<br>
+         * - `s`: 不带 0 补齐秒表示<br>
+         * - `YYYY`: 带 0 补齐的四位年表示<br>
+         * - `YY`: 带 0 补齐的两位年表示<br>
+         * - `MM`: 带 0 补齐的两位月表示<br>
+         * - `M`: 不带 0 补齐的月表示<br>
+         * - `DD`: 带 0 补齐的两位日表示<br>
+         * - `D`: 不带 0 补齐的日表示
+         *
          * @param {Date} source 目标日期对象
          * @param {string} pattern 日期格式化规则
-         *
-         * @remark
-         *
-         * <b>格式表达式，变量含义：</b><br><br>
-         * hh: 带 0 补齐的两位 12 进制时表示<br>
-         * h: 不带 0 补齐的 12 进制时表示<br>
-         * HH: 带 0 补齐的两位 24 进制时表示<br>
-         * H: 不带 0 补齐的 24 进制时表示<br>
-         * mm: 带 0 补齐两位分表示<br>
-         * m: 不带 0 补齐分表示<br>
-         * ss: 带 0 补齐两位秒表示<br>
-         * s: 不带 0 补齐秒表示<br>
-         * YYYY: 带 0 补齐的四位年表示<br>
-         * YY: 带 0 补齐的两位年表示<br>
-         * MM: 带 0 补齐的两位月表示<br>
-         * M: 不带 0 补齐的月表示<br>
-         * DD: 带 0 补齐的两位日表示<br>
-         * D: 不带 0 补齐的日表示
-         *
          * @return {string} 格式化后的字符串
          */
         date.format = function (source, pattern) {
@@ -56,43 +52,34 @@ define(
 
             source = source + '';
 
-            function replacer(patternPart, result) {
-                pattern = pattern.replace(patternPart, result);
-            }
-
             var year = source.getFullYear();
             var month = source.getMonth() + 1;
-            var date2 = source.getDate();
+            var date = source.getDate();
             var hours = source.getHours();
             var minutes = source.getMinutes();
             var seconds = source.getSeconds();
 
-            replacer(/YYYY/g, pad(year, 4));
-            replacer(/YY/g, pad(parseInt(year.toString().slice(2), 10), 2));
-            replacer(/MM/g, pad(month, 2));
-            replacer(/M/g, month);
-            replacer(/DD/g, pad(date2, 2));
-            replacer(/D/g, date2);
+            var result = pattern
+                .replace(/YYYY/g, pad(year, 4))
+                .replace(/YY/g, pad(parseInt((year + '').slice(2), 10), 2))
+                .replace(/MM/g, pad(month, 2))
+                .replace(/M/g, month)
+                .replace(/DD/g, pad(date, 2))
+                .replace(/D/g, date)
+                .replace(/HH/g, pad(hours, 2))
+                .replace(/H/g, hours)
+                .replace(/hh/g, pad(hours % 12, 2))
+                .replace(/h/g, hours % 12)
+                .replace(/mm/g, pad(minutes, 2))
+                .replace(/m/g, minutes)
+                .replace(/ss/g, pad(seconds, 2))
+                .replace(/s/g, seconds);
 
-            replacer(/HH/g, pad(hours, 2));
-            replacer(/H/g, hours);
-            replacer(/hh/g, pad(hours % 12, 2));
-            replacer(/h/g, hours % 12);
-            replacer(/mm/g, pad(minutes, 2));
-            replacer(/m/g, minutes);
-            replacer(/ss/g, pad(seconds, 2));
-            replacer(/s/g, seconds);
-
-            return pattern;
+            return result;
         };
 
         /**
          * 将目标字符串转换成日期对象
-         *
-         * @method module:date.parse
-         * @grammar date.parse(source)
-         * @param {string} source 目标字符串
-         * @remark
          *
          * 对于目标字符串，下面这些规则决定了 parse 方法能够成功地解析：
          *
@@ -122,6 +109,7 @@ define(
          * - 包含无效日期的字符串是错误的。
          * 例如，一个包含有两个年份或两个月份的字符串就是错误的。
          *
+         * @param {string} source 目标字符串
          * @return {Date} 转换后的日期对象
          */
         date.parse = function (source) {
