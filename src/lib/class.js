@@ -7,55 +7,70 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
+        var dom = require('./dom');
         var lib = {};
+
+        function getClassList(element) {
+            return element.className
+                ? element.className.split(/\s+/)
+                : [];
+        }
 
         /**
          * 判断元素是否拥有指定的 className
          *
-         * @param {HTMLElement} element 目标元素
+         * @param {HTMLElement | string} element 目标元素
          * @param {string} className 要判断的className
          *
          * @return {boolean} 是否拥有指定的className
          */
         lib.hasClass = function (element, className) {
-            if (!element) {
+            element = dom.g(element);
+
+            if (className === '') {
+                throw new Error('className must not be empty');
+            }
+
+            if (!element || !className) {
                 return false;
             }
 
-            if (!className) {
-                return true;
+            if (element.classList) {
+                return element.classList.contains(className);
             }
 
-            var classes = element.className.split(/\s+/);
-            for (var i = 0; i < classes.length; i++) {
-                if (classes[i] === className) {
-                    return true;
-                }
-            }
-
-            return false;
+            var classes = getClassList(element);
+            return u.contains(classes, className);
         };
 
         /**
          * 为目标元素添加 className
          *
-         * @param {HTMLElement} element 目标元素或目标元素的 id
+         * @param {HTMLElement | string} element 目标元素或目标元素的 id
          * @param {string} className 要添加的 className
          *
          * @return {HTMLElement} 目标元素
          */
         lib.addClass = function (element, className) {
+            element = dom.g(element);
+
+            if (className === '') {
+                throw new Error('className must not be empty');
+            }
+
             if (!element || !className) {
                 return element;
             }
 
-            var classes = element.className
-                ? element.className.split(/\s+/)
-                : [];
-            for (var i = 0; i < classes.length; i++) {
-                if (classes[i] === className) {
-                    return element;
-                }
+            if (element.classList) {
+                classList.add(className);
+                return element;
+            }
+
+            var classes = getClassList(element);
+            if (u.contains(classes, className)) {
+                return element;
             }
 
             classes.push(className);
@@ -67,34 +82,28 @@ define(
         /**
          * 批量添加 className
          *
-         * @param {HTMLElement} element 目标元素
-         * @param {Array.<string>} classes 需添加的 className
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string[]} classes 需添加的 className
          *
          * @return {HTMLElement} 目标元素
          */
         lib.addClasses = function (element, classes) {
+            element = dom.g(element);
+
             if (!element || !classes) {
                 return element;
             }
 
-            var originalClasses =
-                element.className ? element.className.split(/\s+/) : [];
-            var map = {};
-            for (var i = 0; i < originalClasses.length; i++) {
-                map[originalClasses[i]] = true;
+            if (element.classList) {
+                element.classList.add.apply(element.classList, classes);
+                return element;
             }
 
-            var changed = false;
-            for (var i = 0; i < classes.length; i++) {
-                var className = classes[i];
-                if (!map.hasOwnProperty(className)) {
-                    originalClasses.push(className);
-                    changed = true;
-                }
-            }
+            var originalClasses = getClassList(element);
+            var newClasses = u.union(originalClasses, classes);
 
-            if (changed) {
-                element.className = originalClasses.join(' ');
+            if (newClasses.length > originalClasses.length) {
+                element.className = newClasses.join(' ');
             }
 
             return element;
@@ -103,26 +112,41 @@ define(
         /**
          * 移除目标元素的 className
          *
-         * @param {HTMLElement} element 目标元素或目标元素的 id
+         * @param {HTMLElement | string} element 目标元素或目标元素的 id
          * @param {string} className 要移除的 className
          *
          * @return {HTMLElement} 目标元素
          */
         lib.removeClass = function (element, className) {
+            element = dom.g(element);
+
+            if (className === '') {
+                throw new Error('className must not be empty');
+            }
+
             if (!element || !className) {
                 return element;
             }
 
-            var classes = element.className
-                ? element.className.split(/\s+/)
-                : [];
+            if (element.classList) {
+                classList.remove(className);
+                return element;
+            }
+
+            var classes = getClassList(element);
+            var changed = false;
+            // 这个方法比用`u.diff`要快
             for (var i = 0; i < classes.length; i++) {
                 if (classes[i] === className) {
                     classes.splice(i, 1);
                     i--;
+                    changed = true;
                 }
             }
-            element.className = classes.join(' ');
+
+            if (changed) {
+                element.className = classes.join(' ');
+            }
 
             return element;
         };
@@ -130,33 +154,28 @@ define(
         /**
          * 批量移除 className
          *
-         * @param {HTMLElement} element 目标元素
-         * @param {Array.<string>} 需移除的 className
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string[]} 需移除的 className
          *
          * @return {HTMLElement} 目标元素
          */
         lib.removeClasses = function (element, classes) {
+            element = dom.g(element);
+
             if (!element || !classes) {
                 return element;
             }
 
-            var map = {};
-            for (var i = 0; i < classes.length; i++) {
-                map[classes[i]] = true;
+            if (element.classList) {
+                element.classList.remove.apply(element.classList, classes);
+                return element;
             }
 
-            var originalClasses =
-                element.className ? element.className.split(/\s+/) : [];
-            var finalClasses = [];
-            for (var i = 0; i < originalClasses.length; i++) {
-                var className = originalClasses[i];
-                if (!map.hasOwnProperty(className)) {
-                    finalClasses.push(className);
-                }
-            }
+            var originalClasses = getClassList(element);
+            var newClasses = u.difference(originalClasses, classes);
 
-            if (finalClasses.length !== originalClasses.length) {
-                element.className = finalClasses.join(' ');
+            if (newClasses.length < originalClasses.length) {
+                element.className = newClasses.join(' ');
             }
 
             return element;
@@ -171,13 +190,22 @@ define(
          * @return {HTMLElement} 目标元素
          */
         lib.toggleClass = function (element, className) {
+            element = dom.g(element);
+
+            if (className === '') {
+                throw new Error('className must not be empty');
+            }
+
             if (!element || !className) {
                 return element;
             }
 
-            var classes = element.className
-                ? element.className.split(/\s+/)
-                : [];
+            if (element.classList) {
+                element.classList.toggle(className);
+                return element;
+            }
+
+            var classes = getClassList(element);
             var containsClass = false;
             for (var i = 0; i < classes.length; i++) {
                 if (classes[i] === className) {
