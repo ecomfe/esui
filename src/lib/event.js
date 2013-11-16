@@ -8,6 +8,7 @@
 define(
     function (require) {
         var dom = require('./dom');
+        var page = require('./page');
         var event = {};
 
         /**
@@ -49,22 +50,15 @@ define(
          */
         event.getMousePosition = function (event) {
             event = event || window.event;
-            
-            var doc = document.documentElement;
-            var body = document.body;
 
-            // TODO: 用`page`模块
-
-            if (!event.pageX) {
-                event.pageX = event.clientX
-                    + (doc && doc.scrollLeft || body && body.scrollLeft || 0)
-                    - (doc && doc.clientLeft || body && body.clientLeft || 0);
+            if (typeof event.pageX !== 'number') {
+                event.pageX = 
+                    event.clientX + page.getScrollLeft() - page.getClientLeft();
             }
 
-            if (!event.pageY) {
-                event.pageY = event.clientY
-                    + (doc && doc.scrollTop || body && body.scrollTop || 0)
-                    - (doc && doc.clientTop || body && body.clientTop || 0);
+            if (typeof event.pageY !== 'number') {
+                event.pageY = 
+                    event.clientY + page.getScrollTop() - page.getClientTop();
             }
         };
 
@@ -84,7 +78,7 @@ define(
         return {
             on: function (element, type, listener) {
                 element = dom.g(element);
-                
+
                 if (element.addEventListener) {
                     element.addEventListener(type, listener, false);
                 }

@@ -85,6 +85,28 @@ define(
                 || 0;
         };
 
+        /**
+         * 获取页面纵向坐标
+         *
+         * @return {number}
+         */
+        page.getClientTop = function () {
+            return document.documentElement.clientTop
+                || document.body.clientTop
+                || 0;
+        };
+
+        /**
+         * 获取页面横向坐标
+         *
+         * @return {number}
+         */
+        page.getClientLeft = function () {
+            return document.documentElement.clientLeft
+                || document.body.clientLeft
+                || 0;
+        };
+
         return { page: page };
     }
 );
