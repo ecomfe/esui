@@ -50,7 +50,9 @@ define(
                 return '';
             }
 
-            source = source + '';
+            if (typeof pattern !== 'string') {
+                return source + '';
+            }
 
             var year = source.getFullYear();
             var month = source.getMonth() + 1;
