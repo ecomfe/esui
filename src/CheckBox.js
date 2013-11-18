@@ -45,6 +45,15 @@ define(
                 return document.createElement('label');
             },
 
+            /**
+             * 获取控件的分类
+             *
+             * @return {string}
+             */
+            getCategory: function () {
+                return 'check';
+            },
+
             initOptions: function (options) {
                 var properties = {
                     value: 'on',
@@ -100,6 +109,7 @@ define(
                 if (this.main.nodeName.toLowerCase() === 'input') {
                     this.boxId = this.main.id || helper.getId(this, 'box');
                     helper.replaceMain(this);
+                    this.main.id = this.helper.getId();
                 }
                 else {
                     this.boxId = helper.getId(this, 'box');

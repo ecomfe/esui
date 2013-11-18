@@ -119,20 +119,14 @@ define(
                 this.fire('enter');
             }
 
-            var isDefaultPrevented = false;
-            var event = {
+            var args = {
                 keyCode: keyCode,
                 key: String.fromCharCode(keyCode),
                 ctrlKey: e.ctrlKey,
-                altKey: e.altKey,
-                preventDefault: function () {
-                    isDefaultPrevented = true;
-                }
+                altKey: e.altKey
             };
+            var event = require('mini-event').fromDOMEvent(e, 'keypress', args);
             this.fire('keypress', event);
-            if (isDefaultPrevented) {
-                e.preventDefault();
-            }
         }
 
         /**
@@ -215,7 +209,12 @@ define(
             if (lib.isInput(this.main)) {
                 var main = helper.replaceMain(this);
                 
+                // `replaceMain`会复制`id`属性，但`TextBox`是特殊的，`id`要保留下来
                 this.inputId = main.id || helper.getId(this, 'input');
+
+                if (this.main.id) {
+                    this.main.id = this.helper.getId();
+                }
 
                 // TextBox上会有`maxlength`之类的属性，因此不能直接丢掉，
                 // 但保留下来就不能加`data-ctrl-id`属性，
@@ -272,22 +271,10 @@ define(
          * @protected
          */
         TextBox.prototype.repaint = helper.createRepaint(
-            // `TextBox`对`value`有一个同步处理（详见`setProperties`方法），
-            // 这导致`setProperties`调用时，就算没有`value`和`rawValue`，
-            // 也会去`<input>`元素上同步值。
-            // 但是调用`setProperties`时如果同时给了`value`和`disabled`之类的的，
-            // 因为`disabled`会在父类实现中再次调用`setProperties`，
-            // 导致`value`去同步`<input>`元素上的值，变回旧值，传入的`value`无效。
-            // 因此，要把对`value`的处理放在父类调用之前，这是一个特化的例子
+            InputControl.prototype.repaint,
             {
                 name: 'rawValue',
                 paint: function (textbox, rawValue) {
-                    // 某些浏览器（实测OSX Chrome）开着输入法的时候，事件会混乱，
-                    // 因此要在这里额外再判断一次是否相等，相等就不要处理
-                    if (rawValue === textbox.getRawValue()) {
-                        return;
-                    }
-
                     var input = lib.g(textbox.inputId);
                     var eventName = 
                         ('oninput' in input) ? 'input' : 'propertychange';
@@ -300,7 +287,6 @@ define(
                     togglePlaceholder(textbox);
                 }
             },
-            InputControl.prototype.repaint,
             {
                 name: 'title',
                 paint: function (textbox, title) {
@@ -453,43 +439,6 @@ define(
         );
 
         /**
-         * 批量设置属性
-         *
-         * @param {Object} 属性值
-         * @return {Object} 切实修改过的属性
-         */
-        TextBox.prototype.setProperties = function (properties) {
-            properties = lib.extend({}, properties);
-
-            // 因为IE9在有些时候（退格等删除文字）不会触发事件，无法同步值，
-            // 因此这里把真正的值（文本框中的）拿出来当`rawValue`，
-            // 这样如果没有外部显示地设置值，就会使用真正的值同步，
-            // 但是在`render`以前就调用`setProperties`的话，从DOM元素上拿东西是错的，
-            // 因此只在`render`之后，才会从DOM元素上同步值
-            if (!properties.hasOwnProperty('value')
-                && !properties.hasOwnProperty('rawValue')
-                && helper.isInStage(this, 'RENDERED')
-            ) {
-                properties.rawValue = this.getRawValue();
-            } 
-
-            var changed = 
-                InputControl.prototype.setProperties.call(this, properties);
-
-            // 因为`rawValue`有一个getter，因此不保存`rawValue`属性。
-            // 如果保存了这个属性，则可能出这样的事：
-            // 
-            // 1. `set('rawValue', '123');`
-            // 2. 用户输入成`abc`
-            // 3. `set('rawValue', '123'); // 没反应`
-            if (helper.isInStage(this, 'RENDERED')) {
-                this.rawValue = undefined;
-            }
-            
-            return changed;
-        };
-
-        /**
          * 获取验证信息控件
          *
          * @return {Validity}
@@ -518,6 +467,8 @@ define(
             var input = lib.g(this.inputId);
             return input ? input.value : (this.rawValue || this.value || '');
         };
+
+        TextBox.prototype.getRawValueProperty = TextBox.prototype.getRawValue;
 
         lib.inherits(TextBox, InputControl);
         ui.register(TextBox);

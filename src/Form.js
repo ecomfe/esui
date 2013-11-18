@@ -12,8 +12,6 @@ define(
         var helper = require('./controlHelper');
         var ui = require('./main');
         var Panel = require('./Panel');
-        var InputControl = require('./InputControl');
-        var CheckBox = require('./CheckBox');
 
         /**
          * 输入控件集合类
@@ -46,7 +44,7 @@ define(
                 var control = inputs[i];
 
                 // 排除未选中的选择框控件
-                if (control instanceof CheckBox && !control.isChecked()) {
+                if (control.getCategory() === 'check' && !control.isChecked()) {
                     continue;
                 }
 
@@ -273,6 +271,17 @@ define(
         };
 
         /**
+         * 判断是否为输入控件
+         *
+         * @param {Control} control 控件
+         * @return {boolean}
+         */
+        function isInputControl(control) {
+            var category = control.getCategory();
+            return category === 'input' || category === 'check';
+        }
+
+        /**
          * 根据名称及可选的类型获取输入控件
          * 
          * 这个方法返回符合以下要求的控件：
@@ -307,7 +316,7 @@ define(
 
                     var control = ui.getControlByDOM(element);
                     if (control
-                        && control instanceof InputControl
+                        && isInputControl(control)
                         && control.viewContext === form.viewContext
                         && control.get('name')
                         && (!name || control.get('name') === name)

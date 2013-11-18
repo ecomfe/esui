@@ -878,7 +878,7 @@ define(
                         orderBy: field.field
                     });
 
-                    table.fire('sort', {field: field, order: order});
+                    table.fire('sort', { field: field, order: order });
                 }
             }
         }
@@ -1837,8 +1837,8 @@ define(
                     index:index, 
                     item: dataItem
                 };
-                table.fire('subrowopen', eventArgs);
-                if (eventArgs.returnResult !== false) {
+                eventArgs = table.fire('subrowopen', eventArgs);
+                if (eventArgs.isDefaultPrevented()) {
                     openSubrow(table, index, el);
                 }
             } else {
@@ -1860,9 +1860,9 @@ define(
                 item: table.datasource[index]
             };
 
-            table.fire('subrowclose', eventArgs);
+            eventArgs = table.fire('subrowclose', eventArgs);
 
-            if (eventArgs.returnResult !== false) {
+            if (eventArgs.isDefaultPrevented()) {
                 entryOut(table, entry);
                 table.subrowIndex = null;
                 
@@ -2784,7 +2784,9 @@ define(
                     || allProperities['selectedIndex']
                 ) {
                     renderBody(table);
+                    // TODO: @deprecated 移除
                     table.fire('bodyChange');
+                    table.fire('changebody');
                     tbodyChange = true;
                 }
                 if (tbodyChange

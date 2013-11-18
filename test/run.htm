@@ -16,6 +16,7 @@
 
     <script>
         require.config({
+            waitSeconds: 2,
             paths: {
                 'css': 'asset/js/css'
             },
@@ -24,6 +25,16 @@
                     name: 'esui',
                     location: '../src',
                     main: 'main'
+                },
+                {
+                    name: 'mini-event',
+                    location: '../dep/mini-event/0.9.0/src',
+                    main: 'main'
+                },
+                {
+                    name: 'underscore',
+                    location: '../dep/underscore/1.4.4/src',
+                    main: 'underscore'
                 }
             ]
         });
