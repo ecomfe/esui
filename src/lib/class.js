@@ -64,7 +64,7 @@ define(
             }
 
             if (element.classList) {
-                classList.add(className);
+                element.classList.add(className);
                 return element;
             }
 
@@ -129,7 +129,7 @@ define(
             }
 
             if (element.classList) {
-                classList.remove(className);
+                element.classList.remove(className);
                 return element;
             }
 
