@@ -30,7 +30,7 @@
         }
     ],
     "dependencies": {
-        "mini-event": "0.x",
+        "mini-event": ">=0.9.0",
         "underscore": "1.4.x"
     },
     "main": "main",
