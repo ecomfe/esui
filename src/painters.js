@@ -172,6 +172,72 @@ define(
             };
         };
 
+        /**
+         * 通过`painter`对象创建`repaint`方法
+         *
+         * @param {...Object | function} args `painter`对象
+         * @return {function} `repaint`方法的实现
+         */
+        painters.create = function () {
+            var painters = [].concat.apply([], [].slice.call(arguments));
+
+            return function (changes, changesIndex) {
+                // 临时索引，不能直接修改`changesIndex`，会导致子类的逻辑错误
+                var index = lib.extend({}, changesIndex);
+                for (var i = 0; i < painters.length; i++) {
+                    var painter = painters[i];
+
+                    // 如果是一个函数，就认为这个函数处理所有的变化，直接调用一下
+                    if (typeof painter === 'function') {
+                        painter.apply(this, arguments);
+                        continue;
+                    }
+
+                    // 其它情况下，走的是`painter`的自动化属性->函数映射机制
+                    var propertyNames = [].concat(painter.name);
+
+                    // 以下2种情况下要调用：
+                    // 
+                    // - 第一次重会（没有`changes`）
+                    // - `changesIndex`有任何一个负责的属性的变化
+                    var shouldPaint = !changes;
+                    if (!shouldPaint) {
+                        for (var j = 0; j < propertyNames.length; j++) {
+                            var name = propertyNames[j];
+                            if (changesIndex.hasOwnProperty(name)) {
+                                shouldPaint = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!shouldPaint) {
+                        continue;
+                    }
+
+                    // 收集所有属性的值
+                    var properties = [this];
+                    for (var j = 0; j < propertyNames.length; j++) {
+                        var name = propertyNames[j];
+                        properties.push(this[name]);
+                        // 从索引中删除，为了后续构建`unpainted`数组
+                        delete index[name]; 
+                    }
+                    // 绘制
+                    painter.paint.apply(painter, properties);
+                }
+
+                // 构建出未渲染的属性集合
+                var unpainted = [];
+                for (var key in index) {
+                    if (index.hasOwnProperty(key)) {
+                        unpainted.push(index[key]);
+                    }
+                }
+
+                return unpainted;
+            };
+        };
+
         return painters;
     }
 );

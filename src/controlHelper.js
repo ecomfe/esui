@@ -43,11 +43,7 @@ define(
             'addDOMEvent', 'removeDOMEvent', 'clearDOMEvents'
         ];
 
-        // `createRepaint`是特殊的，第一个参数不是`control`
-        helper.createRepaint = function () {
-            var helper = new Helper();
-            return helper.createRepaint.apply(helper, arguments);
-        };
+        helper.createRepaint = require('./painters').create;
 
         // 补上原有的方法，全部代理到`Helper`上
         require('underscore').each(
