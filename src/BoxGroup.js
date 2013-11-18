@@ -8,8 +8,8 @@
 
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
 
         /**
@@ -28,7 +28,6 @@ define(
          * @param {Object} options 输入的配置项
          * @param {string|undefined} options.name 输入控件的名称
          * @param {string} options.boxType 选项框的类型，参考`unknownTypes`
-         * @inner
          */
         function extractDatasourceFromDOM(element, options) {
             // 提取符合以下条件的子`<input>`控件：
@@ -102,7 +101,7 @@ define(
                 orientation: 'horizontal',
                 boxType: 'radio'
             };
-            lib.extend(properties, options);
+            u.extend(properties, options);
 
             if (!properties.datasource.length) {
                 extractDatasourceFromDOM(this.main, properties);
@@ -116,24 +115,14 @@ define(
 
         /**
          * 同步值
-         *
-         * @param {BoxGroup} this 控件实例
-         * @inner
          */
         function syncValue() {
-            var result = [];
-            var inputs = this.main.getElementsByTagName('input');
-            for (var i = inputs.length - 1; i >= 0; i--) {
-                var input = inputs[i];
-                if (input.type === this.boxType && input.checked) {
-                    result.push(input.value);
-                }
-            }
+            var result = u.chain(this.getBoxElements())
+                .where({ checked: true })
+                .pluck('value')
+                .value();
 
             this.rawValue = result;
-            var input = lib.g(helper.getId(this, 'value'));
-            input.value = this.getValue();
-
             this.fire('change');
         }
 
@@ -150,39 +139,29 @@ define(
          * 渲染控件
          *
          * @param {BoxGroup} group 控件实例
-         * @param {Array.<Object>} 数据源对象
+         * @param {Object[]} datasource 数据源对象
          * @param {string} boxType 选择框的类型
-         * @inner
          */
         function render(group, datasource, boxType) {
             // `BoxGroup`只会加`change`事件，所以全清就行
-            helper.clearDOMEvents(group);
+            group.helper.clearDOMEvents();
 
-            // 一个隐藏的`<input>`元素
-            var html = '<input type="hidden" '
-                + 'id="' + helper.getId(group, 'value') + '"';
-            if (group.name) {
-                html += ' name="' + group.name + '"';
-            }
-            html += ' />';
+            var html = '';
 
             var classes = [].concat(
-                helper.getPartClasses(group, boxType),
-                helper.getPartClasses(group, 'wrapper')
+                group.helper.getPartClasses(boxType),
+                group.helper.getPartClasses('wrapper')
             );
 
-            var valueIndex = {};
-            for (var i = 0; i < group.rawValue.length; i++) {
-                valueIndex[group.rawValue[i]] = true;
-            }
+            var valueIndex = lib.toDictionary(group.rawValue);
 
             // 分组的选择框必须有相同的`name`属性，所以哪怕没有也给造一个
-            var name = group.name || helper.getGUID();
+            var name = this.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
                 var data = {
                     wrapperClass: classes.join(' '),
-                    id: helper.getId(group, 'box-' + i),
+                    id: group.helper.getId('box-' + i),
                     type: group.boxType,
                     name: name,
                     title: lib.trim(item.title || item.name || item.text),
@@ -195,14 +174,14 @@ define(
             group.main.innerHTML = html;
 
             // `change`事件不会冒泡的，所以在这里要给一个一个加上
-            var inputs = group.main.getElementsByTagName('input');
             var eventName = group.main.addEventListener ? 'change' : 'click';
-            for (var i = inputs.length - 1; i >= 0; i--) {
-                var input = inputs[i];
-                if (input.type === group.boxType) {
-                    helper.addDOMEvent(group, input, eventName, syncValue);
-                }
-            }
+            u.each(
+                group.getBoxElements(),
+                function (box) {
+                    this.helper.addDOMEvent(box, eventName, syncValue);
+                },
+                group
+            );
         }
 
         /**
@@ -236,7 +215,7 @@ define(
          * @override
          * @protected
          */
-        BoxGroup.prototype.repaint = helper.createRepaint(
+        BoxGroup.prototype.repaint = require('./painters').createRepaint(
             InputControl.prototype.repaint,
             {
                 name: ['datasource', 'boxType'],
@@ -245,12 +224,13 @@ define(
             {
                 name: ['disabled', 'readOnly'],
                 paint: function (group, disabled, readOnly) {
-                    var inputs = group.main.getElementsByTagName('input');
-                    for (var i = inputs.length - 1; i >= 0; i--) {
-                        var input = inputs[i];
-                        input.disabled = disabled;
-                        input.readOnly = readOnly;
-                    }
+                    u.each(
+                        group.getBoxElements(),
+                        function (box) {
+                            box.disabled = disabled;
+                            box.readOnly = readOnly;
+                        }
+                    );
                 }
             },
             {
@@ -264,17 +244,12 @@ define(
                         map[rawValue[i]] = true;
                     }
 
-                    var inputs = group.main.getElementsByTagName('input');
-                    for (var i = inputs.length - 1; i >= 0; i--) {
-                        var input = inputs[i];
-                        if (input.type === group.boxType) {
-                            input.checked = map.hasOwnProperty(input.value);
+                    u.each(
+                        group.getBoxElements(),
+                        function (box) {
+                            box.checked = map.hasOwnProperty(box.value);
                         }
-                    }
-
-                    // 有可能`rawValue`给多了，所以要重新获取一次以同步
-                    var input = lib.g(helper.getId(group, 'value'));
-                    input.value = group.getValue();
+                    );
                 }
             },
             {
@@ -297,6 +272,21 @@ define(
          */
         BoxGroup.prototype.parseValue = function (value) {
             return value.split(',');
+        };
+
+        // 保护函数区域
+
+        /**
+         * 获取内部的输入元素
+         *
+         * @return {HTMLInputElement[]}
+         * @protected
+         */
+        BoxGroup.prototype.getBoxElements = function () {
+            return u.where(
+                this.main.getElementsByTagName('input'),
+                { type: this.boxType }
+            );
         };
 
         lib.inherits(BoxGroup, InputControl);
