@@ -9,7 +9,6 @@
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
 
         var painters = {};
 
@@ -112,7 +111,7 @@ define(
                     var element = typeof this.element === 'function'
                         ? this.element(control)
                         : this.element
-                            ? lib.g(helper.getId(control, this.element))
+                            ? control.helper.getPart(this.element)
                             : control.main;
                     if (element) {
                         var html = typeof this.generate === 'function'
@@ -141,7 +140,7 @@ define(
                     var element = typeof this.element === 'function'
                         ? this.element(control)
                         : this.element
-                            ? lib.g(helper.getId(control, this.element))
+                            ? control.helper.getPart(this.element)
                             : control.main;
                     if (element) {
                         var html = typeof this.generate === 'function'
