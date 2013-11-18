@@ -11,8 +11,6 @@ define(
         var lib = require('./lib');
 
         var Helper = require('./Helper');
-        // 默认作为桥梁的`Helper`实例
-        var defaultHelper = new Helper();
 
         /**
          * 控件类常用的helper方法模块
@@ -47,17 +45,18 @@ define(
 
         // `createRepaint`是特殊的，第一个参数不是`control`
         helper.createRepaint = function () {
-            return defaultHelper.createRepaint.apply(defaultHelper, arguments);
+            var helper = new Helper();
+            return helper.createRepaint.apply(helper, arguments);
         };
 
-        // 补上原有的方法，全部代理到`defaultHelper`上
+        // 补上原有的方法，全部代理到`Helper`上
         require('underscore').each(
             methods,
             function (name) {
                 helper[name] = function (control) {
-                    defaultHelper.control = control;
+                    var helper = new Helper(control);
                     var args = [].slice.call(arguments, 1);
-                    return defaultHelper[name].apply(defaultHelper, args);
+                    return helper[name].apply(helper, args);
                 };
             }
         );
