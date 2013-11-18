@@ -177,7 +177,7 @@ define(
          * @param {...Object | function} args `painter`对象
          * @return {function} `repaint`方法的实现
          */
-        painters.create = function () {
+        painters.createRepaint = function () {
             var painters = [].concat.apply([], [].slice.call(arguments));
 
             return function (changes, changesIndex) {

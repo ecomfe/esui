@@ -43,7 +43,7 @@ define(
             'addDOMEvent', 'removeDOMEvent', 'clearDOMEvents'
         ];
 
-        helper.createRepaint = require('./painters').create;
+        helper.createRepaint = require('./painters').createRepaint;
 
         // 补上原有的方法，全部代理到`Helper`上
         require('underscore').each(
