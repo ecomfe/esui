@@ -215,6 +215,22 @@ define(
         };
 
         /**
+         * 代理DOM元素的事件为自身的事件
+         *
+         * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
+         * @param {string} type 需要代理的DOM事件类型
+         * @param {string} [newType] 代理时触发的事件，默认与`type`一致
+         */
+        helper.delegateDOMEvent = function (element, type, newType) {
+            var handler = function (e) {
+                var event = require('mini-event').fromDOMEvent(e);
+                this.fire(newType || e.type, event);
+            };
+
+            this.addDOMEvent(element, type, handler);
+        };
+
+        /**
          * 为控件管理的DOM元素添加DOM事件
          *
          * @param {HTMLElement | string} element 需要添加事件的DOM元素

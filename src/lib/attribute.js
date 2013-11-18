@@ -32,20 +32,13 @@
         // 提供给 setAttribute 与 getAttribute 方法作名称转换使用
         var ATTRIBUTE_NAME_MAPPING = (function () {
             var result = {
-                'tabindex': 'tabIndex',
-                'readonly': 'readOnly',
-                'for': 'htmlFor',
-                'class': 'className',
-                'maxlength': 'maxLength',
-                'cellspacing': 'cellSpacing',
-                'cellpadding': 'cellPadding',
-                'rowspan': 'rowSpan',
-                'colspan': 'colSpan',
-                'usemap': 'useMap',
-                'frameborder': 'frameBorder',
-                'contenteditable': 'contentEditable',
-                'valign': 'vAlign',
-                'enctype': 'encType'
+                cellpadding: 'cellPadding',
+                cellspacing: 'cellSpacing',
+                colspan: 'colSpan',
+                rowspan: 'rowSpan',
+                valign: 'vAlign',
+                usemap: 'useMap',
+                frameborder: 'frameBorder'
             };
 
             var div = document.createElement('div');

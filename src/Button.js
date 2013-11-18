@@ -8,11 +8,10 @@
 
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
-        var Control = require('./Control');
-        var ui = require('./main');
         var paint = require('./painters');
+        var Control = require('./Control');
 
         /**
          * 按钮控件类
@@ -22,10 +21,6 @@ define(
          */
         function Button(options) {
             Control.apply(this, arguments);
-        }
-
-        function dispathClickEvent() {
-            this.fire('click');
         }
 
         /**
@@ -63,10 +58,10 @@ define(
                  * 默认选项配置
                  */
                 var properties = {
-                    content: '',         // 按钮的显示文字
-                    disabled: false     // 控件是否禁用
+                    content: '', // 按钮的显示文字
+                    disabled: false // 控件是否禁用
                 };
-                lib.extend(properties, options);
+                u.extend(properties, options);
                 properties.tagName = this.main.nodeName.toLowerCase();
                 if (properties.text == null) {
                     properties.text = lib.getText(this.main);
@@ -103,7 +98,7 @@ define(
              */
             initStructure: function () {
                 // 初始化状态事件
-                helper.addDOMEvent(this, this.main, 'click', dispathClickEvent);
+                this.helper.delegateDOMEvent(this.main, 'click');
             },
             
             /**
@@ -113,7 +108,7 @@ define(
              * @param {Array=} 变更过的属性的集合
              * @override
              */
-            repaint: helper.createRepaint(
+            repaint: paint.createRepaint(
                 Control.prototype.repaint,
                 paint.style('width'),
                 {
@@ -138,12 +133,7 @@ define(
                         }
                     } 
                 },
-                {
-                    name: 'content',
-                    paint: function (button, value) {
-                        button.main.innerHTML = value;
-                    }
-                }
+                paint.html('content')
             ),
 
             /**
@@ -157,7 +147,7 @@ define(
         };
 
         lib.inherits(Button, Control);
-        ui.register(Button);
+        require('./main').register(Button);
 
         return Button;
     }
