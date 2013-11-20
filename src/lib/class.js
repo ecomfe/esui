@@ -97,7 +97,9 @@ define(
             if (element.classList) {
                 u.each(
                     classes,
-                    u.bind(element.classList.add, element.classList)
+                    function (className) {
+                        element.classList.add(className);
+                    }
                 );
                 return element;
             }
@@ -172,7 +174,9 @@ define(
             if (element.classList) {
                 u.each(
                     classes,
-                    u.bind(element.classList.remove, element.classList)
+                    function (className) {
+                        element.classList.remove(className);
+                    }
                 );
                 return element;
             }
