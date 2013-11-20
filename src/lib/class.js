@@ -95,7 +95,10 @@ define(
             }
 
             if (element.classList) {
-                element.classList.add.apply(element.classList, classes);
+                u.each(
+                    classes,
+                    u.bind(element.classList.add, element.classList)
+                );
                 return element;
             }
 
@@ -167,7 +170,10 @@ define(
             }
 
             if (element.classList) {
-                element.classList.remove.apply(element.classList, classes);
+                u.each(
+                    classes,
+                    u.bind(element.classList.remove, element.classList)
+                );
                 return element;
             }
 
