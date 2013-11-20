@@ -2786,7 +2786,7 @@ define(
                     renderBody(table);
                     // TODO: @deprecated 移除
                     table.fire('bodyChange');
-                    table.fire('changebody');
+                    table.fire('bodychange');
                     tbodyChange = true;
                 }
                 if (tbodyChange

@@ -50,14 +50,20 @@ define(
                     var commandName = target.getAttribute('data-command');
                     if (commandName) {
                         var args = target.getAttribute('data-command-args');
-                        this.fire(
-                            'command', 
+                        var event = require('mini-event').fromDOMEvent(
+                            e,
+                            'command',
                             {
                                 name: commandName, 
                                 triggerType: e.type, 
                                 args: args
                             }
                         );
+                        event = this.fire('command', event);
+                        
+                        if (event.isPropagationStopped()) {
+                            return;
+                        }
                     }
                 }
                 target = target.parentNode;

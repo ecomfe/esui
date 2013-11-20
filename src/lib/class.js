@@ -95,7 +95,12 @@ define(
             }
 
             if (element.classList) {
-                element.classList.add.apply(element.classList, classes);
+                u.each(
+                    classes,
+                    function (className) {
+                        element.classList.add(className);
+                    }
+                );
                 return element;
             }
 
@@ -167,7 +172,12 @@ define(
             }
 
             if (element.classList) {
-                element.classList.remove.apply(element.classList, classes);
+                u.each(
+                    classes,
+                    function (className) {
+                        element.classList.remove(className);
+                    }
+                );
                 return element;
             }
 
