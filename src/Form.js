@@ -9,15 +9,13 @@
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var ui = require('./main');
         var Panel = require('./Panel');
 
         /**
          * 输入控件集合类
          *
-         * @param {Array.<InputControl>} inputs 管理的输入控件
-         * @inner
+         * @param {InputControl[]} inputs 管理的输入控件
          */
         function InputCollection(inputs) {
             this.length = inputs.length;
@@ -33,10 +31,9 @@ define(
          * 获取表单数据，形成以`name`为键，`fetchValue`指定方法的返回值为值，
          * 如果有同`name`的多个控件，则值为数组
          *
-         * @param {Array.<InputControl>} 输入控件集合
-         * @param {function} fetchValue 获取值的函数
+         * @param {InputControl[]} 输入控件集合
+         * @param {Function} fetchValue 获取值的函数
          * @return {Object} 表单的数据
-         * @inner
          */
         function getData(inputs, fetchValue) {
             var store = {};
@@ -48,7 +45,7 @@ define(
                     continue;
                 }
 
-                 // 不对disabled和readonly的控件进行验证
+                 // 不需要禁用了的控件的值
                 if (control.isDisabled()) {
                     continue;
                 }
@@ -70,7 +67,6 @@ define(
          * 如果有同`name`的多个控件，则值为数组
          *
          * @return {Object} 表单的数据
-         * @public
          */
         InputCollection.prototype.getData = function () {
             return getData(
@@ -83,7 +79,6 @@ define(
          * 获取提交的字符串数据
          *
          * @return {string} 可提交的字符串
-         * @public
          */
         InputCollection.prototype.getDataAsString = function () {
             var store = getData(
@@ -94,12 +89,13 @@ define(
                 }
             );
             var valueString = '';
-            for (var key in store) {
-                if (store.hasOwnProperty(key)) {
+            u.each(
+                store,
+                function (value, key) {
                     // 数组默认就是逗号分隔的所以没问题
-                    valueString += encodeURIComponent(key) + '=' + store[key];
+                    valueString += encodeURIComponent(key) + '=' + value;
                 }
-            }
+            );
 
             return valueString;
         };
@@ -107,9 +103,8 @@ define(
         /**
          * 获取字符串形式的控件值
          *
-         * @param {string=} name 指定控件的`name`属性
+         * @param {string} [name] 指定控件的`name`属性
          * @return {string} 用逗号分隔的值
-         * @public
          */
         InputCollection.prototype.getValueAsString = function (name) {
             var data = this.getData();
@@ -122,13 +117,11 @@ define(
 
         /**
          * 勾选全部控件
-         *
-         * @public
          */
         InputCollection.prototype.checkAll = function () {
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
-                if (typeof control.setChecked === 'function') {
+                if (control.getCategory() === 'check') {
                     control.setChecked(true);
                 }
             }
@@ -142,7 +135,7 @@ define(
         InputCollection.prototype.uncheckAll = function () {
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
-                if (typeof control.setChecked === 'function') {
+                if (control.getCategory() === 'check') {
                     control.setChecked(false);
                 }
             }
@@ -156,7 +149,7 @@ define(
         InputCollection.prototype.checkInverse = function () {
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
-                if (typeof control.setChecked === 'function') {
+                if (control.getCategory() === 'check') {
                     control.setChecked(!control.isChecked());
                 }
             }
@@ -169,15 +162,14 @@ define(
          * @public
          */
         InputCollection.prototype.checkByValue = function (values) {
-            var map = {};
-            for (var i = 0; i < values.length; i++) {
-                map[values[i]] = true;
-            }
+            var map = lib.toDictionary(values);
 
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
-                if (typeof control.setChecked === 'function') {
-                    control.setChecked(map[control.getValue()]);
+                if (control.getCategory() === 'check') {
+                    var shouldBeChecked = 
+                        map.hasOwnProperty(control.getValue());
+                    control.setChecked(shouldBeChecked);
                 }
             }
         };
@@ -199,37 +191,38 @@ define(
         Form.prototype.type = 'Form';
         
         /**
-         * 进行提交逻辑，根据`autoValidate`属性有不同行为
-         *
-         * @inner
+         * 验证并提交表单，根据`autoValidate`属性有不同行为
          */
-        function performSubmit(form) {
-            var isValid = form.get('autoValidate')
-                ? form.validate()
+        Form.prototype.validateAndSubmit = function () {
+            var isValid = this.get('autoValidate')
+                ? this.validate()
                 : true;
             var data = {
                 triggerSource: this
             };
 
-            form.fire(isValid ? 'submit' : 'invalid', data);
-        }
+            this.fire(isValid ? 'submit' : 'invalid', data);
+        };
 
         Form.prototype.initStructure = function () {
             if (this.main.nodeName.toLowerCase() === 'form') {
                 // 劫持表单的提交事件
-                helper.addDOMEvent(
-                    this, 
+                this.helper.addDOMEvent(
                     this.main,
                     'submit',
                     function (e) {
-                        this.performSubmit();
+                        try {
+                            this.validateAndSubmit();
+                        }
+                        catch (ex) {
+                            this.fire('submitfail', { error: ex });
+                        }
+
                         e.preventDefault();
                         return false;
                     }
                 );
             }
-
-            this.performSubmit = lib.curry(performSubmit, this);
         };
 
         /**
@@ -379,15 +372,6 @@ define(
             return !!result;
         };
 
-        /**
-         * 验证并提交表单
-         *
-         * @public
-         */
-        Form.prototype.validateAndSubmit = function () {
-            performSubmit.call(this, this);
-        };
-
         Form.prototype.repaint = function (changes, changesIndex) {
             Panel.prototype.repaint.apply(this, arguments);
 
@@ -405,7 +389,7 @@ define(
                         var oldButton = 
                             this.viewContext.get(record.oldValue[i]);
                         if (oldButton) {
-                            oldButton.un('click', this.performSubmit);
+                            oldButton.un('click', this.validateAndSubmit, this);
                         }
                     }
 
@@ -417,7 +401,7 @@ define(
                 for (var i = 0; i < this.submitButton.length; i++) {
                     var button = this.viewContext.get(this.submitButton[i]);
                     if (button) {
-                        button.on('click', this.performSubmit);
+                        button.on('click', this.validateAndSubmit, this);
                     }
                 }
             }
@@ -425,7 +409,7 @@ define(
 
         Form.prototype.setProperties = function (properties) {
             properties = lib.extend({}, properties);
-            // 允许`submitButton`是个数组
+            // 允许`submitButton`是个逗号分隔的字符串
             if (typeof properties.submitButton === 'string') {
                 properties.submitButton = properties.submitButton.split(',');
             }
