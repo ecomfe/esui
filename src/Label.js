@@ -5,11 +5,9 @@
  * @file Label控件
  * @author erik, otakustay
  */
-
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -54,22 +52,13 @@ define(
         };
 
         /**
-         * 分发点击事件
-         *
-         * @inner
-         */
-        function dispatchClickEvent () {
-            this.fire('click');
-        }
-
-        /**
          * 初始化DOM结构
          *
          * @override
          * @protected
          */
         Label.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', dispatchClickEvent);
+            this.helper.delegateDOMEvent(this.main, 'click');
         };
 
         var allProperties = [
