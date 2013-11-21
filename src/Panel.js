@@ -5,17 +5,16 @@
  * @file Panel控件
  * @author otakustay
  */
-
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
          * Panel控件
          *
          * @constructor
+         * @extends Control
          */
         function Panel() {
             Control.apply(this, arguments);
@@ -28,8 +27,8 @@ define(
          *
          * @param {Object} 构造函数传入的参数
          * @return {HTMLElement}
-         * @override
          * @protected
+         * @override
          */
         Panel.prototype.createMain = function (options) {
             return document.createElement(options.tagName || 'div');
@@ -45,23 +44,22 @@ define(
         /**
          * 渲染自身
          *
-         * @param {Array=} 变更过的属性的集合
-         * @override
          * @protected
+         * @override
          */
-        Panel.prototype.repaint = helper.createRepaint(
+        Panel.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
                 name: 'content',
-                paint: function (control, content) {
+                paint: function (panel, content) {
                     // 第一次刷新的时候是可能没有`content`的，
                     // 这时在`innerHTML`上就地创建控件，不要刷掉内容，
                     // 后续有要求`content`是字符串，所以不管非字符串的后果
                     if (content != null) {
-                        control.disposeChildren();
-                        control.main.innerHTML = content;
+                        panel.helper.disposeChildren();
+                        panel.main.innerHTML = content;
                     }
-                    control.initChildren(control.main);
+                    panel.helper.initChildren();
                 }
             }
         );
@@ -111,7 +109,7 @@ define(
          * 设置样式
          *
          * @param {string} name 样式名称，如果只有这一个参数，则表示为整串样式
-         * @param {string=} value 样式值
+         * @param {string} [value] 样式值
          */
         Panel.prototype.setStyle = function (name, value) {
             name = normalizeStyleName(name);
