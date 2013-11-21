@@ -5,10 +5,9 @@
  * @file 树的数据交互策略类
  * @author otakustay
  */
-
 define(
     function (require) {
-        var lib = require('./lib');
+        var u = require('underscore');
 
         /**
          * 树的数据交互策略
@@ -16,13 +15,12 @@ define(
          * @param {Object=} options 初始化参数
          * @param {boolean=} options.defaultExpand 节点是否展开，默认为`false`
          * @constructor
-         * @public
          */
         function TreeStrategy(options) {
             var defaults = {
                 defaultExpand: false
             };
-            lib.extend(this, defaults, options);
+            u.extend(this, defaults, options);
         }
 
         /**
@@ -30,7 +28,6 @@ define(
          *
          * @param {Object} node 节点数据项
          * @return {boolean}
-         * @public
          */
         TreeStrategy.prototype.isLeafNode = function (node) {
             return !node.children || !node.children.length;
@@ -41,7 +38,6 @@ define(
          *
          * @param {Object} node 节点数据项
          * @return {boolean}
-         * @public
          */
         TreeStrategy.prototype.shouldExpand = function (node) {
             return this.defaultExpand;
@@ -51,7 +47,6 @@ define(
          * 将当前策略依附到控件上
          *
          * @param {Tree} tree 控件实例
-         * @public
          */
         TreeStrategy.prototype.attachTo = function (tree) {
             this.enableToggleStrategy(tree);
