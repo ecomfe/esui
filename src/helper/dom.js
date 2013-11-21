@@ -30,6 +30,7 @@ define(
             return [].slice.call(arguments, 0).join('-');
         }
 
+        var u = require('underscore');
         var lib = require('../lib');
         var ui = require('../main');
         var helper = {};
@@ -278,6 +279,52 @@ define(
             this.control.main = main;
 
             return initialMain;
+        };
+
+        var INPUT_PROPERTY_MAPPING = {
+            value: { name: 'value' },
+            name: { name: 'name' },
+            maxlength: { name: 'maxLength', type: 'number' },
+            required: { name: 'required', type: 'boolean' },
+            pattern: { name: 'pattern' },
+            min: { name: 'min', type: 'number' },
+            max: { name: 'max', type: 'number' },
+            autofocus: { name: 'autoFocus', type: 'boolean' },
+            disabled: { name: 'disabled', type: 'boolean' },
+            readonly: { name: 'readOnly', type: 'boolean' }
+        };
+
+        /**
+         * 从输入元素上抽取属性
+         *
+         * @param {HTMLInputElement} 输入元素
+         * @param {Object} [options] 已有的配置对象，有此参数则将抽取的属性覆盖上去
+         * @return {Object}
+         */
+        helper.extractOptionsFromInput = function (input, options) {
+            var result = {};
+            u.each(
+                INPUT_PROPERTY_MAPPING,
+                function (config, attributeName) {
+                    var specified = lib.hasAttribute(input, attributeName);
+                    if (specified) {
+                        var value = lib.getAttribute(input, attributeName);
+
+                        switch (config.type) {
+                            case 'boolean':
+                                value = specified;
+                                break;
+                            case 'number':
+                                value = parseInt(value, 10);
+                                break;
+                        }
+
+                        result[config.name] = value;
+                    }
+                }
+            );
+
+            return u.defaults(options || {}, result);
         };
 
         return helper;
