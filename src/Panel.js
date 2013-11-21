@@ -7,6 +7,7 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
 
@@ -36,7 +37,7 @@ define(
 
         Panel.prototype.initOptions = function (options) {
             var properties = {};
-            lib.extend(properties, options);
+            u.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             this.setProperties(properties);
         };

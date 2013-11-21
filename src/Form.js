@@ -5,9 +5,9 @@
  * @file 表单控件
  * @author otakustay
  */
-
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
         var ui = require('./main');
         var Panel = require('./Panel');
@@ -246,7 +246,7 @@ define(
          * @protected
          */
         Form.prototype.initOptions = function (options) {
-            var properties = lib.extend({}, Form.defaultProperties, options);
+            var properties = u.extend({}, Form.defaultProperties, options);
             if (this.main.nodeName.toLowerCase() === 'form') {
                 properties.action = this.main.getAttribute('action');
                 properties.method = this.main.getAttribute('method');
@@ -408,7 +408,7 @@ define(
         };
 
         Form.prototype.setProperties = function (properties) {
-            properties = lib.extend({}, properties);
+            properties = u.clone(properties);
             // 允许`submitButton`是个逗号分隔的字符串
             if (typeof properties.submitButton === 'string') {
                 properties.submitButton = properties.submitButton.split(',');

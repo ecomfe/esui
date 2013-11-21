@@ -7,6 +7,7 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
 
@@ -43,12 +44,12 @@ define(
          */
         Label.prototype.initOptions = function (options) {
             var properties = {};
-            lib.extend(properties, options);
+            u.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             if (options.text == null) {
                 properties.text = lib.trim(lib.getText(this.main));
             }
-            lib.extend(this, properties);
+            u.extend(this, properties);
         };
 
         /**
@@ -81,7 +82,7 @@ define(
                 var record = changes[i];
 
                 if (record.name === 'title') {
-                    this.main.title = lib.encodeHTML(this.title);
+                    this.main.title = u.escape(this.title);
                 }
                 else {
                     shouldRepaint = true;
@@ -89,7 +90,7 @@ define(
             }
 
             if (shouldRepaint) {
-                this.main.innerHTML = lib.encodeHTML(this.text);
+                this.main.innerHTML = u.escape(this.text);
             }
         };
 

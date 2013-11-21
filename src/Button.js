@@ -5,7 +5,6 @@
  * @file 按钮
  * @author dbear
  */
-
 define(
     function (require) {
         var u = require('underscore');

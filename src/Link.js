@@ -7,6 +7,7 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
         var paint = require('./painters');
@@ -52,7 +53,7 @@ define(
             initOptions: function (options) {
                 var properties = {};
 
-                lib.extend(properties, options);
+                u.extend(properties, options);
 
                 if (options.href == null) {
                 
@@ -70,7 +71,7 @@ define(
                     properties.content = this.main.innerHTML;
                 }
 
-                lib.extend(this, properties);
+                u.extend(this, properties);
             },
 
             /**

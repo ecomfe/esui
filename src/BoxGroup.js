@@ -5,7 +5,6 @@
  * @file 选择框组
  * @author otakustay
  */
-
 define(
     function (require) {
         var u = require('underscore');
