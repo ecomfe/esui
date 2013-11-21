@@ -166,10 +166,14 @@ define(
             /**
              * 将控件添加到页面的某个元素中
              * 
-             * @param {HTMLElement} wrap 控件要添加到的目标元素
+             * @param {HTMLElement | Control} wrap 控件要添加到的目标元素
              * @public
              */
             appendTo: function (wrap) {
+                if (wrap instanceof Control) {
+                    wrap = wrap.main;
+                }
+
                 wrap.appendChild(this.main);
                 if (helper.isInStage(this, 'NEW')
                     || helper.isInStage(this, 'INITED')
@@ -181,10 +185,14 @@ define(
             /**
              * 将控件添加到页面的某个元素之前
              * 
-             * @param {HTMLElement} reference 控件要添加到之前的目标元素
+             * @param {HTMLElement | Control} reference 控件要添加到之前的目标元素
              * @public
              */
             insertBefore: function (reference) {
+                if (reference instanceof Control) {
+                    reference = reference.main;
+                }
+                
                 reference.parentNode.insertBefore(this.main, reference);
                 if (helper.isInStage(this, 'NEW')
                     || helper.isInStage(this, 'INITED')
