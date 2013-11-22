@@ -12,6 +12,7 @@ define(
         var helper = require('./controlHelper');
         var Helper = require('./Helper');
         var ui = require('./main');
+        var u = require('underscore');
 
         /**
          * 控件基类
