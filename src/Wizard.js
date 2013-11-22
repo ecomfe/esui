@@ -5,11 +5,10 @@
  * @file 多步骤导航控件
  * @author otakustay
  */
-
 define(
     function (require) {
+        var u  = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
         /**
          * 多步骤导航控件
@@ -26,8 +25,8 @@ define(
          * 创建控件主元素
          *
          * @return {HTMLElement}
-         * @override
          * @protected
+         * @override
          */
         Wizard.prototype.createMain = function () {
             return document.createElement('ol');
@@ -37,8 +36,8 @@ define(
          * 初始化参数
          *
          * @param {Object=} options 构造函数传入的参数
-         * @override
          * @protected
+         * @override
          */
         Wizard.prototype.initOptions = function (options) {
             var properties = {
@@ -47,19 +46,21 @@ define(
             };
 
             var children = lib.getChildren(this.main);
-            if (!options.path && children.length) {
-                for (var i = 0; i < children.length; i++) {
-                    var node = children[i];
-                    var config = { text: lib.getText(node) };
-                    var panel = node.getAttribute('data-for');
-                    if (panel) {
-                        config.panel = panel;
+            if (!options.steps && children.length) {
+                properties.steps = u.map(
+                    children,
+                    function (node) {
+                        var config = { text: lib.getText(node) };
+                        var panel = node.getAttribute('data-for');
+                        if (panel) {
+                            config.panel = panel;
+                        }
+                        return config;
                     }
-                    properties.steps.push(config);
-                }
+                );
             }
 
-            lib.extend(properties, options);
+            u.extend(properties, options);
             this.setProperties(properties);
         };
 
@@ -78,14 +79,13 @@ define(
             }
 
             var method = isActive ? 'removePartClasses' : 'addPartClasses';
-            helper[method](wizard, 'panel-hidden', panel);
+            wizard.helper[method]('panel-hidden', panel);
         }
 
         /**
          * 节点内容的HTML模板
          *
          * @type {string}
-         * @public
          */
         Wizard.prototype.nodeTemplate = '<span>${text}</span>';
 
@@ -95,7 +95,6 @@ define(
          * @param {Object} node 节点数据项
          * @param {string} node.text 显示的文字
          * @return {string}
-         * @public
          */
         Wizard.prototype.getNodeHTML = function (node) {
             return lib.format(
@@ -111,8 +110,6 @@ define(
          *
          * @param {Wizard} Wizard 控件实例
          * @return {string}
-         *
-         * @inner
          */
         function getHTML(wizard) {
             var html = '';
@@ -120,39 +117,48 @@ define(
             for (var i = 0; i < wizard.steps.length; i++) {
                 var node = wizard.steps[i];
 
-                var classes = helper.getPartClasses(wizard, 'node');
+                var classes = wizard.helper.getPartClasses('node');
+                // 第一步
                 if (i === 0) {
-                    classes = classes.concat(
-                        helper.getPartClasses(wizard, 'node-first')
+                    classes.push.apply(
+                        classes,
+                        wizard.helper.getPartClasses('node-first')
                     );
                 }
+                // 最后一步
                 if (i === wizard.steps.length - 1 && !wizard.finishText) {
-                    classes = classes.concat(
-                        helper.getPartClasses(wizard, 'node-last')
+                    classes.push.apply(
+                        classes,
+                        wizard.helper.getPartClasses('node-last')
                     );
                 }
 
                 // 当前步之前的一步
-                if (i === (wizard.activeIndex - 1)) {
-                    classes = classes.concat(
-                        helper.getPartClasses(wizard, 'node-active-prev')
+                if (i === wizard.activeIndex - 1) {
+                    classes.push.apply(
+                        classes,
+                        wizard.helper.getPartClasses('node-active-prev')
                     );
                 }
-                if (i <= (wizard.activeIndex - 1)) {
-                    classes = classes.concat(
-                        helper.getPartClasses(wizard, 'node-done')
+                // 已经完成的步骤
+                if (i <= wizard.activeIndex - 1) {
+                    classes.push.apply(
+                        classes,
+                        wizard.helper.getPartClasses('node-done')
                     );
                 }
 
                 var isActive = i === wizard.activeIndex;
                 togglePanel(wizard, node, isActive);
                 if (isActive) {
-                    classes = classes.concat(
-                        helper.getPartClasses(wizard, 'node-active')
+                    classes.push.apply(
+                        classes,
+                        wizard.helper.getPartClasses('node-active')
                     );
                     if (i === wizard.steps.length - 1) {
-                        classes = classes.concat(
-                            helper.getPartClasses(wizard, 'node-last-active')
+                        classes.push.apply(
+                            classes,
+                            wizard.helper.getPartClasses('node-last-active')
                         );
                     }
                 }
@@ -164,11 +170,11 @@ define(
 
             if (wizard.finishText) {
                 var classes = [].concat(
-                    helper.getPartClasses(wizard, 'node'),
-                    helper.getPartClasses(wizard, 'node-last'),
-                    helper.getPartClasses(wizard, 'node-finish'),
+                    wizard.helper.getPartClasses('node'),
+                    wizard.helper.getPartClasses('node-last'),
+                    wizard.helper.getPartClasses('node-finish'),
                     wizard.activeIndex === wizard.steps.length
-                        ? helper.getPartClasses(wizard, 'node-active')
+                        ? wizard.helper.getPartClasses('node-active')
                         : []
                 );
                 html += '<li class="' + classes.join(' ') + '">';
@@ -180,13 +186,28 @@ define(
         }
 
         var paint = require('./painters');
-        var repaint = helper.createRepaint(
+        /**
+         * 渲染自身
+         *
+         * @protected
+         * @override
+         */
+        Wizard.prototype.repaint = paint.createRepaint(
             Control.prototype.repaint,
-            paint.html('steps', null, getHTML),
-            paint.html('finishText', null, getHTML),
+            {
+                name: ['steps', 'finishText'],
+                paint: function (wizard) {
+                    wizard.main.innerHTML = getHTML(wizard);
+                }
+            },
             {
                 name: 'activeIndex',
                 paint: function (wizard, value) {
+                    // 初始化时`steps`的渲染器会处理掉`activeIndex`，不需要这里
+                    if (!wizard.helper.isInStage('RENDERED')) {
+                        return;
+                    }
+
                     var nodes = wizard.main.getElementsByTagName('li');
                     for (var i = nodes.length - 1; i >= 0; i--) {
                         var isActive = i === wizard.activeIndex;
@@ -196,45 +217,27 @@ define(
                         var method = isActive
                             ? 'addPartClasses'
                             : 'removePartClasses';
-                        helper[method](wizard, 'node-active', node);
+                        wizard.helper[method]('node-active', node);
 
                         if (i === wizard.steps.length - 1) {
-                            helper[method](wizard, 'node-last-active', node);
+                            wizard.helper[method]('node-last-active', node);
                         }
 
                         var isDone = i <= (wizard.activeIndex - 1);
                         var method = isDone
                             ? 'addPartClasses'
                             : 'removePartClasses';
-                        helper[method](wizard, 'node-done', node);
+                        wizard.helper[method]('node-done', node);
 
                         var isCurPrev = i === (wizard.activeIndex - 1);
                         var method = isCurPrev
                             ? 'addPartClasses'
                             : 'removePartClasses';
-                        helper[method](wizard, 'node-active-prev', node);
+                        wizard.helper[method]('node-active-prev', node);
                     }
                 }
             }
         );
-
-        /**
-         * 渲染自身
-         *
-         * @override
-         * @protected
-         */
-        Wizard.prototype.repaint = function (changes) {
-            Control.prototype.repaint.apply(this, arguments);
-            // 第一次渲染的时候同时有`steps`和`activeIndex`属性，
-            // 这会导致连续执行2个`painter`，因此要特别处理改成一次
-            if (!changes) {
-                this.main.innerHTML = getHTML(this);
-            }
-            else {
-                repaint.apply(this, arguments);
-            }
-        };
 
         Wizard.prototype.setProperties = function (properties) {
             if (properties.hasOwnProperty('steps')) {

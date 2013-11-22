@@ -5,61 +5,12 @@
  * @file 命令菜单控件
  * @author otakustay
  */
-
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
-
-        function CommandMenu() {
-            Control.apply(this, arguments);
-        }
-
-        CommandMenu.prototype.type = 'CommandMenu';
-
-        /**
-         * 浮层中每一项的HTML模板
-         *
-         * @type {string}
-         * @public
-         */
-        CommandMenu.prototype.itemTemplate = '<span>${text}</span>';
-
-        /**
-         * 获取浮层中每一项的HTML
-         *
-         * @param {Object} item 当前项的数据项
-         * @return {string}
-         * @public
-         */
-        CommandMenu.prototype.getItemHTML = function (item) {
-            var data = {
-                text: lib.encodeHTML(item.text)
-            };
-            return lib.format(this.itemTemplate, data);
-        };
-
-        /**
-         * 获取浮层的HTML
-         *
-         * @param {Menu} menu 控件实例
-         * @inner
-         */
-        function getLayerHTML(menu) {
-            var html = '';
-            for (var i = 0; i < menu.datasource.length; i++) {
-                var classes = helper.getPartClasses(menu, 'node');
-                if (i === menu.activeIndex) {
-                    classes = classes.concat(
-                        helper.getPartClasses(menu, 'node-active'));
-                }
-                html += '<li data-index="' + i + '"'
-                    + ' class="' + classes.join(' ') + '">';
-                html += menu.getItemHTML(menu.datasource[i]);
-            }
-            return html;
-        }
+        var Layer = require('./Layer');
 
         /**
          * 选中某一项
@@ -69,7 +20,7 @@ define(
          * @inner
          */
         function selectItem(e) {
-            hideLayer(this);
+            this.layer.hide();
 
             var target = e.target;
             while (target !== e.currentTarget
@@ -94,117 +45,85 @@ define(
         }
 
         /**
-         * 隐藏下拉弹层
+         * CommandMenu用浮层
          *
-         * @param {CommandMenu} CommandMenu控件实例
-         * @param {HTMLElement=} layer 已经生成的浮层元素
-         * @inner
+         * @constructor
+         * @extends Layer
          */
-        function hideLayer(menu, layer) {
-            layer = layer || lib.g(helper.getId(menu, 'layer'));
-            if (layer) {
-                var classes = helper.getPartClasses(menu, 'layer-hidden');
-                lib.addClasses(layer, classes);
-                menu.removeState('active');
-            }
+        function CommandMenuLayer() {
+            Layer.apply(this, arguments);
         }
 
-        /**
-         * 关闭下拉弹层
-         *
-         * @param {Event} 触发事件的事件对象
-         * @inner
-         */
-        function closeLayer(e) {
-            var target = e.target;
-            var layer = lib.g(helper.getId(this, 'layer'));
-            var main = this.main;
+        lib.inherits(CommandMenuLayer, Layer);
 
-            if (!layer) {
-                return;
-            }
+        CommandMenuLayer.prototype.nodeName = 'ul';
 
-            while (target && (target !== layer && target !== main)) {
-                target = target.parentNode;
-            }
+        CommandMenuLayer.prototype.dock = {
+            top: 'bottom',
+            left: 'left',
+            right: 'right',
+            spaceDetection: 'vertical'
+        };
 
-            if (target !== layer && target !== main) {
-                hideLayer(this);
-            }
-        }
+        CommandMenuLayer.prototype.render = function (element) {
+            var html = '';
 
-        /**
-         * 创建浮层
-         *
-         * @param {Menu} menu 控件实例
-         * @inner
-         */
-        function createLayer(menu) {
-            var layer = document.createElement('ul');
-            layer.id = helper.getId(menu, 'layer');
-            layer.className = helper.getPartClasses(menu, 'layer').join(' ');
-            layer.innerHTML = getLayerHTML(menu);
-            helper.addDOMEvent(menu, layer, 'click', selectItem);
-            hideLayer(menu, layer);
-            document.body.appendChild(layer);
-
-            helper.addDOMEvent(menu, document, 'mousedown', closeLayer);
-            helper.addDOMEvent(
-                menu, 
-                layer,
-                'mousedown',
-                function (e) { e.stopPropagation(); }
-            );
-        }
-
-        /**
-         * 显示下拉弹层
-         *
-         * @param {CommandMenu} CommandMenu控件实例
-         * @inner
-         */
-        function showLayer(menu) {
-            var layer = lib.g(helper.getId(menu, 'layer'));
-            var classes = helper.getPartClasses(menu, 'layer-hidden');
-
-            layer.style.zIndex = helper.layer.getZIndex(menu.main);
-            
-            helper.layer.attachTo(
-                layer, 
-                menu.main, 
-                {
-                    top: 'bottom',
-                    left: 'left',
-                    right: 'right',
-                    spaceDetection: 'vertical'
+            for (var i = 0; i < this.control.datasource.length; i++) {
+                var classes = this.control.helper.getPartClasses('node');
+                if (i === this.control.activeIndex) {
+                    classes.push.apply(
+                        classes,
+                        this.control.helper.getPartClasses('node-active')
+                    );
                 }
-            );
-            lib.removeClasses(layer, classes);
-            menu.addState('active');
-        }
+
+                html += '<li data-index="' + i + '"'
+                    + ' class="' + classes.join(' ') + '">';
+
+                html += this.control.getItemHTML(this.control.datasource[i]);
+            }
+
+            element.innerHTML = html;
+        };
+
+        CommandMenuLayer.prototype.initBehavior = function (element) {
+            this.control.helper.addDOMEvent(element, 'click', selectItem);
+        };
 
         /**
-         * 根据当前状态显示或隐藏浮层
+         * 命令菜单控件
          *
-         * @param {CommandMenu} this 控件实例
-         * @inner
+         * @constructor
+         * @extends {Control}
          */
-        function toggleLayer() {
-            var layer = lib.g(helper.getId(this, 'layer'));
-            if (!layer) {
-                createLayer(this);
-                showLayer(this);
-            }
-            else {
-                var classes = helper.getPartClasses(this, 'layer-hidden');
-                if (lib.hasClass(layer, classes[0])) {
-                    showLayer(this);
-                }
-                else {
-                    hideLayer(this);
-                }
-            }
+        function CommandMenu() {
+            Control.apply(this, arguments);
+            this.layer = new CommandMenuLayer(this);
         }
+
+        CommandMenu.prototype.type = 'CommandMenu';
+
+        /**
+         * 浮层中每一项的HTML模板
+         *
+         * @type {string}
+         * @public
+         */
+        CommandMenu.prototype.itemTemplate = '<span>${text}</span>';
+
+        /**
+         * 获取浮层中每一项的HTML
+         *
+         * @param {Object} item 当前项的数据项
+         * @return {string}
+         * @public
+         */
+        CommandMenu.prototype.getItemHTML = function (item) {
+            var data = {
+                text: u.escape(item.text)
+            };
+            return lib.format(this.itemTemplate, data);
+        };
 
         /**
          * 初始化DOM结构
@@ -213,28 +132,35 @@ define(
          * @protected
          */
         CommandMenu.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', toggleLayer, this);
+            this.helper.addDOMEvent(
+                this.main, 
+                'click', 
+                u.bind(this.layer.toggle, this.layer)
+            );
         };
 
         var paint = require('./painters');
-
         /**
          * 重绘
          *
          * @override
-         * @public
          */
-        CommandMenu.prototype.repaint = helper.createRepaint(
+        CommandMenu.prototype.repaint = paint.createRepaint(
             Control.prototype.repaint,
             paint.style('width'),
             paint.style('height'),
-            paint.html('datasource', 'layer', getLayerHTML),
+            {
+                name: 'datasource',
+                paint: function (menu) {
+                    menu.layer.repaint();
+                }
+            },
             paint.text('displayText'),
             {
                 name: ['disabled', 'hidden', 'readOnly'],
                 paint: function (menu, disabled, hidden, readOnly) {
                     if (disabled || hidden || readOnly) {
-                        hideLayer(menu);
+                        menu.layer.hide();
                     }
                 }
             }
@@ -247,13 +173,13 @@ define(
          * @public
          */
         CommandMenu.prototype.dispose = function () {
-            if (helper.isInStage(this, 'DISPOSED')) {
+            if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
                 
-            var layer = lib.g(helper.getId(this, 'layer'));
-            if (layer) {
-                layer.parentNode.removeChild(layer);
+            if (this.layer) {
+                this.layer.dispose();
+                this.layer = null;
             }
 
             Control.prototype.dispose.apply(this, arguments);

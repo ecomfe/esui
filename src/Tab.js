@@ -5,17 +5,16 @@
  * @file 标签页控件
  * @author otakustay
  */
-
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
          * 标签页控件
          *
-         * @param {Object=} options 构造控件的选项
+         * @param {Object} [options] 构造控件的选项
          * @constructor
          */
         function Tab(options) {
@@ -30,6 +29,7 @@ define(
          * @param {Object} options 构造函数传入的参数
          * @return {HTMLElement} 主元素
          * @protected
+         * @override
          */
         Tab.prototype.createMain = function (options) {
             return document.createElement('div');
@@ -49,7 +49,7 @@ define(
                 orientation: 'horizontal'
             };
 
-            lib.extend(properties, options);
+            u.extend(properties, options);
 
             // 如果子元素中有一个`[data-role="navigator"]`的元素，
             // 则应该从元素中去找出对应的标签页配置，然后这个元素就不要了，
@@ -107,7 +107,6 @@ define(
         /*
          * 点击某个标签时的切换逻辑
          *
-         * @param {Tab} this Tab控件实例
          * @param {Event} e 触发事件的事件对象
          */
         function clickTab(e) {
@@ -124,8 +123,7 @@ define(
                     if (children[i] === tabElement) {
                         // 如果点在关闭区域上，则移除这个元素，
                         // 其它情况为激活该元素
-                        var className = helper.getPartClasses(this, 'close')[0];
-                        if (lib.hasClass(target, className)) {
+                        if (this.helper.isPart(target, 'close')) {
                             this.removeAt(i);
                         }
                         else {
@@ -141,6 +139,7 @@ define(
          * 初始化DOM结构
          *
          * @protected
+         * @override
          */
         Tab.prototype.initStructure = function () {
             var navigator = this.navigatorElement;
@@ -151,18 +150,17 @@ define(
                 this.main.insertBefore(navigator, this.main.firstChild || null);
             }
 
-            navigator.id = helper.getId(this, 'navigator');
+            navigator.id = this.helper.getId('navigator');
 
-            helper.addPartClasses(this, 'navigator', navigator);
+            this.helper.addPartClasses('navigator', navigator);
 
-            helper.addDOMEvent(this, navigator, 'click', clickTab);
+            this.helper.addDOMEvent(navigator, 'click', clickTab);
         };
 
         /**
          * 标签页内容的模板
          *
          * @type {string}
-         * @public
          */
         Tab.prototype.contentTemplate = '<span>${title}</span>';
 
@@ -172,18 +170,17 @@ define(
          * @param {Object} config 标签页数据项
          * @param {boolean} allowClose 是否允许关闭
          * @return {string}
-         * @public
          */
         Tab.prototype.getContentHTML = function (config, allowClose) {
             var html = lib.format(
                 this.contentTemplate,
                 {
-                    title: lib.encodeHTML(config.title)
+                    title: u.escape(config.title)
                 }
             );
             if (allowClose) {
                 html += '<span class="'
-                    + helper.getPartClasses(this, 'close').join(' ')
+                    + this.helper.getPartClassName('close')
                     + '">关闭</span>';
             }
             return html;
@@ -201,10 +198,10 @@ define(
         function createTabElement(tab, config, isActive, allowClose) {
             var element = document.createElement('li');
             
-            helper.addPartClasses(tab, 'item', element);
+            tab.helper.addPartClasses('item', element);
 
             if (isActive) {
-                helper.addPartClasses(tab, 'item-active', element);
+                tab.helper.addPartClasses('item-active', element);
             }
 
             element.innerHTML = tab.getContentHTML(config, allowClose);
@@ -219,7 +216,7 @@ define(
          * @inner
          */
         function fillNavigator(tab) {
-            var navigator = lib.g(helper.getId(tab, 'navigator'));
+            var navigator = tab.helper.getPart('navigator');
             var parentNode = navigator.parentNode;
             var placeholder = navigator.nextSibling;
             navigator.innerHTML = '';
@@ -306,12 +303,12 @@ define(
                     }
                 }
 
-                var navigator = lib.g(helper.getId(tab, 'navigator'));
+                var navigator = tab.helper.getPart('navigator');
                 var children = lib.getChildren(navigator);
                 var tabElement = children[i];
                 var methodName = 
                     i === index ? 'addPartClasses' : 'removePartClasses';
-                helper[methodName](tab, 'item-active', tabElement);
+                tab.helper[methodName]('item-active', tabElement);
             }
 
             var event = {
@@ -327,19 +324,15 @@ define(
          * @param {Array=} 更新过的属性集合
          * @protected
          */
-        Tab.prototype.repaint = helper.createRepaint(
+        Tab.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
                 name: ['tabs', 'allowClose'],
-                paint: function(tab, tabs, allowClose) {
-                    fillNavigator(tab);
-                }
+                paint: fillNavigator
             },
             {
                 name: 'activeIndex',
-                paint: function (tab, activeIndex) {
-                    activateTab(tab, activeIndex);
-                }
+                paint: activateTab
             },
             {
                 name: 'orientation',
@@ -391,7 +384,7 @@ define(
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
             var tabElement = 
                 createTabElement(this, config, false, this.allowClose);
-            var navigator = lib.g(helper.getId(this, 'navigator'));
+            var navigator = this.helper.getPart('navigator');
             var children = lib.getChildren(navigator);
             navigator.insertBefore(
                 tabElement, children[index] || null);
@@ -431,7 +424,7 @@ define(
             // 直接`this.tabs.slice`而发生的变量不同步错误
             // 此坑很隐晦，修改需谨慎
             var index = 0;
-            while ((index = lib.indexOf(this.tabs, config, index)) >= 0) {
+            while ((index = u.indexOf(this.tabs, config, index)) >= 0) {
                 this.removeAt(index);
             }
         };
@@ -443,7 +436,7 @@ define(
          */
         Tab.prototype.removeAt = function (index) {
             var removed = this.tabs.splice(index, 1)[0];
-            var navigator = lib.g(helper.getId(this, 'navigator'));
+            var navigator = this.helper.getPart('navigator');
             if (removed) {
                 var children = lib.getChildren(navigator);
                 var tabElement = children[index];

@@ -2,16 +2,17 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 控件基类模块
  * @author erik, otakustay
  */
-
 define(
     function (require) {
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Helper = require('./Helper');
         var ui = require('./main');
+        var u = require('underscore');
 
         /**
          * 控件基类
@@ -23,7 +24,7 @@ define(
             helper.changeStage(this, 'NEW');
             this.children = [];
             this.childrenIndex = {};
-            this.states = {};
+            this.currentStates = {};
             this.domEvents = {};
             this.helper = new Helper(this);
             options = options || {};
@@ -59,7 +60,7 @@ define(
             /**
              * 指定在哪些状态下该元素不处理相关的DOM事件
              *
-             * @type {Array.<string>}
+             * @type {string[]}
              * @protected
              */
             ignoreStates: ['disabled'],
@@ -76,7 +77,7 @@ define(
             /**
              * 初始化控件需要使用的选项
              *
-             * @param {Object=} options 构造函数传入的选项
+             * @param {Object} [options] 构造函数传入的选项
              * @protected
              */
             initOptions: function (options) {
@@ -102,8 +103,6 @@ define(
 
             /**
              * 渲染控件
-             *
-             * @public
              */
             render: function () {
                 if (helper.isInStage(this, 'INITED')) {
@@ -129,6 +128,14 @@ define(
                     );
 
                     helper.addPartClasses(this);
+
+                    if (this.states) {
+                        this.states = typeof this.states === 'string'
+                            ? this.states.split(' ')
+                            : this.states;
+                            
+                        u.each(this.states, this.addState, this);
+                    }
                 }
 
                 // 由子控件实现
@@ -146,8 +153,8 @@ define(
              * 重新渲染视图
              * 仅当生命周期处于RENDER时，该方法才重新渲染
              *
-             * @param {Array=} 变更过的属性的集合
-             * @param {Object=} 变更过的属性的索引
+             * @param {Object[]} [changes] 变更过的属性的集合
+             * @param {Object} [changesIndex] 变更过的属性的索引
              * @protected
              */
             repaint: function (changes, changesIndex) {
@@ -166,10 +173,13 @@ define(
             /**
              * 将控件添加到页面的某个元素中
              * 
-             * @param {HTMLElement} wrap 控件要添加到的目标元素
-             * @public
+             * @param {HTMLElement | Control} wrap 控件要添加到的目标元素
              */
             appendTo: function (wrap) {
+                if (wrap instanceof Control) {
+                    wrap = wrap.main;
+                }
+
                 wrap.appendChild(this.main);
                 if (helper.isInStage(this, 'NEW')
                     || helper.isInStage(this, 'INITED')
@@ -181,10 +191,13 @@ define(
             /**
              * 将控件添加到页面的某个元素之前
              * 
-             * @param {HTMLElement} reference 控件要添加到之前的目标元素
-             * @public
+             * @param {HTMLElement | Control} reference 控件要添加到之前的目标元素
              */
             insertBefore: function (reference) {
+                if (reference instanceof Control) {
+                    reference = reference.main;
+                }
+                
                 reference.parentNode.insertBefore(this.main, reference);
                 if (helper.isInStage(this, 'NEW')
                     || helper.isInStage(this, 'INITED')
@@ -195,7 +208,6 @@ define(
 
             /**
              * 销毁释放控件
-             * @public
              */
             dispose: function () {
                 if (!helper.isInStage(this, 'DISPOSED')) {
@@ -209,8 +221,7 @@ define(
              * 获取控件的属性值
              * 
              * @param {string} name 属性名
-             * @return {*}
-             * @public
+             * @return {Mixed}
              */
             get: function (name) {
                 var method = this['get' + lib.pascalize(name)];
@@ -226,8 +237,7 @@ define(
              * 设置控件的属性值
              * 
              * @param {string} name 属性名
-             * @param {*} value 属性值
-             * @public
+             * @param {Mixed} value 属性值
              */
             set: function (name, value) {
                 var method = this['set' + lib.pascalize(name)];
@@ -434,7 +444,7 @@ define(
              */
             addState: function (state) {
                 if (!this.hasState(state)) {
-                    this.states[state] = 1;
+                    this.currentStates[state] = true;
                     helper.addStateClasses(this, state);
                     var properties = {};
                     var statePropertyName = state.replace(
@@ -453,7 +463,7 @@ define(
              */
             removeState: function (state) {
                 if (this.hasState(state)) {
-                    delete this.states[state];
+                    this.currentStates[state] = false;
                     helper.removeStateClasses(this, state);
                     var properties = {};
                     var statePropertyName = state.replace(
@@ -485,14 +495,14 @@ define(
              * @return {boolean}
              */
             hasState: function (state) {
-                return !!this.states[state];
+                return !!this.currentStates[state];
             },
 
             /**
              * 添加子控件
              * 
              * @param {Control} control 子控件实例
-             * @param {string=} childName 子控件名
+             * @param {string} [childName] 子控件名
              */
             addChild: function (control, childName) {
                 childName = childName || control.childName;
@@ -564,9 +574,9 @@ define(
             /**
              * 批量初始化子控件
              * 
-             * @param {HTMLElement=} wrap 容器DOM元素，默认为主元素
-             * @param {Object=} options init参数
-             * @param {Object=} options.properties 属性集合，通过id映射
+             * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
+             * @param {Object} [options] 初始化的配置参数
+             * @param {Object} [options.properties] 属性集合，通过id映射
              */
             initChildren: function (wrap, options) {
                 wrap = wrap || this.main;

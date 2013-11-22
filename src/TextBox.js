@@ -3,14 +3,13 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
  * @file 文本框输入控件
- * @author erik
+ * @author otakustay
  */
-
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
         var ui = require('./main');
-        var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var supportPlaceholder = 
             ('placeholder' in document.createElement('input'));
@@ -29,7 +28,6 @@ define(
          * 默认属性值
          *
          * @type {Object}
-         * @public
          */
         TextBox.defaultProperties = {
             width: 200
@@ -41,8 +39,8 @@ define(
          * 创建主元素
          *
          * @return {HTMLElement} 主元素
-         * @override
          * @protected
+         * @override
          */
         TextBox.prototype.createMain = function () {
             return document.createElement('div');
@@ -52,17 +50,16 @@ define(
          * 初始化参数
          *
          * @param {Object} options 构造函数传入的参数
-         * @override
          * @protected
+         * @override
          */
         TextBox.prototype.initOptions = function (options) {
             var properties = {
                 mode: 'text',
-                value: '',
                 placeholder: '',
                 autoSelect: false
             };
-            lib.extend(properties, TextBox.defaultProperties, options);
+            u.extend(properties, TextBox.defaultProperties, options);
 
             if (!properties.name) {
                 properties.name = this.main.getAttribute('name');
@@ -84,18 +81,7 @@ define(
                         this.main.getAttribute('placeholder');
                 }
 
-                if (!properties.value) {
-                    properties.value = this.main.value;
-                }
-
-                if (!properties.maxLength
-                    && (
-                        lib.hasAttribute(this.main, 'maxlength')
-                        || this.main.maxLength > 0
-                    )
-                ) {
-                    properties.maxLength = this.main.maxLength;
-                }
+                this.helper.extractOptionsFromInput(this.main, properties);
             }
 
             this.setProperties(properties);
@@ -110,7 +96,6 @@ define(
          *
          * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
-         * @inner
          */
         function dispatchSpecialKey(e) {
             var keyCode = e.which || e.keyCode;
@@ -134,25 +119,23 @@ define(
          *
          * @param {TextBox} textbox 控件实例
          * @param {boolean=} focused 额外指定文本框是否聚集
-         * @inner
          */
         function togglePlaceholder(textbox, focused) {
             var input = lib.g(textbox.inputId);
 
             if (!supportPlaceholder) {
-                var placeholder = 
-                    lib.g(helper.getId(textbox, 'placeholder'));
+                var placeholder = textbox.helper.getPart('placeholder');
                 if (typeof focused !== 'boolean') {
                     focused = document.activeElement === input;
                 }
                 // 只有没焦点且没值的时候才显示placeholder
                 if (!focused && !textbox.getRawValue()) {
-                    helper.removePartClasses(
-                        textbox, 'placeholder-hidden', placeholder);
+                    textbox.helper.removePartClasses(
+                        'placeholder-hidden', placeholder);
                 }
                 else {
-                    helper.addPartClasses(
-                        textbox, 'placeholder-hidden', placeholder);
+                    textbox.helper.addPartClasses(
+                        'placeholder-hidden', placeholder);
                 }
             }
         }
@@ -160,9 +143,7 @@ define(
         /**
          * 获得焦点的逻辑
          *
-         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
-         * @inner
          */
         function focus(e) {
             togglePlaceholder(this, true);
@@ -170,15 +151,14 @@ define(
             if (this.autoSelect) {
                 input.select();
             }
+
             this.fire('focus');
         }
 
         /**
          * 失去焦点的逻辑
          *
-         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
-         * @inner
          */
         function blur(e) {
             togglePlaceholder(this, false);
@@ -189,9 +169,7 @@ define(
         /**
          * 同步DOM的值与控件的属性
          *
-         * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
-         * @inner
          */
         function dispatchInputEvent(e) {
             if (e.type === 'input' || e.propertyName === 'value') {
@@ -207,10 +185,10 @@ define(
          */
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
-                var main = helper.replaceMain(this);
+                var main = this.helper.replaceMain();
                 
                 // `replaceMain`会复制`id`属性，但`TextBox`是特殊的，`id`要保留下来
-                this.inputId = main.id || helper.getId(this, 'input');
+                this.inputId = main.id || this.helper.getId('input');
 
                 if (this.main.id) {
                     this.main.id = this.helper.getId();
@@ -229,13 +207,13 @@ define(
                 this.main.appendChild(input);
             }
             else {
-                this.inputId = helper.getId(this, 'input');
+                this.inputId = this.helper.getId('input');
                 var html = this.mode === 'textarea'
                     ? '<textarea id="' + this.inputId + '"'
                     : '<input type="' + this.mode + '" '
                         + 'id="' + this.inputId + '"';
                 if (this.name) {
-                    html += ' name="' + lib.encodeHTML(this.name) + '"';
+                    html += ' name="' + u.escape(this.name) + '"';
                 }
                 html += this.mode === 'textarea'
                     ? '></textarea>'
@@ -245,20 +223,19 @@ define(
             }
 
             var input = lib.g(this.inputId);
-            helper.addDOMEvent(this, input, 'keypress', dispatchSpecialKey);
-            helper.addDOMEvent(this, input, 'focus', focus);
-            helper.addDOMEvent(this, input, 'blur', blur);
+            this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
+            this.helper.addDOMEvent(input, 'focus', focus);
+            this.helper.addDOMEvent(input, 'blur', blur);
             var inputEventName = ('oninput' in input) 
                 ? 'input' 
                 : 'propertychange';
-            helper.addDOMEvent(this, input, inputEventName, dispatchInputEvent);
+            this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
 
             if (!supportPlaceholder) {
                 var placeholder = document.createElement('label');
-                placeholder.id = helper.getId(this, 'placeholder');
+                placeholder.id = this.helper.getId('placeholder');
                 lib.setAttribute(placeholder, 'for', input.id);
-                placeholder.className = 
-                    helper.getPartClasses(this, 'placeholder').join(' ');
+                this.helper.addPartClasses('placeholder', placeholder);
                 lib.insertAfter(placeholder, input);
             }
         };
@@ -267,10 +244,10 @@ define(
          * 重绘
          *
          * @param {Array=} 更新过的属性集合
-         * @override
          * @protected
+         * @override
          */
-        TextBox.prototype.repaint = helper.createRepaint(
+        TextBox.prototype.repaint = require('./painters').createRepaint(
             InputControl.prototype.repaint,
             {
                 name: 'rawValue',
@@ -279,10 +256,10 @@ define(
                     var eventName = 
                         ('oninput' in input) ? 'input' : 'propertychange';
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
-                    helper.removeDOMEvent(textbox, input, eventName);
+                    textbox.helper.removeDOMEvent(input, eventName);
                     input.value = textbox.stringifyValue(rawValue);
-                    helper.addDOMEvent(
-                        textbox, input, eventName, dispatchInputEvent);
+                    textbox.helper.addDOMEvent(
+                        input, eventName, dispatchInputEvent);
 
                     togglePlaceholder(textbox);
                 }
@@ -291,8 +268,7 @@ define(
                 name: 'title',
                 paint: function (textbox, title) {
                     var input = lib.g(textbox.inputId);
-                    var placeholder = 
-                        lib.g(helper.getId(textbox, 'placeholder'));
+                    var placeholder = textbox.helper.getPart('placeholder');
                     if (title) {
                         lib.setAttribute(textbox.main, 'title', title);
                         lib.setAttribute(input, 'title', title);
@@ -325,7 +301,7 @@ define(
                     }
                     else {
                         input.maxLength = maxLength;
-                        lib.setAttribute(input, 'maxLength', maxLength);
+                        lib.setAttribute(input, 'maxlength', maxLength);
                     }
                 }
             },
@@ -350,9 +326,8 @@ define(
                         }
                     }
                     else {
-                        var label = 
-                            lib.g(helper.getId(textbox, 'placeholder'));
-                        label.innerHTML = lib.encodeHTML(placeholder || '');
+                        var label = textbox.helper.getPart('placeholder');
+                        label.innerHTML = u.escape(placeholder || '');
                     }
                     togglePlaceholder(textbox);
                 }
@@ -360,7 +335,7 @@ define(
             {
                 name: ['hint', 'hintType'],
                 paint: function (textbox, hint, hintType) {
-                    var label = lib.g(helper.getId(textbox, 'hint'));
+                    var label = textbox.helper.getPart('hint');
 
                     textbox.removeState('hint-prefix');
                     textbox.removeState('hint-suffix');
@@ -372,12 +347,12 @@ define(
                     if (hint) {
                         if (!label) {
                             label = document.createElement('label');
-                            label.id = helper.getId(textbox, 'hint');
-                            helper.addPartClasses(textbox, 'hint', label);
+                            label.id = textbox.helper.getId('hint');
+                            textbox.helper.addPartClasses('hint', label);
                             lib.setAttribute(label, 'for', textbox.inputId);
                         }
 
-                        label.innerHTML = lib.encodeHTML(hint);
+                        label.innerHTML = u.escape(hint);
                         hintType = hintType === 'prefix' ? 'prefix' : 'suffix';
                         var method = hintType === 'prefix'
                             ? 'insertBefore'
@@ -397,7 +372,7 @@ define(
                     }
 
                     if (hint) {
-                        var hintLabel = lib.g(helper.getId(textbox, 'hint'));
+                        var hintLabel = textbox.helper.getPart('hint');
                         if (hintLabel) {
                             width -= hintLabel.offsetWidth;
                         }
@@ -405,8 +380,7 @@ define(
 
                     var input = lib.g(textbox.inputId);
                     input.style.width = width + 'px';
-                    var placeholder = 
-                        lib.g(helper.getId(textbox, 'placeholder'));
+                    var placeholder = textbox.helper.getPart('placeholder');
                     if (placeholder) {
                         placeholder.style.maxWidth = width + 'px';
                     }
@@ -419,7 +393,7 @@ define(
                         return;
                     }
 
-                    var hintLabel = lib.g(helper.getId(textbox, 'hint'));
+                    var hintLabel = textbox.helper.getPart('hint');
                     var heightWithUnit = height + 'px';
                     if (hintLabel) {
                         hintLabel.style.height = heightWithUnit;
@@ -428,8 +402,7 @@ define(
 
                     var input = lib.g(textbox.inputId);
                     input.style.height = heightWithUnit;
-                    var placeholder = 
-                        lib.g(helper.getId(textbox, 'placeholder'));
+                    var placeholder = textbox.helper.getPart('placeholder');
                     if (placeholder) {
                         placeholder.style.height = heightWithUnit;
                         placeholder.style.lineHeight = heightWithUnit;
@@ -442,8 +415,8 @@ define(
          * 获取验证信息控件
          *
          * @return {Validity}
-         * @override
          * @public
+         * @override
          */
         TextBox.prototype.getValidityLabel = function () {
             // `TextBox`根据`mode`来分配具体的类型

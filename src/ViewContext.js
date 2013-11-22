@@ -2,12 +2,20 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 视图环境类 用于对控件视图的管理
  * @author DBear, errorrik
  */
- 
 define(
     function () {
+        /**
+         * 控件分组
+         *
+         * 控件分组表达一组控件，类似`getElementsByClass(className)`的效果，
+         * 分组同时提供一些方法以方便地操作这个集合
+         *
+         * @constructor
+         */
         function ControlGroup(name) {
             this.length = 0;
             this.name = name;
@@ -19,7 +27,7 @@ define(
         /**
          * 对分组内每个控件调用指定函数
          *
-         * @param {function} callback 调用的函数，函数中的`this`为控件对象
+         * @param {Function} callback 调用的函数，函数中的`this`为控件对象
          */
         ControlGroup.prototype.each = function (callback) {
             for (var i = 0; i < this.length; i++) {
@@ -91,7 +99,6 @@ define(
         /**
          * 获取唯一id
          * 
-         * @inner
          * @return {string}
          */
         function getGUID() {
@@ -101,13 +108,14 @@ define(
         /**
          * 视图环境对象池
          * 
-         * @inner
          * @type {Object}
          */
         var pool = {};
 
         /**
-         * ViewContext类声明
+         * 视图环境类
+         *
+         * 一个视图环境是一组控件的集合，不同视图环境中相同id的控件的DOM id不会重复
          *
          * @param {string} id 该`ViewContext`的id
          * @constructor
@@ -163,7 +171,6 @@ define(
          * 将控件实例添加到视图环境中
          *
          * @param {Control} control 待加控件
-         * @public
          */
         ViewContext.prototype.add = function (control) {
             var exists = this.controls[control.id];
@@ -201,7 +208,6 @@ define(
          * 将控件实例从视图环境中移除。
          *
          * @param {Control} control 待移除控件
-         * @public
          */
         ViewContext.prototype.remove = function (control) {
             delete this.controls[control.id];
@@ -227,7 +233,6 @@ define(
          *
          * @param {string} id 控件id
          * @return {Control} 根据id获取的控件
-         * @public
          */
         ViewContext.prototype.get = function (id) {
             return this.controls[id];
@@ -253,8 +258,6 @@ define(
 
         /**
          * 清除视图环境中所有控件。 
-         *
-         * @public
          */
         ViewContext.prototype.clean = function () {
             for (var id in this.controls) {
@@ -278,8 +281,6 @@ define(
 
         /**
          * 销毁视图环境 
-         *
-         * @public
          */
         ViewContext.prototype.dispose = function () {
             this.clean();

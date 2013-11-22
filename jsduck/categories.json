@@ -1,0 +1,19 @@
+[
+    {
+        "name": "esui",
+        "groups": [
+            {
+                "name": "Classes",
+                "classes": [
+                    "ViewContext",
+                    "Control",
+                    "ControlGroup"
+                    // "Extension",
+                    // "main"
+                ]
+            }
+        ]
+
+
+    }
+]

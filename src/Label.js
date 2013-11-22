@@ -5,11 +5,10 @@
  * @file Label控件
  * @author erik, otakustay
  */
-
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -45,22 +44,13 @@ define(
          */
         Label.prototype.initOptions = function (options) {
             var properties = {};
-            lib.extend(properties, options);
+            u.extend(properties, options);
             properties.tagName = this.main.nodeName.toLowerCase();
             if (options.text == null) {
                 properties.text = lib.trim(lib.getText(this.main));
             }
-            lib.extend(this, properties);
+            u.extend(this, properties);
         };
-
-        /**
-         * 分发点击事件
-         *
-         * @inner
-         */
-        function dispatchClickEvent () {
-            this.fire('click');
-        }
 
         /**
          * 初始化DOM结构
@@ -69,7 +59,7 @@ define(
          * @protected
          */
         Label.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', dispatchClickEvent);
+            this.helper.delegateDOMEvent(this.main, 'click');
         };
 
         var allProperties = [
@@ -92,7 +82,7 @@ define(
                 var record = changes[i];
 
                 if (record.name === 'title') {
-                    this.main.title = lib.encodeHTML(this.title);
+                    this.main.title = u.escape(this.title);
                 }
                 else {
                     shouldRepaint = true;
@@ -100,7 +90,7 @@ define(
             }
 
             if (shouldRepaint) {
-                this.main.innerHTML = lib.encodeHTML(this.text);
+                this.main.innerHTML = u.escape(this.text);
             }
         };
 

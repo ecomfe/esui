@@ -1,0 +1,13 @@
+[
+    {
+        "title": "mini-event引导手册",
+        "items": [
+            {
+                "name": "开始",
+                "url": "../guide",
+                "title": "开始使用mini-event",
+                "description": "快速上手 mini-event"
+            }
+        ]
+    }
+]
