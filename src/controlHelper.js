@@ -50,7 +50,7 @@ define(
             methods,
             function (name) {
                 helper[name] = function (control) {
-                    var helper = new Helper(control);
+                    var helper = control.helper || new Helper(control);
                     var args = [].slice.call(arguments, 1);
                     return helper[name].apply(helper, args);
                 };
