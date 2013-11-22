@@ -31,7 +31,8 @@
     ],
     "dependencies": {
         "mini-event": ">=0.9.0",
-        "underscore": "1.4.x"
+        "underscore": "1.4.x",
+        "moment": "2.x"
     },
     "main": "main",
     "description": "ESUI是一个轻巧灵活的高性能UI组件库。",
