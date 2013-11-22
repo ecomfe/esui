@@ -155,7 +155,7 @@ define(
             var valueIndex = lib.toDictionary(group.rawValue);
 
             // 分组的选择框必须有相同的`name`属性，所以哪怕没有也给造一个
-            var name = this.name || lib.getGUID();
+            var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
                 var data = {
