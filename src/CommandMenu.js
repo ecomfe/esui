@@ -161,7 +161,7 @@ define(
                 name: ['disabled', 'hidden', 'readOnly'],
                 paint: function (menu, disabled, hidden, readOnly) {
                     if (disabled || hidden || readOnly) {
-                        hideLayer(menu);
+                        menu.layer.hide();
                     }
                 }
             }
