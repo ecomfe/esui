@@ -2,11 +2,15 @@
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file 日期相关基础库
  * @author otakustay
  */
 define(
     function (require) {
+        /**
+         * @class lib.date
+         */
         var date = {};
 
         function pad(source, length) {
@@ -44,6 +48,7 @@ define(
          * @param {Date} source 目标日期对象
          * @param {string} pattern 日期格式化规则
          * @return {string} 格式化后的字符串
+         * @static
          */
         date.format = function (source, pattern) {
             if (!source) {
@@ -113,6 +118,7 @@ define(
          *
          * @param {string} source 目标字符串
          * @return {Date} 转换后的日期对象
+         * @static
          */
         date.parse = function (source) {
             if (!source) {

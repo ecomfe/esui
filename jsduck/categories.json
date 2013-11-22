@@ -8,7 +8,12 @@
                     "ViewContext",
                     "Control",
                     "ControlGroup",
-                    "Helper"
+                    "Helper",
+                    "lib",
+                    "lib.date",
+                    "lib.dom",
+                    "lib.event",
+                    "lib.page"
                     // "Extension",
                     // "main"
                 ]

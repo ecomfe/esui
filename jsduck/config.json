@@ -6,12 +6,23 @@
     "--": [
         "../src/ViewContext.js",
         "../src/Control.js",
+
         "../src/Helper.js",
         "../src/helper/children.js",
         "../src/helper/dom.js",
         "../src/helper/event.js",
         "../src/helper/html.js",
-        "../src/helper/life.js"
+        "../src/helper/life.js",
+
+        "../src/lib.js",
+        "../src/lib/attribute.js",
+        "../src/lib/class.js",
+        "../src/lib/date.js",
+        "../src/lib/dom.js",
+        "../src/lib/event.js",
+        "../src/lib/lang.js",
+        "../src/lib/page.js",
+        "../src/lib/string.js"
         // "../src/painters.js",
         // "../src/main.js",
         // "../src/Extension.js"

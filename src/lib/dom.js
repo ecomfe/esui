@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file DOM相关基础库
  * @author otakustay
  */
@@ -9,14 +10,18 @@ define(
     function (require) {
         var u = require('underscore');
         var string = require('./string');
+
+        /**
+         * @override lib
+         */
         var lib = {};
 
         /**
-         * 从文档中获取指定的 DOM 元素
+         * 从文档中获取指定的DOM元素
          *
-         * @param {string|HTMLElement} id 元素的 id 或 DOM 元素
-         *
-         * @return {?HTMLElement} 获取的元素，查找不到时返回null
+         * @param {string | HTMLElement} id 元素的id或DOM元素
+         * @return {HTMLElement | null} 获取的元素，查找不到时返回null
+         * @static
          */
         lib.g = function (id) {
             if (!id) {
@@ -30,8 +35,8 @@ define(
          * 判断一个元素是否输入元素
          *
          * @param {HTMLElement} element 目标元素
-         *
          * @return {boolean}
+         * @static
          */
         lib.isInput = function (element) {
             var nodeName = element.nodeName.toLowerCase();
@@ -43,8 +48,8 @@ define(
         /**
          * 移除目标元素
          *
-         * @param {HTMLElement} element 目标元素或目标元素的 id
-         *
+         * @param {HTMLElement} element 目标元素或其id
+         * @static
          */
         lib.removeNode = function (element) {
             if (typeof element === 'string') {
@@ -64,42 +69,43 @@ define(
         /**
          * 将目标元素添加到基准元素之后
          *
-         * @param {HTMLElement} newElement 被添加的目标元素
-         * @param {HTMLElement} existElement 基准元素
-         *
+         * @param {HTMLElement} element 被添加的目标元素
+         * @param {HTMLElement} reference 基准元素
          * @return {HTMLElement} 被添加的目标元素
+         * @static
          */
-        lib.insertAfter = function (newElement, existElement) {
-            var parent = existElement.parentNode;
+        lib.insertAfter = function (element, reference) {
+            var parent = reference.parentNode;
 
             if (parent) {
-                parent.insertBefore(newElement, existElement.nextSibling);
+                parent.insertBefore(element, reference.nextSibling);
             }
-            return newElement;
+            return element;
         };
 
         /**
          * 将目标元素添加到基准元素之前
          *
-         * @param {HTMLElement} newElement 被添加的目标元素
-         * @param {HTMLElement} existElement 基准元素
-         *
+         * @param {HTMLElement} element 被添加的目标元素
+         * @param {HTMLElement} reference 基准元素
          * @return {HTMLElement} 被添加的目标元素
+         * @static
          */
-        lib.insertBefore = function (newElement, existElement) {
-            var parent = existElement.parentNode;
+        lib.insertBefore = function (element, reference) {
+            var parent = reference.parentNode;
 
             if (parent) {
-                parent.insertBefore(newElement, existElement);
+                parent.insertBefore(element, reference);
             }
 
-            return newElement;
+            return element;
         };
 
         /**
          * 获取子元素
          * @param {HTMLElement} element 目标元素
-         * @param {Array.<HTMLElement>} 目标元素的所有子元素
+         * @return {HTMLElement[]} 目标元素的所有子元素
+         * @static
          */
         lib.getChildren = function (element) {
             return u.filter(
@@ -116,8 +122,8 @@ define(
          *
          * @param {HTMLElement} element 目标元素
          * @param {string} key 样式名称
-         *
          * @return {string}
+         * @static
          */
         lib.getComputedStyle = function (element, key) {
             if (!element) {
@@ -145,8 +151,8 @@ define(
          *
          * @param {HTMLElement} element 目标元素
          * @param {string} key 样式名称
-         *
          * @return {string} 目标元素的指定样式值
+         * @static
          */
         lib.getStyle = function (element, key) {
             key = string.camelize(key);
@@ -159,8 +165,9 @@ define(
          * 获取元素在页面中的位置和尺寸信息
          *
          * @param {HTMLElement} element 目标元素
-         *
-         * @return {Object} 元素的尺寸和位置信息
+         * @return {Object} 元素的尺寸和位置信息，
+         * 包含`top`、`right`、`bottom`、`left`、`width`和`height`属性
+         * @static
          */
         lib.getOffset = function (element) {
             var rect = element.getBoundingClientRect();
@@ -190,40 +197,44 @@ define(
             return offset;
         };
 
+        /**
+         * 获取元素内部文本
+         *
+         * @param {HTMLElement} element 目标元素
+         * @return {string}
+         * @static
+         */
         lib.getText = function (element) {
-            var ret = '';
-            var childs;
-            var i = 0;
-            var l;
+            var text = '';
 
             //  text 和 CDATA 节点，取nodeValue
             if (element.nodeType === 3 || element.nodeType === 4) {
-
-                ret += element.nodeValue;
+                text += element.nodeValue;
             }
             // 8 是 comment Node
             else if (element.nodeType !== 8) {
-                childs = element.childNodes;
-
-                for (l = childs.length; i < l; i++) {
-                    ret += lib.getText(childs[i]);
-                }
+                u.each(
+                    element.childNodes,
+                    function (child) {
+                        text += lib.getText(child);
+                    }
+                );
             }
 
-            return ret;
+            return text;
         };
 
+        /**
+         * @class lib.dom
+         */
         lib.dom = {};
 
         /**
          * 获取目标元素的第一个元素节点
          *
-         * @method module:lib.dom.first
-         * @grammar lib.dom.first(element)
-         * @param {(HTMLElement | string)} element 目标元素或目标元素的 id
-         * @meta standard
-         *
-         * @return {?HTMLElement} 目标元素的第一个元素节点，查找不到时返回 null
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @return {HTMLElement | null} 目标元素的第一个元素节点，查找不到时返回null
+         * @static
          */
         lib.dom.first = function (element) {
             element = lib.g(element);
@@ -241,12 +252,9 @@ define(
         /**
          * 获取目标元素的最后一个元素节点
          *
-         * @method module:lib.dom.last
-         * @grammar lib.dom.last(element)
-         * @param {(HTMLElement | string)} element 目标元素或目标元素的 id
-         * @meta standard
-         *
-         * @return {?HTMLElement} 目标元素的第一个元素节点，查找不到时返回 null
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @return {HTMLElement | null} 目标元素的第一个元素节点，查找不到时返回null
+         * @static
          */
         lib.dom.last = function (element) {
             element = lib.g(element);
@@ -267,12 +275,9 @@ define(
         /**
          * 获取目标元素的下一个兄弟元素节点
          *
-         * @method module:lib.dom.next
-         * @grammar lib.dom.next(element)
-         * @param {(HTMLElement | string)} element 目标元素或目标元素的 id
-         * @meta standard
-         *
-         * @return {?HTMLElement} 目标元素的下一个兄弟元素节点，查找不到时返回 null
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @return {HTMLElement | null} 目标元素的下一个元素节点，查找不到时返回null
+         * @static
          */
         lib.dom.next = function (element) {
             element = lib.g(element);
@@ -290,13 +295,10 @@ define(
         /**
          * 判断一个元素是否包含另一个元素
          *
-         * @method  module:lib.dom.contains
-         * @grammar lib.dom.contains(container, contained)
-         * @param {(HTMLElement | string)} container 包含元素或元素的 id
-         * @param {(HTMLElement | string)} contained 被包含元素或元素的 id
-         * @meta standard
-         *
-         * @return {boolean} contained 元素是否被包含于 container 元素的 DOM 节点上
+         * @param {HTMLElement | string} container 包含元素或元素的 id
+         * @param {HTMLElement | string} contained 被包含元素或元素的 id
+         * @return {boolean} `contained`元素是否被包含于`container`元素的DOM节点上
+         * @static
          */
         lib.dom.contains = function (container, contained) {
             container = lib.g(container);

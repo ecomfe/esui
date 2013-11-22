@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file 页面相关基础库
  * @author otakustay
  */
@@ -12,12 +13,17 @@ define(
         var viewRoot = document.compatMode == 'BackCompat'
             ? body
             : documentElement;
+
+        /**
+         * @class lib.page
+         */
         var page = {};
 
         /**
          * 获取页面宽度
          *
          * @return {number} 页面宽度
+         * @static
          */
         page.getWidth = function () {
             return Math.max(
@@ -32,6 +38,7 @@ define(
          * 获取页面高度
          *
          * @return {number} 页面高度
+         * @static
          */
         page.getHeight = function () {
             return Math.max(
@@ -47,6 +54,7 @@ define(
          * 获取页面视觉区域宽度
          *
          * @return {number} 页面视觉区域宽度
+         * @static
          */
         page.getViewWidth = function () {
             return viewRoot ? viewRoot.clientWidth : 0;
@@ -56,6 +64,7 @@ define(
          * 获取页面视觉区域高度
          *
          * @return {number} 页面视觉区域高度
+         * @static
          */
         page.getViewHeight = function () {
             return viewRoot ? viewRoot.clientHeight : 0;
@@ -65,6 +74,7 @@ define(
          * 获取纵向滚动量
          *
          * @return {number} 纵向滚动量
+         * @static
          */
         page.getScrollTop = function () {
             return window.pageYOffset
@@ -77,6 +87,7 @@ define(
          * 获取横向滚动量
          *
          * @return {number} 横向滚动量
+         * @static
          */
         page.getScrollLeft = function () {
             return window.pageXOffset
@@ -89,6 +100,7 @@ define(
          * 获取页面纵向坐标
          *
          * @return {number}
+         * @static
          */
         page.getClientTop = function () {
             return document.documentElement.clientTop
@@ -100,6 +112,7 @@ define(
          * 获取页面横向坐标
          *
          * @return {number}
+         * @static
          */
         page.getClientLeft = function () {
             return document.documentElement.clientLeft
