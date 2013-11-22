@@ -146,12 +146,12 @@ define(
          * 显示层
          */
         Layer.prototype.show = function () {
-            var classes = getHiddenClasses(this);
-
-            this.position();
-
             var element = this.getElement();
             element.style.zIndex = this.getZIndex();
+            
+            this.position();
+
+            var classes = getHiddenClasses(this);
             lib.removeClasses(element, classes);
             this.control.addState('active');
         };

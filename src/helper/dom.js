@@ -214,7 +214,7 @@ define(
          */
         helper.createPart = function (part, nodeName) {
             nodeName = nodeName || 'div';
-            var element = document.createElement('nodeName');
+            var element = document.createElement(nodeName);
             element.id = this.getId(part);
             this.addPartClasses(part, element);
             return element;
