@@ -1,14 +1,17 @@
 {
-    "--title": "mini-event",
+    "--title": "ESUI",
     "--output": "../doc/",
-//    "--guides": "guide.json",
     "--categories": "categories.json",
-//    "--examples": "example.json",
-//    "--examples-base-url": "../demo/",
-//    "--eg-iframe": "eg-iframe.html",
+    "--external": "mini-event.EventTarget",
     "--": [
         "../src/ViewContext.js",
-        "../src/Control.js"
+        "../src/Control.js",
+        "../src/Helper.js",
+        "../src/helper/children.js",
+        "../src/helper/dom.js",
+        "../src/helper/event.js",
+        "../src/helper/html.js",
+        "../src/helper/life.js"
         // "../src/painters.js",
         // "../src/main.js",
         // "../src/Extension.js"

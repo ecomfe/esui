@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 控件部件相关辅助方法
  * @author otakustay
  */
@@ -10,9 +11,9 @@ define(
         /**
          * 获取控件用于生成css class的类型
          * 
-         * @inner
          * @param {Control} control 控件实例
          * @return {string}
+         * @ignore
          */
         function getControlClassType(control) {
             var type = control.styleType || control.type;
@@ -22,9 +23,9 @@ define(
         /**
          * 将参数用`-`连接成字符串
          * 
-         * @inner
-         * @param {string} ...arg 
+         * @param {string...} args 需要连接的串
          * @return {string}
+         * @ignore
          */
         function joinByStrike() {
             return [].slice.call(arguments, 0).join('-');
@@ -33,24 +34,31 @@ define(
         var u = require('underscore');
         var lib = require('../lib');
         var ui = require('../main');
+
+        /**
+         * @override Helper
+         */
         var helper = {};
 
         /**
          * 获取控件部件相关的class数组
          *
-         * @param {string=} part 部件名称
-         * @return {Array.<string>}
+         * 如果不传递`part`参数，则生成如下：
+         *
+         * - `ui-ctrl`
+         * - `ui-{styleType}`
+         * - `skin-{skin}`
+         * - `skin-{skin}-{styleType}`
+         *
+         * 如果有`part`参数，则生成如下：
+         *
+         * - `ui-{styleType}-{part}`
+         * - `skin-{skin}-{styleType}-{part}`
+         *
+         * @param {string} [part] 部件名称
+         * @return {string[]}
          */
         helper.getPartClasses = function (part) {
-            // main:
-            //   ui-ctrl 为了定义有限全局的normalize
-            //   ui-{type}
-            //   skin-{skinname}
-            //   skin-{skinname}-{type}
-            // part:
-            //   ui-{type}-{part}
-            //   skin-{skinname}-{type}-{part}
-
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
             var prefix = ui.getConfig('uiClassPrefix');
@@ -78,9 +86,9 @@ define(
         };
 
         /**
-         * 获取控件部件相关的class字符串
+         * 获取控件部件相关的class字符串，具体可参考{@link Helper#getPartClasses}方法
          *
-         * @param {string=} part 部件名称
+         * @param {string} [part] 部件名称
          * @return {string}
          */
         helper.getPartClassName = function (part) {
@@ -88,10 +96,10 @@ define(
         };
 
         /**
-         * 添加控件部件相关的class
+         * 添加控件部件相关的class，具体可参考{@link Helper#getPartClasses}方法
          *
-         * @param {string=} part 部件名称
-         * @param {HTMLElement=} element 部件元素
+         * @param {string} [part] 部件名称
+         * @param {HTMLElement | string} [element] 部件元素或部件名称，默认为主元素
          */
         helper.addPartClasses = function (part, element) {
             if (typeof element === 'string') {
@@ -108,10 +116,10 @@ define(
         };
 
         /**
-         * 移除控件部件相关的class
+         * 移除控件部件相关的class，具体可参考{@link Helper#getPartClasses}方法
          *
-         * @param {string=} part 部件名称
-         * @param {HTMLElement=} element 部件元素
+         * @param {string} [part] 部件名称
+         * @param {HTMLElement | string} [element] 部件元素或部件名称，默认为主元素
          */
         helper.removePartClasses = function (part, element) {
             if (typeof element === 'string') {
@@ -130,15 +138,17 @@ define(
         /**
          * 获取控件状态相关的class数组
          *
+         * 生成如下：
+         *
+         * - `ui-{styleType}-{state}`
+         * - `state-{state}`
+         * - `skin-{skin}-{state}`
+         * - `skin-{skin}-{styleType}-{state}`
+         *
          * @param {string} state 状态名称
-         * @return {Array.<string>}
+         * @return {string[]}
          */
         helper.getStateClasses = function (state) {
-            // ui-{type}-{statename}
-            // state-{statename}
-            // skin-{skinname}-{statename}
-            // skin-{skinname}-{type}-{statename}
-            
             var type = getControlClassType(this.control);
             var getConf = ui.getConfig;
             var classes = [
@@ -159,7 +169,7 @@ define(
         };
 
         /**
-         * 添加控件状态相关的class
+         * 添加控件状态相关的class，具体可参考{@link Helper#getStateClasses}方法
          *
          * @param {string} state 状态名称
          */
@@ -174,7 +184,7 @@ define(
         };
 
         /**
-         * 移除控件状态相关的class
+         * 移除控件状态相关的class，具体可参考{@link Helper#getStateClasses}方法
          *
          * @param {string} state 状态名称
          */
@@ -189,9 +199,9 @@ define(
         };
 
         /**
-         * 获取用于控件dom元素的id
+         * 获取用于控件DOM元素的id
          * 
-         * @param {string=} part 部件名称
+         * @param {string} [part] 部件名称，如不提供则生成控件主元素的id
          * @return {string} 
          */
         helper.getId = function (part) {
@@ -210,7 +220,7 @@ define(
          * 创建一个部件元素
          *
          * @param {string} part 部件名称
-         * @param {string} [nodeName] 使用的元素类型
+         * @param {string} [nodeName="div"] 使用的元素类型
          */
         helper.createPart = function (part, nodeName) {
             nodeName = nodeName || 'div';
@@ -259,8 +269,9 @@ define(
         /**
          * 替换控件的主元素
          *
-         * @param {HTMLElement=} main 用于替换的主元素
-         * @parma {HTMLElement=} 原来的主元素
+         * @param {HTMLElement} [main] 用于替换的主元素，
+         * 如不提供则使用当前控件实例的{@link Control#createMain}方法生成
+         * @return {HTMLElement} 原来的主元素
          */
         helper.replaceMain = function (main) {
             main = main || this.control.createMain();
@@ -311,7 +322,7 @@ define(
         /**
          * 从输入元素上抽取属性
          *
-         * @param {HTMLInputElement} 输入元素
+         * @param {HTMLElement} input 输入元素
          * @param {Object} [options] 已有的配置对象，有此参数则将抽取的属性覆盖上去
          * @return {Object}
          */

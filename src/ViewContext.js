@@ -14,7 +14,10 @@ define(
          * 控件分组表达一组控件，类似`getElementsByClass(className)`的效果，
          * 分组同时提供一些方法以方便地操作这个集合
          *
+         * 控件分组是内部类，仅可以通过{@link ViewContext#getGroup}方法获取
+         *
          * @constructor
+         * @param {string} name 分组名称
          */
         function ControlGroup(name) {
             this.length = 0;
@@ -117,8 +120,8 @@ define(
          *
          * 一个视图环境是一组控件的集合，不同视图环境中相同id的控件的DOM id不会重复
          *
-         * @param {string} id 该`ViewContext`的id
          * @constructor
+         * @param {string} id 该`ViewContext`的id
          */
         function ViewContext(id) {
             /**

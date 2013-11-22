@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file DOM事件相关辅助方法
  * @author otakustay
  */
@@ -15,6 +16,10 @@ define(
             body: {}
         };
         var lib = require('../lib');
+
+        /**
+         * @override Helper
+         */
         var helper = {};
 
         function getGlobalEventPool(element) {
@@ -174,9 +179,16 @@ define(
         /**
          * 为控件管理的DOM元素添加DOM事件
          *
-         * @param {HTMLElement | string} element 需要添加事件的DOM元素
+         * 通过本方法添加的DOM事件处理函数，会进行以下额外的处理：
+         *
+         * - 修正`target`和`currentTarget`属性使其保持与标准兼容
+         * - 修正`preventDefault`和`stopPropagation`方法使其保持与标准兼容
+         * - 函数中的`this`对象永远指向当前控件实例
+         * - 当控件处于由其{@link Control#ignoreStates}属性定义的状态时，不执行函数
+         *
+         * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
          * @param {string} type 事件的类型
-         * @param {function} handler 事件处理函数
+         * @param {Function} handler 事件处理函数
          */
         helper.addDOMEvent = function (element, type, handler) {
             if (typeof element === 'string') {
@@ -233,9 +245,9 @@ define(
         /**
          * 为控件管理的DOM元素添加DOM事件
          *
-         * @param {HTMLElement | string} element 需要添加事件的DOM元素
+         * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
          * @param {string} type 事件的类型
-         * @param {function} handler 事件处理函数
+         * @param {Function} [handler] 事件处理函数，不提供则清除所有处理函数
          */
         helper.removeDOMEvent = function (element, type, handler) {
             if (typeof element === 'string') {
@@ -278,8 +290,8 @@ define(
         /**
          * 清除控件管理的DOM元素上的事件
          *
-         * @param {HTMLElement | string} [element] 控件管理的DOM元素，
-         * 如果没有此参数则去除所有该控件管理的元素的DOM事件
+         * @param {HTMLElement | string} [element] 控件管理的DOM元素或部件名称，
+         * 如不提供则去除所有该控件管理的元素的DOM事件
          */
         helper.clearDOMEvents = function (element) {
             if (typeof element === 'string') {

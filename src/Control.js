@@ -17,18 +17,40 @@ define(
         /**
          * 控件基类
          * 
+         * @param {Object} [options] 初始化参数
+         * @extends {mini-event.EventTarget}
          * @constructor
-         * @param {Object} options 初始化参数
          */
         function Control(options) {
             helper.changeStage(this, 'NEW');
+
+            options = options || {};
+
+            /**
+             * 控件关联的{@link Helper}对象
+             *
+             * @type {Helper}
+             * @protected
+             */
+            this.helper = new Helper(this);
+
+            /**
+             * 子控件数组
+             *
+             * @type {Control[]}
+             * @protected
+             */
             this.children = [];
             this.childrenIndex = {};
             this.currentStates = {};
             this.domEvents = {};
-            this.helper = new Helper(this);
-            options = options || {};
 
+            /**
+             * 控件的主元素
+             *
+             * @type {HTMLElement}
+             * @protected
+             */
             this.main = options.main ? options.main : this.createMain(options);
 
             // 如果没给id，自己创建一个，
@@ -36,6 +58,12 @@ define(
             // 这个不能放到`initOptions`的后面，
             // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
             // 会把其它控件的`ViewContext`给冲掉导致各种错误
+
+            /**
+             * 控件的id，在一个{@link ViewContext}中不能重复
+             *
+             * @property {string} id
+             */
             if (!this.id && !options.id) {
                 this.id = helper.getGUID();
             }
@@ -51,8 +79,27 @@ define(
             // 切换控件所属生命周期阶段
             helper.changeStage(this, 'INITED');
 
+            /**
+             * @event init
+             *
+             * 完成初始化
+             */
             this.fire('init');
         }
+
+        /**
+         * @property {string} type
+         *
+         * 控件的类型
+         */
+
+        /**
+         * @property {string} styleType
+         *
+         * 控件的样式类型，用于生成各class使用
+         *
+         * 如无此属性，则使用{@link Control#type}属性代替
+         */
 
         Control.prototype = {
             constructor: Control,
@@ -67,6 +114,12 @@ define(
 
             /**
              * 获取控件的分类
+             *
+             * 控件分类的作用如下：
+             *
+             * - `control`表示普通控件，没有任何特征
+             * - `input`表示输入控件，在表单中使用`getRawValue()`获取其值
+             * - `check`表示复选控件，在表单中通过`isChecked()`判断其值是否加入结果中
              *
              * @return {string} 可以为`control`、`input`或`check`
              */
@@ -106,6 +159,11 @@ define(
              */
             render: function () {
                 if (helper.isInStage(this, 'INITED')) {
+                    /**
+                     * @event beforerender
+                     *
+                     * 开始初次渲染
+                     */
                     this.fire('beforerender');
 
                     this.domIDPrefix = this.viewContext.id;
@@ -142,6 +200,11 @@ define(
                 this.repaint();
 
                 if (helper.isInStage(this, 'INITED')) {
+                    /**
+                     * @event afterrender
+                     *
+                     * 结束初次渲染
+                     */
                     this.fire('afterrender');
                 }
 
@@ -151,7 +214,14 @@ define(
 
             /**
              * 重新渲染视图
+             *
              * 仅当生命周期处于RENDER时，该方法才重新渲染
+             *
+             * 本方法的2个参数中的值均为 **属性变更对象** ，一个该对象包含以下属性：
+             *
+             * - `name`：属性名
+             * - `oldValue`：变更前的值
+             * - `newValue`：变更后的值
              *
              * @param {Object[]} [changes] 变更过的属性的集合
              * @param {Object} [changesIndex] 变更过的属性的索引
@@ -269,6 +339,7 @@ define(
              * 批量设置控件的属性值
              * 
              * @param {Object} properties 属性值集合
+             * @return {Object} `properties`参数中确实变更了的那些属性
              */
             setProperties: function (properties) {
                 // 只有在渲染以前（就是`initOptions`调用的那次）才允许设置id
@@ -439,6 +510,12 @@ define(
 
             /**
              * 添加控件状态
+             *
+             * 调用该方法同时会让状态对应的属性变为`true`，
+             * 从而引起该属性对应的`painter`的执行
+             *
+             * 状态对应的属性名是指将状态名去除横线并以`camelCase`形式书写的名称，
+             * 如`align-left`对应的属性名为`alignLeft`
              * 
              * @param {string} state 状态名
              */
@@ -458,6 +535,12 @@ define(
 
             /**
              * 移除控件状态
+             *
+             * 调用该方法同时会让状态对应的属性变为`false`，
+             * 从而引起该属性对应的`painter`的执行
+             *
+             * 状态对应的属性名是指将状态名去除横线并以`camelCase`形式书写的名称，
+             * 如`align-left`对应的属性名为`alignLeft`
              * 
              * @param {string} state 状态名
              */
@@ -477,6 +560,9 @@ define(
 
             /**
              * 切换控件指定状态
+             *
+             * 该方法根据当前状态调用{@link Control#addState}或
+             * {@link Control#removeState}方法，因此同样会对状态对应的属性进行修改
              * 
              * @param {string} state 状态名
              */
@@ -551,6 +637,8 @@ define(
 
             /**
              * 移除全部子控件
+             *
+             * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
              */
             disposeChildren: function () {
                 var children = this.children.slice();
@@ -577,6 +665,7 @@ define(
              * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
              * @param {Object} [options] 初始化的配置参数
              * @param {Object} [options.properties] 属性集合，通过id映射
+             * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
              */
             initChildren: function (wrap, options) {
                 wrap = wrap || this.main;

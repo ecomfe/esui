@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 生命周期相关辅助方法
  * @author otakustay
  */
@@ -10,8 +11,8 @@ define(
         /**
          * LifeCycle枚举
          * 
-         * @type {Object} 
-         * @inner
+         * @type {Object}
+         * @ignore
          */
         var LifeCycle = {
             NEW: 0,
@@ -21,6 +22,10 @@ define(
         };
         
         var ui = require('../main');
+
+        /**
+         * @override Helper
+         */
         var helper = {};
 
         /**

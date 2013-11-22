@@ -7,7 +7,8 @@
                 "classes": [
                     "ViewContext",
                     "Control",
-                    "ControlGroup"
+                    "ControlGroup",
+                    "Helper"
                     // "Extension",
                     // "main"
                 ]

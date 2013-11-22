@@ -2,11 +2,15 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 生成HTML相关的辅助方法
  * @author otakustay
  */
 define(
     function (require) {
+        /**
+         * @override Helper
+         */
         var helper = {};
 
         // 自闭合的标签列表
