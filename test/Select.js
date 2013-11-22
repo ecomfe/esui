@@ -102,43 +102,6 @@ define(function (require) {
                 expect(getText(findLayer().children[0])).toBe('b');
             });
 
-            it('should have a `input[type="hidden"]` element', function () {
-                var select = new Select();
-                select.appendTo(container);
-                expect(container.getElementsByTagName('input').length).toBe(1);
-                expect(container.getElementsByTagName('input')[0].type).toBe('hidden');
-            });
-
-            it('should accept a `value` option and render it to `<input>` element', function () {
-                var select = new Select({ datasource: datasource, value: '3' });
-                select.appendTo(container);
-                expect(container.getElementsByTagName('input')[0].value).toBe('3');
-            });
-
-            it('should accept a `selectedIndex` option and render it to `<input>` element', function () {
-                var select = new Select({ datasource: datasource, selectedIndex: 2 });
-                select.appendTo(container);
-                expect(container.getElementsByTagName('input')[0].value).toBe('3');
-            });
-
-            it('should accept `value` if `value` and `selectedIndex` are both given', function () {
-                var select = new Select({ datasource: datasource, value: '3', selectedIndex: 5 });
-                select.appendTo(container);
-                expect(container.getElementsByTagName('input')[0].value).toBe('3');
-            });
-
-            it('should accept `rawValue` if `value` and `rawValue` are both given', function () {
-                var select = new Select({ datasource: datasource, value: '2', rawValue: '3' });
-                select.appendTo(container);
-                expect(container.getElementsByTagName('input')[0].value).toBe('3');
-            });
-
-            it('should accept `rawValue` if `value`, `rawValue` and `selectedIndex` are all given', function () {
-                var select = new Select({ datasource: datasource, value: '2', rawValue: '3', selectedIndex: 5 });
-                select.appendTo(container);
-                expect(container.getElementsByTagName('input')[0].value).toBe('3');  
-            });
-
             it('should render selected item\'s text to its content', function () {
                 var select = new Select({ datasource: datasource, value: '3' });
                 select.appendTo(container);
@@ -299,7 +262,6 @@ define(function (require) {
                 select.appendTo(container);
                 select.set('emptyText', 'changed');
                 expect(select.main.firstChild.innerHTML).toBe('changed');
-                expect(select.main.getElementsByTagName('input')[0].value).toBe('');
             });
 
             it('should utilize `displayTemplate` when display selected value text', function () {

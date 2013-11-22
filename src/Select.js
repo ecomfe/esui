@@ -317,14 +317,7 @@ define(
 
             this.main.tabIndex = 0;
             
-            var html = [
-                '<span></span>',
-                '<input type="hidden" name="${name}" />'
-            ];
-            this.main.innerHTML = lib.format(
-                html.join('\n'),
-                { name: this.name }
-            );
+            this.main.innerHTML = this.helper.getPartHTML('text', 'span');
 
             this.helper.addDOMEvent(
                 this.main, 
@@ -339,13 +332,8 @@ define(
          * @param {Select} select Select控件实例
          */
         function updateValue(select) {
-            // 同步`value`
-            var hidden = select.main.getElementsByTagName('input')[0];
-            var value = select.getRawValue();
-            hidden.value = value == null ? '' : value;
-
             // 同步显示的文字
-            var textHolder = select.main.getElementsByTagName('span')[0];
+            var textHolder = select.helper.getPart('text');
             var selectedItem = select.selectedIndex === -1
                 ? null
                 : select.datasource[select.selectedIndex];
