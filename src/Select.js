@@ -251,6 +251,8 @@ define(
                         properties.selectedIndex = item.value ? i : 0;
                     }
                 }
+                
+                this.helper.extractOptionsFromInput(this.main, properties);
             }
 
             this.setProperties(properties);
