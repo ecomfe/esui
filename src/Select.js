@@ -9,7 +9,6 @@ define(
     function (require) {
         var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var Layer = require('./Layer');
 
@@ -21,13 +20,12 @@ define(
         function selectValue(e) {
             var target = lib.event.getTarget(e);
             var layer = this.layer.getElement();
-            var disabledClass = helper.getPartClasses(this, 'item-disabled');
             while (target && target !== layer
                 && !lib.hasAttribute(target, 'data-index')
             ) {
                 target = target.parentNode;
             }
-            if (target && !lib.hasClass(target, disabledClass[0])) {
+            if (target && !this.helper.isPart(target, 'item-disabled')) {
                 var index = target.getAttribute('data-index');
                 this.set('selectedIndex', +index);
                 this.layer.hide();
@@ -125,6 +123,7 @@ define(
          *
          * @param {Object=} options 构造控件的选项
          * @constructor
+         * @extends InputControl
          */
         function Select(options) {
             InputControl.apply(this, arguments);
@@ -138,8 +137,8 @@ define(
          *
          * @param {Object} options 构造函数传入的参数
          * @return {HTMLElement} 主元素
-         * @override
          * @protected
+         * @override
          */
         Select.prototype.createMain = function (options) {
             return document.createElement('div');
@@ -149,7 +148,6 @@ define(
          * 根据`selectedIndex` < `value` < `rawValue`的顺序调整三个参数的值
          *
          * @param {Object} context 有可能包含以上3个参数的参数对象
-         * @inner
          */
         function adjustValueProperties(context) {
             // 因为`value`可能多个项是相同的，所以必须一切以`selectedIndex`为准
@@ -214,8 +212,8 @@ define(
          * 初始化参数
          *
          * @param {Object} options 构造函数传入的参数
-         * @override
          * @protected
+         * @override
          */
         Select.prototype.initOptions = function (options) {
             var defaults = {
@@ -223,7 +221,7 @@ define(
             };
 
             var properties = {};
-            lib.extend(properties, defaults, options);
+            u.extend(properties, defaults, options);
 
             // 如果主元素是个`<select>`元素，则需要从元素中抽取数据源，
             // 这种情况下构造函数中传入的`datasource`无效
@@ -262,7 +260,6 @@ define(
          * 每个节点显示的内容的模板
          *
          * @type {string}
-         * @public
          */
         Select.prototype.itemTemplate = '<span>${text}</span>';
 
@@ -271,12 +268,11 @@ define(
          *
          * @param {Object} item 节点数据
          * @return {string} 节点的HTML
-         * @public
          */
         Select.prototype.getItemHTML = function (item) {
             var data = {
-                text: lib.encodeHTML(item.name || item.text),
-                value: lib.encodeHTML(item.value)
+                text: u.escape(item.name || item.text),
+                value: u.escape(item.value)
             };
             return lib.format(this.itemTemplate, data);
         };
@@ -285,7 +281,6 @@ define(
          * 显示选中值的模板
          *
          * @type {string}
-         * @public
          */
         Select.prototype.displayTemplate = '${text}';
 
@@ -295,16 +290,15 @@ define(
          * @param {Object | null} item 选中节点的数据，如果有`emptyText`且未选节点，
          * 则传递`null`
          * @return {string} 显示的HTML
-         * @public
          */
         Select.prototype.getDisplayHTML = function (item) {
             if (!item) {
-                return lib.encodeHTML(this.emptyText || '');
+                return u.escape(this.emptyText || '');
             }
 
             var data = {
-                text: lib.encodeHTML(item.name || item.text),
-                value: lib.encodeHTML(item.value)
+                text: u.escape(item.name || item.text),
+                value: u.escape(item.value)
             };
             return lib.format(this.displayTemplate, data);
         };
@@ -312,13 +306,13 @@ define(
         /**
          * 初始化DOM结构
          *
-         * @override
          * @protected
+         * @override
          */
         Select.prototype.initStructure = function () {
             // 如果主元素是`<select>`，删之替换成`<div>`
             if (this.main.nodeName.toLowerCase() === 'select') {
-                helper.replaceMain(this);
+                this.helper.replaceMain();
             }
 
             this.main.tabIndex = 0;
@@ -343,7 +337,6 @@ define(
          * 根据控件的值更新其视图
          *
          * @param {Select} select Select控件实例
-         * @inner
          */
         function updateValue(select) {
             // 同步`value`
@@ -367,9 +360,8 @@ define(
         /**
          * 获取原始值
          *
-         * @return {*}
+         * @return {Mixed}
          * @override
-         * @public
          */
         Select.prototype.getRawValue = function () {
             if (this.selectedIndex < 0) {
@@ -386,11 +378,10 @@ define(
         /**
          * 重绘
          *
-         * @param {Array=} 更新过的属性集合
-         * @override
          * @protected
+         * @override
          */
-        Select.prototype.repaint = helper.createRepaint(
+        Select.prototype.repaint = paint.createRepaint(
             InputControl.prototype.repaint,
             paint.style('width'),
             paint.style('height'),
@@ -417,7 +408,7 @@ define(
         /**
          * 更新`datasource`属性，无论传递的值是否变化都会进行更新
          *
-         * @param {Array.<Object>} datasource 新的数据源对象
+         * @param {Object[]} datasource 新的数据源对象
          */
         Select.prototype.updateDatasource = function (datasource) {
             if (!datasource) {
@@ -433,7 +424,6 @@ define(
          *
          * @param {Object} 需更新的属性
          * @override
-         * @public
          */
         Select.prototype.setProperties = function (properties) {
             // 为了`adjustValueProperties`正常工作，需要加上一点东西，
@@ -469,7 +459,7 @@ define(
          * @public
          */
         Select.prototype.dispose = function () {
-            if (helper.isInStage(this, 'DISPOSED')) {
+            if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
             
