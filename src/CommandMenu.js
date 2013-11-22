@@ -5,7 +5,6 @@
  * @file 命令菜单控件
  * @author otakustay
  */
-
 define(
     function (require) {
         var u = require('underscore');
