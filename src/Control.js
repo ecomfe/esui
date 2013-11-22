@@ -23,7 +23,7 @@ define(
             helper.changeStage(this, 'NEW');
             this.children = [];
             this.childrenIndex = {};
-            this.states = {};
+            this.currentStates = {};
             this.domEvents = {};
             this.helper = new Helper(this);
             options = options || {};
@@ -127,6 +127,14 @@ define(
                     );
 
                     helper.addPartClasses(this);
+
+                    if (this.states) {
+                        this.states = typeof this.states === 'string'
+                            ? this.states.split(' ')
+                            : this.states;
+                            
+                        u.each(this.states, this.addState, this);
+                    }
                 }
 
                 // 由子控件实现
@@ -435,7 +443,7 @@ define(
              */
             addState: function (state) {
                 if (!this.hasState(state)) {
-                    this.states[state] = 1;
+                    this.currentStates[state] = true;
                     helper.addStateClasses(this, state);
                     var properties = {};
                     var statePropertyName = state.replace(
@@ -454,7 +462,7 @@ define(
              */
             removeState: function (state) {
                 if (this.hasState(state)) {
-                    delete this.states[state];
+                    this.currentStates[state] = false;
                     helper.removeStateClasses(this, state);
                     var properties = {};
                     var statePropertyName = state.replace(
@@ -486,7 +494,7 @@ define(
              * @return {boolean}
              */
             hasState: function (state) {
-                return !!this.states[state];
+                return !!this.currentStates[state];
             },
 
             /**
