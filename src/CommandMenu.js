@@ -10,7 +10,6 @@ define(
     function (require) {
         var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
         var Layer = require('./Layer');
 
@@ -175,7 +174,7 @@ define(
          * @public
          */
         CommandMenu.prototype.dispose = function () {
-            if (helper.isInStage(this, 'DISPOSED')) {
+            if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
                 
