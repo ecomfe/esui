@@ -207,6 +207,20 @@ define(
         };
 
         /**
+         * 创建一个部件元素
+         *
+         * @param {string} part 部件名称
+         * @param {string} [nodeName] 使用的元素类型
+         */
+        helper.createPart = function (part, nodeName) {
+            nodeName = nodeName || 'div';
+            var element = document.createElement('nodeName');
+            element.id = this.getId(part);
+            this.addPartClasses(part, element);
+            return element;
+        };
+
+        /**
          * 获取指定部件的DOM元素
          *
          * @param {string} part 部件名称
