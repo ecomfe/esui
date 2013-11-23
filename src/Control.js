@@ -288,6 +288,16 @@ define(
             },
 
             /**
+             * 销毁控件并移除所有DOM元素
+             */
+            destroy: function () {
+                // 为了避免`dispose()`的时候把`main`置空了，这里先留存一个
+                var main = this.main;
+                this.dispose();
+                lib.removeNode(main);
+            },
+
+            /**
              * 获取控件的属性值
              * 
              * @param {string} name 属性名

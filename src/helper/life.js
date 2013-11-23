@@ -101,6 +101,9 @@ define(
             this.control.children = null;
             this.control.childrenIndex = null;
 
+            // 销毁所有事件
+            this.control.destroyEvents();
+
             // 移除自身行为
             this.clearDOMEvents();
 
