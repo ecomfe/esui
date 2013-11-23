@@ -8,6 +8,7 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
         var Table = require('../Table');
         var Extension = require('../Extension');
 
@@ -16,7 +17,7 @@ define(
          *
          * 当表格加上此扩展后，其排序功能将由扩展自动提供
          *
-         * 扩展默认使用简单的两值相减的方法判断大小，
+         * 扩展默认使用简单的两值相减（字符串用`localeCompare`）的方法判断大小，
          * 也可以在表格具体列的配置中给出`comparer`属性来提供自定义的排序算法
          *
          * @class extension.AutoSort
@@ -44,7 +45,7 @@ define(
                         y = y[fieldName];
                     }
 
-                    return typeof x === 'string' && typeof y === 'string'
+                    return u.isString(x) && u.isString(y)
                         ? x.localeCompare(y)
                         : x - y;
                 };

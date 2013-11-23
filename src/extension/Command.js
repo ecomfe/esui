@@ -8,6 +8,8 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
+        var lib = require('../lib');
         var Extension = require('../Extension');
 
         /**
@@ -28,9 +30,11 @@ define(
          * - 事件对象中的`name`属性值为DOM元素的`data-command`属性值
          * - 事件对象中的`args`属性值为DOM元素的`data-command-args`属性值
          *
-         * 在使用HTML创建`Command`扩展时，`events`忏悔可以使用逗号分隔的字符串：
+         * 在使用HTML创建`Command`扩展时，`events`忏悔可以使用逗号或空格分隔的字符串：
          *
          *     data-ui-extension-command-events="click,mousedown,mouseup"
+         *     // 或
+         *     data-ui-extension-command-events="click mousedown mouseup"
          *
          * 则表示监听`click`、`mousedown`和`mouseup`事件
          *
@@ -45,11 +49,10 @@ define(
                 options.events = ['click'];
             }
             else if (typeof options.events === 'string') {
-                options.events = options.events.split(',');
-                var lib = require('../lib');
-                for (var i = 0; i < options.events.length; i++) {
-                    options.events[i] = lib.trim(options.events[i]);
-                }
+                options.events = u.chain(options.events.split(/[,\s]/))
+                    .map(lib.trim)
+                    .compact()
+                    .value();
             }
             Extension.apply(this, arguments);
         }
@@ -64,8 +67,20 @@ define(
         /**
          * 处理事件
          *
+         * 该方法包含了以下逻辑：
+         *
+         * 1. 判断元素是否符合触发`command`事件的条件，默认条件为有`data-command`属性
+         * 2. 构造事件对象，默认带有以下属性：
+         *     - `{string} name`：命令名称，来自`data-command`属性的值
+         *     - `{string} args`：命令参数，来自`data-command-args`属性的值
+         *     - `{string} triggerType`：触发的DOM事件类型
+         * 3. 触发`command`事件
+         * 4. 控制`stopPropagation`等逻辑
+         *
+         * 通过重写本方法可以改变以上逻辑，多数情况下不需要重写
+         *
          * @param {Event} e 事件对象
-         * @private
+         * @protected
          */
         Command.prototype.handleCommand = function (e) {
             var target = e.target;
@@ -74,6 +89,7 @@ define(
             
             while (target && target !== endpoint) {
                 if (target.nodeType === 1 
+                    // 点击事件不在禁用的元素上触发，其它事件则可以
                     && (target.disabled !== true || e.type !== 'click')
                 ) {
                     var commandName = target.getAttribute('data-command');
@@ -105,10 +121,8 @@ define(
          * @override
          */
         Command.prototype.activate = function () {
-            var helper = require('../controlHelper');
             for (var i = 0; i < this.events.length; i++) {
-                helper.addDOMEvent(
-                    this.target, 
+                this.target.helper.addDOMEvent(
                     this.target.main, 
                     this.events[i], 
                     this.handleCommand
@@ -124,16 +138,13 @@ define(
          * @override
          */
         Command.prototype.inactivate = function () {
-            var helper = require('../controlHelper');
             for (var i = 0; i < this.events.length; i++) {
-                helper.removeDOMEvent(
-                    this.target, 
+                this.target.helper.removeDOMEvent(
                     this.target.main, 
                     this.events[i], 
                     this.handleCommand
                 );
             }
-            this.handler = null;
 
             Extension.prototype.inactivate.apply(this, arguments);
         };
@@ -163,8 +174,7 @@ define(
          */
         Command.createDispatcher = function (config) {
             var map = config;
-            var lib = require('../lib');
-            if (lib.isArray(config)) {
+            if (u.isArray(config)) {
                 map = {};
                 for (var i = 0; i < config.length; i++) {
                     var item = config[i];
@@ -176,8 +186,6 @@ define(
             }
 
             return function (e) {
-                var lib = require('../lib');
-                
                 // 处理函数的查找规则，优先级从高到低依次是：
                 // 
                 // 1. 从`config`中传过来的且能对上类型及命令名称的
@@ -216,7 +224,7 @@ define(
             };
         };
 
-        require('../lib').inherits(Command, Extension);
+        lib.inherits(Command, Extension);
         require('../main').registerExtension(Command);
 
         return Command;
