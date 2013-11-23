@@ -28,7 +28,6 @@ define(
          * @param {HTMLElement | string} element 目标元素或其id
          * @param {string} className 要判断的class名称
          * @return {boolean} 是否拥有指定的class
-         * @static
          */
         lib.hasClass = function (element, className) {
             element = dom.g(element);
@@ -55,7 +54,6 @@ define(
          * @param {HTMLElement | string} element 目标元素或其id
          * @param {string} className 要添加的class名称
          * @return {HTMLElement} 目标元素
-         * @static
          */
         lib.addClass = function (element, className) {
             element = dom.g(element);
@@ -90,7 +88,6 @@ define(
          * @param {HTMLElement | string} element 目标元素或其id
          * @param {string[]} classes 需添加的class名称
          * @return {HTMLElement} 目标元素
-         * @static
          */
         lib.addClasses = function (element, classes) {
             element = dom.g(element);
@@ -125,7 +122,6 @@ define(
          * @param {HTMLElement | string} element 目标元素或目标元素的 id
          * @param {string} className 要移除的class名称
          * @return {HTMLElement} 目标元素
-         * @static
          */
         lib.removeClass = function (element, className) {
             element = dom.g(element);
@@ -167,7 +163,6 @@ define(
          * @param {HTMLElement | string} element 目标元素或其id
          * @param {string[]} classes 需移除的class名称
          * @return {HTMLElement} 目标元素
-         * @static
          */
         lib.removeClasses = function (element, classes) {
             element = dom.g(element);
@@ -202,7 +197,6 @@ define(
          * @param {HTMLElement} element 目标元素或目标元素的 id
          * @param {string} className 要切换的class名称
          * @return {HTMLElement} 目标元素
-         * @static
          */
         lib.toggleClass = function (element, className) {
             element = dom.g(element);

@@ -12,6 +12,7 @@ define(
 
         /**
          * @class lib.date
+         * @singleton
          */
         var date = {};
 
@@ -25,8 +26,8 @@ define(
          * - `YYYY/MM/DD HH:mm:ss`
          * - `YYYY-MM-DDTHH:mm:ss.SSSZ`
          *
+         * @cfg
          * @type {string[]}
-         * @static
          * @deprecated 将在4.0版本中移除，应尽量确定格式并使用`moment#parse`代替
          */
         date.dateFormats = [
@@ -45,7 +46,6 @@ define(
          * @param {Date} source 目标日期对象
          * @param {string} pattern 日期格式化规则
          * @return {string} 格式化后的字符串
-         * @static
          * @deprecated 将在4.0版本中移除，请使用`moment#format`代替
          */
         date.format = function (source, pattern) {
@@ -65,7 +65,6 @@ define(
          * 不提供此参数则使用{@link lib.date#dateFormats}作为解析格式，
          * 由于默认包含多个格式，这将导致性能有所下降，因此尽量提供明确的格式参数
          * @return {Date} 转换后的日期对象
-         * @static
          * @deprecated 将在4.0版本中移除，请使用`moment#parse`代替
          */
         date.parse = function (source, format) {

@@ -17,9 +17,9 @@ define(
         /**
          * 控件基类
          * 
-         * @param {Object} [options] 初始化参数
-         * @extends {mini-event.EventTarget}
          * @constructor
+         * @extends {mini-event.EventTarget}
+         * @param {Object} [options] 初始化参数
          */
         function Control(options) {
             helper.changeStage(this, 'NEW');

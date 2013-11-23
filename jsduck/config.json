@@ -4,8 +4,10 @@
     "--categories": "categories.json",
     "--external": "mini-event.EventTarget",
     "--": [
+        "../src/main.js",
         "../src/ViewContext.js",
         "../src/Control.js",
+        "../src/InputControl.js",
 
         "../src/Helper.js",
         "../src/helper/children.js",
@@ -22,9 +24,27 @@
         "../src/lib/event.js",
         "../src/lib/lang.js",
         "../src/lib/page.js",
-        "../src/lib/string.js"
-        // "../src/painters.js",
-        // "../src/main.js",
-        // "../src/Extension.js"
+        "../src/lib/string.js",
+        "../src/painters.js",
+
+        "../src/Extension.js",
+        "../src/extension/AutoSort.js",
+        "../src/extension/Command.js",
+        "../src/extension/CustomData.js",
+        "../src/extension/TableEdit.js",
+
+        "../src/validator/MaxByteLengthRule.js",
+        "../src/validator/MaxLengthRule.js",
+        "../src/validator/MaxRule.js",
+        "../src/validator/MinByteLengthRule.js",
+        "../src/validator/MinLengthRule.js",
+        "../src/validator/MinRule.js",
+        "../src/validator/PatternRule.js",
+        "../src/validator/RequiredRule.js",
+        "../src/validator/Rule.js",
+        "../src/validator/Validity.js",
+        "../src/validator/ValidityState.js",
+
+        "../src/Validity.js"
     ]
 }

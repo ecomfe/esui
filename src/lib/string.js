@@ -20,7 +20,6 @@ define(
          *
          * @param {string} source 目标字符串
          * @return {string} 删除两端空白字符后的字符串
-         * @static
          */
         lib.trim = function (source) {
             if (!source) {
@@ -38,7 +37,6 @@ define(
          * @param {string} template 原字符串
          * @param {Object} data 用于模板替换的数据
          * @return {string} 格式化后的字符串
-         * @static
          */
         lib.format = function (template, data) {
             if (!template) {
@@ -69,7 +67,6 @@ define(
          *
          * @param {string} source 源字符串
          * @return {string}
-         * @static
          */
         lib.camelize = function (source) {
             if (!source) {
@@ -91,7 +88,6 @@ define(
          *
          * @param {string} source 源字符串
          * @return {string}
-         * @static
          */
         lib.pascalize = function (source) {
             if (!source) {

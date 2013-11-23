@@ -21,7 +21,6 @@ define(
          *
          * @param {string | HTMLElement} id 元素的id或DOM元素
          * @return {HTMLElement | null} 获取的元素，查找不到时返回null
-         * @static
          */
         lib.g = function (id) {
             if (!id) {
@@ -36,7 +35,6 @@ define(
          *
          * @param {HTMLElement} element 目标元素
          * @return {boolean}
-         * @static
          */
         lib.isInput = function (element) {
             var nodeName = element.nodeName.toLowerCase();
@@ -49,7 +47,6 @@ define(
          * 移除目标元素
          *
          * @param {HTMLElement} element 目标元素或其id
-         * @static
          */
         lib.removeNode = function (element) {
             if (typeof element === 'string') {
@@ -72,7 +69,6 @@ define(
          * @param {HTMLElement} element 被添加的目标元素
          * @param {HTMLElement} reference 基准元素
          * @return {HTMLElement} 被添加的目标元素
-         * @static
          */
         lib.insertAfter = function (element, reference) {
             var parent = reference.parentNode;
@@ -89,7 +85,6 @@ define(
          * @param {HTMLElement} element 被添加的目标元素
          * @param {HTMLElement} reference 基准元素
          * @return {HTMLElement} 被添加的目标元素
-         * @static
          */
         lib.insertBefore = function (element, reference) {
             var parent = reference.parentNode;
@@ -105,7 +100,6 @@ define(
          * 获取子元素
          * @param {HTMLElement} element 目标元素
          * @return {HTMLElement[]} 目标元素的所有子元素
-         * @static
          */
         lib.getChildren = function (element) {
             return u.filter(
@@ -123,7 +117,6 @@ define(
          * @param {HTMLElement} element 目标元素
          * @param {string} key 样式名称
          * @return {string}
-         * @static
          */
         lib.getComputedStyle = function (element, key) {
             if (!element) {
@@ -152,7 +145,6 @@ define(
          * @param {HTMLElement} element 目标元素
          * @param {string} key 样式名称
          * @return {string} 目标元素的指定样式值
-         * @static
          */
         lib.getStyle = function (element, key) {
             key = string.camelize(key);
@@ -167,7 +159,6 @@ define(
          * @param {HTMLElement} element 目标元素
          * @return {Object} 元素的尺寸和位置信息，
          * 包含`top`、`right`、`bottom`、`left`、`width`和`height`属性
-         * @static
          */
         lib.getOffset = function (element) {
             var rect = element.getBoundingClientRect();
@@ -202,7 +193,6 @@ define(
          *
          * @param {HTMLElement} element 目标元素
          * @return {string}
-         * @static
          */
         lib.getText = function (element) {
             var text = '';
@@ -226,6 +216,7 @@ define(
 
         /**
          * @class lib.dom
+         * @singleton
          */
         lib.dom = {};
 
@@ -234,7 +225,6 @@ define(
          *
          * @param {HTMLElement | string} element 目标元素或其id
          * @return {HTMLElement | null} 目标元素的第一个元素节点，查找不到时返回null
-         * @static
          */
         lib.dom.first = function (element) {
             element = lib.g(element);
@@ -254,7 +244,6 @@ define(
          *
          * @param {HTMLElement | string} element 目标元素或其id
          * @return {HTMLElement | null} 目标元素的第一个元素节点，查找不到时返回null
-         * @static
          */
         lib.dom.last = function (element) {
             element = lib.g(element);
@@ -277,7 +266,6 @@ define(
          *
          * @param {HTMLElement | string} element 目标元素或其id
          * @return {HTMLElement | null} 目标元素的下一个元素节点，查找不到时返回null
-         * @static
          */
         lib.dom.next = function (element) {
             element = lib.g(element);
@@ -298,7 +286,6 @@ define(
          * @param {HTMLElement | string} container 包含元素或元素的 id
          * @param {HTMLElement | string} contained 被包含元素或元素的 id
          * @return {boolean} `contained`元素是否被包含于`container`元素的DOM节点上
-         * @static
          */
         lib.dom.contains = function (container, contained) {
             container = lib.g(container);

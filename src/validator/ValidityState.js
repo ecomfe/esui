@@ -1,34 +1,27 @@
 /**
  * ESUI (Enterprise UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 规则验证状态类
- * @author DBear
+ * @author DBear, otakustay
  */
 define(
     function () {
         /**
-         * ValidityState类声明
+         * 验证状态类
+         *
+         * 一个`ValidityState`表示一条规则的验证结果，其包含`state`和`message`两个属性
          * 
-         * @param {boolean} state 验证状态
-         * @param {string} message 验证信息
+         * @class validator.ValidityState
          * @constructor
+         * @param {boolean} state 验证状态
+         * @param {string} [message=""] 验证信息
          */
         function ValidityState(state, message) {
-            /**
-             * 验证信息
-             * @type {string} 
-             */
-            this.message = message || '';
-
-            /**
-             * 验证状态
-             * @type {boolean} 
-             */
             this.state = state;
-
+            this.message = message || '';
         }
-
 
         /**
          * 获取验证信息
@@ -36,21 +29,17 @@ define(
          * @return {string} 
          */
         ValidityState.prototype.getMessage = function () {
-
             return this.message;
-
         };
 
 
         /**
          * 获取验证状态
          *
-         * @return {boolean} true为值合法，false为值非法
+         * @return {boolean} `true`为值合法，`false`为值非法
          */
         ValidityState.prototype.getState = function () {
-
             return this.state;
-
         };
 
 
@@ -58,27 +47,22 @@ define(
         /**
          * 设置验证信息
          *
-         * @param {string} message 
+         * @param {string} message 验证信息字符串
          */
         ValidityState.prototype.setMessage = function (message) {
-
             this.message = message;
-
         };
 
 
         /**
-         * 设置验证状态，true为值合法，false为值非法。
+         * 设置验证状态
          *
-         * @param {boolean} state
+         * @param {boolean} state `true`为值合法，`false`为值非法
          */
         ValidityState.prototype.setState = function (state) {
-
             this.state = state;
-
         };
 
         return ValidityState;
-
     }
 );

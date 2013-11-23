@@ -12,6 +12,7 @@ define(
          * 工具对象
          *
          * @class
+         * @singleton
          */
         var lib = {};
         var u = require('underscore');

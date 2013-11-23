@@ -21,7 +21,6 @@
          * @param {HTMLElement} element 指定元素
          * @param {string} name 指定属性名称
          * @return {boolean}
-         * @static
          */
         lib.hasAttribute = function (element, name) {
             if (element.hasAttribute) {
@@ -75,7 +74,6 @@
          * @param {string} key 要设置的属性名
          * @param {string} value 要设置的属性值
          * @return {HTMLElement} 目标元素
-         * @static
          */
         lib.setAttribute = function (element, key, value) {
             element = dom.g(element);
@@ -97,7 +95,6 @@
          * @param {HTMLElement | string} element 目标元素或其id
          * @param {string} key 要获取的属性名称
          * @return {string | null} 目标元素的attribute值，获取不到时返回 null
-         * @static
          */
         lib.getAttribute = function (element, key) {
             element = dom.g(element);
@@ -115,7 +112,6 @@
          *
          * @param {HTMLElement | string} element 目标元素或其id
          * @param {string} key 属性名称
-         * @static
          */
         lib.removeAttribute = function (element, key) {
             element = dom.g(element);

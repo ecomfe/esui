@@ -21,7 +21,6 @@ define(
          * 
          * @param {string} [prefix="esui"] 前缀
          * @return {string}
-         * @static
          */
         lib.getGUID = function (prefix) {
             prefix = prefix || 'esui';
@@ -34,7 +33,6 @@ define(
          * @param {Function} subClass 子类构造器
          * @param {Function} superClass 父类构造器
          * @return {Function} 返回`subClass`构造器
-         * @static
          */
         lib.inherits = function (subClass, superClass) {
             var Empty = function () {};
@@ -56,7 +54,6 @@ define(
          *
          * @param {Object} source 需要进行复制的对象
          * @return {Object} 复制出来的新对象
-         * @static
          * @deprecated 将在4.0版本中移除，使用{@link lib#deepClone}方法代替
          */
         lib.clone = function (source) {
@@ -94,7 +91,6 @@ define(
          *
          * @param {Object} source 需要进行复制的对象
          * @return {Object} 复制出来的新对象
-         * @static
          */
         lib.deepClone = lib.clone;
 
@@ -103,7 +99,6 @@ define(
          *
          * @param {Array} array 数组
          * @return {Object} 以`array`中的每个对象为键，以`true`为值的字典对象
-         * @static
          */
         lib.toDictionary = function (array) {
             var dictionary = {};
@@ -122,7 +117,6 @@ define(
          *
          * @param {Mixed} source 需要判断的对象
          * @return {boolean}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.isArray`代替
          */
         lib.isArray = u.isArray;
@@ -132,7 +126,6 @@ define(
          *
          * @param {Mixed} source 需要转换的对象
          * @return {Array}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.toArray`代替
          */
         lib.toArray = u.toArray;
@@ -143,7 +136,6 @@ define(
          * @param {Object} source 需要判断的对象
          * @param {Object...} extensions 用于扩展`source`的各个对象
          * @return {Object} 完成扩展的`source`对象
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.extend`代替
          */
         lib.extend = u.extend;
@@ -155,7 +147,6 @@ define(
          * @param {Object} thisObject 执行`fn`时的`this`对象
          * @param {Mixed...} args 执行`fn`时追回在前面的参数
          * @return {Function}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.bind`代替
          */
         lib.bind = u.bind;
@@ -168,7 +159,6 @@ define(
          * @param {Function} fn 需要处理的函数
          * @param {Mixed...} args 执行`fn`时追回在前面的参数
          * @return {Function}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.partial`代替
          */
         lib.curry = u.partial;
@@ -180,7 +170,6 @@ define(
          * @param {Mixed} value 需要查找的对象
          * @param {number} [fromIndex] 开始查找的索引
          * @return {number}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.indexOf`代替
          */
         lib.indexOf = u.indexOf;
@@ -190,7 +179,6 @@ define(
          *
          * @param {string} source 需要解码的字符串
          * @return {string}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.unescape`代替
          */
         lib.decodeHTML = u.unescape;
@@ -200,7 +188,6 @@ define(
          *
          * @param {string} source 需要编码的字符串
          * @return {string}
-         * @static
          * @deprecated 将在4.0版本中移除，使用`underscore.escape`代替
          */
         lib.encodeHTML = u.escape;

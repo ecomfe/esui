@@ -3,19 +3,54 @@
         "name": "esui",
         "groups": [
             {
-                "name": "Classes",
+                "name": "基础组件",
                 "classes": [
+                    "main",
                     "ViewContext",
                     "Control",
+                    "InputControl",
                     "ControlGroup",
-                    "Helper",
+                    "Helper"
+                ]
+            },
+            {
+                "name": "工具对象",
+                "classes": [
                     "lib",
                     "lib.date",
                     "lib.dom",
                     "lib.event",
-                    "lib.page"
-                    // "Extension",
-                    // "main"
+                    "lib.page",
+                    "painters"
+                ]
+            },
+            {
+                "name": "控件",
+                "classes": [
+                    "Validity"
+                ]
+            },
+            {
+                "name": "扩展组件",
+                "classes": [
+                    "Extension",
+                    "extension.*"
+                ]
+            },
+            {
+                "name": "验证",
+                "classes": [
+                    "validator.ValidityState",
+                    "validator.Validity",
+                    "validator.Rule",
+                    "validator.MaxByteLengthRule",
+                    "validator.MaxLengthRule",
+                    "validator.MaxRule",
+                    "validator.MinByteLengthRule",
+                    "validator.MinLengthRule",
+                    "validator.MinRule",
+                    "validator.PatternRule",
+                    "validator.RequiredRule"
                 ]
             }
         ]

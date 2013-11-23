@@ -2,13 +2,21 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 主模块
  * @author erik
  */
-
 define(
     function (require) {
         var lib = require('./lib');
+
+        /**
+         * 主模块
+         *
+         * @class main
+         * @alias ui
+         * @singleton
+         */
         var main = {};
 
         var ViewContext = require('./ViewContext');
@@ -26,8 +34,8 @@ define(
         /**
          * 控件库配置数据
          * 
-         * @inner
          * @type {Object}
+         * @ignore
          */
         var config = {
             uiPrefix: 'data-ui',
@@ -52,16 +60,17 @@ define(
          * 获取配置项
          * 
          * @param {string} name 配置项名称
+         * @return {Mixed} 配置项的值
          */
         main.getConfig = function (name) {
             return config[name];
         };
 
         /**
-         * 将"name:value[;name:value]"的属性值解析成Object
+         * 将`name:value[;name:value]`的属性值解析成对象
          * 
          * @param {string} source 属性值源字符串
-         * @param {function=} 替换值的处理函数
+         * @param {Function} valueReplacer 替换值的处理函数，每个值都将经过此函数
          * @return {Object}
          */
         main.parseAttribute = function (source, valueReplacer) {
@@ -134,26 +143,26 @@ define(
         };
 
         /**
-         * 寻找dom元素所对应的控件
+         * 寻找DOM元素所对应的控件
          * 
-         * @public
-         * @param {HTMLElement} dom dom元素
-         * @return {Control}
+         * @param {HTMLElement} dom DOM元素
+         * @return {Control | null} `dom`对应的控件实例，
+         * 如果`dom`不存在或不对应任何控件则返回`null`
          */
-        main.getControlByDOM = function ( dom ) {
-            if ( !dom ) {
+        main.getControlByDOM = function (dom) {
+            if (!dom) {
                 return null;
             }
 
             var getConf = main.getConfig;
 
-            var controlId = dom.getAttribute( getConf('instanceAttr') );
-            var viewContextId = dom.getAttribute( getConf('viewContextAttr') );
+            var controlId = dom.getAttribute(getConf('instanceAttr'));
+            var viewContextId = dom.getAttribute(getConf('viewContextAttr'));
             var viewContext;
 
             if (controlId 
                 && viewContextId 
-                && (viewContext = ViewContext.get( viewContextId ))
+                && (viewContext = ViewContext.get(viewContextId))
             ) {
                 return viewContext.get(controlId);
             }
@@ -163,9 +172,9 @@ define(
         /**
          * 注册类。用于控件类、规则类或扩展类注册
          * 
-         * @inner
          * @param {Function} classFunc 类Function
          * @param {Object} container 类容器
+         * @ignore
          */
         function registerClass(classFunc, container) {
             if (typeof classFunc == 'function') {
@@ -181,10 +190,10 @@ define(
         /**
          * 创建类实例。用于控件类、规则类或扩展类的实例创建
          * 
-         * @inner
          * @param {string} type 类型
          * @param {Object} options 初始化参数
          * @param {Object} container 类容器
+         * @ignore
          */
         function createInstance(type, options, container) {
             var Constructor = container[type];
@@ -199,16 +208,19 @@ define(
         /**
          * 控件类容器
          * 
-         * @inner
          * @type {Object}
+         * @ignore
          */
         var controlClasses = {};
 
         /**
-         * 注册控件类。
-         * 通过类的prototype.type识别控件类型信息。
+         * 注册控件类
+         *
+         * 该方法通过类的`prototype.type`识别控件类型信息。
          * 
          * @param {Function} controlClass 控件类
+         * @throws
+         * 已经有相同`prototype.type`的控件类存在，不能重复注册同类型控件
          */
         main.register = function (controlClass) {
             registerClass(controlClass, controlClasses);
@@ -228,8 +240,8 @@ define(
         /**
          * 获取控件
          * 
-         * @param {string} id 控件id
-         * @return {Control}
+         * @param {string} id 控件的id
+         * @return {Control | null}
          */
         main.get = function (id) {
             return defaultViewContext.get(id);
@@ -238,12 +250,12 @@ define(
         /**
          * 从容器DOM元素批量初始化内部的控件渲染
          * 
-         * @param {HTMLElement=} wrap 容器DOM元素，默认document.body
-         * @param {Object=} options init参数
-         * @param {Object=} options.viewContext 视图环境
-         * @param {Object=} options.properties 属性集合，通过id映射
-         * @param {Object=} options.valueReplacer 属性值替换函数
-         * @return {Array} 初始化的控件对象集合
+         * @param {HTMLElement} [wrap=document.body] 容器DOM元素，默认
+         * @param {Object} [options] init参数
+         * @param {Object} [options.viewContext] 视图环境
+         * @param {Object} [options.properties] 属性集合，通过id映射
+         * @param {Object} [options.valueReplacer] 属性值替换函数
+         * @return {Control[]} 初始化的控件对象集合
          */
         main.init = function (wrap, options) {
             wrap = wrap || document.body;
@@ -256,9 +268,9 @@ define(
             /**
              * 将字符串数组join成驼峰形式
              * 
-             * @inner
-             * @param {Array.<string>} source 源字符串数组
+             * @param {string[]} source 源字符串数组
              * @return {string}
+             * @ignore
              */
             function joinCamelCase(source) {
                 function replacer(c) {
@@ -275,9 +287,9 @@ define(
             /**
              * 不覆盖目标对象成员的extend
              * 
-             * @inner
              * @param {Object} target 目标对象
              * @param {Object} source 源对象
+             * @ignore
              */
             function noOverrideExtend(target, source) {
                 for (var key in source) {
@@ -290,10 +302,10 @@ define(
             /**
              * 将标签解析的值附加到option对象上
              * 
-             * @inner
              * @param {Object} optionObject option对象
-             * @param {Array.<string>} terms 经过切分的标签名解析结果
+             * @param {string[]} terms 经过切分的标签名解析结果
              * @param {string} value 属性值
+             * @ignore
              */
             function extendToOption(optionObject, terms, value) {
                 if (terms.length === 0) {
@@ -415,16 +427,19 @@ define(
         /**
          * 扩展类容器
          * 
-         * @inner
          * @type {Object}
+         * @ignore
          */
         var extensionClasses = {};
 
         /**
          * 注册扩展类。
-         * 通过类的prototype.type识别扩展类型信息。
+         *
+         * 该方法通过类的`prototype.type`识别扩展类型信息
          * 
          * @param {Function} extensionClass 扩展类
+         * @throws
+         * 已经有相同`prototype.type`的扩展类存在，不能重复注册同类型扩展
          */
         main.registerExtension = function (extensionClass) {
             registerClass(extensionClass, extensionClasses);
@@ -444,13 +459,15 @@ define(
         /**
          * 全局扩展选项容器
          * 
-         * @inner
          * @type {Object}
+         * @ignore
          */
         var globalExtensionOptions = {};
 
         /**
          * 绑定全局扩展
+         *
+         * 通过此方法绑定的扩展，会对所有的控件实例生效
          * 
          * @param {string} type 扩展类型
          * @param {Object} options 扩展初始化参数
@@ -462,7 +479,7 @@ define(
         /**
          * 创建全局扩展对象
          * 
-         * @return {Array.<Extension>}
+         * @return {Extension[]}
          */
         main.createGlobalExtensions = function () {
             var options = globalExtensionOptions;
@@ -484,17 +501,20 @@ define(
         /**
          * 验证规则类容器
          * 
-         * @inner
          * @type {Object}
+         * @ignore
          */
         var ruleClasses = [];
 
         /**
-         * 注册控件验证规则类。
-         * 通过类的prototype.type识别控件类型信息。
+         * 注册控件验证规则类
+         *
+         * 该方法通过类的`prototype.type`识别验证规则类型信息
          * 
          * @param {Function} ruleClass 验证规则类
          * @param {number} priority 优先级，越小的优先级越高
+         * @throws
+         * 已经有相同`prototype.type`的验证规则类存在，不能重复注册同类型验证规则
          */
         main.registerRule = function (ruleClass, priority) {
             // 多个Rule共享一个属性似乎也没问题
@@ -505,10 +525,10 @@ define(
         };
 
         /**
-         * 创建验证规则
+         * 创建控件实例需要的验证规则
          * 
          * @param {Control} control 控件实例
-         * @return {Array.<validate/Rule>}
+         * @return {Array} 验证规则数组
          */
         main.createRulesByControl = function (control) {
             var rules = [];

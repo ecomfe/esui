@@ -1,11 +1,11 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 自定义数据扩展
  * @author otakustay
  */
-
 define(
     function (require) {
         var Extension = require('../Extension');
@@ -19,26 +19,32 @@ define(
          * 使用该扩展后，可在HTML中声明一些自定义属性，
          * 并在后续通过javascript从控件的实例上获取
          *
-         * @example
-         * <div data-ui-type="Button" 
-         *     data-ui-id="submitButton"
-         *     data-ui-data-auth="admin"
-         *     data-ui-extension-data="type: CustomData;">提交</div>
-         * <script>
-         *     var esui = require('esui');
-         *     esui.init(document.body);
-         *     var button = esui.get('submitButton');
-         *     if (button.getData('auth') !== currentUser.role) {
-         *         button.hide();
-         *     }
-         * </script>
+         *     <div data-ui-type="Button" 
+         *         data-ui-id="submitButton"
+         *         data-ui-data-auth="admin"
+         *         data-ui-extension-data-type="CustomData">提交</div>
+         *     <script>
+         *         var esui = require('esui');
+         *         esui.init(document.body);
+         *         var button = esui.get('submitButton');
+         *         if (button.getData('auth') !== currentUser.role) {
+         *             button.hide();
+         *         }
+         *     </script>
          *
+         * @class extension.CustomData
+         * @extends Extension
          * @constructor
          */
         function CustomData() {
             Extension.apply(this, arguments);
         }
 
+        /**
+         * 指定扩展类型，始终为`"CustomData"`
+         *
+         * @type {string}
+         */
         CustomData.prototype.type = 'CustomData';
 
         var dataProperty = /^data[A-Z0-9]/;
@@ -46,7 +52,7 @@ define(
         /**
          * 激活扩展
          *
-         * @public
+         * @override
          */
         CustomData.prototype.activate = function () {
             Extension.prototype.activate.apply(this, arguments);
@@ -73,7 +79,7 @@ define(
         /**
          * 取消扩展的激活状态
          *
-         * @public
+         * @override
          */
         CustomData.prototype.inactivate = function () {
             Extension.prototype.inactivate.apply(this, arguments);

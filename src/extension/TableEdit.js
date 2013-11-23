@@ -2,20 +2,17 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 表格行内编辑扩展
- * @author wurongyao
+ * @author wurongyao, otakustay
  */
 define( 
     function (require) {
-        require(
-            [
-                '../validator/MaxLengthRule',
-                '../validator/MaxRule',
-                '../validator/MinRule',
-                '../validator/RequiredRule',
-                '../validator/PatternRule'
-            ]
-        );
+        require('../validator/MaxLengthRule');
+        require('../validator/MaxRule');
+        require('../validator/MinRule');
+        require('../validator/RequiredRule');
+        require('../validator/PatternRule');
 
         var Extension = require('../Extension');
         var lib = require('../lib');
@@ -59,10 +56,11 @@ define(
         var currentTable = null;
         var currentField = null;
         var guid = 1;
+
         /**
          * 初始化表格内容编辑器
          *
-         * @private
+         * @ignore
          */
         function init(table, options) {
             currentTable = table;
@@ -82,7 +80,7 @@ define(
         /**
          * 初始化编辑器浮层
          *
-         * @private
+         * @ignore
          */
         function initLayer() {
             fillLayer();
@@ -92,7 +90,7 @@ define(
         /**
          * 初始化浮层按钮的控件
          *
-         * @private
+         * @ignore
          */
         function initButtonControl() {
             var controlMap = main.init(layer);
@@ -108,7 +106,7 @@ define(
         /**
          * 初始化输入及验证控件
          *
-         * @private
+         * @ignore
          */
         function initInputControl(options) {
             if (options.field
@@ -154,7 +152,7 @@ define(
         /**
          * 销毁释放控件
          *
-         * @private
+         * @ignore
          */
         function disposeEditorControl(table) {
             if (table == currentTable) {
@@ -180,7 +178,7 @@ define(
         /**
          * 填充浮层的内容
          *
-         * @private
+         * @ignore
          */
         function fillLayer() {
             layer.innerHTML = lib.format(
@@ -201,7 +199,7 @@ define(
         /**
          * 获取初始化后的控件
          *
-         * @private
+         * @ignore
          */
         function getControlFromMap(controlMap, id) {
             for (var i = controlMap.length - 1; i >= 0; i--) {
@@ -215,7 +213,7 @@ define(
         /**
          * 隐藏浮层
          *
-         * @private
+         * @ignore
          */
         function hideLayer(argument) {
             (layer) && (layer.style.display = 'none');
@@ -224,7 +222,7 @@ define(
         /**
          * 现实浮层
          *
-         * @private
+         * @ignore
          */
         function showLayer(argument) {
             (layer) && (layer.style.display = '');
@@ -233,7 +231,7 @@ define(
         /**
          * 显示错误信息
          *
-         * @private
+         * @ignore
          */
         function showErrorMsg(error) {
             if (error) {
@@ -249,7 +247,7 @@ define(
         /**
          * 清空错误信息
          *
-         * @private
+         * @ignore
          */
         function clearErrorMsg(error) {
             var validity = new Validity();
@@ -263,8 +261,8 @@ define(
         /**
          * 获取确定按钮的点击行为handler
          *
-         * @private
          * @return {Function} 
+         * @ignore
          */
         function getOkHandler() {
             return function () {
@@ -295,8 +293,8 @@ define(
         /**
          * 获取取消按钮的点击行为handler
          *
-         * @private
          * @return {Function} 
+         * @ignore
          */
         function getCancelHandler() {
             return function () {
@@ -307,7 +305,7 @@ define(
         /**
          * table结束列拖拽事件处理函数
          *
-         * @private
+         * @ignore
          */
         function tableEndDragHandler() {
             if (this == currentTable) {
@@ -318,7 +316,7 @@ define(
         /**
          * table尺寸改变事件处理函数
          *
-         * @private
+         * @ignore
          */
         function tableResizeHandler() {
             if (this == currentTable) {
@@ -329,7 +327,7 @@ define(
         /**
          * 让浮层跟随编辑单元格
          *
-         * @private
+         * @ignore
          */
         function layerFollow(table) {
             if (layer) {
@@ -352,7 +350,7 @@ define(
         /**
          * 停止编辑功能
          *
-         * @private
+         * @ignore
          */
         function stop() {
             currentState = 0;
@@ -369,9 +367,9 @@ define(
         /**
          * 启动编辑功能
          *
-         * @private
          * @param {Object} table 表格控件实例
          * @param {Object} options 启动参数表
+         * @ignore
          */
         function start(table, options) {
             if (currentState && currentTable) {
@@ -400,8 +398,8 @@ define(
          /**
          * 设置按钮的disabled状态
          *
-         * @public
          * @param {boolean} disabled 按钮的disabled状态
+         * @ignore
          */
         function setButtonDisabled( disabled ) {
             okButton.setDisabled( disabled );
@@ -411,8 +409,8 @@ define(
         /**
          * 设置当前编辑器的值
          *
-         * @private
          * @param {string} value 值内容
+         * @ignore
          */
         function setValue(value) {
             inputCtrl.setValue(value);
@@ -421,8 +419,8 @@ define(
         /**
          * 获取当前编辑器所编辑的值
          *
-         * @private
-         * @return {Any} 
+         * @return {Mixed} 
+         * @ignore
          */
         function getValue() { 
             return inputCtrl.getValue();
@@ -433,8 +431,7 @@ define(
          *
          * @param {object} element 事件元素
          * @param {object} e 事件元素
-         *
-         * @private
+         * @ignore
          */
         function entranceClickHandler(element, e) {
             var table = this;
@@ -448,7 +445,7 @@ define(
         /**
          * 开始某行的编辑逻辑，初始化子控件
          * @param {number} index 行序号
-         * @private
+         * @ignore
          */
         function startEdit(rowIndex, columnIndex, element) {
             if (this.editable) {
@@ -483,7 +480,7 @@ define(
 
         /**
          * 取消编辑
-         * @public
+         * @ignore
          */
         function cancelEdit() {
             if (this == currentTable) {
@@ -495,7 +492,7 @@ define(
                          + 'data-row="${row}" data-col="${col}"></div>';
         /**
          * 生成每单元格内容
-         * @private
+         * @ignore
          */
         function getColHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
@@ -518,19 +515,51 @@ define(
         /**
          * 表格行内编辑扩展
          *
-         * @constructor
+         * 启用该扩展后，{@link Table}控件将可以在行内进行字段的编辑
+         *
+         * 在{@link Table#fields}配置中，可编辑的字段有以下属性控制：
+         *
+         * - `{boolean editable}`：设置为`true`表示可编辑
+         * - `{Object} editRules`：配置编辑的验证规则，同{@link validator.Rule}定义
+         * - `{Function | Mixed} editContent`：指定最终编辑后的内容，
+         * 如果是函数则取函数的返回值作为最终编辑后的内容，其它类型则作为常量
+         *
+         * 在编辑过程中，{@link Table}控件将触发以下事件：
+         *
+         * - `startedit`：开始编辑
+         * - `saveedit`：编辑生效
+         * - `canceledit`：取消编辑
+         *
+         * 以上3个事件的事件对象均提供以下属性：
+         *
+         * 
+         * - `{number} rowIndex`：行索引
+         * - `{number} columnIndex`：列索引
+         * - `{number} field`：对应的字段
+         *
+         * 而`saveedit`还额外提供`{Mixed} value`属性表示保存的值
+         *
+         * 其中`saveedit`和`startedit`均可以通过`preventDefault()`阻止默认行为
+         *
+         * @class extension.TableEdit
          * @extends Extension
+         * @constructor
          */
         function TableEdit() {
             Extension.apply(this, arguments);
         }
 
+        /**
+         * 指定扩展类型，始终为`"TableEdit"`
+         *
+         * @type {string}
+         */
         TableEdit.prototype.type = 'TableEdit';
 
         /**
          * 激活扩展
          *
-         * @public
+         * @override
          */
         TableEdit.prototype.activate = function () {
             var target = this.target;
@@ -568,7 +597,7 @@ define(
         /**
          * 取消扩展的激活状态
          *
-         * @public
+         * @override
          */
         TableEdit.prototype.inactivate = function () {
             var target = this.target;

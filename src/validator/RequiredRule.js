@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 必填项验证规则
  * @author otakustay
  */
@@ -11,8 +12,10 @@ define(
         var ValidityState = require('./ValidityState');
 
         /**
-         * RequiredRule类声明
+         * 非空验证规则
          *
+         * @extends validator.Rule
+         * @class validator.RequiredRule
          * @constructor
          */
         function RequiredRule() {
@@ -20,9 +23,10 @@ define(
         }
 
         /**
-         * 规则类型
+         * 规则类型，始终为`"require"`
          * 
          * @type {string}
+         * @override
          */
         RequiredRule.prototype.type = 'required';
 
@@ -39,8 +43,8 @@ define(
          *
          * @param {string} value 校验值
          * @param {Control} control 待校验控件
-         *
-         * @return {validator/ValidityState}
+         * @return {validator.ValidityState}
+         * @override
          */
         RequiredRule.prototype.check = function (value, control) {
             return new ValidityState(!!value, this.getErrorMessage(control));

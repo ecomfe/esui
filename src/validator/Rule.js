@@ -2,14 +2,32 @@
  * ESUI (Enterprise UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 默认验证规则类
- * @author DBear
+ * @author DBear, otakustay
  */
 define(
     function (require) {
         /**
-         * Rule类声明
+         * 验证规则基类
          *
+         * 验证规则是对{@link InputControl}的值的验证逻辑的抽象
+         *
+         * 每一个验证规则都包含一个`check(value, control)`方法，
+         * 该方法返回一个{@link validator.ValidityState}以表示验证结果
+         *
+         * 验证规则必须通过{@link main#registerRule}进行注册后才可生效，
+         * 每一个验证规则包含`prototype.type`属性来确定规则的类型
+         *
+         * 验证规则并不会显式地附加到控件上，而是通过控件自身的属性决定哪些规则生效，
+         * 当控件本身具有与规则的`type`属性相同的属性时，此规则即会生效，例如：
+         *
+         *     var textbox = main.create('TextBox', { maxLength: 30 });
+         *     textbox.validate();
+         *
+         * 由于`textbox`上存在`maxLength`属性，因此`MaxLengthRule`会对其进行验证
+         *
+         * @class validator.Rule
          * @constructor
          */
         function Rule() {
@@ -24,7 +42,7 @@ define(
 
 
         /**
-         * 错误提示信息
+         * 错误提示信息，可以使用`${xxx}`作为占位符输出控件的属性值
          *
          * @type {string}
          */
@@ -36,12 +54,9 @@ define(
          * @param {string} value 校验值
          * @param {Control} control 待校验控件
          *
-         * @return {validator/ValidityState}
+         * @return {validator.ValidityState}
          */
         Rule.prototype.check = function (value, control) {
-            // 基类接口，参数没用但需要记录文档
-            /* jshint unused:false */
-
             var ValidityState = require('./ValidityState');
             return new ValidityState(true, '');
 
@@ -64,12 +79,10 @@ define(
          * 获取验证限制条件的值 
          *
          * @param {Control} control 待校验控件
-         * @return {*}
+         * @return {Mixed}
          */
         Rule.prototype.getLimitCondition = function (control) {
-
             return control.get(this.type);
-
         };
 
         /**
@@ -78,9 +91,7 @@ define(
          * @return {string}
          */
         Rule.prototype.getName = function () {
-
             return this.type;
-
         };
 
         return Rule;

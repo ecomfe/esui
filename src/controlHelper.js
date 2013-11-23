@@ -65,7 +65,7 @@ define(
          * @param {Control} control 控件实例
          * @param {Object} options 需要更新的参数
          * @return {Object} 提取到的value和name
-         * @deprecated
+         * @deprecated 使用{@link Helper#extractOptionsFromInput}代替
          */
         helper.extractValueFromInput = function (control, options) {
             var main = control.main;

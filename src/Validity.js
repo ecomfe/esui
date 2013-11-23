@@ -110,7 +110,7 @@ define(
          *
          * @param {string} validState 验证结果
          * @param {string} message 验证信息
-         * @param {validator.Validity} 最原始的验证结果对象
+         * @param {validator.Validity} validity 最原始的验证结果对象
          * @protected
          */
         Validity.prototype.display = function (validState, message, validity) {
