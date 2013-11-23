@@ -1,18 +1,18 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 验证信息显示控件
  * @author otakustay
  */
-
 define(
     // 你说为啥要有这么个控件？因为有2货喜欢在验证提示里放别的控件！
     // 你说为啥这东西不继承`Label`？因为有2货要往里放控件！
     // 你说为啥名字不叫`ValidityLabel`？CSS样式里看到`validitylabel`多丑！
     function (require) {
+        var u  = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -30,8 +30,9 @@ define(
         /**
          * 创建主元素
          *
-         * @param {HTMLElement} 肯定返回`<label>`
+         * @return {HTMLElement} 肯定返回`<label>`
          * @protected
+         * @override
          */
         Validity.prototype.createMain = function () {
             return document.createElement('label');
@@ -40,13 +41,13 @@ define(
         /**
          * 初始化参数
          *
-         * @param {Object=} options 输入的参数
-         * @override
+         * @param {Object} [options] 输入的参数
          * @protected
+         * @override
          */
         Validity.prototype.initOptions = function (options) {
             var properties = 
-                lib.extend({}, Validity.defaultProperties, options);
+                u.extend({}, Validity.defaultProperties, options);
             Control.prototype.initOptions.call(this, properties);
         };
 
@@ -55,43 +56,49 @@ define(
          *
          * @param {Validity} label 控件实例
          * @param {string} state 验证状态
-         * @inner
+         * @ignore
          */
         function getClasses(label, state) {
-            var targetContext = null;
-            if (label.target || label.targetType) {
-                targetContext = {
-                    type: label.targetType || label.target.type,
-                    skin: label.target && label.target.skin
+            var target = label.target;
+
+            targetHelper = null;
+            if (target || label.targetType) {
+                var targetContext = {
+                    type: label.targetType || target.type,
+                    skin: target && target.skin
                 };
+                var Helper = require('./Helper');
+                targetHelper = new Helper(targetContext);
             }
 
-            var classes = helper.getPartClasses(label);
-            if (targetContext) {
-                classes = classes.concat(
-                    helper.getPartClasses(targetContext, 'validity-label')
+            var classes = label.helper.getPartClasses();
+            if (targetHelper) {
+                classes.push.apply(
+                    classes,
+                    targetHelper.getPartClasses('validity-label')
                 );
             }
             if (state) {
-                classes = classes.concat(
-                    helper.getPartClasses(label, state)
+                classes.push.apply(
+                    classes,
+                    label.helper.getPartClasses(state)
                 );
-                if (targetContext) {
-                    classes = classes.concat(
-                        helper.getPartClasses(
-                            targetContext, 'validity-label-' + state
-                        )
+                if (targetHelper) {
+                    classes.push.apply(
+                        classes,
+                        targetHelper.getPartClasses('validity-label-' + state)
                     );
                 }
             }
-            if ((label.target && label.target.isHidden()) || label.isHidden()) {
-                classes = classes.concat(
-                    helper.getStateClasses(label, 'hidden')
+            if ((target && target.isHidden()) || label.isHidden()) {
+                classes.push.apply(
+                    classes,
+                    label.helper.getStateClasses('hidden')
                 );
-                if (label.target) {
-                    classes = classes.concat(
-                        helper.getPartClasses(
-                            label.target, 'validity-label-hidden')
+                if (target) {
+                    classes.push.apply(
+                        classes,
+                        target.helper.getPartClasses('validity-label-hidden')
                     );
                 }
             }
@@ -103,8 +110,7 @@ define(
          *
          * @param {string} validState 验证结果
          * @param {string} message 验证信息
-         * @param {validator/Validity} 最原始的验证结果对象
-         *
+         * @param {validator.Validity} 最原始的验证结果对象
          * @protected
          */
         Validity.prototype.display = function (validState, message, validity) {
@@ -113,8 +119,10 @@ define(
 
         /**
          * 重绘
+         *
+         * @override
          */
-        Validity.prototype.repaint = helper.createRepaint(
+        Validity.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
                 name: ['target', 'targetType'],
@@ -178,9 +186,11 @@ define(
 
         /**
          * 销毁控件
+         *
+         * @override
          */
         Validity.prototype.dispose = function () {
-            if (helper.isInStage(this, 'DISPOSED')) {
+            if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
             
