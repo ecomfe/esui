@@ -15,6 +15,9 @@ define(
             documentElement: {},
             body: {}
         };
+
+        var u = require('underscore');
+        var EventQueue = require('mini-event/EventQueue');
         var lib = require('../lib');
 
         /**
@@ -51,10 +54,12 @@ define(
                 return;
             }
 
-            for (var i = 0; i < queue.length; i++) {
-                var control = queue[i];
-                triggerDOMEvent(control, element, e);
-            }
+            u.each(
+                queue,
+                function (control) {
+                    triggerDOMEvent(control, element, e);
+                }
+            );
         }
 
         // 事件模块专用，无通用性
@@ -90,7 +95,7 @@ define(
             var controls = pool[type];
             if (!controls) {
                 controls = pool[type] = [];
-                var handler = lib.curry(triggerGlobalDOMEvent, element);
+                var handler = u.partial(triggerGlobalDOMEvent, element);
                 if (type === 'resize' || type === 'scroll') {
                     handler = debounce(handler);
                 }
@@ -98,10 +103,8 @@ define(
                 lib.on(element, type, controls.handler);
             }
 
-            for (var i = 0; i < controls.length; i++) {
-                if (controls[i] === control) {
-                    return true;
-                }
+            if (u.indexOf(controls, control) >= 0) {
+                return;
             }
 
             controls.push(control);
@@ -140,12 +143,14 @@ define(
             e = e || window.event;
 
             // 每个控件都能在某些状态下不处理DOM事件
-            if (control.ignoreStates) {
-                for (var i = 0; i < control.ignoreStates.length; i++) {
-                    if (control.hasState(control.ignoreStates[i])) {
-                        return;
-                    }
+            var isInIgnoringState = u.any(
+                control.ignoreStates,
+                function (state) {
+                    return control.hasState(state);
                 }
+            );
+            if (isInIgnoringState) {
+                return;
             }
 
             if (!e.target) {
@@ -171,9 +176,7 @@ define(
                 return;
             }
 
-            for (var i = 0; i < queue.length; i++) {
-                queue[i].call(control, e);
-            }
+            queue.execute(e, control);
         }
 
         /**
@@ -214,16 +217,19 @@ define(
             var isGlobal = addGlobalDOMEvent(this.control, type, element);
             var queue = events[type];
             if (!queue) {
-                queue = events[type] = [];
+                queue = events[type] = new EventQueue();
                 // 非全局事件是需要自己管理一个处理函数的，以便到时候解除事件绑定
                 if (!isGlobal) {
+                    // 无论注册多少个处理函数，其实在DOM元素上只有一个函数，
+                    // 这个函数负责执行队列中的所有函数，
+                    // 这样能保证执行的顺序，移除注册时也很方便
                     queue.handler = 
-                        lib.curry(triggerDOMEvent, this.control, element);
+                        u.partial(triggerDOMEvent, this.control, element);
                     lib.on(element, type, queue.handler);
                 }
             }
 
-            queue.push(handler);
+            queue.add(handler);
         };
 
         /**
@@ -266,22 +272,16 @@ define(
             }
 
             if (!handler) {
-                events[type].length = 0;
+                events[type].clear();
             }
             else {
                 var queue = events[type];
-                for (var i = 0; i < queue.length; i++) {
-                    if (queue[i] === handler) {
-                        queue.splice(i, 1);
-                        // 可能有重复注册的，所以要继续循环
-                        i--;
-                    }
-                }
+                queue.remove(handler);
 
                 // 全局元素上的事件很容易冒泡到后执行，
                 // 在上面的又都是`mousemove`这种不停执行的，
                 // 因此对全局事件做一下处理，尽早移除
-                if (!queue.length) {
+                if (!queue.getLength()) {
                     removeGlobalDOMEvent(this.control, type, element);
                 }
             }
@@ -303,12 +303,13 @@ define(
             }
 
             if (!element) {
-                for (var guid in this.control.domEvents) {
-                    if (this.control.domEvents.hasOwnProperty(guid)) {
-                        var events = this.control.domEvents[guid];
-                        this.clearDOMEvents(events.element);
-                    }
-                }
+                // 在循环中直接删除一个属性不知道会发生什么（已知浏览器看上去没问题），
+                // 因此先拿到所有的元素然后再做遍历更安全，虽然是2次循环但能有多少个对象
+                u.each(
+                    u.pluck(this.control.domEvents, 'element'),
+                    this.clearDOMEvents,
+                    this
+                );
                 return;
             }
 
@@ -319,18 +320,22 @@ define(
             // 因此要删除`element`这个键，
             // 以避免`for... in`的时候碰到一个不是数组类型的值
             delete events.element;
-            for (var type in events) {
-                if (events.hasOwnProperty(type)) {
+            u.each(
+                events,
+                function (queue, type) {
                     // 全局事件只要清掉在`globalEvents`那边的注册关系
                     var isGlobal = 
                         removeGlobalDOMEvent(this.control, type, element);
                     if (!isGlobal) {
-                        var handler = events[type].handler;
-                        events[type].handler = null; // 防内存泄露
+                        var handler = queue.handler;
+                        queue.dispose();
+                        queue.handler = null; // 防内存泄露
                         lib.un(element, type, handler);
                     }
-                }
-            }
+                },
+                this
+            );
+
             delete this.control.domEvents[guid];
         };
 
