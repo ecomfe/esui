@@ -18,6 +18,7 @@ define(
          *
          * @constructor
          * @param {string} name 分组名称
+         * @private
          */
         function ControlGroup(name) {
             this.length = 0;
@@ -112,6 +113,7 @@ define(
          * 视图环境对象池
          * 
          * @type {Object}
+         * @private
          */
         var pool = {};
 

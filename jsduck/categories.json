@@ -10,7 +10,8 @@
                     "Control",
                     "InputControl",
                     "ControlGroup",
-                    "Helper"
+                    "Helper",
+                    "Layer"
                 ]
             },
             {

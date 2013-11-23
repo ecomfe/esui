@@ -8,6 +8,7 @@
         "../src/ViewContext.js",
         "../src/Control.js",
         "../src/InputControl.js",
+        "../src/Layer.js",
 
         "../src/Helper.js",
         "../src/helper/children.js",
