@@ -1,6 +1,6 @@
 [
     {
-        "name": "esui",
+        "name": "ESUI",
         "groups": [
             {
                 "name": "基础组件",
@@ -22,7 +22,8 @@
                     "lib.dom",
                     "lib.event",
                     "lib.page",
-                    "painters"
+                    "painters",
+                    "controlHelper"
                 ]
             },
             {
@@ -55,7 +56,5 @@
                 ]
             }
         ]
-
-
     }
 ]

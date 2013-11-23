@@ -16,6 +16,7 @@
         "../src/helper/event.js",
         "../src/helper/html.js",
         "../src/helper/life.js",
+        "../src/controlHelper.js",
 
         "../src/lib.js",
         "../src/lib/attribute.js",
