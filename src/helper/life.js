@@ -21,6 +21,7 @@ define(
             DISPOSED: 4
         };
         
+        var u = require('underscore');
         var ui = require('../main');
 
         /**
@@ -46,7 +47,7 @@ define(
         helper.initExtensions = function () {
             // 附加全局扩展
             var extensions = this.control.extensions;
-            if (!(extensions instanceof Array)) {
+            if (!u.isArray(extensions)) {
                 extensions = this.control.extensions = [];
             }
             Array.prototype.push.apply(
@@ -56,7 +57,7 @@ define(
 
             // 同类型扩展去重
             var registeredExtensions = {};
-            for (var i = 0, len = extensions.length; i < len; i++) {
+            for (var i = 0; i < extensions.length; i++) {
                 var extension = extensions[i];
                 if (!registeredExtensions[extension.type]) {
                     extension.attachTo(this.control);
@@ -108,18 +109,13 @@ define(
             this.clearDOMEvents();
 
             // 移除所有扩展
-            if (this.control.extensions) {
-                for (var i = 0; i < this.control.extensions.length; i++) {
-                    var extension = this.control.extensions[i];
-                    extension.dispose();
-                }
-            }
+            u.invoke(this.control.extensions, 'dispose');
+            this.control.extensions = null;
 
             // 从控件树中移除
             if (this.control.parent) {
                 this.control.parent.removeChild(this.control);
             }
-
 
             // 从视图环境移除
             if (this.control.viewContext) {

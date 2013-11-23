@@ -310,6 +310,7 @@ define(
                     this.clearDOMEvents,
                     this
                 );
+                this.control.domEvents = null;
                 return;
             }
 
