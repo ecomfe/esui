@@ -27,12 +27,6 @@
                 ]
             },
             {
-                "name": "控件",
-                "classes": [
-                    "Validity"
-                ]
-            },
-            {
                 "name": "扩展组件",
                 "classes": [
                     "Extension",
@@ -53,6 +47,12 @@
                     "validator.MinRule",
                     "validator.PatternRule",
                     "validator.RequiredRule"
+                ]
+            },
+            {
+                "name": "控件",
+                "classes": [
+                    "Validity"
                 ]
             }
         ]
