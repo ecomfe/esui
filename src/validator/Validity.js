@@ -70,7 +70,7 @@ define(
         /**
          * 获取验证状态集合
          *
-         * @return {Array}
+         * @return {validator.ValidityState[]}
          */
         Validity.prototype.getStates = function () {
             return this.states.slice();

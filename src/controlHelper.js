@@ -123,7 +123,7 @@ define(
         /**
          * @ignore
          */
-        layer.centerToView = Layer.centerToView
+        layer.centerToView = Layer.centerToView;
 
         return helper;
     }

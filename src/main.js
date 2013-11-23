@@ -528,7 +528,7 @@ define(
          * 创建控件实例需要的验证规则
          * 
          * @param {Control} control 控件实例
-         * @return {Array} 验证规则数组
+         * @return {validator.Rule[]} 验证规则数组
          */
         main.createRulesByControl = function (control) {
             var rules = [];
