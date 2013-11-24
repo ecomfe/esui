@@ -21,7 +21,7 @@ define(
         /**
          * 阻止事件默认行为
          *
-         * @param {Event} [event] 事件对象
+         * @param {Event} event 事件对象
          */
         event.preventDefault = function (event) {
             event = event || window.event;
@@ -37,7 +37,7 @@ define(
         /**
          * 阻止事件冒泡
          *
-         * @param {Event} [event] 事件对象
+         * @param {Event} event 事件对象
          */
         event.stopPropagation = function (event) {
             event = event || window.event;
@@ -53,7 +53,7 @@ define(
         /**
          * 获取鼠标位置
          *
-         * @param {Event} [event] 事件对象
+         * @param {Event} event 事件对象
          * @return {Event} 经过修正的事件对象
          */
         event.getMousePosition = function (event) {
