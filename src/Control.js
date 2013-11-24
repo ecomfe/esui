@@ -39,6 +39,7 @@ define(
              *
              * @type {Control[]}
              * @protected
+             * @readonly
              */
             this.children = [];
             this.childrenIndex = {};
@@ -50,6 +51,7 @@ define(
              *
              * @type {HTMLElement}
              * @protected
+             * @readonly
              */
             this.main = options.main ? options.main : this.createMain(options);
 
@@ -63,6 +65,7 @@ define(
              * 控件的id，在一个{@link ViewContext}中不能重复
              *
              * @property {string} id
+             * @readonly
              */
             if (!this.id && !options.id) {
                 this.id = helper.getGUID();
@@ -91,6 +94,16 @@ define(
          * @property {string} type
          *
          * 控件的类型
+         * @readonly
+         */
+
+        /**
+         * @property {string} skin
+         *
+         * 控件皮肤，仅在初始化时设置有效，运行时不得变更
+         *
+         * @protected
+         * @readonly
          */
 
         /**
@@ -99,6 +112,8 @@ define(
          * 控件的样式类型，用于生成各class使用
          *
          * 如无此属性，则使用{@link Control#type}属性代替
+         *
+         * @readonly
          */
 
         Control.prototype = {

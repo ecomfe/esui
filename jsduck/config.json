@@ -47,6 +47,19 @@
         "../src/validator/Validity.js",
         "../src/validator/ValidityState.js",
 
-        "../src/Validity.js"
+        "../src/BoxGroup.js",
+        "../src/Button.js",
+        "../src/CheckBox.js",
+        "../src/CommandMenu.js",
+        "../src/Crumb.js",
+        "../src/Form.js",
+        "../src/Label.js",
+        "../src/Link.js",
+        "../src/Panel.js",
+        "../src/Validity.js",
+
+        "meta/BoxGroupItem.js",
+        "meta/CommandMenuItem.js",
+        "meta/CrumbItem.js"
     ]
 }

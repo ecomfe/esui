@@ -48,11 +48,8 @@ define(
             if (!options.events) {
                 options.events = ['click'];
             }
-            else if (typeof options.events === 'string') {
-                options.events = u.chain(options.events.split(/[,\s]/))
-                    .map(lib.trim)
-                    .compact()
-                    .value();
+            else {
+                options.events = lib.splitTokenList(options.events);
             }
             Extension.apply(this, arguments);
         }

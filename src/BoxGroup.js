@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 选择框组
  * @author otakustay
  */
@@ -12,12 +13,22 @@ define(
         var InputControl = require('./InputControl');
 
         /**
-         * 单选或复选框组
+         * 单选或复选框组控件
+         *
+         * @extends InputControl
+         * @constructor
          */
         function BoxGroup() {
             InputControl.apply(this, arguments);
         }
 
+        /**
+         * 控件类型，始终为`"BoxGroup"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         BoxGroup.prototype.type = 'BoxGroup';
 
         /*
@@ -27,6 +38,7 @@ define(
          * @param {Object} options 输入的配置项
          * @param {string|undefined} options.name 输入控件的名称
          * @param {string} options.boxType 选项框的类型，参考`unknownTypes`
+         * @ignore
          */
         function extractDatasourceFromDOM(element, options) {
             // 提取符合以下条件的子`<input>`控件：
@@ -90,9 +102,9 @@ define(
         /**
          * 初始化参数
          *
-         * @param {Object} options 构造函数传入的参数
-         * @override
+         * @param {Object} [options] 构造函数传入的参数
          * @protected
+         * @override
          */
         BoxGroup.prototype.initOptions = function (options) {
             var properties = {
@@ -114,6 +126,8 @@ define(
 
         /**
          * 同步值
+         *
+         * @ignore
          */
         function syncValue() {
             var result = u.chain(this.getBoxElements())
@@ -140,6 +154,7 @@ define(
          * @param {BoxGroup} group 控件实例
          * @param {Object[]} datasource 数据源对象
          * @param {string} boxType 选择框的类型
+         * @ignore
          */
         function render(group, datasource, boxType) {
             // `BoxGroup`只会加`change`事件，所以全清就行
@@ -186,9 +201,8 @@ define(
         /**
          * 批量更新属性并重绘
          *
-         * @param {Object} 需更新的属性
+         * @param {Object} properties 需更新的属性
          * @override
-         * @public
          */
         BoxGroup.prototype.setProperties = function (properties) {
             // 修改了`datasource`或`boxType`，且没给新的`rawValue`或`value`的时候，
@@ -204,6 +218,11 @@ define(
             var changes = 
                 InputControl.prototype.setProperties.apply(this, arguments);
             if (changes.hasOwnProperty('rawValue')) {
+                /**
+                 * @event change
+                 *
+                 * 值变化时触发
+                 */
                 this.fire('change');
             }
         };
@@ -211,12 +230,23 @@ define(
         /**
          * 重渲染
          *
-         * @override
          * @protected
+         * @override
          */
         BoxGroup.prototype.repaint = require('./painters').createRepaint(
             InputControl.prototype.repaint,
             {
+                /**
+                 * @property {meta.BoxGroupItem[]} datasource
+                 *
+                 * 数据源
+                 */
+
+                /**
+                 * @property {string} boxType
+                 *
+                 * 选框类型，可以为`radio`表示单选，或`checkbox`表示复选
+                 */
                 name: ['datasource', 'boxType'],
                 paint: render
             },
@@ -233,6 +263,15 @@ define(
                 }
             },
             {
+                /**
+                 * @property {string[]} rawValue
+                 *
+                 * 原始值，无论是`radio`还是`checkbox`，均返回数组
+                 *
+                 * 当{@link BoxGroup#boxType}值为`radio`时，数组必然只有一项
+                 *
+                 * @override
+                 */
                 name: 'rawValue',
                 paint: function (group, rawValue) {
                     rawValue = rawValue || [];
@@ -252,6 +291,11 @@ define(
                 }
             },
             {
+                /**
+                 * @property {string} [orientation="horizontal"]
+                 *
+                 * 选框的放置方向，可以为`vertical`表示纵向，或者`horizontal`表示横向
+                 */
                 name: 'orientation',
                 paint: function (group, orientation) {
                     group.removeState('vertical');
@@ -262,14 +306,19 @@ define(
         );
 
         /**
-         * 将string类型的value转换成原始格式
+         * 将字符串类型的值转换成原始格式
          * 
          * @param {string} value 字符串值
-         * @return {Array.<string>}
-         * @override
+         * @return {string[]}
          * @protected
+         * @override
          */
         BoxGroup.prototype.parseValue = function (value) {
+            /**
+             * @property {string} [value=""]
+             *
+             * `BoxGroup`的字符串形式的值为逗号分隔的多个值
+             */
             return value.split(',');
         };
 
@@ -278,7 +327,7 @@ define(
         /**
          * 获取内部的输入元素
          *
-         * @return {HTMLInputElement[]}
+         * @return {HTMLElement[]}
          * @protected
          */
         BoxGroup.prototype.getBoxElements = function () {

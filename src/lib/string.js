@@ -98,6 +98,29 @@ define(
                 + lib.camelize(source.slice(1));
         };
 
+        /**
+         * 将Token列表字符串切分为数组
+         *
+         * Token列表是使用逗号或空格分隔的字符串
+         *
+         * @param {string | string[] | null | undefined} input 输入值
+         * @return {string[]}
+         */
+        lib.splitTokenList = function (input) {
+            if (!input) {
+                return [];
+            }
+
+            if (u.isArray(input)) {
+                return;
+            }
+
+            return u.chain(input.split(/[,\s]/))
+                .map(lib.trim)
+                .compact()
+                .value();
+        };
+
         return lib;
     }
 );

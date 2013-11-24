@@ -98,6 +98,13 @@ define(
         function InputControl(options) {
             options = options ? lib.extend({}, options) : {};
             if (options.main && !options.name) {
+                /**
+                 * @property {string} name
+                 *
+                 * 输入控件的名称，用于表单提交时作为键值
+                 *
+                 * @readonly
+                 */
                 options.name = options.main.getAttribute('name');
             }
             Control.call(this, options);
@@ -142,6 +149,11 @@ define(
              * @return {string} 
              */
             getValue: function () {
+                /**
+                 * @property {string} value
+                 *
+                 * 输入控件的字符串形式的值
+                 */
                 return this.stringifyValue(this.getRawValue());
             },
 
@@ -161,6 +173,11 @@ define(
              * @return {Mixed} 
              */
             getRawValue: function () {
+                /**
+                 * @property {Mixed} rawValue
+                 *
+                 * 输入控件的原始值，其格式由控件自身决定
+                 */
                 return this.rawValue;
             },
 
