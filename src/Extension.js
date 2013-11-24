@@ -115,7 +115,7 @@ define(
          * 当前扩展实例是否处于激活状态
          *
          * @type {boolean}
-         * @protected
+         * @private
          */
         Extension.prototype.active = false;
 
@@ -130,6 +130,7 @@ define(
 
         /**
          * 激活当前扩展
+         * @abstract
          */
         Extension.prototype.activate = function () {
             this.active = true;
@@ -137,6 +138,7 @@ define(
 
         /**
          * 禁用当前扩展
+         * @abstract
          */
         Extension.prototype.inactivate = function () {
             this.active = false;

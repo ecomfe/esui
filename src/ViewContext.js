@@ -129,7 +129,8 @@ define(
             /**
              * 视图环境控件集合
              * 
-             * @type {Object} 
+             * @type {Object}
+             * @private
              */
             this.controls = {};
 
@@ -137,6 +138,7 @@ define(
              * 视图环境控件分组集合
              *
              * @type {Object}
+             * @private
              */
             this.groups = {};
 
@@ -155,6 +157,7 @@ define(
              * 视图环境id
              * 
              * @type {string} 
+             * @readonly
              */
             this.id = id;
 
@@ -262,7 +265,7 @@ define(
         };
 
         /**
-         * 清除视图环境中所有控件。 
+         * 清除视图环境中所有控件
          */
         ViewContext.prototype.clean = function () {
             for (var id in this.controls) {

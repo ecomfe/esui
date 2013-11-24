@@ -53,8 +53,8 @@ define(
          *
          * @param {string} value 校验值
          * @param {Control} control 待校验控件
-         *
          * @return {validator.ValidityState}
+         * @abstract
          */
         Rule.prototype.check = function (value, control) {
             var ValidityState = require('./ValidityState');

@@ -81,12 +81,16 @@ define(
          * 渲染层内容
          *
          * @param {HTMLElement} element 层元素
+         * @abstract
          */
         Layer.prototype.render = function (element) {
         };
 
         /**
          * 同步控件状态到层
+         *
+         * @param {HTMLElement} element 层元素
+         * @abstract
          */
         Layer.prototype.syncState = function (element) {
         };
@@ -103,6 +107,9 @@ define(
 
         /**
          * 初始化层的交互行为
+         *
+         * @param {HTMLElement} element 层元素
+         * @abstract
          */
         Layer.prototype.initBehavior = function (element) {
         };

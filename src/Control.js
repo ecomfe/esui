@@ -165,6 +165,8 @@ define(
 
             /**
              * 初始化DOM结构，仅在第一次渲染时调用
+             *
+             * @abstract
              */
             initStructure: function () {
             },
