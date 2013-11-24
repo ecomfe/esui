@@ -187,6 +187,7 @@ define(
              *
              * @param {Object} properties 需更新的属性
              * @override
+             * @fires change
              */
             setProperties: function (properties) {
                 var changes = 

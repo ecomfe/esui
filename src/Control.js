@@ -20,6 +20,7 @@ define(
          * @constructor
          * @extends {mini-event.EventTarget}
          * @param {Object} [options] 初始化参数
+         * @fires init
          */
         function Control(options) {
             helper.changeStage(this, 'NEW');
@@ -173,6 +174,9 @@ define(
 
             /**
              * 渲染控件
+             *
+             * @fires beforerender
+             * @fires afterrender
              */
             render: function () {
                 if (helper.isInStage(this, 'INITED')) {
@@ -295,6 +299,9 @@ define(
 
             /**
              * 销毁释放控件
+             *
+             * @fires beforedispose
+             * @fires afterdispose
              */
             dispose: function () {
                 if (!helper.isInStage(this, 'DISPOSED')) {
@@ -306,6 +313,9 @@ define(
 
             /**
              * 销毁控件并移除所有DOM元素
+             *
+             * @fires beforedispose
+             * @fires afterdispose
              */
             destroy: function () {
                 // 为了避免`dispose()`的时候把`main`置空了，这里先留存一个

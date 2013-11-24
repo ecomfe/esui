@@ -21,7 +21,22 @@ define(
          * @private
          */
         function ControlGroup(name) {
+            /**
+             * @property {number} length
+             *
+             * 当前控件分组中控件的数量
+             *
+             * @readonly
+             */
             this.length = 0;
+
+            /**
+             * @property {string} name
+             *
+             * 当前控件分组的名称
+             *
+             * @readonly
+             */
             this.name = name;
         }
 
@@ -31,12 +46,18 @@ define(
         /**
          * 对分组内每个控件调用指定函数
          *
-         * @param {Function} callback 调用的函数，函数中的`this`为控件对象
+         * 需要注意的是，`ControlGroup`是 **live** 的，也就是说当进行循环时，
+         * 如果此过程中有将一个控件销毁、移出{@link ViewContext}等行为，
+         * 此控件会从当前的`ControlGroup`中消失，
+         * 导致{@link ControlGroup#length}属性变化，
+         * 因此在循环中如果对控件有相关操作，需要特别注意状态的同步问题
+         *
+         * @param {Function} iterator 每次循环调用的函数，函数的`this`为控件对象
          */
-        ControlGroup.prototype.each = function (callback) {
+        ControlGroup.prototype.each = function (iterator) {
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
-                callback.call(control);
+                iterator.call(control);
             }
         };
 

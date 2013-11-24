@@ -129,6 +129,13 @@ define(
          * 执行控件销毁前动作
          */
         helper.beforeDispose = function () {
+            /**
+             * @event beforedispose
+             *
+             * 在销毁前触发
+             *
+             * @member Control
+             */
             this.control.fire('beforedispose');
         };
 
@@ -137,6 +144,13 @@ define(
          */
         helper.afterDispose = function () {
             this.changeStage('DISPOSED');
+            /**
+             * @event afterdispose
+             *
+             * 在销毁后触发
+             *
+             * @member Control
+             */
             this.control.fire('afterdispose');
         };
 

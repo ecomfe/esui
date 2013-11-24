@@ -19,6 +19,14 @@ define(
          */
         var main = {};
 
+        /**
+         * 版本号常量
+         *
+         * @type {string}
+         * @readonly
+         */
+        main.version = '3.1.0-alpha.4';
+
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
 
@@ -49,6 +57,18 @@ define(
 
         /**
          * 配置控件库
+         *
+         * 可用的配置有：
+         *
+         * - `{string} uiPrefix="data-ui"`：HTML中用于表示控件属性的DOM属性前缀
+         * - `{string} extensionPrefix="data-ui-extension"`：用于表示扩展属性的前缀
+         * - `{string} instanceAttr="data-ctrl-id"`：
+         * 标识控件id的DOM属性名，配合`viewContextAttr`可根据DOM元素获取对应的控件
+         * - `{string} viewContextAttr="data-ctrl-view-context"`：
+         * 标识视图上下文id的DOM属性名，配合`instanceAttr`可根据DOM元素获取对应的控件
+         * - `{string} uiClassPrefix="ui"`：控件生成DOM元素的class的前缀
+         * - `{string} skinClassPrefix="skin"`：控件生成皮肤相关DOM元素class的前缀
+         * - `{string} stateClassPrefix="state"`：控件生成状态相关DOM元素class的前缀
          * 
          * @param {Object} info 控件库配置信息对象
          */
@@ -58,6 +78,8 @@ define(
 
         /**
          * 获取配置项
+         *
+         * 具体可用配置参考{@link main#config}方法的说明
          * 
          * @param {string} name 配置项名称
          * @return {Mixed} 配置项的值
@@ -468,6 +490,8 @@ define(
          * 绑定全局扩展
          *
          * 通过此方法绑定的扩展，会对所有的控件实例生效
+         *
+         * 每一次全局扩展生成实例时，均会复制`options`对象，而不会直接使用引用
          * 
          * @param {string} type 扩展类型
          * @param {Object} options 扩展初始化参数

@@ -215,34 +215,50 @@ define(
          *
          * 如果{@link Form#autoValidate}属性为`false`，
          * 则直接触发{@link Form#submit}事件
+         *
+         * @fires submit
+         * @fires invalid
+         * @fires submitfail
          */
         Form.prototype.validateAndSubmit = function () {
-            var isValid = this.get('autoValidate')
-                ? this.validate()
-                : true;
-            var data = {
-                triggerSource: this
-            };
+            try {
+                var isValid = this.get('autoValidate')
+                    ? this.validate()
+                    : true;
+                var data = {
+                    triggerSource: this
+                };
 
-            if (isValid) {
-                /**
-                 * @event submit
-                 *
-                 * 提交时触发，控件实际不负责提交操作，仅触发此事件
-                 *
-                 * @param {Control} triggerSource 触发提交的控件
-                 */
-                this.fire('submit', data);
+                if (isValid) {
+                    /**
+                     * @event submit
+                     *
+                     * 提交时触发，控件实际不负责提交操作，仅触发此事件
+                     *
+                     * @param {Control} triggerSource 触发提交的控件
+                     */
+                    this.fire('submit', data);
+                }
+                else {
+                    /**
+                     * @event invalid
+                     *
+                     * 检验失败时触发
+                     *
+                     * @param {Control} triggerSource 触发提交的控件
+                     */
+                    this.fire('invalid', data);
+                }
             }
-            else {
+            catch (ex) {
                 /**
-                 * @event invalid
+                 * @event submitfail
                  *
-                 * 检验失败时触发
+                 * 提交失败时触发，通常由检验阶段发生错误引起
                  *
-                 * @param {Control} triggerSource 触发提交的控件
+                 * @param {Error} error 错误对象
                  */
-                this.fire('invalid', data);
+                this.fire('submitfail', { error: ex });
             }
         };
 
@@ -259,19 +275,7 @@ define(
                     this.main,
                     'submit',
                     function (e) {
-                        try {
-                            this.validateAndSubmit();
-                        }
-                        catch (ex) {
-                            /**
-                             * @event submitfail
-                             *
-                             * 提交失败时触发，通常由检验阶段发生错误引起
-                             *
-                             * @param {Error} error 错误对象
-                             */
-                            this.fire('submitfail', { error: ex });
-                        }
+                        this.validateAndSubmit();
 
                         e.preventDefault();
                         return false;
@@ -348,7 +352,8 @@ define(
                  * 指定提交时是否自动检验，
                  * 默认使用{@link Form#defaultProperties}的配置
                  *
-                 * 为了方便从HTML生成控件，如果该属性值为`"false"`，被视为`false`使用
+                 * 为了方便从HTML生成控件，如果该属性值为字符串`"false"`，
+                 * 会被视为`false`使用，其它情况下通过弱类型转换为`boolean`值
                  */
                 properties.autoValidate = false;
             }

@@ -203,6 +203,7 @@ define(
          *
          * @param {Object} properties 需更新的属性
          * @override
+         * @fires change
          */
         BoxGroup.prototype.setProperties = function (properties) {
             // 修改了`datasource`或`boxType`，且没给新的`rawValue`或`value`的时候，

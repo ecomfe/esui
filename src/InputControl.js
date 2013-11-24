@@ -312,6 +312,9 @@ define(
              * 验证控件，仅返回`true`或`false`
              * 
              * @return {boolean}
+             * @fires beforevalidate
+             * @fires aftervalidate
+             * @fires invalid
              */
             checkValidity: function () {
                 var validity = checkValidity(this);
@@ -322,6 +325,9 @@ define(
              * 验证控件，当值不合法时显示错误信息
              * 
              * @return {boolean}
+             * @fires beforevalidate
+             * @fires aftervalidate
+             * @fires invalid
              */
             validate: function () {
                 var validity = checkValidity(this);
