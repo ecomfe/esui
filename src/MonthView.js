@@ -11,9 +11,6 @@ define(
         require('./Button');
         require('./Select');
         require('./Panel');
-
-        var u = require('underscore');
-        var moment = require('moment');
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
@@ -1485,38 +1482,48 @@ define(
             /**
              * 将value从原始格式转换成string
              * 
-             * @param {Mixed} rawValue 原始值
+             * @param {*} rawValue 原始值
              * @return {string}
              */
             stringifyValue: function (rawValue) {
                 if (this.mode === 'single') {
-                    return moment(rawValue).format(this.paramFormat) || '';
+                    return lib.date.format(rawValue, this.paramFormat) || '';
                 }
                 else {
-                    var dates = [];
-                    var oneDay = 24 * 60 * 60 * 1000;
+                    var dateStrs = [];
+                    var oneDay = 86400000;
                     for (var i = 0; i < rawValue.length; i ++) {
-                        var current = rawValue[i];
-                        var previous = rawValue[i - 1];
                         if (i === 0) {
-                            dates.push(
-                                lib.date.format(current, this.paramFormat));
-                        }
-                        else if (current - previous > oneDay) {
-                            dates.push(
-                                moment(previous).format(this.paramFormat));
-                            dates.push(
-                                moment(current).format(this.paramFormat));
-                        }
-                        else if (i === rawValue.length - 1) {
-                            dates.push(
-                                moment(current).format(this.paramFormat));
+                            dateStrs.push(
+                                lib.date.format(rawValue[i], this.paramFormat)
+                            );
                         }
                         else {
-                            continue;
+                            if ((rawValue[i] - rawValue[i-1]) > oneDay) {
+                                dateStrs.push(
+                                    lib.date.format(
+                                        rawValue[i-1], this.paramFormat
+                                    )
+                                );
+                                dateStrs.push(
+                                    lib.date.format(
+                                        rawValue[i], this.paramFormat
+                                    )
+                                );
+                            }
+                            else if (i == (rawValue.length - 1)) {
+                                dateStrs.push(
+                                    lib.date.format(
+                                        rawValue[i], this.paramFormat
+                                    )
+                                );
+                            }
+                            else {
+                                continue;
+                            }
                         }
                     }
-                    return dates.join(',');
+                    return dateStrs.join(',');
                 }
             },
 
