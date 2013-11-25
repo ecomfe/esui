@@ -147,7 +147,9 @@ define(
 
                 this.syncState(element);
 
-                document.body.appendChild(element);
+                if (!element.parentNode) {
+                    document.body.appendChild(element);
+                }
             }
 
             return element;
