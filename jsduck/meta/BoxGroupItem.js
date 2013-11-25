@@ -5,7 +5,7 @@
  */
 function BoxGroupItem() {
     /**
-     * @property {string} title
+     * @property {string} [title]
      *
      * 标签文字，与{@link meta.BoxGroupItem#name}
      * 和{@link meta.BoxGroupItem#text}作用相同
@@ -15,7 +15,7 @@ function BoxGroupItem() {
     this.title;
 
     /**
-     * @property {string} name
+     * @property {string} [name]
      *
      * 标签文字，与{@link meta.BoxGroupItem#title}
      * 和{@link meta.BoxGroupItem#text}作用相同
@@ -25,7 +25,7 @@ function BoxGroupItem() {
     this.name;
 
     /**
-     * @property {string} text
+     * @property {string} [text]
      *
      * 标签文字，与{@link meta.BoxGroupItem#title}
      * 和{@link meta.BoxGroupItem#name}作用相同

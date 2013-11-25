@@ -166,6 +166,8 @@ define(
         /**
          * 重新渲染
          *
+         * @method
+         * @protected
          * @override
          */
         CommandMenu.prototype.repaint = paint.createRepaint(

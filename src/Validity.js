@@ -28,9 +28,9 @@ define(
         Validity.prototype.type = 'Validity';
 
         /**
-         * 创建主元素
+         * 创建主元素，默认使用`<label>`元素
          *
-         * @return {HTMLElement} 肯定返回`<label>`
+         * @return {HTMLElement}
          * @protected
          * @override
          */
@@ -120,11 +120,24 @@ define(
         /**
          * 重绘
          *
+         * @method
+         * @protected
          * @override
          */
         Validity.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
+                /**
+                 * @property {Control} target
+                 *
+                 * 对应的控件
+                 */
+
+                /**
+                 * @property {string} targetType
+                 *
+                 * 对应的控件的类型，可覆盖{@link Validity#target}的`type`属性
+                 */
                 name: ['target', 'targetType'],
                 paint: function (label) {
                     var validState = label.validity
@@ -135,6 +148,17 @@ define(
                 }
             },
             {
+                /**
+                 * @property {HTMLElement} focusTarget
+                 *
+                 * 点击当前标签后获得焦点的元素
+                 *
+                 * 此元素如果没有`id`属性，则不会获得焦点
+                 *
+                 * 私有属性，仅通过{@link InputControl#getFocusTarget}方法获得
+                 *
+                 * @private
+                 */
                 name: 'focusTarget',
                 paint: function (label, focusTarget) {
                     if (label.main.nodeName.toLowerCase() === 'label') {
@@ -148,6 +172,11 @@ define(
                 }
             },
             {
+                /**
+                 * @property {validator.Validity} validity
+                 *
+                 * 验证结果
+                 */
                 name: 'validity',
                 paint: function (label, validity) {
                     var validState = validity && validity.getValidState();

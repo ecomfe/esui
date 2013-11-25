@@ -1,11 +1,11 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 树控件
  * @author otakustay
  */
-
 define(
     function (require) {
         var Control = require('./Control');
@@ -16,6 +16,9 @@ define(
 
         /**
          * 不做任何事的`TreeStrategy`实现
+         *
+         * @extends TreeStrategy
+         * @ignore
          */
         function NullTreeStrategy() {
             TreeStrategy.apply(this, arguments);
@@ -25,32 +28,51 @@ define(
          * 不做任何事
          *
          * @override
-         * @public
+         * @ignore
          */
         NullTreeStrategy.prototype.attachTo = function () {};
 
         lib.inherits(NullTreeStrategy, TreeStrategy);
 
         /**
-        * 树控件
-        */
+         * 树控件
+         *
+         * @extends Control
+         * @constructor
+         */
         function Tree() {
             Control.apply(this, arguments);
         }
 
+        /**
+         * 控件类型，始终为`"Tree"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         Tree.prototype.type = 'Tree';
 
         /**
-         * 创建主元素
+         * 创建主元素，默认使用`<div>`元素
          *
          * @return {HTMLElement} 主元素
-         * @override
          * @protected
+         * @override
          */
         Tree.prototype.createMain = function () {
             return document.createElement('div');
         };
 
+        /**
+         * @cfg defaultProperties
+         *
+         * 默认属性值
+         *
+         * @cfg {boolean} [defaultProperties.selectMode="single"] 默认选择模式
+         * @cfg {boolean} [defaultProperties.hideRoot=false] 默认是否隐藏根节点
+         * @static
+         */
         Tree.defaultProperties = {
             selectMode: 'single',
             hideRoot: false
@@ -59,21 +81,53 @@ define(
         /**
          * 初始化参数
          *
-         * @param {Object} options 构造函数传入的参数
-         * @override
+         * @param {Object} [options] 构造函数传入的参数
          * @protected
+         * @override
          */
         Tree.prototype.initOptions = function (options) {
             var defaults = {
                 datasource: {},
+                /**
+                 * @property {TreeStrategy} [strategy]
+                 *
+                 * 树关联的{@link TreeStrategy}对象
+                 *
+                 * 树默认不采取任何行为，均委托给`strategy`处理，
+                 * 具体参考{@link TreeStrategy}的说明
+                 *
+                 * 如果不提供此参数，则树不会有展开、收起、选中、反选等交互
+                 *
+                 * @protected
+                 */
                 strategy: new NullTreeStrategy(),
+                /**
+                 * @property {meta.TreeItem[]} selectedNodes
+                 *
+                 * 已选中的节点
+                 *
+                 * @protected
+                 */
                 selectedNodes: [],
+                /**
+                 * @property {Object} selectedNodeIndex
+                 *
+                 * 已选中的节点根据id的索引
+                 *
+                 * @protected
+                 */
                 selectedNodeIndex: {}
             };
             var properties = 
                 lib.extend(defaults, Tree.defaultProperties, options);
             if (properties.allowUnselectNode == null) {
                 // 默认单选模式下不允许取消选择，多选则可以取消
+                /**
+                 * @property {boolean} allowUnselectNode
+                 *
+                 * 指定是否允许将选中的节点取消选择，仅影响通过鼠标点击的操作，
+                 * 对{@link Tree#unselectNode}没有影响
+                 */
                 properties.allowUnselectNode = 
                     (properties.selectMode !== 'single');
             }
@@ -83,17 +137,19 @@ define(
         /**
          * 每个节点显示的内容的模板
          *
+         * 在模板中可以使用以下占位符：
+         *
+         * - `{string} text`：文本内容，经过HTML转义
+         *
          * @type {string}
-         * @public
          */
         Tree.prototype.itemTemplate = '<span>${text}</span>';
 
         /**
          * 获取每个节点显示的内容
          *
-         * @param {Object} node 节点数据
-         * @return {string} 节点的HTML
-         * @public
+         * @param {meta.TreeItem} node 节点数据
+         * @return {string} 节点的HTML片段
          */
         Tree.prototype.getItemHTML = function (node) {
             var data = {
@@ -103,8 +159,7 @@ define(
             return lib.format(this.itemTemplate, data);
         };
 
-
-        var indicatorTextMapping = {
+        var INDICATOR_TEXT_MAPPING = {
             'collapsed': '展开',
             'expanded': '收起',
             'busy': '加载中',
@@ -115,12 +170,12 @@ define(
          * 获取指示器（节点文字前的那个图标）的HTML
          *
          * @param {Tree} tree 控件实例
-         * @param {Object} node 节点数据
+         * @param {meta.TreeItem} node 节点数据
          * @param {string} type 指示器的类型，为`empty`、`expanded`或`collapsed`
          * @param {number} currentLevel 当前指示器代表的层级
          * @param {number} sourceLevel 节点所在的层级
          * @return {string}
-         * @inner
+         * @ignore
          */
         function getIndicatorHTML(tree, node, type, currentLevel, sourceLevel) {
             var diff = sourceLevel - currentLevel;
@@ -138,7 +193,7 @@ define(
                     tree, 'node-indicator-' + diffType)
             );
             var text = diff === 0
-                ? indicatorTextMapping[type || 'collapsed']
+                ? INDICATOR_TEXT_MAPPING[type || 'collapsed']
                 : '第' + currentLevel + '级';
             var html = '<span ';
             if (diff === 0) {
@@ -153,11 +208,11 @@ define(
          * 获取节点的内容HTML
          *
          * @param {Tree} tree 控件实例
-         * @param {Object} node 节点数据
+         * @param {meta.TreeItem} node 节点数据
          * @param {number} level 节点的层级，根是0层
          * @param {boolean} expanded 是否处于展开状态
          * @return {string}
-         * @inner
+         * @ignore
          */
         function getNodeContentHTML(tree, node, level, expanded) {
             var wrapperClasses =
@@ -214,11 +269,11 @@ define(
          * 获取一个节点元素应有的class
          *
          * @param {Tree} tree 控件实例
-         * @param {Object} node 对应的节点数据
+         * @param {meta.TreeItem} node 对应的节点数据
          * @param {number} level 节点的层极，根是0层
          * @param {boolean} expanded 是否处于展开状态
-         * @param {Array.<string>} 对应的节点元素应有的class
-         * @inner
+         * @param {string[]} 对应的节点元素应有的class
+         * @ignore
          */
         function getNodeClasses(tree, node, level, expanded) {
             var state = tree.strategy.isLeafNode(node)
@@ -244,12 +299,12 @@ define(
          * 获取节点的HTML
          *
          * @param {Tree} tree 控件实例
-         * @param {Object} node 节点数据
+         * @param {meta.TreeItem} node 节点数据
          * @param {number} level 节点的层级，根是0层
          * @param {boolean} expanded 是否处于展开状态
-         * @param {string} nodeName 使用节点的类型，默认为li
+         * @param {string} [nodeName="li"] 使用节点的类型
          * @return {string}
-         * @inner
+         * @ignore
          */
         function getNodeHTML(tree, node, level, expanded, nodeName) {
             nodeName = nodeName || 'li';
@@ -265,9 +320,8 @@ define(
         /**
          * 根据节点的当前状态展开或收起节点
          *
-         * @param {Tree} this 控件实例
          * @param {Event} e DOM事件对象
-         * @inner
+         * @ignore
          */
         function toggleAndSelectNode(e) {
             // 对于树控件来说，只有点在`.content-wrapper`上才是有效的，
@@ -337,8 +391,8 @@ define(
         /**
          * 初始化DOM结构
          *
-         * @override
          * @protected
+         * @override
          */
         Tree.prototype.initStructure = function () {
             helper.addDOMEvent(this, this.main, 'click', this.clickNode);
@@ -348,10 +402,10 @@ define(
         /**
          * 构建节点的id->数据的索引
          *
-         * @param {Object} node 节点数据，第一次调用时为根
-         * @param {Object=} index 用于存放索引的对象，第一次调用时不传递
+         * @param {meta.TreeItem} node 节点数据，第一次调用时为根
+         * @param {Object} [index] 用于存放索引的对象，第一次调用时不传递
          * @return {Object}
-         * @inner
+         * @ignore
          */
         function buildNodeIndex(node, index) {
             index = index || {};
@@ -367,14 +421,20 @@ define(
         }
 
         /**
-         * 重绘
+         * 重渲染
          *
-         * @override
+         * @method
          * @protected
+         * @override
          */
         Tree.prototype.repaint = helper.createRepaint(
             Control.prototype.repaint,
             {
+                /**
+                 * @property {meta.TreeItem[]} datasource
+                 *
+                 * 数据源
+                 */
                 name: 'datasource',
                 paint: function (tree, datasource) {
                     tree.selectedNodes = [];
@@ -386,6 +446,11 @@ define(
                 }
             },
             {
+                /**
+                 * @property {boolean} hideRoot
+                 *
+                 * 是否隐藏根节点，隐藏根节点后看上去更像一个多级的列表
+                 */
                 name: 'hideRoot',
                 paint: function (tree, hideRoot) {
                     var method = hideRoot ? 'addState' : 'removeState';
@@ -398,7 +463,6 @@ define(
          * 触发选中或取消选中节点的策略
 
          * @param {string} id 节点的id
-         * @public
          */
         Tree.prototype.triggerSelectStrategy = function (id) {
             var node = this.nodeIndex[id];
@@ -407,15 +471,32 @@ define(
                 return;
             }
 
-            var mode = this.selectedNodeIndex[id] ? 'unselect' : 'select';
-            this.fire(mode, { node: node });
+            if (this.selectedNodeIndex[id]) {
+                /**
+                 * @event unselect
+                 *
+                 * 一个节点被指定取消选择触发，事件之后不会做任何操作
+                 *
+                 * @param {meta.TreeItem} node 指定取消选择的节点
+                 */
+                this.fire('unselect', { node: node });
+            }
+            else {
+                /**
+                 * @event select
+                 *
+                 * 一个节点被指定选中触发，事件之后不会做任何操作
+                 *
+                 * @param {meta.TreeItem} node 指定选中的节点
+                 */
+                this.fire('select', { node: node });
+            }
         };
 
         /**
          * 获取选中的节点集合
          *
-         * @return {Array.<Object>}
-         * @public
+         * @return {meta.TreeItem[]}
          */
         Tree.prototype.getSelectedNodes = function () {
             return this.selectedNodes.slice();
@@ -425,9 +506,9 @@ define(
          * 添加选中节点
          *
          * @param {Tree} tree 控件实例
-         * @param {Object} node 节点数据项
+         * @param {meta.TreeItem} node 节点数据项
          * @return {boolean} 添加是否成功
-         * @inner
+         * @ignore
          */
         function addSelectedNode(tree, node) {
             if (tree.selectedNodeIndex[node.id]) {
@@ -443,9 +524,9 @@ define(
          * 移除选中节点
          *
          * @param {Tree} tree 控件实例
-         * @param {Object} node 节点数据项
+         * @param {meta.TreeItem} node 节点数据项
          * @return {boolean} 移除是否成功
-         * @inner
+         * @ignore
          */
         function removeSelectedNode(tree, node) {
             if (tree.selectedNodeIndex[node.id]) {
@@ -464,7 +545,6 @@ define(
          * 更换节点的选中状态
          *
          * @param {string} id 节点的id
-         * @public
          */
         Tree.prototype.toggleNodeSelection = function (id) {
             var method = this.selectedNodeIndex[id]
@@ -482,7 +562,7 @@ define(
          * @param {boolean} options.force 强制移除（无视`allowUnselectNode`配置）
          * @param {boolean} options.silent 是否静默处理（不触发事件）
          * @param {boolean} options.modifyDOM 是否对DOM节点做处理
-         * @inner
+         * @ignore
          */
         function unselectNode(tree, id, options) {
             // 虽然这个`force`所有调用地方都是`true`了，但可能以后还会有用吧，先留着算了
@@ -507,6 +587,14 @@ define(
                 }
 
                 if (!options.silent) {
+                    /**
+                     * @event unselectnode
+                     *
+                     * 一个节点被取消选中时触发
+                     *
+                     * @param {meta.TreeItem} node 取消选中的节点
+                     * @member Tree
+                     */
                     tree.fire('unselectnode', { node: node });
                     tree.fire('selectionchange');
                 }
@@ -517,8 +605,9 @@ define(
          * 选中一个节点
          *
          * @param {string} id 节点id
-         * @param {boolean} silent 是否禁止触发事件
-         * @public
+         * @param {boolean} [silent=false] 是否禁止触发事件
+         * @fires selectnode
+         * @fires selectionchange
          */
         Tree.prototype.selectNode = function (id, silent) {
             var node = this.nodeIndex[id];
@@ -546,7 +635,22 @@ define(
                 this, 'content-wrapper-selected', nodeElement);
 
             if (!silent) {
+                /**
+                 * @event selectnode
+                 *
+                 * 一个节点被选中时触发
+                 *
+                 * @param {meta.TreeItem} node 选中的节点
+                 */
                 this.fire('selectnode', { node: node });
+                /**
+                 * @event selectionchange
+                 *
+                 * 选中节点变化时触发
+                 * 
+                 * 始终在{@link Tree#selectnode}
+                 * 和{@link Tree#unselectnode}事件之后触发
+                 */
                 this.fire('selectionchange');
             }
         };
@@ -555,7 +659,7 @@ define(
          * 取消一个节点的选中状态
          *
          * @param {string} id 节点id
-         * @public
+         * @fires unselectnode
          */
         Tree.prototype.unselectNode = function (id) {
             unselectNode(
@@ -569,7 +673,7 @@ define(
          * 向指定节点填充子节点并展开节点
          *
          * @param {string} id 节点的id
-         * @param {Array.<Object>=} 子节点数据，如果不提供此参数，
+         * @param {meta.TreeItem[]} children 子节点数据，如果不提供此参数，
          * 则控件按照以下逻辑执行：
          *
          * - 如果原本已经有子树的元素，则直接展开
@@ -615,7 +719,7 @@ define(
             else {
                 // 需要修改`indicator`的字样和class
                 var indicator = lib.g(helper.getId(this, 'indicator-' + id));
-                indicator.innerHTML = indicatorTextMapping.expanded;
+                indicator.innerHTML = INDICATOR_TEXT_MAPPING.expanded;
                 var indicatorClasses = [].concat(
                     helper.getPartClasses(
                         this, 'node-indicator'),
@@ -645,8 +749,7 @@ define(
          * 收起指定节点
          *
          * @param {string} id 节点的id
-         * @param {boolean} removeChild 是否把子节点删除
-         * @public
+         * @param {boolean} [removeChild=false] 是否把子节点删除
          */
         Tree.prototype.collapseNode = function (id, removeChild) {
             var nodeElement = lib.g(helper.getId(this, 'node-' + id));
@@ -695,7 +798,7 @@ define(
                     this, 'node-indicator-collapsed')
             );
             indicator.className = indicatorClasses.join(' ');
-            indicator.innerHTML = indicatorTextMapping.collapsed;
+            indicator.innerHTML = INDICATOR_TEXT_MAPPING.collapsed;
         };
 
         /**
@@ -704,7 +807,7 @@ define(
          * @param {Tree} tree 控件实例
          * @param {HTMLElement} nodeElement 节点对应的DOM元素
          * @return {boolean}
-         * @inner
+         * @ignore
          */
         function isEmpty(tree, nodeElement) {
             var className = helper.getPartClasses(tree, 'node-empty')[0];
@@ -717,9 +820,10 @@ define(
          * @param {Tree} tree 控件实例
          * @param {HTMLElement} nodeElement 节点对应的DOM元素
          * @return {boolean}
-         * @inner
+         * @ignore
          */
         function isExpanded(tree, nodeElement) {
+            // TODO: 放出来给子类用
             var className = helper.getPartClasses(tree, 'node-expanded')[0];
             return lib.hasClass(nodeElement, className);
         }
@@ -728,9 +832,10 @@ define(
          * 根据节点的状态展开或收起节点
          *
          * @param {string} id 节点的id
-         * @param {Array.<Object>=} 子节点数据，参考`expandNode`方法
-         * @param {boolean} removeChild 是否把子节点删除，参考`collapseNode`方法
-         * @public
+         * @param {meta.TreeItem[]} children 子节点数据，
+         * 参考{@link Tree#expandNode}方法的相关说明
+         * @param {boolean} removeChild 是否把子节点删除，
+         * 参考{@link Tree#collapseNode}方法的相关说明
          */
         Tree.prototype.toggleNode = function (id, children, removeChild) {
             if (!this.nodeIndex[id]) {
@@ -758,13 +863,16 @@ define(
         /**
          * 触发展开或收起节点的策略
          * 
-         * 与`toggleNode`不同，该方法用来根据节点的状态，
-         * 触发`expand`或`collapse`事件，以便使用`TreeStrategy`进行具体的策略
+         * 与{@link Tree#toggleNode}不同，该方法用来根据节点的状态，
+         * 触发{@link Tree#expand}或{@link Tree#collapse}事件，
+         * 以便使用{@link TreeStrategy}进行具体的策略
          * 
-         * 在关联的`TreeStrategy`以外的逻辑，推荐使用此方法，而不是`toggleNode`
+         * 在关联的{@link TreeStrategy}以外的逻辑，推荐使用此方法，
+         * 而不是{@link Tree#toggleNode}
          *
          * @param {string} id 节点的id
-         * @public
+         * @fires expand
+         * @fires collapse
          */
         Tree.prototype.triggerToggleStrategy = function (id) {
             var node = this.nodeIndex[id];
@@ -783,15 +891,32 @@ define(
                 return;
             }
 
-            var mode = isExpanded(this, nodeElement) ? 'collapse' : 'expand';
-            this.fire(mode, { node: node });
+            if (isExpanded(this, nodeElement)) {
+                /**
+                 * @event collapse
+                 *
+                 * 一个节点被指定收起时触发，事件之后不会做任何操作
+                 *
+                 * @param {meta.TreeItem} node 指定收起的节点
+                 */
+                this.fire('collapse', { node: node });
+            }
+            else {
+                /**
+                 * @event expand
+                 *
+                 * 一个节点被指定展开时触发，事件之后不会做任何操作
+                 *
+                 * @param {meta.TreeItem} node 展开的节点
+                 */
+                this.fire('expand', { node: node });
+            }
         };
 
         /**
          * 修改指定节点为正在加载数据的繁忙状态
          *
          * @param {string} id 节点的id
-         * @public
          */
         Tree.prototype.indicateNodeLoading = function (id) {
             var nodeElement = lib.g(helper.getId(this, 'node-' + id));
@@ -800,7 +925,7 @@ define(
             }
 
             var indicator = nodeElement.firstChild;
-            indicator.innerHTML = indicatorTextMapping.busy;
+            indicator.innerHTML = INDICATOR_TEXT_MAPPING.busy;
             var classes = [].concat(
                 helper.getPartClasses(
                     this, 'node-indicator'),
@@ -817,8 +942,8 @@ define(
         /**
          * 销毁控件
          *
-         * @override
          * @protected
+         * @override
          */
         Tree.prototype.dispose = function () {
             Control.prototype.dispose.apply(this, arguments);

@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 下拉框控件
  * @author otakustay
  */
@@ -16,6 +17,7 @@ define(
          * 根据下拉弹层的`click`事件设置值
          *
          * @param {Event} e 触发事件的事件对象
+         * @ignore
          */
         function selectValue(e) {
             var target = lib.event.getTarget(e);
@@ -32,6 +34,13 @@ define(
             }
         }
 
+        /**
+         * `Select`控件使用的层类
+         *
+         * @extends Layer
+         * @ignore
+         * @constructor
+         */
         function SelectLayer() {
             Layer.apply(this, arguments);
         }
@@ -121,21 +130,28 @@ define(
         /**
          * 下拉选择控件
          *
-         * @param {Object=} options 构造控件的选项
-         * @constructor
+         * 类似HTML的`<select>`元素
+         *
          * @extends InputControl
+         * @constructor
          */
         function Select(options) {
             InputControl.apply(this, arguments);
             this.layer = new SelectLayer(this);
         }
 
+        /**
+         * 控件类型，始终为`"Select"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         Select.prototype.type = 'Select';
 
         /**
-         * 创建主元素
+         * 创建主元素，默认使用`<div>`元素
          *
-         * @param {Object} options 构造函数传入的参数
          * @return {HTMLElement} 主元素
          * @protected
          * @override
@@ -148,6 +164,7 @@ define(
          * 根据`selectedIndex` < `value` < `rawValue`的顺序调整三个参数的值
          *
          * @param {Object} context 有可能包含以上3个参数的参数对象
+         * @ignore
          */
         function adjustValueProperties(context) {
             // 因为`value`可能多个项是相同的，所以必须一切以`selectedIndex`为准
@@ -211,7 +228,22 @@ define(
         /**
          * 初始化参数
          *
-         * @param {Object} options 构造函数传入的参数
+         * 如果初始化时未给定{@link Select#datasource}属性，
+         * 且主元素是`<select>`元素，则按以下规则生成一个数据源：
+         *
+         * 1. 遍历主元素下所有`<option>`元素
+         * 2. 以`<option>`元素的`name`属性作为数据项的`name`
+         * 3. 如果`<option>`元素没有`name`属性，则使用`text`属性
+         * 4. 以`<option>`元素的`value`属性作为数据项的`value`
+         * 5. 如果`<option>`元素处于禁用状态，则此数据项同样禁用
+         * 6. 如果`<option>`处于选中状态，
+         * 且初始化未给定{@link Select#selectedIndex 值相关的属性}，
+         * 则使用此项的下标作为{@link Select#selectedIndex}属性
+         *
+         * 如果主元素是`<select>`元素，控件会从主元素上抽取相关DOM属性作为控件自身的值，
+         * 详细参考{@link Helper#extractOptionsFromInput}方法
+         *
+         * @param {Object} [options] 构造函数传入的参数
          * @protected
          * @override
          */
@@ -261,6 +293,10 @@ define(
         /**
          * 每个节点显示的内容的模板
          *
+         * 在模板中可以使用以下占位符：
+         *
+         * - `{string} text`：文本内容，经过HTML转义
+         *
          * @type {string}
          */
         Select.prototype.itemTemplate = '<span>${text}</span>';
@@ -268,8 +304,8 @@ define(
         /**
          * 获取每个节点显示的内容
          *
-         * @param {Object} item 节点数据
-         * @return {string} 节点的HTML
+         * @param {meta.SelectItem} item 当前节点的数据项
+         * @return {string} 返回HTML片段
          */
         Select.prototype.getItemHTML = function (item) {
             var data = {
@@ -282,6 +318,10 @@ define(
         /**
          * 显示选中值的模板
          *
+         * 在模板中可以使用以下占位符：
+         *
+         * - `{string} text`：文本内容，经过HTML转义
+         *
          * @type {string}
          */
         Select.prototype.displayTemplate = '${text}';
@@ -289,9 +329,9 @@ define(
         /**
          * 获取选中值的内容
          *
-         * @param {Object | null} item 选中节点的数据，如果有`emptyText`且未选节点，
-         * 则传递`null`
-         * @return {string} 显示的HTML
+         * @param {meta.SelectItem | null} item 选中节点的数据项，
+         * 如果{@link Select#emptyText}属性值不为空且未选中任何节点，则传递`null`
+         * @return {string} 显示的HTML片段
          */
         Select.prototype.getDisplayHTML = function (item) {
             if (!item) {
@@ -331,7 +371,8 @@ define(
         /**
          * 根据控件的值更新其视图
          *
-         * @param {Select} select Select控件实例
+         * @param {Select} select 控件实例
+         * @ignore
          */
         function updateValue(select) {
             // 同步显示的文字
@@ -364,24 +405,66 @@ define(
         };
 
         var paint = require('./painters');
-
         /**
-         * 重绘
+         * 重渲染
          *
+         * @method
          * @protected
          * @override
          */
         Select.prototype.repaint = paint.createRepaint(
             InputControl.prototype.repaint,
+            /**
+             * @property {number} width
+             *
+             * 宽度
+             */
             paint.style('width'),
+            /**
+             * @property {number} height
+             *
+             * 高度，指浮层未展开时的可点击元素的高度， **与浮层高度无关**
+             */
             paint.style('height'),
             {
+                /**
+                 * @property {meta.SelectItem[]} datasource
+                 *
+                 * 数据源，其中每一项生成浮层中的一条
+                 */
                 name: 'datasource',
                 paint: function (select) {
                     select.layer.repaint();
                 }
             },
             {
+                /**
+                 * @property {number} selectedIndex
+                 *
+                 * 选中项的索引
+                 *
+                 * 本控件有3个属性能影响选中值，分别为{@link Select#selectedIndex}、
+                 * {@link Select#value}和{@link Select#rawValue}
+                 *
+                 * 当这三个属性同时存在两个或多个时，它们之间按以下优先级处理：
+                 *
+                 *     selectedIndex < value < rawValue
+                 *
+                 * 即当{@link Select#rawValue}存在时，即便有{@link Select#value}或
+                 * {@link Select#selectedIndex}属性，也会被忽略
+                 *
+                 * 当{@link Select#emptyText}不为空时，此属性可以为`-1`，
+                 * 其它情况下属性值必须大于或等于`0`
+                 */
+
+                /**
+                 * @property {string} emptyText
+                 *
+                 * 未选中任何项时显示的值
+                 *
+                 * 当此属性不为空，且{@link Select#selectedIndex}属性的值为`-1`时，
+                 * 控件处于未选中任何项的状态，此时将显示此属性的内容
+                 */
                 name: ['selectedIndex', 'emptyText', 'datasource'],
                 paint: updateValue
             },
@@ -396,9 +479,9 @@ define(
         );
 
         /**
-         * 更新`datasource`属性，无论传递的值是否变化都会进行更新
+         * 更新{@link Select#datasource}属性，无论传递的值是否变化都会进行更新
          *
-         * @param {Object[]} datasource 新的数据源对象
+         * @param {meta.SelectItem[]} datasource 新的数据源对象
          */
         Select.prototype.updateDatasource = function (datasource) {
             if (!datasource) {
@@ -412,8 +495,9 @@ define(
         /**
          * 批量更新属性并重绘
          *
-         * @param {Object} 需更新的属性
+         * @param {Object} properties 需更新的属性
          * @override
+         * @fires change
          */
         Select.prototype.setProperties = function (properties) {
             // 为了`adjustValueProperties`正常工作，需要加上一点东西，
@@ -421,6 +505,30 @@ define(
             if (properties.datasource == null) {
                 properties.datasource = this.datasource;
             }
+
+            /**
+             * @property {string} value
+             *
+             * 字符串形式的值
+             *
+             * 该属性是将选中的{@link meta.SelectItem}中的`value`属性转为字符串后返回
+             *
+             * 对于属性的优先级，参考{@link Select#selectedIndex}属性的说明
+             *
+             * @override
+             */
+
+            /**
+             * @property {Mixed} rawValue
+             *
+             * 控件的原始值
+             *
+             * 该属性是将选中的{@link meta.SelectItem}中的`value`属性直接返回
+             *
+             * 对于属性的优先级，参考{@link Select#selectedIndex}属性的说明
+             *
+             * @override
+             */
             if (properties.value == null
                 && properties.rawValue == null
                 && properties.selectedIndex == null
@@ -437,6 +545,13 @@ define(
                 InputControl.prototype.setProperties.apply(this, arguments);
 
             if (changes.hasOwnProperty('selectedIndex')) {
+                /**
+                 * @event change
+                 *
+                 * 值发生变化时触发
+                 *
+                 * `Select`控件的值变化是以{@link Select#selectedIndex}属性为基准
+                 */
                 this.fire('change');
             }
 
@@ -446,7 +561,7 @@ define(
         /**
          * 销毁控件
          *
-         * @public
+         * @override
          */
         Select.prototype.dispose = function () {
             if (this.helper.isInStage('DISPOSED')) {

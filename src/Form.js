@@ -475,8 +475,9 @@ define(
         /**
          * 重渲染
          *
-         * @override
+         * @method
          * @protected
+         * @override
          */
         Form.prototype.repaint = function (changes, changesIndex) {
             Panel.prototype.repaint.apply(this, arguments);

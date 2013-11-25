@@ -4,7 +4,7 @@
  * 
  * @ignore
  * @file 视图环境类 用于对控件视图的管理
- * @author DBear, errorrik
+ * @author DBear, errorrik, otakustay
  */
 define(
     function () {

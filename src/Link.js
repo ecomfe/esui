@@ -105,6 +105,8 @@ define(
             /**
              * 渲染控件
              *
+             * @method
+             * @protected
              * @override
              */
             render: function () {

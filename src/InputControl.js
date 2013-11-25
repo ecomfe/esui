@@ -216,6 +216,7 @@ define(
              * 重渲染
              *
              * @method repaint
+             * @protected
              * @override
              */
             repaint: helper.createRepaint(

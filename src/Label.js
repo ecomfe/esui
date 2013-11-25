@@ -102,6 +102,8 @@ define(
         /**
          * 重渲染
          *
+         * @method
+         * @protected
          * @override
          */
         Label.prototype.repaint = function (changes) {

@@ -12,7 +12,8 @@
                     "ControlGroup",
                     "InputCollection",
                     "Helper",
-                    "Layer"
+                    "Layer",
+                    "TreeStrategy"
                 ]
             },
             {
@@ -49,7 +50,12 @@
                     "Label",
                     "Link",
                     "Panel",
-                    "Validity"
+                    "Select",
+                    "Tab",
+                    "TextBox",
+                    "Tree",
+                    "Validity",
+                    "Wizard"
                 ]
             },
             {

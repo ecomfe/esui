@@ -322,6 +322,19 @@ define(
         /**
          * 从输入元素上抽取属性
          *
+         * 该方法按以下对应关系抽取属性，当元素上不存在对应的DOM属性时，不会添加该属性：
+         *
+         * - DOM元素的`value`对应控件的`value`属性
+         * - DOM元素的`name`对应控件的`name`属性
+         * - DOM元素的`maxlength`对应控件的`maxLength`属性，且转为`number`类型
+         * - DOM元素的`required`对应控件的`required`属性，且转为`boolean`类型
+         * - DOM元素的`pattern`对应控件的`pattern`属性
+         * - DOM元素的`min`对应控件的`min`属性，且转为`number`类型
+         * - DOM元素的`max`对应控件的`max`属性，且转为`number`类型
+         * - DOM元素的`autofocus`对应控件的`autoFocus`属性，且转为`boolean`类型
+         * - DOM元素的`disabled`对应控件的`disabled`属性，且转为`boolean`类型
+         * - DOM元素的`readonly`对应控件的`readOnly`属性，且转为`boolean`类型
+         *
          * @param {HTMLElement} input 输入元素
          * @param {Object} [options] 已有的配置对象，有此参数则将抽取的属性覆盖上去
          * @return {Object}

@@ -191,8 +191,9 @@ define(
         /**
          * 重渲染
          *
-         * @override
+         * @method
          * @protected
+         * @override
          */
         Crumb.prototype.repaint = paint.createRepaint(
             Control.prototype.repaint,

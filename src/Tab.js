@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 标签页控件
  * @author otakustay
  */
@@ -14,32 +15,55 @@ define(
         /**
          * 标签页控件
          *
-         * @param {Object} [options] 构造控件的选项
+         * @extends Control
          * @constructor
          */
-        function Tab(options) {
+        function Tab() {
             Control.apply(this, arguments);
         }
 
+        /**
+         * 控件类型，始终为`"Tab"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         Tab.prototype.type = 'Tab';
 
         /**
-         * 创建主元素
+         * 创建主元素，默认使用`<div>`元素
          *
-         * @param {Object} options 构造函数传入的参数
          * @return {HTMLElement} 主元素
          * @protected
          * @override
          */
-        Tab.prototype.createMain = function (options) {
+        Tab.prototype.createMain = function () {
             return document.createElement('div');
         };
 
         /**
          * 初始化参数
          *
-         * @param {Object} options 构造函数传入的参数
+         * 如果初始化时未给定{@link Tab#tabs}属性，则按以下规则从DOM中获取：
+         *
+         * 1. 在主元素的子元素中查找存在`data-role="navigator"`属性的元素
+         * 2. 遍历此元素的所有子元素
+         * 3. 将子元素的文本内容属性作为标签的`title`属性
+         * 4. 将子元素的`data-for`属性作为标签的`panel`属性
+         *
+         * 需要注意的是，此元素仅在初始化时起效果，随后会被移除，
+         * 因此不要依赖此元素上的`id`或者`class`、`style`等属性
+         *
+         * 如果不存在`data-role="navigator"`的元素，则：
+         *
+         * 1. 认为每一个子元素是一个面板
+         * 2. 使用面板的`title`作为标签的`title`属性
+         * 3. 使用面板的`id`作为标签的`panel`属性
+         *
+         * @param {Object} [options] 构造函数传入的参数
          * @protected
+         * @override
          */
         Tab.prototype.initOptions = function (options) {
             var properties = {
@@ -84,7 +108,7 @@ define(
                     }
                     else {
                         // 普通元素当作是一个标签页，
-                        // 遇到`data-role="navigator"]`后会清空配置，
+                        // 遇到`data-role="navigator"`后会清空配置，
                         // 所以不会影响正确性
                         var config = {
                             title: element.getAttribute('title'),
@@ -108,6 +132,7 @@ define(
          * 点击某个标签时的切换逻辑
          *
          * @param {Event} e 触发事件的事件对象
+         * @ignore
          */
         function clickTab(e) {
             var target = e.target;
@@ -160,6 +185,10 @@ define(
         /**
          * 标签页内容的模板
          *
+         * 在模板中可以使用以下占位符：
+         *
+         * - `{string} title`：文本内容，经过HTML转义
+         *
          * @type {string}
          */
         Tab.prototype.contentTemplate = '<span>${title}</span>';
@@ -167,9 +196,9 @@ define(
         /**
          * 获取标签页内容的HTML
          *
-         * @param {Object} config 标签页数据项
+         * @param {meta.TabItem} config 标签页数据项
          * @param {boolean} allowClose 是否允许关闭
-         * @return {string}
+         * @return {string} 返回HTML片段
          */
         Tab.prototype.getContentHTML = function (config, allowClose) {
             var html = lib.format(
@@ -190,10 +219,10 @@ define(
          * 创建一个标签元素
          *
          * @param {Tab} tab 控件实例
-         * @param {Object} config 标签页的配置
-         * @param {string} config.title 标签页的标题
+         * @param {meta.TabItem} config 标签页的配置数据项
          * @param {boolean} isActive 是否自激活状态
          * @param {boolean} allowClose 是否允许关闭
+         * @ignore
          */
         function createTabElement(tab, config, isActive, allowClose) {
             var element = document.createElement('li');
@@ -213,7 +242,7 @@ define(
          * 获取导航条的HTML
          *
          * @param {Tab} tab Tab控件实例
-         * @inner
+         * @ignore
          */
         function fillNavigator(tab) {
             var navigator = tab.helper.getPart('navigator');
@@ -236,8 +265,8 @@ define(
         /**
          * 批量更新属性并重绘
          *
-         * @param {Object} 需更新的属性
-         * @public
+         * @param {Object} properties 需更新的属性
+         * @override
          */
         Tab.prototype.setProperties = function (properties) {
             // 如果`tabs`配置变了，则会导致`navigator`整个重新渲染，
@@ -291,6 +320,7 @@ define(
          *
          * @param {Tab} tab Tab控件实例
          * @parma {number} index 待激活的标签页的下标
+         * @ignore
          */
         function activateTab(tab, index) {
             for (var i = 0; i < tab.tabs.length; i++) {
@@ -315,26 +345,58 @@ define(
                 activeIndex: index,
                 tab: tab.tabs[index]
             };
+            /**
+             * @event activate
+             *
+             * 一个标签从未激活状态变为激活状态时触发
+             *
+             * @param {number} activeIndex 激活的下标
+             * @param {meta.TabItem} tab 激活的标签数据项
+             * @member Tab
+             */
             tab.fire('activate', event);
         }
 
         /**
-         * 重绘
+         * 重渲染
          *
-         * @param {Array=} 更新过的属性集合
+         * @method
          * @protected
+         * @override       
          */
         Tab.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
+                /**
+                 * @property {meta.TabItem[]} tabs
+                 *
+                 * 标签项配置
+                 */
+
+                /**
+                 * @property {boolean} [allowClose=false]
+                 *
+                 * 是否允许关闭标签
+                 */
                 name: ['tabs', 'allowClose'],
                 paint: fillNavigator
             },
             {
+                /**
+                 * @property {number} activeIndex
+                 *
+                 * 激活的标签的下标
+                 */
                 name: 'activeIndex',
                 paint: activateTab
             },
             {
+                /**
+                 * @property {string} orientation
+                 *
+                 * 标签放置的方向，可以使用`horizontal`表示横向放置，
+                 * 或使用`vertical`表示纵向放置
+                 */
                 name: 'orientation',
                 paint: function (tab, orientation) {
                     tab.removeState('vertical');
@@ -347,8 +409,10 @@ define(
         /**
          * 激活一个标签页
          *
-         * @param {Object} config 标签页的配置对象
-         * @public
+         * 如果不幸有多个标签对应的是同一个{@link meta.TabItem}配置项，则会激活最后一个
+         *
+         * @param {meta.TabItem} config 标签页的配置对象
+         * @fires activate
          */
         Tab.prototype.activate = function (config) {
             for (var i = 0; i < this.tabs.length; i++) {
@@ -361,9 +425,8 @@ define(
         /**
          * 添加一个标签页
          *
-         * @param {Object} config 标签页的配置
-         * @param {string} config.title 标签页的标题
-         * @param {string=} config.panel 标签页对应的容器的id
+         * @param {meta.TabItem} config 标签页的配置
+         * @fires add
          */
         Tab.prototype.add = function (config) {
             this.insert(config, this.tabs.length);
@@ -372,9 +435,10 @@ define(
         /**
          * 在指定位置添加一个标签页
          *
-         * @param {Object} config 标签页的配置
-         * @param {string} config.title 标签页的标题
-         * @param {string=} config.panel 标签页对应的容器的id
+         * @param {meta.TabItem} config 标签页的配置
+         * @param {number} index 插入的位置，
+         * 如果小于0则会插入到最前面，大于当前标签数量则插入到最后面
+         * @fires add
          */
         Tab.prototype.insert = function (config, index) {
             index = Math.min(index, this.tabs.length);
@@ -410,13 +474,22 @@ define(
                 }
             }
 
+            /**
+             * @event add
+             *
+             * 添加标签时触发
+             *
+             * @param {number} activeIndex 添加的下标
+             * @param {meta.TabItem} tab 添加的标签数据项
+             */
             this.fire('add', { tab: config, index: index });
         };
 
         /**
          * 移除一个标签页
          *
-         * @param {Object} config 标签页的配置
+         * @param {meta.TabItem} config 标签页的配置
+         * @fires remove
          */
         Tab.prototype.remove = function (config) {
             // 这里使用`while`是解决`this.tabs`在嵌套循环里被修改带来的问题
@@ -433,6 +506,7 @@ define(
          * 根据下标移除一个标签页
          *
          * @param {number} index 需要移除的标签页的下标
+         * @fires remove
          */
         Tab.prototype.removeAt = function (index) {
             var removed = this.tabs.splice(index, 1)[0];
@@ -466,6 +540,15 @@ define(
                         panel.style.display = 'none';
                     }
                 }
+
+                /**
+                 * @event remove
+                 *
+                 * 移除标签时触发
+                 *
+                 * @param {number} activeIndex 移除的下标
+                 * @param {meta.TabItem} tab 移除的标签数据项
+                 */
                 this.fire('remove', { tab: removed, index: index });
             }
         };

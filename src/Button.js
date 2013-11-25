@@ -115,6 +115,7 @@ define(
             /**
              * 重新渲染
              *
+             * @method
              * @protected
              * @override
              */

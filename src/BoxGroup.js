@@ -231,6 +231,7 @@ define(
         /**
          * 重渲染
          *
+         * @method
          * @protected
          * @override
          */

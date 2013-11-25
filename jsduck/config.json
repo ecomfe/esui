@@ -56,10 +56,20 @@
         "../src/Label.js",
         "../src/Link.js",
         "../src/Panel.js",
+        "../src/Select.js",
+        "../src/Tab.js",
+        "../src/TextBox.js",
+        "../src/Tree.js",
+        "../src/TreeStrategy.js",
         "../src/Validity.js",
+        "../src/Wizard.js",
 
         "meta/BoxGroupItem.js",
         "meta/CommandMenuItem.js",
-        "meta/CrumbItem.js"
+        "meta/CrumbItem.js",
+        "meta/SelectItem.js",
+        "meta/TabItem.js",
+        "meta/TreeItem.js",
+        "meta/WizardItem.js"
     ]
 }
