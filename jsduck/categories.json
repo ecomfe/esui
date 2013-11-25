@@ -43,6 +43,7 @@
                 "classes": [
                     "BoxGroup",
                     "Button",
+                    "Calendar",
                     "CheckBox",
                     "CommandMenu",
                     "Crumb",

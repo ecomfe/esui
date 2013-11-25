@@ -234,6 +234,13 @@ define(
                     }
                 },
                 {
+                    /**
+                     * @property {boolean} readOnly
+                     *
+                     * 是否只读
+                     *
+                     * 只读状态下，控件通过用户操作不能修改值，但值随表单提交
+                     */
                     name: 'readOnly',
                     paint: function (control, value) {
                         var method = value ? 'addState' : 'removeState';
@@ -275,6 +282,7 @@ define(
              * 
              * @param {Mixed} rawValue 原始值
              * @return {string}
+             * @protected
              */
             stringifyValue: function (rawValue) {
                 return rawValue != null ? (rawValue + '') : '';
@@ -285,6 +293,7 @@ define(
              * 
              * @param {string} value 字符串值
              * @return {Mixed}
+             * @protected
              */
             parseValue: function (value) {
                 return value;
@@ -400,6 +409,7 @@ define(
 
             /**
              * 销毁控件
+             *
              * @override
              */
             dispose: function () {

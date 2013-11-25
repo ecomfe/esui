@@ -1,11 +1,11 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 日历
  * @author dbear
  */
-
 define(
     function (require) {
         require('./MonthView');
@@ -16,12 +16,15 @@ define(
         var ui = require('./main');
 
         /**
-         * 日历控件类
-         * 
+         * 日历控件
+         *
+         * 日历控件是由一个按钮和一个浮层组成的，如果你只需要显示一个月日期的效果，
+         * 请使用{@link MonthView}控件
+         *
+         * @extends InputControl
          * @constructor
-         * @param {Object} options 初始化参数
          */
-        function Calendar(options) {
+        function Calendar() {
             InputControl.apply(this, arguments);
         }
 
@@ -29,7 +32,8 @@ define(
         /**
          * 显示下拉弹层
          *
-         * @param {Calendar} calendar Calendar控件实例
+         * @param {Calendar} calendar 控件实例
+         * @ignore
          */
         function showLayer(calendar) {
             var layer = calendar.layer;
@@ -52,6 +56,7 @@ define(
          * 隐藏下拉弹层
          *
          * @param {Calendar} calendar Calendar控件实例
+         * @ignore
          */
         function hideLayer(calendar) {
             if (calendar.layer) {
@@ -64,8 +69,8 @@ define(
         /**
          * 点击自动隐藏的处理
          *
-         * @inner
          * @param {Event} 触发事件的事件对象
+         * @ignore
          */
         function closeLayer(e) {
             if (this.isHidePrevent) {
@@ -87,7 +92,7 @@ define(
          * 打开下拉弹层
          *
          * @param {Calendar} calendar Calendar控件实例
-         * @inner
+         * @ignore
          */
         function openLayer(calendar) {
             var layer = calendar.layer;
@@ -122,7 +127,7 @@ define(
          *
          * @param {Calendar} this Calendar控件实例
          * @param {Event} e 触发事件的事件对象
-         * @inner
+         * @ignore
          */
         function mainClick(e) {
             if (!this.disabled) {
@@ -135,9 +140,9 @@ define(
         /**
          * 更新显示
          *
-         * @inner
-         * @param {Calendar} calendar Calendar控件实例
+         * @param {Calendar} calendar 控件实例
          * @param {MonthView} monthView MonthView控件实例
+         * @ignore
          */
         function updateDisplay(calendar, monthView) {
             var date = monthView.getRawValue();
@@ -146,14 +151,21 @@ define(
             }
             calendar.rawValue = date;
             updateMain(calendar);
-            calendar.fire('change', date);
+            /**
+             * @event change
+             *
+             * 值发生变化时触发
+             *
+             * @member Calendar
+             */
+            calendar.fire('change', date); // 以后别传值出去
         }
 
         /**
          * 更新主显示
          *
-         * @inner
          * @param {Calendar} calendar Calendar控件实例
+         * @ignore
          */
         function updateMain(calendar) {
             var date = calendar.rawValue;
@@ -169,7 +181,7 @@ define(
          * 根据下拉弹层当前状态打开或关闭之
          *
          * @param {Calendar} calendar Calendar控件实例
-         * @inner
+         * @ignore
          */
         function toggleLayer(calendar) {
             if (calendar.disabled) {
@@ -195,11 +207,11 @@ define(
         /**
          * 字符串日期转换为Date对象
          *
-         * @inner
          * @param {string} dateStr 字符串日期
+         * @ignore
          */
         function parseToDate(dateStr) {
-            /** 2011-11-04 */
+            // 2011-11-04
             function parse(source) {
                 var dates = source.split('-');
                 if (dates) {
@@ -226,34 +238,56 @@ define(
 
         Calendar.prototype = {
             /**
-             * 控件类型
+             * 控件类型，始终为`"Calendar"`
              * 
              * @type {string}
+             * @readonly
+             * @override
              */
             type: 'Calendar',
 
             /**
              * 初始化参数
              *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
+             * @param {Object} [options] 构造函数传入的参数
              * @protected
+             * @override
              */
             initOptions: function (options) {
-                /**
-                 * 默认选项配置
-                 */
                 var now = new Date();
                 var properties = {
-                    now: now,
                     range: {
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
                     },
+                    /**
+                     * @property {string} [dateFormat="YYYY-MM-DD"]
+                     *
+                     * 输出的日期格式，用于{@link Calendar#getValue}返回时格式化
+                     *
+                     * 具体的日期格式参考
+                     * [moment文档](http://momentjs.com/docs/#/displaying/format/)
+                     */
                     dateFormat: 'YYYY-MM-DD',
+
+                    /**
+                     * @property {string} [paramFormat="YYYY-MM-DD"]
+                     *
+                     * 输入的日期格式，用于{@link Calendar#setValue}时格式化
+                     *
+                     * 具体的日期格式参考
+                     * [moment文档](http://momentjs.com/docs/#/displaying/format/)
+                     */
                     paramFormat: 'YYYY-MM-DD',
-                    rawValue: now,
-                    calType: 'sel' // 日历类型，另外还支持'input' 'label'
+
+                    /**
+                     * @property {Date} [rawValue]
+                     *
+                     * 控件的原始值，为`Date`类型，默认为当天
+                     *
+                     * @override
+                     */
+                    rawValue: now
                 };
 
                 helper.extractValueFromInput(this, options);
@@ -284,6 +318,7 @@ define(
              * 初始化DOM结构
              *
              * @protected
+             * @override
              */
             initStructure: function () {
                 // 如果主元素是输入元素，替换成`<div>`
@@ -320,10 +355,10 @@ define(
             },
 
             /**
-             * 创建控件主元素
+             * 创建控件主元素，默认使用`<div>`元素
              *
-             * @param {Object=} options 构造函数传入的参数
              * @return {HTMLElement}
+             * @protected
              * @override
              */
             createMain: function (options) {
@@ -331,15 +366,20 @@ define(
             },
 
             /**
-             * 重新渲染视图
-             * 仅当生命周期处于RENDER时，该方法才重新渲染
+             * 重渲染
              *
-             * @param {Array=} 变更过的属性的集合
+             * @method
+             * @protected
              * @override
              */
             repaint: helper.createRepaint(
                 InputControl.prototype.repaint,
                 {
+                    /**
+                     * @property {meta.DateRange} range
+                     *
+                     * 指定控件可选的时间段
+                     */
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
                         if (calendar.disabled || calendar.readOnly) {
@@ -369,27 +409,9 @@ define(
             ),
 
             /**
-             * 设置日期
-             *
-             * @param {Date} date 选取的日期.
-             */
-            setRawValue: function (date) {
-                this.setProperties({ 'rawValue': date });
-            },
-
-            /**
-             * 获取选取日期值
-             * 
-             * @return {Date} 
-             */
-            getRawValue: function () {
-                return this.rawValue;
-            },
-
-            /**
              * 设置日期可选区间
              *
-             * @param {Object} range 日期可选区间.
+             * @param {meta.DateRange} range 日期可选区间
              */
             setRange: function (range) {
                 this.setProperties({ 'range': range });
@@ -397,25 +419,34 @@ define(
 
 
             /**
-             * 将value从原始格式转换成string
+             * 将值从原始格式转换成字符串，复杂类型的输入控件需要重写此接口
              * 
-             * @param {*} rawValue 原始值
+             * @param {Date} rawValue 原始值
              * @return {string}
+             * @protected
+             * @override
              */
             stringifyValue: function (rawValue) {
                 return lib.date.format(rawValue, this.paramFormat) || null;
             },
 
             /**
-             * 将string类型的value转换成原始格式
+             * 将字符串类型的值转换成原始格式，复杂类型的输入控件需要重写此接口
              * 
              * @param {string} value 字符串值
-             * @return {*}
+             * @return {Date}
+             * @protected
+             * @override
              */
             parseValue: function (value) {
                 return parseToDate(value);
             },
 
+            /**
+             * 销毁
+             *
+             * @override
+             */
             dispose: function () {
                 if (helper.isInStage(this, 'DISPOSED')) {
                     return;

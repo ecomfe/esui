@@ -49,6 +49,7 @@
 
         "../src/BoxGroup.js",
         "../src/Button.js",
+        "../src/Calendar.js",
         "../src/CheckBox.js",
         "../src/CommandMenu.js",
         "../src/Crumb.js",
@@ -67,6 +68,7 @@
         "meta/BoxGroupItem.js",
         "meta/CommandMenuItem.js",
         "meta/CrumbItem.js",
+        "meta/DateRange.js",
         "meta/SelectItem.js",
         "meta/TabItem.js",
         "meta/TreeItem.js",
