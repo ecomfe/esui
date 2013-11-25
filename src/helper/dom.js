@@ -59,6 +59,14 @@ define(
          * @return {string[]}
          */
         helper.getPartClasses = function (part) {
+            if (part 
+                && this.partClassCache 
+                && this.partClassCache.hasOwnProperty(part)
+            ) {
+                // 得复制一份，不然外面拿到后往里`push`些东西就麻烦了
+                return this.partClassCache[part].slice();
+            }
+
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
             var prefix = ui.getConfig('uiClassPrefix');
@@ -69,6 +77,13 @@ define(
                 classes.push(joinByStrike(prefix, type, part));
                 if (skin) {
                     classes.push(joinByStrike(skinPrefix, skin, type, part));
+                }
+
+                // 缓存起来
+                if (!this.partClassCache) {
+                    this.partClassCache = {};
+                    // 还是得复制一份，不然这个返回回去就可能被修改了
+                    this.partClassCache[part] = classes.slice();
                 }
             }
             else {
@@ -149,6 +164,13 @@ define(
          * @return {string[]}
          */
         helper.getStateClasses = function (state) {
+            if (this.stateClassCache 
+                && this.stateClassCache.hasOwnProperty(state)
+            ) {
+                // 得复制一份，不然外面拿到后往里`push`些东西就麻烦了
+                return this.stateClassCache[state].slice();
+            }
+
             var type = getControlClassType(this.control);
             var getConf = ui.getConfig;
             var classes = [
@@ -163,6 +185,13 @@ define(
                     joinByStrike(skinPrefix, skin, state),
                     joinByStrike(skinPrefix, skin, type, state)
                 );
+            }
+
+            // 缓存起来
+            if (!this.stateClassCache) {
+                this.stateClassCache = {};
+                // 还是得复制一份，不然这个返回回去就可能被修改了
+                this.stateClassCache[state] = classes.slice();
             }
             
             return classes;

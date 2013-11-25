@@ -18,10 +18,6 @@ define(
          */
         function Helper(control) {
             this.control = control;
-
-            // 对`class`的计算进行缓存
-            this.getPartClasses = u.memoize(this.getPartClasses);
-            this.getStateClasses = u.memoize(this.getStateClasses);
         }
 
         u.extend(
