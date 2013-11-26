@@ -1,27 +1,27 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 翻页控件
  * @author shenbin
  */
 
 define(
     function (require) {
-        // required js
-        require('./Select');
-
         var lib = require('./lib');
         var ui = require('./main');
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
+        require('./Select');
+
         /**
-         * 获取控件主元素代码
+         * 获取控件主元素HTML
          *
-         * @inner
-         * @param {Pager} pager Pager控件实例
-         * @return {string} 拼接得到的html代码
+         * @param {Pager} pager 控件实例
+         * @return {string} 拼接得到的HTML代码
+         * @ignore
          */
         function getMainHTML(pager) {
             var tpl = [
@@ -63,9 +63,9 @@ define(
         /**
          * 获取页码区域元素代码
          *
-         * @inner
          * @param {Pager} pager Pager控件实例
-         * @return {string} 拼接得到的html代码
+         * @return {string} 拼接得到的HTML代码
+         * @ignore
          */
         function getPagerMainHTML(pager) {
             // 定义页码模板
@@ -78,9 +78,9 @@ define(
             /**
              * 根据模板拼接url
              *
-             * @inner
              * @param {number} num 页码
-             * @return {string} 拼接返回的url
+             * @return {string} 拼接返回的URL
+             * @ignore
              */
             function getUrlByTemplate(num) {
                 return lib.format(
@@ -95,12 +95,12 @@ define(
             /**
              * 生成用于填充模板的对象
              *
-             * @inner
              * @param {string} className 类名
-             * @param {number=} num 页码
-             * @param {number=} id 用于模板的id字段
-             * @param {string=|number=} text 用于模板的text字段
+             * @param {number} num 页码
+             * @param {number} id 用于模板的id字段
+             * @param {string | number} [text] 用于模板的text字段
              * @return {Object} 用于填充模板的对象
+             * @ignore
              */
             function getTplObj(className, num, id, text) {
                 var obj = {
@@ -123,10 +123,10 @@ define(
             /**
              * 根据模板和填充对象格式化生成页面片段代码
              *
-             * @inner
              * @param {Object} obj 用于填充模板的对象
-             * @param {string=} tpl 页面片段模板
+             * @param {string} [tpl] 页面片段模板
              * @return {string} 页面片段代码
+             * @ignore
              */
             function getSegmentHTML(obj, tpl) {
                 if (!tpl) {
@@ -145,9 +145,9 @@ define(
             /**
              * 将页面片段添加到html数组中
              *
-             * @inner
-             * @param {Object|number} obj Object或者page
-             * @param {string=} tpl 可选模板
+             * @param {Object | number} obj Object或者page
+             * @param {string} [tpl] 可选模板
+             * @ignore
              */
             function addSegmentToHTML(obj, tpl) {
                 if (typeof obj === 'number') {
@@ -246,8 +246,9 @@ define(
 
         /**
          * 绘制页码区域部件
-         * @inner
+         *
          * @param {Pager} pager Pager控件实例
+         * @ignore
          */
         function repaintPager(pager) {
             // 修正每页显示条数，每页显示不能为0
@@ -270,18 +271,19 @@ define(
         }
 
         /**
-         * 绘制Pager控件布局结构
+         * 绘制控件布局结构
          *
-         * @inner
-         * @param {Pager} pager Pager控件实例
+         * @param {Pager} pager 控件实例
          * @param {string} style 布局样式
+         * @ignore
          */
         function repaintLayout(pager, style) {
             /**
              * 获取class的集合
              *
-             * @param{...string} style 布局类型
-             * @return{Array.<string>} 布局类型集合
+             * @param {string} [style] 布局类型
+             * @return {string[]} 布局类型集合
+             * @ignore
              */
             function getClasses() {
                 var classes = [];
@@ -307,9 +309,9 @@ define(
         /**
          * 页码点击事件触发
          *
-         * @inner
          * @param {Pager} this Pager控件实例
          * @param {Event} e 事件对象
+         * @ignore
          */
         function pagerClick(e) {
             var target = e.target;
@@ -340,29 +342,26 @@ define(
         /**
          * 获取select的下拉控件的数据
          *
-         * @inner
-         * @param {Array.<number>} pageSizes 配置信息中的下拉数据
-         * @return {Array.<Object>} 用于Select控件的datasource
+         * @param {number[]} pageSizes 配置信息中的下拉数据
+         * @return {meta.SelectItem[]} 用于`Select`控件的数据源对象
+         * @ignore
          */
         function getPageSizes(pageSizes) {
             var datasource = [];
             for (var i = 0, len = pageSizes.length; i < len; i++) {
                 var pageSize = pageSizes[i];
-                datasource.push({
-                    text: '' + pageSize,
-                    value: '' + pageSize
-                });
+                datasource.push({ text: pageSize + '', value: pageSize + '' });
             }
 
             return datasource;
         }
 
         /**
-         * 更新select控件的value
+         * 更新`Select`控件的`value`属性
          *
-         * @inner
          * @param {Pager} pager Pager控件实例
          * @param {Select} select Select控件实例
+         * @ignore
          */
         function changePageSize(pager, select) {
             var pageSize = parseInt(select.getValue(), 10);
@@ -370,26 +369,44 @@ define(
 
             // 重绘页码
             repaintPager(pager);
+
             // 触发每页显示变更的事件
-            // 保持向后兼容，待大版本再去除changepagesize事件
+            /**
+             * @event changepagesize
+             *
+             * 每页条数变化时触发
+             *
+             * @member Pager
+             * @deprecated 使用{@link Pager#pagesizechange}代替
+             */
             pager.fire('changepagesize');
+
+            /**
+             * @event pagesizechange
+             *
+             * 每页条数变化时触发
+             *
+             * @member Pager
+             */
             pager.fire('pagesizechange');
         }
 
         /**
-         * 获取Select控件和label的父元素容器
+         * 获取`Select`控件和label的父元素容器
          *
-         * @param {Pager} pager Pager控件实例
+         * @param {Pager} pager 控件实例
          * @return {HTMLElement} Select控件和label的父元素
+         * @ignore
          */
         function getSelectWrapper(pager) {
             return lib.g(helper.getId(pager, 'select-wrapper'));
         }
 
         /**
-         * 显示Select控件及对应的label元素
+         * 显示`Select`控件及对应的label元素
          *
-         * @param {Pager} pager Pager控件实例
+         * @param {Pager} pager 控件实例
+         * @ignore
          */
         function showSelect(pager) {
             var selectWrapper = getSelectWrapper(pager);
@@ -401,9 +418,10 @@ define(
         }
 
         /**
-         * 隐藏Select控件及对应的label元素
+         * 隐藏`Select`控件及对应的label元素
          *
-         * @param {Pager} pager Pager控件实例
+         * @param {Pager} pager 控件实例
+         * @ignore
          */
         function hideSelect(pager) {
             var selectWrapper = getSelectWrapper(pager);
@@ -412,25 +430,50 @@ define(
         }
 
         /**
-         * 翻页控件类
-         * 
+         * 翻页控件
+         *
+         * 翻页控件包含2部分：
+         *
+         * - 一个显示页码的横条，根据各个属性配置显示当前页和前后若干页
+         * - 一个选择“每页显示数量”的{@link Select}控件
+         *
+         * @extends Control
+         * @requires Select
          * @constructor
-         * @param {Object} options 初始化参数
          */
         function Pager(options) {
             Control.apply(this, arguments);
         }
 
+
+        /**
+         * @cfg defaultProperties
+         *
+         * 默认属性值
+         *
+         * @cfg {number[]} [defaultProperties.pageSizes] 默认每页数量可选项
+         * @cfg {number} [defaultProperties.pageSize=15] 默认每页数量
+         * @static
+         */
+        Pager.defaultProperties = {
+        };
+
+
         Pager.prototype = {
             /**
-             * 控件类型
+             * 控件类型，始终为`"Pager"`
+             *
              * @type {string}
+             * @readonly
+             * @override
              */
             type: 'Pager',
 
             /**
              * 默认属性
+             *
              * @type {Object}
+             * @deprecated 使用构造函数上的{@link Pager#cfg-defaultProperties}代替
              */
             defaultProperties: {
                 pageSizes: [15, 30, 50, 100],
@@ -440,9 +483,9 @@ define(
             /**
              * 初始化参数
              *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
+             * @param {Object} [options] 构造函数传入的参数
              * @protected
+             * @override
              */
             initOptions: function (options) {
                 var properties = {
@@ -457,15 +500,20 @@ define(
                     layout: 'alignLeft'
                 };
 
-                lib.extend(properties, this.defaultProperties, options);
+                lib.extend(
+                    properties, 
+                    this.defaultProperties, // 这么是向后兼容，以后准备去掉
+                    Pager.defaultProperties,
+                    options
+                );
                 this.setProperties(properties);
             },
 
             /**
              * 初始化DOM结构
              *
-             * @override
              * @protected
+             * @override
              */
             initStructure: function () {
                 // 填充主元素代码
@@ -496,11 +544,10 @@ define(
             },
 
             /**
-             * 转换对象的部分属性的数据类型
-             *
-             * @param {Object} 需要进行转换的对象
+             * 批量设置控件的属性值
+             * 
+             * @param {Object} properties 属性值集合
              * @override
-             * @protected
              */
             setProperties: function (properties) {
                 properties = lib.extend({}, properties);
@@ -509,6 +556,14 @@ define(
                 if (properties.hasOwnProperty('pageIndex')
                     && !properties.hasOwnProperty('page')
                 ) {
+                    /**
+                     * @property {number} pageIndex
+                     *
+                     * 以0为起始的页码，其值始终为{@link Pager#page}减1
+                     *
+                     * 如果与{@link Pager#page}属性同时存在，
+                     * 则优先使用{@link Pager#page}属性
+                     */
                     properties.page = +properties.pageIndex + 1;
                 }
 
@@ -529,21 +584,42 @@ define(
 
                 if (changes.hasOwnProperty('page')) {
                     // 触发页码变更事件
-                    // 保持向后兼容，待大版本再去除changepage事件
+                    /**
+                     * @event changepage
+                     *
+                     * 页码变化时触发
+                     *
+                     * @member Pager
+                     * @deprecated 使用{@link Pager#pagechange}代替
+                     */
                     this.fire('changepage');
+
+                    /**
+                     * @event pagechange
+                     *
+                     * 页码变化时触发
+                     *
+                     * @member Pager
+                     */
                     this.fire('pagechange');
                 }
             },
 
             /**
-             * 重新绘制控件视图
+             * 重渲染
              *
-             * @override
+             * @method
              * @protected
+             * @override
              */
             repaint: helper.createRepaint(
                 Control.prototype.repaint,
                 {
+                    /**
+                     * @property {number[]} pageSizes
+                     *
+                     * 可用的“每页条数”列表
+                     */
                     name: 'pageSizes',
                     paint: function (pager, value) {
                         var select = pager.getChild('select');
@@ -561,14 +637,100 @@ define(
                     }
                 },
                 {
+                    /**
+                     * @property {string} [layout="alignLeft"]
+                     *
+                     * 指定控件的布局方式，可以使用以下值：
+                     *
+                     * - `alignLeft`：整体靠左对齐，页码在左，选择框在右
+                     * - `alignLeftReversed`：整体靠左对齐，而码在右，选择框在左
+                     * - `alignRight`：整体靠右对齐，页码在左，选择框在右
+                     * - `alignRightReversed`：整体靠右对齐，而码在右，选择框在左
+                     * - `distributed`：页码靠左对齐，选择框靠右对齐
+                     * - `distributedReversed`：页码靠右对齐，选择框靠左对齐
+                     */
                     name: 'layout',
                     paint: repaintLayout
                 },
                 {
                     name: [
-                        'pageType', 'count', 'pageSize',
-                        'page', 'backCount', 'forwardCount',
-                        'backText', 'forwardText', 'urlTemplate'
+                        /**
+                         * @property {string} [pageType="anchor"]
+                         *
+                         * 页码元素类型，可以为：
+                         *
+                         * - `plain`：页码为普通文本，点击后不跳转链接，
+                         * 仅触发{@link Pager#pagechange}事件
+                         * - `anchor`：页码为`<a>`元素，点击后直接跳转
+                         */
+                        'pageType',
+
+                        /**
+                         * @property {number} [count=0]
+                         *
+                         * 总条目数量
+                         */
+                        'count',
+
+                        /**
+                         * @property {number} pageSize
+                         *
+                         * 每页显示条目数量
+                         */
+                        'pageSize',
+
+                        /**
+                         * @property {number} [page=1]
+                         *
+                         * 当前页码，以1为起始，即1表示第1页
+                         */
+                        'page',
+
+                        /**
+                         * @property {number} backCount
+                         *
+                         * 在当前页前面显示的页数
+                         *
+                         * 如{@link Pager#page}值为5，`backCount`为3，
+                         * 则显示`[2] [3] [4]  [5]`
+                         */
+                        'backCount',
+
+                        /**
+                         * @property {number} forwardCount
+                         *
+                         * 在当前页后面显示的页数
+                         *
+                         * 如{@link Pager#page}值为5，`forwardCount`为3，
+                         * 则显示`[5] [6] [7] [8]`
+                         */
+                        'forwardCount',
+
+                        /**
+                         * @property {string} backText
+                         *
+                         * “下一页”元素的显示文字
+                         */
+                        'backText',
+
+                        /**
+                         * @property {string} forwardText
+                         *
+                         * “上一页”元素的显示文字
+                         */
+                        'forwardText',
+
+                        /**
+                         * @property {string} urlTemplate
+                         *
+                         * 用于生成链接地址的URL模板
+                         *
+                         * 模板中可以使用以下占位符：
+                         *
+                         * - `page`：当前页码
+                         * - `pageSize`：每页显示条目数
+                         */
+                        'urlTemplate'
                     ],
                     paint: repaintPager
                 }
@@ -577,7 +739,7 @@ define(
             /**
              * 获取从0开始的页码
              *
-             * @return {number}
+             * @return {number} 其值始终为{@link Pager#page}减去1
              */
             getPageIndex: function () {
                 return this.get('page') - 1;

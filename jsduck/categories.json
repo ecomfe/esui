@@ -50,6 +50,7 @@
                     "Form",
                     "Label",
                     "Link",
+                    "Pager",
                     "Panel",
                     "Select",
                     "Tab",

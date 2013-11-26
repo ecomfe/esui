@@ -56,6 +56,7 @@
         "../src/Form.js",
         "../src/Label.js",
         "../src/Link.js",
+        "../src/Pager.js",
         "../src/Panel.js",
         "../src/Select.js",
         "../src/Tab.js",
