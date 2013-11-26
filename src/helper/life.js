@@ -102,9 +102,6 @@ define(
             this.control.children = null;
             this.control.childrenIndex = null;
 
-            // 销毁所有事件
-            this.control.destroyEvents();
-
             // 移除自身行为
             this.clearDOMEvents();
 
@@ -152,6 +149,9 @@ define(
              * @member Control
              */
             this.control.fire('afterdispose');
+
+            // 销毁所有事件，这个必须在`afterdispose`事件之后，不然事件等于没用
+            this.control.destroyEvents();
         };
 
         return helper;
