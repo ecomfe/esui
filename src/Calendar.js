@@ -58,6 +58,7 @@ define(
          * 请使用{@link MonthView}控件
          *
          * @extends InputControl
+         * @requires MonthView
          * @constructor
          */
         function Calendar() {
