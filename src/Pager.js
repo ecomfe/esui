@@ -8,6 +8,7 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
         var lib = require('./lib');
         var ui = require('./main');
         var Control = require('./Control');
@@ -326,7 +327,7 @@ define(
             var datasource = u.map(
                 pageSizes,
                 function (size) {
-                    return { text: pageSize + '', value: pageSize + '' };
+                    return { text: size + '', value: size + '' };
                 }
             );
 
