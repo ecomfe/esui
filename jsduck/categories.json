@@ -55,6 +55,7 @@
                     "Select",
                     "Tab",
                     "TextBox",
+                    "TextLine",
                     "Tree",
                     "Validity",
                     "Wizard"
