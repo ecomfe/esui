@@ -15,12 +15,12 @@ define(
         var ui = require('./main');
 
         require('./TextBox');
-        require('./Panel');
 
         /**
          * 带行号的输入框
          *
          * @extends InputControl
+         * @requires TextBox
          * @constructor
          */
         function TextLine(options) {
