@@ -105,7 +105,7 @@ define(
                  */
                 autoSelect: false
             };
-            u.extend(properties, TextBox.defaultProperties, options);
+            u.extend(properties, TextBox.defaultProperties);
 
             if (!properties.name) {
                 properties.name = this.main.getAttribute('name');
@@ -129,6 +129,8 @@ define(
 
                 this.helper.extractOptionsFromInput(this.main, properties);
             }
+
+            u.extend(properties, options);
 
             this.setProperties(properties);
         };
