@@ -62,6 +62,7 @@
         "../src/Tab.js",
         "../src/TextBox.js",
         "../src/TextLine.js",
+        "../src/Tip.js",
         "../src/Tree.js",
         "../src/TreeStrategy.js",
         "../src/Validity.js",
