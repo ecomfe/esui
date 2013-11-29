@@ -187,17 +187,16 @@ define(
                     if (validity) {
                         var message = validity.getCustomMessage();
                         if (!message) {
-                            var states = validity.getStates();
-                            for (var i = 0; i < states.length; i++) {
-                                var state = states[i];
-                                if (!state.getState()) {
-                                    message = state.getMessage();
-                                    break;
+                            var invalidState = u.find(
+                                validity.getStates(),
+                                function (state) {
+                                    return !state.getState();
                                 }
-                            }
+                            );
+                            message = invalidState && invalidState.getMessage();
                         }
                         label.display(validState, message || '', validity);
-                        label.initChildren();
+                        label.helper.initChildren();
                         if (message) {
                             label.show();
                         }
