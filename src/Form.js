@@ -216,15 +216,50 @@ define(
          * 如果{@link Form#autoValidate}属性为`false`，
          * 则直接触发{@link Form#submit}事件
          *
+         * @fires beforevalidate
+         * @fires aftervalidate
          * @fires submit
          * @fires invalid
          * @fires submitfail
          */
         Form.prototype.validateAndSubmit = function () {
+            /**
+             * @event beforevalidate
+             *
+             * 在验证前触发
+             *
+             * 如果通过`preventDefault()`阻止此事件的默认行为，则不再进行验证和提交
+             *
+             * @member Form
+             * @preventable
+             */
+            var event = this.fire('beforevalidate');
+            if (event.isDefaultPrevented()) {
+                return;
+            }
             try {
                 var isValid = this.get('autoValidate')
                     ? this.validate()
                     : true;
+
+                /**
+                 * @event aftervalidate
+                 *
+                 * 在验证后触发
+                 *
+                 * 如果{@link Form#autoValidate}属性为`false`，不会触发此事件
+                 *
+                 * 如果通过`preventDefault()`阻止此事件的默认行为，则不再进行提交
+                 *
+                 * @param {boolean} isValid 验证的结果，`true`为验证通过
+                 * @member Form
+                 * @preventable
+                 */
+                var event = this.fire('aftervalidate', { isValid: isValid });
+                if (event.isDefaultPrevented()) {
+                    return;
+                }
+
                 var data = {
                     triggerSource: this
                 };
