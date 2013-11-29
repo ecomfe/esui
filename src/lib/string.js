@@ -8,6 +8,7 @@
  */
 define(
     function (require) {
+        var u = require('underscore');
         /**
          * @override lib
          */
