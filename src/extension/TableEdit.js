@@ -74,6 +74,8 @@ define(
                 initLayer();
             }
 
+            layer.style.zIndex = table.zIndex || '';
+
             initInputControl(options);
         }
         
@@ -281,7 +283,7 @@ define(
 
                 eventArgs = currentTable.fire('saveedit', eventArgs);
 
-                if (eventArgs.isDefaultPrevented()) {
+                if (!eventArgs.isDefaultPrevented()) {
                     hideLayer();
                     currentState = 0;
                 } else if (eventArgs.errorMsg) {
@@ -457,7 +459,7 @@ define(
                 };
                 eventArgs = this.fire('startedit', eventArgs);
 
-                if (eventArgs.isDefaultPrevented()) {
+                if (!eventArgs.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
                     var content = field.editContent; 
                     var value = 'function' === typeof content

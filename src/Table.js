@@ -8,6 +8,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var u = require('underscore');
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
@@ -25,7 +26,7 @@ define(
                 plugins: []
             };
 
-            Control.call(this, lib.extend({}, options, protectedProperties));
+            Control.call(this, u.extend({}, options, protectedProperties));
         }
 
         /**
@@ -54,7 +55,7 @@ define(
             sortWidth: 9,
             fontSize: 13,
             colPadding: 8,
-            headZIndex: 1
+            zIndex: 0
         };
 
         /**
@@ -179,6 +180,11 @@ define(
             return lib.g(getId(table, 'select-all'));
         }
         
+
+        function resetTableStyle(table) {
+
+        }
+
         /**
          * 获取表格所在区域宽度
          *
@@ -581,17 +587,15 @@ define(
                     table, 
                     head, 
                     'mousemove', 
-                    lib.bind(headMoveHandler, head, table)
+                    u.bind(headMoveHandler, head, table)
                 );
                 helper.addDOMEvent(
                     table, 
                     head, 
                     'mousedown', 
-                    lib.bind(dragStartHandler, head, table)
+                    u.bind(dragStartHandler, head, table)
                 );
             }
-
-            head.style.zIndex = table.headZIndex || 1;
 
             if (table.noHead) {
                 head.style.display = 'none';
@@ -989,10 +993,10 @@ define(
             initTableOffset(table);
 
             // 绑定拖拽事件
-            var realDragingHandler = lib.curry(dragingHandler, table);
+            var realDragingHandler = u.partial(dragingHandler, table);
             var realDragEndHandler = function(e) {
                 var retrunResult = true;
-                try { retrunResult = lib.curry(dragEndHandler, table)(e); }
+                try { retrunResult = u.partial(dragEndHandler, table)(e); }
                 catch (er) {}
 
                 //清除拖拽向全局绑定的事件
@@ -1063,6 +1067,7 @@ define(
             
             mark.style.top = table.top + 'px';
             mark.style.left = left + 'px';
+            mark.style.zIndex = table.zIndex || '';
 
             var height = table.htmlHeight
                         - table.top
@@ -1313,9 +1318,9 @@ define(
         }
 
          var tplRowPrefix = '<div '
-                        + 'id="${id}" '
-                        + 'class="${className}" '
-                        + 'data-index="${index}" ${attr}>';
+                          + 'id="${id}" '
+                          + 'class="${className}" '
+                          + 'data-index="${index}" ${attr}>';
 
          /**
          * 批量添加rowBuilder
@@ -1838,7 +1843,7 @@ define(
                     item: dataItem
                 };
                 eventArgs = table.fire('subrowopen', eventArgs);
-                if (eventArgs.isDefaultPrevented()) {
+                if (!eventArgs.isDefaultPrevented()) {
                     openSubrow(table, index, el);
                 }
             } else {
@@ -1862,7 +1867,7 @@ define(
 
             eventArgs = table.fire('subrowclose', eventArgs);
 
-            if (eventArgs.isDefaultPrevented()) {
+            if (!eventArgs.isDefaultPrevented()) {
                 entryOut(table, entry);
                 table.subrowIndex = null;
                 
@@ -2058,6 +2063,10 @@ define(
                                                 + domHead.offsetHeight + 'px';
                     placeHolder.style.display = '';
 
+                    if (lib.ie && lib.ie < 8) {
+                        domHead.style.zIndex = table.zIndex + 1;
+                    }
+
                     if (absolutePosition) {
                         for (var i = 0, len = followDoms.length; i < len; i++) {
                             setPos(
@@ -2074,6 +2083,7 @@ define(
                             fhArr[fhLen - 1] + scrollTop, 
                             curLeft
                         );
+
                     } else {
                         for (var i = 0, len = followDoms.length; i < len; i++) {
                             setPos(followDoms[i], posStyle, fhArr[i] ,curLeft);
@@ -2091,6 +2101,7 @@ define(
                     }
 
                     setPos(domHead, posStyle, 0, 0);
+                    domHead.style.zIndex = '';
                 }
 
             };
@@ -2381,6 +2392,16 @@ define(
             }
             table.selectedIndex = [index];
             helper.addPartClasses(table, 'row-selected', getRow(table, index));
+        }
+
+
+        /**
+         * 重置Table主元素的ZIndex
+         * 
+         * @private
+         */
+        function resetMainZIndex(table){
+            table.main.style.zIndex = table.zIndex || '';
         }
 
         /**
@@ -2684,7 +2705,7 @@ define(
                  */
                 var properties = {};
                 
-                lib.extend(properties, Table.defaultProperties, options);
+                u.extend(properties, Table.defaultProperties, options);
 
                 this.setProperties(properties);
             },
@@ -2701,11 +2722,12 @@ define(
                    this.main.style.width = this.realWidth + 'px'; 
                 }
 
+                resetMainZIndex(this);
+
                 initBaseBuilderList(this);
                 initResizeHandler(this);
                 initMainEventhandler(this);
             },
-
 
             /**
              * 渲染控件
@@ -2763,7 +2785,6 @@ define(
                 }
                 if (fieldsChanged
                     || colsWidthChanged
-                    || allProperities['headZIndex']
                     || allProperities['noHead']
                     || allProperities['order']
                     || allProperities['orderBy']
@@ -2809,6 +2830,10 @@ define(
 
                         name: 'width',
                         paint: handleResize
+                    },
+                    {
+                        name: 'zIndex',
+                        paint: resetMainZIndex
                     }
                 ]);
                 table.extraRepaint(changes, changesIndex);
@@ -2980,6 +3005,32 @@ define(
                         selectedIndex: record2
                     }
                 );
+            },
+
+            /**
+             * 重新绘制Table某行
+             * @param {Number} index 
+             * @param {Object} data
+             * @public
+             */
+            updateRowAt: function(index, data) {
+                (data) && (this.datasource[index] = data);
+                var dataItem = this.datasource[index];
+                var rowEl = getRow(this, index);
+
+                if (dataItem && rowEl) {
+                    this.fire('beforeupdaterow', { index: index, data: dataItem });
+
+                    var container = document.createElement('div');
+                    container.innerHTML = getRowHtml(
+                        this, data, index, this.rowBuilderList
+                    );
+                    var newRowEl = container.children[0];
+
+                    rowEl.parentNode.replaceChild(newRowEl, rowEl);
+
+                    this.fire('afterupdaterow', { index: index, data: dataItem });
+                }
             },
 
              /**
