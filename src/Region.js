@@ -65,6 +65,25 @@ define(
         }
 
         /**
+         * 深度遍历获取某节点下所有子节点的id
+         *
+         * @inner
+         * @param {Object} node 目标节点
+         * @return {Array} ids id数组
+         */
+        function getIdsByDepth(node) {
+            var ids = [];
+            var len = node.children instanceof Array && node.children.length;
+            if (len) {
+                while (len--) {
+                   ids.push(node.children[len]['id']);
+                   ids.push.apply(ids, getIdsByDepth(node.children[len]));
+                }
+            }
+            return ids;
+        }
+
+        /**
          * 通过value批量选中地域（多选）
          *
          * @inner
@@ -72,24 +91,36 @@ define(
          * @param {Array} value
          */
         function selectMulti(region, value) {
-            // 更新勾选
+            var regionDataIndex = region.regionDataIndex;
+
+            // 先把已选节点的子节点的值也都选择上
+            // TODO 使用者有可能把父节点和子节点都传进来，为了减少遍历，
+            // 应该做下唯一性筛选
             var len = value.length;
-            var map = {};
-            var key;
+            var fullValue = [];
             while (len--) {
-                map[value[len]] = 1;
+                var id = value[len];
+                var node = regionDataIndex[id];
+                fullValue.push(id);
+                fullValue.push.apply(fullValue, getIdsByDepth(node));
             }
 
-            for (key in region.regionDataIndex) {
-                if (map.hasOwnProperty(key)) {
-                    region.regionDataIndex[key].isSelected = true;
-                }
-                else {
-                    region.regionDataIndex[key].isSelected = false;
-                }
+            var fullLen = fullValue.length;
+            var map = {};
+            while (fullLen--) {
+                map[fullValue[fullLen]] = 1;
+            }
+
+            for (var key in region.regionDataIndex) {
+                var checked = map.hasOwnProperty(key);
                 var checkbox = getOptionDOM(region, key);
+                // 有就更新勾选状态
                 if (checkbox) {
-                    checkbox.checked = (key in map);
+                    checkbox.checked = checked;
+                }
+                // 没有就只修改值
+                else {
+                    region.regionDataIndex[key].isSelected = checked;
                 }
             }
             // 重复调一次，主要是为了更新“选中了几个城市”的显示信息
@@ -112,6 +143,11 @@ define(
 
         /**
          * 更新多选地域的视图和选中值
+         * 这个方法会由上至下的遍历节点，通过数据的选择状态更新视图的显示
+         * 比如：
+         * 1. 某节点处于选择状态时，它的子节点也会全被勾选；
+         * 2. 某节点下的所有节点都被勾选，则该节点也被勾选；
+         * 3. 某节点下的有节点没被勾选，则该节点去掉勾选；
          *
          * @inner
          * @param {Region} region Region控件实例
@@ -121,7 +157,8 @@ define(
          */
         function updateMulti(region, data, dontResetValue, level) {
             var level = level || 0;
-            data = data || {children: region.regionData};
+            data = data || { children: region.regionData };
+            var indexData = region.regionDataIndex[data.id];
             // 虽然rawValue可能已经是最新的值了，这里暂时先清空，然后再填值
             // 为了兼容先勾选地域，再更新值的情况
             // 好丑。以后再改！
@@ -129,14 +166,18 @@ define(
                 region.rawValue = [];
             }
 
-            var isChecked = true;
             var isItemChecked;
             var selChildLength = 0;
 
+            // 有id才有对应的勾选框
             var checkbox = data.id && getOptionDOM(region, data.id);
+
             var children = data.children;
             var len = children instanceof Array && children.length;
             if (len) {
+                // 默认选择
+                var isChecked = true;
+                // 递归深度遍历，更新并获取子节点选择状态
                 for (var i = 0; i < len; i++) {
                     isItemChecked = updateMulti(
                         region,
@@ -144,16 +185,28 @@ define(
                         1,
                         level + 1
                     );
-                    isChecked = isChecked && isItemChecked;
-                    if (level == 3) {
-                        if (isItemChecked) {
-                            selChildLength++;
-                        }
+                    if (isItemChecked) {
+                        selChildLength ++;
                     }
+                    // 只要有一个子节点没有选中，父节点就不选中
+                    isChecked = isChecked && isItemChecked;
+                }
+                // 更新节点勾选状态
+                if (checkbox) {
+                    checkbox.checked = isChecked;
+
+                    // 再把选值塞回去，此时的原则是，
+                    // 选了就塞，不管是否父节点已选
+                    isChecked && region.rawValue.push(data.id);
+
+                    // 通过手动点击勾选全部子节点，
+                    // 造成父节点也选上的数据同步在这里进行
+                    // 因为optionClick方法进行了向下的数据同步
+                    indexData.isSelected = isChecked;
                 }
 
+                // 节点处在倒数第二层，需计算下其下选中的节点个数，并更新信息
                 if (level == 3) {
-                    // isProvince
                     if (!isChecked) {
                         updateSelectedTip(region, selChildLength, len, data.id);
                     }
@@ -162,25 +215,24 @@ define(
                     }
                 }
 
-                checkbox && (checkbox.checked = isChecked);
-                if (!isNaN(parseInt(data.id, 10))) {
-                    isChecked && region.rawValue.push(data.id);
-                }
                 return isChecked;
             }
+            // 到了最后一级弹出层节点
             else {
-                // 弹出层城市不一定创建，所以使用其他方法
                 if (checkbox) {
                     if (checkbox.checked) {
                         region.rawValue.push(data.id);
                     }
+                    // 好像不用了
+                    // indexData.isSelected = checkbox.checked;
                     return checkbox.checked;
                 }
-                else if(region.regionDataIndex[data.id].isSelected) {
+                // 弹出层城市不一定创建，所以使用数据源判断选择状态
+                else if (indexData.isSelected) {
                     region.rawValue.push(data.id);
                 }
 
-                return region.regionDataIndex[data.id].isSelected;
+                return indexData.isSelected;
             }
         }
 
@@ -496,13 +548,13 @@ define(
             while (tar && tar != document.body) {
                 if (tar.nodeName.toLowerCase() === 'input') {
                     optionClick(this, tar);
-                    this.fire('change', this.rawValue);
+                    this.fire('change', { regions: this.getRawValue() });
                     return;
                 }
                 else if (tar.nodeName.toLowerCase() === 'label') {
                     var checkId = tar.getAttribute('for');
                     optionClick(this, lib.g(checkId));
-                    this.fire('change', this.rawValue);
+                    this.fire('change', { regions: this.getRawValue() });
                     return;
                 }
                 tar = tar.parentNode;
@@ -510,21 +562,27 @@ define(
         }
 
         /**
-         * 地域元素点击事件
+         * 地域元素点击事件，
+         * 先向下递归批量更新子节点的全选或全不选状态
+         * 再全局遍历，向上更新选择状态和选择信息
          *
          * @inner
          * @param {Region} region Region控件实例
          * @param {HTMLInputElement} dom 选项checkbox的dom.
+         * @param {boolean} dontRefreshView 是否需要更新状态.
          */
-        function optionClick(region, dom, dontRefreshView) {  
+        function optionClick(region, dom, dontRefreshView) {
             var id = dom.getAttribute('data-optionId');
-            var data = region.regionDataIndex[id];
             var isChecked = dom.checked;
+            var data = region.regionDataIndex[id];
+            data.isSelected = isChecked;
             var children = data.children;
             var len = children instanceof Array && children.length;
             var item;
             var checkbox;
+            // 有下层节点
             if (len) {
+                // 自动勾选
                 while (len--) {
                     item = children[len];
                     checkbox = getOptionDOM(region, item.id);
@@ -559,6 +617,7 @@ define(
                 }
             }
 
+            // 防止每次click都要更新一次信息
             if (!dontRefreshView) {
                 updateMulti(region);
                 updateParamValue(region);
@@ -765,6 +824,30 @@ define(
             }
         }
 
+        function getPureSelected(region, node) {
+            var dataIndex = region.regionDataIndex;
+            var ids = [];
+            // 如果节点已选，就不用再找子节点了
+            if (dataIndex[node.id].isSelected) {
+                ids.push(node.id);
+            }
+            else {
+                var len = 
+                    node.children instanceof Array && node.children.length;
+                if (len) {
+                    while (len--) {
+                        // 带状态选择信息的节点在index下
+                        var child = dataIndex[node.children[len]['id']];
+                        ids.push.apply(
+                            ids, 
+                            getPureSelected(region, child)
+                        );
+                    }
+                }
+            }
+            return ids;
+        }
+
         Region.prototype = {
             /**
              * 控件类型
@@ -787,6 +870,7 @@ define(
                 var properties = {
                     regionData: lib.clone(Region.REGION_LIST),
                     mode: 'multi',
+                    pureSelect: false,
                     rawValue: []
                 };
 
@@ -809,6 +893,11 @@ define(
                     //增加单选型地域数据
                     initSingleData(this, properties);
                 }
+
+                if (properties.pureSelect == 'false') {
+                    properties.pureSelect = false;
+                }
+
                 this.setProperties(properties);
             },
 
@@ -901,6 +990,20 @@ define(
                 if (this.mode == 'single') {
                     return this.getChild('regionSel').getValue();
                 }
+
+                if (this.pureSelect) {
+                    var ids = [];
+                    var regionData = this.regionData;
+                    var len = regionData.length || 0;
+                    while (len--) {
+                        ids.push.apply(
+                            ids, 
+                            getPureSelected(this, regionData[len])
+                        );
+                    }
+                    return ids;
+                }
+
                 return this.rawValue;
             },
 
@@ -932,7 +1035,7 @@ define(
         };
 
         /* jshint maxlen: 600 */
-        Region.REGION_LIST= [
+        Region.REGION_LIST = [
             {
                 'id':'90',
                 'text':'中国',
