@@ -180,9 +180,34 @@ define(
             return lib.g(getId(table, 'select-all'));
         }
         
+        /**
+         * selectedIndex的setter，将自动设置selectedIndexMap
+         * 
+         * @private
+         * @param {object} table 表格控件本身
+         * @param {number} index 行号
+         */
+        function setSelectedIndex(table, selectedIndex) {
+            table.selectedIndex = selectedIndex;
+            var selectedIndexMap = {};
+            for (var i = selectedIndex.length - 1; i >= 0; i--) {
+                selectedIndexMap[selectedIndex[i]] = 1;
+            }
+            table.selectedIndexMap = selectedIndexMap;
+        }
 
-        function resetTableStyle(table) {
-
+        /**
+         * 判断某行是否选中
+         * 
+         * @private
+         * @param {object} table 表格控件本身
+         * @param {number} index 行号
+         */
+        function isRowSelected(table, index) {
+            if (table.selectedIndexMap) {
+                return !!table.selectedIndexMap[index];
+            }
+            return false;
         }
 
         /**
@@ -236,10 +261,10 @@ define(
 
             switch (table.select.toLowerCase()) {
                 case 'multi':
-                    realFields.unshift(getMultiSelectTpl(table));
+                    realFields.unshift(getMultiSelectField(table));
                     break;
                 case 'single':
-                    realFields.unshift(getSingleSelectTpl(table));
+                    realFields.unshift(getSingleSelectField(table));
                     break;
             }
         }
@@ -1546,7 +1571,7 @@ define(
         function getRowBaseArgs(table, rowIndex) {
             var datasource = table.datasource || [];
             var dataLen = datasource.length;
-           return {
+            return {
                 tdCellClass : getClass(table, 'cell'),
                 tdBreakClass : getClass(table, 'cell-break'),
                 tdTextClass : getClass(table, 'cell-text'),
@@ -1554,6 +1579,9 @@ define(
                 rowClass: [
                     getClass(table, 'row'),
                     getClass(table, 'row-' + ((rowIndex % 2) ? 'odd' : 'even')),
+                    isRowSelected(table, rowIndex) 
+                        ? getClass(table, 'row-selected')
+                        : '',
                     dataLen - 1 == rowIndex 
                         ? getClass(table, 'row-last')
                         : '' 
@@ -2173,75 +2201,98 @@ define(
         }
         
         /**
-         * 获取第一列的多选框
+         * 多选框全选模版
          * 
          * @private
          */
-        function getMultiSelectTpl(table) {
-            return { 
-                width: 30,
-                stable: true,
-                select: true,
-                title: function (item, index) {
-                    var template = '<input '
+        var mutilSelectAllTpl = '<input '
                                 +  'type="checkbox" '
                                 +  'id="${id}" '
                                 +  'class="${className}" '
                                 +  'data-index="${index}" '
                                 +  '${disabled}/>';
+
+        /**
+         * 多选框模版
+         * 
+         * @private
+         */
+        var mutilSelectTpl = '<input '
+                            +  'type="checkbox" '
+                            +  'id="${id}" '
+                            +  'class="${className}" '
+                            +  'data-index="${index}" '
+                            +  '${disabled} '
+                            +  '${checked} />';
+        /**
+         * 获取第一列的多选框
+         * 
+         * @private
+         */
+        function getMultiSelectField(table) {
+            return { 
+                width: 30,
+                stable: true,
+                select: true,
+                title: function (item, index) {
                     var data = {
                         id: getId(table, 'select-all'),
                         className: getClass(table, 'select-all'),
                         disabled: table.disabled ? 'disabled="disabled"' : '',
                         index: index
                     };
-                    return lib.format(template, data);
+                    return lib.format(mutilSelectAllTpl, data);
                 },
                 
                 content: function (item, index) {
-                    var template = '<input '
-                                +  'type="checkbox" '
-                                +  'id="${id}" '
-                                +  'class="${className}" '
-                                +  'data-index="${index}" '
-                                +  '${disabled}/>';
                     var data = {
                         id: getId(table, 'multi-select') + index,
                         className: getClass(table, 'multi-select'),
                         disabled: table.disabled ? 'disabled="disabled"' : '',
-                        index: index
+                        index: index,
+                        checked: isRowSelected(table, index) ? 'checked="checked"' : ''
                     };
-                    return lib.format(template, data);
+                    return lib.format(mutilSelectTpl, data);
                 }
             };
         }
         
         /**
+         * 单选框模版
+         * 
+         * @private
+         */
+        var singleSelectTpl = '<input '
+                            +  'type="radio" '
+                            +  'id="${id}" '
+                            +  'name="${name}" '
+                            +  'class="${className}" '
+                            +  'data-index="${index}" '
+                            +  '${disabled} '
+                            +  '${checked} />';
+
+        /**
          * 第一列的单选框
          * 
          * @private
          */
-         function getSingleSelectTpl(table) {
+         function getSingleSelectField(table) {
             return {
                 width: 30,
                 stable: true,
                 title: '&nbsp;',
                 select: true,
                 content: function (item, index) {
-                    var template = '<input '
-                                +  'type="radio" '
-                                +  'id="${id}" '
-                                +  'name="${name}" '
-                                +  'class="${className}" '
-                                +  'data-index="${index}"/>';
                     var id =  getId(table, 'single-select');
                     var data = {
                         id: id + index,
                         name: id,
                         className: getClass(table, 'single-select'),
-                        index: index
+                        index: index,
+                        disabled: table.disabled ? 'disabled="disabled"' : '',
+                        checked: isRowSelected(table, index) ? 'checked="checked"' : ''
                     };
-                    return lib.format(template, data);
+                    return lib.format(singleSelectTpl, data);
                 }
             };
         }
@@ -2294,7 +2345,7 @@ define(
                 }
             }
 
-            table.selectedIndex = selected;
+            setSelectedIndex(table, selected);
             table.fire('select', {selectedIndex: selected});
 
             if (!updateAll) {
@@ -2367,7 +2418,7 @@ define(
                 }
             }
 
-            table.selectedIndex = selected;
+            setSelectedIndex(table, selected);
             table.fire('select', {selectedIndex: selected});
         }
         
@@ -2390,7 +2441,8 @@ define(
                 helper.removePartClasses(
                     table, 'row-selected', getRow(table, selectedIndex[0]));
             }
-            table.selectedIndex = [index];
+
+            setSelectedIndex(table, [index]);
             helper.addPartClasses(table, 'row-selected', getRow(table, index));
         }
 
@@ -2844,7 +2896,7 @@ define(
                     // 重绘时触发onselect事件
                     switch (table.select) {
                         case 'multi':
-                            table.selectedIndex = [];
+                            setSelectedIndex(table, []);
                             table.fire(
                                 'select',
                                 { selectedIndex: table.selectedIndex }
@@ -2991,13 +3043,9 @@ define(
              */
             setDatasource: function(datasource){
                 this.datasource = datasource;
-                this.selectedIndex = [];
-                var record = {
-                    name: 'datasource'
-                };
-                var record2 = {
-                    name: 'selectedIndex'
-                };
+                setSelectedIndex(this, []);
+                var record = { name: 'datasource' };
+                var record2 = { name: 'selectedIndex' };
 
                 this.repaint([record, record2],
                     {
