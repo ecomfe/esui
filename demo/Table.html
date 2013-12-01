@@ -24,7 +24,7 @@
                 <button  id="getSelectedItemsBtn" data-ui="id:getSelectedItemsBtn;type:Button;">getSelectedItems</button>
                 <button  id="updateRowBtn" data-ui="id:updateRowBtn;type:Button;">updateRow</button>
             </div>
-            <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
+            <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
             
             <br/>
         <!--
@@ -53,6 +53,7 @@
                 'esui/Dialog',
                 'esui/Panel',
                 'esui/extension/TableEdit', 
+                'esui/extension/TableSubrow',
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',
@@ -72,7 +73,7 @@
                             subrow:true,
                             select:'multi',
                             editable: 1,
-                            subrowMutex: 1,
+                            subrowMutex: 0,
                             contentEncode: 1,
                             zIndex: 1214,
                             noFollowHeadCache: true,//默认为false,如无必要也最好设置为false,效率更高。

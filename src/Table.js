@@ -22,8 +22,7 @@ define(
             var protectedProperties = {
                 followHeightArr: [0, 0],
                 followWidthArr: [],
-                handlers: [],
-                plugins: []
+                handlers: []
             };
 
             Control.call(this, u.extend({}, options, protectedProperties));
@@ -51,6 +50,7 @@ define(
             subEntryWidth: 18,
             breakLine: false,
             hasTip: false,
+            hasSubrow: false,
             tipWidth: 18,
             sortWidth: 9,
             fontSize: 13,
@@ -65,7 +65,7 @@ define(
          * @return {bool}
          */
         function hasValue(obj) {
-            return !(typeof obj == 'undefined' || obj === null);
+            return !(typeof obj === 'undefined' || obj === null);
         }
 
 
@@ -89,7 +89,7 @@ define(
         }
 
         /**
-         * 获取dom子部件的id
+         * 获取dom带有data-前缀的属性值
          * 
          * @private
          * @return {string}
@@ -110,7 +110,7 @@ define(
         }
 
          /**
-         * 元素属性 自动加上data-前缀
+         * 获取Id
          * 
          * @protected
          */
@@ -1355,7 +1355,6 @@ define(
          * @param {Array} builderList rowBuilder数组
          */
         function addRowBuilderList(table, builderList) {
-            var plugins = table.plugins;
             var rowBuilderList = table.rowBuilderList || [];
             for (var i = 0, l = builderList.length; i <l; i++) {
                 var builder = builderList[i];
@@ -1363,11 +1362,14 @@ define(
                     continue;
                 }
 
+                if(builder.getSubrowHtml) {
+                    table.hasSubrow = true;
+                }
+
                 if(!hasValue(builder.index)) {
                     builder.index = 1000;
                 }
 
-                plugins.push(builder);
                 rowBuilderList.push(builder);
             }
 
@@ -1389,12 +1391,6 @@ define(
             addRowBuilderList(
                 table,
                 [
-                    {
-                        index: 0,
-                        getRowArgs: getSubrowArgs,
-                        getColHtml: getSubEntryHtml,
-                        getSubrowHtml : getSubrowHtml
-                    },
                     {
                         index: 1,
                         getRowArgs: getRowBaseArgs,
@@ -1551,12 +1547,14 @@ define(
 
             html.push('</tr></table></div>');
             
-            for (var i = 0, l = builderList.length; i <l; i++) {
-                var subrowBuilder = builderList[i].getSubrowHtml;
-                if (subrowBuilder) {
-                    html.push(
-                        subrowBuilder(table, index, extraArgsList[i])
-                    );
+            if (table.hasSubrow) {
+                for (var i = 0, l = builderList.length; i <l; i++) {
+                    var subrowBuilder = builderList[i].getSubrowHtml;
+                    if (subrowBuilder) {
+                        html.push(
+                            subrowBuilder(table, index, extraArgsList[i])
+                        );
+                    }
                 }
             }
 
@@ -1662,78 +1660,6 @@ define(
         }
 
         /**
-         * subrow行绘制每行基本参数
-         *
-         * @private
-         */
-        function getSubrowArgs(table, rowIndex){
-            return {
-                subrow : table.subrow && table.subrow != 'false'
-            };
-        }
-
-        /**
-         * subrow入口的html模板
-         *
-         * @private
-         */
-        var tplSubEntry = '<div '
-                        +  'class="${className}" '
-                        + 'id="${id}" '
-                        + 'title="${title}" '
-                        + 'data-index="${index}">'
-                        + '</div>';
-
-        function getSubEntryHtml(
-            table, data, field, rowIndex, fieldIndex, extraArgs
-        ) {
-            var subrow = extraArgs.subrow;
-            var subentry = subrow && field.subEntry;
-            var result = {
-                notInText: true,
-                width: table.subEntryWidth,
-                align: 'right'
-            };
-
-            if (subentry) {
-                var isSubEntryShown = typeof field.isSubEntryShow === 'function'
-                    ? field.isSubEntryShow.call(
-                        table, data, rowIndex, fieldIndex)
-                    : true;
-                if (isSubEntryShown !== false) {
-                    result.html = lib.format(
-                        tplSubEntry,
-                        {
-                            className : getClass(table, 'subentry'),
-                            id :  getSubentryId(table, rowIndex),
-                            title :  table.subEntryOpenTip,
-                            index : rowIndex
-                        }
-                   );
-                }
-
-                result.colClass = getClass(table, 'subentryfield');
-            }
-
-            return result;
-        }
-
-        /**
-         * 获取子内容区域的html
-         *
-         * @private
-         * @return {string}
-         */
-        function getSubrowHtml(table, index, extraArgs) {
-            return extraArgs.subrow
-                    ? '<div id="' + getSubrowId(table, index)
-                    +  '" class="' + getClass(table, 'subrow') + '"'
-                    +  ' style="display:none"></div>'
-                    : '';
-        }
-
-
-        /**
          * 表格行鼠标移上的事件handler
          * 
          * @private
@@ -1789,169 +1715,6 @@ define(
                         break;
                 }
             }
-        }
-        
-        /**
-         * 获取表格子行的元素id
-         *
-         * @private
-         * @param {number} index 行序号
-         * @return {string}
-         */
-        function getSubrowId(table, index) {
-            return getId(table, 'subrow') + index;
-        }
-        
-        /**
-         * 获取表格子行入口元素的id
-         *
-         * @private
-         * @param {number} index 行序号
-         * @return {string}
-         */
-        function getSubentryId(table, index) {
-            return getId(table, 'subentry') + index;
-        }
-        
-        /**
-         * 处理子行入口元素鼠标移入的行为
-         *
-         * @private
-         * @param {number} index 入口元素的序号
-         */
-        function entryOverHandler(element, e) {
-            entryOver(this, element);
-        }
-
-        function entryOver(table, element) {
-            var opened = /subentry-opened/.test(element.className);
-            var classBase = 'subentry-hover';
-                
-            if (opened) {
-                classBase = 'subentry-opened-hover';
-            }
-            helper.addPartClasses(table, classBase, element);
-        }
-        
-        /**
-         * 处理子行入口元素鼠标移出的行为
-         *
-         * @private
-         * @param {number} index 入口元素的序号
-         */
-        function entryOutHandler(element, e) {
-            entryOut(this, element);
-        }
-        
-        function entryOut(table, element) {
-            helper.removePartClasses(table, 'subentry-hover', element);
-            helper.removePartClasses(table, 'subentry-opened-hover', element);
-        }
-        
-        /**
-         * 触发subrow的打开|关闭
-         *
-         * @public
-         * @param {number} index 入口元素的序号
-         */
-        function fireSubrow(el, e) {
-            var table = this;
-            var index = getAttr(el, 'index');
-            var datasource = table.datasource;
-            var dataLen = (datasource instanceof Array && datasource.length);
-            
-            if (!dataLen || index >= dataLen) {
-                return;
-            }
-            
-            if (!getAttr(el, 'subrowopened')) {
-                var dataItem = datasource[index];
-                var eventArgs = {
-                    index:index, 
-                    item: dataItem
-                };
-                eventArgs = table.fire('subrowopen', eventArgs);
-                if (!eventArgs.isDefaultPrevented()) {
-                    openSubrow(table, index, el);
-                }
-            } else {
-                closeSubrow(table, index, el);
-            }
-
-            entryOver(table, el);
-        }
-        
-        /**
-         * 关闭子行
-         *
-         * @private
-         * @param {number} index 子行的序号
-         */
-        function closeSubrow(table, index, entry) {
-            var eventArgs = { 
-                index: index, 
-                item: table.datasource[index]
-            };
-
-            eventArgs = table.fire('subrowclose', eventArgs);
-
-            if (!eventArgs.isDefaultPrevented()) {
-                entryOut(table, entry);
-                table.subrowIndex = null;
-                
-                helper.removePartClasses(
-                    table, 
-                    'subentry-opened', 
-                    entry
-                );
-                helper.removePartClasses(
-                    table, 
-                    'row-unfolded', 
-                    getRow(table, index)
-                );
-                
-                setAttr(entry, 'title', table.subEntryOpenTip);
-                setAttr(entry, 'subrowopened', '');
-                
-                lib.g(getSubrowId(table, index)).style.display = 'none';
-
-                return true;
-            }
-
-            return false;
-        }
-        
-        /**
-         * 打开子行
-         *
-         * @private
-         * @param {number} index 子行的序号
-         */
-        function openSubrow(table, index, entry) {
-            var currentIndex = table.subrowIndex;
-            var closeSuccess = 1;
-            
-            if (hasValue(currentIndex)) {
-                closeSuccess = closeSubrow(
-                    table, 
-                    currentIndex, 
-                    lib.g(getSubentryId(table, currentIndex))
-                );
-            }
-            
-            if (!closeSuccess) {
-                return;
-            }
-
-            helper.addPartClasses(table, 'subentry-opened', entry);
-            helper.addPartClasses(table, 'row-unfolded', getRow(table, index));
-
-            setAttr(entry, 'title', table.subEntryCloseTip);
-            setAttr(entry, 'subrowopened', '1');
-            
-            lib.g(getSubrowId(table, index)).style.display = '';
-            
-            table.subrowMutex && (table.subrowIndex = index);
         }
         
         /**
@@ -2653,7 +2416,6 @@ define(
             var getPartClasses = helper.getPartClasses;
             var rowClass = getPartClasses(table, 'row')[0];
             var titleClass = getPartClasses(table, 'hcell')[0];
-            var subentryClass = getPartClasses(table, 'subentry')[0];
             var selectAllClass = getPartClasses(table, 'select-all')[0];
             var multiSelectClass = getPartClasses(table, 'multi-select')[0];
             var singleSelectClass = getPartClasses(table, 'single-select')[0];
@@ -2670,10 +2432,6 @@ define(
                     {
                         handler: titleOverHandler, 
                         matchFn: titleClass
-                    },
-                    {
-                        handler: entryOverHandler, 
-                        matchFn: subentryClass
                     }
                 ]
             );
@@ -2690,10 +2448,6 @@ define(
                     {
                         handler: titleOutHandler, 
                         matchFn: titleClass
-                    },
-                    {
-                        handler: entryOutHandler, 
-                        matchFn: subentryClass
                     }
                 ]
             );
@@ -2710,10 +2464,6 @@ define(
                     {
                         handler: titleClickHandler,
                         matchFn: titleClass
-                    },
-                    {
-                        handler: fireSubrow,
-                        matchFn: subentryClass
                     },
                     {
                         handler: toggleSelectAll,
@@ -2910,17 +2660,6 @@ define(
                 if (table.realWidth != getWidth(table)) {
                     handleResize(table);
                 }
-            },
-
-             /**
-             * 获取表格子行的元素
-             *
-             * @public
-             * @param {number} index 行序号
-             * @return {HTMLElement}
-             */
-            getSubrow: function(index) {
-                return lib.g(getSubrowId(this, index));    
             },
 
             /**
@@ -3132,8 +2871,7 @@ define(
                     }
                 }
 
-                this.plugins = null;
-                this.rowBuilderList =  null;
+                this.rowBuilderList = null;
 
                 this.headPanel.disposeChildren();
                 this.bodyPanel.disposeChildren();
