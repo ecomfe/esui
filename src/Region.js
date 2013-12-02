@@ -71,11 +71,12 @@ define(
          * @inner
          * @param {Object} node 目标节点
          * @param {Function} handler 处理函数
+         * @param {Object} context 执行环境
          */
-        function walk(node, handler) {
+        function walk(node, handler, context) {
             handler.call(context, node);
             u.each(node.children, function (child) {
-                walk(child, handler);
+                walk(child, handler, context);
             });
         }
 
