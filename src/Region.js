@@ -13,6 +13,7 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var ui = require('./main');
+        var u = require('underscore');
 
         /**
          * 地域控件类
@@ -65,22 +66,17 @@ define(
         }
 
         /**
-         * 深度遍历获取某节点下所有子节点的id
+         * 深度遍历函数
          *
          * @inner
          * @param {Object} node 目标节点
-         * @return {Array} ids id数组
+         * @param {Function} handler 处理函数
          */
-        function getIdsByDepth(node) {
-            var ids = [];
-            var len = node.children instanceof Array && node.children.length;
-            if (len) {
-                while (len--) {
-                   ids.push(node.children[len]['id']);
-                   ids.push.apply(ids, getIdsByDepth(node.children[len]));
-                }
-            }
-            return ids;
+        function walk(node, handler) {
+            handler.call(context, node);
+            u.each(node.children, function (child) {
+                walk(child, handler);
+            });
         }
 
         /**
@@ -90,28 +86,29 @@ define(
          * @param {Region} region Region控件实例
          * @param {Array} value
          */
-        function selectMulti(region, value) {
+        function selectMulti(region, values) {
             var regionDataIndex = region.regionDataIndex;
-
             // 先把已选节点的子节点的值也都选择上
             // TODO 使用者有可能把父节点和子节点都传进来，为了减少遍历，
             // 应该做下唯一性筛选
-            var len = value.length;
-            var fullValue = [];
-            while (len--) {
-                var id = value[len];
-                var node = regionDataIndex[id];
-                fullValue.push(id);
-                fullValue.push.apply(fullValue, getIdsByDepth(node));
-            }
+            var fullValues = [];
+            u.each(values, function (value) {
+                var node = regionDataIndex[value];
+                if (node) {
+                    walk(node, function (node) {
+                        fullValues.push(node.id);
+                    });
+                }
+            });
 
-            var fullLen = fullValue.length;
+            // 把整理后全数据做标识
             var map = {};
-            while (fullLen--) {
-                map[fullValue[fullLen]] = 1;
-            }
+            u.each(fullValues, function (value) {
+                map[value] = 1;
+            });
 
-            for (var key in region.regionDataIndex) {
+            // 根据标识勾选
+            u.each(region.regionDataIndex, function (item, key) {
                 var checked = map.hasOwnProperty(key);
                 var checkbox = getOptionDOM(region, key);
                 // 有就更新勾选状态
@@ -120,9 +117,9 @@ define(
                 }
                 // 没有就只修改值
                 else {
-                    region.regionDataIndex[key].isSelected = checked;
+                    item.isSelected = checked;
                 }
-            }
+            });
             // 重复调一次，主要是为了更新“选中了几个城市”的显示信息
             updateMulti(region);
             updateParamValue(region);
@@ -546,15 +543,18 @@ define(
             }
             var tar = e.target;
             while (tar && tar != document.body) {
+                var hit = false;
                 if (tar.nodeName.toLowerCase() === 'input') {
-                    optionClick(this, tar);
-                    this.fire('change', { regions: this.getRawValue() });
-                    return;
+                    hit = true;
                 }
                 else if (tar.nodeName.toLowerCase() === 'label') {
                     var checkId = tar.getAttribute('for');
-                    optionClick(this, lib.g(checkId));
-                    this.fire('change', { regions: this.getRawValue() });
+                    tar = lib.g(checkId);
+                    hit = true; 
+                }
+                if (hit) {
+                    optionClick(this, tar);
+                    this.fire('change');
                     return;
                 }
                 tar = tar.parentNode;
@@ -578,40 +578,34 @@ define(
             data.isSelected = isChecked;
             var children = data.children;
             var len = children instanceof Array && children.length;
-            var item;
-            var checkbox;
             // 有下层节点
             if (len) {
                 // 自动勾选
-                while (len--) {
-                    item = children[len];
-                    checkbox = getOptionDOM(region, item.id);
+                u.each(children, function (child) {
+                    var checkbox = getOptionDOM(region, child.id);
                     if (checkbox) {
                         checkbox.checked = isChecked;
                         optionClick(region, checkbox, 1);
                     }
                     else {
-                        region.regionDataIndex[item.id].isSelected = isChecked;
+                        region.regionDataIndex[child.id].isSelected = isChecked;
                     }
-                }
+                });
             }
             else if (len === 0) {
                 //获取第三层checkbox
                 if (dom.getAttribute('level') == 3) {
                     var selCityIdsLength = 0;
-                    var cityTotalLength =
-                        region.regionDataIndex[id].parent.children.length;
-                    for (var i = 0; i < cityTotalLength; i++) {
-                        var child =
-                            region.regionDataIndex[id].parent.children[i];
-                        if (getOptionDOM(child.id).checked === true) {
-                            selCityIdsLength++;
+                    var cityTotal = region.regionDataIndex[id].parent.children;
+                    u.each(cityTotal, function (city) {
+                        if (getOptionDOM(city.id).checked === true) {
+                            selCityIdsLength ++;
                         }
-                    }
+                    });
                     updateSelectedTip(
                         region,
                         selCityIdsLength,
-                        cityTotalLength,
+                        cityTotal.length,
                         region.regionDataIndex[id].parent.id
                     );
                 }
@@ -824,26 +818,29 @@ define(
             }
         }
 
+        /**
+         * 获取“纯粹”已选节点（就是吧，如果父节点已选，子节点数据就不找了）
+         *
+         * @inner
+         * @param {Region} region Region控件实例
+         * @param {Object} node 节点
+         */
         function getPureSelected(region, node) {
             var dataIndex = region.regionDataIndex;
             var ids = [];
             // 如果节点已选，就不用再找子节点了
-            if (dataIndex[node.id].isSelected) {
+            if (dataIndex[node.id] && dataIndex[node.id].isSelected) {
                 ids.push(node.id);
             }
             else {
-                var len = 
-                    node.children instanceof Array && node.children.length;
-                if (len) {
-                    while (len--) {
-                        // 带状态选择信息的节点在index下
-                        var child = dataIndex[node.children[len]['id']];
-                        ids.push.apply(
-                            ids, 
-                            getPureSelected(region, child)
-                        );
-                    }
-                }
+                u.each(node.children, function (child) { 
+                    // 带状态选择信息的节点在index下
+                    var indexChild = dataIndex[child['id']];
+                    ids.push.apply(
+                        ids, 
+                        getPureSelected(region, indexChild)
+                    );
+                });
             }
             return ids;
         }
@@ -992,15 +989,13 @@ define(
                 }
 
                 if (this.pureSelect) {
-                    var ids = [];
-                    var regionData = this.regionData;
-                    var len = regionData.length || 0;
-                    while (len--) {
-                        ids.push.apply(
-                            ids, 
-                            getPureSelected(this, regionData[len])
-                        );
-                    }
+                    // 伪造一个
+                    var node = {
+                        // 应该没人用这么奇葩的id吧。。。
+                        id: '-100',
+                        children: this.regionData
+                    };
+                    var ids = getPureSelected(this, node);
                     return ids;
                 }
 
