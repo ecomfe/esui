@@ -18,6 +18,7 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var ui = require('./main');
+        var moment = require('moment');
 
         /**
          * 控件类
@@ -64,6 +65,26 @@ define(
         }
 
         /**
+         * 获取某日开始时刻
+         *
+         * @param {Date} day 某日
+         * @return {Date}
+         */
+        function startOfDay(day) {
+            return moment(day).startOf('day').toDate();
+        }
+
+        /**
+         * 获取某日结束时刻
+         *
+         * @param {Date} day 某日
+         * @return {Date}
+         */
+        function endOfDay(day) {
+            return moment(day).endOf('day').toDate();
+        }
+
+        /**
          * 判断是否不在可选范围内
          *
          * @param {RangeCalendar} calendar RangeCalendar控件实例
@@ -72,8 +93,13 @@ define(
          */
         function isOutOfRange(calendar, shortItem) {
             var range = calendar.range;
-
             var itemValue = shortItem.getValue.call(calendar);
+
+            // 得先格式化一下，去掉时间
+            range.begin = startOfDay(range.begin);
+            range.end = endOfDay(range.end);
+            itemValue.begin = startOfDay(itemValue.begin);
+            itemValue.end = startOfDay(itemValue.end);
             
             if (range.begin > itemValue.begin
                 || range.end < itemValue.end) {
