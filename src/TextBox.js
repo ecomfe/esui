@@ -332,6 +332,7 @@ define(
                 ? 'input' 
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
+            this.helper.delegateDOMEvent(input, 'change');
 
             if (!supportPlaceholder) {
                 var placeholder = document.createElement('label');
