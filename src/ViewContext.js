@@ -107,8 +107,7 @@ define(
         function removeFromGroup(control, group) {
             for (var i = 0; i < group.length; i++) {
                 if (group[i] === control) {
-                    delete group[i];
-                    group.length--;
+                    group.splice(i, 1);
                     return;
                 }
             }

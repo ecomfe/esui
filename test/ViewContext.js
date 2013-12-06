@@ -123,6 +123,21 @@ define(function (require) {
                 expect(group.length).toBe(2);
             });
 
+            it('should move latter elements forward when remove', function () {
+                var viewContext = new ViewContext();
+                var group = viewContext.getGroup('test');
+                viewContext.add(new FakeControl('test'));
+                viewContext.add(new FakeControl('test'));
+                var control = new FakeControl('test');
+                viewContext.add(control);
+                viewContext.add(new FakeControl('test'));
+                viewContext.remove(control);
+
+                for (var i = 0; i < 3; i++) {
+                    expect(group[i]).toBeDefined();
+                }
+            });
+
             it('should sync indexed property when add', function () {
                 var viewContext = new ViewContext();
                 var group = viewContext.getGroup('test');
