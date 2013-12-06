@@ -8,6 +8,7 @@
                     "main",
                     "ViewContext",
                     "Control",
+                    "SafeWrapper",
                     "InputControl",
                     "ControlGroup",
                     "InputCollection",
