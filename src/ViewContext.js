@@ -7,7 +7,7 @@
  * @author DBear, errorrik, otakustay
  */
 define(
-    function () {
+    function (require) {
         /**
          * 控件分组
          *
@@ -257,13 +257,32 @@ define(
         };
 
         /**
-         * 通过id获取控件实例。 
+         * 通过id获取控件实例。
          *
          * @param {string} id 控件id
          * @return {Control} 根据id获取的控件
          */
         ViewContext.prototype.get = function (id) {
             return this.controls[id];
+        };
+
+        /**
+         * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
+         *
+         * @param {string} id 控件id
+         * @return {Control} 根据id获取的控件
+         */
+        ViewContext.prototype.getSafely = function (id) {
+            var control = this.get(id);
+
+            if (!control) {
+                var SafeWrapper = require('./SafeWrapper');
+                control = new SafeWrapper();
+                control.id = id;
+                control.viewContext = this;
+            }
+
+            return control;
         };
 
         /**

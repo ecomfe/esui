@@ -697,6 +697,28 @@ define(
             },
 
             /**
+             * 获取子控件，无相关子控件则返回{@link SafeWrapper}
+             * 
+             * @param {string} childName 子控件名
+             * @return {Control}
+             */
+            getChildSafely: function (childName) {
+                var child = this.getChild(childName);
+
+                if (!child) {
+                    var SafeWrapper = require('./SafeWrapper');
+                    child = new SafeWrapper();
+                    child.childName = childName;
+                    child.parent = this;
+                    if (this.viewContext) {
+                        child.viewContext = this.viewContext;
+                    }
+                }
+
+                return child;
+            },
+
+            /**
              * 批量初始化子控件
              * 
              * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
