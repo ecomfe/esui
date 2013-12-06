@@ -136,17 +136,6 @@ define(
         };
 
         require('./lib').inherits(SafeWrapper, Control);
-
-        /**
-         * 空实例，是一个完全没有任何属性或状态的空的`SafeWrapper`对象，
-         * 用于避免多次创建没啥用的实例
-         *
-         * @type {SafeWrapper}
-         * @readonly
-         * @static
-         */
-        SafeWrapper.empty = new SafeWrapper();
-
         return SafeWrapper;
     }
 );
