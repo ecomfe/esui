@@ -2013,7 +2013,9 @@ define(
                         className: getClass(table, 'multi-select'),
                         disabled: table.disabled ? 'disabled="disabled"' : '',
                         index: index,
-                        checked: isRowSelected(table, index) ? 'checked="checked"' : ''
+                        checked: isRowSelected(table, index)
+                            ? 'checked="checked"'
+                            : ''
                     };
                     return lib.format(mutilSelectTpl, data);
                 }
@@ -2053,7 +2055,9 @@ define(
                         className: getClass(table, 'single-select'),
                         index: index,
                         disabled: table.disabled ? 'disabled="disabled"' : '',
-                        checked: isRowSelected(table, index) ? 'checked="checked"' : ''
+                        checked: isRowSelected(table, index)
+                            ? 'checked="checked"'
+                            : ''
                     };
                     return lib.format(singleSelectTpl, data);
                 }
@@ -2806,7 +2810,10 @@ define(
                 var rowEl = getRow(this, index);
 
                 if (dataItem && rowEl) {
-                    this.fire('beforeupdaterow', { index: index, data: dataItem });
+                    this.fire(
+                        'beforeupdaterow',
+                        { index: index, data: dataItem }
+                    );
 
                     var container = document.createElement('div');
                     container.innerHTML = getRowHtml(
@@ -2816,7 +2823,10 @@ define(
 
                     rowEl.parentNode.replaceChild(newRowEl, rowEl);
 
-                    this.fire('afterupdaterow', { index: index, data: dataItem });
+                    this.fire(
+                        'afterupdaterow',
+                        { index: index, data: dataItem }
+                    );
                 }
             },
 
