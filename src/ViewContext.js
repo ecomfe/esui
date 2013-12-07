@@ -8,6 +8,8 @@
  */
 define(
     function (require) {
+        var ControlCollection = require('./ControlCollection');
+
         /**
          * 控件分组
          *
@@ -16,19 +18,16 @@ define(
          *
          * 控件分组是内部类，仅可以通过{@link ViewContext#getGroup}方法获取
          *
-         * @constructor
+         * 为了保持私有性，`ControlGroup`去除了{@link ControlCollection#add}和
+         * {@link ControlCollection#remove}方法，使用者不能修改集合
+         *
          * @param {string} name 分组名称
+         * @extends ControlCollection
+         * @constructor
          * @private
          */
         function ControlGroup(name) {
-            /**
-             * @property {number} length
-             *
-             * 当前控件分组中控件的数量
-             *
-             * @readonly
-             */
-            this.length = 0;
+            ControlCollection.apply(this, arguments);
 
             /**
              * @property {string} name
@@ -40,59 +39,26 @@ define(
             this.name = name;
         }
 
-        // 为了让Firebug认为这是个数组
-        ControlGroup.prototype.splice = Array.prototype.splice;
+        require('./lib').inherits(ControlGroup, ControlCollection);
 
         /**
-         * 对分组内每个控件调用指定函数
+         * @method
          *
-         * 需要注意的是，`ControlGroup`是 **live** 的，也就是说当进行循环时，
-         * 如果此过程中有将一个控件销毁、移出{@link ViewContext}等行为，
-         * 此控件会从当前的`ControlGroup`中消失，
-         * 导致{@link ControlGroup#length}属性变化，
-         * 因此在循环中如果对控件有相关操作，需要特别注意状态的同步问题
+         * `ControlGroup`不提供此方法
+         */
+        ControlGroup.prototype.add = undefined;
+
+        /**
+         * @method
          *
-         * @param {Function} iterator 每次循环调用的函数，函数的`this`为控件对象
+         * `ControlGroup`不提供此方法
          */
-        ControlGroup.prototype.each = function (iterator) {
-            for (var i = 0; i < this.length; i++) {
-                var control = this[i];
-                iterator.call(control);
-            }
-        };
-
-        /**
-         * 激活分组内所有控件
-         */
-        ControlGroup.prototype.enable = function () {
-            this.each(function () { this.enable(); });
-        };
-
-        /**
-         * 禁用分组内所有控件
-         */
-        ControlGroup.prototype.disable = function () {
-            this.each(function () { this.disable(); });
-        };
-
-        /**
-         * 显示分组内所有控件
-         */
-        ControlGroup.prototype.show = function () {
-            this.each(function () { this.show(); });
-        };
-
-        /**
-         * 隐藏分组内所有控件
-         */
-        ControlGroup.prototype.hide = function () {
-            this.each(function () { this.hide(); });
-        };
+        ControlGroup.prototype.remove = undefined;
 
         /**
          * 销毁当前实例
          */
-        ControlGroup.prototype.dispose = function () {
+        ControlGroup.prototype.disposeGroup = function () {
             for (var i = 0; i < this.length; i++) {
                 delete this[i];
             }
@@ -100,17 +66,11 @@ define(
         };
 
         function addToGroup(control, group) {
-            group[group.length] = control;
-            group.length++;
+            ControlCollection.prototype.add.call(group, control);
         }
 
         function removeFromGroup(control, group) {
-            for (var i = 0; i < group.length; i++) {
-                if (group[i] === control) {
-                    group.splice(i, 1);
-                    return;
-                }
-            }
+            ControlCollection.prototype.remove.call(group, control);
         }
 
         function getGroupNames(control) {
@@ -320,7 +280,7 @@ define(
 
             for (var name in this.groups) {
                 if (this.groups.hasOwnProperty(name)) {
-                    this.groups[name].dispose();
+                    this.groups[name].disposeGroup();
                     this.groups[name] = undefined;
                 }
             }
