@@ -9,6 +9,7 @@
                     "ViewContext",
                     "Control",
                     "SafeWrapper",
+                    "ControlCollection",
                     "InputControl",
                     "ControlGroup",
                     "InputCollection",
