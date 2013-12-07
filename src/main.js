@@ -270,6 +270,25 @@ define(
         };
 
         /**
+        var ControlCollection = require('./ControlCollection');
+
+        /**
+         * 创建控件包裹，返回一个{@link ControlCollection}对象
+         *
+         * @param {Control...} controls 需要包裹的控件
+         * @return {ControlCollection}
+         */
+        main.wrap = function () {
+            var collection = new ControlCollection();
+
+            for (var i = 0; i < arguments.length; i++) {
+                collection.add(arguments[i]);
+            }
+
+            return collection;
+        };
+
+        /**
          * 从容器DOM元素批量初始化内部的控件渲染
          * 
          * @param {HTMLElement} [wrap=document.body] 容器DOM元素，默认
