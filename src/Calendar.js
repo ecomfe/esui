@@ -268,7 +268,7 @@ define(
                     name: ['disabled', 'hidden', 'readOnly'],
                     paint: function (calendar, disabled, hidden, readOnly) {
                         if (disabled || hidden || readOnly) {
-                            hideLayer(calendar);
+                            calendar.layer.hide();
                         }
                     }
                 }
