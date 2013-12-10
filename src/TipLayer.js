@@ -86,11 +86,11 @@ define(
             lib.addClasses(mainDOM, headClasses);
             var properties = {
                 main: mainDOM,
-                id: 'title'
+                childName: 'title'
             };
             var label = ui.create('Label', properties);
             label.render();
-            control.addChild(label, 'title');
+            control.addChild(label);
             return label;
 
         }
