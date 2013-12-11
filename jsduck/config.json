@@ -7,6 +7,8 @@
         "../src/main.js",
         "../src/ViewContext.js",
         "../src/Control.js",
+        "../src/SafeWrapper.js",
+        "../src/ControlCollection.js",
         "../src/InputControl.js",
         "../src/Layer.js",
 

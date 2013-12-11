@@ -74,19 +74,19 @@ define(function (require) {
             it('should dispose all groups when cleaned', function () {
                 var viewContext = new ViewContext();
                 var group = viewContext.getGroup('test');
-                spyOn(group, 'dispose');
+                spyOn(group, 'disposeGroup');
 
                 viewContext.clean();
-                expect(group.dispose).toHaveBeenCalled();
+                expect(group.disposeGroup).toHaveBeenCalled();
             });
 
             it('should dispose all groups when disposed', function () {
                 var viewContext = new ViewContext();
                 var group = viewContext.getGroup('test');
-                spyOn(group, 'dispose');
+                spyOn(group, 'disposeGroup');
 
                 viewContext.dispose();
-                expect(group.dispose).toHaveBeenCalled();
+                expect(group.disposeGroup).toHaveBeenCalled();
             });
         });
 
@@ -121,6 +121,21 @@ define(function (require) {
                 viewContext.remove(control);
 
                 expect(group.length).toBe(2);
+            });
+
+            it('should move latter elements forward when remove', function () {
+                var viewContext = new ViewContext();
+                var group = viewContext.getGroup('test');
+                viewContext.add(new FakeControl('test'));
+                viewContext.add(new FakeControl('test'));
+                var control = new FakeControl('test');
+                viewContext.add(control);
+                viewContext.add(new FakeControl('test'));
+                viewContext.remove(control);
+
+                for (var i = 0; i < 3; i++) {
+                    expect(group[i]).toBeDefined();
+                }
             });
 
             it('should sync indexed property when add', function () {
@@ -253,11 +268,11 @@ define(function (require) {
                 expect(controls[2].hide).toHaveBeenCalled();
             });
 
-            it('should have a `dispose` method', function () {
+            it('should have a `disposeGroup` method', function () {
                 var viewContext = new ViewContext();
                 var group = viewContext.getGroup('test');
 
-                expect(group.dispose).toBeOfType('function');
+                expect(group.disposeGroup).toBeOfType('function');
             });
 
             it('should remove all containing controls when disposed', function () {
@@ -272,7 +287,7 @@ define(function (require) {
                 viewContext.add(controls[1]);
                 viewContext.add(controls[2]);
 
-                group.dispose();
+                group.disposeGroup();
 
                 expect(group.length).toBe(0);
                 expect(group[0]).toBeUndefined();

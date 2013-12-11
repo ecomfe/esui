@@ -19,7 +19,7 @@ define(
          *
          * 需要特别注意的是，对面板进行`disable()`操作，并不会禁用其内部的控件，
          * 对控件进行批量禁用/启用操作，请使用{@link ViewContext#getGroup}
-         * 及{@link ControlGroup#disable}和{@link ControlGroup#enable}方法
+         * 及{@link ControlCollection}提供的相关方法
          *
          * @extends Control
          * @constructor
