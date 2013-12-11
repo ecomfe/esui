@@ -269,16 +269,6 @@ define(
             return defaultViewContext.get(id);
         };
 
-        /**
-         * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
-         *
-         * @param {string} id 控件id
-         * @return {Control} 根据id获取的控件
-         */
-        main.getSafely = function (id) {
-            return defaultViewContext.getSafely(id);
-        };
-
         var ControlCollection = require('./ControlCollection');
 
         /**
