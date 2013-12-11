@@ -49,6 +49,14 @@ define(
             monthView.setProperties(
                 { 'rawValue': calendar.rawValue, 'range': calendar.range });
             monthView.on('change', syncMonthViewValue, calendar);
+
+
+            if (calendar.autoHideLayer) {
+                monthView.on(
+                    'itemclick',
+                    u.bind(calendar.layer.toggle, calendar.layer)
+                );
+            }
         };
 
         /**
@@ -156,9 +164,14 @@ define(
                      *
                      * @override
                      */
-                    rawValue: now
+                    rawValue: now,
+                    // 是否点击自动关闭弹层
+                    autoHideLayer: false
                 };
 
+                if (options.autoHideLayer === 'false') {
+                    options.autoHideLayer = false;
+                }
 
                 u.extend(properties, options);
 
@@ -268,7 +281,7 @@ define(
                     name: ['disabled', 'hidden', 'readOnly'],
                     paint: function (calendar, disabled, hidden, readOnly) {
                         if (disabled || hidden || readOnly) {
-                            hideLayer(calendar);
+                            calendar.layer.hide();
                         }
                     }
                 }

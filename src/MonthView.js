@@ -15,6 +15,7 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ui = require('./main');
+        var m = require('moment');
 
         /**
          * 日历控件类
@@ -229,6 +230,10 @@ define(
 
             var itemClass =
                 helper.getPartClasses(monthView, 'month-item').join(' ');
+
+            var todayClass =
+                helper.getPartClasses(monthView, 'month-item-today').join(' ');
+
             var virClass =
                 helper.getPartClasses(
                     monthView, 'month-item-virtual'
@@ -270,11 +275,13 @@ define(
                 else if (repeater > range.end) {
                     disabled = true;
                 }
-
                 // 构建date的css class
                 var currentClass = itemClass;
                 if (virtual) {
                     currentClass += ' ' + virClass;
+                }
+                else if (m().isSame(repeater, 'day')) {
+                    currentClass += ' ' + todayClass;
                 }
                 if (disabled) {
                     currentClass += ' ' + disabledClass;
@@ -857,6 +864,8 @@ define(
                 updateSingleSelectState(monthView, monthView.rawValue, newDate);
                 monthView.rawValue = newDate;
                 monthView.fire('change');
+                monthView.fire('itemclick');
+
             }
         }
 
