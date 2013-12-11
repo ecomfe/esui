@@ -159,7 +159,16 @@ define(
                  *
                  * 按钮的文本内容，不作HTML转义
                  */
-                paint.html('content')
+                paint.html('content'),
+                {
+                    name: 'disabled',
+                    paint: function (button, disabled) {
+                        var nodeName = button.main.nodeName.toLowerCase();
+                        if (nodeName === 'button' || nodeName === 'input') {
+                            button.main.disabled = !!disabled;
+                        }
+                    }
+                }
             ),
 
             /**
