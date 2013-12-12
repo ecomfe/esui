@@ -11,7 +11,6 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Helper = require('./Helper');
-        var ui = require('./main');
         var u = require('underscore');
 
         /**
@@ -197,6 +196,7 @@ define(
                     }
 
                     // 为控件主元素添加控件实例标识属性
+                    var ui = require('./main');
                     this.main.setAttribute( 
                         ui.getConfig('instanceAttr'), 
                         this.id 
@@ -479,7 +479,7 @@ define(
                 // 在主元素上加个属性，以便找到`ViewContext`
                 if (this.viewContext && helper.isInStage(this, 'RENDERED')) {
                     this.main.setAttribute( 
-                        ui.getConfig('viewContextAttr'), 
+                        require('./main').getConfig('viewContextAttr'), 
                         this.viewContext.id 
                     );
                 }
@@ -732,7 +732,7 @@ define(
                 options.viewContext = this.viewContext;
                 options.parent = this;
 
-                ui.init(wrap, options);
+                require('./main').init(wrap, options);
             }
         };
 

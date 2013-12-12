@@ -227,6 +227,25 @@ define(
         };
 
         /**
+         * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
+         *
+         * @param {string} id 控件id
+         * @return {Control} 根据id获取的控件
+         */
+        ViewContext.prototype.getSafely = function (id) {
+            var control = this.get(id);
+
+            if (!control) {
+                var SafeWrapper = require('./SafeWrapper');
+                control = new SafeWrapper();
+                control.id = id;
+                control.viewContext = this;
+            }
+
+            return control;
+        };
+
+        /**
          * 获取一个控件分组
          *
          * @param {string} name 分组名称
