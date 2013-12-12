@@ -9,8 +9,6 @@
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
-        var Helper = require('./Helper');
         var u = require('underscore');
 
         /**
@@ -22,10 +20,9 @@ define(
          * @fires init
          */
         function Control(options) {
-            helper.changeStage(this, 'NEW');
-
             options = options || {};
 
+            var Helper = require('./Helper');
             /**
              * 控件关联的{@link Helper}对象
              *
@@ -33,6 +30,8 @@ define(
              * @protected
              */
             this.helper = new Helper(this);
+
+            this.helper.changeStage('NEW');
 
             /**
              * 子控件数组
@@ -68,19 +67,19 @@ define(
              * @readonly
              */
             if (!this.id && !options.id) {
-                this.id = helper.getGUID();
+                this.id = lib.getGUID();
             }
 
             this.initOptions(options);
 
             // 初始化视图环境
-            helper.initViewContext(this);
+            this.helper.initViewContext();
 
             // 初始化扩展
-            helper.initExtensions(this);
+            this.helper.initExtensions();
 
             // 切换控件所属生命周期阶段
-            helper.changeStage(this, 'INITED');
+            this.helper.changeStage('INITED');
 
             /**
              * @event init
@@ -178,7 +177,7 @@ define(
              * @fires afterrender
              */
             render: function () {
-                if (helper.isInStage(this, 'INITED')) {
+                if (this.helper.isInStage('INITED')) {
                     /**
                      * @event beforerender
                      *
@@ -192,7 +191,7 @@ define(
 
                     // 为控件主元素添加id
                     if (!this.main.id) {
-                        this.main.id = helper.getId(this);
+                        this.main.id = this.helper.getId();
                     }
 
                     // 为控件主元素添加控件实例标识属性
@@ -206,7 +205,7 @@ define(
                         this.viewContext.id 
                     );
 
-                    helper.addPartClasses(this);
+                    this.helper.addPartClasses();
 
                     if (this.states) {
                         this.states = typeof this.states === 'string'
@@ -220,7 +219,7 @@ define(
                 // 由子控件实现
                 this.repaint();
 
-                if (helper.isInStage(this, 'INITED')) {
+                if (this.helper.isInStage('INITED')) {
                     /**
                      * @event afterrender
                      *
@@ -230,7 +229,7 @@ define(
                 }
 
                 // 切换控件所属生命周期阶段
-                helper.changeStage(this, 'RENDERED');
+                this.helper.changeStage('RENDERED');
             },
 
             /**
@@ -272,8 +271,8 @@ define(
                 }
 
                 wrap.appendChild(this.main);
-                if (helper.isInStage(this, 'NEW')
-                    || helper.isInStage(this, 'INITED')
+                if (this.helper.isInStage('NEW')
+                    || this.helper.isInStage('INITED')
                 ) {
                     this.render();
                 }
@@ -290,8 +289,8 @@ define(
                 }
                 
                 reference.parentNode.insertBefore(this.main, reference);
-                if (helper.isInStage(this, 'NEW')
-                    || helper.isInStage(this, 'INITED')
+                if (this.helper.isInStage('NEW')
+                    || this.helper.isInStage('INITED')
                 ) {
                     this.render();
                 }
@@ -304,10 +303,10 @@ define(
              * @fires afterdispose
              */
             dispose: function () {
-                if (!helper.isInStage(this, 'DISPOSED')) {
-                    helper.beforeDispose(this);
-                    helper.dispose(this);
-                    helper.afterDispose(this);
+                if (!this.helper.isInStage('DISPOSED')) {
+                    this.helper.beforeDispose();
+                    this.helper.dispose();
+                    this.helper.afterDispose();
                 }
             },
 
@@ -438,7 +437,7 @@ define(
                     }
                 }
 
-                if (changes.length && helper.isInStage(this, 'RENDERED')) {
+                if (changes.length && this.helper.isInStage('RENDERED')) {
                     this.repaint(changes, changesIndex);
                 }
 
@@ -477,7 +476,7 @@ define(
                 }
 
                 // 在主元素上加个属性，以便找到`ViewContext`
-                if (this.viewContext && helper.isInStage(this, 'RENDERED')) {
+                if (this.viewContext && this.helper.isInStage('RENDERED')) {
                     this.main.setAttribute( 
                         require('./main').getConfig('viewContextAttr'), 
                         this.viewContext.id 
@@ -559,7 +558,7 @@ define(
             addState: function (state) {
                 if (!this.hasState(state)) {
                     this.currentStates[state] = true;
-                    helper.addStateClasses(this, state);
+                    this.helper.addStateClasses(state);
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/, 
@@ -584,7 +583,7 @@ define(
             removeState: function (state) {
                 if (this.hasState(state)) {
                     this.currentStates[state] = false;
-                    helper.removeStateClasses(this, state);
+                    this.helper.removeStateClasses(state);
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/, 

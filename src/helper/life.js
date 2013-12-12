@@ -22,7 +22,6 @@ define(
         };
         
         var u = require('underscore');
-        var ui = require('../main');
 
         /**
          * @override Helper
@@ -33,7 +32,8 @@ define(
          * 初始化控件视图环境
          */
         helper.initViewContext = function () {
-            var viewContext = this.control.viewContext || ui.getViewContext();
+            var viewContext = this.control.viewContext
+                || require('../main').getViewContext();
 
             // 因为`setViewContext`里有判断传入的`viewContext`和自身的是否相等，
             // 这里必须制造出**不相等**的情况，再调用`setViewContext`
@@ -52,7 +52,7 @@ define(
             }
             Array.prototype.push.apply(
                 extensions, 
-                ui.createGlobalExtensions()
+                require('../main').createGlobalExtensions()
             );
 
             // 同类型扩展去重

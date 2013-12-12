@@ -33,7 +33,6 @@ define(
 
         var u = require('underscore');
         var lib = require('../lib');
-        var ui = require('../main');
 
         /**
          * @override Helper
@@ -69,6 +68,7 @@ define(
 
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
+            var ui = require('../main');
             var prefix = ui.getConfig('uiClassPrefix');
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
@@ -172,7 +172,7 @@ define(
             }
 
             var type = getControlClassType(this.control);
-            var getConf = ui.getConfig;
+            var getConf = require('../main').getConfig;
             var classes = [
                 joinByStrike(getConf('uiClassPrefix'), type, state),
                 joinByStrike(getConf('stateClassPrefix'), state)
@@ -308,7 +308,7 @@ define(
 
             // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
             initialMain.setAttribute(
-                ui.getConfig('instanceAttr'),
+                require('../main').getConfig('instanceAttr'),
                 lib.getGUID()
             );
 
