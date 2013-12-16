@@ -17,6 +17,7 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var ui = require('./main');
+        var m = require('moment');
 
         /**
          * 控件类
@@ -171,55 +172,37 @@ define(
             updateMain(calendar, rawValue);
         }
 
-        function updateYear(calendar, index) {
+        function updateMonthOrYear(calendar, index) {
             // 要把其他的日历也同步为相同的值
             var displayNum = calendar.displayNum;
+            var syncDate = new Date(this.year, this.month, 1);
             for (var i = 0; i < displayNum; i++) {
                 if (i !== index) {
                     var monthView = calendar.getChild('monthView' + i);
                     // 这里要先解绑那些yearchange事件，防止死循环
                     monthView.un('changemonth');
                     monthView.un('changeyear');
-
+                    var scope = (index - i);
+                    var newDate;
+                    if (scope > 0) { 
+                        newDate = m(syncDate).subtract('month', scope);
+                    }
+                    else {
+                        newDate = m(syncDate).add('month', -scope);
+                    }
                     monthView.setProperties({
-                        year: this.year
+                        month: newDate.month() + 1,
+                        year: newDate.year()
                     });
 
                     // 再绑回来
                     monthView.on(
                         'changeyear',
-                        lib.curry(updateYear, calendar, i)
+                        lib.curry(updateMonthOrYear, calendar, i)
                     );
                     monthView.on(
                         'changemonth',
-                        lib.curry(updateMonth, calendar, i)
-                    );
-                }
-            }
-        }
-
-
-        function updateMonth(calendar, index) {
-            // 要把其他的日历也同步为相同的值
-            var displayNum = calendar.displayNum;
-            for (var i = 0; i < displayNum; i++) {
-                if (i !== index) {
-                    var monthView = calendar.getChild('monthView' + i);
-                    // 这里要先解绑那些yearchange事件，防止死循环
-                    monthView.un('changemonth');
-                    monthView.un('changeyear');
-                    monthView.setProperties({
-                        month: this.month + 1 - (index - i)
-                    });
-
-                    // 再绑回来
-                    monthView.on(
-                        'changeyear',
-                        lib.curry(updateYear, calendar, i)
-                    );
-                    monthView.on(
-                        'changemonth',
-                        lib.curry(updateMonth, calendar, i)
+                        lib.curry(updateMonthOrYear, calendar, i)
                     );
                 }
             }
@@ -303,11 +286,11 @@ define(
                 );
                 monthView.on(
                     'changeyear',
-                    lib.curry(updateYear, calendar, index)
+                    lib.curry(updateMonthOrYear, calendar, index)
                 );
                 monthView.on(
                     'changemonth',
-                    lib.curry(updateMonth, calendar, index)
+                    lib.curry(updateMonthOrYear, calendar, index)
                 );
             }
         }
@@ -774,40 +757,42 @@ define(
             /**
              * 将value从原始格式转换成string
              * 
-             * @param {*} rawValue 原始值
+             * @param {*} rawValue 原始值，就是包含了区段中的所有日期的数组
              * @return {string}
              */
             stringifyValue: function (rawValue) {
                 var dateStrs = [];
                 var oneDay = 86400000;
                 for (var i = 0; i < rawValue.length; i ++) {
+                    // 开个头
                     if (i === 0) {
                         dateStrs.push(
                             lib.date.format(rawValue[i], this.paramFormat)
                         );
                     }
                     else {
+                        // 间隔超过1天，说明已中断，则
                         if ((rawValue[i] - rawValue[i-1]) > oneDay) {
+                            // 1. 为前一段时间画结尾
                             dateStrs.push(
                                 lib.date.format(
                                     rawValue[i-1], this.paramFormat
                                 )
                             );
+                            // 2. 为下一段开头
                             dateStrs.push(
                                 lib.date.format(
                                     rawValue[i], this.paramFormat
                                 )
                             );
                         }
-                        else if (i == (rawValue.length - 1)) {
+                        // 已到最后一个数据，无论如何都要收尾了
+                        if (i == (rawValue.length - 1)) {
                             dateStrs.push(
                                 lib.date.format(
                                     rawValue[i], this.paramFormat
                                 )
                             );
-                        }
-                        else {
-                            continue;
                         }
                     }
                 }
