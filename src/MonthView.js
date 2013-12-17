@@ -935,6 +935,8 @@ define(
 
             var yearSelect = me.getChild('yearSel');
             var lastYear = yearSelect.getValue();
+
+            // 通过year选择框来触发其它部分的重渲染
             yearSelect.setProperties({
                 datasource: getYearOptions(me),
                 value: me.year
@@ -992,7 +994,9 @@ define(
          * @param {MonthView} monthView MonthView控件实例
          */
         function goToNextMonth(monthView) {
-            repaintMonthView(monthView, monthView.year, monthView.month + 1);
+            var nowDate = new Date(monthView.year, monthView.month, 1);
+            var newDate = m(nowDate).add('month', 1);
+            repaintMonthView(monthView, newDate.year(), newDate.month());
         }
 
         /**
@@ -1002,7 +1006,9 @@ define(
          * @param {MonthView} monthView MonthView控件实例
          */
         function goToPrevMonth(monthView) {
-            repaintMonthView(monthView, monthView.year, monthView.month - 1);
+            var nowDate = new Date(monthView.year, monthView.month, 1);
+            var newDate = m(nowDate).subtract('month', 1);
+            repaintMonthView(monthView, newDate.year(), newDate.month());
         }
 
         /**
@@ -1406,7 +1412,6 @@ define(
                                 parseToCache(monthView);
                             }
                         }
-
                         repaintMonthView(
                             monthView,
                             monthView.year,

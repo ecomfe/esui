@@ -92,7 +92,7 @@ define(
          * @return {boolean}
          */
         function isOutOfRange(calendar, shortItem) {
-            var range = calendar.range;
+            var range = lib.clone(calendar.range);
             var itemValue = shortItem.getValue.call(calendar);
 
             // 得先格式化一下，去掉时间

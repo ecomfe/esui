@@ -59,6 +59,24 @@ define(
             }
         };
 
+        CalendarLayer.prototype.toggle = function () {
+            var element = this.getElement();
+            if (!element
+                || this.control.helper.isPart(element, 'layer-hidden')
+            ) {
+                // 展示之前先跟main同步
+                var calendar = this.control;
+                var monthView = calendar.getChild('monthView');
+                monthView.setProperties(
+                    { 'rawValue': calendar.rawValue, 'range': calendar.range }
+                );
+                this.show();
+            }
+            else {
+                this.hide();
+            }
+        };
+
         /**
          * 日历控件
          *
