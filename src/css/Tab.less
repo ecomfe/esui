@@ -7,24 +7,23 @@
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-tab {
-    .ui-tab-navigator {
-        margin: 0;
-        padding:0;
-        list-style: none;
-        .box-sizing();
+.ui-tab-navigator {
+    margin: 0;
+    padding:0;
+    list-style: none;
+    .box-sizing();
+}
 
-        .ui-tab-item {
-            margin: 0;
-            padding:0;
-            list-style: none;
-            .box-sizing();
-            .interactive-cursor ();
-        }
-        .ui-tab-item-active {
-            cursor: default;
-        }
-    }
+.ui-tab-item {
+    margin: 0;
+    padding:0;
+    list-style: none;
+    .box-sizing();
+    .interactive-cursor ();
+}
+
+.ui-tab-item-active {
+    cursor: default;
 }
 
 /** 纵向tab */
@@ -33,60 +32,51 @@
         padding-top: 10px;
         border-right: 1px solid #DDD;
         float: left;
-
-        .ui-tab-item {
-            display: block;
-            .border-radius(2px, 0, 0, 2px);
-            border: 1px solid #DFDFDF;
-            border-right: none;
-            background: #F2F2F2;
-            color: #666666;
-            margin-bottom:2px;
-            padding: 3px 10px;
-        }
-
-        .ui-tab-item-active {
-            background: #FFF;
-            color: #333333;
-        }
     }
-    
+    .ui-tab-item {
+        display: block;
+        .border-radius(2px, 0, 0, 2px);
+        border: 1px solid #DFDFDF;
+        border-right: none;
+        background: #F2F2F2;
+        color: #666666;
+        margin-bottom:2px;
+        padding: 3px 10px;
+    }
+
+    .ui-tab-item-active {
+        background: #FFF;
+        color: #333333;
+    } 
 }
 
 /** 横向tab */
 .ui-tab-horizontal {
+    @tabPadding: 10px;
+
     .ui-tab-navigator {
         overflow: hidden;
         zoom: 1;
         position: relative;
-
-        .ui-tab-item {
-            float: left;
-        }
-
-    }
-
-    .ui-tab-navigator {
-        @tabPadding: 10px;
-
         padding-left:10px;
         border-bottom: 1px solid #DDD;
+    }
 
-        .ui-tab-item {
-            padding: 3px @tabPadding;
-            text-align: center;
+    .ui-tab-item {
+        float: left;
+        padding: 3px @tabPadding;
+        text-align: center;
 
-            .border-radius(2px, 2px, 0, 0);
-            border: 1px solid #DFDFDF;
-            border-bottom: none;
-            background: #F2F2F2;
-            color: #666666;
-            margin-right:2px;
-        }
+        .border-radius(2px, 2px, 0, 0);
+        border: 1px solid #DFDFDF;
+        border-bottom: none;
+        background: #F2F2F2;
+        color: #666666;
+        margin-right:2px;
+    }
 
-        .ui-tab-item-active {
-            background: #FFF;
-            color: #333333;
-        }
+    .ui-tab-item-active {
+        background: #FFF;
+        color: #333333;
     }
 }
