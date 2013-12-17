@@ -9,6 +9,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var ui = require('../main');
 
         /**
          * @override Helper
@@ -28,7 +29,7 @@ define(
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
-            require('../main').init(wrap, options);
+            ui.init(wrap, options);
         };
 
         /**

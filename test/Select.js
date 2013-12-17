@@ -1,5 +1,6 @@
 define(function (require) {
     var Select = require('esui/Select');
+    var main = require('esui');
     var datasource = [
         { name: 'a', value: '1' },
         { name: 'b', value: '2' },
@@ -49,16 +50,16 @@ define(function (require) {
                     '</select>'
                 ];
                 container.innerHTML = html;
-                require('esui/main').init(container);
-                var select = require('esui/main').get('test');
+                main.init(container);
+                var select = main.get('test');
                 expect(select.get('datasource')).toEqual(datasource);
                 expect(select.getValue()).toBe('3');
             });
 
             it('should remove the old `<select>` main element and create a `<div>` instead', function () {
                 container.innerHTML = '<select data-ui="type: Select; id: test;"></select>';
-                require('esui/main').init(container);
-                var select = require('esui/main').get('test');
+                main.init(container);
+                var select = main.get('test');
                 expect(container.getElementsByTagName('select').length).toBe(0);
                 expect(select.get('main').nodeName.toLowerCase()).toBe('div');
             });
@@ -71,12 +72,12 @@ define(function (require) {
                     '</select>'
                 ];
                 container.innerHTML = html.join('');
-                require('esui/main').init(container);
+                main.init(container);
                 var datasource = [
                     { name: 'a', value: '1' },
                     { name: 'b', value: '2', disabled: true }
                 ];
-                var select = require('esui/main').get('test');
+                var select = main.get('test');
                 expect(select.get('datasource')).toEqual(datasource);
             });
         });

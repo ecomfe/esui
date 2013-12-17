@@ -9,10 +9,11 @@
 define(
     function (require) {
         var u = require('underscore');
-        var Control = require('./Control');
 
         /**
          * 控件安全包装，模拟一个无任何功能的控件
+         *
+         * **由于技术限制，此类不继承{@link Control}，不能用`instanceof`判断类型**
          *
          * 在实际使用中，经常会有这样的代码：
          *
@@ -135,7 +136,6 @@ define(
             return wrapper;
         };
 
-        require('./lib').inherits(SafeWrapper, Control);
         return SafeWrapper;
     }
 );

@@ -14,6 +14,7 @@ define(
         var u  = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
+        var Helper = require('./Helper');
 
         /**
          * 验证信息显示控件
@@ -67,7 +68,6 @@ define(
                     type: label.targetType || target.type,
                     skin: target && target.skin
                 };
-                var Helper = require('./Helper');
                 targetHelper = new Helper(targetContext);
             }
 

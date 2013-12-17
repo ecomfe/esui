@@ -7,7 +7,7 @@
  * @author DBear
  */
 define(
-    function () {
+    function (require) {
         var u = require('underscore');
 
         /**

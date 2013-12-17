@@ -225,6 +225,8 @@ define(
         ViewContext.prototype.get = function (id) {
             return this.controls[id];
         };
+        
+        var SafeWrapper = require('./SafeWrapper');
 
         /**
          * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
@@ -236,7 +238,6 @@ define(
             var control = this.get(id);
 
             if (!control) {
-                var SafeWrapper = require('./SafeWrapper');
                 control = new SafeWrapper();
                 control.id = id;
                 control.viewContext = this;

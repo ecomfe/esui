@@ -10,6 +10,8 @@ define(
     function (require) {
         var lib = require('./lib');
         var u = require('underscore');
+        var ui = require('./main');
+        var Helper = require('./Helper');
 
         /**
          * 控件基类
@@ -22,7 +24,6 @@ define(
         function Control(options) {
             options = options || {};
 
-            var Helper = require('./Helper');
             /**
              * 控件关联的{@link Helper}对象
              *
@@ -195,7 +196,6 @@ define(
                     }
 
                     // 为控件主元素添加控件实例标识属性
-                    var ui = require('./main');
                     this.main.setAttribute( 
                         ui.getConfig('instanceAttr'), 
                         this.id 
@@ -478,7 +478,7 @@ define(
                 // 在主元素上加个属性，以便找到`ViewContext`
                 if (this.viewContext && this.helper.isInStage('RENDERED')) {
                     this.main.setAttribute( 
-                        require('./main').getConfig('viewContextAttr'), 
+                        ui.getConfig('viewContextAttr'), 
                         this.viewContext.id 
                     );
                 }
@@ -726,12 +726,7 @@ define(
              * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
              */
             initChildren: function (wrap, options) {
-                wrap = wrap || this.main;
-                options = lib.extend({}, this.renderOptions, options);
-                options.viewContext = this.viewContext;
-                options.parent = this;
-
-                require('./main').init(wrap, options);
+                this.helper.initChildren(wrap, options);
             }
         };
 

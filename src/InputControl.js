@@ -12,6 +12,7 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ValidityLabel = require('./Validity');
+        var Validity = require('./validator/Validity');
         var main = require('./main');
 
         /**
@@ -22,7 +23,6 @@ define(
          * @ignore
          */
         function checkValidity(control) {
-            var Validity = require('./validator/Validity');
             var validity = new Validity();
             var eventArg = {
                 validity: validity
