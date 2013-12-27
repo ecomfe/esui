@@ -277,7 +277,22 @@ define(
                         delete index[name]; 
                     }
                     // 绘制
-                    painter.paint.apply(painter, properties);
+                    try {
+                        painter.paint.apply(painter, properties);
+                    }
+                    catch (ex) {
+                        var paintingPropertyNames = 
+                            '"' + propertyNames.join('", "') + '"';
+                        var error = new Error(
+                            'Failed to paint [' + paintingPropertyNames + '] '
+                            + 'for control "' + (this.id || 'anonymous')+ '" '
+                            + 'of type ' + this.type + ' '
+                            + 'because: ' + ex.message
+                        );
+                        error.actualError = error;
+                        throw error;
+                    }
+
                 }
 
                 // 构建出未渲染的属性集合
