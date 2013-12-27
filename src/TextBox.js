@@ -224,8 +224,8 @@ define(
          */
         function focus(e) {
             togglePlaceholder(this, true);
-
             if (this.autoSelect) {
+                var input = lib.g(this.inputId);
                 input.select();
             }
 
