@@ -247,6 +247,7 @@ define(
          */
         lib.dom.last = function (element) {
             element = lib.g(element);
+
             if (element.lastElementChild) {
                 return element.lastElementChild;
             }
@@ -269,6 +270,10 @@ define(
          */
         lib.dom.next = function (element) {
             element = lib.g(element);
+
+            if (element.nextElementSibling) {
+                return element.nextElementSibling;
+            }
 
             var node = element['nextSibling'];
             for (; node; node = node['nextSibling']) {
