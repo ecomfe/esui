@@ -172,7 +172,7 @@ define(
                          */
                         this.fire('click');
                         if (!box.addEventListener) {
-                            syncChecked.call(e);
+                            syncChecked.call(this, e);
                         }
                     }
                 );
