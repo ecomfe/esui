@@ -147,7 +147,8 @@ define(
 
                 this.syncState(element);
 
-                if (!element.parentNode) {
+                // IE下元素始终有`parentNode`，无法判断是否进入了DOM
+                if (!element.parentElement) {
                     document.body.appendChild(element);
                 }
             }
