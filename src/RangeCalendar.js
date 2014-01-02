@@ -27,6 +27,7 @@ define(
          * @param {Object} options 初始化参数
          */
         function RangeCalendar(options) {
+            this.now = new Date();
             InputControl.apply(this, arguments);
         }
 
@@ -93,7 +94,7 @@ define(
          */
         function isOutOfRange(calendar, shortItem) {
             var range = lib.clone(calendar.range);
-            var itemValue = shortItem.getValue.call(calendar);
+            var itemValue = shortItem.getValue.call(calendar, calendar.now);
 
             // 得先格式化一下，去掉时间
             range.begin = startOfDay(range.begin);
@@ -409,7 +410,7 @@ define(
 
             for (var i = 0; i < len; i++) {
                 var item = shortcutItems[i];
-                var itemValue = item.getValue.call(calendar);
+                var itemValue = item.getValue.call(calendar, calendar.now);
 
                 if (isSameDate(value.begin, itemValue.begin)
                     && isSameDate(value.end, itemValue.end)) {
@@ -438,7 +439,7 @@ define(
             // 更新样式
             paintMiniCal(me, index);
 
-            var value = shortcutItems[index].getValue.call(me);
+            var value = shortcutItems[index].getValue.call(me, me.now);
             var begin = value.begin;
             var end = value.end;
 
@@ -842,8 +843,8 @@ define(
                 {
                     name: '昨天',
                     value: 0,
-                    getValue: function () {
-                        var yesterday = new Date(this.now.getTime());
+                    getValue: function (now) {
+                        var yesterday = new Date(now.getTime());
                         yesterday.setDate(yesterday.getDate() - 1);
                         return {
                             begin: yesterday,
@@ -855,7 +856,6 @@ define(
                     name: '最近7天',
                     value: 1,
                     getValue: function (now) {
-                        now = now || this.now;
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
 
@@ -871,8 +871,7 @@ define(
                 {
                     name: '上周',
                     value: 2,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
                         var _wd = 1; //周一为第一天;
@@ -903,8 +902,7 @@ define(
                 {
                     name: '本月',
                     value: 3,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
                         begin.setDate(1);
@@ -917,8 +915,7 @@ define(
                 {
                     name: '上个月',
                     value: 4,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(
                             now.getFullYear(),
                             now.getMonth() - 1,
@@ -939,8 +936,7 @@ define(
                 {
                     name: '上个季度',
                     value: 5,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(
                             now.getFullYear(),
                             now.getMonth() - now.getMonth() % 3 - 3,
@@ -977,12 +973,11 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                var now = new Date();
+                var now = this.now;
                 /**
                  * 默认选项配置
                  */
                 var properties = {
-                    now: now,
                     range: {
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)
