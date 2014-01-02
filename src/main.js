@@ -25,7 +25,7 @@ define(
          * @type {string}
          * @readonly
          */
-        main.version = '3.1.0-alpha.4';
+        main.version = '3.1.0-alpha.5';
 
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
@@ -466,7 +466,20 @@ define(
                         if (options.parent) {
                             options.parent.addChild(control);
                         }
-                        control.render();
+                        try {
+                            control.render();
+                        }
+                        catch (ex) {
+                            var error = new Error(
+                                'Render control ' 
+                                + '"' + (control.id || 'anonymous')+ '" '
+                                + 'of type ' + control.type + ' '
+                                + 'failed because: '
+                                + ex.message
+                            );
+                            error.actualError = ex;
+                            throw error;
+                        }
                     }
                 }
             }
