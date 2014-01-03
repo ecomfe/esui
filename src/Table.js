@@ -993,7 +993,9 @@ define(
                 return;
             }
 
+            // @DEPRECATED: 移除
             table.fire('startdrag');
+            table.fire('dragstart');
             
             var dragClass = getClass(table, 'startdrag');
             var tar = e.target;
@@ -1229,7 +1231,9 @@ define(
             table.isDraging = false;
             hideDragMark(table);
             
+            // @DEPRECATED: 移除
             table.fire('enddrag');
+            table.fire('dragend');
             
             lib.event.preventDefault(e);
             return false;
@@ -2611,7 +2615,7 @@ define(
                     || allProperities['selectedIndex']
                 ) {
                     renderBody(table);
-                    // TODO: @deprecated 移除
+                    // TODO: @DEPRECATED 移除
                     table.fire('bodyChange');
                     table.fire('bodychange');
                     tbodyChange = true;
@@ -2811,7 +2815,7 @@ define(
 
                 if (dataItem && rowEl) {
                     this.fire(
-                        'beforeupdaterow',
+                        'beforerowupdate',
                         { index: index, data: dataItem }
                     );
 
@@ -2824,7 +2828,7 @@ define(
                     rowEl.parentNode.replaceChild(newRowEl, rowEl);
 
                     this.fire(
-                        'afterupdaterow',
+                        'afterrowupdate',
                         { index: index, data: dataItem }
                     );
                 }
