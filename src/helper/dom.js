@@ -8,7 +8,6 @@
  */
 define(
     function (require) {
-
         /**
          * 获取控件用于生成css class的类型
          * 
@@ -337,7 +336,6 @@ define(
         };
 
         var INPUT_PROPERTY_MAPPING = {
-            value: { name: 'value' },
             name: { name: 'name' },
             maxlength: { name: 'maxLength', type: 'number' },
             required: { name: 'required', type: 'boolean' },
@@ -386,11 +384,15 @@ define(
                                 value = parseInt(value, 10);
                                 break;
                         }
-
                         result[config.name] = value;
                     }
                 }
             );
+
+            // value要特殊处理一下，可能是通过innerHTML设置的，
+            if (input.value) {
+                result['value'] = input.value;
+            }
 
             return u.defaults(options || {}, result);
         };
