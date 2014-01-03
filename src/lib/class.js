@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file DOM class基础库
  * @author otakustay
  */
@@ -9,6 +10,10 @@ define(
     function (require) {
         var u = require('underscore');
         var dom = require('./dom');
+
+        /**
+         * @override lib
+         */
         var lib = {};
 
         function getClassList(element) {
@@ -18,12 +23,11 @@ define(
         }
 
         /**
-         * 判断元素是否拥有指定的 className
+         * 判断元素是否拥有指定的class
          *
-         * @param {HTMLElement | string} element 目标元素
-         * @param {string} className 要判断的className
-         *
-         * @return {boolean} 是否拥有指定的className
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string} className 要判断的class名称
+         * @return {boolean} 是否拥有指定的class
          */
         lib.hasClass = function (element, className) {
             element = dom.g(element);
@@ -45,11 +49,10 @@ define(
         };
 
         /**
-         * 为目标元素添加 className
+         * 为目标元素添加class
          *
-         * @param {HTMLElement | string} element 目标元素或目标元素的 id
-         * @param {string} className 要添加的 className
-         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string} className 要添加的class名称
          * @return {HTMLElement} 目标元素
          */
         lib.addClass = function (element, className) {
@@ -80,11 +83,10 @@ define(
         };
 
         /**
-         * 批量添加 className
+         * 批量添加class
          *
          * @param {HTMLElement | string} element 目标元素或其id
-         * @param {string[]} classes 需添加的 className
-         *
+         * @param {string[]} classes 需添加的class名称
          * @return {HTMLElement} 目标元素
          */
         lib.addClasses = function (element, classes) {
@@ -115,11 +117,10 @@ define(
         };
 
         /**
-         * 移除目标元素的 className
+         * 移除目标元素的class
          *
          * @param {HTMLElement | string} element 目标元素或目标元素的 id
-         * @param {string} className 要移除的 className
-         *
+         * @param {string} className 要移除的class名称
          * @return {HTMLElement} 目标元素
          */
         lib.removeClass = function (element, className) {
@@ -157,11 +158,10 @@ define(
         };
 
         /**
-         * 批量移除 className
+         * 批量移除class
          *
          * @param {HTMLElement | string} element 目标元素或其id
-         * @param {string[]} 需移除的 className
-         *
+         * @param {string[]} classes 需移除的class名称
          * @return {HTMLElement} 目标元素
          */
         lib.removeClasses = function (element, classes) {
@@ -192,11 +192,10 @@ define(
         };
 
         /**
-         * 切换目标元素的 className
+         * 切换目标元素的class
          *
          * @param {HTMLElement} element 目标元素或目标元素的 id
-         * @param {string} className 要切换的 className
-         *
+         * @param {string} className 要切换的class名称
          * @return {HTMLElement} 目标元素
          */
         lib.toggleClass = function (element, className) {

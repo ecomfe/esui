@@ -99,37 +99,39 @@
 
 
 // mixin end
-
 .ui-dialog {
     .ui-dialog-mixin();
-    .ui-dialog-head {
-        .ui-dialog-head-mixin();
-        .ui-dialog-close-icon {
-            .ui-dialog-close-icon-mixin();
-        }
+}
 
-        .ui-dialog-title {
-            .ui-dialog-title-mixin();
-        }
-    }
+.ui-dialog-head {
+    .ui-dialog-head-mixin();
+}
 
-    .ui-dialog-body {
-        .ui-dialog-body-mixin();
-    }
-    .ui-dialog-foot-panel {
-        .ui-dialog-foot-panel-mixin();
-        .ui-dialog-foot {
-            .ui-dialog-foot-mixin();
-            .ui-button {
-                margin-right: 6px;
-                height: 26px;
-                line-height: 26px;
-                margin-right: 6px;
-                width: 50px;
-            }
-        }
-    }
+.ui-dialog-close-icon {
+    .ui-dialog-close-icon-mixin();
+}
 
+.ui-dialog-title {
+    .ui-dialog-title-mixin();
+}
+
+.ui-dialog-body {
+    .ui-dialog-body-mixin();
+}
+
+.ui-dialog-foot-panel {
+    .ui-dialog-foot-panel-mixin();
+}
+
+.ui-dialog-foot {
+    .ui-dialog-foot-mixin();
+    .ui-button {
+        margin-right: 6px;
+        height: 26px;
+        line-height: 26px;
+        margin-right: 6px;
+        width: 50px;
+    }
 }
 
 .ui-dialog-draggable {
@@ -149,35 +151,36 @@
 .skin-confirm-dialog {
     .ui-dialog-body {
         padding-bottom: 20px;
-        .ui-dialog-icon {
-            display:none;
-        }
+    }
 
-        .ui-dialog-icon-warning {
-            .background("esui-dialog-notice.png");
-            display: block;
-            float: left;
-            height: 22px;
-            margin: 18px 10px 8px 40px;
-            _margin: 15px 10px 8px 25px;
-            width: 33px;
-        }
+    .ui-dialog-icon {
+        display:none;
+    }
 
-        .ui-dialog-icon-confirm {
-            .background("esui-dialog-question.png");
-            display: block;
-            float: left;
-            height: 34px;
-            margin: 15px 10px 8px 40px;
-            _margin: 12px 10px 8px 25px;
-            width: 34px;
-        }
+    .ui-dialog-icon-warning {
+        .background("esui-dialog-notice.png");
+        display: block;
+        float: left;
+        height: 22px;
+        margin: 18px 10px 8px 40px;
+        _margin: 15px 10px 8px 25px;
+        width: 33px;
+    }
 
-        .ui-dialog-text {
-            margin-top: 20px;
-            line-height: 18px;
-            margin-right: 40px;
-            overflow: hidden;
-        }
+    .ui-dialog-icon-confirm {
+        .background("esui-dialog-question.png");
+        display: block;
+        float: left;
+        height: 34px;
+        margin: 15px 10px 8px 40px;
+        _margin: 12px 10px 8px 25px;
+        width: 34px;
+    }
+
+    .ui-dialog-text {
+        margin-top: 20px;
+        line-height: 18px;
+        margin-right: 40px;
+        overflow: hidden;
     }
 }

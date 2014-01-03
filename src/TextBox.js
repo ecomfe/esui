@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 文本框输入控件
  * @author otakustay
  */
@@ -15,28 +16,41 @@ define(
             ('placeholder' in document.createElement('input'));
 
         /**
-         * 文本框输入控件类
-         * 
-         * @constructor
+         * 文本框输入控件
+         *
+         * 负责单行、密码或多行文本的输入，由{@link TextBox#mode}决定
+         *
+         * @extends {InputControl}
          * @param {Object} options 初始化参数
+         * @constructor
          */
         function TextBox(options) {
             InputControl.apply(this, arguments);
         }
 
         /**
+         * @cfg defaultProperties
+         *
          * 默认属性值
          *
-         * @type {Object}
+         * @cfg {boolean} [defaultProperties.width=200] 默认宽度
+         * @static
          */
         TextBox.defaultProperties = {
             width: 200
         };
 
+        /**
+         * 控件类型，始终为`"TextBox"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         TextBox.prototype.type = 'TextBox';
 
         /**
-         * 创建主元素
+         * 创建主元素，默认使用`<div>`元素
          *
          * @return {HTMLElement} 主元素
          * @protected
@@ -49,17 +63,49 @@ define(
         /**
          * 初始化参数
          *
-         * @param {Object} options 构造函数传入的参数
+         * 如果主元素是`<input>`或`<textarea>`元素，
+         * 控件会从主元素上抽取相关DOM属性作为控件自身的值，
+         * 详细参考{@link Helper#extractOptionsFromInput}方法
+         *
+         * 此外还会按以下逻辑抽取一些属性：
+         *
+         * - 将主元素的`placeholder`作为控件的`placeholder`属性
+         * - 根据主元素的标签类型和`type`属性来确定`mode`属性：
+         *     - 如果主元素是`<input type="password">`，则`mode`值为`"password"`
+         *     - 如果主元素是`<textarea>`，则`mode`值为`textarea`
+         *     - 其它情况下，`mode`值为`text`
+         *
+         * @param {Object} [options] 构造函数传入的参数
          * @protected
          * @override
          */
         TextBox.prototype.initOptions = function (options) {
             var properties = {
+                /**
+                 * @property {string} [mode="text"]
+                 *
+                 * 指定文本框模式，可以有以下值：
+                 *
+                 * - `text`：表示普通单行文本框
+                 * - `textarea`：表示多行文本框
+                 * - `password`：表示密码框
+                 *
+                 * 此属性仅能在初始化时设置，运行期不能修改
+                 *
+                 * 具体从DOM中获取此属性的逻辑参考{@link TextBox#initOptions}方法说明
+                 *
+                 * @readonly
+                 */
                 mode: 'text',
                 placeholder: '',
+                /**
+                 * @property {boolean} [autoSelect=false]
+                 *
+                 * 指定文本框获得焦点时是否自动全选
+                 */
                 autoSelect: false
             };
-            u.extend(properties, TextBox.defaultProperties, options);
+            u.extend(properties, TextBox.defaultProperties);
 
             if (!properties.name) {
                 properties.name = this.main.getAttribute('name');
@@ -84,9 +130,18 @@ define(
                 this.helper.extractOptionsFromInput(this.main, properties);
             }
 
+            u.extend(properties, options);
+
             this.setProperties(properties);
         };
 
+        /**
+         * 获得应当获取焦点的元素，主要用于验证信息的`<label>`元素的`for`属性设置
+         *
+         * @return {HTMLElement}
+         * @protected
+         * @override
+         */
         TextBox.prototype.getFocusTarget = function () {
             return lib.g(this.inputId);
         };
@@ -96,11 +151,19 @@ define(
          *
          * @param {TextBox} this 控件实例
          * @param {Event} e DOM事件对象
+         * @ignore
          */
         function dispatchSpecialKey(e) {
             var keyCode = e.which || e.keyCode;
 
             if (keyCode === 13) {
+                /**
+                 * @event enter
+                 *
+                 * 在控件上按回车时触发
+                 *
+                 * @member TextBox
+                 */
                 this.fire('enter');
             }
 
@@ -110,7 +173,19 @@ define(
                 ctrlKey: e.ctrlKey,
                 altKey: e.altKey
             };
+
             var event = require('mini-event').fromDOMEvent(e, 'keypress', args);
+            /**
+             * @event keypress
+             *
+             * 在控件上按键时触发
+             *
+             * @param {number} keyCode 按键的编码
+             * @param {string} key 按键对应的单字
+             * @param {boolean} ctrlKey CTRL键是否按下
+             * @param {boolean} altKey ALT键是否按下
+             * @member TextBox
+             */
             this.fire('keypress', event);
         }
 
@@ -118,7 +193,8 @@ define(
          * 控制placeholder的显示与隐藏
          *
          * @param {TextBox} textbox 控件实例
-         * @param {boolean=} focused 额外指定文本框是否聚集
+         * @param {boolean} [focused] 额外指定文本框是否聚集
+         * @ignore
          */
         function togglePlaceholder(textbox, focused) {
             var input = lib.g(textbox.inputId);
@@ -144,14 +220,22 @@ define(
          * 获得焦点的逻辑
          *
          * @param {Event} e DOM事件对象
+         * @ignore
          */
         function focus(e) {
             togglePlaceholder(this, true);
-
             if (this.autoSelect) {
+                var input = lib.g(this.inputId);
                 input.select();
             }
 
+            /**
+             * @event focus
+             *
+             * 文本框获得焦点时触发
+             *
+             * @member TextBox
+             */
             this.fire('focus');
         }
 
@@ -159,10 +243,18 @@ define(
          * 失去焦点的逻辑
          *
          * @param {Event} e DOM事件对象
+         * @ignore
          */
         function blur(e) {
             togglePlaceholder(this, false);
 
+            /**
+             * @event blur
+             *
+             * 文本框失去焦点时触发
+             *
+             * @member TextBox
+             */
             this.fire('blur');
         }
 
@@ -170,9 +262,19 @@ define(
          * 同步DOM的值与控件的属性
          *
          * @param {Event} e DOM事件对象
+         * @ignore
          */
         function dispatchInputEvent(e) {
             if (e.type === 'input' || e.propertyName === 'value') {
+                /**
+                 * @event input
+                 *
+                 * 输入内容变化时触发
+                 *
+                 * 在IE下，使用退格（Backspace或Delete）键时可能不触发此事件
+                 *
+                 * @member TextBox
+                 */
                 this.fire('input');
             }
         }
@@ -180,8 +282,8 @@ define(
         /**
          * 初始化DOM结构
          *
-         * @override
          * @protected
+         * @override
          */
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
@@ -230,6 +332,7 @@ define(
                 ? 'input' 
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
+            this.helper.delegateDOMEvent(input, 'change');
 
             if (!supportPlaceholder) {
                 var placeholder = document.createElement('label');
@@ -241,9 +344,9 @@ define(
         };
 
         /**
-         * 重绘
+         * 重渲染
          *
-         * @param {Array=} 更新过的属性集合
+         * @method
          * @protected
          * @override
          */
@@ -265,6 +368,11 @@ define(
                 }
             },
             {
+                /**
+                 * @property {string} title
+                 *
+                 * 鼠标悬停后的提示内容
+                 */
                 name: 'title',
                 paint: function (textbox, title) {
                     var input = lib.g(textbox.inputId);
@@ -286,6 +394,14 @@ define(
                 }
             },
             {
+                /**
+                 * @property {number} maxLength
+                 *
+                 * 最大可输入长度
+                 *
+                 * 在IE低版本中，当{@link TextBox#mode}值为`"textarea"`时，
+                 * 当前属性仅影响验证，不会导致文本框达到最大长度后无法输入
+                 */
                 name: 'maxLength',
                 paint: function (textbox, maxLength) {
                     var input = lib.g(textbox.inputId);
@@ -314,6 +430,13 @@ define(
                 }
             },
             {
+                /**
+                 * @property {string} placeholder
+                 *
+                 * 无内容时的提示信息
+                 *
+                 * 在IE9下，该提示信息的颜色始终与文本框文字颜色相同且无法通过CSS修改
+                 */
                 name: 'placeholder',
                 paint: function (textbox, placeholder) {
                     var input = lib.g(textbox.inputId);
@@ -333,6 +456,35 @@ define(
                 }
             },
             {
+                /**
+                 * @property {string} hint
+                 *
+                 * 放置在文本框前面或后面的提示内容，
+                 * 根据{@link TextBox#hintType}决定放置的位置，
+                 * 该属性会影响到文本框可输入内容区域的宽度，
+                 * 具体参考{@link TextBox#width}属性的说明
+                 */
+
+                /**
+                 * @property {string} hintType
+                 *
+                 * 指定{@link TextBox#hint}放置的位置，
+                 * 可以为`"prefix"`指定放在前面，或`"suffix"`指定放在后面，如：
+                 *
+                 *     <div data-ui-type="TextBox"
+                 *         data-ui-hint="http://"
+                 *         data-ui-hint-type="prefix">
+                 *     </div>
+                 *
+                 * 则在文本框前面显示`"http://"`字样
+                 *
+                 *     <div data-ui-type="TextBox"
+                 *         data-ui-hint="RMB"
+                 *         data-ui-hint-type="suffix">
+                 *     </div>
+                 *
+                 * 则在文本框后面显示`"RMB"`字样
+                 */
                 name: ['hint', 'hintType'],
                 paint: function (textbox, hint, hintType) {
                     var label = textbox.helper.getPart('hint');
@@ -365,6 +517,19 @@ define(
                 }
             },
             {
+                /**
+                 * @property {number} width
+                 *
+                 * 设定文本框宽度
+                 *
+                 * 文本框的宽度包含以下内容：
+                 *
+                 * - 可输入区域的宽
+                 * - 由{@link TextBox#hint}产生的提示信息区域的宽
+                 * - 边框宽度
+                 *
+                 * 因此可以认为文本框的宽度是一个`<div>`元素在`border-box`状态下计算的
+                 */
                 name: ['width', 'hint', 'hidden'],
                 paint: function (textbox, width, hint, hidden) {
                     if (hidden || isNaN(width)) {
@@ -387,6 +552,11 @@ define(
                 }
             },
             {
+                /**
+                 * @property {number} height
+                 *
+                 * 文本框的高度
+                 */
                 name: 'height',
                 paint: function (textbox, height) {
                     if (isNaN(height)) {
@@ -415,7 +585,6 @@ define(
          * 获取验证信息控件
          *
          * @return {Validity}
-         * @public
          * @override
          */
         TextBox.prototype.getValidityLabel = function () {
@@ -435,12 +604,18 @@ define(
          * 获取值
          *
          * @return {string}
+         * @override
          */
         TextBox.prototype.getRawValue = function () {
             var input = lib.g(this.inputId);
             return input ? input.value : (this.rawValue || this.value || '');
         };
 
+        /**
+         * 获取`rawValue`的比对值，用于`setProperties`比对
+         *
+         * @protected
+         */
         TextBox.prototype.getRawValueProperty = TextBox.prototype.getRawValue;
 
         lib.inherits(TextBox, InputControl);

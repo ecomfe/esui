@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 子控件相关辅助方法
  * @author otakustay
  */
@@ -9,6 +10,10 @@ define(
     function (require) {
         var u = require('underscore');
         var ui = require('../main');
+
+        /**
+         * @override Helper
+         */
         var helper = {};
 
         /**

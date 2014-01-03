@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 命令菜单控件
  * @author otakustay
  */
@@ -15,9 +16,8 @@ define(
         /**
          * 选中某一项
          *
-         * @param {Menu} this 控件实例
          * @parma {Event} e DOM事件对象
-         * @inner
+         * @ignore
          */
         function selectItem(e) {
             this.layer.hide();
@@ -41,14 +41,24 @@ define(
                 }
             }
 
+            /**
+             * @event select
+             *
+             * 选中菜单中的一项时触发
+             *
+             * @param {meta.CommandMenuItem} item 选中的项
+             * @param {number} index 选中项在{@CommandMenu#datasource}中的的索引
+             * @member CommandMenu
+             */
             this.fire('select', { item: item, index: index });
         }
 
         /**
          * CommandMenu用浮层
          *
-         * @constructor
          * @extends Layer
+         * @ignore
+         * @constructor
          */
         function CommandMenuLayer() {
             Layer.apply(this, arguments);
@@ -91,32 +101,45 @@ define(
         };
 
         /**
-         * 命令菜单控件
+         * 命令菜单
          *
-         * @constructor
+         * 命令菜单在点击后会出现一个下拉框，根据{@link CommandMenu#datasource}配置，
+         * 点击其中一项后会执行对应的{@link meta.CommandMenuItem#handler}函数，
+         * 或者触发{@link CommandMenu#select}事件
+         *
          * @extends {Control}
+         * @constructor
          */
         function CommandMenu() {
             Control.apply(this, arguments);
             this.layer = new CommandMenuLayer(this);
         }
 
+        /**
+         * 控件类型，始终为`"CommandMenu"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         CommandMenu.prototype.type = 'CommandMenu';
 
         /**
          * 浮层中每一项的HTML模板
          *
+         * 在模板中可以使用以下占位符：
+         *
+         * - `{string} text`：文本内容，经过HTML转义
+         *
          * @type {string}
-         * @public
          */
         CommandMenu.prototype.itemTemplate = '<span>${text}</span>';
 
         /**
          * 获取浮层中每一项的HTML
          *
-         * @param {Object} item 当前项的数据项
-         * @return {string}
-         * @public
+         * @param {meta.CommandMenuItem} item 当前项的数据项
+         * @return {string} 返回HTML片段
          */
         CommandMenu.prototype.getItemHTML = function (item) {
             var data = {
@@ -128,8 +151,8 @@ define(
         /**
          * 初始化DOM结构
          *
-         * @override
          * @protected
+         * @override
          */
         CommandMenu.prototype.initStructure = function () {
             this.helper.addDOMEvent(
@@ -141,20 +164,42 @@ define(
 
         var paint = require('./painters');
         /**
-         * 重绘
+         * 重新渲染
          *
+         * @method
+         * @protected
          * @override
          */
         CommandMenu.prototype.repaint = paint.createRepaint(
             Control.prototype.repaint,
+            /**
+             * @property {number} width
+             *
+             * 宽度
+             */
             paint.style('width'),
+            /**
+             * @property {number} height
+             *
+             * 高度，指浮层未展开时的可点击元素的高度， **与浮层高度无关**
+             */
             paint.style('height'),
             {
+                /**
+                 * @property {meta.CommandMenuItem[]} datasource
+                 *
+                 * 数据源，其中每一项生成浮层中的一条
+                 */
                 name: 'datasource',
                 paint: function (menu) {
                     menu.layer.repaint();
                 }
             },
+            /**
+             * @property {string} displayText
+             *
+             * 显示在可点击元素上的文本，会自动进行HTML转义
+             */
             paint.text('displayText'),
             {
                 name: ['disabled', 'hidden', 'readOnly'],
@@ -170,7 +215,6 @@ define(
          * 销毁控件
          *
          * @override
-         * @public
          */
         CommandMenu.prototype.dispose = function () {
             if (this.helper.isInStage('DISPOSED')) {

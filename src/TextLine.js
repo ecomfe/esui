@@ -2,200 +2,162 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 多行带行码输入框
- * @author dbear
+ * @author dbear, otakustay
  */
 
 define(
     function (require) {
-        require('./TextBox');
-        require('./Panel');
-
+        var u = require('underscore');
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var ui = require('./main');
 
+        require('./TextBox');
+
         /**
-         * 控件类
-         * 
+         * 带行号的输入框
+         *
+         * @extends InputControl
+         * @requires TextBox
          * @constructor
-         * @param {Object} options 初始化参数
          */
         function TextLine(options) {
             InputControl.apply(this, arguments);
         }
 
-
         /**
          * 获取主体的HTML
          *
-         * @param {TextLine} textLine TextLine控件实例
-         * @inner
+         * @param {TextLine} textLine 控件实例
+         * @ignore
          */
         function getMainHTML(textLine) {
-            var tpl = [
-                '<div id="${numLineId}" class="${numLineClass}">1</div>',
+            var textarea = [
                 '<textarea ',
-                'data-ui="type:TextBox;childName:text;mode:textarea" ',
-                'name="${name}" wrap="off">',
-                '</textarea>',
-                '<input type="hidden" id="${inputId}" name="${name}"/>'
-            ].join('');
+                    'data-ui-type="TextBox" ',
+                    'data-ui-child-name="text" ',
+                    'data-ui-mode="textarea" ',
+                    'wrap="off">',
+                '</textarea>'
+            ];
+            var html = [
+                textLine.helper.getPartBeginTag('num-line', 'div'),
+                    '1', // 默认至少有一行
+                textLine.helper.getPartEndTag('num-line', 'div'),
+                textarea.join('')
+            ];
 
-
-            return lib.format(
-                tpl,
-                {
-                    numLineId: helper.getId(textLine, 'num-line'),
-                    numLineClass:
-                        helper.getPartClasses(textLine, 'num-line').join(' '),
-                    name: textLine.name,
-                    inputId: helper.getId(textLine, 'param-value')
-                }
-            );
+            return html.join('');
         }
 
 
         /**
-         * 重置行号，增加内容和keyup时可调用
+         * 重置行号，增加内容和`keyup`时可调用
          *
-         * @param {TextLine} textLine TextLine控件实例
-         * @inner
+         * @ignore
          */
-        function refreshLineNum(textLine) {
-            var me = textLine;
-            var html = [];
-            var num = me.getChild('text').getValue().split('\n').length;
-            if (num != me.number) {
-                me.number = num;
-                for (var i = 1; i < num + 1; i++) {
-                    html.push(i);
-                }
-                me.lineNumBlock.innerHTML = html.join('<br />');
+        function refreshLineNum() {
+            var num = this.getChild('text').getValue().split('\n').length;
+            if (num !== this.number) {
+                this.number = num;
+                var numLine = this.helper.getPart('num-line');
+                numLine.innerHTML = u.range(1, num + 1).join('<br />');
             }
-            me.resetScroll();
-            textLine.fire('change');
+            this.resetScroll();
+            /**
+             * @event change
+             *
+             * 当值变化时触发
+             *
+             * @member TextLine
+             */
+            this.fire('change');
         }
 
-        /**
-         * 批量
-         * @inner
-         * @param {Region} region Region控件实例
-         * @param {boolean} disabled 是否不可用
-         * @param {boolean} readOnly 是否只读
-         */
-        function changeToDisabled(textLine, disabled, readOnly) {
-            var editable = true;
-            /** disable的优先级高于readOnly */
-            if (disabled || readOnly) {
-                editable = false;
-            }
-
-            var textArea = textLine.getChild('text');
-            textArea.setProperties({
-                disabled: disabled,
-                readOnly: readOnly
-            });
-
-
-        }
 
         TextLine.prototype = {
             /**
-             * 控件类型
+             * 控件类型，始终为`"TextLine"`
              * 
              * @type {string}
+             * @readonly
+             * @override
              */
             type: 'TextLine',
 
             /**
              * 初始化参数
              *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
+             * @param {Object} [options] 构造函数传入的参数
              * @protected
+             * @override
              */
             initOptions: function (options) {
-                /**
-                 * 默认选项配置
-                 */
+                // 默认选项配置
                 var properties = {
                     width: 300,
                     height: 200,
                     value: ''
                 };
-                helper.extractValueFromInput(this, options);
-                lib.extend(properties, options);
+                if (lib.isInput(this.main)) {
+                    this.helper.extractOptionsFromInput(this.main, properties);
+                }
+                u.extend(properties, options);
                 this.setProperties(properties);
             },
-
 
             /**
              * 初始化DOM结构
              *
              * @protected
+             * @override
              */
             initStructure: function () {
                 // 如果主元素是输入元素，替换成`<div>`
                 // 如果输入了非块级元素，则不负责
                 if (lib.isInput(this.main)) {
-                    helper.replaceMain(this);
+                    this.helper.replaceMain();
                 }
                 
                 this.main.innerHTML = getMainHTML(this);
                 // 创建控件树
-                this.initChildren(this.main);
+                this.helper.initChildren();
 
                 // 输入区变化监听
                 var textArea = this.getChild('text');
-                textArea.on(
-                    'input',
-                    lib.curry(refreshLineNum, this)
-                );
+                textArea.on('input', refreshLineNum, this);
 
                 // 主体滚动监听
-                helper.addDOMEvent(
-                    textArea, 
+                this.helper.addDOMEvent(
                     textArea.main.firstChild, 
                     'scroll', 
-                    lib.bind(this.resetScroll, this)
+                    this.resetScroll
                 );
-
-                // 行码条滚动监听
-                var lineNumDiv = lib.g(helper.getId(this, 'num-line'));
-                // 保存到控件对象，因为之后会一直用到
-                this.lineNumBlock = lineNumDiv;
-
             },
 
             /**
-             * 创建控件主元素
+             * 重新渲染
              *
-             * @param {Object=} options 构造函数传入的参数
-             * @return {HTMLElement}
+             * @method
+             * @protected
              * @override
              */
-            createMain: function (options) {
-                return document.createElement('DIV');
-            },
-
-            /**
-             * 重新渲染视图
-             * 仅当生命周期处于RENDER时，该方法才重新渲染
-             *
-             * @param {Array=} 变更过的属性的集合
-             * @override
-             */
-            repaint: helper.createRepaint(
+            repaint: require('./painters').createRepaint(
                 InputControl.prototype.repaint,
                 {
+                    /**
+                     * @property {number} height
+                     *
+                     * 控件的高度
+                     */
                     name: 'height',
                     paint: function (textLine, height) {
                         height = height || 300;
 
                         // 渲染行号区高度
-                        var lineNumDiv = textLine.lineNumBlock;
+                        var lineNumDiv = textLine.helper.getPart('num-line');
                         lineNumDiv.style.height = height + 'px';
                         
                         // 主体高度
@@ -203,12 +165,15 @@ define(
 
                         // 输入区
                         var textArea = textLine.getChild('text');
-                        textArea.setProperties({
-                            height: height
-                        });
+                        textArea.set('height', height);
                     }
                 },
                 {
+                    /**
+                     * @property {number} width
+                     *
+                     * 控件的宽度
+                     */
                     name: 'width',
                     paint: function (textLine, width) {
                         width = width || 300;
@@ -218,73 +183,82 @@ define(
 
                         // 输入区
                         var textArea = textLine.getChild('text');
-                        textArea.setProperties({
-                            width: width - 30
-                        });
+                        // TODO: 用`offsetWidth`代替这个30的常量？
+                        textArea.set('width', width - 30);
                     }
                 },
                 {
+                    /**
+                     * @property {string[]} rawValue
+                     *
+                     * 控件的原始值，为字符串数组，每行表示一个字符串
+                     *
+                     * @override
+                     */
                     name: 'rawValue',
                     paint: function (textLine, value) {
                         // 输入区
                         var textArea = textLine.getChild('text');
+
                         if (value) {
-                            if (lib.isArray(value)) {
-                                textLine.value =
-                                    lib.decodeHTML(value.join('\n'));
+                            if (u.isArray(value)) {
+                                textLine.value = u.unescape(value.join('\n'));
                             }
                             // 好怕怕有一个人直接设置了字符串
                             else if (typeof value === 'string') {
-                                textLine.value =
-                                    lib.decodeHTML(value);
+                                textLine.value = u.unescape(value);
                             }
+
                             textArea.setRawValue(textLine.value);
 
-                            var inputId = helper.getId(textLine, 'param-value');
-                            lib.g(inputId).value = textLine.value;
-                            refreshLineNum(textLine);
+                            refreshLineNum.call(textLine);
                         }
                     }
                 }, 
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (textLine, disabled, readOnly) {
-                        changeToDisabled(textLine, disabled, readOnly);
+                        var textArea = textLine.getChild('text');
+                        var properties = {
+                            disabled: disabled,
+                            readOnly: readOnly
+                        };
+                        textArea.setProperties(properties);
                     }
                 }
             ),
 
-
             /**
              * 滚动文本输入框
-             *
-             * @param {TextLine} textLine TextLine控件实例
-             * @public
              */
             resetScroll: function () {
                 var textArea = this.getChild('text').main.firstChild;
-                var lineNumber = this.lineNumBlock;
+                var lineNumber = this.helper.getPart('num-line');
                 // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
                 lineNumber.style.height = textArea.clientHeight + 'px';
-                this.lineNumBlock.scrollTop =
+                this.helper.getPart('num-line').scrollTop =
                     this.getChild('text').main.firstChild.scrollTop;
             },
 
             /**
-             * 将value从原始格式转换成string
+             * 将值从原始格式转换成字符串
              * 
-             * @param {*} rawValue 原始值
+             * @param {string[]} rawValue 原始值
              * @return {string}
+             * @protected
+             * @override
              */
             stringifyValue: function (rawValue) {
                 return rawValue.join('\n');
             },
 
             /**
-             * 将string类型的value转换成原始格式
+             * 将字符串类型的值转换成原始格式
              * 
              * @param {string} value 字符串值
-             * @return {Array}
+             * @return {string[]}
+             * @protected
+             * @override
              */
             parseValue: function (value) {
                 return lib.trim(value.replace(/\n{2,}/g, '\n')).split('\n');
@@ -293,47 +267,23 @@ define(
             /**
              * 获取内容数组形式（去重，去空行）
              *
-             * @return {Array}
+             * @return {string[]}
+             * @override
              */
             getRawValue: function() {
-                var text = this.getChild('text').getValue();
-                var items = text.replace(/\n{2,}/g, '\n').split('\n');
-                var value;
-                var container = {};
-                var result = [];
-
-                for (var i = 0, len = items.length; i < len; i++) {
-                    value = lib.trim(items[i]);
-                    if (value.length === 0 || container[value]) {
-                        continue;
-                    }
-                    container[value] = 1;
-                    result.push(value);
-                }
-        
-                return result;
+                return u.unique(this.getValueRepeatableItems());
             },
 
             /**
              * 获取内容数组形式,并去除空串内容（不去重）
              *
-             * @return {Array}
+             * @return {string[]}
              */
             getValueRepeatableItems: function() {
                 var text = this.getChild('text').getValue();
                 var items = text.split('\n');
-                var value;
-                var result = [];
-        
-                for (var i = 0, len = items.length; i < len; i++) {
-                    value = lib.trim(items[i]);
-                    if (value.length === 0) {
-                        continue;
-                    }
-                    result.push(value);
-                }
-        
-                return result;
+
+                return u.chain(items).map(lib.trim).compact().value();
             },
 
             /**
@@ -343,25 +293,23 @@ define(
              */
             getRowsNumber: function() {
                var items = this.getValue().split('\n');
-               var len = items.length;
-               return len;
+               return items.length;
             },
 
             /**
              * 增加内容
              *
-             * @param {Array} lines
+             * @param {string[]} lines 需添加的行
              */
             addLines: function(lines) {
-                var me = this;
                 var content = lines.join('\n');
-                var value = me.getValue();
+                var value = this.getValue();
         
                 if (value.length > 0) {
                     content = value + '\n' + content;
                 }
         
-                me.setProperties({ rawValue: content });
+                this.setRawValue(content);
             }
 
         };

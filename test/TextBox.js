@@ -1,4 +1,4 @@
-define(function () {
+define(function (require) {
     var TextBox = require('esui/TextBox');
 
     function findInput(textbox) {

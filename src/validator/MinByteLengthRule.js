@@ -2,6 +2,7 @@
  * ESUI (Enterprise UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 字段最小长度验证规则
  * @author otakustay
  */
@@ -11,8 +12,12 @@ define(
         var ValidityState = require('./ValidityState');
 
         /**
-         * MinByteLengthRule类声明
+         * 验证最小字节长度的规则
          *
+         * 该规则将除标准ASCII码外的其它字符视为2个字节
+         *
+         * @extends validator.Rule
+         * @class validator.MinByteLengthRule
          * @constructor
          */
         function MinByteLengthRule() {
@@ -20,9 +25,10 @@ define(
         }
 
         /**
-         * 规则类型
+         * 规则类型，始终为`"minByteLength"`
          * 
          * @type {string}
+         * @override
          */
         MinByteLengthRule.prototype.type = 'minByteLength';
 
@@ -31,6 +37,7 @@ define(
          * 错误提示信息
          *
          * @type {string}
+         * @override
          */
         MinByteLengthRule.prototype.errorMessage = 
             '${title}不能小于${minByteLength}个字符';
@@ -40,8 +47,8 @@ define(
          *
          * @param {string} value 校验值
          * @param {Control} control 待校验控件
-         *
-         * @return {validator/ValidityState}
+         * @return {validator.ValidityState}
+         * @override
          */
         MinByteLengthRule.prototype.check = function (value, control) {
             var byteLength = value.replace(/[^\x00-\xff]/g, 'xx').length;

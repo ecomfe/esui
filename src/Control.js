@@ -9,26 +9,50 @@
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
-        var Helper = require('./Helper');
-        var ui = require('./main');
         var u = require('underscore');
+        var ui = require('./main');
+        var Helper = require('./Helper');
 
         /**
          * 控件基类
          * 
          * @constructor
-         * @param {Object} options 初始化参数
+         * @extends {mini-event.EventTarget}
+         * @param {Object} [options] 初始化参数
+         * @fires init
          */
         function Control(options) {
-            helper.changeStage(this, 'NEW');
+            options = options || {};
+
+            /**
+             * 控件关联的{@link Helper}对象
+             *
+             * @type {Helper}
+             * @protected
+             */
+            this.helper = new Helper(this);
+
+            this.helper.changeStage('NEW');
+
+            /**
+             * 子控件数组
+             *
+             * @type {Control[]}
+             * @protected
+             * @readonly
+             */
             this.children = [];
             this.childrenIndex = {};
             this.currentStates = {};
             this.domEvents = {};
-            this.helper = new Helper(this);
-            options = options || {};
 
+            /**
+             * 控件的主元素
+             *
+             * @type {HTMLElement}
+             * @protected
+             * @readonly
+             */
             this.main = options.main ? options.main : this.createMain(options);
 
             // 如果没给id，自己创建一个，
@@ -36,23 +60,61 @@ define(
             // 这个不能放到`initOptions`的后面，
             // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
             // 会把其它控件的`ViewContext`给冲掉导致各种错误
+
+            /**
+             * 控件的id，在一个{@link ViewContext}中不能重复
+             *
+             * @property {string} id
+             * @readonly
+             */
             if (!this.id && !options.id) {
-                this.id = helper.getGUID();
+                this.id = lib.getGUID();
             }
 
             this.initOptions(options);
 
             // 初始化视图环境
-            helper.initViewContext(this);
+            this.helper.initViewContext();
 
             // 初始化扩展
-            helper.initExtensions(this);
+            this.helper.initExtensions();
 
             // 切换控件所属生命周期阶段
-            helper.changeStage(this, 'INITED');
+            this.helper.changeStage('INITED');
 
+            /**
+             * @event init
+             *
+             * 完成初始化
+             */
             this.fire('init');
         }
+
+        /**
+         * @property {string} type
+         *
+         * 控件的类型
+         * @readonly
+         */
+
+        /**
+         * @property {string} skin
+         *
+         * 控件皮肤，仅在初始化时设置有效，运行时不得变更
+         *
+         * @protected
+         * @readonly
+         */
+
+        /**
+         * @property {string} styleType
+         *
+         * 控件的样式类型，用于生成各class使用
+         *
+         * 如无此属性，则使用{@link Control#type}属性代替
+         *
+         * @readonly
+         */
 
         Control.prototype = {
             constructor: Control,
@@ -67,6 +129,12 @@ define(
 
             /**
              * 获取控件的分类
+             *
+             * 控件分类的作用如下：
+             *
+             * - `control`表示普通控件，没有任何特征
+             * - `input`表示输入控件，在表单中使用`getRawValue()`获取其值
+             * - `check`表示复选控件，在表单中通过`isChecked()`判断其值是否加入结果中
              *
              * @return {string} 可以为`control`、`input`或`check`
              */
@@ -97,15 +165,25 @@ define(
 
             /**
              * 初始化DOM结构，仅在第一次渲染时调用
+             *
+             * @abstract
              */
             initStructure: function () {
             },
 
             /**
              * 渲染控件
+             *
+             * @fires beforerender
+             * @fires afterrender
              */
             render: function () {
-                if (helper.isInStage(this, 'INITED')) {
+                if (this.helper.isInStage('INITED')) {
+                    /**
+                     * @event beforerender
+                     *
+                     * 开始初次渲染
+                     */
                     this.fire('beforerender');
 
                     this.domIDPrefix = this.viewContext.id;
@@ -114,7 +192,7 @@ define(
 
                     // 为控件主元素添加id
                     if (!this.main.id) {
-                        this.main.id = helper.getId(this);
+                        this.main.id = this.helper.getId();
                     }
 
                     // 为控件主元素添加控件实例标识属性
@@ -127,7 +205,7 @@ define(
                         this.viewContext.id 
                     );
 
-                    helper.addPartClasses(this);
+                    this.helper.addPartClasses();
 
                     if (this.states) {
                         this.states = typeof this.states === 'string'
@@ -141,17 +219,29 @@ define(
                 // 由子控件实现
                 this.repaint();
 
-                if (helper.isInStage(this, 'INITED')) {
+                if (this.helper.isInStage('INITED')) {
+                    /**
+                     * @event afterrender
+                     *
+                     * 结束初次渲染
+                     */
                     this.fire('afterrender');
                 }
 
                 // 切换控件所属生命周期阶段
-                helper.changeStage(this, 'RENDERED');
+                this.helper.changeStage('RENDERED');
             },
 
             /**
              * 重新渲染视图
+             *
              * 仅当生命周期处于RENDER时，该方法才重新渲染
+             *
+             * 本方法的2个参数中的值均为 **属性变更对象** ，一个该对象包含以下属性：
+             *
+             * - `name`：属性名
+             * - `oldValue`：变更前的值
+             * - `newValue`：变更后的值
              *
              * @param {Object[]} [changes] 变更过的属性的集合
              * @param {Object} [changesIndex] 变更过的属性的索引
@@ -181,8 +271,8 @@ define(
                 }
 
                 wrap.appendChild(this.main);
-                if (helper.isInStage(this, 'NEW')
-                    || helper.isInStage(this, 'INITED')
+                if (this.helper.isInStage('NEW')
+                    || this.helper.isInStage('INITED')
                 ) {
                     this.render();
                 }
@@ -199,8 +289,8 @@ define(
                 }
                 
                 reference.parentNode.insertBefore(this.main, reference);
-                if (helper.isInStage(this, 'NEW')
-                    || helper.isInStage(this, 'INITED')
+                if (this.helper.isInStage('NEW')
+                    || this.helper.isInStage('INITED')
                 ) {
                     this.render();
                 }
@@ -208,13 +298,29 @@ define(
 
             /**
              * 销毁释放控件
+             *
+             * @fires beforedispose
+             * @fires afterdispose
              */
             dispose: function () {
-                if (!helper.isInStage(this, 'DISPOSED')) {
-                    helper.beforeDispose(this);
-                    helper.dispose(this);
-                    helper.afterDispose(this);
+                if (!this.helper.isInStage('DISPOSED')) {
+                    this.helper.beforeDispose();
+                    this.helper.dispose();
+                    this.helper.afterDispose();
                 }
+            },
+
+            /**
+             * 销毁控件并移除所有DOM元素
+             *
+             * @fires beforedispose
+             * @fires afterdispose
+             */
+            destroy: function () {
+                // 为了避免`dispose()`的时候把`main`置空了，这里先留存一个
+                var main = this.main;
+                this.dispose();
+                lib.removeNode(main);
             },
 
             /**
@@ -269,6 +375,7 @@ define(
              * 批量设置控件的属性值
              * 
              * @param {Object} properties 属性值集合
+             * @return {Object} `properties`参数中确实变更了的那些属性
              */
             setProperties: function (properties) {
                 // 只有在渲染以前（就是`initOptions`调用的那次）才允许设置id
@@ -330,7 +437,7 @@ define(
                     }
                 }
 
-                if (changes.length && helper.isInStage(this, 'RENDERED')) {
+                if (changes.length && this.helper.isInStage('RENDERED')) {
                     this.repaint(changes, changesIndex);
                 }
 
@@ -369,7 +476,7 @@ define(
                 }
 
                 // 在主元素上加个属性，以便找到`ViewContext`
-                if (this.viewContext && helper.isInStage(this, 'RENDERED')) {
+                if (this.viewContext && this.helper.isInStage('RENDERED')) {
                     this.main.setAttribute( 
                         ui.getConfig('viewContextAttr'), 
                         this.viewContext.id 
@@ -439,13 +546,19 @@ define(
 
             /**
              * 添加控件状态
+             *
+             * 调用该方法同时会让状态对应的属性变为`true`，
+             * 从而引起该属性对应的`painter`的执行
+             *
+             * 状态对应的属性名是指将状态名去除横线并以`camelCase`形式书写的名称，
+             * 如`align-left`对应的属性名为`alignLeft`
              * 
              * @param {string} state 状态名
              */
             addState: function (state) {
                 if (!this.hasState(state)) {
                     this.currentStates[state] = true;
-                    helper.addStateClasses(this, state);
+                    this.helper.addStateClasses(state);
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/, 
@@ -458,13 +571,19 @@ define(
 
             /**
              * 移除控件状态
+             *
+             * 调用该方法同时会让状态对应的属性变为`false`，
+             * 从而引起该属性对应的`painter`的执行
+             *
+             * 状态对应的属性名是指将状态名去除横线并以`camelCase`形式书写的名称，
+             * 如`align-left`对应的属性名为`alignLeft`
              * 
              * @param {string} state 状态名
              */
             removeState: function (state) {
                 if (this.hasState(state)) {
                     this.currentStates[state] = false;
-                    helper.removeStateClasses(this, state);
+                    this.helper.removeStateClasses(state);
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/, 
@@ -477,6 +596,9 @@ define(
 
             /**
              * 切换控件指定状态
+             *
+             * 该方法根据当前状态调用{@link Control#addState}或
+             * {@link Control#removeState}方法，因此同样会对状态对应的属性进行修改
              * 
              * @param {string} state 状态名
              */
@@ -551,6 +673,8 @@ define(
 
             /**
              * 移除全部子控件
+             *
+             * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
              */
             disposeChildren: function () {
                 var children = this.children.slice();
@@ -572,19 +696,37 @@ define(
             },
 
             /**
+             * 获取子控件，无相关子控件则返回{@link SafeWrapper}
+             * 
+             * @param {string} childName 子控件名
+             * @return {Control}
+             */
+            getChildSafely: function (childName) {
+                var child = this.getChild(childName);
+
+                if (!child) {
+                    var SafeWrapper = require('./SafeWrapper');
+                    child = new SafeWrapper();
+                    child.childName = childName;
+                    child.parent = this;
+                    if (this.viewContext) {
+                        child.viewContext = this.viewContext;
+                    }
+                }
+
+                return child;
+            },
+
+            /**
              * 批量初始化子控件
              * 
              * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
              * @param {Object} [options] 初始化的配置参数
              * @param {Object} [options.properties] 属性集合，通过id映射
+             * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
              */
             initChildren: function (wrap, options) {
-                wrap = wrap || this.main;
-                options = lib.extend({}, this.renderOptions, options);
-                options.viewContext = this.viewContext;
-                options.parent = this;
-
-                ui.init(wrap, options);
+                this.helper.initChildren(wrap, options);
             }
         };
 

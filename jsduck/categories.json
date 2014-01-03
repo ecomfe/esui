@@ -1,19 +1,75 @@
 [
     {
-        "name": "esui",
+        "name": "ESUI",
         "groups": [
             {
-                "name": "Classes",
+                "name": "基础组件",
                 "classes": [
+                    "main",
                     "ViewContext",
                     "Control",
-                    "ControlGroup"
-                    // "Extension",
-                    // "main"
+                    "SafeWrapper",
+                    "ControlCollection",
+                    "InputControl",
+                    "ControlGroup",
+                    "InputCollection",
+                    "Helper",
+                    "Layer",
+                    "TreeStrategy"
+                ]
+            },
+            {
+                "name": "工具对象",
+                "classes": [
+                    "lib",
+                    "lib.*",
+                    "painters",
+                    "controlHelper"
+                ]
+            },
+            {
+                "name": "扩展组件",
+                "classes": [
+                    "Extension",
+                    "extension.*"
+                ]
+            },
+            {
+                "name": "验证",
+                "classes": [
+                    "validator.*"
+                ]
+            },
+            {
+                "name": "控件",
+                "classes": [
+                    "BoxGroup",
+                    "Button",
+                    "Calendar",
+                    "CheckBox",
+                    "CommandMenu",
+                    "Crumb",
+                    "Form",
+                    "Label",
+                    "Link",
+                    "Pager",
+                    "Panel",
+                    "Select",
+                    "Tab",
+                    "TextBox",
+                    "TextLine",
+                    "Tip",
+                    "Tree",
+                    "Validity",
+                    "Wizard"
+                ]
+            },
+            {
+                "name": "内部数据结构",
+                "classes": [
+                    "meta.*"
                 ]
             }
         ]
-
-
     }
 ]

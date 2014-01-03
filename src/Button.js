@@ -1,9 +1,10 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 按钮
- * @author dbear
+ * @author dbear, otakustay
  */
 define(
     function (require) {
@@ -13,10 +14,10 @@ define(
         var Control = require('./Control');
 
         /**
-         * 按钮控件类
+         * 按钮控件
          * 
+         * @extends Control
          * @constructor
-         * @param {Object} options 初始化参数
          */
         function Button(options) {
             Control.apply(this, arguments);
@@ -26,7 +27,8 @@ define(
          * 获取元素border信息
          * 
          * @param {HTMLElement} dom 目标元素
-         * @return {object}
+         * @return {Object}
+         * @ignore
          */
         function getBorderInfo(dom) {
             var result = {};
@@ -39,18 +41,20 @@ define(
 
         Button.prototype = {
             /**
-             * 控件类型
-             * 
+             * 控件类型，始终为`"Button"`
+             *
              * @type {string}
+             * @readonly
+             * @override
              */
             type: 'Button',
 
             /**
              * 初始化参数
              *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
+             * @param {Object} [options] 构造函数传入的参数
              * @protected
+             * @override
              */
             initOptions: function (options) {
                 /**
@@ -77,13 +81,16 @@ define(
             },
 
             /**
-             * 创建控件主元素
+             * 创建控件主元素，默认使用`<button type="button">`元素
              *
-             * @param {Object=} options 构造函数传入的参数
+             * 如果需要使用其它类型作为主元素，
+             * 需要在始终化时提供{@link Control#main}属性
+             *
              * @return {HTMLElement}
+             * @protected
              * @override
              */
-            createMain: function (options) {
+            createMain: function () {
                 // IE创建带`type`属性的元素很麻烦，干脆这么来
                 var div = document.createElement('div');
                 div.innerHTML = '<button type="button"></button>';
@@ -94,23 +101,38 @@ define(
              * 初始化DOM结构
              *
              * @protected
+             * @override
              */
             initStructure: function () {
-                // 初始化状态事件
+                /**
+                 * @event click
+                 *
+                 * 点击时触发
+                 */
                 this.helper.delegateDOMEvent(this.main, 'click');
             },
             
             /**
-             * 重新渲染视图
-             * 仅当生命周期处于RENDER时，该方法才重新渲染
+             * 重新渲染
              *
-             * @param {Array=} 变更过的属性的集合
+             * @method
+             * @protected
              * @override
              */
             repaint: paint.createRepaint(
                 Control.prototype.repaint,
+                /**
+                 * @property {number} width
+                 *
+                 * 宽度
+                 */
                 paint.style('width'),
                 {
+                    /**
+                     * @property {number} height
+                     *
+                     * 高度
+                     */
                     name: 'height',
                     paint: function (button, value) {
                         if (!value) {
@@ -132,13 +154,27 @@ define(
                         }
                     } 
                 },
-                paint.html('content')
+                /**
+                 * @property {string} [content=""]
+                 *
+                 * 按钮的文本内容，不作HTML转义
+                 */
+                paint.html('content'),
+                {
+                    name: 'disabled',
+                    paint: function (button, disabled) {
+                        var nodeName = button.main.nodeName.toLowerCase();
+                        if (nodeName === 'button' || nodeName === 'input') {
+                            button.main.disabled = !!disabled;
+                        }
+                    }
+                }
             ),
 
             /**
              * 设置内容
              *
-             * @param {string} content 要设置的内容.
+             * @param {string} content 要设置的内容
              */
             setContent: function (content) {
                 this.setProperties({ 'content': content });

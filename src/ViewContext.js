@@ -4,70 +4,61 @@
  * 
  * @ignore
  * @file 视图环境类 用于对控件视图的管理
- * @author DBear, errorrik
+ * @author DBear, errorrik, otakustay
  */
 define(
-    function () {
+    function (require) {
+        var ControlCollection = require('./ControlCollection');
+
         /**
          * 控件分组
          *
          * 控件分组表达一组控件，类似`getElementsByClass(className)`的效果，
          * 分组同时提供一些方法以方便地操作这个集合
          *
+         * 控件分组是内部类，仅可以通过{@link ViewContext#getGroup}方法获取
+         *
+         * 为了保持私有性，`ControlGroup`去除了{@link ControlCollection#add}和
+         * {@link ControlCollection#remove}方法，使用者不能修改集合
+         *
+         * @param {string} name 分组名称
+         * @extends ControlCollection
          * @constructor
+         * @private
          */
         function ControlGroup(name) {
-            this.length = 0;
+            ControlCollection.apply(this, arguments);
+
+            /**
+             * @property {string} name
+             *
+             * 当前控件分组的名称
+             *
+             * @readonly
+             */
             this.name = name;
         }
 
-        // 为了让Firebug认为这是个数组
-        ControlGroup.prototype.splice = Array.prototype.splice;
+        require('./lib').inherits(ControlGroup, ControlCollection);
 
         /**
-         * 对分组内每个控件调用指定函数
+         * @method
          *
-         * @param {Function} callback 调用的函数，函数中的`this`为控件对象
+         * `ControlGroup`不提供此方法
          */
-        ControlGroup.prototype.each = function (callback) {
-            for (var i = 0; i < this.length; i++) {
-                var control = this[i];
-                callback.call(control);
-            }
-        };
+        ControlGroup.prototype.add = undefined;
 
         /**
-         * 激活分组内所有控件
+         * @method
+         *
+         * `ControlGroup`不提供此方法
          */
-        ControlGroup.prototype.enable = function () {
-            this.each(function () { this.enable(); });
-        };
-
-        /**
-         * 禁用分组内所有控件
-         */
-        ControlGroup.prototype.disable = function () {
-            this.each(function () { this.disable(); });
-        };
-
-        /**
-         * 显示分组内所有控件
-         */
-        ControlGroup.prototype.show = function () {
-            this.each(function () { this.show(); });
-        };
-
-        /**
-         * 隐藏分组内所有控件
-         */
-        ControlGroup.prototype.hide = function () {
-            this.each(function () { this.hide(); });
-        };
+        ControlGroup.prototype.remove = undefined;
 
         /**
          * 销毁当前实例
          */
-        ControlGroup.prototype.dispose = function () {
+        ControlGroup.prototype.disposeGroup = function () {
             for (var i = 0; i < this.length; i++) {
                 delete this[i];
             }
@@ -75,18 +66,11 @@ define(
         };
 
         function addToGroup(control, group) {
-            group[group.length] = control;
-            group.length++;
+            ControlCollection.prototype.add.call(group, control);
         }
 
         function removeFromGroup(control, group) {
-            for (var i = 0; i < group.length; i++) {
-                if (group[i] === control) {
-                    delete group[i];
-                    group.length--;
-                    return;
-                }
-            }
+            ControlCollection.prototype.remove.call(group, control);
         }
 
         function getGroupNames(control) {
@@ -109,6 +93,7 @@ define(
          * 视图环境对象池
          * 
          * @type {Object}
+         * @private
          */
         var pool = {};
 
@@ -117,14 +102,15 @@ define(
          *
          * 一个视图环境是一组控件的集合，不同视图环境中相同id的控件的DOM id不会重复
          *
-         * @param {string} id 该`ViewContext`的id
          * @constructor
+         * @param {string} id 该`ViewContext`的id
          */
         function ViewContext(id) {
             /**
              * 视图环境控件集合
              * 
-             * @type {Object} 
+             * @type {Object}
+             * @private
              */
             this.controls = {};
 
@@ -132,6 +118,7 @@ define(
              * 视图环境控件分组集合
              *
              * @type {Object}
+             * @private
              */
             this.groups = {};
 
@@ -150,6 +137,7 @@ define(
              * 视图环境id
              * 
              * @type {string} 
+             * @readonly
              */
             this.id = id;
 
@@ -229,13 +217,33 @@ define(
         };
 
         /**
-         * 通过id获取控件实例。 
+         * 通过id获取控件实例。
          *
          * @param {string} id 控件id
          * @return {Control} 根据id获取的控件
          */
         ViewContext.prototype.get = function (id) {
             return this.controls[id];
+        };
+        
+        var SafeWrapper = require('./SafeWrapper');
+
+        /**
+         * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
+         *
+         * @param {string} id 控件id
+         * @return {Control} 根据id获取的控件
+         */
+        ViewContext.prototype.getSafely = function (id) {
+            var control = this.get(id);
+
+            if (!control) {
+                control = new SafeWrapper();
+                control.id = id;
+                control.viewContext = this;
+            }
+
+            return control;
         };
 
         /**
@@ -257,7 +265,7 @@ define(
         };
 
         /**
-         * 清除视图环境中所有控件。 
+         * 清除视图环境中所有控件
          */
         ViewContext.prototype.clean = function () {
             for (var id in this.controls) {
@@ -273,7 +281,7 @@ define(
 
             for (var name in this.groups) {
                 if (this.groups.hasOwnProperty(name)) {
-                    this.groups[name].dispose();
+                    this.groups[name].disposeGroup();
                     this.groups[name] = undefined;
                 }
             }

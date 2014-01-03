@@ -174,6 +174,9 @@ define(
                 top = (page.getViewHeight() - main.offsetHeight) / 2;
             }
 
+            // 顶部不能越界
+            top = Math.max(top, 0);
+
             main.style.left = left + 'px';
             main.style.top = page.getScrollTop() + top + 'px';
 

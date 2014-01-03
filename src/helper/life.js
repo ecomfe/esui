@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
+ * @ignore
  * @file 生命周期相关辅助方法
  * @author otakustay
  */
@@ -10,8 +11,8 @@ define(
         /**
          * LifeCycle枚举
          * 
-         * @type {Object} 
-         * @inner
+         * @type {Object}
+         * @ignore
          */
         var LifeCycle = {
             NEW: 0,
@@ -20,7 +21,12 @@ define(
             DISPOSED: 4
         };
         
+        var u = require('underscore');
         var ui = require('../main');
+
+        /**
+         * @override Helper
+         */
         var helper = {};
 
         /**
@@ -41,7 +47,7 @@ define(
         helper.initExtensions = function () {
             // 附加全局扩展
             var extensions = this.control.extensions;
-            if (!(extensions instanceof Array)) {
+            if (!u.isArray(extensions)) {
                 extensions = this.control.extensions = [];
             }
             Array.prototype.push.apply(
@@ -51,7 +57,7 @@ define(
 
             // 同类型扩展去重
             var registeredExtensions = {};
-            for (var i = 0, len = extensions.length; i < len; i++) {
+            for (var i = 0; i < extensions.length; i++) {
                 var extension = extensions[i];
                 if (!registeredExtensions[extension.type]) {
                     extension.attachTo(this.control);
@@ -100,18 +106,13 @@ define(
             this.clearDOMEvents();
 
             // 移除所有扩展
-            if (this.control.extensions) {
-                for (var i = 0; i < this.control.extensions.length; i++) {
-                    var extension = this.control.extensions[i];
-                    extension.dispose();
-                }
-            }
+            u.invoke(this.control.extensions, 'dispose');
+            this.control.extensions = null;
 
             // 从控件树中移除
             if (this.control.parent) {
                 this.control.parent.removeChild(this.control);
             }
-
 
             // 从视图环境移除
             if (this.control.viewContext) {
@@ -125,6 +126,13 @@ define(
          * 执行控件销毁前动作
          */
         helper.beforeDispose = function () {
+            /**
+             * @event beforedispose
+             *
+             * 在销毁前触发
+             *
+             * @member Control
+             */
             this.control.fire('beforedispose');
         };
 
@@ -133,7 +141,17 @@ define(
          */
         helper.afterDispose = function () {
             this.changeStage('DISPOSED');
+            /**
+             * @event afterdispose
+             *
+             * 在销毁后触发
+             *
+             * @member Control
+             */
             this.control.fire('afterdispose');
+
+            // 销毁所有事件，这个必须在`afterdispose`事件之后，不然事件等于没用
+            this.control.destroyEvents();
         };
 
         return helper;

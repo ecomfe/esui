@@ -22,14 +22,17 @@
                 <button  id="changeHeadPositionBtn" data-ui="id:changeHeadPositionBtn;type:Button;">changeHeadPosition</button>
                 <button  id="resetFollowHeadBtn" data-ui="id:resetFollowHeadBtn;type:Button;">resetFollowHead</button>
                 <button  id="getSelectedItemsBtn" data-ui="id:getSelectedItemsBtn;type:Button;">getSelectedItems</button>
+                <button  id="updateRowBtn" data-ui="id:updateRowBtn;type:Button;">updateRow</button>
             </div>
-            <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit"></div>
+            <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
+            
             <br/>
-
+        <!--
             <div style="width:1024px;margin: 0 auto;overflow:hidden;">
                 <div data-follow-thead="myTable2">I am not</div>
                 <div data-ui="type:Table;id:myTable2;"  data-ui-extension-tableedit-type="TableEdit"></div>
             </div>
+        -->
         </div>
         <script>
         var data = [
@@ -42,30 +45,21 @@
         ];
         data = data.concat(data);
         data = data.concat(data);
-        //data = data.concat(data);
-        //data = data.concat(data);
-        //data = data.concat(data);
-        //data = data.concat(data);
-        //data = data.concat(data);
-        //data = [{id:6, name: '铮哥', sex: 1}];
         var myTable = null;
         var testFuns = {}
         require(
             [
                 'esui',
+                'esui/Dialog',
                 'esui/Panel',
                 'esui/extension/TableEdit', 
+                'esui/extension/TableSubrow',
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',
                 'esui/TextBox',
                 'esui/Select',
-                'css!esui/css/main.css',
-                'css!esui/css/Table.css',
-                'css!esui/css/Select.css',
-                'css!esui/css/TextBox.css',
-                'css!esui/css/Tip.css',
-                'css!esui/css/TipLayer.css'
+                'css!esui/css/main.css'
             ],
             function (ui) {
                 var lib = require('esui/lib');
@@ -79,8 +73,9 @@
                             subrow:true,
                             select:'multi',
                             editable: 1,
-                            subrowMutex: 1,
+                            subrowMutex: 0,
                             contentEncode: 1,
+                            zIndex: 1214,
                             noFollowHeadCache: true,//默认为false,如无必要也最好设置为false,效率更高。
                             //selectMode :'line',
                             noDataHtml: '<p style="margin:0;">nothing</p>',
@@ -264,9 +259,13 @@
                     myTable.resetFollowHead();
                 };
 
-                ui.get('getSelectedItemsBtn').onclick =function() {
+                ui.get('getSelectedItemsBtn').onclick = function() {
                     var items= myTable.getSelectedItems();
                     alert(items[0].name);
+                };
+
+                ui.get('updateRowBtn').onclick = function() {
+                    myTable.updateRowAt(0,  {id:1, name: 'erik', sex: 0});
                 };
 
                 myTable.onsort = function ( arg ) {

@@ -2,6 +2,7 @@
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file 页面相关基础库
  * @author otakustay
  */
@@ -12,6 +13,11 @@ define(
         var viewRoot = document.compatMode == 'BackCompat'
             ? body
             : documentElement;
+
+        /**
+         * @class lib.page
+         * @singleton
+         */
         var page = {};
 
         /**

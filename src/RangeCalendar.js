@@ -18,6 +18,7 @@ define(
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var ui = require('./main');
+        var moment = require('moment');
 
         /**
          * 控件类
@@ -26,6 +27,7 @@ define(
          * @param {Object} options 初始化参数
          */
         function RangeCalendar(options) {
+            this.now = new Date();
             InputControl.apply(this, arguments);
         }
 
@@ -64,6 +66,26 @@ define(
         }
 
         /**
+         * 获取某日开始时刻
+         *
+         * @param {Date} day 某日
+         * @return {Date}
+         */
+        function startOfDay(day) {
+            return moment(day).startOf('day').toDate();
+        }
+
+        /**
+         * 获取某日结束时刻
+         *
+         * @param {Date} day 某日
+         * @return {Date}
+         */
+        function endOfDay(day) {
+            return moment(day).endOf('day').toDate();
+        }
+
+        /**
          * 判断是否不在可选范围内
          *
          * @param {RangeCalendar} calendar RangeCalendar控件实例
@@ -71,9 +93,14 @@ define(
          * @return {boolean}
          */
         function isOutOfRange(calendar, shortItem) {
-            var range = calendar.range;
+            var range = lib.clone(calendar.range);
+            var itemValue = shortItem.getValue.call(calendar, calendar.now);
 
-            var itemValue = shortItem.getValue.call(calendar);
+            // 得先格式化一下，去掉时间
+            range.begin = startOfDay(range.begin);
+            range.end = endOfDay(range.end);
+            itemValue.begin = startOfDay(itemValue.begin);
+            itemValue.end = startOfDay(itemValue.end);
             
             if (range.begin > itemValue.begin
                 || range.end < itemValue.end) {
@@ -383,7 +410,7 @@ define(
 
             for (var i = 0; i < len; i++) {
                 var item = shortcutItems[i];
-                var itemValue = item.getValue.call(calendar);
+                var itemValue = item.getValue.call(calendar, calendar.now);
 
                 if (isSameDate(value.begin, itemValue.begin)
                     && isSameDate(value.end, itemValue.end)) {
@@ -412,7 +439,7 @@ define(
             // 更新样式
             paintMiniCal(me, index);
 
-            var value = shortcutItems[index].getValue.call(me);
+            var value = shortcutItems[index].getValue.call(me, me.now);
             var begin = value.begin;
             var end = value.end;
 
@@ -816,8 +843,8 @@ define(
                 {
                     name: '昨天',
                     value: 0,
-                    getValue: function () {
-                        var yesterday = new Date(this.now.getTime());
+                    getValue: function (now) {
+                        var yesterday = new Date(now.getTime());
                         yesterday.setDate(yesterday.getDate() - 1);
                         return {
                             begin: yesterday,
@@ -829,7 +856,6 @@ define(
                     name: '最近7天',
                     value: 1,
                     getValue: function (now) {
-                        now = now || this.now;
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
 
@@ -845,8 +871,7 @@ define(
                 {
                     name: '上周',
                     value: 2,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
                         var _wd = 1; //周一为第一天;
@@ -877,8 +902,7 @@ define(
                 {
                     name: '本月',
                     value: 3,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
                         begin.setDate(1);
@@ -891,8 +915,7 @@ define(
                 {
                     name: '上个月',
                     value: 4,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(
                             now.getFullYear(),
                             now.getMonth() - 1,
@@ -913,8 +936,7 @@ define(
                 {
                     name: '上个季度',
                     value: 5,
-                    getValue: function () {
-                        var now = this.now;
+                    getValue: function (now) {
                         var begin = new Date(
                             now.getFullYear(),
                             now.getMonth() - now.getMonth() % 3 - 3,
@@ -951,12 +973,11 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                var now = new Date();
+                var now = this.now;
                 /**
                  * 默认选项配置
                  */
                 var properties = {
-                    now: now,
                     range: {
                         begin: new Date(1983, 8, 3),
                         end: new Date(2046, 10, 4)

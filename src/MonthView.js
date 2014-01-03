@@ -15,6 +15,7 @@ define(
         var helper = require('./controlHelper');
         var Control = require('./Control');
         var ui = require('./main');
+        var m = require('moment');
 
         /**
          * 日历控件类
@@ -229,6 +230,10 @@ define(
 
             var itemClass =
                 helper.getPartClasses(monthView, 'month-item').join(' ');
+
+            var todayClass =
+                helper.getPartClasses(monthView, 'month-item-today').join(' ');
+
             var virClass =
                 helper.getPartClasses(
                     monthView, 'month-item-virtual'
@@ -270,11 +275,13 @@ define(
                 else if (repeater > range.end) {
                     disabled = true;
                 }
-
                 // 构建date的css class
                 var currentClass = itemClass;
                 if (virtual) {
                     currentClass += ' ' + virClass;
+                }
+                else if (m().isSame(repeater, 'day')) {
+                    currentClass += ' ' + todayClass;
                 }
                 if (disabled) {
                     currentClass += ' ' + disabledClass;
@@ -857,6 +864,8 @@ define(
                 updateSingleSelectState(monthView, monthView.rawValue, newDate);
                 monthView.rawValue = newDate;
                 monthView.fire('change');
+                monthView.fire('itemclick');
+
             }
         }
 
@@ -926,6 +935,8 @@ define(
 
             var yearSelect = me.getChild('yearSel');
             var lastYear = yearSelect.getValue();
+
+            // 通过year选择框来触发其它部分的重渲染
             yearSelect.setProperties({
                 datasource: getYearOptions(me),
                 value: me.year
@@ -983,7 +994,9 @@ define(
          * @param {MonthView} monthView MonthView控件实例
          */
         function goToNextMonth(monthView) {
-            repaintMonthView(monthView, monthView.year, monthView.month + 1);
+            var nowDate = new Date(monthView.year, monthView.month, 1);
+            var newDate = m(nowDate).add('month', 1);
+            repaintMonthView(monthView, newDate.year(), newDate.month());
         }
 
         /**
@@ -993,7 +1006,9 @@ define(
          * @param {MonthView} monthView MonthView控件实例
          */
         function goToPrevMonth(monthView) {
-            repaintMonthView(monthView, monthView.year, monthView.month - 1);
+            var nowDate = new Date(monthView.year, monthView.month, 1);
+            var newDate = m(nowDate).subtract('month', 1);
+            repaintMonthView(monthView, newDate.year(), newDate.month());
         }
 
         /**
@@ -1397,7 +1412,6 @@ define(
                                 parseToCache(monthView);
                             }
                         }
-
                         repaintMonthView(
                             monthView,
                             monthView.year,

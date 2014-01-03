@@ -2,7 +2,8 @@
  * ESUI (Enterprise UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  * 
- * @file 字段最大长度验证规则
+ * @ignore
+ * @file 字段最大值验证规则
  * @author otakustay
  */
 define(
@@ -11,8 +12,10 @@ define(
         var ValidityState = require('./ValidityState');
 
         /**
-         * MaxRule类声明
+         * 最大值验证规则
          *
+         * @extends validator.Rule
+         * @class validator.MaxRule
          * @constructor
          */
         function MaxRule() {
@@ -20,9 +23,10 @@ define(
         }
 
         /**
-         * 规则类型
+         * 规则类型，始终为`"max"`
          * 
          * @type {string}
+         * @override
          */
         MaxRule.prototype.type = 'max';
 
@@ -31,6 +35,7 @@ define(
          * 错误提示信息
          *
          * @type {string}
+         * @override
          */
         MaxRule.prototype.errorMessage = 
             '${title}不能大于${max}';
@@ -40,8 +45,8 @@ define(
          *
          * @param {string} value 校验值
          * @param {Control} control 待校验控件
-         *
-         * @return {validator/ValidityState}
+         * @return {validator.ValidityState}
+         * @override
          */
         MaxRule.prototype.check = function (value, control) {
             var valueOfNumber = +value;

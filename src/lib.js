@@ -2,16 +2,17 @@
  * ESUI (Enterprise Simple UI library)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file UI基础库适配层
  * @author otakustay, firede(firede@firede.us), erik
  */
 define(
     function (require) {
         /**
-         * lib命名空间
+         * 工具对象
          *
-         * @namespace
-         * @exports  module:lib
+         * @class
+         * @singleton
          */
         var lib = {};
         var u = require('underscore');
@@ -21,6 +22,7 @@ define(
              * IE浏览器版本号
              *
              * @type {number}
+             * @deprecated 不要使用浏览器版本号检测特性
              */
             lib.ie = document.documentMode || +RegExp.$1;
         }

@@ -11,10 +11,6 @@ define(
         require('./Button');
         require('./Label');
         require('./Panel');
-        
-        // 仅在调试的时候打开
-        //require('css!./css/Button.css');
-        //require('css!./css/TipLayer.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
@@ -86,11 +82,11 @@ define(
             lib.addClasses(mainDOM, headClasses);
             var properties = {
                 main: mainDOM,
-                id: 'title'
+                childName: 'title'
             };
             var label = ui.create('Label', properties);
             label.render();
-            control.addChild(label, 'title');
+            control.addChild(label);
             return label;
 
         }
@@ -158,217 +154,12 @@ define(
             if (!tipLayer.isShow) {
                 return;
             }
-            autoPosition(
-                tipLayer,
-                tipLayer.main, 
+            tipLayer.autoPosition(
                 targetElement,
                 options
             );
         }
 
-        
-        /**
-         * 渲染层样式
-         *
-         * @param {HTMLElement} element 提示层元素
-         * @param {object} 定位参数
-         * @inner
-         */
-        function renderLayer(element, options) {
-            var properties = lib.clone(options || {});
-
-            // 如果同时有`top`和`bottom`，则计算出`height`来
-            if (properties.hasOwnProperty('top')
-                && properties.hasOwnProperty('bottom')
-            ) {
-                properties.height = properties.bottom - properties.top;
-                delete properties.bottom;
-            }
-            // 同样处理`left`和`right`
-            if (properties.hasOwnProperty('left')
-                && properties.hasOwnProperty('right')
-            ) {
-                properties.width = properties.right - properties.left;
-                delete properties.right;
-            }
-
-            // 避免原来的属性影响
-            if (properties.hasOwnProperty('top')
-                || properties.hasOwnProperty('bottom')
-            ) {
-                element.style.top = '';
-                element.style.bottom = '';
-            }
-
-            if (properties.hasOwnProperty('left')
-                || properties.hasOwnProperty('right')
-            ) {
-                element.style.left = '';
-                element.style.right = '';
-            }
-
-            // 设置位置和大小
-            for (var name in properties) {
-                if (properties.hasOwnProperty(name)) {
-                    element.style[name] = properties[name] + 'px';
-                }
-            }
-        }
-
-        /**
-         * 让当前层靠住一个元素
-         *
-         * @param {ui.TipLayer} tipLayer 控件
-         * @param {HTMLElement} element 目标层元素
-         * @param {HTMLElement} target 目标元素
-         * @param {Object=} options 停靠相关的选项
-         * @param {string=} options.top 指示目标的上边缘靠住当前层的哪个边，
-         * 可选值为**top**或**bottom**
-         * @param {string=} options.bottom 指示目标的下边缘靠住当前层的哪个边，
-         * 可选值为**top**或**bottom**，* 当`top`值为**bottom**时，该值无效
-         * @param {string=} options.left 指示目标的左边缘靠住当前层的哪个边，
-         * 可选值为**left**或**right**
-         * @param {string=} options.right 指示目标的右边缘靠住当前层的哪个边，
-         * 可选值为**left**或**right**，* 当`left`值为**right**时，该值无效
-         * @param {number=} options.width 指定层的宽度
-         * @param {number=} options.height 指定层的高度
-         * @public
-         */
-        function autoPosition(tipLayer, element, target, options) {
-            options = options || { left: 'right', top: 'top' };
-
-            var rect = target.getBoundingClientRect();
-            var offset = lib.getOffset(target);
-            var targetPosition = {
-                top: rect.top,
-                right: rect.right,
-                bottom: rect.bottom,
-                left: rect.left,
-                width: rect.right - rect.left,
-                height: rect.bottom - rect.top
-            };
-        
-            // 浮层的存在会影响页面高度计算，必须先让它消失，
-            // 但在消失前，又必须先计算到浮层的正确高度
-            var previousDisplayValue = element.style.display;
-            element.style.display = 'block';
-            var elementHeight = element.offsetHeight;
-            var elementWidth = element.offsetWidth;
-            element.style.display = 'none';
-
-            var config = lib.clone(options);
-
-
-            var viewWidth = lib.page.getViewWidth();
-            var viewHeight = lib.page.getViewHeight();
-
-            // 计算出所有的位置
-            // 目标元素 —— 层元素
-            // left —— right
-            var gapLR = targetPosition.left - elementWidth;
-            // right —— left
-            var gapRL = viewWidth - targetPosition.right - elementWidth;
-
-            // top —— top
-            var gapTT = viewHeight - targetPosition.top - elementHeight;
-            // bottom —— bottom
-            var gapBB = targetPosition.bottom - elementHeight;
-
-
-            if (gapLR >= 0) {
-                if (gapRL >= 0){
-                    // 如果没有设置，哪边大放哪边
-                    if (!config.right && !config.left) {
-                        if (gapRL < gapLR) {
-                            config.left = 'right';
-                            config.right = null;
-                        }
-                        else {
-                            config.right = 'left';
-                            config.left = null;
-                        }
-                    }
-                }
-                else {
-                    config.left = 'right';
-                    config.right = null;
-                } 
-            }
-            else {
-                config.right = 'left';
-                config.left = null;
-            }
-
-            if (gapTT >= 0) {
-                if (gapBB >= 0){
-                    // 如果没有设置，哪边大放哪边
-                    if (!config.bottom && !config.top) {
-                        if (gapBB < gapTT) {
-                            config.top = 'top';
-                            config.bottom = null;
-                        }
-                        else {
-                            config.bottom = 'bottom';
-                            config.top = null;
-                        }
-                    }
-                }
-                else {
-                    config.top = 'top';
-                    config.bottom = null;
-                }
-            }
-            else {
-                config.bottom = 'bottom';
-                config.top = null;
-            }
-
-            var properties = {};
-            var arrowClass;
-            if (config.right) {
-                properties.left = offset['right'];
-                if (config.top) {
-                    arrowClass = 'lt';
-                }
-                else {
-                    arrowClass = 'lb';
-                }
-            }
-            else if (config.left) {
-                properties.left = offset['left'] - elementWidth;
-                if (config.top) {
-                    arrowClass = 'rt';
-                }
-                else {
-                    arrowClass = 'rb';
-                }
-            }
-
-            if (config.top) {
-                properties.top = offset['top'];
-            }
-            else if (config.bottom) {
-                properties.top = offset['bottom'] - elementHeight;
-            }
-
-            element.style.display = previousDisplayValue;
-
-            element.className = ''
-                + helper.getPartClasses(tipLayer).join(' ')
-                + ' '
-                + helper.getPartClasses(tipLayer, arrowClass).join(' ');
-
-            var arrow = lib.g(helper.getId(tipLayer, 'arrow'));
-            if (arrow) {
-                arrow.className = ''
-                    + helper.getPartClasses(tipLayer, 'arrow').join(' ')
-                    + ' '
-                    + helper.getPartClasses(
-                        tipLayer, 'arrow' + '-' + arrowClass
-                    ).join(' ');
-            }
-            renderLayer(element, properties);
-        }
 
         /**
          * 延迟展现
@@ -559,6 +350,208 @@ define(
             ),
 
             /**
+             * 让当前层靠住一个元素
+             *
+             * @param {HTMLElement} target 目标元素
+             * @param {Object=} options 停靠相关的选项
+             * @param {string=} options.top 指示目标的上边缘靠住当前层的哪个边，
+             * 可选值为**top**或**bottom**
+             * @param {string=} options.bottom 指示目标的下边缘靠住当前层的哪个边，
+             * 可选值为**top**或**bottom**，* 当`top`值为**bottom**时，该值无效
+             * @param {string=} options.left 指示目标的左边缘靠住当前层的哪个边，
+             * 可选值为**left**或**right**
+             * @param {string=} options.right 指示目标的右边缘靠住当前层的哪个边，
+             * 可选值为**left**或**right**，* 当`left`值为**right**时，该值无效
+             * @param {number=} options.width 指定层的宽度
+             * @param {number=} options.height 指定层的高度
+             * @public
+             */
+            autoPosition: function (target, options) {
+                var tipLayer = this;
+                var element = this.main;
+                options = options || { left: 'right', top: 'top' };
+
+                var rect = target.getBoundingClientRect();
+                var offset = lib.getOffset(target);
+                var targetPosition = {
+                    top: rect.top,
+                    right: rect.right,
+                    bottom: rect.bottom,
+                    left: rect.left,
+                    width: rect.right - rect.left,
+                    height: rect.bottom - rect.top
+                };
+            
+                // 浮层的存在会影响页面高度计算，必须先让它消失，
+                // 但在消失前，又必须先计算到浮层的正确高度
+                var previousDisplayValue = element.style.display;
+                element.style.display = 'block';
+                var elementHeight = element.offsetHeight;
+                var elementWidth = element.offsetWidth;
+                element.style.display = 'none';
+
+                var config = lib.clone(options);
+
+
+                var viewWidth = lib.page.getViewWidth();
+                var viewHeight = lib.page.getViewHeight();
+
+                // 计算出所有的位置
+                // 目标元素 —— 层元素
+                // left —— right
+                var gapLR = targetPosition.left - elementWidth;
+                // right —— left
+                var gapRL = viewWidth - targetPosition.right - elementWidth;
+
+                // top —— top
+                var gapTT = viewHeight - targetPosition.top - elementHeight;
+                // bottom —— bottom
+                var gapBB = targetPosition.bottom - elementHeight;
+
+
+                if (gapLR >= 0) {
+                    if (gapRL >= 0){
+                        // 如果没有设置，哪边大放哪边
+                        if (!config.right && !config.left) {
+                            if (gapRL < gapLR) {
+                                config.left = 'right';
+                                config.right = null;
+                            }
+                            else {
+                                config.right = 'left';
+                                config.left = null;
+                            }
+                        }
+                    }
+                    else {
+                        config.left = 'right';
+                        config.right = null;
+                    } 
+                }
+                else {
+                    config.right = 'left';
+                    config.left = null;
+                }
+
+                if (gapTT >= 0) {
+                    if (gapBB >= 0){
+                        // 如果没有设置，哪边大放哪边
+                        if (!config.bottom && !config.top) {
+                            if (gapBB < gapTT) {
+                                config.top = 'top';
+                                config.bottom = null;
+                            }
+                            else {
+                                config.bottom = 'bottom';
+                                config.top = null;
+                            }
+                        }
+                    }
+                    else {
+                        config.top = 'top';
+                        config.bottom = null;
+                    }
+                }
+                else {
+                    config.bottom = 'bottom';
+                    config.top = null;
+                }
+
+                var properties = {};
+                var arrowClass;
+                if (config.right) {
+                    properties.left = offset['right'];
+                    if (config.top) {
+                        arrowClass = 'lt';
+                    }
+                    else {
+                        arrowClass = 'lb';
+                    }
+                }
+                else if (config.left) {
+                    properties.left = offset['left'] - elementWidth;
+                    if (config.top) {
+                        arrowClass = 'rt';
+                    }
+                    else {
+                        arrowClass = 'rb';
+                    }
+                }
+
+                if (config.top) {
+                    properties.top = offset['top'];
+                }
+                else if (config.bottom) {
+                    properties.top = offset['bottom'] - elementHeight;
+                }
+
+                element.style.display = previousDisplayValue;
+
+                element.className = ''
+                    + helper.getPartClasses(tipLayer).join(' ')
+                    + ' '
+                    + helper.getPartClasses(tipLayer, arrowClass).join(' ');
+
+                var arrow = lib.g(helper.getId(tipLayer, 'arrow'));
+                if (arrow) {
+                    arrow.className = ''
+                        + helper.getPartClasses(tipLayer, 'arrow').join(' ')
+                        + ' '
+                        + helper.getPartClasses(
+                            tipLayer, 'arrow' + '-' + arrowClass
+                        ).join(' ');
+                }
+                tipLayer.renderLayer(element, properties);
+            },
+
+            /**
+             * 渲染层样式
+             *
+             * @param {HTMLElement} element 提示层元素
+             * @param {object} 定位参数
+             * @inner
+             */
+            renderLayer: function (element, options) {
+                var properties = lib.clone(options || {});
+
+                // 如果同时有`top`和`bottom`，则计算出`height`来
+                if (properties.hasOwnProperty('top')
+                    && properties.hasOwnProperty('bottom')
+                ) {
+                    properties.height = properties.bottom - properties.top;
+                    delete properties.bottom;
+                }
+                // 同样处理`left`和`right`
+                if (properties.hasOwnProperty('left')
+                    && properties.hasOwnProperty('right')
+                ) {
+                    properties.width = properties.right - properties.left;
+                    delete properties.right;
+                }
+
+                // 避免原来的属性影响
+                if (properties.hasOwnProperty('top')
+                    || properties.hasOwnProperty('bottom')
+                ) {
+                    element.style.top = '';
+                    element.style.bottom = '';
+                }
+
+                if (properties.hasOwnProperty('left')
+                    || properties.hasOwnProperty('right')
+                ) {
+                    element.style.left = '';
+                    element.style.right = '';
+                }
+
+                // 设置位置和大小
+                for (var name in properties) {
+                    if (properties.hasOwnProperty(name)) {
+                        element.style[name] = properties[name] + 'px';
+                    }
+                }
+            },
+            /**
              * 将提示层捆绑到一个DOM元素或控件上
              * 
              * @param {Object=} options 绑定参数
@@ -693,16 +686,13 @@ define(
                 this.removeState('hidden');
 
                 // 定位，八种。。
-                autoPosition(
-                    this,
-                    this.main, 
+                this.autoPosition(
                     targetElement,
                     options
                 );
 
                 this.fire('show');
                 this.isShow = true;
-
             },
 
 

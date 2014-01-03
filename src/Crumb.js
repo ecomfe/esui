@@ -1,7 +1,8 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
+ * @ignore
  * @file 面包屑导航控件
  * @author otakustay
  */
@@ -12,28 +13,40 @@ define(
         var Control = require('./Control');
 
         /**
-         * 面包屑导航控件
+         * 面包屑导航条
          *
-         * @constructor
+         * 就是一个简单的导航条，通过{@link Crumb#separator}分隔每个节点
+         *
          * @extends Control
+         * @constructor
          */
         function Crumb() {
             Control.apply(this, arguments);
         }
 
         /**
+         * @cfg defaultProperties
+         *
          * 默认属性值
          *
-         * @type {Object}
+         * @cfg {string} [defaultProperties.separator=">"] 节点分隔符
+         * @static
          */
         Crumb.defaultProperties = {
             separator: '>'
         };
 
+        /**
+         * 控件类型，始终为`"Crumb"`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
         Crumb.prototype.type = 'Crumb';
 
         /**
-         * 创建控件主元素
+         * 创建控件主元素，默认使用`<nav>`元素
          *
          * @return {HTMLElement}
          * @protected
@@ -46,9 +59,18 @@ define(
         /**
          * 初始化参数
          *
+         * 如果初始化时未提供{@link Crumb#path}属性，则按以下规则构建该属性：
+         *
+         * 1. 获取主元素的所有子元素
+         * 2. 对每个子元素，获取其文本内容为{@link meta.CrumbItem#text}属性
+         * 3. 如果子元素是`<a>`元素，
+         * 获取其`href`属性为配置项的{@link meta.CrumbItem#href}属性
+         *
+         * 因此 *不要* 在主元素下写分隔符
+         *
          * @param {Object} [options] 构造函数传入的参数
-         * @override
          * @protected
+         * @override
          */
         Crumb.prototype.initOptions = function (options) {
             var properties = {
@@ -81,6 +103,10 @@ define(
         /**
          * 无链接的文字节点的内容HTML模板
          *
+         * 模板中可以使用以下占位符：
+         *
+         * - `{string} text`：文本内容，经过HTML转义
+         *
          * @type {string}
          */
         Crumb.prototype.textNodeTemplate = 
@@ -88,6 +114,11 @@ define(
 
         /**
          * 链接节点的内容HTML模板
+         *
+         * 模板中可以使用以下占位符：
+         *
+         * - `{string} text`：文本内容，经过HTML转义
+         * - `{string} href`：链接地址，经过HTML转义
          *
          * @type {string}
          */
@@ -97,6 +128,11 @@ define(
         /**
          * 分隔符HTML模板
          *
+         * 模板中可以使用以下占位符：
+         *
+         * - `{string} classes`：节点需要使用的class名称
+         * - `{string} text`：文本内容，经过HTML转义
+         *
          * @type {string}
          */
         Crumb.prototype.separatorTemplate = 
@@ -105,9 +141,7 @@ define(
         /**
          * 获取节点的HTML内容
          *
-         * @param {Object} node 节点数据项
-         * @param {string=} node.href 链接地址
-         * @param {string} node.text 显示文字
+         * @param {meta.CrumbItem} node 节点数据项
          * @param {number} index 节点索引序号
          * @return {string}
          */
@@ -153,31 +187,36 @@ define(
             );
         };
 
-        /**
-         * 获取导航HTML
-         *
-         * @param {Crumb} crumb 控件实例
-         * @param {Object[]} path 路径
-         * @return {string}
-         */
-        function getHTML(crumb, path) {
-            var html = u.map(path, crumb.getNodeHTML, crumb);
-            var separator = crumb.getSeparatorHTML();
-
-            return html.join(separator);
-        }
-
         var paint = require('./painters');
-
         /**
          * 重渲染
          *
-         * @override
+         * @method
          * @protected
+         * @override
          */
         Crumb.prototype.repaint = paint.createRepaint(
             Control.prototype.repaint,
-            paint.html('path', null, getHTML)
+            {
+                /**
+                 * @property {meta.CrumbItem[]} path
+                 *
+                 * 数据源配置，数组中的每一项生成一个节点
+                 */
+
+                /**
+                 * @property {string} separator
+                 *
+                 * 分隔符，默认使用{@link Crumb#defaultProperties}中的配置
+                 */
+                name: ['path', 'separator'],
+                paint: function (crumb, path) {
+                    var html = u.map(path, crumb.getNodeHTML, crumb);
+                    var separator = crumb.getSeparatorHTML();
+
+                    crumb.main.innerHTML = html.join(separator);
+                }
+            }
         );
 
         require('./main').register(Crumb);

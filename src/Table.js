@@ -8,6 +8,7 @@
 define(
     function (require) {
         var lib = require('./lib');
+        var u = require('underscore');
         var helper = require('./controlHelper');
         var Control = require('./Control');
 
@@ -21,11 +22,10 @@ define(
             var protectedProperties = {
                 followHeightArr: [0, 0],
                 followWidthArr: [],
-                handlers: [],
-                plugins: []
+                handlers: []
             };
 
-            Control.call(this, lib.extend({}, options, protectedProperties));
+            Control.call(this, u.extend({}, options, protectedProperties));
         }
 
         /**
@@ -50,11 +50,12 @@ define(
             subEntryWidth: 18,
             breakLine: false,
             hasTip: false,
+            hasSubrow: false,
             tipWidth: 18,
             sortWidth: 9,
             fontSize: 13,
             colPadding: 8,
-            headZIndex: 1
+            zIndex: 0
         };
 
         /**
@@ -64,7 +65,7 @@ define(
          * @return {bool}
          */
         function hasValue(obj) {
-            return !(typeof obj == 'undefined' || obj === null);
+            return !(typeof obj === 'undefined' || obj === null);
         }
 
 
@@ -88,7 +89,7 @@ define(
         }
 
         /**
-         * 获取dom子部件的id
+         * 获取dom带有data-前缀的属性值
          * 
          * @private
          * @return {string}
@@ -109,7 +110,7 @@ define(
         }
 
          /**
-         * 元素属性 自动加上data-前缀
+         * 获取Id
          * 
          * @protected
          */
@@ -180,6 +181,36 @@ define(
         }
         
         /**
+         * selectedIndex的setter，将自动设置selectedIndexMap
+         * 
+         * @private
+         * @param {object} table 表格控件本身
+         * @param {number} index 行号
+         */
+        function setSelectedIndex(table, selectedIndex) {
+            table.selectedIndex = selectedIndex;
+            var selectedIndexMap = {};
+            for (var i = selectedIndex.length - 1; i >= 0; i--) {
+                selectedIndexMap[selectedIndex[i]] = 1;
+            }
+            table.selectedIndexMap = selectedIndexMap;
+        }
+
+        /**
+         * 判断某行是否选中
+         * 
+         * @private
+         * @param {object} table 表格控件本身
+         * @param {number} index 行号
+         */
+        function isRowSelected(table, index) {
+            if (table.selectedIndexMap) {
+                return !!table.selectedIndexMap[index];
+            }
+            return false;
+        }
+
+        /**
          * 获取表格所在区域宽度
          *
          * @private
@@ -230,10 +261,10 @@ define(
 
             switch (table.select.toLowerCase()) {
                 case 'multi':
-                    realFields.unshift(getMultiSelectTpl(table));
+                    realFields.unshift(getMultiSelectField(table));
                     break;
                 case 'single':
-                    realFields.unshift(getSingleSelectTpl(table));
+                    realFields.unshift(getSingleSelectField(table));
                     break;
             }
         }
@@ -581,17 +612,15 @@ define(
                     table, 
                     head, 
                     'mousemove', 
-                    lib.bind(headMoveHandler, head, table)
+                    u.bind(headMoveHandler, head, table)
                 );
                 helper.addDOMEvent(
                     table, 
                     head, 
                     'mousedown', 
-                    lib.bind(dragStartHandler, head, table)
+                    u.bind(dragStartHandler, head, table)
                 );
             }
-
-            head.style.zIndex = table.headZIndex || 1;
 
             if (table.noHead) {
                 head.style.display = 'none';
@@ -989,10 +1018,10 @@ define(
             initTableOffset(table);
 
             // 绑定拖拽事件
-            var realDragingHandler = lib.curry(dragingHandler, table);
+            var realDragingHandler = u.partial(dragingHandler, table);
             var realDragEndHandler = function(e) {
                 var retrunResult = true;
-                try { retrunResult = lib.curry(dragEndHandler, table)(e); }
+                try { retrunResult = u.partial(dragEndHandler, table)(e); }
                 catch (er) {}
 
                 //清除拖拽向全局绑定的事件
@@ -1063,6 +1092,7 @@ define(
             
             mark.style.top = table.top + 'px';
             mark.style.left = left + 'px';
+            mark.style.zIndex = table.zIndex || '';
 
             var height = table.htmlHeight
                         - table.top
@@ -1313,9 +1343,9 @@ define(
         }
 
          var tplRowPrefix = '<div '
-                        + 'id="${id}" '
-                        + 'class="${className}" '
-                        + 'data-index="${index}" ${attr}>';
+                          + 'id="${id}" '
+                          + 'class="${className}" '
+                          + 'data-index="${index}" ${attr}>';
 
          /**
          * 批量添加rowBuilder
@@ -1325,7 +1355,6 @@ define(
          * @param {Array} builderList rowBuilder数组
          */
         function addRowBuilderList(table, builderList) {
-            var plugins = table.plugins;
             var rowBuilderList = table.rowBuilderList || [];
             for (var i = 0, l = builderList.length; i <l; i++) {
                 var builder = builderList[i];
@@ -1333,11 +1362,14 @@ define(
                     continue;
                 }
 
+                if(builder.getSubrowHtml) {
+                    table.hasSubrow = true;
+                }
+
                 if(!hasValue(builder.index)) {
                     builder.index = 1000;
                 }
 
-                plugins.push(builder);
                 rowBuilderList.push(builder);
             }
 
@@ -1359,12 +1391,6 @@ define(
             addRowBuilderList(
                 table,
                 [
-                    {
-                        index: 0,
-                        getRowArgs: getSubrowArgs,
-                        getColHtml: getSubEntryHtml,
-                        getSubrowHtml : getSubrowHtml
-                    },
                     {
                         index: 1,
                         getRowArgs: getRowBaseArgs,
@@ -1521,12 +1547,14 @@ define(
 
             html.push('</tr></table></div>');
             
-            for (var i = 0, l = builderList.length; i <l; i++) {
-                var subrowBuilder = builderList[i].getSubrowHtml;
-                if (subrowBuilder) {
-                    html.push(
-                        subrowBuilder(table, index, extraArgsList[i])
-                    );
+            if (table.hasSubrow) {
+                for (var i = 0, l = builderList.length; i <l; i++) {
+                    var subrowBuilder = builderList[i].getSubrowHtml;
+                    if (subrowBuilder) {
+                        html.push(
+                            subrowBuilder(table, index, extraArgsList[i])
+                        );
+                    }
                 }
             }
 
@@ -1541,7 +1569,7 @@ define(
         function getRowBaseArgs(table, rowIndex) {
             var datasource = table.datasource || [];
             var dataLen = datasource.length;
-           return {
+            return {
                 tdCellClass : getClass(table, 'cell'),
                 tdBreakClass : getClass(table, 'cell-break'),
                 tdTextClass : getClass(table, 'cell-text'),
@@ -1549,6 +1577,9 @@ define(
                 rowClass: [
                     getClass(table, 'row'),
                     getClass(table, 'row-' + ((rowIndex % 2) ? 'odd' : 'even')),
+                    isRowSelected(table, rowIndex) 
+                        ? getClass(table, 'row-selected')
+                        : '',
                     dataLen - 1 == rowIndex 
                         ? getClass(table, 'row-last')
                         : '' 
@@ -1629,78 +1660,6 @@ define(
         }
 
         /**
-         * subrow行绘制每行基本参数
-         *
-         * @private
-         */
-        function getSubrowArgs(table, rowIndex){
-            return {
-                subrow : table.subrow && table.subrow != 'false'
-            };
-        }
-
-        /**
-         * subrow入口的html模板
-         *
-         * @private
-         */
-        var tplSubEntry = '<div '
-                        +  'class="${className}" '
-                        + 'id="${id}" '
-                        + 'title="${title}" '
-                        + 'data-index="${index}">'
-                        + '</div>';
-
-        function getSubEntryHtml(
-            table, data, field, rowIndex, fieldIndex, extraArgs
-        ) {
-            var subrow = extraArgs.subrow;
-            var subentry = subrow && field.subEntry;
-            var result = {
-                notInText: true,
-                width: table.subEntryWidth,
-                align: 'right'
-            };
-
-            if (subentry) {
-                var isSubEntryShown = typeof field.isSubEntryShow === 'function'
-                    ? field.isSubEntryShow.call(
-                        table, data, rowIndex, fieldIndex)
-                    : true;
-                if (isSubEntryShown !== false) {
-                    result.html = lib.format(
-                        tplSubEntry,
-                        {
-                            className : getClass(table, 'subentry'),
-                            id :  getSubentryId(table, rowIndex),
-                            title :  table.subEntryOpenTip,
-                            index : rowIndex
-                        }
-                   );
-                }
-
-                result.colClass = getClass(table, 'subentryfield');
-            }
-
-            return result;
-        }
-
-        /**
-         * 获取子内容区域的html
-         *
-         * @private
-         * @return {string}
-         */
-        function getSubrowHtml(table, index, extraArgs) {
-            return extraArgs.subrow
-                    ? '<div id="' + getSubrowId(table, index)
-                    +  '" class="' + getClass(table, 'subrow') + '"'
-                    +  ' style="display:none"></div>'
-                    : '';
-        }
-
-
-        /**
          * 表格行鼠标移上的事件handler
          * 
          * @private
@@ -1756,169 +1715,6 @@ define(
                         break;
                 }
             }
-        }
-        
-        /**
-         * 获取表格子行的元素id
-         *
-         * @private
-         * @param {number} index 行序号
-         * @return {string}
-         */
-        function getSubrowId(table, index) {
-            return getId(table, 'subrow') + index;
-        }
-        
-        /**
-         * 获取表格子行入口元素的id
-         *
-         * @private
-         * @param {number} index 行序号
-         * @return {string}
-         */
-        function getSubentryId(table, index) {
-            return getId(table, 'subentry') + index;
-        }
-        
-        /**
-         * 处理子行入口元素鼠标移入的行为
-         *
-         * @private
-         * @param {number} index 入口元素的序号
-         */
-        function entryOverHandler(element, e) {
-            entryOver(this, element);
-        }
-
-        function entryOver(table, element) {
-            var opened = /subentry-opened/.test(element.className);
-            var classBase = 'subentry-hover';
-                
-            if (opened) {
-                classBase = 'subentry-opened-hover';
-            }
-            helper.addPartClasses(table, classBase, element);
-        }
-        
-        /**
-         * 处理子行入口元素鼠标移出的行为
-         *
-         * @private
-         * @param {number} index 入口元素的序号
-         */
-        function entryOutHandler(element, e) {
-            entryOut(this, element);
-        }
-        
-        function entryOut(table, element) {
-            helper.removePartClasses(table, 'subentry-hover', element);
-            helper.removePartClasses(table, 'subentry-opened-hover', element);
-        }
-        
-        /**
-         * 触发subrow的打开|关闭
-         *
-         * @public
-         * @param {number} index 入口元素的序号
-         */
-        function fireSubrow(el, e) {
-            var table = this;
-            var index = getAttr(el, 'index');
-            var datasource = table.datasource;
-            var dataLen = (datasource instanceof Array && datasource.length);
-            
-            if (!dataLen || index >= dataLen) {
-                return;
-            }
-            
-            if (!getAttr(el, 'subrowopened')) {
-                var dataItem = datasource[index];
-                var eventArgs = {
-                    index:index, 
-                    item: dataItem
-                };
-                eventArgs = table.fire('subrowopen', eventArgs);
-                if (eventArgs.isDefaultPrevented()) {
-                    openSubrow(table, index, el);
-                }
-            } else {
-                closeSubrow(table, index, el);
-            }
-
-            entryOver(table, el);
-        }
-        
-        /**
-         * 关闭子行
-         *
-         * @private
-         * @param {number} index 子行的序号
-         */
-        function closeSubrow(table, index, entry) {
-            var eventArgs = { 
-                index: index, 
-                item: table.datasource[index]
-            };
-
-            eventArgs = table.fire('subrowclose', eventArgs);
-
-            if (eventArgs.isDefaultPrevented()) {
-                entryOut(table, entry);
-                table.subrowIndex = null;
-                
-                helper.removePartClasses(
-                    table, 
-                    'subentry-opened', 
-                    entry
-                );
-                helper.removePartClasses(
-                    table, 
-                    'row-unfolded', 
-                    getRow(table, index)
-                );
-                
-                setAttr(entry, 'title', table.subEntryOpenTip);
-                setAttr(entry, 'subrowopened', '');
-                
-                lib.g(getSubrowId(table, index)).style.display = 'none';
-
-                return true;
-            }
-
-            return false;
-        }
-        
-        /**
-         * 打开子行
-         *
-         * @private
-         * @param {number} index 子行的序号
-         */
-        function openSubrow(table, index, entry) {
-            var currentIndex = table.subrowIndex;
-            var closeSuccess = 1;
-            
-            if (hasValue(currentIndex)) {
-                closeSuccess = closeSubrow(
-                    table, 
-                    currentIndex, 
-                    lib.g(getSubentryId(table, currentIndex))
-                );
-            }
-            
-            if (!closeSuccess) {
-                return;
-            }
-
-            helper.addPartClasses(table, 'subentry-opened', entry);
-            helper.addPartClasses(table, 'row-unfolded', getRow(table, index));
-
-            setAttr(entry, 'title', table.subEntryCloseTip);
-            setAttr(entry, 'subrowopened', '1');
-            
-            lib.g(getSubrowId(table, index)).style.display = '';
-            
-            table.subrowMutex && (table.subrowIndex = index);
         }
         
         /**
@@ -2058,6 +1854,10 @@ define(
                                                 + domHead.offsetHeight + 'px';
                     placeHolder.style.display = '';
 
+                    if (lib.ie && lib.ie < 8) {
+                        domHead.style.zIndex = table.zIndex + 1;
+                    }
+
                     if (absolutePosition) {
                         for (var i = 0, len = followDoms.length; i < len; i++) {
                             setPos(
@@ -2074,6 +1874,7 @@ define(
                             fhArr[fhLen - 1] + scrollTop, 
                             curLeft
                         );
+
                     } else {
                         for (var i = 0, len = followDoms.length; i < len; i++) {
                             setPos(followDoms[i], posStyle, fhArr[i] ,curLeft);
@@ -2091,6 +1892,7 @@ define(
                     }
 
                     setPos(domHead, posStyle, 0, 0);
+                    domHead.style.zIndex = '';
                 }
 
             };
@@ -2162,75 +1964,102 @@ define(
         }
         
         /**
-         * 获取第一列的多选框
+         * 多选框全选模版
          * 
          * @private
          */
-        function getMultiSelectTpl(table) {
-            return { 
-                width: 30,
-                stable: true,
-                select: true,
-                title: function (item, index) {
-                    var template = '<input '
+        var mutilSelectAllTpl = '<input '
                                 +  'type="checkbox" '
                                 +  'id="${id}" '
                                 +  'class="${className}" '
                                 +  'data-index="${index}" '
                                 +  '${disabled}/>';
+
+        /**
+         * 多选框模版
+         * 
+         * @private
+         */
+        var mutilSelectTpl = '<input '
+                            +  'type="checkbox" '
+                            +  'id="${id}" '
+                            +  'class="${className}" '
+                            +  'data-index="${index}" '
+                            +  '${disabled} '
+                            +  '${checked} />';
+        /**
+         * 获取第一列的多选框
+         * 
+         * @private
+         */
+        function getMultiSelectField(table) {
+            return { 
+                width: 30,
+                stable: true,
+                select: true,
+                title: function (item, index) {
                     var data = {
                         id: getId(table, 'select-all'),
                         className: getClass(table, 'select-all'),
                         disabled: table.disabled ? 'disabled="disabled"' : '',
                         index: index
                     };
-                    return lib.format(template, data);
+                    return lib.format(mutilSelectAllTpl, data);
                 },
                 
                 content: function (item, index) {
-                    var template = '<input '
-                                +  'type="checkbox" '
-                                +  'id="${id}" '
-                                +  'class="${className}" '
-                                +  'data-index="${index}" '
-                                +  '${disabled}/>';
                     var data = {
                         id: getId(table, 'multi-select') + index,
                         className: getClass(table, 'multi-select'),
                         disabled: table.disabled ? 'disabled="disabled"' : '',
-                        index: index
+                        index: index,
+                        checked: isRowSelected(table, index)
+                            ? 'checked="checked"'
+                            : ''
                     };
-                    return lib.format(template, data);
+                    return lib.format(mutilSelectTpl, data);
                 }
             };
         }
         
         /**
+         * 单选框模版
+         * 
+         * @private
+         */
+        var singleSelectTpl = '<input '
+                            +  'type="radio" '
+                            +  'id="${id}" '
+                            +  'name="${name}" '
+                            +  'class="${className}" '
+                            +  'data-index="${index}" '
+                            +  '${disabled} '
+                            +  '${checked} />';
+
+        /**
          * 第一列的单选框
          * 
          * @private
          */
-         function getSingleSelectTpl(table) {
+         function getSingleSelectField(table) {
             return {
                 width: 30,
                 stable: true,
                 title: '&nbsp;',
                 select: true,
                 content: function (item, index) {
-                    var template = '<input '
-                                +  'type="radio" '
-                                +  'id="${id}" '
-                                +  'name="${name}" '
-                                +  'class="${className}" '
-                                +  'data-index="${index}"/>';
                     var id =  getId(table, 'single-select');
                     var data = {
                         id: id + index,
                         name: id,
                         className: getClass(table, 'single-select'),
-                        index: index
+                        index: index,
+                        disabled: table.disabled ? 'disabled="disabled"' : '',
+                        checked: isRowSelected(table, index)
+                            ? 'checked="checked"'
+                            : ''
                     };
-                    return lib.format(template, data);
+                    return lib.format(singleSelectTpl, data);
                 }
             };
         }
@@ -2283,7 +2112,7 @@ define(
                 }
             }
 
-            table.selectedIndex = selected;
+            setSelectedIndex(table, selected);
             table.fire('select', {selectedIndex: selected});
 
             if (!updateAll) {
@@ -2356,7 +2185,7 @@ define(
                 }
             }
 
-            table.selectedIndex = selected;
+            setSelectedIndex(table, selected);
             table.fire('select', {selectedIndex: selected});
         }
         
@@ -2379,8 +2208,19 @@ define(
                 helper.removePartClasses(
                     table, 'row-selected', getRow(table, selectedIndex[0]));
             }
-            table.selectedIndex = [index];
+
+            setSelectedIndex(table, [index]);
             helper.addPartClasses(table, 'row-selected', getRow(table, index));
+        }
+
+
+        /**
+         * 重置Table主元素的ZIndex
+         * 
+         * @private
+         */
+        function resetMainZIndex(table){
+            table.main.style.zIndex = table.zIndex || '';
         }
 
         /**
@@ -2580,7 +2420,6 @@ define(
             var getPartClasses = helper.getPartClasses;
             var rowClass = getPartClasses(table, 'row')[0];
             var titleClass = getPartClasses(table, 'hcell')[0];
-            var subentryClass = getPartClasses(table, 'subentry')[0];
             var selectAllClass = getPartClasses(table, 'select-all')[0];
             var multiSelectClass = getPartClasses(table, 'multi-select')[0];
             var singleSelectClass = getPartClasses(table, 'single-select')[0];
@@ -2597,10 +2436,6 @@ define(
                     {
                         handler: titleOverHandler, 
                         matchFn: titleClass
-                    },
-                    {
-                        handler: entryOverHandler, 
-                        matchFn: subentryClass
                     }
                 ]
             );
@@ -2617,10 +2452,6 @@ define(
                     {
                         handler: titleOutHandler, 
                         matchFn: titleClass
-                    },
-                    {
-                        handler: entryOutHandler, 
-                        matchFn: subentryClass
                     }
                 ]
             );
@@ -2637,10 +2468,6 @@ define(
                     {
                         handler: titleClickHandler,
                         matchFn: titleClass
-                    },
-                    {
-                        handler: fireSubrow,
-                        matchFn: subentryClass
                     },
                     {
                         handler: toggleSelectAll,
@@ -2684,7 +2511,7 @@ define(
                  */
                 var properties = {};
                 
-                lib.extend(properties, Table.defaultProperties, options);
+                u.extend(properties, Table.defaultProperties, options);
 
                 this.setProperties(properties);
             },
@@ -2701,11 +2528,12 @@ define(
                    this.main.style.width = this.realWidth + 'px'; 
                 }
 
+                resetMainZIndex(this);
+
                 initBaseBuilderList(this);
                 initResizeHandler(this);
                 initMainEventhandler(this);
             },
-
 
             /**
              * 渲染控件
@@ -2763,7 +2591,6 @@ define(
                 }
                 if (fieldsChanged
                     || colsWidthChanged
-                    || allProperities['headZIndex']
                     || allProperities['noHead']
                     || allProperities['order']
                     || allProperities['orderBy']
@@ -2809,6 +2636,10 @@ define(
 
                         name: 'width',
                         paint: handleResize
+                    },
+                    {
+                        name: 'zIndex',
+                        paint: resetMainZIndex
                     }
                 ]);
                 table.extraRepaint(changes, changesIndex);
@@ -2819,7 +2650,7 @@ define(
                     // 重绘时触发onselect事件
                     switch (table.select) {
                         case 'multi':
-                            table.selectedIndex = [];
+                            setSelectedIndex(table, []);
                             table.fire(
                                 'select',
                                 { selectedIndex: table.selectedIndex }
@@ -2833,17 +2664,6 @@ define(
                 if (table.realWidth != getWidth(table)) {
                     handleResize(table);
                 }
-            },
-
-             /**
-             * 获取表格子行的元素
-             *
-             * @public
-             * @param {number} index 行序号
-             * @return {HTMLElement}
-             */
-            getSubrow: function(index) {
-                return lib.g(getSubrowId(this, index));    
             },
 
             /**
@@ -2966,13 +2786,9 @@ define(
              */
             setDatasource: function(datasource){
                 this.datasource = datasource;
-                this.selectedIndex = [];
-                var record = {
-                    name: 'datasource'
-                };
-                var record2 = {
-                    name: 'selectedIndex'
-                };
+                setSelectedIndex(this, []);
+                var record = { name: 'datasource' };
+                var record2 = { name: 'selectedIndex' };
 
                 this.repaint([record, record2],
                     {
@@ -2980,6 +2796,38 @@ define(
                         selectedIndex: record2
                     }
                 );
+            },
+
+            /**
+             * 重新绘制Table某行
+             * @param {Number} index 
+             * @param {Object} data
+             * @public
+             */
+            updateRowAt: function(index, data) {
+                (data) && (this.datasource[index] = data);
+                var dataItem = this.datasource[index];
+                var rowEl = getRow(this, index);
+
+                if (dataItem && rowEl) {
+                    this.fire(
+                        'beforeupdaterow',
+                        { index: index, data: dataItem }
+                    );
+
+                    var container = document.createElement('div');
+                    container.innerHTML = getRowHtml(
+                        this, data, index, this.rowBuilderList
+                    );
+                    var newRowEl = container.children[0];
+
+                    rowEl.parentNode.replaceChild(newRowEl, rowEl);
+
+                    this.fire(
+                        'afterupdaterow',
+                        { index: index, data: dataItem }
+                    );
+                }
             },
 
              /**
@@ -3033,8 +2881,7 @@ define(
                     }
                 }
 
-                this.plugins = null;
-                this.rowBuilderList =  null;
+                this.rowBuilderList = null;
 
                 this.headPanel.disposeChildren();
                 this.bodyPanel.disposeChildren();
