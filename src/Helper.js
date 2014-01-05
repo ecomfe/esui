@@ -26,7 +26,8 @@ define(
             require('./helper/dom'),
             require('./helper/event'),
             require('./helper/html'),
-            require('./helper/life')
+            require('./helper/life'),
+            require('./helper/template')
         );
 
         return Helper;
