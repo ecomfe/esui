@@ -8,12 +8,12 @@
 @import "mixin.less";
 @import "variable.less";
 .ui-textline {
+    padding: 0 4px;
     position: relative;
     border: 1px solid #dddddd;
-    background: #f8f9fb;
-
     .ui-textbox {
         left: 30px;
+        right: 0;
         top: 0;
         position: absolute;
         background: #fff;
@@ -22,12 +22,9 @@
             top: 0;
             line-height: 21px;
             font-size: 14px;
-            border: 0 none;
             padding: 0;
             margin: 0;
-            &:hover {
-                border: 0 none;
-            }
+            border: 0 none;
         }
 
     }
@@ -45,6 +42,9 @@
     width: 30px;
     font-size: 12px;
     overflow-y: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .ui-textline-disabled,
