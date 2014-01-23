@@ -317,7 +317,7 @@ define(
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
                 var name = attribute.name;
-                if (attribute.specified
+                if (lib.hasAttribute(initialMain, name)
                     && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
                 ) {
                     lib.setAttribute(
