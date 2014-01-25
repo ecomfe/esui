@@ -133,7 +133,6 @@ define(
              * 控件分类的作用如下：
              *
              * - `control`表示普通控件，没有任何特征
-             * - `container`表示容器控件，容器控件的主元素内部的控件与容器控件本身无关
              * - `input`表示输入控件，在表单中使用`getRawValue()`获取其值
              * - `check`表示复选控件，在表单中通过`isChecked()`判断其值是否加入结果中
              *
@@ -221,6 +220,9 @@ define(
                 this.repaint();
 
                 if (this.helper.isInStage('INITED')) {
+                    // 切换控件所属生命周期阶段
+                    this.helper.changeStage('RENDERED');
+                    
                     /**
                      * @event afterrender
                      *
@@ -228,9 +230,6 @@ define(
                      */
                     this.fire('afterrender');
                 }
-
-                // 切换控件所属生命周期阶段
-                this.helper.changeStage('RENDERED');
             },
 
             /**
