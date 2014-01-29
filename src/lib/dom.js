@@ -229,8 +229,12 @@ define(
         lib.dom.first = function (element) {
             element = lib.g(element);
 
-            var node = element['firstChild'];
-            for (; node; node = node['nextSibling']) {
+            if (element.firstElementChild) {
+                return element.firstElementChild;
+            }
+
+            var node = element.firstChild;
+            for (; node; node = node.nextSibling) {
                 if (node.nodeType == 1) {
                     return node;
                 }
