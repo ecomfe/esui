@@ -14,7 +14,7 @@ define(
         /**
          * Frame控件
          *
-         * @extends esui/Control
+         * @extends Control
          * @param {Object} [options] 初始化参数
          * @constructor
          */
@@ -118,7 +118,7 @@ define(
          * 调用iframe内容窗口的方法
          *
          * @param {string} methodName 方法名称
-         * @param {Mixed...} 调用时的参数
+         * @param {Mixed...} args 调用时的参数
          * @return {Mixed}
          * @throws {Error} 内容窗口还未加载完毕无法使用
          */

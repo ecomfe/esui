@@ -158,9 +158,30 @@ define(
                     text, width, disabled, readOnly
                 ) {
                     var properties = {
+                        /**
+                         * @property {number} maxLength
+                         *
+                         * 最大长度，参考{@link TextBox#maxLength}
+                         */
                         maxLength: maxLength,
+                        /**
+                         * @property {string} placeholder
+                         *
+                         * 无内容时的提示文字，参考{@link TextBox#placeholder}
+                         */
                         placeholder: placeholder,
+                        /**
+                         * @property {string} text
+                         *
+                         * 文字内容
+                         */
                         value: text,
+
+                        /**
+                         * @property {number} width
+                         *
+                         * 设定文本框宽度，参考{@link TextBox#width}
+                         */
                         width: width,
                         disabled: disabled,
                         readOnly: readOnly
@@ -180,7 +201,11 @@ define(
                 }
             },
             {
-                // 是否独占一行
+                /**
+                 * @property {boolean} fitWidth
+                 *
+                 * 设定当前控件是否独占一行宽度
+                 */
                 name: 'fitWidth',
                 paint: function (box, fitWidth) {
                     var method = fitWidth ? 'addState' : 'removeState';
@@ -193,6 +218,7 @@ define(
          * 获取用于比对的text属性值
          *
          * @return {string}
+         * @protected
          */
         SearchBox.prototype.getTextProperty = function () {
             var textbox = this.getChild('text');
