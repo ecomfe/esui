@@ -5,7 +5,6 @@
  * @ignore
  * @file 搜索框控件
  * @author otakustay
- * @date $DATE$
  */
 define(
     function (require) {
