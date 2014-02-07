@@ -31,7 +31,7 @@
     ],
     "dependencies": {
         "mini-event": "1.x",
-        "underscore": "1.4.x",
+        "underscore": "1.5.x",
         "moment": "2.x",
         "etpl": ">=2.0.8"
     },
