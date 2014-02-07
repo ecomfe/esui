@@ -250,6 +250,16 @@ define(
                         + 'data-index="${index}">'
                         + '</div>';
 
+        /**
+         * subrow入口的html模板
+         *
+         * @private
+         */
+        var tplSubPanel = '<div '
+                        + 'data-ui="type:Panel;id:${id}" '
+                        + 'data-index="${index}">'
+                        + '</div>';
+
         function getSubEntryHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
@@ -296,6 +306,33 @@ define(
                     +  '" class="' + getClass(table, 'subrow') + '"'
                     +  ' style="display:none"></div>'
                     : '';
+        }
+
+
+        function getSubrow(table, index) {
+            return lib.g(getSubrowId(table, index));
+        }
+
+        function getSubrowContainer(table, index) {
+            var subrowWrapper = getSubrow(table, index);
+            var subrowPanelId = getId(table, 'subrow-panel-' + index);
+            var subrowPanel = table.viewContext.get(subrowPanelId);
+
+            if (!subrowPanel) {
+                subrowWrapper.innerHTML = lib.format(
+                    tplSubPanel,
+                    {
+                        id: subrowPanelId,
+                        index: index
+                    }
+                );
+
+                table.initChildren(subrowWrapper);
+                subrowPanel = table.viewContext.get(subrowPanelId);
+                table.addChild(subrowPanel);
+            }
+
+            return subrowPanel;
         }
 
 
@@ -372,9 +409,21 @@ define(
              * @return {HTMLElement}
              */
             target.getSubrow = function(index) {
-                return lib.g(getSubrowId(this, index));    
+                return getSubrow(this, index);
             };
 
+            target.setSubrowContent = function(content, index){
+                var subrowPanel = getSubrowContainer(this, index);
+
+                if (subrowPanel) {
+                    subrowPanel.set('content', content);
+                }
+            };
+
+
+            target.getSubrowContainer = function(index){
+                return getSubrowContainer(this, index);
+            };
 
             Extension.prototype.activate.apply(this, arguments);
         };

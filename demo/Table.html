@@ -195,11 +195,14 @@
                 
                 myTable = ui.get('myTable');
                 myTable.onsubrowopen = function ( arg ) {
-                    this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
+                    this.setSubrowContent(
+                        '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>',
+                        arg.index
+                    );
                 };
 
                 myTable.onsubrowclose = function ( arg ) {
-                    this.getSubrow( arg.index ).innerHTML = '';
+                    this.getSubrowContainer(arg.index).set('content', '');
                 };
 
                 myTable.onselect = function ( arg ) {
