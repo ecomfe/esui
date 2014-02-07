@@ -40,6 +40,16 @@ define(
             type: 'Link',
 
             /**
+             * 获取控件的分类
+             *
+             * @return {string} 始终返回`"container"`
+             * @override
+             */
+            getCategory: function () {
+                return 'container';
+            },
+
+            /**
              * 创建控件主元素，始终创建`<a>`元素
              *
              * @return {HTMLElement}

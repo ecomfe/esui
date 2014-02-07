@@ -8,27 +8,9 @@
 @import "mixin.less";
 @import "variable.less";
 .ui-textline {
+    // padding: 0 4px;
     position: relative;
     border: 1px solid #dddddd;
-    background: #f8f9fb;
-
-    .ui-textbox  {
-        left: 30px;
-        top: 0;
-        position: absolute;
-        background: #fff;
-        textarea {
-            line-height: 21px;
-            font-size: 14px;
-            border: 0;
-            padding: 0;
-            margin: 0;
-            &:hover {
-                border: none;
-            }
-        }
-
-    }
     &:hover {
         border: 1px solid #6e8ab8;
     }
@@ -43,6 +25,29 @@
     width: 30px;
     font-size: 12px;
     overflow-y: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.ui-textline-text-container {
+    position: absolute;
+    left: 30px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    textarea {
+        position: absolute;
+        background: #fff;
+        width: 100%;
+        height: 100%;
+        line-height: 21px;
+        font-size: 14px;
+        padding: 0;
+        margin: 0;
+        border: 0 none;
+    }
 }
 
 .ui-textline-disabled,

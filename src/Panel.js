@@ -38,6 +38,16 @@ define(
         Panel.prototype.type = 'Panel';
 
         /**
+         * 获取控件的分类
+         *
+         * @return {string} 始终返回`"container"`
+         * @override
+         */
+        Panel.prototype.getCategory = function () {
+            return 'container';
+        };
+
+        /**
          * 创建控件主元素
          *
          * 如果初始化时提供{@link Panel#tagName}属性，则以此创建元素，

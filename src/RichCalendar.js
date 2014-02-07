@@ -786,14 +786,14 @@ define(
                                 )
                             );
                         }
-                        // 已到最后一个数据，无论如何都要收尾了
-                        if (i == (rawValue.length - 1)) {
-                            dateStrs.push(
-                                lib.date.format(
-                                    rawValue[i], this.paramFormat
-                                )
-                            );
-                        }
+                    }
+                    // 已到最后一个数据，无论如何都要收尾了
+                    if (i === (rawValue.length - 1)) {
+                        dateStrs.push(
+                            lib.date.format(
+                                rawValue[i], this.paramFormat
+                            )
+                        );
                     }
                 }
                 return dateStrs.join(',');

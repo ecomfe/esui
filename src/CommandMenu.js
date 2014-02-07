@@ -16,7 +16,7 @@ define(
         /**
          * 选中某一项
          *
-         * @parma {Event} e DOM事件对象
+         * @param {Event} e DOM事件对象
          * @ignore
          */
         function selectItem(e) {

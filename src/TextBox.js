@@ -132,6 +132,10 @@ define(
 
             u.extend(properties, options);
 
+            if (!properties.hasOwnProperty('title') && this.main.title) {
+                properties.title = this.main.title;
+            }
+
             this.setProperties(properties);
         };
 
@@ -288,6 +292,10 @@ define(
         TextBox.prototype.initStructure = function () {
             if (lib.isInput(this.main)) {
                 var main = this.helper.replaceMain();
+
+                // 如果原来有`tabindex`属性会放到`main`上来，要去掉，
+                // 不然会出现TAB导航的问题，需要2次TAB才能正确到文本框
+                lib.removeAttribute(this.main, 'tabindex');
                 
                 // `replaceMain`会复制`id`属性，但`TextBox`是特殊的，`id`要保留下来
                 this.inputId = main.id || this.helper.getId('input');

@@ -220,6 +220,9 @@ define(
                 this.repaint();
 
                 if (this.helper.isInStage('INITED')) {
+                    // 切换控件所属生命周期阶段
+                    this.helper.changeStage('RENDERED');
+                    
                     /**
                      * @event afterrender
                      *
@@ -227,9 +230,6 @@ define(
                      */
                     this.fire('afterrender');
                 }
-
-                // 切换控件所属生命周期阶段
-                this.helper.changeStage('RENDERED');
             },
 
             /**

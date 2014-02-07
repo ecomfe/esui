@@ -105,6 +105,16 @@ define(function (require) {
                 textbox.appendTo(container);
                 expect(findInput(textbox).getAttribute('maxlength')).toBe('3');
             });
+
+            it('should remove `tabindex` attribute to prevent tab navigation problem', function () {
+                var div = document.createElement('div');
+                div.innerHTML = '<input type="text" tabindex="1" />';
+                var main = div.firstChild;
+
+                var textbox = new TextBox({ main: main });
+                textbox.appendTo(container);
+                expect(hasAttribute(textbox.main, 'tabindex')).toBe(false);
+            });
         });
 
         describe('generally', function () {
