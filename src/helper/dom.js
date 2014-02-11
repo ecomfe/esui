@@ -320,11 +320,7 @@ define(
                 if (lib.hasAttribute(initialMain, name)
                     && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
                 ) {
-                    lib.setAttribute(
-                        main,
-                        attribute.name,
-                        attribute.value
-                    );
+                    lib.setAttribute(main, name, attribute.value);
                 }
             }
             
