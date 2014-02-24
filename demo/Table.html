@@ -114,6 +114,28 @@
                                     width: 100,
                                     content: function (item) {
                                         return item.name;
+                                    },
+                                    onstartedit: function(arg) {
+                                        //arg.preventDefault();
+                                    },
+
+                                    onsaveedit: function(arg){
+                                         if ( arg.value.length > 4 ) {
+                                            arg.returnResult = false;
+                                            arg.errorMsg = '亲，出错了哟';
+                                            arg.preventDefault();
+                                        } else {
+                                            arg.preventDefault();
+                                            this.setCellText(
+                                                arg.value,
+                                                arg.rowIndex,
+                                                arg.columnIndex
+                                            );
+                                            var table = this;
+                                            setTimeout(function(){
+                                                table.hideEditLayer();
+                                            }, 1000);
+                                        }
                                     }
                                 },
                                 {
@@ -298,6 +320,7 @@
                     myTable.setDatasource(data);
                 };
 
+                /*
                 myTable.onsaveedit = function(arg) {
                     if ( arg.value.length > 4 ) {
                         arg.returnResult = false;
@@ -319,6 +342,7 @@
                 myTable.onstartedit = function(arg) {
                     alert(arg.field.field);
                 };
+                */
 
                 /*
                 myTable2 = ui.get('myTable2');

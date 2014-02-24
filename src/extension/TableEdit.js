@@ -282,14 +282,27 @@ define(
                 };
 
                 eventArgs = currentTable.fire('saveedit', eventArgs);
+                fieldHanlder(currentTable, 'saveedit', eventArgs);
 
                 if (!eventArgs.isDefaultPrevented()) {
-                    hideLayer();
-                    currentState = 0;
-                } else if (eventArgs.errorMsg) {
-                    showErrorMsg(eventArgs.errorMsg);
-                } 
+                    saveSuccessHandler.call(currentTable, eventArgs);
+                } else {
+                    saveFailedHandler.call(currentTable, eventArgs);
+                }
             }
+        }
+
+        function saveSuccessHandler(eventArgs) {
+            if (this === currentTable) { 
+                hideLayer();
+                currentState = 0;
+            }
+        }
+
+        function saveFailedHandler(eventArgs) {
+            if (this === currentTable && eventArgs.errorMsg) {
+                showErrorMsg(eventArgs.errorMsg);
+            }  
         }
         
         /**
@@ -363,7 +376,9 @@ define(
                 columnIndex: currentColIndex,
                 field: currentTable.realFields[currentColIndex]
             };
-            currentTable.fire('canceledit', eventArgs);
+            
+            eventArgs = currentTable.fire('canceledit', eventArgs);
+            fieldHanlder(currentTable, 'canceledit', eventArgs);
         }
 
         /**
@@ -403,9 +418,9 @@ define(
          * @param {boolean} disabled 按钮的disabled状态
          * @ignore
          */
-        function setButtonDisabled( disabled ) {
-            okButton.setDisabled( disabled );
-            cancelButton.setDisabled( disabled );
+        function setButtonDisabled(disabled) {
+            okButton.setDisabled(disabled);
+            cancelButton.setDisabled(disabled);
         }
 
         /**
@@ -446,8 +461,9 @@ define(
 
         /**
          * 开始某行的编辑逻辑，初始化子控件
-         * @param {number} index 行序号
-         * @ignore
+         * @param {number} rowIndex 行序号
+         * @param {number} columnIndex 列序号
+         * @public
          */
         function startEdit(rowIndex, columnIndex, element) {
             if (this.editable) {
@@ -457,7 +473,9 @@ define(
                     columnIndex: columnIndex,
                     field: field
                 };
+
                 eventArgs = this.fire('startedit', eventArgs);
+                fieldHanlder(this, 'startedit', eventArgs);
 
                 if (!eventArgs.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
@@ -482,11 +500,31 @@ define(
 
         /**
          * 取消编辑
-         * @ignore
+         * @public
          */
         function cancelEdit() {
             if (this == currentTable) {
                 stop();
+            }
+        }
+
+        /**
+         * 隐藏编辑浮层
+         * @public
+         */
+        function hideEditLayer() {
+            if (this === currentTable) {
+                hideLayer();
+            }
+        }
+
+        /**
+         * 显示编辑浮层
+         * @public
+         */
+        function showEditError () {
+            if (this === currentTable) {
+                showLayer();
             }
         }
 
@@ -511,6 +549,14 @@ define(
                         }
                     )
                 };
+            }
+        }
+
+        function fieldHanlder(table, eventType, args) {
+            var handler = args.field['on' + eventType];
+            if (handler 
+                && '[object Function]' == Object.prototype.toString.call(handler)) {
+                handler.call(table, args);
             }
         }
 
@@ -572,6 +618,8 @@ define(
 
             target.startEdit = startEdit;
             target.cancelEdit = cancelEdit;
+            target.hideEditLayer = hideEditLayer;
+            target.showEditError = showEditError;
 
             target.addRowBuilders([
                 {
@@ -592,7 +640,7 @@ define(
 
             target.on('enddrag', tableEndDragHandler);
             target.on('resize', tableResizeHandler);
-
+            
             Extension.prototype.activate.apply(this, arguments);
         };
 
@@ -625,3 +673,6 @@ define(
         return TableEdit;
     }
 );
+
+
+01010395370
