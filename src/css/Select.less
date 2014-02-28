@@ -9,7 +9,7 @@
 @import "variable.less";
 .ui-select {
     .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #fff);
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
     .ellipse-overflow ();
     .interactive-cursor ();
     border: 1px solid #D8D8D8;
@@ -26,19 +26,19 @@
 .ui-select:hover,
 .ui-select:focus {
     .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -36px, #fff);
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -36px, #fff);
 }
 
 .ui-select:active {
     .linear-gradient-background-with-image (
-        top, #f6f6f6, #ffffff, "esui-combo-arrow.png", right, -36px, #fff);
+        top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png", right, -36px, #fff);
 }
 
 .ui-select-active,
 .ui-select-active:hover,
 .ui-select-active:focus {
     .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -67px, #fff);
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -67px, #fff);
 }
 
 .ui-select-layer {
@@ -72,6 +72,7 @@
 .ui-select-item-selected {
     background-color: #E0E0E0;
     border: 1px solid #DDDDDD;
+    padding: 0 3px;
 }
 
 .ui-select-item:hover {
@@ -94,7 +95,7 @@
     &:hover,
     &:focus {
         .linear-gradient-background-with-image (
-            top, #ffffff, #f6f6f6, "esui-combo-arrow.png", right, -6px, #f3f3f3);
+            top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #f3f3f3);
     }
 }
 
@@ -107,7 +108,7 @@
     margin-top: 5px;
 }
 .ui-select-validity-label-invalid {
-    .background('esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+    .background('../img/esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
     border: 1px solid #F0CCCC;
     color: #dd6767;
     padding-left: 50px;

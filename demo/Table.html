@@ -114,6 +114,28 @@
                                     width: 100,
                                     content: function (item) {
                                         return item.name;
+                                    },
+                                    onstartedit: function(arg) {
+                                        //arg.preventDefault();
+                                    },
+
+                                    onsaveedit: function(arg){
+                                         if ( arg.value.length > 4 ) {
+                                            arg.returnResult = false;
+                                            arg.errorMsg = '亲，出错了哟';
+                                            arg.preventDefault();
+                                        } else {
+                                            arg.preventDefault();
+                                            this.setCellText(
+                                                arg.value,
+                                                arg.rowIndex,
+                                                arg.columnIndex
+                                            );
+                                            var table = this;
+                                            setTimeout(function(){
+                                                table.hideEditLayer();
+                                            }, 1000);
+                                        }
                                     }
                                 },
                                 {
@@ -195,11 +217,14 @@
                 
                 myTable = ui.get('myTable');
                 myTable.onsubrowopen = function ( arg ) {
-                    this.getSubrow( arg.index ).innerHTML = '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>';
+                    this.setSubrowContent(
+                        '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>',
+                        arg.index
+                    );
                 };
 
                 myTable.onsubrowclose = function ( arg ) {
-                    this.getSubrow( arg.index ).innerHTML = '';
+                    this.getSubrowContainer(arg.index).set('content', '');
                 };
 
                 myTable.onselect = function ( arg ) {
@@ -295,6 +320,7 @@
                     myTable.setDatasource(data);
                 };
 
+                /*
                 myTable.onsaveedit = function(arg) {
                     if ( arg.value.length > 4 ) {
                         arg.returnResult = false;
@@ -316,6 +342,7 @@
                 myTable.onstartedit = function(arg) {
                     alert(arg.field.field);
                 };
+                */
 
                 /*
                 myTable2 = ui.get('myTable2');

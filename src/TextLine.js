@@ -111,6 +111,11 @@ define(
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
                 u.extend(properties, options);
+
+                if (!properties.hasOwnProperty('title') && this.main.title) {
+                    properties.title = this.main.title;
+                }
+                
                 this.setProperties(properties);
             },
 

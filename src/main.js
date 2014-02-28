@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 主模块
  * @author erik
@@ -25,14 +25,14 @@ define(
          * @type {string}
          * @readonly
          */
-        main.version = '3.1.0-alpha.6';
+        main.version = '3.1.0-alpha.7';
 
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
 
         /**
          * 获取默认的控件视图环境
-         * 
+         *
          * @return {ViewContext}
          */
         main.getViewContext = function () {
@@ -41,7 +41,7 @@ define(
 
         /**
          * 控件库配置数据
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -69,7 +69,7 @@ define(
          * - `{string} uiClassPrefix="ui"`：控件生成DOM元素的class的前缀
          * - `{string} skinClassPrefix="skin"`：控件生成皮肤相关DOM元素class的前缀
          * - `{string} stateClassPrefix="state"`：控件生成状态相关DOM元素class的前缀
-         * 
+         *
          * @param {Object} info 控件库配置信息对象
          */
         main.config = function (info) {
@@ -80,7 +80,7 @@ define(
          * 获取配置项
          *
          * 具体可用配置参考{@link main#config}方法的说明
-         * 
+         *
          * @param {string} name 配置项名称
          * @return {Mixed} 配置项的值
          */
@@ -90,7 +90,7 @@ define(
 
         /**
          * 将`name:value[;name:value]`的属性值解析成对象
-         * 
+         *
          * @param {string} source 属性值源字符串
          * @param {Function} valueReplacer 替换值的处理函数，每个值都将经过此函数
          * @return {Object}
@@ -100,9 +100,9 @@ define(
                 return {};
             }
             // 为了让key和value中有`:`或`;`这类分隔符时能正常工作，不采用正则
-            // 
+            //
             // 分析的原则是：
-            // 
+            //
             // 1. 找到第1个冒号，取前面部分为key
             // 2. 找下个早号前的最后一个分号，取前面部分为value
             // 3. 如果字符串没结束，回到第1步
@@ -166,7 +166,7 @@ define(
 
         /**
          * 寻找DOM元素所对应的控件
-         * 
+         *
          * @param {HTMLElement} dom DOM元素
          * @return {Control | null} `dom`对应的控件实例，
          * 如果`dom`不存在或不对应任何控件则返回`null`
@@ -182,8 +182,8 @@ define(
             var viewContextId = dom.getAttribute(getConf('viewContextAttr'));
             var viewContext;
 
-            if (controlId 
-                && viewContextId 
+            if (controlId
+                && viewContextId
                 && (viewContext = ViewContext.get(viewContextId))
             ) {
                 return viewContext.get(controlId);
@@ -193,7 +193,7 @@ define(
 
         /**
          * 注册类。用于控件类、规则类或扩展类注册
-         * 
+         *
          * @param {Function} classFunc 类Function
          * @param {Object} container 类容器
          * @ignore
@@ -211,7 +211,7 @@ define(
 
         /**
          * 创建类实例。用于控件类、规则类或扩展类的实例创建
-         * 
+         *
          * @param {string} type 类型
          * @param {Object} options 初始化参数
          * @param {Object} container 类容器
@@ -229,7 +229,7 @@ define(
 
         /**
          * 控件类容器
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -239,7 +239,7 @@ define(
          * 注册控件类
          *
          * 该方法通过类的`prototype.type`识别控件类型信息。
-         * 
+         *
          * @param {Function} controlClass 控件类
          * @throws
          * 已经有相同`prototype.type`的控件类存在，不能重复注册同类型控件
@@ -250,7 +250,7 @@ define(
 
         /**
          * 创建控件
-         * 
+         *
          * @param {string} type 控件类型
          * @param {Object} options 初始化参数
          * @return {Control}
@@ -261,7 +261,7 @@ define(
 
         /**
          * 获取控件
-         * 
+         *
          * @param {string} id 控件的id
          * @return {Control | null}
          */
@@ -299,7 +299,7 @@ define(
 
         /**
          * 从容器DOM元素批量初始化内部的控件渲染
-         * 
+         *
          * @param {HTMLElement} [wrap=document.body] 容器DOM元素，默认
          * @param {Object} [options] init参数
          * @param {Object} [options.viewContext] 视图环境
@@ -310,14 +310,14 @@ define(
         main.init = function (wrap, options) {
             wrap = wrap || document.body;
             options = options || {};
-            
+
             var valueReplacer = options.valueReplacer || function (value) {
                 return value;
             };
 
             /**
              * 将字符串数组join成驼峰形式
-             * 
+             *
              * @param {string[]} source 源字符串数组
              * @return {string}
              * @ignore
@@ -336,7 +336,7 @@ define(
 
             /**
              * 不覆盖目标对象成员的extend
-             * 
+             *
              * @param {Object} target 目标对象
              * @param {Object} source 源对象
              * @ignore
@@ -351,7 +351,7 @@ define(
 
             /**
              * 将标签解析的值附加到option对象上
-             * 
+             *
              * @param {Object} optionObject option对象
              * @param {string[]} terms 经过切分的标签名解析结果
              * @param {string} value 属性值
@@ -360,7 +360,7 @@ define(
             function extendToOption(optionObject, terms, value) {
                 if (terms.length === 0) {
                     noOverrideExtend(
-                        optionObject, 
+                        optionObject,
                         main.parseAttribute(value, valueReplacer)
                     );
                 }
@@ -444,7 +444,7 @@ define(
                     for (var key in extensionOptions) {
                         var extOption = extensionOptions[key];
                         var extension = main.createExtension(
-                            extOption.type, 
+                            extOption.type,
                             extOption
                         );
                         extension && extensions.push(extension);
@@ -471,7 +471,7 @@ define(
                         }
                         catch (ex) {
                             var error = new Error(
-                                'Render control ' 
+                                'Render control '
                                 + '"' + (control.id || 'anonymous')+ '" '
                                 + 'of type ' + control.type + ' '
                                 + 'failed because: '
@@ -489,7 +489,7 @@ define(
 
         /**
          * 扩展类容器
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -499,7 +499,7 @@ define(
          * 注册扩展类。
          *
          * 该方法通过类的`prototype.type`识别扩展类型信息
-         * 
+         *
          * @param {Function} extensionClass 扩展类
          * @throws
          * 已经有相同`prototype.type`的扩展类存在，不能重复注册同类型扩展
@@ -510,7 +510,7 @@ define(
 
         /**
          * 创建扩展
-         * 
+         *
          * @param {string} type 扩展类型
          * @param {Object} options 初始化参数
          * @return {Extension}
@@ -521,7 +521,7 @@ define(
 
         /**
          * 全局扩展选项容器
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -533,7 +533,7 @@ define(
          * 通过此方法绑定的扩展，会对所有的控件实例生效
          *
          * 每一次全局扩展生成实例时，均会复制`options`对象，而不会直接使用引用
-         * 
+         *
          * @param {string} type 扩展类型
          * @param {Object} options 扩展初始化参数
          */
@@ -543,7 +543,7 @@ define(
 
         /**
          * 创建全局扩展对象
-         * 
+         *
          * @return {Extension[]}
          */
         main.createGlobalExtensions = function () {
@@ -565,7 +565,7 @@ define(
 
         /**
          * 验证规则类容器
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -575,7 +575,7 @@ define(
          * 注册控件验证规则类
          *
          * 该方法通过类的`prototype.type`识别验证规则类型信息
-         * 
+         *
          * @param {Function} ruleClass 验证规则类
          * @param {number} priority 优先级，越小的优先级越高
          * @throws
@@ -591,7 +591,7 @@ define(
 
         /**
          * 创建控件实例需要的验证规则
-         * 
+         *
          * @param {Control} control 控件实例
          * @return {validator.Rule[]} 验证规则数组
          */

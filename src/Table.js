@@ -228,7 +228,7 @@ define(
             
             parent.appendChild(rulerDiv);    
             var width = rulerDiv.offsetWidth;
-            parent.removeChild(rulerDiv);
+            rulerDiv.parentNode.removeChild(rulerDiv);
             
             return width;
         }
