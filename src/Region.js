@@ -549,7 +549,7 @@ define(
                     hit = true;
                 }
                 else if (tar.nodeName.toLowerCase() === 'label') {
-                    var checkId = tar.getAttribute('for');
+                    var checkId = lib.getAttribute(tar, 'for');
                     tar = lib.g(checkId);
                     hit = true; 
                 }
@@ -573,7 +573,7 @@ define(
          * @param {boolean} dontRefreshView 是否需要更新状态.
          */
         function optionClick(region, dom, dontRefreshView) {
-            var id = dom.getAttribute('data-optionId');
+            var id = lib.getAttribute(dom, 'data-optionId');
             var isChecked = dom.checked;
             var data = region.regionDataIndex[id];
             data.isSelected = isChecked;
@@ -595,7 +595,7 @@ define(
             }
             else if (len === 0) {
                 //获取第三层checkbox
-                if (dom.getAttribute('level') == 3) {
+                if (lib.getAttribute(dom, 'level') == 3) {
                     var selCityIdsLength = 0;
                     var cityTotal = region.regionDataIndex[id].parent.children;
                     u.each(cityTotal, function (city) {
@@ -646,7 +646,7 @@ define(
             while (tar && tar != document.body) {
                 var optionChildLayer;
                 if (lib.hasClass(tar, textClass[0])) {
-                    itemId = tar.firstChild.getAttribute('value');
+                    itemId = lib.getAttribute(tar.firstChild, 'value');
                     optionChildLayer = tar.previousSibling.firstChild;
                 }
                 else if (lib.hasClass(tar, layerClass[0])) {
