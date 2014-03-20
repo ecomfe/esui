@@ -162,7 +162,7 @@ define(
             var right = this.right;
             var bottom = this.bottom;
 
-            if (!left) {
+            if (left === undefined || left === null) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
 
@@ -170,7 +170,7 @@ define(
                 left = 0;
             }
 
-            if (!top) {
+            if (top === undefined || top === null) {
                 top = (page.getViewHeight() - main.offsetHeight) / 2;
             }
 
@@ -181,11 +181,11 @@ define(
             main.style.top = page.getScrollTop() + top + 'px';
 
             // 如果设置right，就用
-            if (right) {
+            if (right !== undefined && right !== null) {
                 main.style.right = right + 'px';
             }
             // 如果设置bottom，就用
-            if (bottom !== undefined) {
+            if (bottom !== undefined && bottom !== null) {
                 main.style.bottom = bottom + 'px';
             }
             // 设置的height是auto时的逻辑是
