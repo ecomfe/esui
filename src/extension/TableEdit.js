@@ -1,12 +1,12 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 表格行内编辑扩展
  * @author wurongyao, otakustay
  */
-define( 
+define(
     function (require) {
         require('../validator/MaxLengthRule');
         require('../validator/MaxRule');
@@ -78,7 +78,7 @@ define(
 
             initInputControl(options);
         }
-        
+
         /**
          * 初始化编辑器浮层
          *
@@ -88,7 +88,7 @@ define(
             fillLayer();
             initButtonControl();
         }
-        
+
         /**
          * 初始化浮层按钮的控件
          *
@@ -101,7 +101,7 @@ define(
 
             okButton.on('click', getOkHandler());
             cancelButton.on('click', getCancelHandler());
-        
+
             setButtonDisabled(1);
         }
 
@@ -130,7 +130,7 @@ define(
                     validTpl,
                     { validId: newValidId }
                 );
-                
+
                 var inputCtrlOptions = {properties:{}};
                 inputCtrlOptions.properties[newInputId] = lib.extend(
                     {
@@ -159,7 +159,7 @@ define(
         function disposeEditorControl(table) {
             if (table == currentTable) {
                 hideLayer();
-                
+
                 inputCtrl.dispose();
                 okButton.dispose();
                 cancelButton.dispose();
@@ -167,7 +167,7 @@ define(
                 try{
                     layer && document.body.removeChild(layer);
                 } catch (ex){}
-                
+
                 layer = null;
                 inputCtrl = null;
                 okButton = null;
@@ -176,7 +176,7 @@ define(
                 currentField = null;
             }
         }
-        
+
         /**
          * 填充浮层的内容
          *
@@ -184,7 +184,7 @@ define(
          */
         function fillLayer() {
             layer.innerHTML = lib.format(
-                layContentTpl, 
+                layContentTpl,
                 {
                     inputFieldId: inputFieldId,
                     okId: okId,
@@ -211,7 +211,7 @@ define(
                 }
             }
         }
-        
+
         /**
          * 隐藏浮层
          *
@@ -238,8 +238,8 @@ define(
         function showErrorMsg(error) {
             if (error) {
                 var validity = new Validity();
-                validity.addState( 
-                    'TableEditCustomRule', 
+                validity.addState(
+                    'TableEditCustomRule',
                     new ValidityState(false, error)
                 );
                 inputCtrl.showValidity(validity);
@@ -253,8 +253,8 @@ define(
          */
         function clearErrorMsg(error) {
             var validity = new Validity();
-            validity.addState( 
-                'TableEditCustomRule', 
+            validity.addState(
+                'TableEditCustomRule',
                 new ValidityState(true)
             );
             inputCtrl.showValidity(validity);
@@ -263,7 +263,7 @@ define(
         /**
          * 获取确定按钮的点击行为handler
          *
-         * @return {Function} 
+         * @return {Function}
          * @ignore
          */
         function getOkHandler() {
@@ -293,7 +293,7 @@ define(
         }
 
         function saveSuccessHandler(eventArgs) {
-            if (this === currentTable) { 
+            if (this === currentTable) {
                 hideLayer();
                 currentState = 0;
             }
@@ -302,13 +302,13 @@ define(
         function saveFailedHandler(eventArgs) {
             if (this === currentTable && eventArgs.errorMsg) {
                 showErrorMsg(eventArgs.errorMsg);
-            }  
+            }
         }
-        
+
         /**
          * 获取取消按钮的点击行为handler
          *
-         * @return {Function} 
+         * @return {Function}
          * @ignore
          */
         function getCancelHandler() {
@@ -357,7 +357,7 @@ define(
                    helper.layer.attachTo(
                         layer,
                         entrance
-                    );   
+                    );
                 }
             }
         }
@@ -376,7 +376,7 @@ define(
                 columnIndex: currentColIndex,
                 field: currentTable.realFields[currentColIndex]
             };
-            
+
             eventArgs = currentTable.fire('canceledit', eventArgs);
             fieldHanlder(currentTable, 'canceledit', eventArgs);
         }
@@ -436,10 +436,10 @@ define(
         /**
          * 获取当前编辑器所编辑的值
          *
-         * @return {Mixed} 
+         * @return {Mixed}
          * @ignore
          */
-        function getValue() { 
+        function getValue() {
             return inputCtrl.getValue();
         }
 
@@ -455,7 +455,7 @@ define(
             if (table.startEdit) {
                 var rowIndex = lib.getAttribute(element, 'data-row');
                 var columnIndex = lib.getAttribute(element, 'data-col');
-                table.startEdit(rowIndex, columnIndex, element); 
+                table.startEdit(rowIndex, columnIndex, element);
             }
         }
 
@@ -479,7 +479,7 @@ define(
 
                 if (!eventArgs.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
-                    var content = field.editContent; 
+                    var content = field.editContent;
                     var value = 'function' === typeof content
                         ? content.call(this, data, rowIndex, columnIndex)
                         : data[field.field];
@@ -554,7 +554,7 @@ define(
 
         function fieldHanlder(table, eventType, args) {
             var handler = args.field['on' + eventType];
-            if (handler 
+            if (handler
                 && '[object Function]' == Object.prototype.toString.call(handler)) {
                 handler.call(table, args);
             }
@@ -580,7 +580,7 @@ define(
          *
          * 以上3个事件的事件对象均提供以下属性：
          *
-         * 
+         *
          * - `{number} rowIndex`：行索引
          * - `{number} columnIndex`：列索引
          * - `{number} field`：对应的字段
@@ -640,7 +640,7 @@ define(
 
             target.on('enddrag', tableEndDragHandler);
             target.on('resize', tableResizeHandler);
-            
+
             Extension.prototype.activate.apply(this, arguments);
         };
 
@@ -669,10 +669,7 @@ define(
 
         lib.inherits(TableEdit, Extension);
         main.registerExtension(TableEdit);
-        
+
         return TableEdit;
     }
 );
-
-
-01010395370
