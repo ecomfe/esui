@@ -19,28 +19,33 @@
     padding: 2px 5px;
 
     table {width:200px;}
-}
-
-/** 先前向后按钮 */
-.ui-monthview-month-forward,
-.ui-monthview-month-back {
-    .background("../img/esui.png", repeat, 0px, -200px);
-    font-size: 1px;
-    height: 20px;
-    width: 20px;
-    padding: 0;
-    float: left;
-    &:active {
-        .background("../img/esui.png", repeat, 0px, -200px);
-        height: 20px;
+    
+    /** 先前向后按钮 */
+    .ui-monthview-month-select,
+    .ui-monthview-year-select {
+        width: 30px;
     }
-}
 
-.ui-monthview-month-forward {
-    background-position: -20px -200px;
-    margin-left: 15px;
-    &:active {
+    .ui-monthview-month-forward,
+    .ui-monthview-month-back {
+        .background("../img/esui.png", repeat, 0px, -200px);
+        font-size: 1px;
+        height: 20px;
+        width: 20px;
+        padding: 0;
+        float: left;
+        &:active {
+            .background("../img/esui.png", repeat, 0px, -200px);
+            height: 20px;
+        }
+    }
+
+    .ui-monthview-month-forward {
         background-position: -20px -200px;
+        margin-left: 15px;
+        &:active {
+            background-position: -20px -200px;
+        }
     }
 }
 

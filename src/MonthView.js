@@ -90,22 +90,24 @@ define(
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthBack"',
                         ' data-ui-id="${monthBackId}"',
-                        ' data-ui-height="20"></div>',
+                        '></div>',
                     '</td>',
                     '<td>',
-                        '<div data-ui="type:Select;childName:yearSel;',
-                        'id:${yearSelId};width:30;"></div>',
+                        '<div class="${yearSelectClass}"',
+                        ' data-ui="type:Select;childName:yearSel;',
+                        ' id:${yearSelId};"></div>',
                     '</td>',
                     '<td>',
-                        '<div data-ui="type:Select;childName:monthSel;',
-                        'id:${monthSelId};width:20;"></div>',
+                        '<div class="${monthSelectClass}"',
+                        ' data-ui="type:Select;childName:monthSel;',
+                        ' id:${monthSelId};"></div>',
                     '</td>',
                     '<td width="40" align="right">',
                         '<div class="${monthForClass}"',
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthForward"',
                         ' data-ui-id="${monthForwardId}"',
-                        ' data-ui-height="20"></div>',
+                        '></div>',
                     '</td>',
                 '</tr></table></div>',
                 '<div id="${monthMainId}" class="${monthMainClass}"></div>'
@@ -115,23 +117,21 @@ define(
             return lib.format(
                 tpl,
                 {
-                    headClass:
-                        helper.getPartClasses(monthView, 'head').join(' '),
-                    monthBackId: helper.getId(monthView, 'monthBack'),
-                    monthForwardId: helper.getId(monthView, 'monthForward'),
-                    yearSelId: helper.getId(monthView, 'yearSel'),
-                    monthSelId: helper.getId(monthView, 'monthSel'),
-                    monthMainId: helper.getId(monthView, 'monthMain'),
-                    monthMainClass:
-                        helper.getPartClasses(monthView, 'month').join(' '),
+                    headClass: monthView.helper.getPartClassName('head'),
+                    monthBackId: monthView.helper.getId('monthBack'),
+                    monthForwardId: monthView.helper.getId('monthForward'),
+                    yearSelId: monthView.helper.getId('yearSel'),
+                    monthSelId: monthView.helper.getId('monthSel'),
+                    monthMainId: monthView.helper.getId('monthMain'),
+                    monthMainClass: monthView.helper.getPartClassName('month'),
                     monthBackClass:
-                        helper.getPartClasses(
-                            monthView, 'month-back'
-                        ).join(' '),
+                        monthView.helper.getPartClassName('month-back'),
                     monthForClass:
-                        helper.getPartClasses(
-                            monthView, 'month-forward'
-                        ).join(' ')
+                        monthView.helper.getPartClassName('month-forward'),
+                    yearSelectClass:
+                        monthView.helper.getPartClassName('year-select'),
+                    monthSelectClass:
+                        monthView.helper.getPartClassName('month-select')
                 }
             );
         }
@@ -163,9 +163,7 @@ define(
                     tplHead,
                     { 
                         className:
-                            helper.getPartClasses(
-                                monthView, 'month-main'
-                            ).join(' ')
+                            monthView.helper.getPartClassName('month-main')
                     }
                 )
             );
@@ -175,16 +173,10 @@ define(
                 + '<td id="${id}" data-index="${index}" class="${className}">'
                 + '${text}</td>';
             var headItemClass =
-                helper.getPartClasses(
-                    monthView,
-                    'month-title'
-                ).join(' ');
-            var headItemId = helper.getId(monthView, 'month-title');
+                monthView.helper.getPartClassName('month-title');
+            var headItemId = monthView.helper.getId('month-title');
             var emptyHeadItemClass = 
-                helper.getPartClasses(
-                    monthView,
-                    'month-select-all'
-                ).join(' ');
+                monthView.helper.getPartClassName('month-select-all');
 
             var tLen = titles.length;
             for (var tIndex = 0; tIndex < tLen; tIndex++) {
@@ -212,10 +204,8 @@ define(
 
             // 单行全选模板
             var rowSelectClass = 
-                helper.getPartClasses(
-                    monthView, 'month-row-select'
-                ).join(' ');
-            var tplRowSelectId = helper.getId(monthView, 'row-select');
+                monthView.helper.getPartClassName('month-row-select');
+            var tplRowSelectId = monthView.helper.getId('row-select');
             var rowTagIndex = 0;
             var tplRowSelectTpl = ''
                 + '<td id="${id}" class="' + rowSelectClass + '">&gt;</td>';
@@ -228,20 +218,15 @@ define(
             var begin = 1 - (repeater.getDay() + 6) % 7;
             repeater.setDate(begin);
 
-            var itemClass =
-                helper.getPartClasses(monthView, 'month-item').join(' ');
+            var itemClass = monthView.helper.getPartClassName('month-item');
 
             var todayClass =
-                helper.getPartClasses(monthView, 'month-item-today').join(' ');
+                monthView.helper.getPartClassName('month-item-today');
 
             var virClass =
-                helper.getPartClasses(
-                    monthView, 'month-item-virtual'
-                ).join(' ');
+                monthView.helper.getPartClassName('month-item-virtual');
             var disabledClass =
-                helper.getPartClasses(
-                    monthView, 'month-item-disabled'
-                ).join(' ');
+                monthView.helper.getPartClassName('month-item-disabled');
             var range = monthView.range;
 
             if (monthView.mode === 'multi') {
@@ -318,11 +303,10 @@ define(
          * @return {string}
          */
         function getItemId(monthView, date) {
-            return helper.getId(
-                monthView,
+            return monthView.helper.getId(
                 date.getFullYear()
-                    + '-' + date.getMonth()
-                    + '-' + date.getDate()
+                + '-' + date.getMonth()
+                + '-' + date.getDate()
             );
         }
 
