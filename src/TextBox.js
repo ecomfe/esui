@@ -56,9 +56,9 @@ define(
          * @protected
          * @override
          */
-        TextBox.prototype.createMain = function () {
+      /*  TextBox.prototype.createMain = function () {
             return document.createElement('div');
-        };
+        };*/
 
         /**
          * 初始化参数

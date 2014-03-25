@@ -46,7 +46,10 @@ define(
          * @override
          */
         Label.prototype.createMain = function (options) {
-            return document.createElement(options.tagName || 'span');
+            if (!options.tagName) {
+                return Control.prototype.createMain.call(this);
+            }
+            return document.createElement(options.tagName);
         };
 
         /**
@@ -95,7 +98,7 @@ define(
         };
 
         var allProperties = [
-            { name: 'title' }, 
+            { name: 'title' },
             { name: 'text' }
         ];
 

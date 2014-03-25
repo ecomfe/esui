@@ -255,9 +255,9 @@ define(
              * @protected
              * @override
              */
-            createMain: function (options) {
+           /* createMain: function (options) {
                 return document.createElement('div');
-            },
+            },*/
 
             /**
              * 重渲染

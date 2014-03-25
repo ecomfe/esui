@@ -48,6 +48,7 @@ define(
         var config = {
             uiPrefix: 'data-ui',
             extensionPrefix: 'data-ui-extension',
+            customElementPrefix: 'esui',
             instanceAttr: 'data-ctrl-id',
             viewContextAttr: 'data-ctrl-view-context',
             uiClassPrefix: 'ui',
@@ -116,7 +117,7 @@ define(
                 // 找key，找到第1个冒号
                 while (cursor < source.length
                     && source.charAt(cursor) !== ':'
-                ) {
+                    ) {
                     cursor++;
                 }
                 // 如果找到尾也没找到冒号，那就是最后有一段非键值对的字符串，丢掉
@@ -132,7 +133,7 @@ define(
                 // 找value，要找最后一个分号，这里就需要前溯了，先找到第1个分号
                 while (cursor < source.length
                     && source.charAt(cursor) !== ';'
-                ) {
+                    ) {
                     cursor++;
                 }
                 // 然后做前溯一直到下一个冒号
@@ -185,7 +186,7 @@ define(
             if (controlId
                 && viewContextId
                 && (viewContext = ViewContext.get(viewContextId))
-            ) {
+                ) {
                 return viewContext.get(controlId);
             }
             return null;
@@ -381,6 +382,7 @@ define(
 
             var uiPrefix = main.getConfig('uiPrefix');
             var extPrefix = main.getConfig('extensionPrefix');
+            var customElementPrefix = main.getConfig('customElementPrefix');
             var uiPrefixLen = uiPrefix.length;
             var extPrefixLen = extPrefix.length;
             var properties = options.properties || {};
@@ -428,6 +430,16 @@ define(
 
                 // 根据选项创建控件
                 var type = controlOptions.type;
+                if (!type) {
+                    var nodeName = element.nodeName.toLowerCase();
+                    var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
+                    if (esuiPrefixIndex === 0) {
+                        controlOptions.type = type =
+                            nodeName.replace(/-(\S)/g,function (match, char) {
+                                return char.toUpperCase();
+                            }).slice(esuiPrefixIndex + customElementPrefix.length);
+                    }
+                }
                 if (type) {
                     // 从用户传入的properties中merge控件初始化属性选项
                     var controlId = controlOptions.id;
@@ -472,10 +484,10 @@ define(
                         catch (ex) {
                             var error = new Error(
                                 'Render control '
-                                + '"' + (control.id || 'anonymous')+ '" '
-                                + 'of type ' + control.type + ' '
-                                + 'failed because: '
-                                + ex.message
+                                    + '"' + (control.id || 'anonymous') + '" '
+                                    + 'of type ' + control.type + ' '
+                                    + 'failed because: '
+                                    + ex.message
                             );
                             error.actualError = ex;
                             throw error;

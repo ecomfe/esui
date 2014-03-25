@@ -1104,9 +1104,9 @@ define(
              * @return {HTMLElement}
              * @override
              */
-            createMain: function (options) {
+            /*createMain: function (options) {
                 return document.createElement('div');
-            },
+            },*/
 
             /**
              * 重新渲染视图

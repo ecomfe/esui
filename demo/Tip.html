@@ -11,6 +11,8 @@
         <header>Tip</header>
         <div class="container" style="margin-left:100px">
             <div data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里">content也可以写在这里</div>
+            <esui-tip data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里"></esui-tip>
+
             <br>
             <label id="tip-layer-label">
                 一行字也可以绑定提示
@@ -47,15 +49,11 @@
                     targetDOM: 'tip-layer-label'
                 });
 
-                //创建main
-                var main = document.createElement('div');
-                document.body.appendChild(main);
-
                 var tipLayer = ui.create('TipLayer', {
-                    main: main,
                     title: '最普通的提示',
                     content: '随便提示一下随便提示一下随便提示一下'
                 });
+                tipLayer.appendTo(document.body)
                 tipLayer.render();
                 tipLayer.attachTo({
                     targetControl: 'control-tip',

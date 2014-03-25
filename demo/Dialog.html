@@ -79,6 +79,10 @@
                     <label>html静态创建：</label>
                     <button id="trigger-static">点我点我！</button>
                 </div>
+                <div>
+                    <label>html自定义元素静态创建：</label>
+                    <button id="trigger-static1">点我点我！</button>
+                </div>
                 <pre class="source source-script">
                     //创建main
                     var main = document.createElement('div');
@@ -125,6 +129,13 @@
                   <span data-ui="type:Button;id:springBtn;skin:spring">显示文字</span>
                 </div>
             </div>
+            <esui-dialog data-ui="width:400;draggable:true;mask:true;id:staticDg1;closeOnHide:false;">
+                <h1 data-role="title">我来自静态html</h1>
+                <div data-role="content">
+                  <p>第一行</p>
+                  <span data-ui="type:Button;id:springBtn;skin:spring">显示文字</span>
+                </div>
+            </esui-dialog>
             <h2>两种默认框</h2>
             <section class="intro">
                 <p>两种默认框：警告框（Alert）；确认框（Confirm）</p>
@@ -198,6 +209,7 @@
         function (ui, Button, Dialog) {
             var controls = ui.init();
             var staticDg = controls[0];
+            var staticDg1 = controls[1];
             document.getElementById('trigger-alert').onclick = function () {
                 var dialog = Dialog.alert({
                     title: '电你',
@@ -237,6 +249,13 @@
                    staticDg.show(); 
                 }
                 
+            };
+
+            document.getElementById('trigger-static1').onclick = function () {
+                if (staticDg1) {
+                   staticDg1.show();
+                }
+
             };
 
             document.getElementById('trigger-common').onclick = function () {
