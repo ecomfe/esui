@@ -102,7 +102,8 @@ define(function (require) {
                 expect(box.main.title).toBe('title');
                 expect(textbox.value).toBe('text');
                 expect(textbox.maxLength).toBe(10);
-                expect(textbox.placeholder).toBe('placeholder');
+                //原生不支持placeholder，需要用 getAttribute
+                expect(textbox.getAttribute('placeholder')).toBe('placeholder');
                 expect(textbox.style.width).toBe('100px');
                 expect(textbox.disabled).toBe(true);
                 expect(textbox.readOnly).toBe(true);
@@ -146,7 +147,6 @@ define(function (require) {
                 var textbox = getInputElement(box);
                 textbox.focus();
                 dispatchEvent(textbox, 'input', { keyCode: 13 });
-
                 expect(handler).toHaveBeenCalled();
             });
         });

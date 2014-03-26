@@ -89,7 +89,8 @@ define(
                 skin: 'search', 
                 childName: 'text',
                 height: this.height,
-                viewContext: this.viewContext
+                viewContext: this.viewContext,
+                placeholder: this.placeholder
             };
 
             if (lib.isInput(this.main)) {

@@ -195,7 +195,8 @@ define(function (require) {
                 textbox.appendTo(container);
                 textbox.set('placeholder', 'test');
                 var input = findInput(textbox);
-                if ('placeholder' in input) {
+                if ('placeholder' in document.createElement('input')) {
+                    // ie8中对 input 设置了 placeholder，会造成 'placeholder' in input 为 true
                     expect(input.getAttribute('placeholder')).toBe('test');
                 }
                 else {
@@ -299,8 +300,11 @@ define(function (require) {
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
                     var hintLabel = input.nextSibling;
+
                     textbox.set('hint', '');
-                    expect(hintLabel.parentNode).toBe(null);
+                    var hasNotParent =
+                           hintLabel.parentNode === null || hintLabel.parentElement == null;
+                    expect(hasNotParent).toBe(true);
                 });
             });
 
