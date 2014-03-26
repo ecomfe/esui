@@ -160,7 +160,11 @@ define(
              * @protected
              */
             createMain: function () {
-                var name = this.type.replace(/([A-Z])/g, function (match, char) {
+                if (!this.type) {
+                    return document.createElement('div');
+                }
+
+                var name = this.type.replace(/([A-Z])/g,function (match, char) {
                     return '-' + char.toLowerCase();
                 }).slice(1);
                 return document.createElement(ui.getConfig('customElementPrefix') + '-' + name);

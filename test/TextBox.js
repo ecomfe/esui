@@ -24,10 +24,10 @@ define(function (require) {
         });
 
         describe('created via script', function () {
-            it('should create a `<div>` element as its main element', function () {
+            it('should create a `<esui-text-box>` element as its main element', function () {
                 var textbox = new TextBox();
                 textbox.appendTo(container);
-                expect(textbox.main.nodeName.toLowerCase()).toBe('div');
+                expect(textbox.main.nodeName.toLowerCase()).toBe('esui-text-box');
             });
 
             it('should create a correct `<input type="text" />` element if `mode` is "text"', function () {

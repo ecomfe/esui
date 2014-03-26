@@ -11,10 +11,10 @@ define(function (require) {
         });
 
         describe('created via script', function () {
-            it('should create a `<nav>` element as its main element', function () {
+            it('should create a `<esui-crumb>` element as its main element', function () {
                 var crumb = new Crumb();
                 crumb.appendTo(container);
-                expect(container.getElementsByTagName('nav').length).toBeGreaterThan(0);
+                expect(container.getElementsByTagName('esui-crumb').length).toBeGreaterThan(0);
             });
 
             it('should assign `path` property to an empty array if not given', function () {
