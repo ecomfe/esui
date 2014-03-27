@@ -197,6 +197,9 @@ define(
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
 
+                // parseValue 需要用到 paramFormat
+                this.paramFormat = properties.paramFormat;
+
                 if (properties.value) {
                     properties.rawValue = this.parseValue(properties.value);
                 }
@@ -336,7 +339,7 @@ define(
              * @override
              */
             parseValue: function (value) {
-                var date = moment(value, this.pareamFormat).toDate();
+                var date = moment(value, this.paramFormat).toDate();
                 return date;
             },
 
