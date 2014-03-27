@@ -197,10 +197,8 @@ define(
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
 
-                // parseValue 需要用到 paramFormat，对它先做setProperties操作
-                this.setProperties({
-                    'paramFormat': properties.paramFormat
-                });
+                // parseValue 需要用到 paramFormat
+                this.paramFormat = properties.paramFormat;
 
                 if (properties.value) {
                     properties.rawValue = this.parseValue(properties.value);
