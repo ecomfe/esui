@@ -60,9 +60,9 @@ define(
          * @protected
          * @override
          */
-        Tree.prototype.createMain = function () {
+      /*  Tree.prototype.createMain = function () {
             return document.createElement('div');
-        };
+        };*/
 
         /**
          * @cfg defaultProperties

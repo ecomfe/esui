@@ -59,7 +59,10 @@ define(
          * @override
          */
         Panel.prototype.createMain = function (options) {
-            return document.createElement(options.tagName || 'div');
+            if (!options.tagName) {
+                return Control.prototype.createMain.call(this);
+            }
+            return document.createElement(options.tagName);
         };
 
         /**
@@ -138,7 +141,7 @@ define(
         function normalizeStyleName(name) {
             if (name.indexOf('-') >= 0) {
                 name = name.replace(
-                    /-\w/g, 
+                    /-\w/g,
                     function (word) {
                         return word.charAt(1).toUpperCase();
                     }

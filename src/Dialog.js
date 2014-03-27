@@ -831,7 +831,7 @@ define(
              * 销毁控件
              */
             dispose: function () {
-                if (helper.isInStage(this, 'DISPOSED')) {
+                if (this.helper.isInStage('DISPOSED')) {
                     return;
                 }
                 this.hide();
@@ -881,20 +881,16 @@ define(
             ].join('');
 
 
-            //创建main
-            var main = document.createElement('div');
-            document.body.appendChild(main);
-
             properties.id = helper.getGUID(dialogPrefix);
             properties.closeButton = false;
             properties.mask = true;
-            properties.main = main;
             properties.alwaysTop = true;
 
             var type = properties.type;
             properties.type = null;
 
             var dialog = ui.create('Dialog', properties);
+            dialog.appendTo(document.body)
 
             dialog.setTitle(title);
             dialog.setContent(
@@ -965,21 +961,17 @@ define(
                 '<div class="ui-dialog-text">${content}</div>'
             ].join('');
 
-            //创建main
-            var main = document.createElement('div');
-            document.body.appendChild(main);
-
             var dialogId = helper.getGUID(dialogPrefix);
             properties.id = dialogId;
             properties.closeButton = false;
             properties.mask = true;
-            properties.main = main;
             properties.alwaysTop = true;
 
             var type = properties.type;
             properties.type = null;
 
             var dialog = ui.create('Dialog', properties);
+            dialog.appendTo(document.body)
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })

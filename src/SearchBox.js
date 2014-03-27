@@ -62,6 +62,7 @@ define(
                     properties.maxLength = this.main.maxLength;
                 }
             }
+            //TODO: custom elments 的兼容
             else {
                 if (!properties.text) {
                     properties.text = lib.getText(this.main);
@@ -88,7 +89,8 @@ define(
                 skin: 'search', 
                 childName: 'text',
                 height: this.height,
-                viewContext: this.viewContext
+                viewContext: this.viewContext,
+                placeholder: this.placeholder
             };
 
             if (lib.isInput(this.main)) {

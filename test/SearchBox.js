@@ -19,9 +19,9 @@ define(function (require) {
         });
 
         describe('created via script', function () {
-            it('should create a `div` element by default', function () {
+            it('should create a `esui-search-box` element by default', function () {
                 var box = new SearchBox();
-                expect(box.main).toBeElement('div');
+                expect(box.main).toBeElement('esui-search-box');
             });
         });
 
@@ -49,14 +49,13 @@ define(function (require) {
                     expect(document.getElementById('test-search-box-input')).toBeDefined();
                 });
 
-                it('should replace the `<input>` element with a `<div>`', function () {
+                it('should replace the `<input>` element with a `<esui-search-box>`', function () {
                     var div = document.createElement('div');
                     div.innerHTML = '<input />';
                     var main = div.firstChild;
                     var box = new SearchBox({ main: main });
                     box.appendTo(container);
-
-                    expect(box.main).toBeElement('div');
+                    expect(box.main).toBeElement('esui-search-box');
                 });
             });
 
@@ -103,7 +102,8 @@ define(function (require) {
                 expect(box.main.title).toBe('title');
                 expect(textbox.value).toBe('text');
                 expect(textbox.maxLength).toBe(10);
-                expect(textbox.placeholder).toBe('placeholder');
+                //原生不支持placeholder，需要用 getAttribute
+                expect(textbox.getAttribute('placeholder')).toBe('placeholder');
                 expect(textbox.style.width).toBe('100px');
                 expect(textbox.disabled).toBe(true);
                 expect(textbox.readOnly).toBe(true);
@@ -147,7 +147,6 @@ define(function (require) {
                 var textbox = getInputElement(box);
                 textbox.focus();
                 dispatchEvent(textbox, 'input', { keyCode: 13 });
-
                 expect(handler).toHaveBeenCalled();
             });
         });

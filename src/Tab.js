@@ -38,10 +38,10 @@ define(
          * @protected
          * @override
          */
-        Tab.prototype.createMain = function () {
+      /*  Tab.prototype.createMain = function () {
             return document.createElement('div');
         };
-
+*/
         /**
          * 初始化参数
          *

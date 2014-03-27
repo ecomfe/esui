@@ -30,10 +30,10 @@ define(function (require) {
         });
 
         describe('created via script', function () {
-            it('should create a `<div>` element as its main element', function () {
+            it('should create a `<esui-select>` element as its main element', function () {
                 var select = new Select();
                 select.appendTo(container);
-                expect(container.getElementsByTagName('div').length).toBeGreaterThan(0);
+                expect(container.getElementsByTagName('esui-select').length).toBeGreaterThan(0);
             });
         });
 
@@ -56,12 +56,12 @@ define(function (require) {
                 expect(select.getValue()).toBe('3');
             });
 
-            it('should remove the old `<select>` main element and create a `<div>` instead', function () {
+            it('should remove the old `<select>` main element and create a `<esui-select>` instead', function () {
                 container.innerHTML = '<select data-ui="type: Select; id: test;"></select>';
                 main.init(container);
                 var select = main.get('test');
                 expect(container.getElementsByTagName('select').length).toBe(0);
-                expect(select.get('main').nodeName.toLowerCase()).toBe('div');
+                expect(select.get('main').nodeName.toLowerCase()).toBe('esui-select');
             });
 
             it('should read `disabled` attribute from `<option>` element', function () {

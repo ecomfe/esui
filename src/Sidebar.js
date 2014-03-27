@@ -34,7 +34,10 @@ define(
          * @protected
          */
         Sidebar.prototype.createMain = function (options) {
-            return document.createElement(options.tagName || 'aside');
+            if (!options.tagName) {
+               return Control.prototype.createMain.call(this)
+            }
+            return document.createElement(options.tagName);
         };
 
         /**

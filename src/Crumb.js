@@ -52,9 +52,9 @@ define(
          * @protected
          * @override
          */
-        Crumb.prototype.createMain = function () {
+        /*Crumb.prototype.createMain = function () {
             return document.createElement('nav');
-        };
+        };*/
 
         /**
          * 初始化参数
