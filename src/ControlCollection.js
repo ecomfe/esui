@@ -67,6 +67,14 @@ define(
         ControlCollection.prototype.remove = function (control) {
             for (var i = 0; i < this.length; i++) {
                 if (this[i] === control) {
+                    //  ie8 splice下有问题，只会改变length,并设置元素索引，但不会删除元素
+                    //  var t = {0:'a', 1: 'b', 2:'c', 3:'d', length: 4};
+                    //  [].splice.call(t, 3, 1);
+                    //  alert(t.length)
+                    //  for(var k in t) {
+                    //     alert(k+ ':' + t[k])
+                    //  }
+
                     [].splice.call(this, i, 1);
                     return;
                 }

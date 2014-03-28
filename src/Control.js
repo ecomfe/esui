@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 控件基类模块
  * @author erik, otakustay
@@ -15,7 +15,7 @@ define(
 
         /**
          * 控件基类
-         * 
+         *
          * @constructor
          * @extends {mini-event.EventTarget}
          * @param {Object} [options] 初始化参数
@@ -155,12 +155,19 @@ define(
 
             /**
              * 创建控件主元素
-             * 
+             *
              * @return {HTMLElement}
              * @protected
              */
             createMain: function () {
-                return document.createElement('div');
+                if (!this.type) {
+                    return document.createElement('div');
+                }
+
+                var name = this.type.replace(/([A-Z])/g,function (match, char) {
+                    return '-' + char.toLowerCase();
+                }).slice(1);
+                return document.createElement(ui.getConfig('customElementPrefix') + '-' + name);
             },
 
             /**
@@ -196,13 +203,13 @@ define(
                     }
 
                     // 为控件主元素添加控件实例标识属性
-                    this.main.setAttribute( 
-                        ui.getConfig('instanceAttr'), 
-                        this.id 
+                    this.main.setAttribute(
+                        ui.getConfig('instanceAttr'),
+                        this.id
                     );
-                    this.main.setAttribute( 
-                        ui.getConfig('viewContextAttr'), 
-                        this.viewContext.id 
+                    this.main.setAttribute(
+                        ui.getConfig('viewContextAttr'),
+                        this.viewContext.id
                     );
 
                     this.helper.addPartClasses();
@@ -211,7 +218,7 @@ define(
                         this.states = typeof this.states === 'string'
                             ? this.states.split(' ')
                             : this.states;
-                            
+
                         u.each(this.states, this.addState, this);
                     }
                 }
@@ -222,7 +229,7 @@ define(
                 if (this.helper.isInStage('INITED')) {
                     // 切换控件所属生命周期阶段
                     this.helper.changeStage('RENDERED');
-                    
+
                     /**
                      * @event afterrender
                      *
@@ -250,7 +257,7 @@ define(
             repaint: function (changes, changesIndex) {
                 if (!changesIndex
                     || changesIndex.hasOwnProperty('disabled')
-                ) {
+                    ) {
                     var method = this.disabled ? 'addState' : 'removeState';
                     this[method]('disabled');
                 }
@@ -262,7 +269,7 @@ define(
 
             /**
              * 将控件添加到页面的某个元素中
-             * 
+             *
              * @param {HTMLElement | Control} wrap 控件要添加到的目标元素
              */
             appendTo: function (wrap) {
@@ -273,25 +280,25 @@ define(
                 wrap.appendChild(this.main);
                 if (this.helper.isInStage('NEW')
                     || this.helper.isInStage('INITED')
-                ) {
+                    ) {
                     this.render();
                 }
             },
 
             /**
              * 将控件添加到页面的某个元素之前
-             * 
+             *
              * @param {HTMLElement | Control} reference 控件要添加到之前的目标元素
              */
             insertBefore: function (reference) {
                 if (reference instanceof Control) {
                     reference = reference.main;
                 }
-                
+
                 reference.parentNode.insertBefore(this.main, reference);
                 if (this.helper.isInStage('NEW')
                     || this.helper.isInStage('INITED')
-                ) {
+                    ) {
                     this.render();
                 }
             },
@@ -325,7 +332,7 @@ define(
 
             /**
              * 获取控件的属性值
-             * 
+             *
              * @param {string} name 属性名
              * @return {Mixed}
              */
@@ -335,13 +342,13 @@ define(
                 if (typeof method == 'function') {
                     return method.call(this);
                 }
-                
+
                 return this[name];
             },
 
             /**
              * 设置控件的属性值
-             * 
+             *
              * @param {string} name 属性名
              * @param {Mixed} value 属性值
              */
@@ -373,7 +380,7 @@ define(
 
             /**
              * 批量设置控件的属性值
-             * 
+             *
              * @param {Object} properties 属性值集合
              * @return {Object} `properties`参数中确实变更了的那些属性
              */
@@ -416,13 +423,13 @@ define(
                 for (var key in properties) {
                     if (properties.hasOwnProperty(key)) {
                         var newValue = properties[key];
-                        var getterMethodName = 
+                        var getterMethodName =
                             'get' + lib.pascalize(key) + 'Property';
                         var oldValue = this[getterMethodName]
                             ? this[getterMethodName]()
                             : this[key];
 
-                        var isChanged = 
+                        var isChanged =
                             this.isPropertyChanged(key, newValue, oldValue);
                         if (isChanged) {
                             this[key] = newValue;
@@ -447,7 +454,7 @@ define(
 
             /**
              * 设置控件的所属视图环境
-             * 
+             *
              * @param {ViewContext} viewContext 视图环境
              */
             setViewContext: function (viewContext) {
@@ -477,9 +484,9 @@ define(
 
                 // 在主元素上加个属性，以便找到`ViewContext`
                 if (this.viewContext && this.helper.isInStage('RENDERED')) {
-                    this.main.setAttribute( 
-                        ui.getConfig('viewContextAttr'), 
-                        this.viewContext.id 
+                    this.main.setAttribute(
+                        ui.getConfig('viewContextAttr'),
+                        this.viewContext.id
                     );
                 }
             },
@@ -507,7 +514,7 @@ define(
 
             /**
              * 判断控件是否不可用
-             * 
+             *
              * @return {boolean}
              */
             isDisabled: function () {
@@ -537,7 +544,7 @@ define(
 
             /**
              * 判断控件是否不可见
-             * 
+             *
              * @return {boolean}
              */
             isHidden: function () {
@@ -552,7 +559,7 @@ define(
              *
              * 状态对应的属性名是指将状态名去除横线并以`camelCase`形式书写的名称，
              * 如`align-left`对应的属性名为`alignLeft`
-             * 
+             *
              * @param {string} state 状态名
              */
             addState: function (state) {
@@ -561,7 +568,7 @@ define(
                     this.helper.addStateClasses(state);
                     var properties = {};
                     var statePropertyName = state.replace(
-                        /-(\w)/, 
+                        /-(\w)/,
                         function (m, c) { return c.toUpperCase(); }
                     );
                     properties[statePropertyName] = true;
@@ -577,7 +584,7 @@ define(
              *
              * 状态对应的属性名是指将状态名去除横线并以`camelCase`形式书写的名称，
              * 如`align-left`对应的属性名为`alignLeft`
-             * 
+             *
              * @param {string} state 状态名
              */
             removeState: function (state) {
@@ -586,7 +593,7 @@ define(
                     this.helper.removeStateClasses(state);
                     var properties = {};
                     var statePropertyName = state.replace(
-                        /-(\w)/, 
+                        /-(\w)/,
                         function (m, c) { return c.toUpperCase(); }
                     );
                     properties[statePropertyName] = false;
@@ -599,20 +606,20 @@ define(
              *
              * 该方法根据当前状态调用{@link Control#addState}或
              * {@link Control#removeState}方法，因此同样会对状态对应的属性进行修改
-             * 
+             *
              * @param {string} state 状态名
              */
             toggleState: function (state) {
                 var methodName = this.hasState(state)
                     ? 'removeState'
                     : 'addState';
-                
+
                 this[methodName](state);
             },
 
             /**
              * 判断控件是否处于指定状态
-             * 
+             *
              * @param {string} state 状态名
              * @return {boolean}
              */
@@ -622,7 +629,7 @@ define(
 
             /**
              * 添加子控件
-             * 
+             *
              * @param {Control} control 子控件实例
              * @param {string} [childName] 子控件名
              */
@@ -649,7 +656,7 @@ define(
 
             /**
              * 移除子控件
-             * 
+             *
              * @param {Control} control 子控件实例
              */
             removeChild: function (control) {
@@ -687,7 +694,7 @@ define(
 
             /**
              * 获取子控件
-             * 
+             *
              * @param {string} childName 子控件名
              * @return {Control}
              */
@@ -697,7 +704,7 @@ define(
 
             /**
              * 获取子控件，无相关子控件则返回{@link SafeWrapper}
-             * 
+             *
              * @param {string} childName 子控件名
              * @return {Control}
              */
@@ -719,7 +726,7 @@ define(
 
             /**
              * 批量初始化子控件
-             * 
+             *
              * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
              * @param {Object} [options] 初始化的配置参数
              * @param {Object} [options.properties] 属性集合，通过id映射

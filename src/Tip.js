@@ -107,9 +107,9 @@ define(
          * @protected
          * @override
          */
-        Tip.prototype.createMain = function (options) {
+       /* Tip.prototype.createMain = function (options) {
             return document.createElement('aside');
-        };
+        };*/
 
         /**
          * 初始化DOM结构

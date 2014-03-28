@@ -17,14 +17,15 @@
             </div>
             <div style="overflow:hidden;zoom:1">
                 <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;"></div>
-                <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;"></input>
-            <div style="overflow:hidden;zoom:1">
+                <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;" />
+                <esui-calendar value="2014-03-25" name="test2" data-ui="id:test3;range:2011-02-02,2014-02-01;"></esui-calendar>
+            </div>
         </div>
         <script>
         require(
             [
                 'esui',
-                'esui/Button', 
+                'esui/Button',
                 'esui/Calendar',
                 'css!esui/css/main.css'
             ],

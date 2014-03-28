@@ -56,9 +56,9 @@ define(
          * @protected
          * @override
          */
-        TextBox.prototype.createMain = function () {
+      /*  TextBox.prototype.createMain = function () {
             return document.createElement('div');
-        };
+        };*/
 
         /**
          * 初始化参数
@@ -320,8 +320,8 @@ define(
                 this.inputId = this.helper.getId('input');
                 var html = this.mode === 'textarea'
                     ? '<textarea id="' + this.inputId + '"'
-                    : '<input type="' + this.mode + '" '
-                        + 'id="' + this.inputId + '"';
+                    : '<input type="' + this.mode + '" placeholder="'
+                        + this.placeholder + '" id="' + this.inputId + '"';
                 if (this.name) {
                     html += ' name="' + u.escape(this.name) + '"';
                 }

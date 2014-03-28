@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 无限区间日历
  * @author dbear
  */
@@ -82,7 +82,7 @@ define(
 
             var cancelBtn = calendar.getChild('cancelBtn');
             cancelBtn.on(
-                'click', 
+                'click',
                 u.bind(calendar.layer.hide, calendar.layer)
             );
             // 关闭按钮
@@ -135,7 +135,7 @@ define(
 
         /**
          * 控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -211,7 +211,7 @@ define(
             var range = calendar.range;
             var itemValue = shortItem.getValue.call(calendar);
 
-            // 得先格式化一下，去掉时间            
+            // 得先格式化一下，去掉时间
             if (startOfDay(range.begin) > startOfDay(range.begin)
                 || endOfDay(itemValue.end) < endOfDay(itemValue.end)) {
                 return true;
@@ -266,7 +266,7 @@ define(
 
                     html.push(
                         lib.format(
-                            tplItem, 
+                            tplItem,
                             {
                                 shortIndex: i,
                                 shortClass: shortClasses.join(' '),
@@ -488,7 +488,7 @@ define(
 
             var tar = e.target || e.srcElement;
             var classes = this.helper.getPartClasses('shortcut-item');
-            var disableClasses = 
+            var disableClasses =
                 this.helper.getPartClasses('shortcut-item-disabled');
 
             while (tar && tar != document.body) {
@@ -546,7 +546,7 @@ define(
                     'begin': begin,
                     'end': end
                 };
-            } 
+            }
             else if (end !== null) {
                 value = {
                     'begin': end,
@@ -555,7 +555,7 @@ define(
             }
 
             var event = me.fire('beforechange', { value: value });
-            
+
             // 阻止事件，则不继续运行
             if (event.isDefaultPrevented()) {
                 return false;
@@ -622,7 +622,7 @@ define(
             else if (strDates[1] === ''){
                 strDates[1] = '2046-11-04';
             }
-            
+
             return {
                 begin: m(strDates[0], 'YYYY-MM-DD').toDate(),
                 end: m(strDates[1], 'YYYY-MM-DD').toDate()
@@ -643,7 +643,7 @@ define(
             if (calendar.isEndless && dateText) {
                 return dateText;
             }
-            // 快捷日历 
+            // 快捷日历
             var shortcut = '';
             if (!calendar.curMiniName
                 && calendar.miniMode !== null
@@ -763,10 +763,10 @@ define(
                     name: '上个月',
                     value: 4,
                     getValue: function () {
-                        var begin = 
+                        var begin =
                             m(this.now).subtract('month', 1)
                             .startOf('month').toDate();
-                        var end = 
+                        var end =
                             m(this.now).startOf('month')
                             .subtract('day', 1).toDate();
                         return {
@@ -797,7 +797,7 @@ define(
 
         /**
          * 控件类型
-         * 
+         *
          * @type {string}
          */
         RangeCalendar.prototype.type = 'RangeCalendar';
@@ -923,19 +923,30 @@ define(
             var target = this.parent;
             while(target) {
                 this.helper.addDOMEvent(
-                    target.main, 
-                    'scroll', 
+                    target.main,
+                    'scroll',
                     u.bind(this.layer.hide, this.layer)
                 );
                 target = this.parent;
             }
 
             this.helper.addDOMEvent(
-                this.main, 
-                'mousedown', 
+                this.main,
+                'mousedown',
                 u.bind(this.layer.toggle, this.layer)
             );
         };
+
+        /**
+         * 创建控件主元素
+         *
+         * @param {Object=} options 构造函数传入的参数
+         * @return {HTMLElement}
+         * @override
+         */
+        /*createMain: function (options) {
+            return document.createElement('div');
+        },*/
 
         /**
          * 重新渲染视图
@@ -1009,8 +1020,8 @@ define(
 
         /**
          * 获取选取日期值
-         * 
-         * @return {Date} 
+         *
+         * @return {Date}
          */
         RangeCalendar.prototype.getRawValue = function () {
             return this.rawValue;
@@ -1019,7 +1030,7 @@ define(
 
         /**
          * 将value从原始格式转换成string
-         * 
+         *
          * @param {*} rawValue 原始值
          * @return {string}
          */
@@ -1029,7 +1040,7 @@ define(
 
         /**
          * 将string类型的value转换成原始格式
-         * 
+         *
          * @param {string} value 字符串值
          * @return {*}
          */

@@ -156,9 +156,9 @@ define(
          * @protected
          * @override
          */
-        Select.prototype.createMain = function (options) {
+       /* Select.prototype.createMain = function (options) {
             return document.createElement('div');
-        };
+        };*/
 
         /**
          * 根据`selectedIndex` < `value` < `rawValue`的顺序调整三个参数的值
