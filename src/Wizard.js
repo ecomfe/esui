@@ -79,6 +79,11 @@ define(
             }
 
             u.extend(properties, options);
+
+            if (typeof properties.activeIndex === 'string') {
+                properties.activeIndex = +properties.activeIndex;
+            }
+
             this.setProperties(properties);
         };
 
@@ -281,7 +286,7 @@ define(
 
         /**
          * 批量设置控件的属性值
-         * 
+         *
          * @param {Object} properties 属性值集合
          * @return {Object} `properties`参数中确实变更了的那些属性
          * @fires enter
@@ -308,7 +313,7 @@ define(
                 }
             }
 
-            var changes = 
+            var changes =
                 Control.prototype.setProperties.apply(this, arguments);
             if (changes.hasOwnProperty('steps')
                 || changes.hasOwnProperty('activeIndex')
@@ -335,8 +340,8 @@ define(
          * 进入下一步
          */
         Wizard.prototype.stepNext = function () {
-            var maxStep = this.finishText 
-                ? this.steps.length 
+            var maxStep = this.finishText
+                ? this.steps.length
                 : this.steps.length - 1;
             if (this.activeIndex < maxStep) {
                 this.set('activeIndex', this.activeIndex + 1);
