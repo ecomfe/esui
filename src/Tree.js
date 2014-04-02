@@ -924,8 +924,15 @@ define(
                 return;
             }
 
-            // FIXME: 现在一个节点有多个指示器元素，要改最后一个，同时要根据前面有几个指示器来计算`level`的值
-            var indicator = nodeElement.firstChild;
+            // 一个节点会对应多个`indicator`元素，在内容元素前面的全是`indicator`元素，
+            // 其`level`从`0`开始递增，但只需要修改最后一个的样式就行了
+            var children = lib.getChildren(nodeElement);
+            var level = 0;
+            while (!this.helper.isPart(children[level], 'item-content')) {
+                level++;
+            }
+
+            var indicator = children[level];
             indicator.innerHTML = INDICATOR_TEXT_MAPPING.busy;
             var classes = [].concat(
                 helper.getPartClasses(
