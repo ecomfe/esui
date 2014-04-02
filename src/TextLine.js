@@ -34,15 +34,18 @@ define(
          * @ignore
          */
         function getMainHTML(textLine) {
+            var textareaHTML = ''
+                + '<textarea wrap="off" '
+                + 'id="'+ textLine.helper.getId('text') + '"'
+                + '</textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                     '1', // 默认至少有一行
                 textLine.helper.getPartEndTag('num-line', 'div'),
                 textLine.helper.getPartBeginTag('text-container', 'div'),
-                    textLine.helper.getPartHTML('text', 'textarea'),
+                    textareaHTML,
                 textLine.helper.getPartEndTag('text-container', 'div')
             ];
-
             return html.join('');
         }
 

@@ -47,10 +47,6 @@ define(
             element.innerHTML = getLayerHtml(calendar);
             calendar.helper.initChildren(element);
 
-            // 渲染mini日历
-            var selectedIndex = getSelectedIndex(calendar, calendar.view);
-            paintMiniCal(calendar, selectedIndex);
-
             // 为mini日历绑定点击事件
             var shortcutDom = calendar.helper.getPart('shortcut');
             helper.addDOMEvent(
@@ -58,6 +54,11 @@ define(
             // 渲染开始结束日历
             paintCal(calendar, 'begin', calendar.view.begin, true);
             paintCal(calendar, 'end', calendar.view.end, true);
+
+
+            // 渲染mini日历
+            var selectedIndex = getSelectedIndex(calendar, calendar.view);
+            paintMiniCal(calendar, selectedIndex);
 
             // 绑定“无限结束”勾选事件
             var endlessCheck = calendar.getChild('endlessCheck');
@@ -119,10 +120,13 @@ define(
             calendar.view.begin = value.begin;
             calendar.view.end = value.end;
             calendar.value = calendar.convertToParam(value);
-            var selectedIndex = getSelectedIndex(calendar, calendar.view);
-            paintMiniCal(calendar, selectedIndex);
+
             paintCal(calendar, 'begin', value.begin);
             paintCal(calendar, 'end', value.end);
+
+            var selectedIndex = getSelectedIndex(calendar, calendar.view);
+            paintMiniCal(calendar, selectedIndex);
+
             var isEndless;
             if (!value.end) {
                 isEndless = true;
@@ -406,9 +410,6 @@ define(
                 return;
             }
 
-            // 更新样式
-            paintMiniCal(me, index);
-
             var value = shortcutItems[index].getValue.call(me);
             var begin = value.begin;
             var end = value.end;
@@ -416,6 +417,10 @@ define(
             calendar.view = { begin: begin, end: end };
             paintCal(calendar, 'begin', begin);
             paintCal(calendar, 'end', end);
+
+            // 更新样式
+            paintMiniCal(me, index);
+
         }
 
         /**
