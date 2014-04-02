@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -9,7 +8,6 @@
     <script src="asset/js/jasmine.js"></script>
     <script src="asset/js/jasmine-html.js"></script>
     <script src="matchers.js"></script>
-    <script src="../src/"></script>
     <script src="asset/js/esl.js"></script>
 </head>
 <body>
@@ -34,7 +32,7 @@
                 },
                 {
                     name: 'underscore',
-                    location: '../dep/underscore/1.4.4/src',
+                    location: '../dep/underscore/1.5.2/src',
                     main: 'underscore'
                 },
                 {
@@ -82,7 +80,7 @@
                 ? element.hasAttribute(name)
                 : (element.attributes[name] && element.attributes[name].specified);
         }
-        
+
         var suits = [
             'esui', 'controlHelper', 'ViewContext', 'Validity', 'Control', 'InputControl', 'SafeWrapper',
             'Label', 'Panel', 'Select', 'Form', 'Tab', 'Crumb', 'Wizard', 'TextBox', 'SearchBox',
