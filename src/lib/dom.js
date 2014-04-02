@@ -279,8 +279,8 @@ define(
                 return element.nextElementSibling;
             }
 
-            var node = element['nextSibling'];
-            for (; node; node = node['nextSibling']) {
+            var node = element.nextSibling;
+            for (; node; node = node.nextSibling) {
                 if (node.nodeType == 1) {
                     return node;
                 }

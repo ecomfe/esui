@@ -387,7 +387,7 @@ define(
 
             // value要特殊处理一下，可能是通过innerHTML设置的，
             if (lib.hasAttribute(input, 'value')) {
-                result['value'] = input.value;
+                result.value = input.value;
             }
 
             return u.defaults(options || {}, result);

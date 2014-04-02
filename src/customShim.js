@@ -6,7 +6,7 @@
  * @file ie8自定义元素 shim
  * @author exodia
  */
-~function () {
+(function () {
     var prefix = 'esui-';
     var elements = [
         'Calendar', 'Crumb', 'Dialog', 'Label', 'Month-View', 'Pager', 'Panel', 'Range-Calendar',
@@ -17,4 +17,4 @@
     for (var i = elements.length - 1; i > -1; --i) {
         document.createElement(prefix + elements[i]);
     }
-}()
+}());

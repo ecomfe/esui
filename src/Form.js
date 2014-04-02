@@ -75,7 +75,7 @@ define(
          */
         InputCollection.prototype.getData = function () {
             return getData(
-                this, 
+                this,
                 function (control) { return control.getRawValue(); }
             );
         };
@@ -87,7 +87,7 @@ define(
          */
         InputCollection.prototype.getDataAsString = function () {
             var store = getData(
-                this, 
+                this,
                 function (control) {
                     var value = control.getValue();
                     return encodeURIComponent(value);
@@ -115,7 +115,7 @@ define(
             var data = this.getData();
             var values = data[name];
             var valueString = values
-                ? (typeof value === 'string' ? value : value.join(','))
+                ? (typeof values === 'string' ? values : values.join(','))
                 : '';
             return valueString;
         };
@@ -169,7 +169,7 @@ define(
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
                 if (control.getCategory() === 'check') {
-                    var shouldBeChecked = 
+                    var shouldBeChecked =
                         map.hasOwnProperty(control.getValue());
                     control.setChecked(shouldBeChecked);
                 }
@@ -206,7 +206,7 @@ define(
          * @override
          */
         Form.prototype.type = 'Form';
-        
+
         /**
          * 验证并提交表单，根据{@link Form#autoValidate}属性有不同行为
          *
@@ -412,9 +412,9 @@ define(
 
         /**
          * 根据名称及可选的类型获取输入控件
-         * 
+         *
          * 这个方法返回符合以下要求的控件：
-         * 
+         *
          * - 是{@link InputControl}
          * - `name`和`type`符合要求
          * - 主元素在当前控件的主元素下
@@ -522,14 +522,14 @@ define(
                 shouldAttachSubmit = true;
             }
 
-            if (changesIndex 
+            if (changesIndex
                 && changesIndex.hasOwnProperty('submitButton')
             ) {
                 // 如果是运行期个性`submitButton`，要先把原来的`click`事件解除
                 var record = changesIndex.submitButton;
                 if (record.oldValue) {
                     for (var i = 0; i < record.oldValue.length; i++) {
-                        var oldButton = 
+                        var oldButton =
                             this.viewContext.get(record.oldValue[i]);
                         if (oldButton) {
                             oldButton.un('click', this.validateAndSubmit, this);

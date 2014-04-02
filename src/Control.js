@@ -164,10 +164,11 @@ define(
                     return document.createElement('div');
                 }
 
-                var name = this.type.replace(/([A-Z])/g,function (match, char) {
-                    return '-' + char.toLowerCase();
-                }).slice(1);
-                return document.createElement(ui.getConfig('customElementPrefix') + '-' + name);
+                var name = this.type.replace(
+                    /([A-Z])/g,
+                    function (match, ch) { return '-' + ch.toLowerCase(); }
+                );
+                return document.createElement(ui.getConfig('customElementPrefix') + '-' + name.slice(1));
             },
 
             /**

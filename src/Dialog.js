@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 弹出框
  * @author dbear
  */
@@ -10,7 +10,7 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
-        
+
         // 仅在调试的时候打开
         //require('css!./css/Button.css');
         //require('css!./css/Dialog.css');
@@ -24,7 +24,7 @@ define(
 
         /**
          * 弹出框控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -34,7 +34,7 @@ define(
 
         /**
          * 渲染控件前重绘控件
-         * 
+         *
          */
         function parseMain(options) {
             var main = options.main;
@@ -62,7 +62,7 @@ define(
 
         /**
          * 构建对话框标题栏
-         * 
+         *
          * @param {ui.Dialog} 控件对象
          * @param {HTMLElement} mainDOM head主元素
          * @inner
@@ -71,7 +71,7 @@ define(
             var title = 'title';
             var close = 'close-icon';
 
-            var closeTpl = 
+            var closeTpl =
                 '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
             var closeIcon = '';
 
@@ -367,7 +367,7 @@ define(
 
         /**
          * 遮盖层初始化
-         * 
+         *
          * @param {string} maskId 遮盖层domId
          * @inner
          */
@@ -404,7 +404,7 @@ define(
         Dialog.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'Dialog',
@@ -607,7 +607,7 @@ define(
                         var data = {
                             'class': bodyClass.join(' '),
                             'id': bodyId,
-                            'content': value 
+                            'content': value
                         };
                         body.setContent(
                             lib.format(bfTpl, data)
@@ -616,7 +616,7 @@ define(
                 },
                 {
                     name: 'foot',
-                    paint: function (dialog, value) { 
+                    paint: function (dialog, value) {
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
@@ -636,7 +636,7 @@ define(
                             var data = {
                                 'class': footClass.join(' '),
                                 'id': footId,
-                                'content': value 
+                                'content': value
                             };
                             if (!foot) {
                                 foot = dialog.createBF('foot');
@@ -665,9 +665,9 @@ define(
 
             /**
              * 获取对话框主体的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getBody: function () {
                 return this.getChild('body');
@@ -676,9 +676,9 @@ define(
 
             /**
              * 获取对话框头部的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getHead: function () {
                 return this.getChild('head');
@@ -687,9 +687,9 @@ define(
 
             /**
              * 获取对话框腿部的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getFoot: function () {
                 return this.getChild('foot');
@@ -698,7 +698,7 @@ define(
 
             /**
              * 显示对话框
-             * 
+             *
              */
             show: function () {
                 var mask = this.mask;
@@ -753,7 +753,7 @@ define(
 
             /**
              * 隐藏对话框
-             * 
+             *
              */
             hide: function () {
                 if (this.isShow) {
@@ -763,7 +763,7 @@ define(
                     var mask = this.mask;
 
                     this.addState('hidden');
- 
+
                     if (mask) {
                         hideMask(this);
                     }
@@ -776,7 +776,7 @@ define(
 
             /**
              * 设置标题文字
-             * 
+             *
              * @param {string} html 要设置的文字，支持html
              */
             setTitle: function (html) {
@@ -853,7 +853,7 @@ define(
 
             /**
              * 获取按钮点击的处理函数
-             * 
+             *
              * @private
              * @param {ui.Dialog} 控件对象
              * @param {string} 事件类型
@@ -890,7 +890,7 @@ define(
             properties.type = null;
 
             var dialog = ui.create('Dialog', properties);
-            dialog.appendTo(document.body)
+            dialog.appendTo(document.body);
 
             dialog.setTitle(title);
             dialog.setContent(
@@ -933,7 +933,7 @@ define(
 
             /**
              * 获取按钮点击的处理函数
-             * 
+             *
              * @private
              * @param {ui.Dialog} 控件对象
              * @param {string} 事件类型
@@ -971,19 +971,19 @@ define(
             properties.type = null;
 
             var dialog = ui.create('Dialog', properties);
-            dialog.appendTo(document.body)
+            dialog.appendTo(document.body);
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(tpl, { type: type, content: content })
             );
 
             dialog.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:' 
+                + '<div data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
                 + Dialog.OK_TEXT
                 + '</div>'
             );
-            
+
             dialog.show();
             var okBtn = dialog.getFoot().getChild('okBtn');
             okBtn.on(
@@ -1001,7 +1001,7 @@ define(
             }
 
             return dialog;
-        }; 
+        };
 
         lib.inherits(Dialog, Control);
         ui.register(Dialog);

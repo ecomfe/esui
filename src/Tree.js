@@ -118,7 +118,7 @@ define(
                  */
                 selectedNodeIndex: {}
             };
-            var properties = 
+            var properties =
                 lib.extend(defaults, Tree.defaultProperties, options);
             if (properties.allowUnselectNode == null) {
                 // 默认单选模式下不允许取消选择，多选则可以取消
@@ -128,7 +128,7 @@ define(
                  * 指定是否允许将选中的节点取消选择，仅影响通过鼠标点击的操作，
                  * 对{@link Tree#unselectNode}没有影响
                  */
-                properties.allowUnselectNode = 
+                properties.allowUnselectNode =
                     (properties.selectMode !== 'single');
             }
             this.setProperties(properties);
@@ -179,7 +179,7 @@ define(
          */
         function getIndicatorHTML(tree, node, type, currentLevel, sourceLevel) {
             var diff = sourceLevel - currentLevel;
-            var diffType = diff === 0 
+            var diffType = diff === 0
                 ? 'current'
                 : (diff === 1 ? 'previous' : 'far-previous');
             var classes = [].concat(
@@ -197,7 +197,7 @@ define(
                 : '第' + currentLevel + '级';
             var html = '<span ';
             if (diff === 0) {
-                html += 
+                html +=
                     'id="' + helper.getId(tree, 'indicator-' + node.id) + '" ';
             }
             html += 'class="' + classes.join(' ') + '">' + text + '</span>';
@@ -224,9 +224,9 @@ define(
             }
             wrapperClasses = wrapperClasses.join(' ');
 
-            var wrapperId = 
+            var wrapperId =
                 helper.getId(tree, 'content-wrapper-' + node.id);
-            var html = 
+            var html =
                 '<div id="' + wrapperId + '" class="' + wrapperClasses + '">';
 
             var indicatorType = tree.strategy.isLeafNode(node)
@@ -253,9 +253,9 @@ define(
                 for (var i = 0; i < node.children.length; i++) {
                     var child = node.children[i];
                     html += getNodeHTML(
-                        tree, 
-                        child, 
-                        level + 1, 
+                        tree,
+                        child,
+                        level + 1,
                         tree.strategy.shouldExpand(child)
                     );
                 }
@@ -326,25 +326,25 @@ define(
         function toggleAndSelectNode(e) {
             // 对于树控件来说，只有点在`.content-wrapper`上才是有效的，
             // 而`.content-wrapper`下只有2类元素：
-            // 
+            //
             // - 提示元素，有`ui-tree-node-indicator`这个class，且没有子元素
             // - 内容元素，有`ui-tree-item-content`这个class，内容未知
-            // 
+            //
             // 因此，首先判断是否点在提示元素上，如果不是则向上找看是不是能到wrapper
             var target = e.target;
 
 
-            var indicatorClass = 
+            var indicatorClass =
                 helper.getPartClasses(this, 'node-indicator')[0];
             var isValidToggleEvent = lib.hasClass(target, indicatorClass);
             // 点在`indicator`上时不触发选中逻辑，只负责展开/收起
             var isValidSelectEvent = !isValidToggleEvent;
 
             if (!isValidToggleEvent) {
-                var wrapperClass = 
+                var wrapperClass =
                     helper.getPartClasses(this, 'content-wrapper')[0];
-                while (target 
-                    && target !== this.main 
+                while (target
+                    && target !== this.main
                     && !lib.hasClass(target, wrapperClass)
                 ) {
                     target = target.parentNode;
@@ -361,7 +361,7 @@ define(
             }
 
             // 往上找到树的节点，有`data-id`等有用的属性
-            while (target 
+            while (target
                 && target !== this.main
                 && !lib.hasAttribute(target, 'data-id')
             ) {
@@ -440,7 +440,7 @@ define(
                     tree.selectedNodes = [];
                     tree.selectedNodeIndex = {};
                     tree.nodeIndex = buildNodeIndex(datasource);
-                    tree.main.innerHTML = 
+                    tree.main.innerHTML =
                         getNodeHTML(tree, datasource, 0, true, 'div');
 
                 }
@@ -624,12 +624,12 @@ define(
             // 只能选一个的话，新选中的肯定在后面，因此把第1个删掉就行
             if (this.selectMode === 'single' && this.selectedNodes.length > 1) {
                 unselectNode(
-                    this, 
-                    this.selectedNodes[0].id, 
+                    this,
+                    this.selectedNodes[0].id,
                     { force: true, silent: true, modifyDOM: true }
                 );
             }
-            var nodeElement = 
+            var nodeElement =
                 lib.g(helper.getId(this, 'content-wrapper-' + id));
             helper.addPartClasses(
                 this, 'content-wrapper-selected', nodeElement);
@@ -647,7 +647,7 @@ define(
                  * @event selectionchange
                  *
                  * 选中节点变化时触发
-                 * 
+                 *
                  * 始终在{@link Tree#selectnode}
                  * 和{@link Tree#unselectnode}事件之后触发
                  */
@@ -663,8 +663,8 @@ define(
          */
         Tree.prototype.unselectNode = function (id) {
             unselectNode(
-                this, 
-                id, 
+                this,
+                id,
                 { force: true, silent: false, modifyDOM: true }
             );
         };
@@ -688,7 +688,7 @@ define(
 
             var level = +lib.getAttribute(nodeElement, 'data-level');
             // 更新过数据或者原本没有子树的情况下重绘
-            if (children 
+            if (children
                 || nodeElement.lastChild.nodeName.toLowerCase() !== 'ul'
             ) {
                 var node = this.nodeIndex[id];
@@ -700,8 +700,8 @@ define(
                     if (node.children) {
                         for (var i = 0; i < node.children.length; i++) {
                             unselectNode(
-                                this, 
-                                node.children[i].id, 
+                                this,
+                                node.children[i].id,
                                 { force: true, silent: true, modifyDOM: false }
                             );
                             this.nodeIndex[node.children[i].id] = undefined;
@@ -713,7 +713,7 @@ define(
                 }
 
                 // 为了效率，直接刷掉原来的HTML
-                nodeElement.innerHTML = 
+                nodeElement.innerHTML =
                     getNodeContentHTML(this, node, level, true);
             }
             else {
@@ -767,8 +767,8 @@ define(
                     if (node.children) {
                         for (var i = 0; i < node.children.length; i++) {
                             unselectNode(
-                                this, 
-                                node.children[i].id, 
+                                this,
+                                node.children[i].id,
                                 { force: true, silent: false, modifyDOM: false }
                             );
                         }
@@ -862,11 +862,11 @@ define(
 
         /**
          * 触发展开或收起节点的策略
-         * 
+         *
          * 与{@link Tree#toggleNode}不同，该方法用来根据节点的状态，
          * 触发{@link Tree#expand}或{@link Tree#collapse}事件，
          * 以便使用{@link TreeStrategy}进行具体的策略
-         * 
+         *
          * 在关联的{@link TreeStrategy}以外的逻辑，推荐使用此方法，
          * 而不是{@link Tree#toggleNode}
          *
@@ -924,6 +924,7 @@ define(
                 return;
             }
 
+            // FIXME: 现在一个节点有多个指示器元素，要改最后一个，同时要根据前面有几个指示器来计算`level`的值
             var indicator = nodeElement.firstChild;
             indicator.innerHTML = INDICATOR_TEXT_MAPPING.busy;
             var classes = [].concat(

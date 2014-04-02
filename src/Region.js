@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 地域选择
  * @author dbear
  */
@@ -17,7 +17,7 @@ define(
 
         /**
          * 地域控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -264,7 +264,7 @@ define(
                 ' data-optionId="${itemValue}" data-level="${level}">',
                 '<label for="${itemId}">${text}</label>',
             '</div>'].join('');
-    
+
         // 国家、地区外包
         var tplBoxWrapper = [
             '<div class="${boxClass}">',
@@ -283,7 +283,7 @@ define(
         var tplProvinceWrapper = '<div class="${classes}">${content}</div>';
 
         var tempIdx = 0;
-   
+
         /**
          * 创建不同层级的选项html
          *
@@ -301,7 +301,7 @@ define(
              * height: 5px
              * width: 25px;
              *
-             */      
+             */
             item.level = level;
             var subItemHtml = [];
             var children = item.children;
@@ -366,7 +366,7 @@ define(
                             itemId: helper.getId(region, 'item-' + item.id),
                             level: item.level,
                             text: item.text,
-                            contentClass: 
+                            contentClass:
                                 helper.getPartClasses(
                                     region, 'province-box'
                                 ).join(' '),
@@ -411,7 +411,7 @@ define(
                     return lib.format(
                         tplProvinceWrapper,
                         {
-                            classes: 
+                            classes:
                                 helper.getPartClasses(
                                     region, 'province-item'
                                 ).join(' '),
@@ -455,22 +455,22 @@ define(
                     itemHtml.push(
                         getLevelHtml(region, item.children[i], item.level + 1)
                     );
-                    
+
                     if (i % 2 === 0
                         && item.children[i].text.length > leftLength) {
                         leftLength = item.children[i].text.length;
                     }
-                    
+
                     if (i % 2 === 1
                         && item.children[i].text.length > rightLength) {
                         rightLength = item.children[i].text.length;
                     }
                 }
-                
+
                 if (itemHtml.length % 2 === 1) {
                     itemHtml.push('');
                 }
-                
+
                 var html = [
                     '<table border="0" cellspacing="0" cellpadding="0"',
                     ' width="',
@@ -490,12 +490,12 @@ define(
                 for (var j = 0; j < itemHtml.length; j += 2) {
                     html += lib.format(
                         tpl, {
-                            firstItem: itemHtml[j], 
+                            firstItem: itemHtml[j],
                             secondItem: itemHtml[j + 1]
                         }
                     );
                 }
-                
+
                 return html + '</table>';
             }
             return '';
@@ -551,7 +551,7 @@ define(
                 else if (tar.nodeName.toLowerCase() === 'label') {
                     var checkId = lib.getAttribute(tar, 'for');
                     tar = lib.g(checkId);
-                    hit = true; 
+                    hit = true;
                 }
                 if (hit) {
                     optionClick(this, tar);
@@ -784,7 +784,7 @@ define(
          * @param {Region} region Region控件实例
          * @param {boolean} disabled 是否不可用
          */
-        function changeToDisabled(region, disabled) { 
+        function changeToDisabled(region, disabled) {
             if (region.mode === 'multi') {
                 // 遍历素有checkbox，设置为disabled
                 var elements =
@@ -834,11 +834,11 @@ define(
                 ids.push(node.id);
             }
             else {
-                u.each(node.children, function (child) { 
+                u.each(node.children, function (child) {
                     // 带状态选择信息的节点在index下
-                    var indexChild = dataIndex[child['id']];
+                    var indexChild = dataIndex[child.id];
                     ids.push.apply(
-                        ids, 
+                        ids,
                         getPureSelected(region, indexChild)
                     );
                 });
@@ -849,7 +849,7 @@ define(
         Region.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'Region',
@@ -948,7 +948,7 @@ define(
                             });
                         }
                     }
-                }, 
+                },
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (region, disabled, readOnly) {
@@ -957,16 +957,16 @@ define(
                         if (disabled || readOnly) {
                             editable = false;
                         }
-                        
+
                         changeToDisabled(region, !editable);
-                        // 只读状态下要开放input的读属性    
+                        // 只读状态下要开放input的读属性
                         if (!disabled && readOnly) {
                             var input =
                                 lib.g(helper.getId(region, 'param-value'));
                             input.disabled = false;
                         }
                     }
-                    
+
                 }
             ),
 
@@ -981,8 +981,8 @@ define(
 
             /**
              * 获取选中的地域，数组格式。
-             * 
-             * @return {Array} 
+             *
+             * @return {Array}
              */
             getRawValue: function () {
                 if (this.mode == 'single') {
@@ -1005,7 +1005,7 @@ define(
 
             /**
              * 将value从原始格式转换成string
-             * 
+             *
              * @param {*} rawValue 原始值
              * @return {string}
              */
@@ -1020,7 +1020,7 @@ define(
 
             /**
              * 将string类型的value转换成原始格式
-             * 
+             *
              * @param {string} value 字符串值
              * @return {*}
              */
