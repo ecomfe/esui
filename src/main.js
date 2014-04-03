@@ -115,9 +115,7 @@ define(
             // 不过这么做会频繁分配字符串对象，所以优化了一下保证`source`不变
             while (cursor < source.length) {
                 // 找key，找到第1个冒号
-                while (cursor < source.length
-                    && source.charAt(cursor) !== ':'
-                    ) {
+                while (cursor < source.length && source.charAt(cursor) !== ':') {
                     cursor++;
                 }
                 // 如果找到尾也没找到冒号，那就是最后有一段非键值对的字符串，丢掉
@@ -434,10 +432,13 @@ define(
                     var nodeName = element.nodeName.toLowerCase();
                     var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
                     if (esuiPrefixIndex === 0) {
-                        controlOptions.type = type =
-                            nodeName.replace(/-(\S)/g,function (match, char) {
-                                return char.toUpperCase();
-                            }).slice(esuiPrefixIndex + customElementPrefix.length);
+                        var typeFromCustomElement = nodeName.replace(
+                            /-(\S)/g,
+                            function (match, ch) { return ch.toUpperCase(); }
+                        );
+                        typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
+                        controlOptions.type = typeFromCustomElement;
+                        type = typeFromCustomElement;
                     }
                 }
                 if (type) {

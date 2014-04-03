@@ -47,7 +47,7 @@ define(
          * @override
          */
         Validity.prototype.initOptions = function (options) {
-            var properties = 
+            var properties =
                 u.extend({}, Validity.defaultProperties, options);
             Control.prototype.initOptions.call(this, properties);
         };
@@ -62,7 +62,7 @@ define(
         function getClasses(label, state) {
             var target = label.target;
 
-            targetHelper = null;
+            var targetHelper = null;
             if (target || label.targetType) {
                 var targetContext = {
                     type: label.targetType || target.type,
@@ -221,7 +221,7 @@ define(
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
-            
+
             if (this.target) {
                 this.target.validityLabel = null;
                 this.target = null;

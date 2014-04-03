@@ -520,7 +520,7 @@ define(
             if (!date) {
                 return;
             }
-            this['view'][type] = date;
+            this.view[type] = date;
             // 更新shortcut
             var selectedIndex = getSelectedIndex(this, this.view);
             paintMiniCal(this, selectedIndex);
@@ -729,15 +729,15 @@ define(
                         var now = this.now;
                         var begin = new Date(now.getTime());
                         var end = new Date(now.getTime());
-                        var _wd = 1; //周一为第一天;
+                        var startOfWeek = 1; // 周一为第一天;
 
-                        if (begin.getDay() < _wd % 7) {
+                        if (begin.getDay() < startOfWeek % 7) {
                             begin.setDate(
-                                begin.getDate() - 14 + _wd - begin.getDay()
+                                begin.getDate() - 14 + startOfWeek - begin.getDay()
                             );
                         } else {
                             begin.setDate(
-                                begin.getDate() - 7 - begin.getDay() + _wd % 7
+                                begin.getDate() - 7 - begin.getDay() + startOfWeek % 7
                             );
                         }
                         begin.setHours(0, 0, 0, 0);
@@ -992,7 +992,7 @@ define(
                 name: ['disabled', 'hidden', 'readOnly'],
                 paint: function (calendar, disabled, hidden, readOnly) {
                     if (disabled || hidden || readOnly) {
-                        hideLayer(calendar);
+                        calendar.layer.hide();
                     }
                 }
             },

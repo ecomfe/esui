@@ -14,7 +14,7 @@ require.config({
         },
         {
             name: 'underscore',
-            location: '../dep/underscore/1.4.4/src',
+            location: '../dep/underscore/1.5.2/src',
             main: 'underscore'
         },
         {

@@ -78,7 +78,7 @@ define(
             // 如果子元素中有一个`[data-role="navigator"]`的元素，
             // 则应该从元素中去找出对应的标签页配置，然后这个元素就不要了，
             // 控件会自动生成正确的`navigator`格式并放在`main`的最前面
-            // 
+            //
             // 而如果有子元素且没有`[data-role="navigator"]`元素，
             // 同时构造控件的时候没给`tabs`选项，
             // 则认为每个子元素是一个标签页，从`title`属性中找出对应的`title`
@@ -125,6 +125,11 @@ define(
                     properties.tabs = tabs;
                 }
             }
+
+            if (typeof properties.activeIndex === 'string') {
+                properties.activeIndex = +properties.activeIndex;
+            }
+
             this.setProperties(properties);
         };
 
@@ -226,7 +231,7 @@ define(
          */
         function createTabElement(tab, config, isActive, allowClose) {
             var element = document.createElement('li');
-            
+
             tab.helper.addPartClasses('item', element);
 
             if (isActive) {
@@ -236,7 +241,7 @@ define(
             element.innerHTML = tab.getContentHTML(config, allowClose);
 
             return element;
-        } 
+        }
 
         /**
          * 获取导航条的HTML
@@ -254,7 +259,7 @@ define(
             for (var i = 0; i < tab.tabs.length; i++) {
                 var config = tab.tabs[i];
                 var isActive = tab.activeIndex === i;
-                var tabElement = 
+                var tabElement =
                     createTabElement(tab, config, isActive, tab.allowClose);
                 navigator.appendChild(tabElement);
             }
@@ -336,7 +341,7 @@ define(
                 var navigator = tab.helper.getPart('navigator');
                 var children = lib.getChildren(navigator);
                 var tabElement = children[i];
-                var methodName = 
+                var methodName =
                     i === index ? 'addPartClasses' : 'removePartClasses';
                 tab.helper[methodName]('item-active', tabElement);
             }
@@ -362,7 +367,7 @@ define(
          *
          * @method
          * @protected
-         * @override       
+         * @override
          */
         Tab.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
@@ -446,7 +451,7 @@ define(
 
             this.tabs.splice(index, 0, config);
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
-            var tabElement = 
+            var tabElement =
                 createTabElement(this, config, false, this.allowClose);
             var navigator = this.helper.getPart('navigator');
             var children = lib.getChildren(navigator);
@@ -527,7 +532,7 @@ define(
                 else if (index === this.activeIndex) {
                     // 由于可能`activeIndex`没变，因此不能走`setProperties`流程
                     this.activeIndex = Math.min(
-                        this.activeIndex, 
+                        this.activeIndex,
                         this.tabs.length - 1
                     );
                     activateTab(this, this.activeIndex);

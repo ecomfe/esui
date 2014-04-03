@@ -126,7 +126,7 @@ define(
                 element.style.top = (offset.top - layerHeight) + 'px';
             }
         };
-        
+
         /**
          * 下拉选择控件
          *
@@ -206,7 +206,7 @@ define(
             // 有可能更换过`datasource`，或者给了一个不存在的`value`，
             // 则会导致`selectedIndex`无法同步，
             // 因此如果`selectedIndex`在数组范围外，要根据`emptyText`来决定修正
-            if (context.selectedIndex < 0 
+            if (context.selectedIndex < 0
                 || context.selectedIndex >= context.datasource.length
             ) {
                 if (context.emptyText) {
@@ -263,7 +263,7 @@ define(
                 for (var i = 0, length = elements.length; i < length; i++) {
                     var item = elements[i];
                     var dataItem = {
-                        name: item.name || item.text, 
+                        name: item.name || item.text,
                         value: item.value
                     };
                     if (item.disabled) {
@@ -283,8 +283,12 @@ define(
                         properties.selectedIndex = item.value ? i : 0;
                     }
                 }
-                
+
                 this.helper.extractOptionsFromInput(this.main, properties);
+            }
+
+            if (typeof properties.selectedIndex === 'string') {
+                properties.selectedIndex = +properties.selectedIndex;
             }
 
             this.setProperties(properties);
@@ -358,12 +362,12 @@ define(
             }
 
             this.main.tabIndex = 0;
-            
+
             this.main.innerHTML = this.helper.getPartHTML('text', 'span');
 
             this.helper.addDOMEvent(
-                this.main, 
-                'click', 
+                this.main,
+                'click',
                 u.bind(this.layer.toggle, this.layer)
             );
         };
@@ -398,7 +402,7 @@ define(
             if (this.selectedIndex < 0) {
                 return null;
             }
-            
+
             var item = this.datasource[this.selectedIndex];
 
             return item ? item.value : null;
@@ -541,7 +545,7 @@ define(
             }
 
             adjustValueProperties(properties);
-            var changes = 
+            var changes =
                 InputControl.prototype.setProperties.apply(this, arguments);
 
             if (changes.hasOwnProperty('selectedIndex')) {
@@ -567,7 +571,7 @@ define(
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
-            
+
             if (this.layer) {
                 this.layer.dispose();
                 this.layer = null;

@@ -178,8 +178,8 @@ define(
         function initBody(schedule) {
             lib.g(getId(schedule, 'body')).innerHTML = ''
                 + getBodyTimeHtml(schedule) // 拼接html: 头部time列表
-                + getBodyDayHtml(schedule) // 拼接html: 星期列表 
-                + getBodyItemHtml(schedule); // 拼接html: 时间item列表 
+                + getBodyDayHtml(schedule) // 拼接html: 星期列表
+                + getBodyItemHtml(schedule); // 拼接html: 时间item列表
         }
 
         /**
@@ -285,7 +285,7 @@ define(
                 );
 
                 //24小时
-                for (j = 0; j < 24; j++) {
+                for (var j = 0; j < 24; j++) {
 
                     var itemId = getId(me, 'time_' + i + '_' + j);
 
@@ -759,11 +759,9 @@ define(
                 return;
             }
 
-            element = target;
-
             //移除hover效果
             lib.removeClasses(
-                element,
+                target,
                 helper.getPartClasses(this, 'time-hover')
             );
 
@@ -959,7 +957,6 @@ define(
 
                 }
             }
-            timebodyCellRange = null;
 
             me.setRawValue(rawValueCopy);
         }
@@ -1091,7 +1088,7 @@ define(
                 target.setCapture();
             }
             else if (window.captureEvents) {
-                window.captureEvents(Event.MOUSEMOVE|Event.MOUSEUP);
+                window.captureEvents(window.Event.MOUSEMOVE | window.Event.MOUSEUP);
             }
 
             //清除鼠标已选择元素
@@ -1116,8 +1113,7 @@ define(
                 target.releaseCapture();
             }
             else if (window.releaseEvents) {
-
-                window.releaseEvents(Event.MOUSEMOVE|Event.MOUSEUP);
+                window.releaseEvents(window.Event.MOUSEMOVE | window.Event.MOUSEUP);
             }
 
             lib.un(doc, 'selectstart', dragUnSelect);
@@ -1295,7 +1291,7 @@ define(
                 var changes = InputControl.prototype.setProperties.call(
                     this, properties);
 
-                var rawValueObj = changes['rawValue'];
+                var rawValueObj = changes.rawValue;
 
                 if (rawValueObj
                     && (this.stringifyValue(rawValueObj.oldValue)

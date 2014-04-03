@@ -109,7 +109,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.textNodeTemplate = 
+        Crumb.prototype.textNodeTemplate =
             '<span class="${classes}">${text}</span>';
 
         /**
@@ -122,7 +122,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.linkNodeTemplate = 
+        Crumb.prototype.linkNodeTemplate =
             '<a class="${classes}" href="${href}">${text}</a>';
 
         /**
@@ -135,7 +135,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.separatorTemplate = 
+        Crumb.prototype.separatorTemplate =
             '<span class="${classes}">${text}</span>';
 
         /**
@@ -158,7 +158,6 @@ define(
                     classes,
                     this.helper.getPartClasses('node-last')
                 );
-                separator = '';
             }
 
             var template = node.href
