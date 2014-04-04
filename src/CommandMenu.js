@@ -69,10 +69,7 @@ define(
         CommandMenuLayer.prototype.nodeName = 'ul';
 
         CommandMenuLayer.prototype.dock = {
-            top: 'bottom',
-            left: 'left',
-            right: 'right',
-            spaceDetection: 'vertical'
+            strictWidth: true
         };
 
         CommandMenuLayer.prototype.render = function (element) {
@@ -156,8 +153,8 @@ define(
          */
         CommandMenu.prototype.initStructure = function () {
             this.helper.addDOMEvent(
-                this.main, 
-                'click', 
+                this.main,
+                'click',
                 u.bind(this.layer.toggle, this.layer)
             );
         };
@@ -220,7 +217,7 @@ define(
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
-                
+
             if (this.layer) {
                 this.layer.dispose();
                 this.layer = null;
