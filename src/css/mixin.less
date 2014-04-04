@@ -97,28 +97,29 @@
     @is-url-exp: ~`/^url\([^()]+\)$/i.test("@{url}") ? 'true' : 'false'`;
 
     .background(@is-url-exp) when not (@is-url-exp) {
-        background: 
-            url(@url) @repeat-type scroll @s-x @s-y @b-color;
+        background: url(@url) @repeat-type scroll @s-x @s-y @b-color;
         // Safari 4-5, Chrome 1-9
         background: 
-            url(@url) @repeat-type scroll @s-x @s-y,
+            url(@url),
             -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
         // Safari 5.1, Chrome 10+
         background:
-            url(@url) @repeat-type scroll @s-x @s-y,
+            url(@url),
             -webkit-linear-gradient(@direction, @from-color, @to-color);
         // Firefox 3.6+
         background:
-            url(@url) @repeat-type scroll @s-x @s-y,
+            url(@url),
             -moz-linear-gradient(@direction, @from-color, @to-color);
         // IE 10
         background:
-            url(@url) @repeat-type scroll @s-x @s-y,
+            url(@url),
             -ms-linear-gradient(@direction, @from-color, @to-color);
         // Opera 11.10+
         background:
-            url(@url) @repeat-type scroll @s-x @s-y,
+            url(@url),
             -o-linear-gradient(@direction, @from-color, @to-color);
+        background-repeat: @repeat-type, no-repeat;
+        background-position: @s-x @s-y, 0 0;
     }
 
     .background(@is-url-exp) when (@is-url-exp) {
@@ -126,24 +127,27 @@
             @url @repeat-type scroll @s-x @s-y @b-color;
         // Safari 4-5, Chrome 1-9
         background: 
-            @url @repeat-type scroll @s-x @s-y,
+            @url,
             -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
         // Safari 5.1, Chrome 10+
         background:
-            @url @repeat-type scroll @s-x @s-y,
+            @url,
             -webkit-linear-gradient(@direction, @from-color, @to-color);
         // Firefox 3.6+
         background:
-            @url @repeat-type scroll @s-x @s-y,
+            @url,
             -moz-linear-gradient(@direction, @from-color, @to-color);
         // IE 10
         background:
-            @url @repeat-type scroll @s-x @s-y,
+            @url,
             -ms-linear-gradient(@direction, @from-color, @to-color);
         // Opera 11.10+
         background:
-            @url @repeat-type scroll @s-x @s-y,
+            @url,
             -o-linear-gradient(@direction, @from-color, @to-color);
+            
+        background-repeat: @repeat-type, no-repeat;
+        background-position: @s-x @s-y, 0 0;
     }
 
     .background(@is-url-exp);
