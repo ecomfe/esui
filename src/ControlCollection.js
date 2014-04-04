@@ -120,7 +120,7 @@ define(
                 'enable', 'disable', 'setDisabled',
                 'show', 'hide', 'toggle',
                 'addChild', 'removeChild',
-                'set',' setProperties',
+                'set', 'setProperties',
                 'addState', 'removeState', 'toggleState',
                 'on', 'off', 'fire',
                 'dispose', 'destroy',
