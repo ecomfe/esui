@@ -89,42 +89,8 @@ define(
             }
         };
 
-        SelectLayer.prototype.position = function () {
-            var element = this.getElement();
-
-            // 获取的浮层一定是隐藏的，必须此时获得页面尺寸，
-            // 一但让浮层显示出来，就可能导致滚动条出现，无法获得正确的尺寸了
-            var pageWidth = lib.page.getViewWidth();
-            var pageHeight = lib.page.getViewHeight();
-            // 先计算需要的尺寸，浮层必须显示出来才能真正计算里面的内容
-            element.style.display = 'block';
-            element.style.top = '-5000px';
-            element.style.left = '-5000px';
-            // IE7下，如果浮层隐藏着反而会影响offset的获取，
-            // 但浮层显示出来又可能造成滚动条出现，
-            // 因此显示浮层显示后移到屏幕外面，然后计算坐标
-            var offset = lib.getOffset(this.control.main);
-            element.style.width = '';
-            element.style.height = '';
-            var layerWidth = element.offsetWidth;
-            var layerHeight = element.offsetHeight;
-            element.style.display = '';
-            element.style.minWidth = offset.width + 'px';
-            // 然后看下靠左放能不能放下，不能就靠右
-            if (pageWidth - offset.left > layerWidth) {
-                element.style.left = offset.left + 'px';
-            }
-            else {
-                element.style.left = (offset.right - layerWidth) + 'px';
-            }
-
-            // 再看看放下面能不能放下，不能就放上面去
-            if (pageHeight - offset.bottom > layerHeight) {
-                element.style.top = offset.bottom + 'px';
-            }
-            else {
-                element.style.top = (offset.top - layerHeight) + 'px';
-            }
+        SelectLayer.prototype.dock = {
+            strictWidth: true
         };
 
         /**

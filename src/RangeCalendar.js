@@ -34,13 +34,6 @@ define(
 
         lib.inherits(RangeCalendarLayer, Layer);
 
-        // 位置
-        RangeCalendarLayer.prototype.dock = {
-            top: 'bottom',
-            left: 'left',
-            spaceDetection: 'both'
-        };
-
         RangeCalendarLayer.prototype.render = function (element) {
             var calendar = this.control;
             document.body.appendChild(element);
