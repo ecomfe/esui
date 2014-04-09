@@ -430,9 +430,15 @@ define(
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     defaultFoot: ''
-                        + '<div data-ui="type:Button;id:btnFootOk;'
+                        + '<div '
+                        + 'class="' 
+                        + this.helper.getPartClassNames('ok-btn')
+                        + '" data-ui="type:Button;id:btnFootOk;'
                         + 'childName:btnOk;skin:spring;">确定</div>'
-                        + '<div data-ui="type:Button;'
+                        + '<div '
+                        + 'class="' 
+                        + this.helper.getPartClassNames('cancel-btn')
+                        + 'data-ui="type:Button;'
                         + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
                     needFoot: true,
                     roles: {}
@@ -978,7 +984,9 @@ define(
             );
 
             dialog.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:'
+                + '<div '
+                + 'class="' + dialog.helper.getPartClassNames('ok-btn') + '"'
+                + ' data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
                 + Dialog.OK_TEXT
                 + '</div>'
