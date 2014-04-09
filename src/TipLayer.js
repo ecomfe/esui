@@ -198,6 +198,13 @@ define(
                 setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
         }
 
+        function getElementByControl(tipLayer, control) {
+            if (typeof control == 'string') {
+                control = tipLayer.viewContext.get(control);
+            }
+            return control.main;
+        }
+
         TipLayer.prototype = {
             /**
              * 控件类型
@@ -345,6 +352,30 @@ define(
                                 lib.format(bfTpl, data)
                             );
                         }
+                    }
+                },
+                {
+                    name: [
+                        'targetDOM', 'targetControl',
+                        'showMode', 'positionOpt', 'delayTime'
+                    ],
+                    paint:
+                        function (tipLayer, targetDOM, targetControl,
+                            showMode, positionOpt, delayTime) {
+                        var options = {
+                            targetDOM: targetDOM,
+                            targetControl: targetControl,
+                            showMode: showMode,
+                            delayTime: delayTime
+                        };
+                        if (positionOpt) {
+                            positionOpt = positionOpt.split('|');
+                            options.positionOpt = {
+                                top: positionOpt[0] || 'top',
+                                right: positionOpt[1] || 'left',
+                            };
+                        }
+                        tipLayer.attachTo(options);
                     }
                 }
             ),
@@ -580,17 +611,8 @@ define(
                     targetElement = lib.g(options.targetDOM);
                 }
                 else if (options.targetControl) {
-                    var targetControl;
-                    if (typeof options.targetControl == 'string') {
-                        targetControl =
-                            this.viewContext.get(options.targetControl);
-                    }
-                    else {
-                        targetControl = options.targetControl;
-                    }
-                    if (targetControl) {
-                        targetElement = targetControl.main;
-                    }
+                    targetElement =
+                        getElementByControl(this, options.targetControl);
                 }
 
                 if (!targetElement) {
