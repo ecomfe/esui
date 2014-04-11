@@ -12,7 +12,7 @@
 @paddingHorizon: 4px;
 @borderWidth: 1px;
 
-.ui-textbox {
+.@{ui-class-prefix}-textbox {
     position: relative;
     display: inline-block;
     *display: inline;
@@ -44,10 +44,10 @@
 }
 
 // 要跟hint保持一致
-.ui-textbox-hint-suffix input {
+.@{ui-class-prefix}-textbox-hint-suffix input {
     vertical-align: middle;
 }
-.ui-textbox-hint {
+.@{ui-class-prefix}-textbox-hint {
     .inline-block ();
     .box-sizing (content-box);
     background-color: #f2f2f2;
@@ -58,7 +58,7 @@
     line-height: 19px;
 }
 
-.ui-textbox-placeholder {
+.@{ui-class-prefix}-textbox-placeholder {
     color: #999;
     position: absolute;
     height: 19px;
@@ -67,24 +67,24 @@
     top: @paddingVertical + @borderWidth;
 }
 
-.ui-textbox-placeholder-hidden {
+.@{ui-class-prefix}-textbox-placeholder-hidden {
     display: none;
 }
 
-.ui-textbox-hint-suffix {
-    .ui-textbox-hint {
+.@{ui-class-prefix}-textbox-hint-suffix {
+    .@{ui-class-prefix}-textbox-hint {
         border-left: 0;
     }
 }
 
-.ui-textbox-hint-prefix {
-    .ui-textbox-hint {
+.@{ui-class-prefix}-textbox-hint-prefix {
+    .@{ui-class-prefix}-textbox-hint {
         border-right: 0;
     }
 }
 
-.ui-textbox-disabled,
-.ui-textbox-read-only {
+.@{ui-class-prefix}-textbox-disabled,
+.@{ui-class-prefix}-textbox-read-only {
     input, textarea {
         border: 1px solid #7E9DB9;
         background: #f6f6f6;
@@ -94,8 +94,8 @@
 
 
 /** 验证 */
-.ui-textbox-validity-label,
-.ui-textarea-validity-label {
+.@{ui-class-prefix}-textbox-validity-label,
+.@{ui-class-prefix}-textarea-validity-label {
     display:inline-block;
     *display:inline;
     zoom:1;
@@ -103,22 +103,22 @@
     padding-left: 10px;
 }
 
-.ui-textbox-validity-label-notice,
-.ui-textarea-validity-label-notice {
+.@{ui-class-prefix}-textbox-validity-label-notice,
+.@{ui-class-prefix}-textarea-validity-label-notice {
     color: #FF0000;
 }
 
-.ui-textbox-validity-label-warn,
-.ui-textarea-validity-label-warn {
+.@{ui-class-prefix}-textbox-validity-label-warn,
+.@{ui-class-prefix}-textarea-validity-label-warn {
     color: red;
 }
 
-.ui-textbox-validity-label-invalid,
-.ui-textarea-validity-label-invalid {
+.@{ui-class-prefix}-textbox-validity-label-invalid,
+.@{ui-class-prefix}-textarea-validity-label-invalid {
     color: #CC0000;
 }
 
-.ui-textbox-validity-invalid input,
-.ui-textbox-validity-invalid textarea {
+.@{ui-class-prefix}-textbox-validity-invalid input,
+.@{ui-class-prefix}-textbox-validity-invalid textarea {
     border: 1px solid red;
 }

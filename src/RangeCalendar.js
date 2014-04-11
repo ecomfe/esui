@@ -925,7 +925,7 @@ define(
                     'scroll',
                     u.bind(this.layer.hide, this.layer)
                 );
-                target = this.parent;
+                target = target.parent;
             }
 
             this.helper.addDOMEvent(

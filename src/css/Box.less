@@ -7,10 +7,10 @@
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-checkbox,
-.ui-radio,
-.ui-boxgroup-checkbox,
-.ui-boxgroup-radio {
+.@{ui-class-prefix}-checkbox,
+.@{ui-class-prefix}-radio,
+.@{ui-class-prefix}-boxgroup-checkbox,
+.@{ui-class-prefix}-boxgroup-radio {
     vertical-align: middle;
     line-height: 1.8;
 
@@ -25,35 +25,35 @@
     }
 }
 
-.ui-boxgroup-horizontal label {
+.@{ui-class-prefix}-boxgroup-horizontal label {
     .inline-block ();
     margin-right: .5em;
 }
 
-.ui-boxgroup-vertical label {
+.@{ui-class-prefix}-boxgroup-vertical label {
     display: block;
 }
 
 
 /** 验证 */
-.ui-checkbox-validity-label {
+.@{ui-class-prefix}-checkbox-validity-label {
     zoom:1;
     color: #CC0000;
     padding-left: 10px;
 }
 
-.ui-checkbox-validity-label-notice {
+.@{ui-class-prefix}-checkbox-validity-label-notice {
     color: #FF0000;
 }
 
-.ui-checkbox-validity-label-warn {
+.@{ui-class-prefix}-checkbox-validity-label-warn {
     color: red;
 }
 
-.ui-checkbox-validity-label-invalid {
+.@{ui-class-prefix}-checkbox-validity-label-invalid {
     color: #CC0000;
 }
 
-.ui-boxgroup-validity-label-invalid {
+.@{ui-class-prefix}-boxgroup-validity-label-invalid {
     color: #CC0000;
 }

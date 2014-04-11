@@ -7,7 +7,7 @@
   */
 @import "mixin.less";
 @import "variable.less";
-.ui-tip-layer {
+.@{ui-class-prefix}-tip-layer {
     background: #FFF3D9;
     border: 1px solid #D9CBA8;
     padding: 10px;
@@ -16,8 +16,8 @@
     z-index: @layer-z-index;
 }
 
-.ui-tip-title,
-.ui-tip-body {
+.@{ui-class-prefix}-tip-title,
+.@{ui-class-prefix}-tip-body {
     padding: 0;
     margin: 0;
     font-size: 12px;
@@ -27,21 +27,21 @@ ui
     margin: 0 0 0.5em;
 }
 
-.ui-tip-body {
+.@{ui-class-prefix}-tip-body {
     margin-bottom: 5px;
 }
 
-.ui-tip {
+.@{ui-class-prefix}-tip {
     font-size: 1px;
 }
 
-.ui-tip-arrow {
+.@{ui-class-prefix}-tip-arrow {
     display: none;
     position: absolute;
     font-size: 1px;
 }
 
-.ui-tip-arrow-tl .ui-tip-arrow-1 {
+.@{ui-class-prefix}-tip-arrow-tl .@{ui-class-prefix}-tip-arrow-1 {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, -24px, -12px);
     width: 12px;
@@ -49,7 +49,7 @@ ui
     top: -13px;
     left: 12px;
 }
-.ui-tip-arrow-tr {
+.@{ui-class-prefix}-tip-arrow-tr {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, -36px, -12px);
     width: 12px;
@@ -57,7 +57,7 @@ ui
     top: -13px;
     right: 12px;
 }
-.ui-tip-arrow-bl {
+.@{ui-class-prefix}-tip-arrow-bl {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, -12px, -12px);
     width: 12px;
@@ -65,7 +65,7 @@ ui
     bottom: -13px;
     left: 12px;
 }
-.ui-tip-arrow-br {
+.@{ui-class-prefix}-tip-arrow-br {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, 0px, -12px);
     width: 12px;
@@ -74,7 +74,7 @@ ui
     right: 12px;
 }
 
-.ui-tip-arrow-lt {
+.@{ui-class-prefix}-tip-arrow-lt {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, -26px, 0px);
     width: 13px;
@@ -82,7 +82,7 @@ ui
     top: 7px;
     left: -13px;
 }
-.ui-tip-arrow-lb {
+.@{ui-class-prefix}-tip-arrow-lb {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, -39px, 0);
     width: 13px;
@@ -90,7 +90,7 @@ ui
     bottom: 7px;
     left: -13px;
 }
-.ui-tip-arrow-rt {
+.@{ui-class-prefix}-tip-arrow-rt {
     display: block;
     .background ("../img/esui_transparent.gif");
     width: 13px;
@@ -98,7 +98,7 @@ ui
     top: 7px;
     right: -13px;
 }
-.ui-tip-arrow-rb {
+.@{ui-class-prefix}-tip-arrow-rb {
     display: block;
     .background ("../img/esui_transparent.gif", no-repeat, -13px, 0);
     width: 13px;
@@ -107,7 +107,7 @@ ui
     right: -13px;
 }
 
-.ui-tip {
+.@{ui-class-prefix}-tip {
     width: 14px;
     height: 14px;
     .background ("../img/esui.png", no-repeat, -101px, -89px);
@@ -116,6 +116,6 @@ ui
     vertical-align: middle;
 }
 
-.ui-tip-layer-hidden {
+.@{ui-class-prefix}-tip-layer-hidden {
     display: none;
 }
