@@ -86,7 +86,6 @@ define(
             // 一个搜索框由一个文本框和一个按钮组成
             var textboxOptions = {
                 mode: 'text', 
-                skin: 'search', 
                 childName: 'text',
                 height: this.height,
                 viewContext: this.viewContext,
@@ -118,7 +117,6 @@ define(
 
             var buttonOptions = {
                 main: document.createElement('span'),
-                skin: 'search',
                 childName: 'button',
                 content: '搜索',
                 viewContext: this.viewContext

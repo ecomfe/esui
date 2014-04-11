@@ -8,27 +8,6 @@
 @import "mixin.less";
 @import "variable.less";
 
-.ui-searchbox {
-    .inline-block();
-    position: relative;
-    overflow: hidden;
-}
-
-.skin-search-textbox {
-    input {
-        padding-right: 25px;
-        border: 1px solid #d8d8d8;
-
-        &:hover {
-            border-color: #d0d0d0;
-        }
-
-        &:focus {
-            border-color: #bbbbbb; 
-        }
-    }
-}
-
 .normal-search-icon() {
     background: transparent url(../img/search.png) no-repeat center -25px;
 }
@@ -36,29 +15,50 @@
     background: transparent url(../img/search.png) no-repeat center 0;
 }
 
-.skin-search-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 25px;
-    height: 25px;
-    border: 0;
-    padding: 0;
-    text-indent: -5000px;
-    .normal-search-icon();
+.ui-searchbox {
+    .inline-block();
+    position: relative;
+    overflow: hidden;
 
-    &:active {
+    .ui-textbox {
+        input {
+            padding-right: 25px;
+            border: 1px solid #d8d8d8;
+
+            &:hover {
+                border-color: #d0d0d0;
+            }
+
+            &:focus {
+                border-color: #bbbbbb; 
+            }
+        }
+    }
+
+    .ui-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25px;
+        height: 25px;
         border: 0;
-        .active-search-icon();
-    }
-}
+        padding: 0;
+        text-indent: -5000px;
+        .normal-search-icon();
 
-.skin-search-button-disabled {
-    &:hover {
-        cursor: default;
+        &:active {
+            border: 0;
+            .active-search-icon();
+        }
     }
-    &:active {
-        .active-search-icon();
+
+    .ui-button-disabled {
+        &:hover {
+            cursor: default;
+        }
+        &:active {
+            .active-search-icon();
+        }
     }
 }
 
@@ -69,7 +69,7 @@
 }
 
 .ui-searchbox-focus {
-    .skin-search-button {
+    .ui-button {
         .active-search-icon();
     }
 }
@@ -80,7 +80,7 @@
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-    .skin-search-button {
+    .ui-searchbox .ui-button {
         .searchbox-2x();
 
         &:active {
@@ -89,7 +89,7 @@
     }
 
     .ui-searchbox-focus {
-        .skin-search-button {
+        .ui-button {
             .searchbox-2x();
         }
     }
