@@ -326,9 +326,11 @@ define(
          * @return {string}
          */
         function getSubrowHtml(table, index, extraArgs) {
+            var dataLen = table.datasource ? table.datasource.length : 0;
             return extraArgs.subrow
                     ? '<div id="' + getSubrowId(table, index)
-                    +  '" class="' + getClass(table, 'subrow') + '"'
+                    +  '" class="' + getClass(table, 'subrow') + ' '
+                    +  ( dataLen === index + 1 ? getClass(table, 'subrow-last') : '' ) + '"'
                     +  ' style="display:none"></div>'
                     : '';
         }
