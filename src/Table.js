@@ -1265,6 +1265,8 @@ define(
 
             table.bodyPanel.disposeChildren();
             lib.g(tBodyPanelId).innerHTML = getBodyHtml(table);
+
+            table.fire('bodyChange');
         }
 
          /**
@@ -1696,19 +1698,15 @@ define(
                     return;
                 }
                 var index = getAttr(element, 'index');
-                var input;
-
                 switch (table.select) {
                     case 'multi':
-                        input = lib.g(getId(table, 'multi-select') + index);
-                        input.checked = !input.checked;
-                        selectMulti(table, index);
+                        var input = lib.g(getId(table, 'multi-select') + index);
+                        selectMulti(table, index, !input.checked);
+                        resetMutilSelectedStatus(table);
                         break;
 
                     case 'single':
-                        input = lib.g(getId(table, 'single-select') + index);
-                        input.checked = true;
-                        selectSingle(table, index);
+                        selectSingle(table, index, true);
                         break;
                 }
             }
@@ -2069,6 +2067,7 @@ define(
         function rowCheckboxClick(element, e) {
             var index = getAttr(element, 'index');
             selectMulti(this, index);
+            resetMutilSelectedStatus(this);
         }
 
         /**
@@ -2077,50 +2076,63 @@ define(
          * @private
          * @param {number} index 需要更新的body中checkbox行，不传则更新全部
          */
-        function selectMulti(table, index) {
+        function selectMulti(table, index, isSelected) {
+            var selectedClass = 'row-selected';
+            if (index >= 0) {
+                var input = lib.g(getId(table, 'multi-select') + index);
+                if (input) {
+                    hasValue(isSelected) && (input.checked = isSelected);
+                    var row = getRow(table, index);
+                    if (input.checked) {
+                        helper.addPartClasses(table, selectedClass, row);
+                    } else {
+                        helper.removePartClasses(table, selectedClass, row);
+                    }
+                }
+            } else if(hasValue(isSelected)){
+                var inputs = findSelectBox(table, 'checkbox');
+                for (var i = 0, len = inputs.length; i < len; i++) {
+                    var input = inputs[i];
+                    input.checked = isSelected;
+                    var inputIndex = getAttr(input, 'index');
+                    var row = getRow(table, inputIndex);
+                    if (isSelected) {
+                        helper.addPartClasses(table, selectedClass, row);
+                    } else {
+                         helper.removePartClasses(table, selectedClass, row);
+                    }
+                }
+            }
+        }
+
+
+        /**
+         * 重置多选的选中状态，包括是否全选和selectedIndex
+         *
+         * @private
+         */
+        function resetMutilSelectedStatus(table) {
             var selectAll = getHeadCheckbox(table);
             var inputs = findSelectBox(table, 'checkbox');
             var allChecked = true;
             var selected = [];
             var cbIdPrefix = getId(table, 'multi-select');
-            var updateAll = !hasValue(index);
-            var selectedClass = 'row-selected';
 
             for (var i = 0, len = inputs.length; i < len; i++) {
                 var input = inputs[i];
                 if (input.id.indexOf(cbIdPrefix) >= 0) {
                     var inputIndex = getAttr(input, 'index');
-                    // 下面也只在`updateAll`的时候用，所以没关系
-                    var row = updateAll && table.getRow(inputIndex);
                     if (!input.checked) {
                         allChecked = false;
-                        // faster
-                        if (updateAll) {
-                            helper.removePartClasses(table, selectedClass, row);
-                        }
                     }
                     else {
                         selected.push(inputIndex);
-                        // faster
-                        if (updateAll) {
-                            helper.addPartClasses(table, selectedClass, row);
-                        }
                     }
                 }
             }
 
             setSelectedIndex(table, selected);
             table.fire('select', {selectedIndex: selected});
-
-            if (!updateAll) {
-                var row = getRow(table, index);
-                var input = lib.g(cbIdPrefix + index);
-                if (input.checked) {
-                    helper.addPartClasses(table, selectedClass, row);
-                } else {
-                    helper.removePartClasses(table, selectedClass, row);
-                }
-            }
 
             selectAll.checked = allChecked;
         }
@@ -2160,30 +2172,8 @@ define(
          * @param {boolean} checked 是否选中
          */
         function selectAll(table, checked) {
-            var inputs = findSelectBox(table, 'checkbox');
-            var selected = [];
-            var cbIdPrefix = getId(table, 'multi-select');
-
-            for (var i = 0, len = inputs.length; i < len; i++) {
-                var input = inputs[i];
-                if (input.id.indexOf(cbIdPrefix) >= 0) {
-                    var index = getAttr(input, 'index');
-                    inputs[i].checked = checked;
-
-                    if (checked) {
-                        selected.push(index);
-                        helper.addPartClasses(
-                            table, 'row-selected', getRow(table, index));
-                    }
-                    else {
-                        helper.removePartClasses(
-                            table, 'row-selected', getRow(table, index));
-                    }
-                }
-            }
-
-            setSelectedIndex(table, selected);
-            table.fire('select', {selectedIndex: selected});
+            selectMulti(table, -1, checked);
+            resetMutilSelectedStatus(table);
         }
 
         function selectSingleHandler(element, e) {
@@ -2196,18 +2186,22 @@ define(
          * @private
          * @param {number} index 选取的序号
          */
-        function selectSingle(table, index) {
+        function selectSingle(table, index, isSelected) {
             var selectedIndex = table.selectedIndex;
+            var input = lib.g(getId(table, 'single-select') + index);
+            if (input) {
+                hasValue(isSelected) && (input.checked = isSelected);
 
-            table.fire('select', {selectedIndex: index});
+                table.fire('select', {selectedIndex: index});
 
-            if (selectedIndex && selectedIndex.length) {
-                helper.removePartClasses(
-                    table, 'row-selected', getRow(table, selectedIndex[0]));
+                if (selectedIndex && selectedIndex.length) {
+                    helper.removePartClasses(
+                        table, 'row-selected', getRow(table, selectedIndex[0]));
+                }
+
+                setSelectedIndex(table, [index]);
+                helper.addPartClasses(table, 'row-selected', getRow(table, index));
             }
-
-            setSelectedIndex(table, [index]);
-            helper.addPartClasses(table, 'row-selected', getRow(table, index));
         }
 
 
@@ -2608,9 +2602,6 @@ define(
                     || allProperities.selectedIndex
                 ) {
                     renderBody(table);
-                    // TODO: @DEPRECATED 移除
-                    table.fire('bodyChange');
-                    table.fire('bodychange');
                     tbodyChange = true;
                 }
                 if (tbodyChange
@@ -2845,6 +2836,46 @@ define(
                 }
                 return result;
             },
+
+            /**
+             * 设置行选中
+             *
+             * @param {Number}/{Array} index
+             * @param {Boolean} isSelected
+             * @public
+             */
+            setRowSelected: function(index, isSelected) {
+                var table = this;
+                var isMutil = table.select === 'multi';
+                var selectedHandler = isMutil ? selectMulti : selectSingle;
+
+                if (u.isArray(index)) {
+                    if (isMutil) {
+                        u.each(index, function(value){
+                            selectedHandler(table, value, isSelected);
+                        });
+                    } else {
+                        selectedHandler(table, index[0], isSelected);
+                    }
+                } else {
+                    selectedHandler(table, index, isSelected);
+                }
+
+                if (isMutil) {
+                    resetMutilSelectedStatus(table);
+                }
+            },
+
+            /**
+             * 设置所有行选中
+             *
+             * @param {Boolean} isSelected
+             * @public
+             */
+            setAllRowSelected: function(isSelected) {
+                this.setRowSelected(-1, isSelected);
+            },
+
 
             /**
              * 重置表头跟随设置
