@@ -13,7 +13,7 @@ ol {
     overflow: hidden;
     zoom: 1;
 }
-.ui-wizard {
+.@{ui-class-prefix}-wizard {
     .clear-float();
 
     li {
@@ -23,12 +23,12 @@ ol {
     }
 }
 
-.ui-wizard-panel-hidden {
+.@{ui-class-prefix}-wizard-panel-hidden {
     display: none;
 }
 
 
-.skin-default-wizard {
+.@{skin-class-prefix}-default-wizard {
     @commonColor: #E4E4E4;
     @doneColor: #ccf9b8;
     @activeColor: #44ba0f;
@@ -36,7 +36,7 @@ ol {
     @arrowHeight: 24px;
 
     @arrowGap: 4px;
-    .ui-wizard-node {
+    .@{ui-class-prefix}-wizard-node {
         color: #404040;
         font-size: 14px;
         font-weight: bold;
@@ -84,7 +84,7 @@ ol {
         }
     }
 
-    .ui-wizard-node-done {
+    .@{ui-class-prefix}-wizard-node-done {
         span {
             background-color: @doneColor;
             color: #000;
@@ -99,14 +99,14 @@ ol {
         }
     }
 
-    .ui-wizard-node-last {
+    .@{ui-class-prefix}-wizard-node-last {
         background: none;
     }
 
-    .ui-wizard-node-active-prev {
+    .@{ui-class-prefix}-wizard-node-active-prev {
     }
 
-    .ui-wizard-node-active {
+    .@{ui-class-prefix}-wizard-node-active {
         span {
             background-color: @activeColor;
             color: #FFFFFF;

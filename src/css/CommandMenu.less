@@ -7,7 +7,7 @@
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-commandmenu {
+.@{ui-class-prefix}-commandmenu {
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
     border: 1px solid #D8D8D8;
@@ -34,15 +34,15 @@
 	}
 }
 
-.ui-commandmenu-active,
-.ui-commandmenu-active:hover,
-.ui-commandmenu-active:focus {
+.@{ui-class-prefix}-commandmenu-active,
+.@{ui-class-prefix}-commandmenu-active:hover,
+.@{ui-class-prefix}-commandmenu-active:focus {
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png",
         right, -69px, #f3f3f3);
 }
 
-.ui-commandmenu-layer {
+.@{ui-class-prefix}-commandmenu-layer {
     .reset-list ();
     .box-sizing (border-box);
     background: none repeat scroll 0 0 #FFFFFF;
@@ -74,16 +74,16 @@
 	}
 }
 
-.ui-commandmenu-layer-selected {
+.@{ui-class-prefix}-commandmenu-layer-selected {
     background-color: #E0E0E0;
     border: 1px solid #DDDDDD;
 }
 
-.ui-commandmenu-layer-hidden {
+.@{ui-class-prefix}-commandmenu-layer-hidden {
     display: none;
 }
 
-.ui-commandmenu-disabled {
+.@{ui-class-prefix}-commandmenu-disabled {
     color: #999999;
     &:hover,
     &:focus,

@@ -1,13 +1,13 @@
  /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file sidebar样式
  * @author miaojian
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-sidebar {
+.@{ui-class-prefix}-sidebar {
     width: 202px;
     border: 1px solid #ccc;
     background: #fff;
@@ -18,15 +18,15 @@
     .border-radius(5px);
 }
 
-.ui-sidebar-neighbor {  
+.@{ui-class-prefix}-sidebar-neighbor {
     margin-left: 220px;
 }
 
-.ui-sidebar-neighbor-hide {
+.@{ui-class-prefix}-sidebar-neighbor-hide {
     margin-left: 30px;
 }
 
-.ui-sidebar-mat {
+.@{ui-class-prefix}-sidebar-mat {
     position: fixed;
     _display: none;
     width: 218px;
@@ -36,7 +36,7 @@
     border-right: 1px solid #ddd;
 }
 
-.ui-sidebar-minibar {
+.@{ui-class-prefix}-sidebar-minibar {
     position: fixed;
     _position: absolute;
     _padding-bottom: 10px;
@@ -49,12 +49,12 @@
     .border-radius(0, 5px, 5px, 0);
 }
 
-.ui-sidebar-minibar-text {
+.@{ui-class-prefix}-sidebar-minibar-text {
     padding: 8px 0;
     width: 12px;
-} 
+}
 
-.ui-sidebar-minibar-arrow {
+.@{ui-class-prefix}-sidebar-minibar-arrow {
     width: 5px;
     height: 9px;
     font-size: 0;
@@ -65,15 +65,15 @@
     left: 50%;
 }
 
-.ui-sidebar-minibar-hover .ui-sidebar-minibar-arrow {
+.@{ui-class-prefix}-sidebar-minibar-hover .@{ui-class-prefix}-sidebar-minibar-arrow {
     background: url(../img/esui.png) -64px -88px;
 }
 
-.ui-sidebar-minibar-hover .ui-sidebar-minibar-text {
+.@{ui-class-prefix}-sidebar-minibar-hover .@{ui-class-prefix}-sidebar-minibar-text {
     color: #03c;
 }
 
-.ui-sidebar-head {
+.@{ui-class-prefix}-sidebar-head {
     border-bottom: 1px solid #ccc;
     background: url(../img/esui.png) 0 -260px;
     line-height: 34px;
@@ -82,7 +82,7 @@
     height: 36px;
 }
 
-.ui-sidebar-body {
+.@{ui-class-prefix}-sidebar-body {
     position: absolute;
     _position: static;
     overflow-x: hidden;
@@ -91,8 +91,8 @@
     width: 100%;
 }
 
-.skin-autohide-button,
-.skin-fixed-button {
+.@{skin-class-prefix}-autohide-button,
+.@{skin-class-prefix}-fixed-button {
     height: 13px !important;
     width: 14px;
     background: url(../img/esui.png);
@@ -104,28 +104,28 @@
     padding:  0;
 }
 
-.skin-autohide-button:hover {
+.@{skin-class-prefix}-autohide-button:hover {
     border: 1px solid #777;
 }
 
-.skin-autohide-button:active {
+.@{skin-class-prefix}-autohide-button:active {
     height: 13px;
 }
 
-.skin-autohide-button {
+.@{skin-class-prefix}-autohide-button {
     background-position: -59px -167px;
     *background-position: -61px -169px;
 }
 
-.skin-fixed-button {
+.@{skin-class-prefix}-fixed-button {
     background-position: -45px -167px;
     *background-position: -47px -169px;
 }
 
-.skin-fixed-button:hover {
+.@{skin-class-prefix}-fixed-button:hover {
     border: 1px solid #777;
 }
 
-.skin-fixed-button:active {
+.@{skin-class-prefix}-fixed-button:active {
     height: 13px;
 }

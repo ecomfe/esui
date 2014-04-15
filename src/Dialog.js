@@ -734,9 +734,9 @@ define(
                     var dialogNum = 0;
                     for (var i = 0, len = rawElements.length; i < len; i++) {
                         if (rawElements[i].nodeType === 1) {
-                            if (lib.hasClass(rawElements[i], 'ui-dialog')
+                            if (lib.hasClass(rawElements[i], this.helper.getPrimaryClassName())
                                 && !lib.hasClass(
-                                    rawElements[i], 'ui-dialog-hidden')
+                                    rawElements[i], this.helper.getPrimaryClassName('hidden'))
                             ) {
                                 dialogNum ++;
                             }
@@ -882,8 +882,8 @@ define(
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
-                '<div class="ui-dialog-text">${content}</div>'
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
 
@@ -900,7 +900,14 @@ define(
 
             dialog.setTitle(title);
             dialog.setContent(
-                lib.format(tpl, { type: type, content: content })
+                lib.format(
+                    tpl,
+                    {
+                        type: type,
+                        content: content,
+                        prefix: dialog.helper.getPrimaryClassName()
+                    }
+                )
             );
             dialog.show();
             //使用默认foot，改变显示文字
@@ -963,8 +970,8 @@ define(
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
-                '<div class="ui-dialog-text">${content}</div>'
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
             var dialogId = helper.getGUID(dialogPrefix);
@@ -980,7 +987,14 @@ define(
             dialog.appendTo(document.body);
             dialog.setTitle(title);
             dialog.setContent(
-                lib.format(tpl, { type: type, content: content })
+                lib.format(
+                    tpl,
+                    {
+                        type: type,
+                        content: content,
+                        prefix: dialog.helper.getPrimaryClassName()
+                    }
+                )
             );
 
             dialog.setFoot(''

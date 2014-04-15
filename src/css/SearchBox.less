@@ -15,12 +15,12 @@
     background: transparent url(../img/search.png) no-repeat center 0;
 }
 
-.ui-searchbox {
+.@{ui-class-prefix}-searchbox {
     .inline-block();
     position: relative;
     overflow: hidden;
 
-    .ui-textbox {
+    .@{ui-class-prefix}-textbox {
         input {
             padding-right: 25px;
             border: 1px solid #d8d8d8;
@@ -35,7 +35,7 @@
         }
     }
 
-    .ui-button {
+    .@{ui-class-prefix}-button {
         position: absolute;
         top: 0;
         right: 0;
@@ -52,7 +52,7 @@
         }
     }
 
-    .ui-button-disabled {
+    .@{ui-class-prefix}-button-disabled {
         &:hover {
             cursor: default;
         }
@@ -62,14 +62,14 @@
     }
 }
 
-.ui-searchbox-fit-width {
-    .ui-textbox {
+.@{ui-class-prefix}-searchbox-fit-width {
+    .@{ui-class-prefix}-textbox {
         width: 100% !important;
     }
 }
 
-.ui-searchbox-focus {
-    .ui-button {
+.@{ui-class-prefix}-searchbox-focus {
+    .@{ui-class-prefix}-button {
         .active-search-icon();
     }
 }
@@ -80,7 +80,7 @@
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-    .ui-searchbox .ui-button {
+    .@{ui-class-prefix}-searchbox .@{ui-class-prefix}-button {
         .searchbox-2x();
 
         &:active {
@@ -88,8 +88,8 @@
         }
     }
 
-    .ui-searchbox-focus {
-        .ui-button {
+    .@{ui-class-prefix}-searchbox-focus {
+        .@{ui-class-prefix}-button {
             .searchbox-2x();
         }
     }

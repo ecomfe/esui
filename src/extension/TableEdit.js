@@ -70,7 +70,7 @@ define(
             if (!layer) {
                 layer = helper.layer.create();
                 document.body.appendChild(layer);
-                layer.className = 'ui-table-editor';
+                layer.className = table.helper.getPartClassName('editor');
                 initLayer();
             }
 
@@ -191,8 +191,8 @@ define(
                     cancelId: cancelId,
                     okText: okText,
                     cancelText: cancelText,
-                    optClass: 'ui-table-editor-opt',
-                    errorClass: 'ui-table-editor-error',
+                    optClass: currentTable.helper.getPartClassName('editor-opt'),
+                    errorClass: currentTable.helper.getPartClassName('editor-error'),
                     errorId: errorId
                 }
             );

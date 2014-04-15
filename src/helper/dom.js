@@ -87,7 +87,7 @@ define(
                 }
             }
             else {
-                classes.push('ui-ctrl');
+                classes.push(joinByStrike(prefix, 'ctrl'));
                 classes.push(joinByStrike(prefix, type));
                 if (skin) {
                     classes.push(
@@ -108,6 +108,31 @@ define(
          */
         helper.getPartClassName = function (part) {
             return this.getPartClasses(part).join(' ');
+        };
+
+        /**
+         * 获取控件部件相关的主class字符串
+         *
+         * 如果不传递`part`参数，则生成如下：
+         *
+         * - `ui-{styleType}`
+         *
+         * 如果有`part`参数，则生成如下：
+         *
+         * - `ui-{styleType}-{part}`
+         *
+         * @param {string} [part] 部件名称
+         * @return {string}
+         */
+        helper.getPrimaryClassName = function (part) {
+            var type = getControlClassType(this.control);
+
+            if (part) {
+                return joinByStrike(ui.getConfig('uiClassPrefix'), type, part);
+            }
+            else {
+                return joinByStrike(ui.getConfig('uiClassPrefix'), type);
+            }
         };
 
         /**

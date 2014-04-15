@@ -234,6 +234,15 @@ define(
             }
         }
 
+        /**
+         * 获取hidden状态的class
+         *
+         * @return {string}
+         */
+        function getHiddenClassName() {
+            return ui.getConfig('stateClassPrefix') + '-hidden';
+        }
+
         /*
          * 更新城市选择状态，比如'2/30'
          *
@@ -246,11 +255,11 @@ define(
         function updateSelectedTip(region, selCityIdsLength, cLength, id) {
             var infoTag = lib.g(helper.getId(region, 'info-' + id));
             if (selCityIdsLength !== 0 && selCityIdsLength !== cLength) {
-                lib.removeClass(infoTag, 'state-hidden');
+                lib.removeClass(infoTag, getHiddenClassName());
                 infoTag.innerHTML = selCityIdsLength + '/' + cLength + '';
             }
             else {
-                lib.addClass(infoTag, 'state-hidden');
+                lib.addClass(infoTag, getHiddenClassName());
                 infoTag.innerHTML = '';
             }
         }
@@ -275,9 +284,9 @@ define(
         // 省级别下市弹出层
         var tplPopLayer = [
             '<div class="${popLayerClass}">',
-                '<div class="state-hidden ${layerBoxClass}" id="${id}">',
+                '<div class="${hiddenClass} ${layerBoxClass}" id="${id}">',
                 '${innerHTML}</div>',
-                '<b class="state-hidden" id="${infoId}"></b>',
+                '<b class="${hiddenClass}" id="${infoId}"></b>',
             '</div>'].join('');
         // 省外包
         var tplProvinceWrapper = '<div class="${classes}">${content}</div>';
@@ -388,6 +397,7 @@ define(
                                     region,
                                     'city-box'
                                 ).join(' '),
+                            hiddenClass: getHiddenClassName(),
                             id: helper.getId(region, 'sub-' + item.id),
                             infoId: helper.getId(region, 'info-' + item.id),
                             innerHTML: subItemHtml.join('')
@@ -681,7 +691,7 @@ define(
                 selectMulti(region, region.rawValue);
             }
 
-            lib.removeClass(dom, 'state-hidden');
+            lib.removeClass(dom, getHiddenClassName());
             var wrapper = dom.parentNode.nextSibling;
             helper.addPartClasses(region, 'text-over', wrapper);
         }
@@ -695,7 +705,7 @@ define(
          * @param {string} itemId 弹出层对应的父城市id.
          */
         function hideSubCity(region, dom, itemId) {
-            lib.addClass(dom, 'state-hidden');
+            lib.addClass(dom, getHiddenClassName());
             var wrapper = dom.parentNode.nextSibling;
             helper.removePartClasses(region, 'text-over', wrapper);
         }

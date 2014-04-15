@@ -7,7 +7,7 @@
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-calendar {
+.@{ui-class-prefix}-calendar {
     border: 1px solid #a9adb6;/*border:1px solid #dde0e9;*/
     width: 110px;
     height: 23px;
@@ -21,18 +21,18 @@
     .border-radius (3px, 3px, 3px, 3px);
 }
 
-.ui-calendar-text {
+.@{ui-class-prefix}-calendar-text {
     padding-left: 3px;
     width: 85px;
     float: right;
 }
 
-.ui-calendar:hover,
-.ui-calendar:active {
+.@{ui-class-prefix}-calendar:hover,
+.@{ui-class-prefix}-calendar:active {
     border-color: #a9adb6;
 }
 
-.ui-calendar-arrow {
+.@{ui-class-prefix}-calendar-arrow {
     float: left;
     height: 16px;
     margin-top: 3px;
@@ -40,31 +40,31 @@
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-cal.png", left, 0px, #f3f3f3);
 }
-.ui-calendar-layer {
+.@{ui-class-prefix}-calendar-layer {
     background: #fff;
     width: 210px;
     -moz-user-select: none;
     -webkit-user-select: none;
 }
-.ui-calendar-layer-hidden {
+.@{ui-class-prefix}-calendar-layer-hidden {
     display: none;    
 }
 
-.ui-calendar-disabled,
-.ui-calendar-read-only {
+.@{ui-class-prefix}-calendar-disabled,
+.@{ui-class-prefix}-calendar-read-only {
     color: #999;
     border-color: #D8D8D8;
 }
 
 /** 验证 */
-.ui-calendar-validity-invalid {
+.@{ui-class-prefix}-calendar-validity-invalid {
     border: 1px solid red;
 }
-.ui-calendar-validity-label {
+.@{ui-class-prefix}-calendar-validity-label {
     display:block;
     margin-top: 5px;
 }
-.ui-calendar-validity-label-invalid {
+.@{ui-class-prefix}-calendar-validity-label-invalid {
     .background('../img/esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
     border: 1px solid #F0CCCC;
     color: #dd6767;

@@ -10,6 +10,7 @@ define(
     function(require) {
         var u = require('underscore');
         var lib = require('./lib');
+        var ui = require('./main');
 
         /**
          * 浮层基类
@@ -73,7 +74,7 @@ define(
         Layer.prototype.create = function () {
             var element =
                 this.control.helper.createPart('layer', this.nodeName);
-            lib.addClass(element, 'ui-layer');
+            lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
             return element;
         };
 
@@ -116,7 +117,7 @@ define(
 
         function getHiddenClasses(layer) {
             var classes = layer.control.helper.getPartClasses('layer-hidden');
-            classes.unshift('ui-layer-hidden');
+            classes.unshift(ui.getConfig('uiClassPrefix') + '-layer-hidden');
 
             return classes;
         }
