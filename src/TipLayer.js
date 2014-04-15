@@ -372,7 +372,7 @@ define(
                             positionOpt = positionOpt.split('|');
                             options.positionOpt = {
                                 top: positionOpt[0] || 'top',
-                                right: positionOpt[1] || 'left',
+                                right: positionOpt[1] || 'left'
                             };
                         }
                         tipLayer.attachTo(options);
