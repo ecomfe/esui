@@ -12,7 +12,7 @@ define(
         var lib = require('./lib');
         var ui = require('./main');
         var InputControl = require('./InputControl');
-        var supportPlaceholder = 
+        var supportPlaceholder =
             ('placeholder' in document.createElement('input'));
 
         /**
@@ -123,7 +123,7 @@ define(
                 }
 
                 if (!properties.placeholder) {
-                    properties.placeholder = 
+                    properties.placeholder =
                         this.main.getAttribute('placeholder');
                 }
 
@@ -296,7 +296,7 @@ define(
                 // 如果原来有`tabindex`属性会放到`main`上来，要去掉，
                 // 不然会出现TAB导航的问题，需要2次TAB才能正确到文本框
                 lib.removeAttribute(this.main, 'tabindex');
-                
+
                 // `replaceMain`会复制`id`属性，但`TextBox`是特殊的，`id`要保留下来
                 this.inputId = main.id || this.helper.getId('input');
 
@@ -336,8 +336,8 @@ define(
             this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
             this.helper.addDOMEvent(input, 'focus', focus);
             this.helper.addDOMEvent(input, 'blur', blur);
-            var inputEventName = ('oninput' in input) 
-                ? 'input' 
+            var inputEventName = ('oninput' in input)
+                ? 'input'
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
             this.helper.delegateDOMEvent(input, 'change');
@@ -364,7 +364,7 @@ define(
                 name: 'rawValue',
                 paint: function (textbox, rawValue) {
                     var input = lib.g(textbox.inputId);
-                    var eventName = 
+                    var eventName =
                         ('oninput' in input) ? 'input' : 'propertychange';
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
                     textbox.helper.removeDOMEvent(input, eventName);
@@ -422,6 +422,7 @@ define(
                         catch (badErrorForIE) {
                         }
                         lib.removeAttribute(input, 'maxlength');
+                        lib.removeAttribute(input, 'maxLength'); // 兼容IE7
                     }
                     else {
                         input.maxLength = maxLength;
@@ -597,11 +598,11 @@ define(
          */
         TextBox.prototype.getValidityLabel = function () {
             // `TextBox`根据`mode`来分配具体的类型
-            var label = 
+            var label =
                 InputControl.prototype.getValidityLabel.apply(this, arguments);
             if (label) {
                 label.set(
-                    'targetType', 
+                    'targetType',
                     this.mode === 'textarea' ? 'TextArea' : 'TextBox'
                 );
             }
