@@ -137,14 +137,14 @@ define(
          * @inner
          */
         function closeClickHandler() {
+            this.fire('close');
+
             if (this.closeOnHide) {
                 this.dispose();
             }
             else {
                 this.hide();
             }
-            this.fire('close');
-
         }
 
 
@@ -431,12 +431,12 @@ define(
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     defaultFoot: ''
                         + '<div '
-                        + 'class="' 
+                        + 'class="'
                         + this.helper.getPartClassNames('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
                         + 'childName:btnOk;skin:spring;">确定</div>'
                         + '<div '
-                        + 'class="' 
+                        + 'class="'
                         + this.helper.getPartClassNames('cancel-btn')
                         + 'data-ui="type:Button;'
                         + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
