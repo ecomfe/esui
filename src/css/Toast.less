@@ -1,0 +1,149 @@
+@keyframes ui-toast-show {
+    from {
+        opacity: 0;
+        margin-top: -30px;
+    }
+    to {
+        opacity: 1;
+        margin-top: -1px;
+    }
+}
+@-webkit-keyframes ui-toast-show {
+    from {
+        opacity: 0;
+        margin-top: -30px;
+    }
+    to {
+        opacity: 1;
+        margin-top: -1px;
+    }
+}
+
+.ui-toast {
+    position: fixed;
+    top: 80px;
+    text-align: center;
+    // 这是个很神奇的事情，一般来说放一个占满宽度的元素会导致下面的东西不能点击，
+    // 因此有`pointer-events`来处理，但是IE不支持这个所以有兼容性问题。
+    // 但是IE6-9（10未测）统一透明的地方是默认穿透的，所以完全没问题- -
+
+    // 经过测试IE下并不是所有元素能穿透
+    // 内容元素能穿透（文本框、文本等），空白部分穿透不了
+    // 导致我们的select控件只有文字部分能点，右边一部分点击和hover都没反应
+    // 所以目前把 width 设为100% height 设为0，来达到居中，又不遮罩底层
+    // pointer-events: none;
+    width: 100%;
+    height: 0;
+    z-index: 99999999;
+    color: #555;
+    -webkit-animation: ui-toast-show .3s;
+    animation: ui-toast-show .3s;
+}
+
+.ui-toast-collection-area {
+    position: fixed;
+    right: 20px;
+    bottom: 19px;
+    max-width: 40em;
+}
+
+.ui-toast-collection-area {
+    .ui-toast {
+        position: static;
+        margin-top: -1px;
+        height: auto;
+        .ui-toast-content {
+            border-radius: 0px;
+            display: block;
+            box-shadow: none;
+        }
+    }
+    .ui-toast:first-child {
+        .ui-toast-content {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+    }
+    .ui-toast:last-child {
+        .ui-toast-content { 
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+    }
+}
+
+//默认消息
+.ui-toast-content {
+    margin: 0;
+    padding: 5px 15px;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    line-height: 23px;
+    border: 1px solid;
+    pointer-events: auto;
+    border-radius: 4px;
+    font-size: 14px;
+
+    strong {
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        max-width: 40em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        font-weight: bold;
+    }
+}
+
+//普通消息
+.ui-toast-normal {
+    color: #565656;
+    .ui-toast-content {
+        background-color: #EAEAEA;
+        border-color: #A0A0A0;
+        box-shadow: 0px 2px 10px 0px #EAEAEA;
+    }
+}
+
+//通知类消息
+.ui-toast-info {
+    color: #FFF;
+    .ui-toast-content {
+        background-color: #57B6E1;
+        border-color: #007DB7;
+        box-shadow: 0px 2px 10px 0px #80C5E4;
+    }
+}
+
+//错误类消息
+.ui-toast-error {
+    color: #FFF;
+    .ui-toast-content {
+        background-color: #FF0000;
+        border-color: #8B0000;
+        box-shadow: 0px 2px 10px 0px #FF7E7E;
+    }
+}
+
+//警告类消息
+.ui-toast-alert {
+    color: #AA6200;
+    .ui-toast-content {
+        background-color: #FFEAA8;
+        border-color: #FFB72A;
+        box-shadow: 0px 2px 10px 0px #FFF5C5;
+    }
+}
+
+//成功类消息
+.ui-toast-success {
+    color: #006400;
+    .ui-toast-content {
+        background-color: #8FEC8F;
+        border-color: #006400;
+        box-shadow: 0px 2px 10px 0px #B1FF93;
+    }
+}
