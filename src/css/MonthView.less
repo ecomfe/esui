@@ -1,16 +1,17 @@
  /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 单日历样式
  * @author dbear
  */
 @import "mixin.less";
 @import "variable.less";
+
 .@{ui-class-prefix}-monthview {
     background:#fff;
     width:210px;
-    .user-select();   
+    .user-select();
 }
 
 .@{ui-class-prefix}-monthview-head {
@@ -19,7 +20,7 @@
     padding: 2px 5px;
 
     table {width:200px;}
-    
+
     /** 先前向后按钮 */
     .@{ui-class-prefix}-monthview-month-select,
     .@{ui-class-prefix}-monthview-year-select {
@@ -28,14 +29,14 @@
 
     .@{ui-class-prefix}-monthview-month-forward,
     .@{ui-class-prefix}-monthview-month-back {
-        .background("../img/esui.png", repeat, 0px, -200px);
+        .background(url(../img/esui.png), repeat, 0px, -200px);
         font-size: 1px;
         height: 20px;
         width: 20px;
         padding: 0;
         float: left;
         &:active {
-            .background("../img/esui.png", repeat, 0px, -200px);
+            .background(url(../img/esui.png), repeat, 0px, -200px);
             height: 20px;
         }
     }
@@ -135,7 +136,7 @@
     .@{ui-class-prefix}-monthview-month-select-all-selected {
         background: #CCCED4;
     }
- 
+
     .@{ui-class-prefix}-monthview-month-row-select {
         background: #f1f1f1;
         height: 21px;
@@ -153,16 +154,16 @@
     /** 先前向后按钮 */
     .@{ui-class-prefix}-monthview-month-forward,
     .@{ui-class-prefix}-monthview-month-back {
-        background-position: 0 -240px; 
+        background-position: 0 -240px;
         &:active {
-            .background("../img/esui.png", repeat, 0px, -240px);
+            .background(url(../img/esui.png), repeat, 0px, -240px);
             height: 20px;
             border-color: #CFCFCF;
         }
     }
 
     .@{ui-class-prefix}-monthview-month-forward {
-        background-position: -20px -240px; 
+        background-position: -20px -240px;
         &:active {
             background-position: -20px -240px;
             border-color: #CFCFCF;

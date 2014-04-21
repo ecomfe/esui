@@ -1,7 +1,7 @@
  /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 对话框样式
  * @author dbear
  */
@@ -19,7 +19,7 @@
 }
 
 .ui-dialog-head-mixin() {
-    .background("../img/esui-dialog-head-bg.png", repeat);
+    .background(url(../img/esui-dialog-head-bg.png), repeat);
     color: #FFFFFF;
     font-weight: bold;
     height: 26px;
@@ -31,7 +31,7 @@
 }
 
 .ui-dialog-close-icon-mixin() {
-    .background("../img/esui-dialog-head-close.png");
+    .background(url(../img/esui-dialog-head-close.png));
     height: 13px;
     width: 13px;
     position: absolute;
@@ -70,7 +70,7 @@
     }
 }
 
-.ui-dialog-draggable-mixin() {  
+.ui-dialog-draggable-mixin() {
     .@{ui-class-prefix}-dialog-head {
         cursor: move;
     }
@@ -158,7 +158,7 @@
     }
 
     .@{ui-class-prefix}-dialog-icon-warning {
-        .background("../img/esui-dialog-notice.png");
+        .background(url(../img/esui-dialog-notice.png));
         display: block;
         float: left;
         height: 22px;
@@ -168,7 +168,7 @@
     }
 
     .@{ui-class-prefix}-dialog-icon-confirm {
-        .background("../img/esui-dialog-question.png");
+        .background(url(../img/esui-dialog-question.png));
         display: block;
         float: left;
         height: 34px;

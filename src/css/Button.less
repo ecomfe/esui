@@ -1,7 +1,7 @@
  /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
+  *
   * @file 按钮样式
   * @author dbear
   */
@@ -11,6 +11,7 @@
  */
 @import "mixin.less";
 @import "variable.less";
+
 .@{ui-class-prefix}-button {
     .user-select();
     overflow:hidden;
@@ -31,7 +32,7 @@
     &:before {
         content: '.';
         visibility: hidden;
-        display: inline-block; 
+        display: inline-block;
         width: 0;
     }
 
@@ -94,7 +95,7 @@ button.@{skin-class-prefix}-spring-button {
 
 .@{skin-class-prefix}-spring-add-button {
     .linear-gradient-background-with-image (
-        top, #6cbb4c, #519c30, "../img/esui-button-plus.gif", 9px, center, #65b445);
+        top, #6cbb4c, #519c30, url(../img/esui-button-plus.gif), 9px, center, #65b445);
     padding: 0 13px 0 27px;
 }
 
@@ -107,7 +108,7 @@ button.@{skin-class-prefix}-spring-button {
 }
 .@{skin-class-prefix}-spring-add-button:active {
     .linear-gradient-background-with-image (
-        top, #519c30, #6cbb4c, "../img/esui-button-plus.gif", 9px, center, #65b445);
+        top, #519c30, #6cbb4c, url(../img/esui-button-plus.gif), 9px, center, #65b445);
 }
 
 .@{skin-class-prefix}-spring-button:hover,
@@ -119,18 +120,18 @@ button.@{skin-class-prefix}-spring-button {
 /** 下载系列 */
 .@{skin-class-prefix}-download-button {
     .linear-gradient-background-with-image (
-        top, #FFF, #f6f6f6, "../img/esui-btn-download.png", 40px, center, #65b445);
+        top, #FFF, #f6f6f6, url(../img/esui-btn-download.png), 40px, center, #65b445);
     padding-left: 12px;
     padding-right: 25px;
 }
 .@{skin-class-prefix}-download-button:active {
     .linear-gradient-background-with-image (
-        top, #f6f6f6, #FFF, "../img/esui-btn-download.png", 40px, center, #65b445);
+        top, #f6f6f6, #FFF, url(../img/esui-btn-download.png), 40px, center, #65b445);
 }
 
 /** 关闭layer按钮 */
 .@{skin-class-prefix}-layerClose-button {
-    .background("../img/esui.png", repeat, -37px, -88px, transparent);
+    .background(url(../img/esui.png), repeat, -37px, -88px, transparent);
     border: 0 none;
     height: 12px;
     overflow: hidden;
@@ -141,7 +142,7 @@ button.@{skin-class-prefix}-spring-button {
     padding: 0;
 }
 .@{skin-class-prefix}-layerClose-button:active {
-    .background("../img/esui.png", repeat, -37px, -88px, transparent);
+    .background(url(../img/esui.png), repeat, -37px, -88px, transparent);
     border: 1px solid #f6f6f6;
     height: 12px;
     width: 12px;
