@@ -16,7 +16,7 @@
          * Toast控件
          *
          * @param {Object=} options 初始化参数
-         * @extends ./Control
+         * @extends Control
          * @constructor
          * @public
          */
