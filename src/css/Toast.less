@@ -53,31 +53,9 @@
 
 .@{ui-class-prefix}-toast-collection-area {
     position: fixed;
-    right: 20px;
-    bottom: 19px;
-    max-width: 40em;
-    .@{ui-class-prefix}-toast {
-        position: static;
-        margin-top: -1px;
-        height: auto;
-        .@{ui-class-prefix}-toast-content {
-            border-radius: 0;
-            display: block;
-            box-shadow: none;
-        }
-    }
-    .@{ui-class-prefix}-toast:first-child {
-        .@{ui-class-prefix}-toast-content {
-            border-top-left-radius: 4px;
-            border-top-right-radius: 4px;
-        }
-    }
-    .@{ui-class-prefix}-toast:last-child {
-        .@{ui-class-prefix}-toast-content {
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
-    }
+    top: 0;
+    width: 100%;
+    height: 0;
 }
 
 //默认消息

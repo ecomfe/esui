@@ -31,17 +31,18 @@
          *
          * @cfg {number} [defaultProperties.duration=3000] 显示时间
          * @cfg {string} [defaultProperties.messageType='normal'] 消息类型
+         *      normal   默认信息：灰色背景
+         *      info     通知信息：蓝色背景
+         *      alert    警告信息：黄色背景
+         *      error    错误信息：红色背景
+         *      success  成功信息：绿色背景
          * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
-         *      normal info alert error success
-         * @cfg {boolean} [defaultProperties.isStack=false] 是否堆叠
-         *      false：顶部显示
-         *      true：右下角堆叠
          * @static
          */
         Toast.defaultProperties = {
             duration: 3000,
             messageType: 'normal',
-            isStack: false
+            disposeOnHide: true
         };
 
         /**
@@ -77,9 +78,6 @@
          */
         Toast.prototype.initStructure = function () {
             this.helper.addPartClasses(this.messageType);
-            if (this.main.isStack) {
-                this.helper.addPartClasses('stack');
-            }
             this.helper.getPartHTML('content', 'p');
             this.main.innerHTML = this.helper.getPartHTML('content', 'p');
         };
@@ -97,7 +95,6 @@
                 paint: function (toast, content) {
                     var container = toast.helper.getPart('content');
                     container.innerHTML = content;
-                    toast.show();
                 }
             }
         );
@@ -151,9 +148,8 @@
         };
 
         /**
-         * Toast控件
+         * 获取的容器,可自行添加样式，使其呈现堆叠效果。
          *
-         * 获取堆叠时的容器
          * @private
          */
         function getContainer() {
@@ -189,12 +185,8 @@
                         options.messageType = options.messageType || messageType;
                         options = lib.extend({ content: content }, options);
                         var toast = new Toast(options);
-                        if (options.isStack) {
-                            toast.appendTo(getContainer.call(toast));
-                        }
-                        else {
-                            toast.appendTo(document.body);
-                        }
+                        Control.prototype.hide.apply(toast);
+                        toast.appendTo(getContainer.call(toast));
                         return toast;
                     };
                 }) (allType[key]);
