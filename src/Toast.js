@@ -8,15 +8,15 @@
  */
  define(
     function (require) {
-        var lib = require('esui/lib');
-        var helper = require('esui/controlHelper');
-        var Control = require('esui/Control');
+        var lib = require('./lib');
+        var helper = require('./controlHelper');
+        var Control = require('./Control');
 
         /**
          * Toast控件
          *
          * @param {Object=} options 初始化参数
-         * @extends esui/Control
+         * @extends ./Control
          * @constructor
          * @public
          */
@@ -30,16 +30,17 @@
          * 默认属性值
          *
          * @cfg {number} [defaultProperties.duration=3000] 显示时间
-         * @cfg {string} [defaultProperties.msgType='normal'] 消息类型
+         * @cfg {string} [defaultProperties.messageType='normal'] 消息类型
+         * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
          *      normal info alert error success
          * @cfg {boolean} [defaultProperties.isStack=false] 是否堆叠
-         *      false: 顶部显示
+         *      false：顶部显示
          *      true：右下角堆叠
          * @static
          */
         Toast.defaultProperties = {
             duration: 3000,
-            msgType: 'normal',
+            messageType: 'normal',
             isStack: false
         };
 
@@ -47,18 +48,10 @@
          * 控件类型
          *
          * @type {string}
+         * @readonly
+         * @override
          */
         Toast.prototype.type = 'Toast';
-
-        /**
-         * 创建主元素
-         *
-         * @override
-         * @protected
-         */
-        Toast.prototype.createMain = function () {
-            return document.createElement('aside');
-        };
 
         /**
          * 初始化参数
@@ -70,13 +63,11 @@
         Toast.prototype.initOptions = function (options) {
             var properties = {};
             lib.extend(properties, Toast.defaultProperties, options);
-            if (properties.content === null) {
+            if (properties.content == null) {
                 properties.content = this.main.innerHTML;
             }
             this.setProperties(properties);
         };
-
-        var tempalte = '<p id="${id}" class="${classes}"></p>';
 
         /**
          * 初始化结构
@@ -85,17 +76,12 @@
          * @protected
          */
         Toast.prototype.initStructure = function () {
-            this.helper.addPartClasses(this.msgType);
+            this.helper.addPartClasses(this.messageType);
             if (this.main.isStack) {
                 this.helper.addPartClasses('stack');
             }
-            this.main.innerHTML = lib.format(
-                tempalte,
-                {
-                    id: this.helper.getId('content'),
-                    classes: this.helper.getPartClasses('content').join(' ')
-                }
-            );
+            this.helper.getPartHTML('content', 'p');
+            this.main.innerHTML = this.helper.getPartHTML('content', 'p');
         };
 
         /**
@@ -104,12 +90,12 @@
          * @protected
          * @override
          */
-        Toast.prototype.repaint = helper.createRepaint(
+        Toast.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
                 name: 'content',
                 paint: function (toast, content) {
-                    var container = toast.main.firstChild;
+                    var container = toast.helper.getPart('content');
                     container.innerHTML = content;
                     toast.show();
                 }
@@ -131,10 +117,7 @@
             this.fire('show');
             clearTimeout(this.timer);
             if (!isNaN(this.duration) && this.duration !== Infinity) {
-                this.timer = setTimeout(
-                    lib.bind(this.hide, this),
-                    this.duration
-                );
+                this.timer = setTimeout(lib.bind(this.hide, this), this.duration);
             }
         };
 
@@ -148,8 +131,9 @@
             Control.prototype.hide.apply(this, arguments);
             clearTimeout(this.timer);
             this.fire('hide');
-            //销毁自身
-            this.dispose();
+            if (this.disposeOnHide) {
+                this.dispose();
+            }
         };
 
         /**
@@ -174,10 +158,12 @@
          */
         function getContainer() {
             // 因为container是多个toast公用的，所以不能标记为特定id
-            var element = document.getElementById('ui-toast-collection-area');
+            var prefix = require('./main').getConfig('uiClassPrefix');
+            var containerId = prefix + '-toast-collection-area';
+            var element = document.getElementById(containerId);
             if (!element) {
                 element = document.createElement('div');
-                element.id = 'ui-toast-collection-area';
+                element.id = containerId;
                 this.helper.addPartClasses('collection-area', element);
                 document.body.appendChild(element);
             }
@@ -195,13 +181,13 @@
         var allType = ['show', 'info', 'alert', 'error', 'success'];
         for (var key in allType) {
             if (allType.hasOwnProperty(key)) {
-                (function (msgType) {
-                    Toast[msgType] = function (content, options) {
-                        if (msgType === 'show') {
-                            msgType = 'normal';
+                (function (messageType) {
+                    Toast[messageType] = function (content, options) {
+                        if (messageType === 'show') {
+                            messageType = 'normal';
                         }
-                        options.msgType = options.msgType || msgType;
-                        options = lib.extend({ content:content }, options);
+                        options.messageType = options.messageType || messageType;
+                        options = lib.extend({ content: content }, options);
                         var toast = new Toast(options);
                         if (options.isStack) {
                             toast.appendTo(getContainer.call(toast));
@@ -216,7 +202,7 @@
         };
 
         lib.inherits(Toast, Control);
-        require('esui').register(Toast);
+        require('./main').register(Toast);
         return Toast;
     }
 );
