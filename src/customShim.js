@@ -11,7 +11,7 @@
     var elements = [
         'Calendar', 'Crumb', 'Dialog', 'Label', 'Month-View', 'Pager', 'Panel', 'Range-Calendar',
         'Region', 'Rich-Calendar', 'Schedule', 'Search-Box', 'Sidebar', 'Tab', 'Table', 'Text-Box',
-        'Text-Line', 'Tip', 'Tip-Layer', 'Tree', 'Wizard'
+        'Text-Line', 'Tip', 'Tip-Layer', 'Tree', 'Wizard', 'Toast'
     ];
 
     for (var i = elements.length - 1; i > -1; --i) {
