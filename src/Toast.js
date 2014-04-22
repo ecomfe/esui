@@ -6,10 +6,9 @@
  * @author zhanglili(otakustay@gmail.com) , chenhaoyin(curarchy@163.com)
  * @date 2014-01-13
  */
- define(
+define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
 
         /**
@@ -189,9 +188,9 @@
                         toast.appendTo(getContainer.call(toast));
                         return toast;
                     };
-                }) (allType[key]);
+                })(allType[key]);
             }
-        };
+        }
 
         lib.inherits(Toast, Control);
         require('./main').register(Toast);
