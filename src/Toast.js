@@ -78,7 +78,6 @@
          */
         Toast.prototype.initStructure = function () {
             this.helper.addPartClasses(this.messageType);
-            this.helper.getPartHTML('content', 'p');
             this.main.innerHTML = this.helper.getPartHTML('content', 'p');
         };
 
