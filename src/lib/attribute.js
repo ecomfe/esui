@@ -53,11 +53,11 @@
                 result['class'] = 'className';
             }
             else {
-                result['className'] = 'class';
+                result.className = 'class';
             }
 
             if (label.getAttribute('for') === 'test') {
-                result['htmlFor'] = 'for';
+                result.htmlFor = 'for';
             }
             else {
                 result['for'] = 'htmlFor';

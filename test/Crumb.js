@@ -11,10 +11,10 @@ define(function (require) {
         });
 
         describe('created via script', function () {
-            it('should create a `<nav>` element as its main element', function () {
+            it('should create a `<esui-crumb>` element as its main element', function () {
                 var crumb = new Crumb();
                 crumb.appendTo(container);
-                expect(container.getElementsByTagName('nav').length).toBeGreaterThan(0);
+                expect(container.getElementsByTagName('esui-crumb').length).toBeGreaterThan(0);
             });
 
             it('should assign `path` property to an empty array if not given', function () {
@@ -33,12 +33,16 @@ define(function (require) {
                 var path = [
                     { href: '#1', text: 'test1' },
                     { href: '#2', text: 'test2' },
-                    { text: 'test3' },
+                    { text: 'test3' }
                 ];
                 expect(crumb.get('path')).toEqual(path);
             });
 
             it('should add separators to DOM', function () {
+                //for ie
+                main.innerHTML = '<a href="#1">test1</a><a href="#2">test2</a><span>test3</span>';
+                var crumb = new Crumb({ main: main });
+                crumb.appendTo(container);
                 expect(main.children.length).toBe(5);
                 expect(main.children[0].className).toContain('ui-crumb-node');
                 expect(main.children[0].className).toContain('ui-crumb-node-first');

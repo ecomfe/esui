@@ -4,10 +4,10 @@ define(function (require) {
 
     describe('Label', function () {
         describe('created via script', function () {
-            it('should create a `<span>` element if `tagName` is not specified', function () {
+            it('should create a `<esui-label>` element if `tagName` is not specified', function () {
                 var label = new Label();
                 label.appendTo(container);
-                expect(label.main.nodeName.toLowerCase()).toBe('span');
+                expect(label.main.nodeName.toLowerCase()).toBe('esui-label');
             });
 
             it('should create a specified element if `tagName` is given', function () {

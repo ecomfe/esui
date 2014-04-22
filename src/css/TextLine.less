@@ -1,14 +1,14 @@
  /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
+  *
   * @file 带行号输入框
   * @author dbear
   */
 @import "mixin.less";
 @import "variable.less";
-.ui-textline {
-    // padding: 0 4px;
+.@{ui-class-prefix}-textline {
+    padding: 0 4px;
     position: relative;
     border: 1px solid #dddddd;
     &:hover {
@@ -16,7 +16,7 @@
     }
 }
 
-.ui-textline-num-line {
+.@{ui-class-prefix}-textline-num-line {
     background: #f8f9fb;
     color: #000;
     font-weight: bold;
@@ -30,7 +30,7 @@
     top: 0;
 }
 
-.ui-textline-text-container {
+.@{ui-class-prefix}-textline-text-container {
     position: absolute;
     left: 30px;
     right: 0;
@@ -48,25 +48,26 @@
         margin: 0;
         border: 0 none;
         outline: none;
+        resize: none;
     }
 }
 
-.ui-textline-disabled,
-.ui-textline-read-only {
+.@{ui-class-prefix}-textline-disabled,
+.@{ui-class-prefix}-textline-read-only {
     color: #999;
     border-color: #D8D8D8;
 }
 
 /** 验证 */
-.ui-textline-validity-invalid {
+.@{ui-class-prefix}-textline-validity-invalid {
     border: 1px solid red;
 }
-.ui-textline-validity-label {
+.@{ui-class-prefix}-textline-validity-label {
     display:block;
     margin-top: 5px;
 }
-.ui-textline-validity-label-invalid {
-    .background('../img/esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+.@{ui-class-prefix}-textline-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
     border: 1px solid #F0CCCC;
     color: #dd6767;
     padding-left: 50px;

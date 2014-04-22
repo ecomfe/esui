@@ -62,6 +62,7 @@ define(
                     properties.maxLength = this.main.maxLength;
                 }
             }
+            //TODO: custom elments 的兼容
             else {
                 if (!properties.text) {
                     properties.text = lib.getText(this.main);
@@ -85,10 +86,10 @@ define(
             // 一个搜索框由一个文本框和一个按钮组成
             var textboxOptions = {
                 mode: 'text', 
-                skin: 'search', 
                 childName: 'text',
                 height: this.height,
-                viewContext: this.viewContext
+                viewContext: this.viewContext,
+                placeholder: this.placeholder
             };
 
             if (lib.isInput(this.main)) {
@@ -116,7 +117,6 @@ define(
 
             var buttonOptions = {
                 main: document.createElement('span'),
-                skin: 'search',
                 childName: 'button',
                 content: '搜索',
                 viewContext: this.viewContext

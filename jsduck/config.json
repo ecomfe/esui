@@ -68,6 +68,7 @@
         "../src/TextBox.js",
         "../src/TextLine.js",
         "../src/Tip.js",
+        "../src/Toast.js",
         "../src/Tree.js",
         "../src/TreeStrategy.js",
         "../src/Validity.js",

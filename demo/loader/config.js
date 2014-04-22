@@ -14,7 +14,7 @@ require.config({
         },
         {
             name: 'underscore',
-            location: '../dep/underscore/1.4.4/src',
+            location: '../dep/underscore/1.5.2/src',
             main: 'underscore'
         },
         {
@@ -25,3 +25,13 @@ require.config({
     ]
 });
 document.createElement('header');
+var prefix = 'esui-';
+var elements = [
+    'Calendar', 'Crumb', 'Dialog', 'Label', 'Month-View', 'Pager', 'Panel', 'Range-Calendar',
+    'Region', 'Rich-Calendar', 'Schedule', 'Search-Box', 'Sidebar', 'Select', 'Tab', 'Table',
+    'Text-Box', 'Text-Line', 'Tip', 'Tip-Layer', 'Tree', 'Wizard'
+];
+
+for (var i = elements.length - 1; i > -1; --i) {
+    document.createElement(prefix + elements[i]);
+}

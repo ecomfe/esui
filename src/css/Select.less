@@ -1,13 +1,13 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 下拉选择样式
  * @author dbear
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-select {
+.@{ui-class-prefix}-select {
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
     .ellipse-overflow ();
@@ -23,25 +23,25 @@
     outline: none;
 }
 
-.ui-select:hover,
-.ui-select:focus {
+.@{ui-class-prefix}-select:hover,
+.@{ui-class-prefix}-select:focus {
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -36px, #fff);
 }
 
-.ui-select:active {
+.@{ui-class-prefix}-select:active {
     .linear-gradient-background-with-image (
         top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png", right, -36px, #fff);
 }
 
-.ui-select-active,
-.ui-select-active:hover,
-.ui-select-active:focus {
+.@{ui-class-prefix}-select-active,
+.@{ui-class-prefix}-select-active:hover,
+.@{ui-class-prefix}-select-active:focus {
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -67px, #fff);
 }
 
-.ui-select-layer {
+.@{ui-class-prefix}-select-layer {
     .reset-list ();
     .box-sizing (border-box);
     background: none repeat scroll 0 0 #FFFFFF;
@@ -57,7 +57,7 @@
     z-index: @layer-z-index;
 }
 
-.ui-select-item {
+.@{ui-class-prefix}-select-item {
     color: #333333;
     .interactive-cursor ();
     line-height: 22px;
@@ -65,31 +65,31 @@
     padding: 0 4px;
 }
 
-.ui-select-item-disabled {
+.@{ui-class-prefix}-select-item-disabled {
     color: #999;
 }
 
-.ui-select-item-selected {
+.@{ui-class-prefix}-select-item-selected {
     background-color: #E0E0E0;
     border: 1px solid #DDDDDD;
     padding: 0 3px;
 }
 
-.ui-select-item:hover {
+.@{ui-class-prefix}-select-item:hover {
     background-color: #F1F1F1;
 }
 
-.ui-select-item span {
+.@{ui-class-prefix}-select-item span {
     display: block;
     .ellipse-overflow ();
 }
 
-.ui-select-layer-hidden {
+.@{ui-class-prefix}-select-layer-hidden {
     display: none;
 }
 
-.ui-select-disabled,
-.ui-select-read-only {
+.@{ui-class-prefix}-select-disabled,
+.@{ui-class-prefix}-select-read-only {
     color: #999;
     border-color: #D8D8D8;
     &:hover,
@@ -100,15 +100,15 @@
 }
 
 /** 验证 */
-.ui-select-validity-invalid {
+.@{ui-class-prefix}-select-validity-invalid {
     border: 1px solid red;
 }
-.ui-select-validity-label {
+.@{ui-class-prefix}-select-validity-label {
     display:block;
     margin-top: 5px;
 }
-.ui-select-validity-label-invalid {
-    .background('../img/esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+.@{ui-class-prefix}-select-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
     border: 1px solid #F0CCCC;
     color: #dd6767;
     padding-left: 50px;

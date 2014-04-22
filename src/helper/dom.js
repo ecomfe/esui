@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 控件部件相关辅助方法
  * @author otakustay
@@ -10,7 +10,7 @@ define(
     function (require) {
         /**
          * 获取控件用于生成css class的类型
-         * 
+         *
          * @param {Control} control 控件实例
          * @return {string}
          * @ignore
@@ -22,7 +22,7 @@ define(
 
         /**
          * 将参数用`-`连接成字符串
-         * 
+         *
          * @param {string...} args 需要连接的串
          * @return {string}
          * @ignore
@@ -59,8 +59,8 @@ define(
          * @return {string[]}
          */
         helper.getPartClasses = function (part) {
-            if (part 
-                && this.partClassCache 
+            if (part
+                && this.partClassCache
                 && this.partClassCache.hasOwnProperty(part)
             ) {
                 // 得复制一份，不然外面拿到后往里`push`些东西就麻烦了
@@ -72,7 +72,7 @@ define(
             var prefix = ui.getConfig('uiClassPrefix');
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
-            
+
             if (part) {
                 classes.push(joinByStrike(prefix, type, part));
                 if (skin) {
@@ -87,7 +87,7 @@ define(
                 }
             }
             else {
-                classes.push('ui-ctrl');
+                classes.push(joinByStrike(prefix, 'ctrl'));
                 classes.push(joinByStrike(prefix, type));
                 if (skin) {
                     classes.push(
@@ -111,6 +111,31 @@ define(
         };
 
         /**
+         * 获取控件部件相关的主class字符串
+         *
+         * 如果不传递`part`参数，则生成如下：
+         *
+         * - `ui-{styleType}`
+         *
+         * 如果有`part`参数，则生成如下：
+         *
+         * - `ui-{styleType}-{part}`
+         *
+         * @param {string} [part] 部件名称
+         * @return {string}
+         */
+        helper.getPrimaryClassName = function (part) {
+            var type = getControlClassType(this.control);
+
+            if (part) {
+                return joinByStrike(ui.getConfig('uiClassPrefix'), type, part);
+            }
+            else {
+                return joinByStrike(ui.getConfig('uiClassPrefix'), type);
+            }
+        };
+
+        /**
          * 添加控件部件相关的class，具体可参考{@link Helper#getPartClasses}方法
          *
          * @param {string} [part] 部件名称
@@ -120,7 +145,7 @@ define(
             if (typeof element === 'string') {
                 element = this.getPart(element);
             }
-            
+
             element = element || this.control.main;
             if (element) {
                 lib.addClasses(
@@ -164,7 +189,7 @@ define(
          * @return {string[]}
          */
         helper.getStateClasses = function (state) {
-            if (this.stateClassCache 
+            if (this.stateClassCache
                 && this.stateClassCache.hasOwnProperty(state)
             ) {
                 // 得复制一份，不然外面拿到后往里`push`些东西就麻烦了
@@ -193,7 +218,7 @@ define(
                 // 还是得复制一份，不然这个返回回去就可能被修改了
                 this.stateClassCache[state] = classes.slice();
             }
-            
+
             return classes;
         };
 
@@ -206,7 +231,7 @@ define(
             var element = this.control.main;
             if (element) {
                 lib.addClasses(
-                    element, 
+                    element,
                     this.getStateClasses(state)
                 );
             }
@@ -221,7 +246,7 @@ define(
             var element = this.control.main;
             if (element) {
                 lib.removeClasses(
-                    element, 
+                    element,
                     this.getStateClasses(state)
                 );
             }
@@ -229,14 +254,14 @@ define(
 
         /**
          * 获取用于控件DOM元素的id
-         * 
+         *
          * @param {string} [part] 部件名称，如不提供则生成控件主元素的id
-         * @return {string} 
+         * @return {string}
          */
         helper.getId = function (part) {
             part = part ? '-' + part : '';
             if (!this.control.domIDPrefix) {
-                this.control.domIDPrefix = 
+                this.control.domIDPrefix =
                     this.control.viewContext && this.control.viewContext.id;
             }
             var prefix = this.control.domIDPrefix
@@ -283,7 +308,7 @@ define(
 
         // 这些属性是不复制的，多数是某些元素特有
         var INPUT_SPECIFIED_ATTRIBUTES = {
-            type: true, name: true, alt: true, 
+            type: true, name: true, alt: true,
             autocomplete: true, autofocus: true,
             checked: true, dirname: true, disabled: true,
             form: true, formaction: true, formenctype: true,
@@ -323,7 +348,7 @@ define(
                     lib.setAttribute(main, name, attribute.value);
                 }
             }
-            
+
             lib.insertBefore(main, initialMain);
             initialMain.parentNode.removeChild(initialMain);
             this.control.main = main;
@@ -385,9 +410,12 @@ define(
                 }
             );
 
-            // value要特殊处理一下，可能是通过innerHTML设置的，
-            if (input.value) {
-                result['value'] = input.value;
+            // value要特殊处理一下，可能是通过innerHTML设置的，但是`<select>`元素在没有`value`属性时会自动选中第1个，
+            // 这会影响诸如`selectedIndex`属性的效果，因此对`<select>`要特别地排除
+            if (lib.hasAttribute(input, 'value')
+                || (input.nodeName.toLowerCase() !== 'select' && input.value)
+            ) {
+                result.value = input.value;
             }
 
             return u.defaults(options || {}, result);

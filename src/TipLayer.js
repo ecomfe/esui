@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 提示层
  * @author dbear
  */
@@ -20,7 +20,7 @@ define(
 
         /**
          * 提示层控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -30,7 +30,7 @@ define(
 
         /**
          * 渲染控件前重绘控件
-         * 
+         *
          */
         function parseMain(options) {
             var main = options.main;
@@ -58,7 +58,7 @@ define(
 
         /**
          * 构建提示层标题栏
-         * 
+         *
          * @param {ui.TipLayer} 控件对象
          * @param {HTMLElement} mainDOM head主元素
          * @inner
@@ -194,14 +194,21 @@ define(
         function delayHide(tipLayer, delayTime) {
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
-            tipLayer.hideTimeout = 
+            tipLayer.hideTimeout =
                 setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
+        }
+
+        function getElementByControl(tipLayer, control) {
+            if (typeof control == 'string') {
+                control = tipLayer.viewContext.get(control);
+            }
+            return control.main;
         }
 
         TipLayer.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'TipLayer',
@@ -309,7 +316,7 @@ define(
                         var data = {
                             'class': bodyClass.join(' '),
                             'id': bodyId,
-                            'content': value 
+                            'content': value
                         };
                         body.setContent(
                             lib.format(bfTpl, data)
@@ -318,7 +325,7 @@ define(
                 },
                 {
                     name: 'foot',
-                    paint: function (tipLayer, value) { 
+                    paint: function (tipLayer, value) {
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
@@ -336,7 +343,7 @@ define(
                             var data = {
                                 'class': footClass.join(' '),
                                 'id': footId,
-                                'content': value 
+                                'content': value
                             };
                             if (!foot) {
                                 foot = createBF(tipLayer, 'foot');
@@ -345,6 +352,30 @@ define(
                                 lib.format(bfTpl, data)
                             );
                         }
+                    }
+                },
+                {
+                    name: [
+                        'targetDOM', 'targetControl',
+                        'showMode', 'positionOpt', 'delayTime'
+                    ],
+                    paint:
+                        function (tipLayer, targetDOM, targetControl,
+                            showMode, positionOpt, delayTime) {
+                        var options = {
+                            targetDOM: targetDOM,
+                            targetControl: targetControl,
+                            showMode: showMode,
+                            delayTime: delayTime
+                        };
+                        if (positionOpt) {
+                            positionOpt = positionOpt.split('|');
+                            options.positionOpt = {
+                                top: positionOpt[0] || 'top',
+                                right: positionOpt[1] || 'left'
+                            };
+                        }
+                        tipLayer.attachTo(options);
                     }
                 }
             ),
@@ -381,7 +412,7 @@ define(
                     width: rect.right - rect.left,
                     height: rect.bottom - rect.top
                 };
-            
+
                 // 浮层的存在会影响页面高度计算，必须先让它消失，
                 // 但在消失前，又必须先计算到浮层的正确高度
                 var previousDisplayValue = element.style.display;
@@ -426,7 +457,7 @@ define(
                     else {
                         config.left = 'right';
                         config.right = null;
-                    } 
+                    }
                 }
                 else {
                     config.right = 'left';
@@ -460,7 +491,7 @@ define(
                 var properties = {};
                 var arrowClass;
                 if (config.right) {
-                    properties.left = offset['right'];
+                    properties.left = offset.right;
                     if (config.top) {
                         arrowClass = 'lt';
                     }
@@ -469,7 +500,7 @@ define(
                     }
                 }
                 else if (config.left) {
-                    properties.left = offset['left'] - elementWidth;
+                    properties.left = offset.left - elementWidth;
                     if (config.top) {
                         arrowClass = 'rt';
                     }
@@ -479,10 +510,10 @@ define(
                 }
 
                 if (config.top) {
-                    properties.top = offset['top'];
+                    properties.top = offset.top;
                 }
                 else if (config.bottom) {
-                    properties.top = offset['bottom'] - elementHeight;
+                    properties.top = offset.bottom - elementHeight;
                 }
 
                 element.style.display = previousDisplayValue;
@@ -553,7 +584,7 @@ define(
             },
             /**
              * 将提示层捆绑到一个DOM元素或控件上
-             * 
+             *
              * @param {Object=} options 绑定参数
              *    {string} showMode 展示触发模式
              *    {string} targetDOM 绑定元素的id
@@ -580,17 +611,8 @@ define(
                     targetElement = lib.g(options.targetDOM);
                 }
                 else if (options.targetControl) {
-                    var targetControl;
-                    if (typeof options.targetControl == 'string') {
-                        targetControl =
-                            this.viewContext.get(options.targetControl);
-                    }
-                    else {
-                        targetControl = options.targetControl;
-                    }
-                    if (targetControl) {
-                        targetElement = targetControl.main;
-                    }
+                    targetElement =
+                        getElementByControl(this, options.targetControl);
                 }
 
                 if (!targetElement) {
@@ -609,14 +631,14 @@ define(
                         )
                     );
                     helper.addDOMEvent(
-                        this, this.main, 'mouseover', 
+                        this, this.main, 'mouseover',
                         lib.bind(
                             this.show, this, targetElement, options.positionOpt
                         )
                     );
 
                     helper.addDOMEvent(
-                        this, this.main, 'mouseout', 
+                        this, this.main, 'mouseout',
                         lib.curry(delayHide, this, 150)
                     );
                 }
@@ -631,9 +653,9 @@ define(
 
             /**
              * 获取提示层腿部的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getHead: function () {
                 return this.getChild('title');
@@ -641,9 +663,9 @@ define(
 
             /**
              * 获取提示层主体的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getBody: function () {
                 return this.getChild('body');
@@ -652,9 +674,9 @@ define(
 
             /**
              * 获取提示层腿部的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getFoot: function () {
                 return this.getChild('foot');
@@ -663,7 +685,7 @@ define(
             /**
              * 显示提示层
              * @param {HTMLElement} targetElement 提示层的捆绑元素
-             * 
+             *
              */
             show: function (targetElement, options) {
                 if (helper.isInStage(this, 'INITED')) {
@@ -676,7 +698,7 @@ define(
                 clearTimeout(this.hideTimeout);
 
                 helper.addDOMEvent(
-                    this, window, 'resize', 
+                    this, window, 'resize',
                     lib.curry(resizeHandler, this, targetElement, options)
                 );
 
@@ -698,7 +720,7 @@ define(
 
             /**
              * 隐藏提示层
-             * 
+             *
              */
             hide: function () {
                 if (this.isShow) {
@@ -712,7 +734,7 @@ define(
 
             /**
              * 设置标题文字
-             * 
+             *
              * @param {string} html 要设置的文字，支持html
              */
             setTitle: function (html) {
@@ -769,7 +791,7 @@ define(
 
             /**
              * 获取按钮点击的处理函数
-             * 
+             *
              * @private
              * @param {ui.TipLayer} tipLayer 控件对象
              * @param {string} 事件类型
@@ -799,7 +821,7 @@ define(
             var main = document.createElement('div');
             document.body.appendChild(main);
 
-            tipLayerId = helper.getGUID(tipLayerPrefix);
+            var tipLayerId = helper.getGUID(tipLayerPrefix);
             properties.id = tipLayerId;
             properties.main = main;
 
@@ -811,7 +833,7 @@ define(
 
             var okText = args.okText || '知道了';
             tipLayer.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:' 
+                + '<div data-ui="type:Button;childName:okBtn;id:'
                 + tipLayerId + '-' + okPrefix + ';width:50;"'
                 + 'class="'
                 + helper.getPartClasses(tipLayer, 'once-notice')
