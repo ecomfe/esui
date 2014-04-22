@@ -100,16 +100,6 @@ define(
             options.content = options.content || main.innerHTML;
             main.innerHTML = '';
         }
-        /**
-         * 创建主元素，默认使用`<aside>`元素
-         *
-         * @return {HTMLElement} 主元素
-         * @protected
-         * @override
-         */
-       /* Tip.prototype.createMain = function (options) {
-            return document.createElement('aside');
-        };*/
 
         /**
          * 初始化DOM结构

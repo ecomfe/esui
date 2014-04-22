@@ -936,17 +936,6 @@ define(
         };
 
         /**
-         * 创建控件主元素
-         *
-         * @param {Object=} options 构造函数传入的参数
-         * @return {HTMLElement}
-         * @override
-         */
-        /*createMain: function (options) {
-            return document.createElement('div');
-        },*/
-
-        /**
          * 重新渲染视图
          * 仅当生命周期处于RENDER时，该方法才重新渲染
          *

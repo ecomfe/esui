@@ -116,17 +116,6 @@ define(
         Select.prototype.type = 'Select';
 
         /**
-         * 创建主元素，默认使用`<div>`元素
-         *
-         * @return {HTMLElement} 主元素
-         * @protected
-         * @override
-         */
-       /* Select.prototype.createMain = function (options) {
-            return document.createElement('div');
-        };*/
-
-        /**
          * 根据`selectedIndex` < `value` < `rawValue`的顺序调整三个参数的值
          *
          * @param {Object} context 有可能包含以上3个参数的参数对象

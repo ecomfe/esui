@@ -50,17 +50,6 @@ define(
         TextBox.prototype.type = 'TextBox';
 
         /**
-         * 创建主元素，默认使用`<div>`元素
-         *
-         * @return {HTMLElement} 主元素
-         * @protected
-         * @override
-         */
-      /*  TextBox.prototype.createMain = function () {
-            return document.createElement('div');
-        };*/
-
-        /**
          * 初始化参数
          *
          * 如果主元素是`<input>`或`<textarea>`元素，

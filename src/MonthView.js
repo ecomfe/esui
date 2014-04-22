@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 单月日历
  * @author dbear
  */
@@ -19,7 +19,7 @@ define(
 
         /**
          * 日历控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -161,7 +161,7 @@ define(
             html.push(
                 lib.format(
                     tplHead,
-                    { 
+                    {
                         className:
                             monthView.helper.getPartClassName('month-main')
                     }
@@ -175,7 +175,7 @@ define(
             var headItemClass =
                 monthView.helper.getPartClassName('month-title');
             var headItemId = monthView.helper.getId('month-title');
-            var emptyHeadItemClass = 
+            var emptyHeadItemClass =
                 monthView.helper.getPartClassName('month-select-all');
 
             var tLen = titles.length;
@@ -203,7 +203,7 @@ define(
                 + 'id="${id}">${date}</td>';
 
             // 单行全选模板
-            var rowSelectClass = 
+            var rowSelectClass =
                 monthView.helper.getPartClassName('month-row-select');
             var tplRowSelectId = monthView.helper.getId('row-select');
             var rowTagIndex = 0;
@@ -291,7 +291,7 @@ define(
             monthView.rowTagNum = rowTagIndex;
 
             html.push('</tr></tbody></table>');
-            return html.join('');            
+            return html.join('');
         }
 
         /**
@@ -362,7 +362,7 @@ define(
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
-         */        
+         */
         function parseToCache(monthView) {
             var rawValue = monthView.rawValue;
             monthView.viewValue = {};
@@ -386,12 +386,12 @@ define(
          * @inner
          * @param {MonthView} monthView MonthView控件实例
          * @param {HTMLElement} dateItem 日期节点
-         * @return {number} 1: 可以选择 -1: 虚拟日期 0: 
+         * @return {number} 1: 可以选择 -1: 虚拟日期 0:
          */
         function isItemSelectable(monthView, dateItem) {
-            var virtualClasses = 
+            var virtualClasses =
                 helper.getPartClasses(monthView, 'month-item-virtual');
-            var disabledClasses = 
+            var disabledClasses =
                 helper.getPartClasses(monthView, 'month-item-disabled');
                 // 既不是范围外的，又不是虚拟的
                 if(!lib.hasClass(dateItem, virtualClasses[0])
@@ -450,7 +450,7 @@ define(
          * @param {HTMLElement} rowTagItem 横向批量选择按钮
          */
         function repaintRowTag(monthView, rowTag) {
-            var selectedClasses = 
+            var selectedClasses =
                 helper.getPartClasses(monthView, 'month-item-selected');
             var dateItem = rowTag.nextSibling;
             var isAllSelected = true;
@@ -480,7 +480,7 @@ define(
          */
         function selectByColumn(monthView, columnTag) {
             var index = columnTag.getAttribute('data-index');
-            var columnSelectedClasses = 
+            var columnSelectedClasses =
                 helper.getPartClasses(monthView, 'month-title-selected');
 
             var selectAll = true;
@@ -571,7 +571,7 @@ define(
          * @param {HTMLElement} columnTagItem 纵向批量选择按钮
          */
         function repaintColumnTag(monthView, columnTagItem) {
-            var selectedClasses = 
+            var selectedClasses =
                 helper.getPartClasses(monthView, 'month-item-selected');
             var index = columnTagItem.getAttribute('data-index');
             var isAllSelected = true;
@@ -612,11 +612,11 @@ define(
             var row = rowTag.parentNode;
             var rowSelectClasses =
                 helper.getPartClasses(monthView, 'month-row-select');
-            var rowSelectedClasses = 
+            var rowSelectedClasses =
                 helper.getPartClasses(monthView, 'month-row-select-selected');
-            var virtualClasses = 
+            var virtualClasses =
                 helper.getPartClasses(monthView, 'month-item-virtual');
-            var disabledClasses = 
+            var disabledClasses =
                 helper.getPartClasses(monthView, 'month-item-disabled');
 
             var selectAll = true;
@@ -631,7 +631,7 @@ define(
                     monthView, 'month-row-select-selected', rowTag
                 );
             }
-            
+
             var children = row.children;
             var viewValue = monthView.viewValue;
             var changedDates = [];
@@ -741,7 +741,7 @@ define(
             }
             else {
                 resetMultiSelected(monthView, dates);
-            } 
+            }
         }
 
         /**
@@ -860,7 +860,7 @@ define(
          * @param {MonthView} monthView MonthView控件实例
          * @param {number} year 年.
          * @param {number} month 月.
-         * @return {Object} 
+         * @return {Object}
          */
         function reviseYearMonth(monthView, year, month) {
             var me = monthView;
@@ -873,7 +873,7 @@ define(
             var viewMonth = year * 12 + month;
             var view = new Date(year, month, 1);
             month = view.getMonth();
-            
+
             // 设置早了，补足
             if (rangeBegin - viewMonth > 0) {
                 month += (rangeBegin - viewMonth);
@@ -882,12 +882,12 @@ define(
             else if (viewMonth - rangeEnd > 0) {
                 month -= (viewMonth - rangeEnd);
             }
- 
+
             // 重新设置
             view.setMonth(month);
             month = view.getMonth();
             year = view.getFullYear();
-            
+
             return {
                 year: year,
                 month: month
@@ -1018,7 +1018,7 @@ define(
                 datasource: getMonthOptions(monthView, monthView.year),
                 value: monthView.month
             });
-            
+
             // 如果month选择的数据没改变，则要手动触发变化
             if (!changes.hasOwnProperty('rawValue')) {
                 changeMonth(monthView, monthSelect);
@@ -1068,7 +1068,7 @@ define(
          */
          function rangeAdapter(range) {
             var begin;
-            var end;           
+            var end;
             // range类型如果是string
             if (typeof range === 'string') {
                 var beginAndEnd = range.split(',');
@@ -1137,7 +1137,7 @@ define(
             if (mode === 'single') {
                 return parseToDate(value);
             }
-            else {             
+            else {
                 var dateStrs = value.split(',');
                 var dates = [];
                 for (var i = 0; i < dateStrs.length - 1; i += 2) {
@@ -1207,7 +1207,7 @@ define(
         MonthView.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'MonthView',
@@ -1308,7 +1308,7 @@ define(
                         properties.month = parseInt(month, 10) - 1;
                     }
                 }
-                var changes = 
+                var changes =
                     Control.prototype.setProperties.apply(this, arguments);
 
                 if (changes.hasOwnProperty('rawValue')) {
@@ -1367,17 +1367,6 @@ define(
             },
 
             /**
-             * 创建控件主元素
-             *
-             * @param {Object=} options 构造函数传入的参数
-             * @return {HTMLElement}
-             * @override
-             */
-          /*  createMain: function (options) {
-                return document.createElement('DIV');
-            },*/
-
-            /**
              * 重新渲染视图
              * 仅当生命周期处于RENDER时，该方法才重新渲染
              *
@@ -1413,7 +1402,7 @@ define(
                         // 向前按钮
                         var monthForward = monthView.getChild('monthForward');
                         monthForward.setProperties({disabled: disabled});
-    
+
                         // 月份选择
                         var monthSel = monthView.getChild('monthSel');
                         monthSel.setProperties({disabled: disabled});
@@ -1466,8 +1455,8 @@ define(
 
             /**
              * 获取选取日期值
-             * 
-             * @return {Date|Array} 
+             *
+             * @return {Date|Array}
              */
             getRawValue: function () {
                 return this.rawValue;
@@ -1479,7 +1468,7 @@ define(
 
             /**
              * 将value从原始格式转换成string
-             * 
+             *
              * @param {*} rawValue 原始值
              * @return {string}
              */

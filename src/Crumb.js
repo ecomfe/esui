@@ -46,17 +46,6 @@ define(
         Crumb.prototype.type = 'Crumb';
 
         /**
-         * 创建控件主元素，默认使用`<nav>`元素
-         *
-         * @return {HTMLElement}
-         * @protected
-         * @override
-         */
-        /*Crumb.prototype.createMain = function () {
-            return document.createElement('nav');
-        };*/
-
-        /**
          * 初始化参数
          *
          * 如果初始化时未提供{@link Crumb#path}属性，则按以下规则构建该属性：

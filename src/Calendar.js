@@ -245,17 +245,6 @@ define(
             },
 
             /**
-             * 创建控件主元素，默认使用`<div>`元素
-             *
-             * @return {HTMLElement}
-             * @protected
-             * @override
-             */
-           /* createMain: function (options) {
-                return document.createElement('div');
-            },*/
-
-            /**
              * 重渲染
              *
              * @method

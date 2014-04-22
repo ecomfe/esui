@@ -32,17 +32,6 @@ define(
         Tab.prototype.type = 'Tab';
 
         /**
-         * 创建主元素，默认使用`<div>`元素
-         *
-         * @return {HTMLElement} 主元素
-         * @protected
-         * @override
-         */
-      /*  Tab.prototype.createMain = function () {
-            return document.createElement('div');
-        };
-*/
-        /**
          * 初始化参数
          *
          * 如果初始化时未给定{@link Tab#tabs}属性，则按以下规则从DOM中获取：

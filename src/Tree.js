@@ -54,17 +54,6 @@ define(
         Tree.prototype.type = 'Tree';
 
         /**
-         * 创建主元素，默认使用`<div>`元素
-         *
-         * @return {HTMLElement} 主元素
-         * @protected
-         * @override
-         */
-      /*  Tree.prototype.createMain = function () {
-            return document.createElement('div');
-        };*/
-
-        /**
          * @cfg defaultProperties
          *
          * 默认属性值
