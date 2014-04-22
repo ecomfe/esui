@@ -2,9 +2,9 @@
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
+ * @ignore
  * @file 简易信息提示控件
  * @author zhanglili(otakustay@gmail.com) , chenhaoyin(curarchy@163.com)
- * @date 2014-01-13
  */
 define(
     function (require) {
@@ -17,7 +17,6 @@ define(
          * @param {Object=} options 初始化参数
          * @extends Control
          * @constructor
-         * @public
          */
         function Toast(options) {
             Control.apply(this, arguments);
@@ -30,11 +29,11 @@ define(
          *
          * @cfg {number} [defaultProperties.duration=3000] 显示时间
          * @cfg {string} [defaultProperties.messageType='normal'] 消息类型
-         *      normal   默认信息：灰色背景
-         *      info     通知信息：蓝色背景
-         *      alert    警告信息：黄色背景
-         *      error    错误信息：红色背景
-         *      success  成功信息：绿色背景
+         *      `normal`：默认信息：灰色背景
+         *      `info`：通知信息：蓝色背景
+         *      `alert`：警告信息：黄色背景
+         *      `error`：错误信息：红色背景
+         *      `success`：成功信息：绿色背景
          * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
          * @static
          */
@@ -45,7 +44,7 @@ define(
         };
 
         /**
-         * 控件类型
+         * 控件类型，始终为`"Toast"`
          *
          * @type {string}
          * @readonly
@@ -57,8 +56,8 @@ define(
          * 初始化参数
          *
          * @param {Object=} options 构造函数传入的参数
-         * @override
          * @protected
+         * @override
          */
         Toast.prototype.initOptions = function (options) {
             var properties = {};
@@ -72,8 +71,8 @@ define(
         /**
          * 初始化结构
          *
-         * @override
          * @protected
+         * @override
          */
         Toast.prototype.initStructure = function () {
             this.helper.addPartClasses(this.messageType);
@@ -83,8 +82,8 @@ define(
         /**
          * 重渲染
          *
-         * @protected
          * @override
+         * @protected
          */
         Toast.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
@@ -101,7 +100,6 @@ define(
          * 显示提示信息
          *
          * @override
-         * @public
          */
         Toast.prototype.show = function () {
             if (this.helper.isInStage('DISPOSED')) {
@@ -120,7 +118,6 @@ define(
          * 隐藏提示信息
          *
          * @override
-         * @public
          */
         Toast.prototype.hide = function () {
             Control.prototype.hide.apply(this, arguments);
@@ -134,8 +131,8 @@ define(
         /**
          * 销毁控件，同时移出DOM树
          *
-         * @override
          * @protected
+         * @override
          */
         Toast.prototype.dispose = function () {
             clearTimeout(this.timer);
@@ -149,7 +146,7 @@ define(
         /**
          * 获取的容器,可自行添加样式，使其呈现堆叠效果。
          *
-         * @private
+         * @ignore
          */
         function getContainer() {
             // 因为container是多个toast公用的，所以不能标记为特定id
@@ -170,8 +167,7 @@ define(
          *
          * @parma {string} content 显示的内容
          * @param {Object} options 其它配置项
-         *
-         * @public
+         * @ignore
          */
         var allType = ['show', 'info', 'alert', 'error', 'success'];
         for (var key in allType) {

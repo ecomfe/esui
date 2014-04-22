@@ -463,7 +463,7 @@ define(
          * 开始某行的编辑逻辑，初始化子控件
          * @param {number} rowIndex 行序号
          * @param {number} columnIndex 列序号
-         * @public
+         * @ignore
          */
         function startEdit(rowIndex, columnIndex, element) {
             if (this.editable) {
@@ -500,7 +500,7 @@ define(
 
         /**
          * 取消编辑
-         * @public
+         * @ignore
          */
         function cancelEdit() {
             if (this == currentTable) {
@@ -510,7 +510,7 @@ define(
 
         /**
          * 隐藏编辑浮层
-         * @public
+         * @ignore
          */
         function hideEditLayer() {
             if (this === currentTable) {
@@ -520,7 +520,7 @@ define(
 
         /**
          * 显示编辑浮层
-         * @public
+         * @ignore
          */
         function showEditError () {
             if (this === currentTable) {
