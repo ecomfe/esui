@@ -139,6 +139,7 @@
          * @protected
          */
         Toast.prototype.dispose = function () {
+            clearTimeout(this.timer);
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
