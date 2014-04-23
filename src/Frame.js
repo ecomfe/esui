@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file Frame控件
  * @author otakustay
@@ -71,11 +71,16 @@ define(
             this.main.marginHeight = '0';
             this.main.marginWeight = '0';
 
-            this.helper.addDOMEvent(
-                this.main,
-                'load',
-                lib.bind(this.fire, this, 'load')
-            );
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Frame.prototype.initEvents = function () {
+            this.helper.delegateDOMEvent(this.main, 'load');
             this.helper.addDOMEvent(
                 this.main,
                 'message',

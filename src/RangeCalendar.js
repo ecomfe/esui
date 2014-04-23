@@ -918,21 +918,16 @@ define(
                 }
             );
 
-            var target = this.parent;
-            while(target) {
-                this.helper.addDOMEvent(
-                    target.main,
-                    'scroll',
-                    u.bind(this.layer.hide, this.layer)
-                );
-                target = target.parent;
-            }
+        };
 
-            this.helper.addDOMEvent(
-                this.main,
-                'mousedown',
-                u.bind(this.layer.toggle, this.layer)
-            );
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        RangeCalendar.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'mousedown', u.bind(this.layer.toggle, this.layer));
         };
 
         /**

@@ -384,8 +384,17 @@ define(
          * @override
          */
         Tree.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', this.clickNode);
             this.strategy.attachTo(this);
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Tree.prototype.initEvents = function () {
+            helper.addDOMEvent(this, this.main, 'click', this.clickNode);
         };
 
         /**

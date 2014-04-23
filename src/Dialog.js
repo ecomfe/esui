@@ -484,8 +484,15 @@ define(
                 if (this.needFoot) {
                     this.createBF('foot', this.roles.foot);
                 }
+            },
 
-                // 初始化控件主元素上的行为
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 if (this.closeButton) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
                     if (close) {
@@ -498,6 +505,7 @@ define(
                     }
                 }
             },
+
             /**
              * 构建对话框主内容和底部内容
              *

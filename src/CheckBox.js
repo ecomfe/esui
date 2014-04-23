@@ -85,9 +85,9 @@ define(
              *
              * `CheckBox`控件在初始化时可以提供`datasource`属性，
              * 该属性用于控件判断一开始是否选中，且这个属性只在初始化时有效，不会保存下来
-             * 
+             *
              * `datasource`可以是以下类型：
-             * 
+             *
              * - 数组：此时只要`rawValue`在`datasource`中（使用`==`比较）则选上
              * - 其它：只要`rawValue`与此相等（使用`==`比较）则选上
              * @protected
@@ -101,7 +101,7 @@ define(
 
                 u.extend(properties, options);
 
-                properties.name = 
+                properties.name =
                     properties.name || this.main.getAttribute('name');
 
                 var datasource = properties.datasource;
@@ -131,7 +131,7 @@ define(
                         || (this.getValue() === 'on' ? '' : this.getValue());
                 }
             },
-            
+
             /**
              * 初始化DOM结构
              *
@@ -159,11 +159,19 @@ define(
                         textId: this.helper.getId('text')
                     }
                 );
+            },
 
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 var box = lib.g(this.boxId);
                 this.helper.addDOMEvent(
-                    box, 
-                    'click', 
+                    box,
+                    'click',
                     function (e) {
                         /**
                          * @event click
@@ -190,7 +198,7 @@ define(
              * @fires change
              */
             setProperties: function (properties) {
-                var changes = 
+                var changes =
                     InputControl.prototype.setProperties.apply(this, arguments);
                 if (changes.hasOwnProperty('checked')) {
                     /**
@@ -275,16 +283,16 @@ define(
 
             /**
              * 设置选中状态
-             * 
+             *
              * @param {boolean} checked 状态
              */
             setChecked: function ( checked ) {
                 this.setProperties({ checked: checked });
             },
-            
+
             /**
              * 获取选中状态
-             * 
+             *
              * @return {boolean} 如已经选中则返回`true`
              */
             isChecked: function () {

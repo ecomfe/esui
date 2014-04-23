@@ -1328,42 +1328,49 @@ define(
                 // 创建控件树
                 this.initChildren(this.main);
 
-                //向后按钮
+                if (this.mode === 'multi') {
+                    this.addState('multi-select');
+                }
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                // 向后按钮
                 var monthBack = this.getChild('monthBack');
                 monthBack.on(
                     'click',
                     lib.curry(goToPrevMonth, this)
                 );
 
-
-                //向前按钮
+                // 向前按钮
                 var monthForward = this.getChild('monthForward');
                 monthForward.on(
                     'click',
                     lib.curry(goToNextMonth, this)
                 );
 
+                // 月份选择
                 var monthSel = this.getChild('monthSel');
                 monthSel.on(
                     'change',
                     lib.curry(changeMonth, this, monthSel)
                 );
+
+                // 年份选择
                 var yearSel = this.getChild('yearSel');
                 yearSel.on(
                     'change',
                     lib.curry(changeYear, this, yearSel)
                 );
 
-                var monthMainId = helper.getId(this, 'monthMain');
-                var monthMain = lib.g(monthMainId);
-
-                //为日期绑定点击事件
+                // 为日期绑定点击事件
+                var monthMain = this.helper.getPart('monthMain');
                 helper.addDOMEvent(this, monthMain, 'click', monthViewClick);
-
-
-                if (this.mode === 'multi') {
-                    this.addState('multi-select');
-                }
             },
 
             /**

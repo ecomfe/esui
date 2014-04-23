@@ -268,8 +268,6 @@ define(
                         helper.getPartClasses(this, 'arrow').join(' ');
                     this.main.appendChild(arrow);
                 }
-
-
             },
 
 

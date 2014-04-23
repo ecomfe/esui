@@ -659,22 +659,23 @@ define(
                 );
 
                 this.initChildren(this.main);
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 var modifyBtn = this.getChild('modifyBtn');
                 modifyBtn.on('click', lib.curry(toggleLayer, this));
 
-                var deleteAllBtn =
-                    this.getChild('generalPanel').getChild('deleteBtn');
+                var deleteAllBtn = this.getChild('generalPanel').getChild('deleteBtn');
                 deleteAllBtn.on('click', lib.curry(deleteAll, this));
 
                 var textInput = this.getChild('textInput');
-                // textInput.on(
-                //     'input',
-                //     lib.curry(updateRawValueByTyping, this)
-                // );
-                textInput.on(
-                    'blur',
-                    lib.curry(updateRawValueByTyping, this)
-                );
+                textInput.on('blur', lib.curry(updateRawValueByTyping, this));
 
                 helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },

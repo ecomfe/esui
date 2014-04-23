@@ -236,12 +236,16 @@ define(
                         arrow: this.helper.getPartClassName('arrow')
                     }
                 );
+            },
 
-                this.helper.addDOMEvent(
-                    this.main,
-                    'click',
-                    u.bind(this.layer.toggle, this.layer)
-                );
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
             },
 
             /**

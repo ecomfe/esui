@@ -83,12 +83,12 @@ define(
         };
 
         /**
-         * 初始化DOM结构
+         * 初始化事件交互
          *
          * @protected
          * @override
          */
-        Label.prototype.initStructure = function () {
+        Label.prototype.initEvents = function () {
             /**
              * @event click
              *

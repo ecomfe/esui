@@ -321,6 +321,23 @@ define(
                 this.main.innerHTML = html;
             }
 
+            if (!supportPlaceholder) {
+                var input = lib.g(this.inputId);
+                var placeholder = document.createElement('label');
+                placeholder.id = this.helper.getId('placeholder');
+                lib.setAttribute(placeholder, 'for', input.id);
+                this.helper.addPartClasses('placeholder', placeholder);
+                lib.insertAfter(placeholder, input);
+            }
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        TextBox.prototype.initEvents = function () {
             var input = lib.g(this.inputId);
             this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
             this.helper.addDOMEvent(input, 'focus', focus);
@@ -330,14 +347,6 @@ define(
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
             this.helper.delegateDOMEvent(input, 'change');
-
-            if (!supportPlaceholder) {
-                var placeholder = document.createElement('label');
-                placeholder.id = this.helper.getId('placeholder');
-                lib.setAttribute(placeholder, 'for', input.id);
-                this.helper.addPartClasses('placeholder', placeholder);
-                lib.insertAfter(placeholder, input);
-            }
         };
 
         /**
