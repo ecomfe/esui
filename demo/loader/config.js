@@ -1,26 +1,31 @@
 require.config({
-    paths: {
-        css: 'loader/css'
-    },
-    packages: [
+    'baseUrl': '../../src',
+    'paths': { 'css': '../demo/loader/css' },
+    'packages': [
         {
-            name: 'esui',
-            location: '../src'
+            'name': 'esui',
+            'location': '../src',
+            'main': 'main'
         },
         {
-            name: 'mini-event',
-            location: '../dep/mini-event/1.0.0/src',
-            main: 'main'
+            'name': 'mini-event',
+            'location': '../dep/mini-event/1.0.0/src',
+            'main': 'main'
         },
         {
-            name: 'underscore',
-            location: '../dep/underscore/1.5.2/src',
-            main: 'underscore'
+            'name': 'underscore',
+            'location': '../dep/underscore/1.5.2/src',
+            'main': 'underscore'
         },
         {
-            name: 'moment',
-            location: '../dep/moment/2.0.0/src',
-            main: 'moment'
+            'name': 'moment',
+            'location': '../dep/moment/2.0.1/src',
+            'main': 'moment'
+        },
+        {
+            'name': 'etpl',
+            'location': '../dep/etpl/2.1.0/src',
+            'main': 'main'
         }
     ]
 });

@@ -4,8 +4,43 @@
         <meta charset="UTF-8" />
         <title>Form - ESUI Demo</title>
         <script src="loader/esl.js"></script>
-        <script src="loader/config.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
         <style>
         /* 清除浮动 */
 		.form-row,
@@ -19,10 +54,10 @@
 		.form-line:after,
 		.form-value:after,
 		.edit-submit:after {
-		    content:"\0020"; 
+		    content:"\0020";
 		    display:block;
-		    height:0; 
-		    visibility:hidden; 
+		    height:0;
+		    visibility:hidden;
 		    clear:both;
 		}
 
@@ -52,8 +87,8 @@
         <header>Form</header>
         <div class="container">
 			<form class="edit-form"
-			data-ui-type="Form" 
-			data-ui-id="form" 
+			data-ui-type="Form"
+			data-ui-id="form"
 			data-ui-auto-validate="true"
 			data-ui-submit-button="submit-button,submit-and-continue-button">
 				<div class="form-body">
@@ -93,7 +128,7 @@
 			                <input data-ui-type="TextBox" data-ui-id="amount"
 			                 data-ui-child-name="amount"
 			                 data-ui-name="amount" data-ui-mode="text"
-			                 data-ui-title="金额" 
+			                 data-ui-title="金额"
 			                 data-ui-required="required"
 			                 data-ui-pattern="^[0-9]\d*(\.\d+)?$"
 			                 data-ui-patternErrorMessage="金额必须为整数"
@@ -139,14 +174,13 @@
                 'esui/validator/MaxLengthRule',
                 'esui/validator/PatternRule',
                 'esui/validator/RequiredRule',
-                'esui/validator/MaxRule',
-                'css!esui/css/main.css'
+                'esui/validator/MaxRule'
             ],
             function (ui, lib, Validity) {
                 var controls = ui.init();
 	            var form = ui.get('form');
 	            var nameText = form.getChild('amount');
-            	
+
             	function submit(e) {
                     console.log(e.triggerSource.id);
 		            var data = form.getData();

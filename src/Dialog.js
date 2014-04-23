@@ -11,10 +11,6 @@ define(
         require('./Button');
         require('./Panel');
 
-        // 仅在调试的时候打开
-        //require('css!./css/Button.css');
-        //require('css!./css/Dialog.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
