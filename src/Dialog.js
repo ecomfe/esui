@@ -872,6 +872,8 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
+            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
+            var cancelText = lib.encodeHTML(args.cancelText) || Dialog.CANCEL_TEXT;
 
             var properties = {
                 type: 'confirm',
@@ -897,6 +899,13 @@ define(
 
             var dialog = ui.create('Dialog', properties);
             dialog.appendTo(document.body);
+            dialog.show();
+
+            //使用默认foot，改变显示文字
+            var okBtn = dialog.getFoot().getChild('btnOk');
+            var cancelBtn = dialog.getFoot().getChild('btnCancel');
+            okBtn.setContent(okText);
+            cancelBtn.setContent(cancelText);
 
             dialog.setTitle(title);
             dialog.setContent(
@@ -909,14 +918,9 @@ define(
                     }
                 )
             );
-            dialog.show();
-            //使用默认foot，改变显示文字
-            var okBtn = dialog.getFoot().getChild('btnOk');
-            var cancelBtn = dialog.getFoot().getChild('btnCancel');
-            okBtn.setContent(Dialog.OK_TEXT);
-            cancelBtn.setContent(Dialog.CANCEL_TEXT);
 
             // 也可以改宽高
+            // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
                 okBtn.set('height', properties.btnHeight);
                 cancelBtn.set('height', properties.btnHeight);
@@ -960,6 +964,7 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
+            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
 
             var properties = {
                 type: 'warning',
@@ -985,6 +990,7 @@ define(
 
             var dialog = ui.create('Dialog', properties);
             dialog.appendTo(document.body);
+
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(
@@ -1002,7 +1008,7 @@ define(
                 + 'class="' + dialog.helper.getPartClassNames('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
-                + Dialog.OK_TEXT
+                + okText
                 + '</div>'
             );
 
@@ -1014,6 +1020,7 @@ define(
             );
 
             // 也可以改宽高
+            // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
                 okBtn.set('height', properties.btnHeight);
             }
