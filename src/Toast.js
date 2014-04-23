@@ -75,7 +75,6 @@ define(
          * @override
          */
         Toast.prototype.initStructure = function () {
-            this.helper.addPartClasses(this.messageType);
             this.main.innerHTML = this.helper.getPartHTML('content', 'p');
         };
 
@@ -88,10 +87,26 @@ define(
         Toast.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
             {
+                /**
+                 * @property {string} content
+                 *
+                 * 提示的内容，支持HTML
+                 */
                 name: 'content',
                 paint: function (toast, content) {
                     var container = toast.helper.getPart('content');
                     container.innerHTML = content;
+                }
+            },
+            {
+                /**
+                 * @property {string} messageType
+                 *
+                 * 提示的类型
+                 */
+                name: 'messageType',
+                paint: function (toast, messageType) {
+                    toast.helper.addPartClasses(this.messageType);
                 }
             }
         );
