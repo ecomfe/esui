@@ -333,7 +333,7 @@ define(
          * @return {meta.WizardItem}
          */
         Wizard.prototype.getActiveStep = function () {
-            return this.steps[this.activeIndex];
+            return this.get('steps')[this.get('activeIndex')];
         };
 
         /**

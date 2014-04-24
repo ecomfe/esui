@@ -539,6 +539,15 @@ define(
             InputControl.prototype.dispose.apply(this, arguments);
         };
 
+        /**
+         * 获取当前选中的{@link meta.SelectItem}对象
+         *
+         * @return {meta.SelectItem}
+         */
+        Select.prototype.getSelectedItem = function () {
+            return this.get('datasource')[this.get('selectedIndex')];
+        };
+
         lib.inherits(Select, InputControl);
         require('./main').register(Select);
         return Select;
