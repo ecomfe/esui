@@ -42,8 +42,8 @@ define(
             var rules = main.createRulesByControl(control);
             for (var i = 0, len = rules.length; i < len; i++) {
                 var rule = rules[i];
-                validity.addState( 
-                    rule.getName(), 
+                validity.addState(
+                    rule.getName(),
                     rule.check(control.getValue(), control)
                 );
             }
@@ -145,8 +145,8 @@ define(
 
             /**
              * 获取输入控件的值的字符串形式
-             * 
-             * @return {string} 
+             *
+             * @return {string}
              */
             getValue: function () {
                 /**
@@ -159,7 +159,7 @@ define(
 
             /**
              * 设置输入控件的值
-             * 
+             *
              * @param {string} value 输入控件的值
              */
             setValue: function (value) {
@@ -169,8 +169,8 @@ define(
 
             /**
              * 获取输入控件的原始值，原始值的格式由控件自身决定
-             * 
-             * @return {Mixed} 
+             *
+             * @return {Mixed}
              */
             getRawValue: function () {
                 /**
@@ -183,7 +183,7 @@ define(
 
             /**
              * 设置输入控件的原始值，原始值的格式由控件自身决定
-             * 
+             *
              * @param {Mixed} rawValue 输入控件的原始值
              */
             setRawValue: function (rawValue) {
@@ -192,7 +192,7 @@ define(
 
             /**
              * 批量设置控件的属性值
-             * 
+             *
              * @param {Object} properties 属性值集合
              * @override
              */
@@ -279,7 +279,7 @@ define(
 
             /**
              * 将值从原始格式转换成字符串，复杂类型的输入控件需要重写此接口
-             * 
+             *
              * @param {Mixed} rawValue 原始值
              * @return {string}
              * @protected
@@ -290,7 +290,7 @@ define(
 
             /**
              * 将字符串类型的值转换成原始格式，复杂类型的输入控件需要重写此接口
-             * 
+             *
              * @param {string} value 字符串值
              * @return {Mixed}
              * @protected
@@ -301,7 +301,7 @@ define(
 
             /**
              * 设置控件的只读状态
-             * 
+             *
              * @param {boolean} readOnly 是否只读
              */
             setReadOnly: function (readOnly) {
@@ -311,7 +311,7 @@ define(
 
             /**
              * 判读控件是否处于只读状态
-             * 
+             *
              * @return {boolean}
              */
             isReadOnly: function () {
@@ -320,7 +320,7 @@ define(
 
             /**
              * 验证控件，仅返回`true`或`false`
-             * 
+             *
              * @return {boolean}
              * @fires beforevalidate
              * @fires aftervalidate
@@ -333,7 +333,7 @@ define(
 
             /**
              * 验证控件，当值不合法时显示错误信息
-             * 
+             *
              * @return {boolean}
              * @fires beforevalidate
              * @fires aftervalidate
@@ -400,11 +400,25 @@ define(
                 }
 
                 var properties = {
-                    target: this, 
+                    target: this,
                     focusTarget: this.getFocusTarget(),
                     validity: validity
                 };
                 label.setProperties(properties);
+            },
+
+            /**
+             * 直接显示验证消息
+             *
+             * @param {string} validState 验证状态，通常未通过验证为`"invalid"`
+             * @param {string} message 待显示的信息
+             */
+            showValidationMessage: function (validState, message) {
+                message = message || '';
+                var validity = new Validity();
+                validity.setCustomValidState(validState);
+                validity.setCustomMessage(message);
+                this.showValidity(validity);
             },
 
             /**
@@ -416,7 +430,7 @@ define(
                 if (helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
-                
+
                 var validityLabel = this.getValidityLabel(true);
                 if (validityLabel) {
                     validityLabel.dispose();
