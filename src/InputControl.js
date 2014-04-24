@@ -16,67 +16,6 @@ define(
         var main = require('./main');
 
         /**
-         * 校验
-         *
-         * @param {InputControl} control 目标控件
-         * @return {validator.Validity}
-         * @ignore
-         */
-        function checkValidity(control) {
-            var validity = new Validity();
-            var eventArg = {
-                validity: validity
-            };
-
-            /**
-             * @event beforevalidate
-             *
-             * 在验证前触发
-             *
-             * @param {validator.Validity} validity 验证结果
-             * @member InputControl
-             */
-            eventArg = control.fire('beforevalidate', eventArg);
-
-            // 验证合法性
-            var rules = main.createRulesByControl(control);
-            for (var i = 0, len = rules.length; i < len; i++) {
-                var rule = rules[i];
-                validity.addState(
-                    rule.getName(),
-                    rule.check(control.getValue(), control)
-                );
-            }
-
-            // 触发invalid和aftervalidate事件
-            // 这两个事件中用户可能会对validity进行修改操作
-            // 所以validity.isValid()结果不能缓存
-            if (!validity.isValid()) {
-                /**
-                 * @event invalid
-                 *
-                 * 在验证结果为错误时触发
-                 *
-                 * @param {validator.Validity} validity 验证结果
-                 * @member InputControl
-                 */
-                eventArg = control.fire('invalid', eventArg);
-            }
-
-            /**
-             * @event aftervalidate
-             *
-             * 在验证后触发
-             *
-             * @param {validator.Validity} validity 验证结果
-             * @member InputControl
-             */
-            control.fire('aftervalidate', eventArg);
-
-            return validity;
-        }
-
-        /**
          * 输入控件基类
          *
          * 输入控件用于表示需要在表单中包含的控件，
@@ -319,6 +258,68 @@ define(
             },
 
             /**
+             * 获取验证结果的{@link validator.Validity}对象
+             *
+             * @return {validator.Validity}
+             * @fires beforevalidate
+             * @fires aftervalidate
+             * @fires invalid
+             */
+            getValidationResult: function () {
+                var validity = new Validity();
+                var eventArg = {
+                    validity: validity
+                };
+
+                /**
+                 * @event beforevalidate
+                 *
+                 * 在验证前触发
+                 *
+                 * @param {validator.Validity} validity 验证结果
+                 * @member InputControl
+                 */
+                eventArg = this.fire('beforevalidate', eventArg);
+
+                // 验证合法性
+                var rules = main.createRulesByControl(this);
+                for (var i = 0, len = rules.length; i < len; i++) {
+                    var rule = rules[i];
+                    validity.addState(
+                        rule.getName(),
+                        rule.check(this.getValue(), this)
+                    );
+                }
+
+                // 触发invalid和aftervalidate事件
+                // 这两个事件中用户可能会对validity进行修改操作
+                // 所以validity.isValid()结果不能缓存
+                if (!validity.isValid()) {
+                    /**
+                     * @event invalid
+                     *
+                     * 在验证结果为错误时触发
+                     *
+                     * @param {validator.Validity} validity 验证结果
+                     * @member InputControl
+                     */
+                    eventArg = this.fire('invalid', eventArg);
+                }
+
+                /**
+                 * @event aftervalidate
+                 *
+                 * 在验证后触发
+                 *
+                 * @param {validator.Validity} validity 验证结果
+                 * @member InputControl
+                 */
+                this.fire('aftervalidate', eventArg);
+
+                return validity;
+            },
+
+            /**
              * 验证控件，仅返回`true`或`false`
              *
              * @return {boolean}
@@ -327,7 +328,7 @@ define(
              * @fires invalid
              */
             checkValidity: function () {
-                var validity = checkValidity(this);
+                var validity = this.getValidationResult();
                 return validity.isValid();
             },
 
@@ -340,7 +341,7 @@ define(
              * @fires invalid
              */
             validate: function () {
-                var validity = checkValidity(this);
+                var validity = this.getValidationResult();
                 this.showValidity(validity);
                 return validity.isValid();
             },
