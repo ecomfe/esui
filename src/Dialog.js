@@ -133,14 +133,21 @@ define(
          * @inner
          */
         function closeClickHandler() {
+            var event = this.fire('beforeclose');
+            
+            // 阻止事件，则不继续运行
+            if (event.isDefaultPrevented()) {
+                return false;
+            }
+
+            this.hide();
+
             this.fire('close');
 
             if (this.closeOnHide) {
                 this.dispose();
             }
-            else {
-                this.hide();
-            }
+
         }
 
 
