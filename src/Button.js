@@ -98,12 +98,12 @@ define(
             },
 
             /**
-             * 初始化DOM结构
+             * 初始化事件交互
              *
              * @protected
              * @override
              */
-            initStructure: function () {
+            initEvents: function () {
                 /**
                  * @event click
                  *

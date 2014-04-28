@@ -11,10 +11,6 @@ define(
         require('./Button');
         require('./Panel');
 
-        // 仅在调试的时候打开
-        //require('css!./css/Button.css');
-        //require('css!./css/Dialog.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
@@ -137,14 +133,21 @@ define(
          * @inner
          */
         function closeClickHandler() {
+            var event = this.fire('beforeclose');
+            
+            // 阻止事件，则不继续运行
+            if (event.isDefaultPrevented()) {
+                return false;
+            }
+
+            this.hide();
+
             this.fire('close');
 
             if (this.closeOnHide) {
                 this.dispose();
             }
-            else {
-                this.hide();
-            }
+
         }
 
 
@@ -488,8 +491,15 @@ define(
                 if (this.needFoot) {
                     this.createBF('foot', this.roles.foot);
                 }
+            },
 
-                // 初始化控件主元素上的行为
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 if (this.closeButton) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
                     if (close) {
@@ -502,6 +512,7 @@ define(
                     }
                 }
             },
+
             /**
              * 构建对话框主内容和底部内容
              *
@@ -872,6 +883,8 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
+            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
+            var cancelText = lib.encodeHTML(args.cancelText) || Dialog.CANCEL_TEXT;
 
             var properties = {
                 type: 'confirm',
@@ -897,6 +910,13 @@ define(
 
             var dialog = ui.create('Dialog', properties);
             dialog.appendTo(document.body);
+            dialog.show();
+
+            //使用默认foot，改变显示文字
+            var okBtn = dialog.getFoot().getChild('btnOk');
+            var cancelBtn = dialog.getFoot().getChild('btnCancel');
+            okBtn.setContent(okText);
+            cancelBtn.setContent(cancelText);
 
             dialog.setTitle(title);
             dialog.setContent(
@@ -909,14 +929,9 @@ define(
                     }
                 )
             );
-            dialog.show();
-            //使用默认foot，改变显示文字
-            var okBtn = dialog.getFoot().getChild('btnOk');
-            var cancelBtn = dialog.getFoot().getChild('btnCancel');
-            okBtn.setContent(Dialog.OK_TEXT);
-            cancelBtn.setContent(Dialog.CANCEL_TEXT);
 
             // 也可以改宽高
+            // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
                 okBtn.set('height', properties.btnHeight);
                 cancelBtn.set('height', properties.btnHeight);
@@ -960,6 +975,7 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
+            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
 
             var properties = {
                 type: 'warning',
@@ -985,6 +1001,7 @@ define(
 
             var dialog = ui.create('Dialog', properties);
             dialog.appendTo(document.body);
+
             dialog.setTitle(title);
             dialog.setContent(
                 lib.format(
@@ -1002,7 +1019,7 @@ define(
                 + 'class="' + dialog.helper.getPartClassNames('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
-                + Dialog.OK_TEXT
+                + okText
                 + '</div>'
             );
 
@@ -1014,6 +1031,7 @@ define(
             );
 
             // 也可以改宽高
+            // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
                 okBtn.set('height', properties.btnHeight);
             }

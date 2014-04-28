@@ -446,16 +446,6 @@ define(
                 lib.on(window, 'scroll', this.topReset);
             }
 
-            // 给主元素添加over和out的事件handler
-            helper.addDOMEvent(
-                this, this.main, 'mouseover',
-                lib.bind(mainOverHandler, null, this)
-            );
-            helper.addDOMEvent(
-                this, this.main, 'mouseout',
-                lib.bind(mainOutHandler, null, this)
-            );
-
             // 初始化位置
             initPosition(this);
 
@@ -463,6 +453,18 @@ define(
             if (this.isAutoHide()) {
                 hide(this);
             }
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Sidebar.prototype.initEvents = function () {
+            // 给主元素添加over和out的事件handler
+            this.helper.addDOMEvent(this.main, 'mouseover', lib.bind(mainOverHandler, null, this));
+            this.helper.addDOMEvent(this.main, 'mouseout', lib.bind(mainOutHandler, null, this));
         };
 
         /**

@@ -172,8 +172,16 @@ define(
             navigator.id = this.helper.getId('navigator');
 
             this.helper.addPartClasses('navigator', navigator);
+        };
 
-            this.helper.addDOMEvent(navigator, 'click', clickTab);
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Tab.prototype.initEvents = function () {
+            this.helper.addDOMEvent('navigator', 'click', clickTab);
         };
 
         /**
@@ -548,6 +556,15 @@ define(
         };
 
         // TODO: 添加`allowClose`属性的控制
+
+        /**
+         * 获取当前激活的{@link meta.TabItem}对象
+         *
+         * @return {meta.TabItem}
+         */
+        Tab.prototype.getActiveTab = function () {
+            return this.get('tabs')[this.get('activeIndex')];
+        };
 
         lib.inherits(Tab, Control);
         require('./main').register(Tab);

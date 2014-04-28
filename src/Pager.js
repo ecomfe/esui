@@ -341,7 +341,7 @@ define(
          * @ignore
          */
         function changePageSize(e) {
-            var pageSize = parseInt(e.target.getValue(), 10);
+            var pageSize = parseInt(this.getChild('select').getValue(), 10);
             this.pageSize = pageSize;
 
             // 重绘页码
@@ -484,11 +484,8 @@ define(
                 // 创建控件树
                 this.helper.initChildren();
 
-                // 每页显示的select控件
-                var select = this.getChild('select');
-                select.on('change', changePageSize, this);
-
                 // 当初始化pageSizes属性不存在或为空数组时，隐藏控件显示
+                var select = this.getChild('select');
                 if (!this.pageSizes || !this.pageSizes.length) {
                     hideSelect(this);
                 }
@@ -499,6 +496,21 @@ define(
                     };
                     select.setProperties(properties);
                 }
+
+                // 同步一次状态
+                changePageSize.call(this);
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                // 每页显示的select控件
+                var select = this.getChild('select');
+                select.on('change', changePageSize, this);
 
                 // pager主元素绑定事件
                 this.helper.addDOMEvent('main', 'click', pagerClick);

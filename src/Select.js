@@ -319,12 +319,16 @@ define(
             this.main.tabIndex = 0;
 
             this.main.innerHTML = this.helper.getPartHTML('text', 'span');
+        };
 
-            this.helper.addDOMEvent(
-                this.main,
-                'click',
-                u.bind(this.layer.toggle, this.layer)
-            );
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Select.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
         };
 
         /**
@@ -533,6 +537,15 @@ define(
             }
 
             InputControl.prototype.dispose.apply(this, arguments);
+        };
+
+        /**
+         * 获取当前选中的{@link meta.SelectItem}对象
+         *
+         * @return {meta.SelectItem}
+         */
+        Select.prototype.getSelectedItem = function () {
+            return this.get('datasource')[this.get('selectedIndex')];
         };
 
         lib.inherits(Select, InputControl);

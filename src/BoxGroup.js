@@ -42,14 +42,14 @@ define(
          */
         function extractDatasourceFromDOM(element, options) {
             // 提取符合以下条件的子`<input>`控件：
-            // 
+            //
             // - `type`属性已知（基本就是`radio`和`checkbox`）
             // - 二选一：
             //     - 当前控件和`<input>`控件都没有`name`属性
             //     - `<input>`和当前控件的`name`属性相同
-            // 
+            //
             // 根据以下优先级获得`title`属性：
-            // 
+            //
             // 1. 有一个`for`属性等于`<input>`的`id`属性的`<label>`元素，则取其文字
             // 2. 取`<input>`的`title`属性
             // 3. 取`<input>`的`value`
@@ -78,7 +78,7 @@ define(
                     var label = box.id && labelIndex[box.id];
                     item.title = label ? lib.getText(label) : '';
                     if (!item.title) {
-                        item.title = 
+                        item.title =
                             box.title || (box.value === 'on' ? box.value : '');
                     }
                     datasource.push(item);
@@ -106,7 +106,7 @@ define(
          * @protected
          * @override
          */
-        BoxGroup.prototype.initOptions = function (options) {
+        BoxGroup.prototype.initstr = function (options) {
             var properties = {
                 datasource: [],
                 orientation: 'horizontal',
@@ -216,7 +216,7 @@ define(
                 properties.rawValue = [];
             }
 
-            var changes = 
+            var changes =
                 InputControl.prototype.setProperties.apply(this, arguments);
             if (changes.hasOwnProperty('rawValue')) {
                 /**
@@ -309,7 +309,7 @@ define(
 
         /**
          * 将字符串类型的值转换成原始格式
-         * 
+         *
          * @param {string} value 字符串值
          * @return {string[]}
          * @protected

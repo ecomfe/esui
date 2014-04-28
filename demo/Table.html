@@ -4,8 +4,43 @@
         <meta charset="UTF-8" />
         <title>Table - ESUI Demo</title>
         <script src="loader/esl.js"></script>
-        <script src="loader/config.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
         <header>Table</header>
@@ -25,7 +60,7 @@
                 <button  id="updateRowBtn" data-ui="id:updateRowBtn;type:Button;">updateRow</button>
             </div>
             <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
-            
+
             <br/>
         <!--
             <div style="width:1024px;margin: 0 auto;overflow:hidden;">
@@ -52,14 +87,13 @@
                 'esui',
                 'esui/Dialog',
                 'esui/Panel',
-                'esui/extension/TableEdit', 
+                'esui/extension/TableEdit',
                 'esui/extension/TableSubrow',
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',
                 'esui/TextBox',
-                'esui/Select',
-                'css!esui/css/main.css'
+                'esui/Select'
             ],
             function (ui) {
                 var lib = require('esui/lib');
@@ -191,9 +225,9 @@
                                 }
                             ]
                         }
-                    }   
+                    }
                 });
-                
+
                 myTable = ui.get('myTable');
                 myTable.onsubrowopen = function ( arg ) {
                     this.setSubrowContent(
@@ -221,7 +255,7 @@
                 ui.get('SortableBtn').onclick = function () {
                     myTable.set( 'sortable', !myTable.get('sortable'));
                 };
-                
+
                 ui.get('ColumnResizableBtn').onclick = function () {
                     myTable.set( 'columnResizable', !myTable.get('columnResizable'));
                 };
@@ -229,7 +263,7 @@
                 ui.get('SetDataSourceBtn').onclick = function(){
                      myTable.setDatasource(data.concat(data));
                 };
-                
+
                 ui.get('changeWidthBtn').onclick = function () {
                    var container = document.getElementById('container');
                    var width = container.style.width;
@@ -287,13 +321,13 @@
                                 compareResult = a.sex > b.sex ;
                                 break;
                             }
-                            
+
                             if ( arg.order == 'desc' ) {
                                 compareResult = -compareResult;
                             }
-                            
+
                             return compareResult;
-                        } );    
+                        } );
                     }
 
                     myTable.setDatasource(data);
@@ -306,7 +340,7 @@
                     } else {
                         myTable.setCellText(
                             arg.value,
-                            arg.rowIndex, 
+                            arg.rowIndex,
                             arg.columnIndex
                         );
                     }

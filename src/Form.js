@@ -298,12 +298,12 @@ define(
         };
 
         /**
-         * 初始化DOM结构
+         * 初始化事件交互
          *
          * @protected
          * @override
          */
-        Form.prototype.initStructure = function () {
+        Form.prototype.initEvents = function () {
             if (this.main.nodeName.toLowerCase() === 'form') {
                 // 劫持表单的提交事件
                 this.helper.addDOMEvent(

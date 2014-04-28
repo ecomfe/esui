@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Toast - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Toast</header>
+        <div class="container">
+            <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
+                data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
+            <div>
+                <button id="op-show">show</button>
+            </div>
+            <div>
+                <button id="op-info">info</button>
+            </div>
+            <div>
+                <button id="op-alert">alert</button>
+            </div>
+            <div>
+                <button id="op-success">success</button>
+            </div>
+            <div>
+                <button id="op-error">error</button>
+            </div>
+            <div>
+                <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
+                    data-ui-hint-type="suffix"/>
+                <button id="op-time">time</button>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Toast',
+                'esui/TextBox'
+            ],
+            function (ui, toast) {
+                ui.init();
+                document.getElementById('op-show').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.show(content).show();
+                };
+                document.getElementById('op-info').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.info(content).show();
+                };
+                document.getElementById('op-alert').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.alert(content).show();
+                };
+                document.getElementById('op-success').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.success(content).show();
+                };
+                document.getElementById('op-error').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.error(content).show();
+                };
+                document.getElementById('op-time').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    var time = ui.get('time').getValue();
+                    toast.show(content, {duration: +time}).show();
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

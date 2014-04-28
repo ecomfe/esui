@@ -50,19 +50,6 @@ define(
 
             region.main.innerHTML = html.join('');
 
-            //点击事件
-            helper.addDOMEvent(region, region.main, 'click', mainClick);
-
-            //鼠标悬浮事件
-            helper.addDOMEvent(
-                region, region.main, 'mouseover',
-                lib.curry(mainMouseHandler, 'show')
-            );
-            //鼠标悬浮事件
-            helper.addDOMEvent(
-                region, region.main, 'mouseout',
-                lib.curry(mainMouseHandler, 'hide')
-            );
         }
 
         /**
@@ -932,8 +919,29 @@ define(
                         helper.getPartClasses(this, 'single').join(' ')
                     );
                 }
+            },
 
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                if (this.mode == 'multi') {
+                    //点击事件
+                    this.helper.addDOMEvent(this.main, 'click', mainClick);
 
+                    //鼠标悬浮事件
+                    this.helper.addDOMEvent(this.main, 'mouseover', lib.curry(mainMouseHandler, 'show'));
+                    //鼠标悬浮事件
+                    this.helper.addDOMEvent(this.main, 'mouseout', lib.curry(mainMouseHandler, 'hide'));
+                }
+                else {
+                    var regionSel = this.getChild('regionSel');
+
+                    regionSel.on('change', lib.bind(changeSingleRegion, null, this, regionSel));
+                }
             },
 
             /**

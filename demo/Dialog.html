@@ -4,9 +4,43 @@
     <meta charset="utf-8" />
     <title>TextBox - ESUI Demo</title>
     <script src="loader/esl.js"></script>
-    <script src="loader/config.js"></script>
+    <script>
+        require.config({
+            'baseUrl': '../src',
+            'paths': {},
+            'packages': [
+                {
+                    'name': 'mini-event',
+                    'location': '../dep/mini-event/1.0.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'underscore',
+                    'location': '../dep/underscore/1.5.2/src',
+                    'main': 'underscore'
+                },
+                {
+                    'name': 'moment',
+                    'location': '../dep/moment/2.0.1/src',
+                    'main': 'moment'
+                },
+                {
+                    'name': 'etpl',
+                    'location': '../dep/etpl/2.1.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'esui',
+                    'location': '../src',
+                    'main': 'main'
+                }
+            ]
+        });
+    </script>
+    <script src="../src/customShim.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <link rel="stylesheet" href="demo.css" />
+    <link rel="stylesheet" href="../src/css/main.css" />
     <style>
         label {
             display: block;
@@ -203,8 +237,7 @@
         [
             'esui',
             'esui/Button',
-            'esui/Dialog',
-            'css!esui/css/main.css'
+            'esui/Dialog'
         ],
         function (ui, Button, Dialog) {
             var controls = ui.init();
@@ -246,9 +279,9 @@
 
             document.getElementById('trigger-static').onclick = function () {
                 if (staticDg) {
-                   staticDg.show(); 
+                   staticDg.show();
                 }
-                
+
             };
 
             document.getElementById('trigger-static1').onclick = function () {

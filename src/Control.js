@@ -174,9 +174,19 @@ define(
             /**
              * 初始化DOM结构，仅在第一次渲染时调用
              *
+             * @protected
              * @abstract
              */
             initStructure: function () {
+            },
+
+            /**
+             * 初始化与DOM元素、子控件等的事件交互，仅在第一次渲染时调用
+             *
+             * @protected
+             * @abstract
+             */
+            initEvents: function () {
             },
 
             /**
@@ -197,6 +207,7 @@ define(
                     this.domIDPrefix = this.viewContext.id;
 
                     this.initStructure();
+                    this.initEvents();
 
                     // 为控件主元素添加id
                     if (!this.main.id) {

@@ -772,60 +772,6 @@ define(
         var getTimeBodyMoveHandler; //drag mousemove的句柄
         var getTimeBodyUpHandler; //drag mouseup的句柄
 
-        /**
-         * 绑定事件
-         * @param  {Schedule} schedule
-         */
-        function bindEvent(schedule) {
-            var me = schedule;
-
-            var timebody = lib.g( getId(me, 'time-body') );
-            //绑定拖动drag事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mousedown', timeBodyDownHandler);
-
-            //绑定timebody mouseover事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mouseover', timeOverHandler);
-
-            //绑定timebody mouseout事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mouseout', timeOutHandler);
-
-            //绑定选择星期事件
-            helper.addDOMEvent(
-                schedule,
-                lib.g( getId(me, 'day-head') ),
-                'click',
-                dayClickHandler
-            );
-
-
-            var shortcut = lib.g( getId(me, 'shortcut') );
-            //绑定点击shortcut事件
-            helper.addDOMEvent(
-                schedule, shortcut, 'click', shortcutClickHandler);
-
-            //shortcut mouseover
-            helper.addDOMEvent(
-                schedule,
-                lib.g( getId(me, 'shortcut') ),
-                'mouseover',
-                lib.curry(shortcutOverOutHandler, true)
-            );
-
-            //shortover mouseout
-            helper.addDOMEvent(
-                schedule,
-                shortcut,
-                'mouseout',
-                lib.curry(shortcutOverOutHandler, false)
-            );
-
-            //shortcut mousemove
-            helper.addDOMEvent(
-                schedule, shortcut, 'mousemove', shortcutMoveHandler);
-        }
 
         /**
          * drag时 mousedown的事件处理函数
@@ -1278,7 +1224,41 @@ define(
                 );
 
                 initBody(me);
-                bindEvent(me);
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                var timebody = lib.g( getId(this, 'time-body') );
+                //绑定拖动drag事件
+                this.helper.addDOMEvent(timebody, 'mousedown', timeBodyDownHandler);
+
+                //绑定timebody mouseover事件
+                this.helper.addDOMEvent(timebody, 'mouseover', timeOverHandler);
+
+                //绑定timebody mouseout事件
+                this.helper.addDOMEvent(timebody, 'mouseout', timeOutHandler);
+
+                //绑定选择星期事件
+                this.helper.addDOMEvent(lib.g(getId(this, 'day-head')), 'click', dayClickHandler);
+
+
+                var shortcut = this.helper.getPart('shortcut');
+                //绑定点击shortcut事件
+                this.helper.addDOMEvent(shortcut, 'click', shortcutClickHandler);
+
+                //shortcut mouseover
+                this.helper.addDOMEvent(shortcut, 'mouseover', lib.curry(shortcutOverOutHandler, true));
+
+                //shortover mouseout
+                this.helper.addDOMEvent(shortcut, 'mouseout', lib.curry(shortcutOverOutHandler, false));
+
+                //shortcut mousemove
+                this.helper.addDOMEvent(shortcut, 'mousemove', shortcutMoveHandler);
             },
 
             /**
