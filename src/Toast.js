@@ -121,6 +121,11 @@ define(
                 return;
             }
 
+            // 如果没放到DOM中，这里放进去
+            if (!this.main.parentElement && !this.main.parentNode) {
+                this.appendTo(getContainer.call(this));
+            }
+
             Control.prototype.show.apply(this, arguments);
             this.fire('show');
             clearTimeout(this.timer);
