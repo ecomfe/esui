@@ -94,7 +94,7 @@ define(
                  */
                 name: 'content',
                 paint: function (toast, content) {
-                    var container = toast.helper.getPart('content');
+                    var container = toast.main.firstChild;
                     container.innerHTML = content;
                 }
             },
