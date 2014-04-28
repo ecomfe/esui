@@ -106,7 +106,7 @@ define(
          * @protected
          * @override
          */
-        BoxGroup.prototype.initstr = function (options) {
+        BoxGroup.prototype.initOptions = function (options) {
             var properties = {
                 datasource: [],
                 orientation: 'horizontal',

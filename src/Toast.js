@@ -106,7 +106,7 @@ define(
                  */
                 name: 'messageType',
                 paint: function (toast, messageType) {
-                    toast.helper.addPartClasses(this.messageType);
+                    toast.helper.addPartClasses(toast.messageType);
                 }
             }
         );

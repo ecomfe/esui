@@ -134,7 +134,7 @@ define(
          */
         function closeClickHandler() {
             var event = this.fire('beforeclose');
-            
+
             // 阻止事件，则不继续运行
             if (event.isDefaultPrevented()) {
                 return false;
@@ -435,12 +435,12 @@ define(
                     defaultFoot: ''
                         + '<div '
                         + 'class="'
-                        + this.helper.getPartClassNames('ok-btn')
+                        + this.helper.getPartClassName('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
                         + 'childName:btnOk;skin:spring;">确定</div>'
                         + '<div '
                         + 'class="'
-                        + this.helper.getPartClassNames('cancel-btn')
+                        + this.helper.getPartClassName('cancel-btn') + '" '
                         + 'data-ui="type:Button;'
                         + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
                     needFoot: true,
@@ -1016,7 +1016,7 @@ define(
 
             dialog.setFoot(''
                 + '<div '
-                + 'class="' + dialog.helper.getPartClassNames('ok-btn') + '"'
+                + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
                 + okText
