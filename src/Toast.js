@@ -94,7 +94,7 @@ define(
                  */
                 name: 'content',
                 paint: function (toast, content) {
-                    var container = toast.helper.getPart('content');
+                    var container = toast.main.firstChild;
                     container.innerHTML = content;
                 }
             },
@@ -106,7 +106,7 @@ define(
                  */
                 name: 'messageType',
                 paint: function (toast, messageType) {
-                    toast.helper.addPartClasses(this.messageType);
+                    toast.helper.addPartClasses(toast.messageType);
                 }
             }
         );
@@ -119,6 +119,11 @@ define(
         Toast.prototype.show = function () {
             if (this.helper.isInStage('DISPOSED')) {
                 return;
+            }
+
+            // 如果没放到DOM中，这里放进去
+            if (!this.main.parentElement && !this.main.parentNode) {
+                this.appendTo(getContainer.call(this));
             }
 
             Control.prototype.show.apply(this, arguments);
