@@ -811,7 +811,7 @@ define(
         }
 
         /**
-         * 通过item的dom元素选择日期
+         * 通过点击日期单元dom元素选择日期
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
@@ -1528,6 +1528,10 @@ define(
             setRawValueWithoutFireChange: function (value) {
                 this.rawValue = value;
                 parseToCache(this);
+            },
+
+            getDateItemHTML: function (date) {
+                return lib.g(getItemId(this, date));
             }
 
         };

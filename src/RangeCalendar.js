@@ -39,52 +39,7 @@ define(
             document.body.appendChild(element);
             element.innerHTML = getLayerHtml(calendar);
             calendar.helper.initChildren(element);
-
-            // 为mini日历绑定点击事件
-            var shortcutDom = calendar.helper.getPart('shortcut');
-            helper.addDOMEvent(
-                calendar, shortcutDom, 'click', shortcutClick);
-            // 渲染开始结束日历
-            paintCal(calendar, 'begin', calendar.view.begin, true);
-            paintCal(calendar, 'end', calendar.view.end, true);
-
-
-            // 渲染mini日历
-            var selectedIndex = getSelectedIndex(calendar, calendar.view);
-            paintMiniCal(calendar, selectedIndex);
-
-            // 绑定“无限结束”勾选事件
-            var endlessCheck = calendar.getChild('endlessCheck');
-            if (endlessCheck) {
-                endlessCheck.on(
-                    'change',
-                    lib.curry(makeCalendarEndless, calendar)
-                );
-                // 设置endless
-                if (calendar.isEndless) {
-                    endlessCheck.setChecked(true);
-                    calendar.helper.addPartClasses(
-                        'shortcut-disabled',
-                        calendar.helper.getPart(calendar)
-                    );
-                }
-            }
-
-            // 绑定提交和取消按钮
-            var okBtn = calendar.getChild('okBtn');
-            okBtn.on('click', lib.curry(commitValue, calendar));
-
-            var cancelBtn = calendar.getChild('cancelBtn');
-            cancelBtn.on(
-                'click',
-                u.bind(calendar.layer.hide, calendar.layer)
-            );
-            // 关闭按钮
-            var closeBtn = calendar.getChild('closeBtn');
-            closeBtn.on(
-                'click',
-                u.bind(calendar.layer.hide, calendar.layer)
-            );
+            paintLayer(calendar, calendar.view, 'render');
         };
 
         RangeCalendarLayer.prototype.toggle = function () {
@@ -94,7 +49,7 @@ define(
             ) {
                 // 展示之前先跟main同步
                 var calendar = this.control;
-                paintLayer(calendar, calendar.rawValue);
+                paintLayer(calendar, calendar.rawValue, 'repaint');
                 this.show();
             }
             else {
@@ -108,26 +63,71 @@ define(
          * @inner
          * @param {RangeCalendar} calendar RangeCalendar控件实例
          * @param {{begin:Date,end:Date}=} value 显示的日期
+         * @param {string} state 渲染时控件状态
          */
-        function paintLayer(calendar, value) {
-            calendar.view.begin = value.begin;
-            calendar.view.end = value.end;
-            calendar.value = calendar.convertToParam(value);
+        function paintLayer(calendar, value, state) {
+            if (state === 'render') {
+                // 为mini日历绑定点击事件
+                var shortcutDom = calendar.helper.getPart('shortcut');
+                helper.addDOMEvent(
+                    calendar, shortcutDom, 'click', shortcutClick);
 
-            paintCal(calendar, 'begin', value.begin);
-            paintCal(calendar, 'end', value.end);
+                // 绑定“无限结束”勾选事件
+                var endlessCheck = calendar.getChild('endlessCheck');
+                if (endlessCheck) {
+                    endlessCheck.on(
+                        'change',
+                        lib.curry(makeCalendarEndless, calendar)
+                    );
+                    // 设置endless
+                    if (calendar.isEndless) {
+                        endlessCheck.setChecked(true);
+                        calendar.helper.addPartClasses(
+                            'shortcut-disabled',
+                            calendar.helper.getPart(calendar)
+                        );
+                    }
+                }
 
-            var selectedIndex = getSelectedIndex(calendar, calendar.view);
-            paintMiniCal(calendar, selectedIndex);
+                // 绑定提交和取消按钮
+                var okBtn = calendar.getChild('okBtn');
+                okBtn.on('click', lib.curry(commitValue, calendar));
 
-            var isEndless;
-            if (!value.end) {
-                isEndless = true;
+                var cancelBtn = calendar.getChild('cancelBtn');
+                cancelBtn.on(
+                    'click',
+                    u.bind(calendar.layer.hide, calendar.layer)
+                );
+                // 关闭按钮
+                var closeBtn = calendar.getChild('closeBtn');
+                closeBtn.on(
+                    'click',
+                    u.bind(calendar.layer.hide, calendar.layer)
+                );
             }
             else {
-                isEndless = false;
+                calendar.view.begin = value.begin;
+                calendar.view.end = value.end;
+                calendar.value = calendar.convertToParam(value);
+
+                var isEndless;
+                if (!value.end) {
+                    isEndless = true;
+                }
+                else {
+                    isEndless = false;
+                }
+                calendar.setProperties({ isEndless: isEndless });
             }
-            calendar.setProperties({ isEndless: isEndless });
+
+            // 渲染开始结束日历
+            paintCal(calendar, 'begin', calendar.view.begin, state === 'render');
+            paintCal(calendar, 'end', calendar.view.end, state === 'render');
+
+
+            // 渲染mini日历
+            var selectedIndex = getSelectedIndex(calendar, calendar.view);
+            paintMiniCal(calendar, selectedIndex);
         }
 
         /**
@@ -389,7 +389,7 @@ define(
         }
 
         /**
-         * 根据索引选取日期
+         * 根据索引选取日期，在点击快捷日期链接时调用
          *
          * @inner
          * @param {RangeCalendar} calendar RangeCalendar控件实例
@@ -407,13 +407,15 @@ define(
             var begin = value.begin;
             var end = value.end;
 
+            // 更新view
             calendar.view = { begin: begin, end: end };
+
+            // 更新日历
             paintCal(calendar, 'begin', begin);
             paintCal(calendar, 'end', end);
 
-            // 更新样式
+            // 更新快捷链接样式
             paintMiniCal(me, index);
-
         }
 
         /**
@@ -460,16 +462,22 @@ define(
             if (!monthView) {
                 return;
             }
-            monthView.setProperties({
-                rawValue: value,
-                range: calendar.range
-            });
+            // 只有在第一次生成MonthView视图时需要绑定事件，其余时候都无需事件绑定
             if (bindEvent === true) {
                 monthView.on(
                     'change',
                     u.bind(updateView, calendar, monthView, type)
                 );
+                monthView.on(
+                    'changemonth',
+                    u.bind(updateHighlightRange, null, calendar)
+                );
             }
+            // 更新日历选值
+            monthView.setProperties({
+                rawValue: value,
+                range: calendar.range
+            });
         }
 
         /**
@@ -517,6 +525,7 @@ define(
             // 更新shortcut
             var selectedIndex = getSelectedIndex(this, this.view);
             paintMiniCal(this, selectedIndex);
+            updateHighlightRange(this);
         }
 
         /**
@@ -1029,6 +1038,53 @@ define(
         RangeCalendar.prototype.parseValue = function (value) {
             return this.convertToRaw(value);
         };
+
+        /**
+         * 更新高亮区间
+         *
+         * @param {RangeCalendar} calendar RangeCalendar控件实例
+
+         */
+        function updateHighlightRange(calendar) {
+            function updateSingleMonth(monthView, monthViewType) {
+                var begin = new Date(monthView.year, monthView.month, 1);
+                begin = m(begin);
+                var end = begin.clone().endOf('month');
+                var cursor = begin;
+                while (cursor <= end) {
+                    var highlight = true;
+                    if (monthViewType === 'begin'
+                        && (cursor <= m(rangeBegin) || cursor > m(rangeEnd))) {
+                       highlight = false;
+                    }
+                    else if (monthViewType === 'end'
+                        && (cursor < m(rangeBegin) || cursor >= m(rangeEnd))) {
+                       highlight = false;
+                    }
+
+                    changeHighlightState(monthView, cursor.toDate(), highlight);
+                    cursor.add('day', 1); 
+                }
+            }
+
+            function changeHighlightState (monthView, date, highlight) {
+                var dateItem = monthView.getDateItemHTML(date);
+                if (highlight) {
+                    monthView.helper.addPartClasses('month-item-highlight', dateItem);
+                }
+                else {
+                    monthView.helper.removePartClasses('month-item-highlight', dateItem);
+                }
+            }
+
+            var beginMonth = calendar.getChild('beginCal');
+            var endMonth = calendar.getChild('endCal');
+            var rangeBegin = calendar.view.begin;
+            var rangeEnd = calendar.view.end;
+            updateSingleMonth(beginMonth, 'begin');
+            updateSingleMonth(endMonth, 'end');
+
+        }
 
         RangeCalendar.prototype.dispose = function () {
             if (helper.isInStage(this, 'DISPOSED')) {
