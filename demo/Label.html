@@ -46,19 +46,23 @@
         <header>Label</header>
         <div class="container">
             <strong data-ui-type="Label">Hello Label!</strong>
-           <esui-label data-ui-type="Label">Custom Label!</esui-label>
+            <esui-label data-ui-type="Label">Custom Label!</esui-label>
             <br />
             <button id="op-show">show</button>
             <button id="op-hide">hide</button>
             <button id="op-toggle">toggle</button>
             <button id="op-set-text">set text</button>
             <button id="op-set-content">set content</button>
+            <br />
+            <label data-ui-type="Label" data-ui-for-target="username">Click to enter username</label>
+            <esui-text-box data-ui-id="username"></esui-text-box>
         </div>
         <script>
         require(
             [
                 'esui',
-                'esui/Label'
+                'esui/Label',
+                'esui/TextBox'
             ],
             function (ui) {
                 var label = ui.init()[0];
