@@ -599,10 +599,13 @@ define(
             var beginTime = rawValue.begin;
             var endTime = rawValue.end;
 
+            var beginTail = ' 00:00:00';
+            var endTail = ' 23:59:59';
+
             var timeResult = [];
-            timeResult.push(m(beginTime).format('YYYY-MM-DD'));
+            timeResult.push(m(beginTime).format('YYYY-MM-DD') + beginTail);
             if (endTime) {
-                timeResult.push(m(endTime).format('YYYY-MM-DD'));
+                timeResult.push(m(endTime).format('YYYY-MM-DD') + endTail);
             }
             return timeResult.join(',');
         };
