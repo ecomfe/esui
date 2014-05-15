@@ -12,6 +12,7 @@ define(
         require('./Label');
         require('./Panel');
 
+        var u = require('underscore');
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
@@ -355,16 +356,17 @@ define(
                 {
                     name: [
                         'targetDOM', 'targetControl',
-                        'showMode', 'positionOpt', 'delayTime'
+                        'showMode', 'positionOpt', 'delayTime', 'delayHideTime'
                     ],
                     paint:
                         function (tipLayer, targetDOM, targetControl,
-                            showMode, positionOpt, delayTime) {
+                            showMode, positionOpt, delayTime, delayHideTime) {
                         var options = {
                             targetDOM: targetDOM,
                             targetControl: targetControl,
                             showMode: showMode,
-                            delayTime: delayTime
+                            delayTime: delayTime,
+                            delayHideTime: delayHideTime
                         };
                         if (positionOpt) {
                             positionOpt = positionOpt.split('|');
@@ -419,8 +421,18 @@ define(
                 var elementWidth = element.offsetWidth;
                 element.style.display = 'none';
 
-                var config = lib.clone(options);
-
+                // options可能会有个属性是targetControl，这是个环引用
+                var config = {};
+                if (options.hasOwnProperty('targetControl')) {
+                    u.each(options, function (item, key) {
+                        if (key != 'targetControl') {
+                            config[key] = lib.clone(item);
+                        }
+                    });
+                    config.targetControl = options.targetControl;
+                } else {
+                    config = lib.clone(options);
+                }
 
                 var viewWidth = lib.page.getViewWidth();
                 var viewHeight = lib.page.getViewHeight();
@@ -588,9 +600,11 @@ define(
              *    {string} targetDOM 绑定元素的id
              *    {ui.Control | string} targetControl 绑定控件的实例或id
              *    {number} delayTime 延迟展示时间
+             *    {number} delayHideTime 延迟隐藏时间
              *    {Object=} positionOpt 层布局参数
              */
             attachTo: function (options) {
+                var me = this;
                 var showMode = options.showMode || 'over';
                 var showEvent;
                 var hideEvent;
@@ -610,41 +624,73 @@ define(
                 }
                 else if (options.targetControl) {
                     targetElement =
-                        getElementByControl(this, options.targetControl);
+                        getElementByControl(me, options.targetControl);
                 }
 
                 if (!targetElement) {
                     return;
                 }
 
+                // 延迟展现
+                var delayShowHandler = lib.curry(
+                    delayShow, me, options.delayTime,
+                    targetElement, options.positionOpt
+                );
+                // 展现之后点击其他区域隐藏
+                var showThenHideByClick = function () {
+                    delayShowHandler();
+                    var onceHide = u.partial(
+                        delayHide, me, options.delayHideTime
+                    );
+                    var onceClickHandler = function () {
+                        onceHide();
+                        helper.removeDOMEvent(
+                            me, document.body, 'click',
+                            onceClickHandler
+                        );
+                    };
+                    helper.addDOMEvent(
+                        me, document.body, 'click', onceClickHandler
+                    );
+                };
+
                 if (showMode === 'auto') {
-                    this.show(targetElement, options);
+                    // 直接使用me.show会导致展现错位
+                    // 这样控制就可以使delayTime能够应用
+                    // 如果传入的delayHideTime不为0，则延时自动隐藏
+                    if (options.delayHideTime) {
+                        delayShowHandler();
+                        setTimeout(
+                            lib.curry(delayHide, me, 0),
+                            options.delayTime + options.delayHideTime
+                        );
+                    } else { // 如果传入的delayHideTime为0，需要点击隐藏
+                        showThenHideByClick();
+                    }
                 }
-                else {
+                else if (showMode === 'click') {
                     helper.addDOMEvent(
-                        this, targetElement, showEvent,
-                        lib.curry(
-                            delayShow, this, options.delayTime,
-                            targetElement, options.positionOpt
-                        )
+                        me, targetElement, showEvent, showThenHideByClick
+                    );
+                    // 阻止浮层上点击时的冒泡
+                    helper.addDOMEvent(
+                        me, me.main, 'click', function (e) {
+                            e.stopPropagation();
+                        }
+                    );
+                } else if (showMode == 'over') {
+                    helper.addDOMEvent(
+                        me, targetElement, showEvent, delayShowHandler
                     );
                     helper.addDOMEvent(
-                        this, this.main, 'mouseover',
+                        me, me.main, 'mouseover',
                         lib.bind(
-                            this.show, this, targetElement, options.positionOpt
+                            me.show, me, targetElement, options.positionOpt
                         )
                     );
-
                     helper.addDOMEvent(
-                        this, this.main, 'mouseout',
-                        lib.curry(delayHide, this, 150)
-                    );
-                }
-
-                if (hideEvent === 'mouseout') {
-                    helper.addDOMEvent(
-                        this, targetElement, hideEvent,
-                        lib.curry(delayHide, this, 150)
+                        me, me.main, 'mouseout',
+                        lib.curry(delayHide, me, options.delayHideTime)
                     );
                 }
             },
