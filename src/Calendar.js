@@ -276,14 +276,8 @@ define(
                      */
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (calendar.disabled || calendar.readOnly) {
-                            return;
-                        }
-
                         updateDisplayText(calendar);
 
-                        // if (calendar.layer) {
-                        // 更新日历
                         var monthView = calendar.getChild('monthView');
                         if (monthView) {
                             monthView.setProperties({
@@ -291,8 +285,6 @@ define(
                                 range: range
                             });
                         }
-                        // }
-
                     }
                 },
                 {
