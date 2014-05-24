@@ -122,7 +122,7 @@ define(
                 // 单选框组在没有指定`value`时默认选中第一项
                 if (properties.boxType === 'radio'
                     && datasource.length) {
-                    properties.rawValue = datasource[0].value;
+                    properties.rawValue = [datasource[0].value];
                 }
                 else {
                     properties.rawValue = [];
