@@ -59,7 +59,10 @@ define(
          * @override
          */
         Panel.prototype.createMain = function (options) {
-            return document.createElement(options.tagName || 'div');
+            if (!options.tagName) {
+                return Control.prototype.createMain.call(this);
+            }
+            return document.createElement(options.tagName);
         };
 
         /**
@@ -129,6 +132,60 @@ define(
         };
 
         /**
+         * 追加内容
+         *
+         * @param {string} html 追加内容的HTML代码
+         * @param {boolean} isPrepend 是否加到面板最前面
+         * @ignore
+         */
+        function addContent(html, isPrepend) {
+            var panel = this;
+            var main = panel.main;
+            var container = document.createElement('div');
+            container.innerHTML = html;
+
+            var options = u.extend({}, panel.renderOptions, {
+                viewContext: panel.viewContext,
+                parent: panel
+            });
+
+            var childNodes = container.childNodes;
+            var children = [];
+            for (var i = 0; i < childNodes.length; i++) {
+                children.push(childNodes[i]);
+            };
+
+            u.each(children, function (child) {
+                var ref = main.firstChild;
+                if (isPrepend && ref) {
+                    main.insertBefore(child, ref);
+                }
+                else {
+                    main.appendChild(child);
+                }
+                ui.init(main, options);
+            });
+        }
+
+        /**
+         * 在面板最前面追加内容
+         *
+         * @param {string} html 追加内容的HTML代码
+         */
+        Panel.prototype.prependContent = function (html) {
+            addContent.call(this, true);
+        };
+
+        /**
+         * 在面板最后面追加内容
+         *
+         * @param {string} html 追加内容的HTML代码
+         */
+        Panel.prototype.appendContent = function (html) {
+            addContent.call(this, false);
+        };
+
+        /**
          * 统一化样式名
          *
          * @param {string} name 样式名称
@@ -138,7 +195,7 @@ define(
         function normalizeStyleName(name) {
             if (name.indexOf('-') >= 0) {
                 name = name.replace(
-                    /-\w/g, 
+                    /-\w/g,
                     function (word) {
                         return word.charAt(1).toUpperCase();
                     }
