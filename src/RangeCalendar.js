@@ -92,7 +92,6 @@ define(
                 // 绑定提交和取消按钮
                 var okBtn = calendar.getChild('okBtn');
                 okBtn.on('click', lib.curry(commitValue, calendar));
-
                 var cancelBtn = calendar.getChild('cancelBtn');
                 cancelBtn.on(
                     'click',
@@ -1066,7 +1065,7 @@ define(
                     }
 
                     changeHighlightState(monthView, cursor.toDate(), highlight);
-                    cursor.add('day', 1); 
+                    cursor.add('day', 1);
                 }
             }
 
