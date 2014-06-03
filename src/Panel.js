@@ -155,7 +155,12 @@ define(
             };
 
             u.each(children, function (child) {
-                main.insertBefore(child, main.firstChild);
+                if (isPrepend) {
+                    main.insertBefore(child, main.firstChild);
+                }
+                else {
+                    main.appendChild(child);
+                }
                 ui.init(main, options);
             });
         }
