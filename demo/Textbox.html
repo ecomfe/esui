@@ -45,33 +45,12 @@
         label {
             display: block;
         }
-        .invalid {
-            color: #f00;
-        }
     </style>
-    <script>
-        var ready = (function () {
-            var list = [];
-            return function (callback) {
-                if (callback) {
-                    list.push(callback);
-                }
-                else {
-                    for (var i = 0; i < list.length; i++) {
-                        list[i]();
-                    }
-                    ready = function (callback) {
-                        callback();
-                    };
-                }
-            }
-        }());
-    </script>
-</head>
+    </head>
 <body>
     <h1>TextBox</h1>
-    <div id="page">
-        <div id="main">
+    <div class="container">
+        <div>
             <h2>多种模式</h2>
             <section class="intro">
                 <p>文本框有3种模式：文本、密码、多行。</p>

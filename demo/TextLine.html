@@ -45,33 +45,12 @@
         label {
             display: block;
         }
-        .invalid {
-            color: #f00;
-        }
     </style>
-    <script>
-        var ready = (function () {
-            var list = [];
-            return function (callback) {
-                if (callback) {
-                    list.push(callback);
-                }
-                else {
-                    for (var i = 0; i < list.length; i++) {
-                        list[i]();
-                    }
-                    ready = function (callback) {
-                        callback();
-                    };
-                }
-            }
-        }());
-    </script>
 </head>
 <body>
     <h1>Region</h1>
-    <div id="page">
-        <div id="main">
+    <div class="container">
+        <div>
             <h2>展示</h2>
             <section class="intro">
                 <p>描述</p>
