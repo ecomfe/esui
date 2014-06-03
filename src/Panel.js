@@ -132,6 +132,58 @@ define(
         };
 
         /**
+         * 追加内容
+         *
+         * @param {string} html 追加内容的HTML代码
+         * @param {boolean} isPrepend 是否加到面板最前面
+         * @ignore
+         */
+        function addContent(html, isPrepend) {
+            var main = this.main;
+            var container = document.createElement('div');
+            container.innerHTML = html;
+
+            var options = u.extend({}, this.renderOptions, {
+                viewContext: this.viewContext,
+                parent: this
+            });
+
+            var childNodes = container.childNodes;
+            var children = [];
+            for (var i = 0; i < childNodes.length; i++) {
+                children.push(childNodes[i]);
+            };
+
+            u.each(children, function (child) {
+                if (isPrepend) {
+                    main.insertBefore(child, main.firstChild);
+                }
+                else {
+                    main.appendChild(child);
+                }
+                ui.init(main, options);
+            });
+        }
+
+        /**
+         * 在面板最前面追加内容
+         *
+         * @param {string} html 追加内容的HTML代码
+         */
+        Panel.prototype.prependContent = function (html) {
+            addContent.call(this, true);
+        };
+
+        /**
+         * 在面板最后面追加内容
+         *
+         * @param {string} html 追加内容的HTML代码
+         */
+        Panel.prototype.appendContent = function (html) {
+            addContent.call(this, false);
+        };
+
+        /**
          * 统一化样式名
          *
          * @param {string} name 样式名称
