@@ -103,7 +103,7 @@ define(
          */
         lib.getChildren = function (element) {
             return u.filter(
-                element.childNodes,
+                element.children,
                 function (child) {
                     return child.nodeType === 1;
                 }
