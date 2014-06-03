@@ -139,14 +139,13 @@ define(
          * @ignore
          */
         function addContent(html, isPrepend) {
-            var panel = this;
-            var main = panel.main;
+            var main = this.main;
             var container = document.createElement('div');
             container.innerHTML = html;
 
-            var options = u.extend({}, panel.renderOptions, {
-                viewContext: panel.viewContext,
-                parent: panel
+            var options = u.extend({}, this.renderOptions, {
+                viewContext: this.viewContext,
+                parent: this
             });
 
             var childNodes = container.childNodes;
@@ -156,13 +155,7 @@ define(
             };
 
             u.each(children, function (child) {
-                var ref = main.firstChild;
-                if (isPrepend && ref) {
-                    main.insertBefore(child, ref);
-                }
-                else {
-                    main.appendChild(child);
-                }
+                main.insertBefore(child, main.firstChild);
                 ui.init(main, options);
             });
         }

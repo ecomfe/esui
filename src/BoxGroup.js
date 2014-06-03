@@ -118,10 +118,9 @@ define(
             if (!datasource.length) {
                 extractDatasourceFromDOM(this.main, properties);
             }
-            if (!properties.rawValue && !properties.value) {
+            if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
                 // 单选框组在没有指定`value`时默认选中第一项
-                if (properties.boxType === 'radio'
-                    && datasource.length) {
+                if (properties.boxType === 'radio' && datasource.length) {
                     properties.rawValue = [datasource[0].value];
                 }
                 else {
