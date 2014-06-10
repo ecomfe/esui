@@ -154,6 +154,7 @@ define(
                 children.push(childNodes[i]);
             };
 
+            var ui = require('./main');
             u.each(children, function (child) {
                 if (isPrepend) {
                     main.insertBefore(child, main.firstChild);
@@ -171,7 +172,7 @@ define(
          * @param {string} html 追加内容的HTML代码
          */
         Panel.prototype.prependContent = function (html) {
-            addContent.call(this, true);
+            addContent.call(this, html, true);
         };
 
         /**
@@ -180,7 +181,7 @@ define(
          * @param {string} html 追加内容的HTML代码
          */
         Panel.prototype.appendContent = function (html) {
-            addContent.call(this, false);
+            addContent.call(this, html, false);
         };
 
         /**
