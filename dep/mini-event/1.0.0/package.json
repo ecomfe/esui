@@ -1,0 +1,15 @@
+{
+    "name": "mini-event",
+    "version": "1.0.0",
+    "description": "A simple and dedicated library to provide event components",
+    "main": "main",
+    "maintainers": [
+        { "name": "otakustay", "email": "otakustay@gmail.com" }
+    ],
+    "contributors": [
+        { "name": "otakustay", "email": "otakustay@gmail.com" }
+    ],
+    "license": "MIT",
+    "repository": "git://github.com:ecomfe/mini-event.git",
+    "bugs": "https://github.com/ecomfe/mini-event/issues"
+}

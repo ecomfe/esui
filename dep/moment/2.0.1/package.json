@@ -1,0 +1,21 @@
+{
+    "name": "moment",
+    "version": "2.0.1",
+    "description": "Parse, manipulate, and display dates.",
+    "main": "moment",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/ecomfe/dep-moment.git"
+    },
+    "maintainers": [
+        {
+            "name": "Firede",
+            "email": "firede@firede.us"
+        }
+    ],
+    "license": "MIT",
+    "readmeFilename": "README.md",
+    "bugs": {
+        "url": "https://github.com/ecomfe/dep-moment/issues"
+    }
+}

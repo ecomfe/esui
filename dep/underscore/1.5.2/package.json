@@ -1,0 +1,21 @@
+{
+    "name": "underscore",
+    "description": "JavaScript's functional programming helper library.",
+    "version": "1.5.2",
+    "main": "underscore",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/ecomfe/dep-underscore.git"
+    },
+    "maintainers": [
+        {
+            "name": "Firede",
+            "email": "firede@firede.us"
+        }
+    ],
+    "license": "MIT",
+    "readmeFilename": "README.md",
+    "bugs": {
+        "url": "https://github.com/ecomfe/dep-underscore/issues"
+    }
+}

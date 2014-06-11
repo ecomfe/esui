@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Jasmine Spec Runner</title>
+
+    <link rel="stylesheet" href="asset/css/jasmine.css">
+    <script src="asset/js/jasmine.js"></script>
+    <script src="asset/js/async.js"></script>
+    <script src="asset/js/jasmine-html.js"></script>
+    <script src="matchers.js"></script>
+    <script src="asset/js/esl.js"></script>
+
+    <script>
+        require.config({
+            packages: [
+                {
+                    name: 'mini-event',
+                    location: '../src',
+                    main: 'main'
+                }
+            ]
+        });
+    </script>
+    <script>
+        var suits = [
+            'EventQueue',
+            'EventTarget',
+            'Event'
+        ];
+        for (var i = 0; i < suits.length; i++) {
+            suits[i] = 'spec/' + suits[i];
+        }
+        require(
+            suits,
+            function() {
+                var jasmineEnv = jasmine.getEnv();
+                jasmineEnv.updateInterval = 1000;
+
+                var htmlReporter = new jasmine.HtmlReporter();
+
+                jasmineEnv.addReporter(htmlReporter);
+
+                jasmineEnv.specFilter = function(spec) {
+                    return htmlReporter.specFilter(spec);
+                };
+
+                var currentWindowOnload = window.onload;
+
+                window.onload = function() {
+                    if (currentWindowOnload) {
+                        currentWindowOnload();
+                    }
+                    execJasmine();
+                };
+
+                function execJasmine() {
+                    jasmineEnv.execute();
+                }
+            }
+        );
+    </script>
+
+</head>
+
+<body>
+</body>
+</html>

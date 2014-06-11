@@ -1,0 +1,16 @@
+{
+    "--title": "mini-event",
+    "--output": "../doc/",
+//    "--guides": "guide.json",
+    "--categories": "categories.json",
+//    "--examples": "example.json",
+//    "--examples-base-url": "../demo/",
+//    "--eg-iframe": "eg-iframe.html",
+    "--": [
+        "../src/Event.js",
+        "../src/EventQueue.js",
+        "../src/EventTarget.js",
+        "../src/main.js",
+        "../src/lib.js"
+    ]
+}

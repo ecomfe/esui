@@ -1,0 +1,17 @@
+[
+    {
+        "name": "mini-event",
+        "groups": [
+            {
+                "name": "Classes",
+                "classes": [
+                    "Event",
+                    "EventQueue",
+                    "EventTarget",
+                    "lib",
+                    "main"
+                ]
+            }
+        ]
+    }
+]

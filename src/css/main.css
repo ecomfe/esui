@@ -1,0 +1,3053 @@
+.state-hidden {
+  display: none !important;
+}
+.ui-layer {
+  position: absolute;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 重置样式
+ * @author DBear
+ */
+.ui-ctrl {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.ui-ctrl table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.ui-ctrl fieldset,
+.ui-ctrl iframe,
+.ui-ctrl img {
+  border: 0;
+}
+.ui-ctrl a img {
+  display: block;
+}
+.ui-ctrl ol,
+.ui-ctrl ul,
+.ui-ctrl li {
+  list-style: none;
+}
+.ui-ctrl address,
+.ui-ctrl caption,
+.ui-ctrl cite,
+.ui-ctrl code,
+.ui-ctrl dfn,
+.ui-ctrl em,
+.ui-ctrl strong,
+.ui-ctrl th,
+.ui-ctrl var,
+.ui-ctrl i {
+  font-style: normal;
+  font-weight: normal;
+}
+table.ui-ctrl {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+fieldset.ui-ctrl,
+iframe.ui-ctrl,
+img.ui-ctrl {
+  border: 0;
+}
+a img.ui-ctrl {
+  display: block;
+}
+li.ui-ctrl {
+  list-style: none;
+}
+address.ui-ctrl,
+caption.ui-ctrl,
+cite.ui-ctrl,
+code.ui-ctrl,
+dfn.ui-ctrl,
+em.ui-ctrl,
+strong.ui-ctrl,
+th.ui-ctrl,
+var.ui-ctrl,
+i.ui-ctrl {
+  font-style: normal;
+}
+esui-calendar,
+esui-crumb,
+esui-dialog,
+esui-label,
+esui-month-view,
+esui-pager,
+esui-panel,
+esui-range-calendar,
+esui-region,
+esui-rich-calendar,
+esui-schedule,
+esui-search-box,
+esui-sidebar,
+esui-select,
+esui-tab,
+esui-table,
+esui-text-box,
+esui-text-line,
+esui-tip,
+esui-tip-layer,
+esui-tree,
+esui-wizard {
+  display: block;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 组合框样式
+ * @author dbear
+ */
+.ui-checkbox,
+.ui-radio,
+.ui-boxgroup-checkbox,
+.ui-boxgroup-radio {
+  vertical-align: middle;
+  line-height: 1.8;
+}
+.ui-checkbox input,
+.ui-radio input,
+.ui-boxgroup-checkbox input,
+.ui-boxgroup-radio input {
+  margin-right: .2em;
+  vertical-align: middle;
+  margin-bottom: -0.01em;
+}
+.ui-checkbox span,
+.ui-radio span,
+.ui-boxgroup-checkbox span,
+.ui-boxgroup-radio span {
+  vertical-align: middle;
+}
+.ui-boxgroup-horizontal label {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  margin-right: .5em;
+}
+.ui-boxgroup-vertical label {
+  display: block;
+}
+/** 验证 */
+.ui-checkbox-validity-label {
+  zoom: 1;
+  color: #CC0000;
+  padding-left: 10px;
+}
+.ui-checkbox-validity-label-notice {
+  color: #FF0000;
+}
+.ui-checkbox-validity-label-warn {
+  color: red;
+}
+.ui-checkbox-validity-label-invalid {
+  color: #CC0000;
+}
+.ui-boxgroup-validity-label-invalid {
+  color: #CC0000;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 按钮样式
+  * @author dbear
+  */
+/**
+ * 基础按钮样式
+ */
+.ui-button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+  overflow: hidden;
+  background: #ffffff;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -o-linear-gradient(top, #ffffff, #f6f6f6);
+  border: 1px solid #CCC;
+  font-size: 12px;
+  text-align: center;
+  color: #333;
+  padding: 0 10px;
+  vertical-align: top;
+  -moz-border-radius: 2px 2px 2px 2px;
+  -webkit-border-radius: 2px 2px 2px 2px;
+  border-radius: 2px 2px 2px 2px;
+  cursor: pointer;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 23px;
+  line-height: 23px;
+}
+.ui-button:before {
+  content: '.';
+  visibility: hidden;
+  display: inline-block;
+  width: 0;
+}
+button.ui-button {
+  *height: 25px;
+}
+/**
+ * 基础按钮样式状态
+ */
+.ui-button:hover {
+  cursor: pointer;
+}
+.ui-button:active {
+  border: 1px solid #BEBEBE;
+  background: #f6f6f6;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f6f6f6), to(#ffffff));
+  background: -webkit-linear-gradient(top, #f6f6f6, #ffffff);
+  background: -moz-linear-gradient(top, #f6f6f6, #ffffff);
+  background: -ms-linear-gradient(top, #f6f6f6, #ffffff);
+  background: -o-linear-gradient(top, #f6f6f6, #ffffff);
+}
+.ui-button-disabled {
+  background: #f6f6f6;
+  border-color: #cfcfcf;
+  color: #999;
+}
+.ui-button-lf-icon {
+  float: left;
+}
+.ui-button-rt-icon {
+  float: right;
+}
+/** 春天系列 */
+.skin-spring-button,
+.skin-spring-add-button {
+  border: 1px solid #519D30;
+  color: white;
+  font-weight: bold;
+}
+.skin-spring-button {
+  background: #65b445;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#6cbb4c), to(#519c30));
+  background: -webkit-linear-gradient(top, #6cbb4c, #519c30);
+  background: -moz-linear-gradient(top, #6cbb4c, #519c30);
+  background: -ms-linear-gradient(top, #6cbb4c, #519c30);
+  background: -o-linear-gradient(top, #6cbb4c, #519c30);
+  padding: 0 10px;
+  height: 30px;
+  line-height: 30px;
+}
+button.skin-spring-button {
+  *height: 32px;
+}
+.skin-spring-add-button {
+  background: url(../img/esui-button-plus.gif) no-repeat scroll 9px center #65b445;
+  background: url(../img/esui-button-plus.gif), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#6cbb4c), to(#519c30));
+  background: url(../img/esui-button-plus.gif), -webkit-linear-gradient(top, #6cbb4c, #519c30);
+  background: url(../img/esui-button-plus.gif), -moz-linear-gradient(top, #6cbb4c, #519c30);
+  background: url(../img/esui-button-plus.gif), -ms-linear-gradient(top, #6cbb4c, #519c30);
+  background: url(../img/esui-button-plus.gif), -o-linear-gradient(top, #6cbb4c, #519c30);
+  background-repeat: no-repeat, no-repeat;
+  background-position: 9px center, 0 0;
+  padding: 0 13px 0 27px;
+}
+.skin-spring-button:active,
+.skin-spring-add-button:active {
+  border: 1px solid #509c2f;
+}
+.skin-spring-button:active {
+  background: #65b445;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#519c30), to(#6cbb4c));
+  background: -webkit-linear-gradient(top, #519c30, #6cbb4c);
+  background: -moz-linear-gradient(top, #519c30, #6cbb4c);
+  background: -ms-linear-gradient(top, #519c30, #6cbb4c);
+  background: -o-linear-gradient(top, #519c30, #6cbb4c);
+}
+.skin-spring-add-button:active {
+  background: url(../img/esui-button-plus.gif) no-repeat scroll 9px center #65b445;
+  background: url(../img/esui-button-plus.gif), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#519c30), to(#6cbb4c));
+  background: url(../img/esui-button-plus.gif), -webkit-linear-gradient(top, #519c30, #6cbb4c);
+  background: url(../img/esui-button-plus.gif), -moz-linear-gradient(top, #519c30, #6cbb4c);
+  background: url(../img/esui-button-plus.gif), -ms-linear-gradient(top, #519c30, #6cbb4c);
+  background: url(../img/esui-button-plus.gif), -o-linear-gradient(top, #519c30, #6cbb4c);
+  background-repeat: no-repeat, no-repeat;
+  background-position: 9px center, 0 0;
+}
+.skin-spring-button:hover,
+.skin-spring-add-button:hover {
+  border: 1px solid #157106;
+}
+/** 下载系列 */
+.skin-download-button {
+  background: url(../img/esui-btn-download.png) no-repeat scroll 40px center #65b445;
+  background: url(../img/esui-btn-download.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-btn-download.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-btn-download.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-btn-download.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-btn-download.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: 40px center, 0 0;
+  padding-left: 12px;
+  padding-right: 25px;
+}
+.skin-download-button:active {
+  background: url(../img/esui-btn-download.png) no-repeat scroll 40px center #65b445;
+  background: url(../img/esui-btn-download.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f6f6f6), to(#ffffff));
+  background: url(../img/esui-btn-download.png), -webkit-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-btn-download.png), -moz-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-btn-download.png), -ms-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-btn-download.png), -o-linear-gradient(top, #f6f6f6, #ffffff);
+  background-repeat: no-repeat, no-repeat;
+  background-position: 40px center, 0 0;
+}
+/** 关闭layer按钮 */
+.skin-layerClose-button {
+  background-image: url(../img/esui.png);
+  background-repeat: repeat;
+  background-position: -37px -88px;
+  background-color: transparent;
+  border: 0 none;
+  height: 12px;
+  overflow: hidden;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 12px;
+  padding: 0;
+}
+.skin-layerClose-button:active {
+  background-image: url(../img/esui.png);
+  background-repeat: repeat;
+  background-position: -37px -88px;
+  background-color: transparent;
+  border: 1px solid #f6f6f6;
+  height: 12px;
+  width: 12px;
+  right: 4px;
+  top: 4px;
+}
+/** 文字按钮 */
+.skin-link-button {
+  background: none;
+  border: 0 none;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+}
+button.skin-link-button {
+  *height: 28px;
+}
+.skin-link-button:active,
+.skin-link-button:hover {
+  background: none;
+  border: 0 none;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  color: blue;
+}
+button.skin-link-button:active,
+button.skin-link-button:hover {
+  height: 28px;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 输入日历样式
+ * @author dbear
+ */
+.ui-calendar {
+  border: 1px solid #a9adb6;
+  /*border:1px solid #dde0e9;*/
+  width: 110px;
+  height: 23px;
+  line-height: 23px;
+  padding-left: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+  background-color: white;
+  background: transparent;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -o-linear-gradient(top, #ffffff, #f6f6f6);
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+}
+.ui-calendar-text {
+  padding-left: 3px;
+  width: 85px;
+  float: right;
+}
+.ui-calendar:hover,
+.ui-calendar:active {
+  border-color: #a9adb6;
+}
+.ui-calendar-arrow {
+  float: left;
+  height: 16px;
+  margin-top: 3px;
+  width: 16px;
+  background: url(../img/esui-cal.png) no-repeat scroll left 0px #f3f3f3;
+  background: url(../img/esui-cal.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-cal.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-cal.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-cal.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-cal.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: left 0px, 0 0;
+}
+.ui-calendar-layer {
+  background: #fff;
+  width: 210px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.ui-calendar-layer-hidden {
+  display: none;
+}
+.ui-calendar-disabled,
+.ui-calendar-read-only {
+  color: #999;
+  border-color: #D8D8D8;
+}
+/** 验证 */
+.ui-calendar-validity-invalid {
+  border: 1px solid red;
+}
+.ui-calendar-validity-label {
+  display: block;
+  margin-top: 5px;
+}
+.ui-calendar-validity-label-invalid {
+  background-image: url(../img/esui-icon-alert.png);
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-color: #fedbdc;
+  border: 1px solid #F0CCCC;
+  color: #dd6767;
+  padding-left: 50px;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 对话框样式
+ * @author dbear
+ */
+.ui-commandmenu {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -6px #ffffff;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -6px, 0 0;
+  border: 1px solid #D8D8D8;
+  border-radius: 3px 3px 3px 3px;
+  cursor: pointer;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  font-size: 12px;
+  height: 17px;
+  line-height: 17px;
+  padding: 3px 3px 3px 5px;
+  width: 100px;
+}
+.ui-commandmenu:hover,
+.ui-commandmenu:focus {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -36px #f3f3f3;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -36px, 0 0;
+}
+.ui-commandmenu:active {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -36px #f3f3f3;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f6f6f6), to(#ffffff));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #f6f6f6, #ffffff);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -36px, 0 0;
+}
+.ui-commandmenu-active,
+.ui-commandmenu-active:hover,
+.ui-commandmenu-active:focus {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -69px #f3f3f3;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -69px, 0 0;
+}
+.ui-commandmenu-layer {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  background: none repeat scroll 0 0 #FFFFFF;
+  border: 1px solid #A8ADB6;
+  font-size: 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 1px;
+  position: absolute;
+  text-align: left;
+  z-index: 1002;
+}
+.ui-commandmenu-layer span {
+  display: block;
+}
+.ui-commandmenu-layer li {
+  color: #333333;
+  cursor: pointer;
+  height: 22px;
+  line-height: 22px;
+  margin: 0 0 1px;
+  padding: 0 4px;
+  overflow: hidden;
+}
+.ui-commandmenu-layer li:hover {
+  background-color: #F1F1F1;
+}
+.ui-commandmenu-layer-selected {
+  background-color: #E0E0E0;
+  border: 1px solid #DDDDDD;
+}
+.ui-commandmenu-layer-hidden {
+  display: none;
+}
+.ui-commandmenu-disabled {
+  color: #999999;
+}
+.ui-commandmenu-disabled:hover,
+.ui-commandmenu-disabled:focus,
+.ui-commandmenu-disabled:active {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -6px #ffffff;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -6px, 0 0;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 面包屑样式
+ * @author dbear, otakustay
+ */
+.ui-crumb {
+  overflow: hidden;
+}
+.ui-crumb-node,
+.ui-crumb-separator {
+  padding: 0;
+  float: left;
+}
+.ui-crumb-separator {
+  margin: 0 5px;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 对话框样式
+ * @author dbear
+ */
+.ui-dialog {
+  background: none repeat scroll 0 0 #FFFFFF;
+  border: 2px solid #394459;
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+  position: absolute;
+  width: 600px;
+  z-index: 1203;
+}
+.ui-dialog-head {
+  background-image: url(../img/esui-dialog-head-bg.png);
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-color: transparent;
+  color: #FFFFFF;
+  font-weight: bold;
+  height: 26px;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+.ui-dialog-close-icon {
+  background-image: url(../img/esui-dialog-head-close.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+  height: 13px;
+  width: 13px;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+}
+.ui-dialog-title {
+  padding-left: 12px;
+  line-height: 28px;
+  font-size: 15px;
+  line-height: 26px;
+}
+.ui-dialog-body {
+  padding: 10px 8px 8px;
+  overflow: hidden;
+  zoom: 1;
+}
+.ui-dialog-foot-panel {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+  margin: 0px 8px 3px;
+  padding: 15px 0 20px 25px;
+  border-top: 1px solid #F0F0F0;
+  overflow: hidden;
+  zoom: 1;
+}
+.ui-dialog-foot {
+  float: right;
+}
+.ui-dialog-foot .ui-button {
+  margin-right: 6px;
+}
+.ui-dialog-foot .ui-button {
+  height: 26px;
+  line-height: 26px;
+  margin-right: 6px;
+  width: 50px;
+}
+.ui-dialog-draggable .ui-dialog-head {
+  cursor: move;
+}
+.ui-dialog-dragging {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+.ui-dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  _position: absolute;
+  _width: 100%;
+  _height: 100%;
+  background: #333;
+  opacity: .2;
+  filter: alpha(opacity=20);
+  z-index: 1003;
+}
+/** 警告框，确认框 */
+.skin-alert-dialog .ui-dialog-body,
+.skin-confirm-dialog .ui-dialog-body {
+  padding-bottom: 20px;
+}
+.skin-alert-dialog .ui-dialog-icon,
+.skin-confirm-dialog .ui-dialog-icon {
+  display: none;
+}
+.skin-alert-dialog .ui-dialog-icon-warning,
+.skin-confirm-dialog .ui-dialog-icon-warning {
+  background-image: url(../img/esui-dialog-notice.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+  display: block;
+  float: left;
+  height: 22px;
+  margin: 18px 10px 8px 40px;
+  _margin: 15px 10px 8px 25px;
+  width: 33px;
+}
+.skin-alert-dialog .ui-dialog-icon-confirm,
+.skin-confirm-dialog .ui-dialog-icon-confirm {
+  background-image: url(../img/esui-dialog-question.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+  display: block;
+  float: left;
+  height: 34px;
+  margin: 15px 10px 8px 40px;
+  _margin: 12px 10px 8px 25px;
+  width: 34px;
+}
+.skin-alert-dialog .ui-dialog-text,
+.skin-confirm-dialog .ui-dialog-text {
+  margin-top: 20px;
+  line-height: 18px;
+  margin-right: 40px;
+  overflow: hidden;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 单日历样式
+ * @author dbear
+ */
+.ui-monthview {
+  background: #fff;
+  width: 210px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+.ui-monthview-head {
+  background: none repeat scroll 0 0 #CCCED4;
+  height: 27px;
+  padding: 2px 5px;
+  /** 先前向后按钮 */
+}
+.ui-monthview-head table {
+  width: 200px;
+}
+.ui-monthview-head .ui-monthview-month-select,
+.ui-monthview-head .ui-monthview-year-select {
+  width: 30px;
+}
+.ui-monthview-head .ui-monthview-month-forward,
+.ui-monthview-head .ui-monthview-month-back {
+  background-image: url(../img/esui.png);
+  background-repeat: repeat;
+  background-position: 0px -200px;
+  background-color: transparent;
+  font-size: 1px;
+  height: 20px;
+  width: 20px;
+  padding: 0;
+  float: left;
+}
+.ui-monthview-head .ui-monthview-month-forward:active,
+.ui-monthview-head .ui-monthview-month-back:active {
+  background-image: url(../img/esui.png);
+  background-repeat: repeat;
+  background-position: 0px -200px;
+  background-color: transparent;
+  height: 20px;
+}
+.ui-monthview-head .ui-monthview-month-forward {
+  background-position: -20px -200px;
+  margin-left: 15px;
+}
+.ui-monthview-head .ui-monthview-month-forward:active {
+  background-position: -20px -200px;
+}
+.ui-monthview-month {
+  border: 1px solid #ccced4;
+  font-size: 13px;
+}
+.ui-monthview-month table {
+  width: 100%;
+}
+.ui-monthview-month-title {
+  width: 29px;
+  height: 21px;
+  line-height: 21px;
+  background: #f1f1f1;
+  color: #666;
+  text-align: center;
+}
+.ui-monthview-month-title-selected {
+  background: #CCCED4;
+}
+.ui-monthview-month-item {
+  width: 19px;
+  height: 21px;
+  line-height: 21px;
+  cursor: pointer;
+  color: #03c;
+  text-align: center;
+  border-bottom: 1px solid #f1f1f1;
+}
+.ui-monthview-last-row .ui-monthview-month-item {
+  border-bottom: none;
+}
+.ui-monthview-month-item:hover {
+  background: #e4eaf9;
+}
+.ui-monthview-month-item-selected {
+  background: #fff6bd;
+  color: #333;
+  font-weight: bold;
+}
+.ui-monthview-month-item-virtual,
+.ui-monthview-month-item-out {
+  color: #888;
+  cursor: default;
+  background: #fff;
+}
+.ui-monthview-month-item-virtual:hover,
+.ui-monthview-month-item-out:hover {
+  background: #fff;
+}
+.ui-monthview-month-item-disabled {
+  background: #ddd;
+  cursor: default;
+}
+.ui-monthview-month-item-disabled:hover {
+  background: #ddd;
+}
+.ui-monthview-multi-select {
+  width: 220px;
+}
+.ui-monthview-multi-select .ui-monthview-head table {
+  width: 215px;
+}
+.ui-monthview-multi-select .ui-monthview-month-select-all {
+  width: 15px;
+  height: 21px;
+  line-height: 21px;
+  background: #f1f1f1;
+  text-align: center;
+  cursor: pointer;
+}
+.ui-monthview-multi-select .ui-monthview-month-select-all:hover {
+  background: #f1f1f1;
+}
+.ui-monthview-multi-select .ui-monthview-month-select-all-selected {
+  background: #CCCED4;
+}
+.ui-monthview-multi-select .ui-monthview-month-row-select {
+  background: #f1f1f1;
+  height: 21px;
+  line-height: 21px;
+  text-align: center;
+  border-bottom: 1px solid #f1f1f1;
+  cursor: pointer;
+}
+.ui-monthview-multi-select .ui-monthview-month-row-select-selected {
+  background: #CCCED4;
+}
+.ui-monthview-disabled {
+  /** 先前向后按钮 */
+}
+.ui-monthview-disabled .ui-monthview-month-forward,
+.ui-monthview-disabled .ui-monthview-month-back {
+  background-position: 0 -240px;
+}
+.ui-monthview-disabled .ui-monthview-month-forward:active,
+.ui-monthview-disabled .ui-monthview-month-back:active {
+  background-image: url(../img/esui.png);
+  background-repeat: repeat;
+  background-position: 0px -240px;
+  background-color: transparent;
+  height: 20px;
+  border-color: #CFCFCF;
+}
+.ui-monthview-disabled .ui-monthview-month-forward {
+  background-position: -20px -240px;
+}
+.ui-monthview-disabled .ui-monthview-month-forward:active {
+  background-position: -20px -240px;
+  border-color: #CFCFCF;
+}
+.ui-monthview-disabled .ui-monthview-month-item {
+  background: #ddd;
+  cursor: default;
+}
+.ui-monthview-disabled .ui-monthview-month-item:hover {
+  background: #ddd;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 翻页样式
+ * @author shenbin
+ */
+/** Pager 文字配色 */
+.ui-pager {
+  font-size: 12px;
+  height: 25px;
+  line-height: 25px;
+}
+.ui-pager-label {
+  color: #333333;
+  text-align: center;
+}
+.ui-pager-select-wrapper {
+  margin-left: 5px;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+.ui-pager .ui-select {
+  vertical-align: top;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+.ui-pager-select-hidden {
+  display: none;
+}
+.ui-pager-main {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+/*
+ * 部分沿用button控件的样式
+ */
+.ui-pager-main li {
+  /* Hack 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
+     * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
+     * 为兼容Mac下显示效果，前面增加STHeiti */
+  font-family: STHeiti, SimSun;
+  margin-left: 4px;
+  text-align: center;
+  vertical-align: top;
+  color: #333333;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+.ui-pager-main a {
+  color: #333333;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+.ui-pager-main a:hover {
+  text-decoration: none;
+}
+/*
+ * 部分沿用button控件的样式
+ */
+.ui-pager-item,
+.ui-pager-item-extend {
+  background: #ffffff;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -o-linear-gradient(top, #ffffff, #f6f6f6);
+  width: 23px;
+  height: 23px;
+  border: 1px #ccc solid;
+  cursor: pointer;
+  -moz-border-radius: 2px 2px 2px 2px;
+  -webkit-border-radius: 2px 2px 2px 2px;
+  border-radius: 2px 2px 2px 2px;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.ui-pager-item a {
+  width: 23px;
+}
+.ui-pager-item-extend,
+.ui-pager-item-extend a {
+  width: 50px;
+}
+.ui-pager-item-current,
+.ui-pager-item-omit {
+  width: 25px;
+  height: 25px;
+}
+.ui-pager-item-current {
+  font-weight: 600;
+  line-height: 26px;
+}
+.ui-pager-item-omit {
+  line-height: 36px;
+}
+/*
+ * 布局皮肤样式
+ */
+/* 左侧正序、左侧逆序 */
+.ui-pager-alignLeft,
+.ui-pager-alignLeftReverse {
+  float: left;
+}
+/* 左侧逆序 */
+.ui-pager-alignLeftReverse .ui-pager-select-wrapper {
+  float: right;
+}
+/* 右侧正序、右侧逆序 */
+.ui-pager-alignRight,
+.ui-pager-alignRightReverse {
+  float: right;
+}
+/* 右侧逆序 */
+.ui-pager-alignRightReverse .ui-pager-select-wrapper {
+  float: right;
+}
+/* 分散正序 */
+.ui-pager-distributed .ui-pager-main {
+  float: right;
+}
+/* 分散逆序 */
+.ui-pager-distributedReverse .ui-pager-select-wrapper {
+  float: right;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 区间日历样式
+ * @author dbear
+ */
+.ui-rangecalendar {
+  border: 1px solid #a9adb6;
+  /*border:1px solid #dde0e9;*/
+  width: 235px;
+  height: 23px;
+  line-height: 23px;
+  padding-left: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: white;
+  background: transparent;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: -o-linear-gradient(top, #ffffff, #f6f6f6);
+  -moz-border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+.ui-rangecalendar-text {
+  padding-left: 3px;
+  float: left;
+}
+.ui-rangecalendar:hover,
+.ui-rangecalendar:active {
+  border-color: #a9adb6;
+}
+.ui-rangecalendar-arrow {
+  float: right;
+  height: 16px;
+  margin-top: 3px;
+  margin-right: 5px;
+  width: 16px;
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll left -9px #f3f3f3;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: left -9px, 0 0;
+}
+.ui-rangecalendar-layer {
+  background: none repeat scroll 0 0 #FFFFFF;
+  border-color: #394459 #A8ADB6 #A8ADB6;
+  border-image: none;
+  border-right: 1px solid #A8ADB6;
+  border-style: solid;
+  border-width: 2px 1px 1px;
+  padding: 8px;
+  width: 430px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-shortcut {
+  font-size: 12px;
+  height: 20px;
+  line-height: 20px;
+  padding-right: 10px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-shortcut-item {
+  color: #3377AA;
+  cursor: pointer;
+  text-decoration: underline;
+  border-left: 1px solid #3377AA;
+  margin-left: 5px;
+  padding-left: 5px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-shortcut-item.ui-rangecalendar-shortcut-item-first {
+  border-left: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-shortcut-item-selected {
+  color: #666666;
+  cursor: default;
+  text-decoration: none;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-shortcut-item-disabled {
+  color: #999999;
+  cursor: default;
+  text-decoration: none;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-shortcut-disabled .ui-rangecalendar-shortcut-item {
+  color: #999999;
+  cursor: default;
+  text-decoration: none;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-begin,
+.ui-rangecalendar-layer .ui-rangecalendar-end {
+  float: left;
+  width: 210px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-begin {
+  margin-right: 10px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-label {
+  font-size: 12px;
+  height: 18px;
+  padding-top: 7px;
+  overflow: hidden;
+  zoom: 1;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-label h3 {
+  float: left;
+  font-size: 12px;
+  line-height: 18px;
+  margin: 0;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-label .ui-checkbox {
+  float: right;
+  line-height: 18px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-label .ui-checkbox input {
+  vertical-align: text-bottom;
+  *margin-bottom: -3px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-foot {
+  clear: both;
+  padding-top: 8px;
+}
+.ui-rangecalendar-layer .ui-rangecalendar-foot .ui-button {
+  margin-right: 5px;
+}
+.ui-rangecalendar-layer-hidden {
+  display: none;
+}
+.ui-rangecalendar-disabled,
+.ui-rangecalendar-read-only {
+  color: #999;
+  border-color: #D8D8D8;
+}
+/** 验证 */
+.ui-rangecalendar-validity-invalid {
+  border: 1px solid red;
+}
+.ui-rangecalendar-validity-label {
+  display: block;
+  margin-top: 5px;
+}
+.ui-rangecalendar-validity-label-invalid {
+  background-image: url(../img/esui-icon-alert.png);
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-color: #fedbdc;
+  border: 1px solid #F0CCCC;
+  color: #dd6767;
+  padding-left: 50px;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 多月份多选日历
+ * @author dbear
+ */
+.ui-richcalendar-layer {
+  background: #fff;
+  display: block;
+  border: 1px solid #A8ADB6;
+  -moz-box-shadow: 3px 4px 4px -4px;
+  -webkit-box-shadow: 3px 4px 4px -4px;
+  box-shadow: 3px 4px 4px -4px;
+  margin-top: 1px;
+  padding: 5px 5px 5px 0;
+}
+.ui-richcalendar-layer:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.ui-richcalendar-layer .ui-richcalendar-month-container {
+  float: left;
+  margin-left: 5px;
+}
+.ui-richcalendar-layer-hidden {
+  display: none;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 地域选择样式
+ * @author dbear
+ */
+.ui-region {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  width: 610px;
+  font-size: 12px;
+  color: #000;
+  line-height: 13px;
+  border: 1px solid #DDDDDD;
+  border-bottom: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+.ui-region input {
+  float: left;
+  margin: 0px;
+  padding: 0px;
+  width: 13px;
+  height: 13px;
+}
+.ui-region label {
+  cursor: default;
+  padding-left: 4px;
+  display: inline;
+}
+.ui-region .ui-region-country-box {
+  overflow: hidden;
+  zoom: 1;
+  border-bottom: 1px solid #DDD;
+}
+.ui-region .ui-region-country-check {
+  width: 600px;
+  height: 14px;
+  padding: 8px 0 8px 10px;
+  background-color: #F6F6F6;
+  border-top: none;
+}
+.ui-region .ui-region-region-box0 {
+  width: 610px;
+  border-top: solid 1px #E6EEF6;
+  background: #F9FCFE;
+  clear: both;
+  display: block;
+}
+.ui-region .ui-region-region-box0:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.ui-region .ui-region-region-box1 {
+  width: 610px;
+  clear: both;
+  background: none repeat scroll 0 0 #FFFFFF;
+  border-top: 1px solid #F1F1F1;
+  display: block;
+}
+.ui-region .ui-region-region-box1:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.ui-region .ui-region-region-check {
+  width: 90px;
+  padding: 6px 0 6px 10px;
+  float: left;
+}
+.ui-region .ui-region-province-box {
+  width: 510px;
+  float: left;
+}
+.ui-region .ui-region-province-item {
+  width: 100px;
+  float: left;
+}
+.ui-region .ui-region-province-item .ui-region-locator {
+  float: right;
+  width: 35px;
+  height: 14px;
+}
+.ui-region .ui-region-province-item .ui-region-city-box {
+  border: solid 1px #97A5B2;
+  position: absolute;
+  padding: 3px 0;
+  margin: -1px;
+  background-color: #FFF;
+  z-index: 998;
+  _height: 26px;
+}
+.ui-region .ui-region-province-item .ui-region-city-box .ui-region-city {
+  height: 18px;
+  float: left;
+  padding: 3px 8px;
+}
+.ui-region .ui-region-province-item .ui-region-city-box-over {
+  border: solid 1px #97A5B2;
+  border-right: none;
+  background-color: #FFF;
+  margin: -1px 0;
+  z-index: 999;
+}
+.ui-region .ui-region-province-item b {
+  width: 33px;
+  color: #FFF;
+  display: block;
+  text-align: center;
+  font-weight: normal;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #3F8FE1;
+  margin-top: 8px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+.ui-region .ui-region-province-item .ui-region-text {
+  position: relative;
+  zoom: 1;
+  width: 58px;
+  height: 14px;
+  padding: 8px 0 8px 4px;
+  float: right;
+}
+.ui-region .ui-region-province-item .ui-region-text-over {
+  border: solid 1px #97A5B2;
+  border-right: none;
+  background-color: #FFF;
+  margin: -1px 0;
+  z-index: 998;
+}
+.ui-region-single {
+  margin: 0;
+  padding: 0;
+  width: auto;
+  font-size: 12px;
+  border: none;
+}
+.ui-region-disabled,
+.ui-region-read-only {
+  color: #999;
+  border-color: #D8D8D8;
+}
+/** 验证 */
+.ui-region-validity-invalid {
+  border: 1px solid red;
+}
+.ui-region-validity-label {
+  display: block;
+  margin-top: 5px;
+}
+.ui-region-validity-label-invalid {
+  background-image: url(../img/esui-icon-alert.png);
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-color: #fedbdc;
+  border: 1px solid #F0CCCC;
+  color: #dd6767;
+  padding-left: 50px;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 日程样式
+  * @author miaojian
+  */
+.ui-schedule {
+  font-size: 12px;
+  width: 710px;
+  height: 236px;
+  padding: 6px 0px 8px 0px;
+  background: #F7F7F7;
+  border: 1px solid #CDCDCD;
+  position: relative;
+}
+.ui-schedule-body {
+  height: 200px;
+}
+.ui-schedule-head {
+  height: 28px;
+  width: 710px;
+  line-height: 28px;
+  padding-top: 10px;
+  position: relative;
+}
+.ui-schedule-help {
+  float: right;
+  width: 200px;
+}
+.ui-schedule-help-text {
+  line-height: 16px;
+  padding: 2px 8px 0 3px;
+}
+.ui-schedule-help div {
+  float: left;
+  cursor: default;
+}
+.ui-schedule-shortcut {
+  float: left;
+  padding: 2px 0 0 10px;
+  line-height: 16px;
+}
+.ui-schedule-shortcut-item {
+  cursor: pointer;
+  color: #333;
+  display: block;
+  float: left;
+  padding: 0 10px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  margin-right: 10px;
+  border: 1px solid #A8ADB6;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -o-border-radius: 2px;
+  -ms-border-radius: 2px;
+  border-radius: 2px;
+}
+.ui-schedule-shortcut-item-hover,
+.ui-schedule-shortcut-item-press {
+  border: 1px solid #888f9b;
+}
+.ui-schedule-shortcut-text-item {
+  color: #333;
+  display: block;
+  float: left;
+  width: 60px;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 0px;
+}
+.ui-schedule-day-head {
+  float: left;
+  width: 65px;
+  margin: 0px;
+}
+.ui-schedule-day {
+  line-height: 25px;
+  padding-right: 5px;
+  height: 25px;
+  text-align: right;
+}
+.ui-schedule-seg {
+  float: left;
+  width: 140px;
+}
+.ui-schedule-time,
+.ui-schedule-help-selected,
+.ui-schedule-help-unselected {
+  background: #fff;
+  border: 1px solid #dcdcdc;
+  color: #E6E6E6;
+  cursor: pointer;
+  float: left;
+  font-size: 12px;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  width: 23px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+}
+.ui-schedule-time-head {
+  border: 0px;
+  width: 50px;
+  text-align: center;
+  position: relative;
+  color: #000;
+  float: left;
+  font-size: 12px;
+  height: 23px;
+  line-height: 23px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.ui-schedule-line {
+  height: 25px;
+  padding: 0px;
+  position: relative;
+  overflow: hidden;
+}
+.ui-schedule-time-line {
+  height: 23px;
+  padding: 0px 0px 0px 40px;
+}
+.ui-schedule-time-body {
+  float: left;
+  margin: 0px;
+  padding: 0px;
+  width: 600px;
+  border-top: 1px solid #dcdcdc;
+  position: relative;
+}
+.ui-schedule-time-selected,
+.ui-schedule-help-selected {
+  background: #dcfacf;
+  border: 1px solid #c2e8a6;
+  color: #fff;
+}
+.ui-schedule-time-hover {
+  border: 1px solid #f7de41;
+  cursor: pointer;
+  background: #fff6bd;
+}
+.ui-schedule-shortcut-item-tip,
+.ui-schedule-timeitem-tip {
+  border: 1px solid #a6a6a6;
+  line-height: 20px;
+  padding: 0px 5px;
+}
+.ui-schedule-timeitem-tip .ui-schedule-timeitem-tip-body {
+  color: #a6a6a6;
+}
+.ui-schedule-overitem {
+  width: 23px;
+  height: 23px;
+  border: 1px solid #f7de41;
+  cursor: pointer;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: #fff6bd;
+  display: none;
+}
+.ui-schedule-dragitem {
+  width: 23px;
+  height: 23px;
+  border: 0px;
+  background: #FEFEFE;
+  opacity: 0.1;
+  filter: alpha(opacity=10);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+.ui-schedule-follow-item {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border: 1px dotted #cc0000;
+  background: transparent;
+  top: 0px;
+  left: 0px;
+  display: none;
+  z-index: 49;
+}
+.ui-schedule-continue-covertimes {
+  background: #dcfacf;
+  font-size: 12px;
+  height: 25px;
+  line-height: 25px;
+  position: absolute;
+  color: #2b7a08;
+  border: 0px;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  margin: 0;
+}
+.ui-schedule-coverclose {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 10px;
+  width: 10px;
+  z-index: 999;
+  cursor: pointer;
+  display: none;
+}
+.ui-schedule-covertimes-tip {
+  width: 100%;
+  text-align: center;
+  height: 25px;
+  line-height: 25px;
+  border: 0px;
+}
+.ui-schedule-disabled .ui-schedule-time-hover,
+.ui-schedule-readonly .ui-schedule-time-hover {
+  cursor: default;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 下拉选择样式
+ * @author dbear
+ */
+.ui-select {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -6px #ffffff;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -6px, 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  cursor: pointer;
+  border: 1px solid #D8D8D8;
+  border-radius: 3px 3px 3px 3px;
+  font-size: 12px;
+  height: 17px;
+  line-height: 17px;
+  padding: 3px 3px 3px 5px;
+  width: 50px;
+  padding-right: 20px;
+  outline: none;
+}
+.ui-select:hover,
+.ui-select:focus {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -36px #ffffff;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -36px, 0 0;
+}
+.ui-select:active {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -36px #ffffff;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f6f6f6), to(#ffffff));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #f6f6f6, #ffffff);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #f6f6f6, #ffffff);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -36px, 0 0;
+}
+.ui-select-active,
+.ui-select-active:hover,
+.ui-select-active:focus {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -67px #ffffff;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -67px, 0 0;
+}
+.ui-select-layer {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  background: none repeat scroll 0 0 #FFFFFF;
+  border: 1px solid #A8ADB6;
+  font-size: 12px;
+  overflow-x: hidden;
+  *height: 152px;
+  max-height: 152px;
+  overflow-y: auto;
+  padding: 0 1px;
+  position: absolute;
+  text-align: left;
+  z-index: 1002;
+}
+.ui-select-item {
+  color: #333333;
+  cursor: pointer;
+  line-height: 22px;
+  margin: 0 0 1px;
+  padding: 0 4px;
+}
+.ui-select-item-disabled {
+  color: #999;
+}
+.ui-select-item-selected {
+  background-color: #E0E0E0;
+  border: 1px solid #DDDDDD;
+  padding: 0 3px;
+}
+.ui-select-item:hover {
+  background-color: #F1F1F1;
+}
+.ui-select-item span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+.ui-select-layer-hidden {
+  display: none;
+}
+.ui-select-disabled,
+.ui-select-read-only {
+  color: #999;
+  border-color: #D8D8D8;
+}
+.ui-select-disabled:hover,
+.ui-select-read-only:hover,
+.ui-select-disabled:focus,
+.ui-select-read-only:focus {
+  background: url(../img/esui-combo-arrow.png) no-repeat scroll right -6px #f3f3f3;
+  background: url(../img/esui-combo-arrow.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f6f6f6));
+  background: url(../img/esui-combo-arrow.png), -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -ms-linear-gradient(top, #ffffff, #f6f6f6);
+  background: url(../img/esui-combo-arrow.png), -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right -6px, 0 0;
+}
+/** 验证 */
+.ui-select-validity-invalid {
+  border: 1px solid red;
+}
+.ui-select-validity-label {
+  display: block;
+  margin-top: 5px;
+}
+.ui-select-validity-label-invalid {
+  background-image: url(../img/esui-icon-alert.png);
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-color: #fedbdc;
+  border: 1px solid #F0CCCC;
+  color: #dd6767;
+  padding-left: 50px;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file sidebar样式
+ * @author miaojian
+ */
+.ui-sidebar {
+  width: 202px;
+  border: 1px solid #ccc;
+  background: #fff;
+  position: fixed;
+  _position: absolute;
+  z-index: 100;
+  overflow: hidden;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.ui-sidebar-neighbor {
+  margin-left: 220px;
+}
+.ui-sidebar-neighbor-hide {
+  margin-left: 30px;
+}
+.ui-sidebar-mat {
+  position: fixed;
+  _display: none;
+  width: 218px;
+  z-index: 50;
+  background: #fff;
+  bottom: 0;
+  border-right: 1px solid #ddd;
+}
+.ui-sidebar-minibar {
+  position: fixed;
+  _position: absolute;
+  _padding-bottom: 10px;
+  background: #eaeaea;
+  border: 1px solid #d1d1d1;
+  border-left: 0;
+  width: 19px;
+  padding-left: 6px;
+  cursor: pointer;
+  -moz-border-radius: 0 5px 5px 0;
+  -webkit-border-radius: 0 5px 5px 0;
+  border-radius: 0 5px 5px 0;
+}
+.ui-sidebar-minibar-text {
+  padding: 8px 0;
+  width: 12px;
+}
+.ui-sidebar-minibar-arrow {
+  width: 5px;
+  height: 9px;
+  font-size: 0;
+  background: url(../img/esui.png) -54px -88px;
+  position: absolute;
+  bottom: 50%;
+  _bottom: 5px;
+  left: 50%;
+}
+.ui-sidebar-minibar-hover .ui-sidebar-minibar-arrow {
+  background: url(../img/esui.png) -64px -88px;
+}
+.ui-sidebar-minibar-hover .ui-sidebar-minibar-text {
+  color: #03c;
+}
+.ui-sidebar-head {
+  border-bottom: 1px solid #ccc;
+  background: url(../img/esui.png) 0 -260px;
+  line-height: 34px;
+  padding-left: 8px;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  height: 36px;
+}
+.ui-sidebar-body {
+  position: absolute;
+  _position: static;
+  overflow-x: hidden;
+  overflow-y: auto;
+  bottom: 0;
+  width: 100%;
+}
+.skin-autohide-button,
+.skin-fixed-button {
+  height: 13px !important;
+  width: 14px;
+  background: url(../img/esui.png);
+  font-size: 0;
+  border: 1px solid #aeaeae;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+}
+.skin-autohide-button:hover {
+  border: 1px solid #777;
+}
+.skin-autohide-button:active {
+  height: 13px;
+}
+.skin-autohide-button {
+  background-position: -59px -167px;
+  *background-position: -61px -169px;
+}
+.skin-fixed-button {
+  background-position: -45px -167px;
+  *background-position: -47px -169px;
+}
+.skin-fixed-button:hover {
+  border: 1px solid #777;
+}
+.skin-fixed-button:active {
+  height: 13px;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 搜索框控件
+  * @author otakustay
+  */
+.ui-searchbox {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  position: relative;
+  overflow: hidden;
+}
+.ui-searchbox .ui-textbox input {
+  padding-right: 25px;
+  border: 1px solid #d8d8d8;
+}
+.ui-searchbox .ui-textbox input:hover {
+  border-color: #d0d0d0;
+}
+.ui-searchbox .ui-textbox input:focus {
+  border-color: #bbbbbb;
+}
+.ui-searchbox .ui-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  border: 0;
+  padding: 0;
+  text-indent: -5000px;
+  background: transparent url(../img/search.png) no-repeat center -25px;
+}
+.ui-searchbox .ui-button:active {
+  border: 0;
+  background: transparent url(../img/search.png) no-repeat center 0;
+}
+.ui-searchbox .ui-button-disabled:hover {
+  cursor: default;
+}
+.ui-searchbox .ui-button-disabled:active {
+  background: transparent url(../img/search.png) no-repeat center 0;
+}
+.ui-searchbox-fit-width .ui-textbox {
+  width: 100% !important;
+}
+.ui-searchbox-focus .ui-button {
+  background: transparent url(../img/search.png) no-repeat center 0;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .ui-searchbox .ui-button {
+    background-image: url(../img/search@2x.png);
+    background-size: 15px 50px;
+  }
+  .ui-searchbox .ui-button:active {
+    background-image: url(../img/search@2x.png);
+    background-size: 15px 50px;
+  }
+  .ui-searchbox-focus .ui-button {
+    background-image: url(../img/search@2x.png);
+    background-size: 15px 50px;
+  }
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 切换面板样式
+ * @author dbear
+ */
+.ui-tab-navigator {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ui-tab-item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.ui-tab-item-active {
+  cursor: default;
+}
+/** 纵向tab */
+.ui-tab-vertical .ui-tab-navigator {
+  padding-top: 10px;
+  border-right: 1px solid #DDD;
+  float: left;
+}
+.ui-tab-vertical .ui-tab-item {
+  display: block;
+  -moz-border-radius: 2px 0 0 2px;
+  -webkit-border-radius: 2px 0 0 2px;
+  border-radius: 2px 0 0 2px;
+  border: 1px solid #DFDFDF;
+  border-right: none;
+  background: #F2F2F2;
+  color: #666666;
+  margin-bottom: 2px;
+  padding: 3px 10px;
+}
+.ui-tab-vertical .ui-tab-item-active {
+  background: #FFF;
+  color: #333333;
+}
+/** 横向tab */
+.ui-tab-horizontal .ui-tab-navigator {
+  overflow: hidden;
+  zoom: 1;
+  position: relative;
+  padding-left: 10px;
+  border-bottom: 1px solid #DDD;
+}
+.ui-tab-horizontal .ui-tab-item {
+  float: left;
+  padding: 3px 10px;
+  text-align: center;
+  -moz-border-radius: 2px 2px 0 0;
+  -webkit-border-radius: 2px 2px 0 0;
+  border-radius: 2px 2px 0 0;
+  border: 1px solid #DFDFDF;
+  border-bottom: none;
+  background: #F2F2F2;
+  color: #666666;
+  margin-right: 2px;
+}
+.ui-tab-horizontal .ui-tab-item-active {
+  background: #FFF;
+  color: #333333;
+}
+/*
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * path:    ui-table.css
+ * desc:    表格控件样式
+ * author:  wurongyao
+ * date:    $Date$
+ */
+.ui-table {
+  font-size: 12px;
+}
+.ui-table table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.ui-table-head {
+  background: #fbfbfb;
+}
+.ui-table-foot {
+  background: #fbfbfb;
+}
+.ui-table-head table {
+  border-width: 1px 1px 1px 0;
+  border-color: #e8e8e8;
+  border-style: solid;
+}
+.ui-table-body table,
+.ui-table-foot table {
+  border-width: 0 1px 0 0;
+  border-color: #e8e8e8;
+  border-style: solid;
+}
+.ui-table-foot table {
+  border-width: 0 1px 1px 0;
+}
+/* 表头单元格 */
+.ui-table-hcell {
+  font-weight: 700;
+  color: #777777;
+  border-left: 1px solid #e8e8e8;
+}
+/* 表头单元格DIV容器 */
+.ui-table-hcell-text {
+  height: 36px;
+  line-height: 36px;
+  overflow: hidden;
+  padding: 0 8px;
+  text-align: left;
+}
+/* 表尾单元格 */
+.ui-table-fcell {
+  font-weight: 700;
+  color: #000;
+  border-left: 1px solid #e8e8e8;
+}
+/* 表尾单元格DIV容器 */
+.ui-table-fcell-text {
+  height: 32px;
+  line-height: 32px;
+  overflow: hidden;
+  padding: 0 8px;
+  text-align: left;
+}
+/* 表格内容单元格 */
+.ui-table-cell {
+  border-left: 1px solid #e8e8e8;
+}
+/* 表格内容单元格容器 */
+.ui-table-cell-text,
+.ui-table-body-nodata {
+  line-height: 24px;
+  height: 24px;
+  overflow: hidden;
+  padding: 4px 8px;
+  text-align: left;
+}
+.ui-table-cell-text-first,
+.ui-table-hcell-text-first {
+  padding-left: 12px;
+}
+.ui-table-cell-text-last,
+.ui-table-hcell-text-last {
+  padding-right: 12px;
+}
+.ui-table-cell-sel,
+.ui-table-hcell-sel {
+  padding: 3px 8px 0;
+  *padding: 0 4px;
+  height: 24px;
+  line-height: 24px;
+}
+.ui-table-scroll-x {
+  height: 20px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+/* 表头单元格提示 */
+.ui-table-htip {
+  margin: 0 4px 0 0;
+}
+/* 表头单元格排序标识 */
+.ui-table-hsort {
+  background: url(../img/esui.png) -40px -250px;
+  margin: 2px 0 0 2px;
+  height: 10px;
+  width: 7px;
+  font-size: 1px;
+  overflow: hidden;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+.ui-table-hcell-asc .ui-table-hsort {
+  background-position: -40px -240px;
+}
+.ui-table-hcell-desc .ui-table-hsort {
+  background-position: -40px -230px;
+}
+.ui-table-cell-align-left .ui-table-cell-text,
+.ui-table-cell-align-left .ui-table-hcell-text {
+  text-align: left;
+}
+.ui-table-cell-align-right .ui-table-cell-text,
+.ui-table-cell-align-right .ui-table-hcell-text,
+.ui-table-cell-align-right .ui-table-fcell-text {
+  text-align: right;
+}
+.ui-table-cell-align-center .ui-table-cell-text,
+.ui-table-cell-align-center .ui-table-hcell-text {
+  text-align: center;
+}
+.ui-table-cell-break .ui-table-cell-text,
+.ui-table-cell-break .ui-table-hcell-text {
+  word-wrap: break-word;
+  word-break: break-all;
+  height: auto;
+}
+/* 可排序列的表头样式Hover */
+.ui-table-hcell-sort-hover {
+  cursor: pointer;
+  background: #FDE8C4;
+}
+.ui-table-body {
+  background: #FFF;
+  border-bottom: 1px solid #ddd;
+  *position: relative;
+}
+.ui-table-body-nodata {
+  border: 1px solid #ddd;
+  border-width: 0 1px;
+  text-align: center;
+}
+.ui-table-row {
+  background: #FFF;
+  border-bottom: 1px solid #ddd;
+  zoom: 1;
+}
+.ui-table-row-last {
+  border-bottom: 0;
+}
+/* 行表格移上 */
+.ui-table-row-hover {
+  background: #FFF9EE;
+}
+.ui-table-row-hover .ui-table-cell-editable {
+  border: 1px solid #a8adb6;
+  margin: 2px;
+  padding: 1px 5px;
+  background: #fcfcfc;
+  position: relative;
+}
+.ui-table-editor {
+  background: #FFF6BD;
+  border: 1px solid #D5CA81;
+  padding: 5px 0 0 5px;
+  width: 268px;
+}
+.ui-table-editor-opt {
+  margin-bottom: 5px;
+  overflow: hidden;
+  zoom: 1;
+}
+.ui-table-editor-error {
+  clear: left;
+  margin-bottom: 5px;
+}
+.ui-table-editor .ui-button {
+  float: left;
+  margin-left: 5px;
+}
+.ui-table-editor .ui-textbox {
+  float: left;
+}
+/* 行表格选中 */
+.ui-table-row-selected table {
+  background: #FFF4DD;
+}
+/* 行表格展开 */
+.ui-table-row-unfolded {
+  background: #FDE8C4;
+}
+/* 定义拖拽鼠标指针 */
+.ui-table .ui-table-startdrag,
+.ui-table .ui-table-startdrag .ui-table-thcntr {
+  cursor: col-resize;
+}
+/* 拖拽显示的竖线 */
+.ui-table-mark {
+  height: 400px;
+  width: 1px;
+  overflow: hidden;
+  background: #000;
+  position: absolute;
+}
+.ui-table-cell-editentry {
+  width: 12px;
+  height: 11px;
+  display: none;
+  top: 4px;
+  right: 2px;
+  cursor: pointer;
+  position: absolute;
+  background: url(../img/esui.png) -116px -90px;
+}
+.ui-table-cell-align-right .ui-table-cell-editentry {
+  left: 2px;
+  right: auto;
+}
+.ui-table-row-hover .ui-table-cell-editentry {
+  display: block;
+}
+/* 子表格收起展开按钮 */
+.ui-table-subentry,
+.ui-table-subentry-opened,
+.ui-table-subentry-opened-hover {
+  overflow: hidden;
+  width: 11px;
+  height: 11px;
+  margin: 0 auto;
+  background-image: url(../img/esui.png);
+  background-repeat: no-repeat;
+  border: 1px solid #a8adb6;
+  cursor: pointer;
+  -webkit-border-radius: 2px;
+  -o-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  border-radius: 2px;
+}
+.ui-table-subentryfield table {
+  border: 0;
+}
+.ui-table-subentry {
+  background-position: -102px -114px;
+}
+.ui-table-subentry-opened {
+  background-position: -102px -103px;
+}
+.ui-table-subentry-hover,
+.ui-table-subentry-opened-hover {
+  border-color: #7a859a;
+}
+.ui-table-subrow {
+  background: #FFF9EE;
+  border-color: #ddd;
+  border-style: solid;
+  border-width: 0 1px 1px;
+  padding: 1px 0 0 36px;
+  zoom: 1;
+}
+.ui-table-subrow-last {
+  border-width: 1px 1px 0;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 单行、文本框样式
+ * @author erik, zhaolei
+ */
+.ui-textbox {
+  position: relative;
+  display: inline-block;
+  *display: inline;
+}
+.ui-textbox input,
+.ui-textbox textarea {
+  color: #333;
+  padding: 2px 4px;
+  font-size: 13px;
+  background: #FFF;
+  border: 1px solid #a8adb6;
+  height: 19px;
+  line-height: 19px;
+  width: 200px;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  box-sizing: content-box;
+  background-image: -webkit-gradient(linear, 0 0, 0 2, from(#ececec), to(#ffffff));
+  background-image: -moz-linear-gradient(top, #ececec, #ffffff 2px, #ffffff);
+}
+.ui-textbox input:focus,
+.ui-textbox textarea:focus {
+  outline: 0;
+}
+.ui-textbox input:hover,
+.ui-textbox textarea:hover {
+  border: 1px solid #6e8ab8;
+}
+.ui-textbox textarea {
+  height: 200px;
+  overflow: auto;
+  resize: none;
+}
+.ui-textbox-hint-suffix input {
+  vertical-align: middle;
+}
+.ui-textbox-hint {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  box-sizing: content-box;
+  background-color: #f2f2f2;
+  padding: 2px 12px;
+  border: 1px solid #a8adb6;
+  vertical-align: middle;
+  height: 19px;
+  line-height: 19px;
+}
+.ui-textbox-placeholder {
+  color: #999;
+  position: absolute;
+  height: 19px;
+  line-height: 19px;
+  left: 3px;
+  top: 3px;
+}
+.ui-textbox-placeholder-hidden {
+  display: none;
+}
+.ui-textbox-hint-suffix .ui-textbox-hint {
+  border-left: 0;
+}
+.ui-textbox-hint-prefix .ui-textbox-hint {
+  border-right: 0;
+}
+.ui-textbox-disabled input,
+.ui-textbox-read-only input,
+.ui-textbox-disabled textarea,
+.ui-textbox-read-only textarea {
+  border: 1px solid #7E9DB9;
+  background: #f6f6f6;
+  color: #999;
+}
+/** 验证 */
+.ui-textbox-validity-label,
+.ui-textarea-validity-label {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  color: #CC0000;
+  padding-left: 10px;
+}
+.ui-textbox-validity-label-notice,
+.ui-textarea-validity-label-notice {
+  color: #FF0000;
+}
+.ui-textbox-validity-label-warn,
+.ui-textarea-validity-label-warn {
+  color: red;
+}
+.ui-textbox-validity-label-invalid,
+.ui-textarea-validity-label-invalid {
+  color: #CC0000;
+}
+.ui-textbox-validity-invalid input,
+.ui-textbox-validity-invalid textarea {
+  border: 1px solid red;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 带行号输入框
+  * @author dbear
+  */
+.ui-textline {
+  padding: 0 4px;
+  position: relative;
+  border: 1px solid #dddddd;
+}
+.ui-textline:hover {
+  border: 1px solid #6e8ab8;
+}
+.ui-textline-num-line {
+  background: #f8f9fb;
+  color: #000;
+  font-weight: bold;
+  line-height: 21px;
+  text-align: center;
+  width: 30px;
+  font-size: 12px;
+  overflow-y: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.ui-textline-text-container {
+  position: absolute;
+  left: 30px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.ui-textline-text-container textarea {
+  position: absolute;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  line-height: 21px;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+  border: 0 none;
+  outline: none;
+  resize: none;
+}
+.ui-textline-disabled,
+.ui-textline-read-only {
+  color: #999;
+  border-color: #D8D8D8;
+}
+/** 验证 */
+.ui-textline-validity-invalid {
+  border: 1px solid red;
+}
+.ui-textline-validity-label {
+  display: block;
+  margin-top: 5px;
+}
+.ui-textline-validity-label-invalid {
+  background-image: url(../img/esui-icon-alert.png);
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-color: #fedbdc;
+  border: 1px solid #F0CCCC;
+  color: #dd6767;
+  padding-left: 50px;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 提示
+  * @author dbear
+  */
+.ui-tip-layer {
+  background: #FFF3D9;
+  border: 1px solid #D9CBA8;
+  padding: 10px;
+  margin-left: -5px;
+  margin-top: 13px;
+  z-index: 1002;
+}
+.ui-tip-title,
+.ui-tip-body {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+ui .-tip-title {
+  margin: 0 0 0.5em;
+}
+.ui-tip-body {
+  margin-bottom: 5px;
+}
+.ui-tip {
+  font-size: 1px;
+}
+.ui-tip-arrow {
+  display: none;
+  position: absolute;
+  font-size: 1px;
+}
+.ui-tip-arrow-tl .ui-tip-arrow-1 {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -24px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  top: -13px;
+  left: 12px;
+}
+.ui-tip-arrow-tr {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -36px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  top: -13px;
+  right: 12px;
+}
+.ui-tip-arrow-bl {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -12px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  bottom: -13px;
+  left: 12px;
+}
+.ui-tip-arrow-br {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: 0px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  bottom: -13px;
+  right: 12px;
+}
+.ui-tip-arrow-lt {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -26px 0px;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  top: 7px;
+  left: -13px;
+}
+.ui-tip-arrow-lb {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -39px 0;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  bottom: 7px;
+  left: -13px;
+}
+.ui-tip-arrow-rt {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  top: 7px;
+  right: -13px;
+}
+.ui-tip-arrow-rb {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -13px 0;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  bottom: 7px;
+  right: -13px;
+}
+.ui-tip {
+  width: 14px;
+  height: 14px;
+  background-image: url(../img/esui.png);
+  background-repeat: no-repeat;
+  background-position: -101px -89px;
+  background-color: transparent;
+  overflow: hidden;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  vertical-align: middle;
+}
+.ui-tip-layer-hidden {
+  display: none;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 通用提示用漂浮层
+  * @author dbear
+  */
+.ui-tiplayer {
+  background: #fff6bd;
+  border: 1px solid #d5ca81;
+  padding: 5px;
+  z-index: 1002;
+  position: absolute;
+}
+.ui-tiplayer-rt,
+.ui-tiplayer-rb {
+  margin-left: -10px;
+}
+.ui-tiplayer-lt,
+.ui-tiplayer-lb {
+  margin-left: 10px;
+}
+.ui-tiplayer-title,
+.ui-tiplayer-body {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+.ui-tiplayer-title {
+  margin: .5em 0;
+}
+.ui-tiplayer-body {
+  margin-bottom: 5px;
+}
+.ui-tiplayer-arrow {
+  display: none;
+  position: absolute;
+  font-size: 1px;
+}
+.ui-tiplayer-arrow-tl {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -24px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  top: -13px;
+  left: 12px;
+}
+.ui-tiplayer-arrow-tr {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -36px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  top: -13px;
+  right: 12px;
+}
+.ui-tiplayer-arrow-bl {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -12px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  bottom: -13px;
+  left: 12px;
+}
+.ui-tiplayer-arrow-br {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: 0px -12px;
+  background-color: transparent;
+  width: 12px;
+  height: 13px;
+  bottom: -13px;
+  right: 12px;
+}
+.ui-tiplayer-arrow-lt {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -26px 0px;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  top: 7px;
+  left: -13px;
+}
+.ui-tiplayer-arrow-lb {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -39px 0;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  bottom: 7px;
+  left: -13px;
+}
+.ui-tiplayer-arrow-rt {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  top: 7px;
+  right: -13px;
+}
+.ui-tiplayer-arrow-rb {
+  display: block;
+  background-image: url(../img/esui_transparent.gif);
+  background-repeat: no-repeat;
+  background-position: -13px 0;
+  background-color: transparent;
+  width: 13px;
+  height: 12px;
+  bottom: 7px;
+  right: -13px;
+}
+.ui-tiplayer-hidden {
+  display: none;
+}
+/**
+* ESUI (Enterprise Simple UI)
+* Copyright 2014 Baidu Inc. All rights reserved.
+*
+* @file Toast样式
+* @author curarchy
+*/
+@keyframes @toast-show-keyframes-name {
+  from {
+    opacity: 0;
+    margin-top: -30px;
+  }
+  to {
+    opacity: 1;
+    margin-top: -1px;
+  }
+}
+@-webkit-keyframes @toast-show-keyframes-name {
+  from {
+    opacity: 0;
+    margin-top: -30px;
+  }
+  to {
+    opacity: 1;
+    margin-top: -1px;
+  }
+}
+.ui-toast {
+  position: fixed;
+  top: 80px;
+  text-align: center;
+  width: 100%;
+  height: 0;
+  z-index: 99999999;
+  color: #555;
+  -webkit-animation: ui-toast-show 0.3s;
+  animation: ui-toast-show 0.3s;
+}
+.ui-toast-collection-area {
+  position: fixed;
+  z-index: 99999999;
+  top: 0;
+  width: 100%;
+  height: 0;
+}
+.ui-toast-content {
+  margin: 0;
+  padding: 5px 15px;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  line-height: 23px;
+  border: 1px solid;
+  pointer-events: auto;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.ui-toast-content strong {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  max-width: 40em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  font-weight: bold;
+}
+.ui-toast-normal {
+  color: #565656;
+}
+.ui-toast-normal .ui-toast-content {
+  background-color: #EAEAEA;
+  border-color: #A0A0A0;
+  box-shadow: 0 2px 10px 0 #EAEAEA;
+}
+.ui-toast-info {
+  color: #FFF;
+}
+.ui-toast-info .ui-toast-content {
+  background-color: #57B6E1;
+  border-color: #007DB7;
+  box-shadow: 0 2px 10px 0 #80C5E4;
+}
+.ui-toast-error {
+  color: #FFF;
+}
+.ui-toast-error .ui-toast-content {
+  background-color: #F00;
+  border-color: #8B0000;
+  box-shadow: 0 2px 10px 0 #FF7E7E;
+}
+.ui-toast-alert {
+  color: #AA6200;
+}
+.ui-toast-alert .ui-toast-content {
+  background-color: #FFEAA8;
+  border-color: #FFB72A;
+  box-shadow: 0 2px 10px 0 #FFF5C5;
+}
+.ui-toast-success {
+  color: #006400;
+}
+.ui-toast-success .ui-toast-content {
+  background-color: #8FEC8F;
+  border-color: #006400;
+  box-shadow: 0 2px 10px 0 #B1FF93;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 树样式
+  * @author dbear
+  */
+.ui-tree ul,
+.ui-tree li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.ui-tree-node {
+  cursor: pointer;
+  overflow: hidden;
+  line-height: 22px;
+}
+.ui-tree-node-empty {
+  cursor: default;
+}
+.ui-tree-content-wrapper {
+  border-left: 4px solid #fff;
+  padding-left: 15px;
+}
+.ui-tree-node-indicator {
+  text-indent: -500%;
+  *text-indent: 0;
+  *font-size: 0;
+  *line-height: 0;
+  vertical-align: middle;
+  margin: 4px 3px 0 0;
+  float: left;
+  width: 14px;
+  height: 14px;
+  overflow: hidden;
+  background-image: url(../img/esui-open-icon.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+}
+.ui-tree-node-indicator-expanded {
+  background-image: url(../img/esui-close-icon.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: transparent;
+}
+.ui-tree-node-indicator-empty,
+.ui-tree-node-indicator-previous,
+.ui-tree-node-indicator-far-previous {
+  background-image: none;
+}
+.ui-tree-item-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+.ui-tree-content-wrapper-selected {
+  background: #c9c9c9;
+  border-left: 4px solid #4765ca;
+}
+.ui-tree-sub-root-expanded {
+  display: block;
+}
+.ui-tree-sub-root-collapsed {
+  display: none;
+}
+.ui-tree-hide-root .ui-tree-root .ui-tree-content-wrapper {
+  display: none;
+}
+.ui-tree-hide-root .ui-tree-root .ui-tree-content-wrapper .ui-tree-node-indicator-level-0 {
+  width: 0;
+}
+.ui-tree-hide-root .ui-tree-root .ui-tree-sub-root .ui-tree-content-wrapper {
+  display: block;
+}
+.skin-folder-tree-node-indicator {
+  background-image: url(../img/esui-folder.png);
+  background-repeat: no-repeat;
+  background-position: 0 -6px;
+  background-color: transparent;
+}
+.skin-folder-tree-node-indicator-expanded {
+  background-position: 0 -30px;
+}
+.skin-folder-tree-node-indicator-empty,
+.skin-folder-tree-node-indicator-previous,
+.skin-folder-tree-node-indicator-far-previous {
+  background-image: none;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Wizard样式
+  * @author dbear
+  */
+ol {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  zoom: 1;
+}
+.ui-wizard {
+  display: block;
+}
+.ui-wizard:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.ui-wizard li {
+  list-style: none;
+  padding: 0;
+  float: left;
+}
+.ui-wizard-panel-hidden {
+  display: none;
+}
+.skin-default-wizard .ui-wizard-node {
+  color: #404040;
+  font-size: 14px;
+  font-weight: bold;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 15px 0 0;
+  *padding: 0;
+  text-align: center;
+  position: relative;
+  background: #fff;
+}
+.skin-default-wizard .ui-wizard-node span {
+  margin-right: 4px;
+  color: #000;
+  height: 24px;
+  float: left;
+  position: relative;
+  text-align: center;
+  width: auto;
+  padding: 0 10px;
+  background-color: #e4e4e4;
+}
+.skin-default-wizard .ui-wizard-node span:after {
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid #e4e4e4;
+  border-top: 12px solid transparent;
+  content: " ";
+  height: 0;
+  position: absolute;
+  right: -12px;
+  top: 0;
+  width: 0;
+}
+.skin-default-wizard .ui-wizard-node span:before {
+  border-bottom: 12px solid #e4e4e4;
+  border-left: 12px solid transparent;
+  border-top: 12px solid #e4e4e4;
+  content: "";
+  height: 0;
+  left: -12px;
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+.skin-default-wizard .ui-wizard-node-done span {
+  background-color: #ccf9b8;
+  color: #000;
+}
+.skin-default-wizard .ui-wizard-node-done span:after {
+  border-left: 12px solid #ccf9b8;
+}
+.skin-default-wizard .ui-wizard-node-done span:before {
+  border-bottom: 12px solid #ccf9b8;
+  border-top: 12px solid #ccf9b8;
+}
+.skin-default-wizard .ui-wizard-node-last {
+  background: none;
+}
+.skin-default-wizard .ui-wizard-node-active span {
+  background-color: #44ba0f;
+  color: #FFFFFF;
+}
+.skin-default-wizard .ui-wizard-node-active span:after {
+  border-left: 12px solid #44ba0f;
+}
+.skin-default-wizard .ui-wizard-node-active span:before {
+  border-bottom: 12px solid #44ba0f;
+  border-top: 12px solid #44ba0f;
+}
