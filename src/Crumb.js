@@ -94,10 +94,16 @@ define(
         };
 
         function click(e) {
-            if (this.helper.isPart(e.target, 'node')) {
-                var index = e.target.getAttribute('data-index');
-                var event = this.fire('click', { item: this.path[index] });
-                event.isDefaultPrevented() && e.preventDefault();
+            var node = e.target;
+            while (node !== this.main) {
+                if (this.helper.isPart(node, 'node')) {
+                    var index = e.target.getAttribute('data-index');
+                    var event = this.fire('click', { item: this.path[index] });
+                    event.isDefaultPrevented() && e.preventDefault();
+                    return;
+                }
+
+                node = node.parentNode;
             }
         }
 
