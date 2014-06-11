@@ -89,6 +89,18 @@ define(
         };
 
 
+        Crumb.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'click', click);
+        };
+
+        function click(e) {
+            if (this.helper.isPart(e.target, 'node')) {
+                var index = e.target.getAttribute('data-index');
+                var event = this.fire('click', { item: this.path[index] });
+                event.isDefaultPrevented() && e.preventDefault();
+            }
+        }
+
         /**
          * 无链接的文字节点的内容HTML模板
          *
@@ -99,7 +111,7 @@ define(
          * @type {string}
          */
         Crumb.prototype.textNodeTemplate =
-            '<span class="${classes}">${text}</span>';
+            '<span class="${classes}" data-index="${index}">${text}</span>';
 
         /**
          * 链接节点的内容HTML模板
@@ -112,7 +124,7 @@ define(
          * @type {string}
          */
         Crumb.prototype.linkNodeTemplate =
-            '<a class="${classes}" href="${href}">${text}</a>';
+            '<a class="${classes}" href="${href}" data-index="${index}">${text}</a>';
 
         /**
          * 分隔符HTML模板
@@ -155,6 +167,7 @@ define(
             var data = {
                 href: u.escape(node.href),
                 text: u.escape(node.text),
+                index: index,
                 classes: classes.join(' ')
             };
             return lib.format(template, data);
