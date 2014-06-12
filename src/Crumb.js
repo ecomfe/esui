@@ -95,15 +95,26 @@ define(
 
         function click(e) {
             var node = e.target;
+            var children = lib.getChildren(this.main);
             while (node !== this.main) {
                 if (this.helper.isPart(node, 'node')) {
-                    var index = e.target.getAttribute('data-index');
+                    var index = node.hasAttribute('data-index') ? node.getAttribute('data-index')
+                        : getPathIndex(children, node);
                     var event = this.fire('click', { item: this.path[index] });
                     event.isDefaultPrevented() && e.preventDefault();
                     return;
                 }
 
                 node = node.parentNode;
+            }
+        }
+
+        function getPathIndex(children, node) {
+            for (var i = children.length - 1; i > -1; i -= 2) {
+                if (children[i] === node) {
+                    // separator 的插入使得索引要除个2
+                    return i / 2;
+                }
             }
         }
 
