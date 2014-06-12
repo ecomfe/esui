@@ -102,6 +102,8 @@ define(
                         : getPathIndex(children, node);
                     var event = this.fire('click', { item: this.path[index] });
                     event.isDefaultPrevented() && e.preventDefault();
+                    event.isPropagationStopped() && e.stopPropagation();
+
                     return;
                 }
 
