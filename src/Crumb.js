@@ -98,7 +98,7 @@ define(
             var children = lib.getChildren(this.main);
             while (node !== this.main) {
                 if (this.helper.isPart(node, 'node')) {
-                    var index = node.hasAttribute('data-index') ? node.getAttribute('data-index')
+                    var index = lib.hasAttribute(node, 'data-index') ? node.getAttribute('data-index')
                         : getPathIndex(children, node);
                     var event = this.fire('click', { item: this.path[index] });
                     event.isDefaultPrevented() && e.preventDefault();
