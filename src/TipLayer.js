@@ -189,10 +189,11 @@ define(
          * 延迟隐藏
          *
          * @param {ui.TipLayer} tipLayer 控件
-         * @param {number} delayTime 延迟时间
+         * @param {number=} delayTime 延迟时间
          * @inner
          */
         function delayHide(tipLayer, delayTime) {
+            delayTime = delayTime || 150;
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
             tipLayer.hideTimeout =
@@ -356,17 +357,17 @@ define(
                 {
                     name: [
                         'targetDOM', 'targetControl',
-                        'showMode', 'positionOpt', 'delayTime', 'delayHideTime'
+                        'showMode', 'positionOpt', 'delayTime', 'showDuration'
                     ],
                     paint:
                         function (tipLayer, targetDOM, targetControl,
-                            showMode, positionOpt, delayTime, delayHideTime) {
+                            showMode, positionOpt, delayTime, showDuration) {
                         var options = {
                             targetDOM: targetDOM,
                             targetControl: targetControl,
                             showMode: showMode,
                             delayTime: delayTime,
-                            delayHideTime: delayHideTime
+                            showDuration: showDuration
                         };
                         if (positionOpt) {
                             positionOpt = positionOpt.split('|');
@@ -430,7 +431,8 @@ define(
                         }
                     });
                     config.targetControl = options.targetControl;
-                } else {
+                }
+                else {
                     config = lib.clone(options);
                 }
 
@@ -600,23 +602,12 @@ define(
              *    {string} targetDOM 绑定元素的id
              *    {ui.Control | string} targetControl 绑定控件的实例或id
              *    {number} delayTime 延迟展示时间
-             *    {number} delayHideTime 延迟隐藏时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
              *    {Object=} positionOpt 层布局参数
              */
             attachTo: function (options) {
                 var me = this;
                 var showMode = options.showMode || 'over';
-                var showEvent;
-                var hideEvent;
-                if (showMode === 'over') {
-                    showEvent = 'mouseover';
-                    hideEvent = 'mouseout';
-                }
-                else if (showMode === 'click') {
-                    showEvent = 'click';
-                    hideEvent = 'click';
-                }
-
 
                 var targetElement;
                 if (options.targetDOM) {
@@ -631,66 +622,124 @@ define(
                     return;
                 }
 
+                var showEvent;  // 展现触发方式
+                var hideEvent;  // 隐藏触发方式
+                if (showMode === 'auto') {
+                    showEvent = 'auto';
+                    if (options.showDuration > 0) {
+                        hideEvent = 'auto';
+                    }
+                    else {
+                        hideEvent = 'click';
+                    }
+                }
+                else if (showMode === 'over') {
+                    showEvent = 'mouseover';
+                    hideEvent = 'mouseout';
+                }
+                else if (showMode === 'click') {
+                    showEvent = 'mouseup';
+                    hideEvent = 'mouseup';
+                }
+
+                // 准备相关的方法
                 // 延迟展现
-                var delayShowHandler = lib.curry(
+                var showHandler = lib.curry(
                     delayShow, me, options.delayTime,
                     targetElement, options.positionOpt
                 );
-                // 展现之后点击其他区域隐藏
-                var showThenHideByClick = function () {
-                    delayShowHandler();
-                    var onceHide = u.partial(
-                        delayHide, me, options.delayHideTime
+                // 隐藏，使用默认延迟时间
+                var hideHandler = lib.curry(
+                    delayHide, me, 0
+                );
+
+                var onceClickHide = function () {
+                    hideHandler();
+                    helper.removeDOMEvent(
+                        me, document.documentElement, 'mouseup',
+                        onceClickHide
                     );
-                    var onceClickHandler = function () {
-                        onceHide();
-                        helper.removeDOMEvent(
-                            me, document.body, 'click',
-                            onceClickHandler
-                        );
-                    };
+                };
+                var bindOnceClickHide = function () {
                     helper.addDOMEvent(
-                        me, document.body, 'click', onceClickHandler
+                        me, document.documentElement,
+                        'mouseup', onceClickHide
+                    );
+                };
+                var removeOnceClickHide = function () {
+                    helper.removeDOMEvent(
+                        me, document.documentElement,
+                        'mouseup', onceClickHide
                     );
                 };
 
-                if (showMode === 'auto') {
-                    // 直接使用me.show会导致展现错位
-                    // 这样控制就可以使delayTime能够应用
-                    // 如果传入的delayHideTime不为0，则延时自动隐藏
-                    if (options.delayHideTime) {
-                        delayShowHandler();
-                        setTimeout(
-                            lib.curry(delayHide, me, 0),
-                            options.delayTime + options.delayHideTime
-                        );
-                    } else { // 如果传入的delayHideTime为0，需要点击隐藏
-                        showThenHideByClick();
+                // 根据showEvent和hideEvent进行事件绑定
+                if (showEvent) {
+                    // 自动展现处理
+                    if (showEvent == 'auto') {
+                        // 直接展现
+                        showHandler();
+
+                        // 如果不是自动隐藏，则配置点击其他位置关闭
+                        if (hideEvent != 'auto') {
+                            // 点击其他区域隐藏事件绑定
+                            bindOnceClickHide();
+                        }
+
+                        // 之后showEvent转为mouseup
+                        showEvent = 'mouseup';
                     }
-                }
-                else if (showMode === 'click') {
+
+                    // 配置展现的触发事件
                     helper.addDOMEvent(
-                        me, targetElement, showEvent, showThenHideByClick
-                    );
-                    // 阻止浮层上点击时的冒泡
-                    helper.addDOMEvent(
-                        me, me.main, 'click', function (e) {
+                        me, targetElement, showEvent, function (e) {
+                            showHandler();
+                            // 点击其他区域隐藏事件绑定
+                            bindOnceClickHide();
                             e.stopPropagation();
                         }
                     );
-                } else if (showMode == 'over') {
+
+                    // 阻止浮层上mouseup触发时的冒泡，避免将浮层隐藏
                     helper.addDOMEvent(
-                        me, targetElement, showEvent, delayShowHandler
+                        me, me.main,
+                        'mouseup',
+                        function (e) {
+                            e.stopPropagation();
+                        }
                     );
-                    helper.addDOMEvent(
-                        me, me.main, 'mouseover',
-                        lib.bind(
-                            me.show, me, targetElement, options.positionOpt
-                        )
+
+                    // 如果是mouseover，还要配置main的mouseover事件
+                    // 否则浮层会自动隐藏
+                    if (showEvent == 'mouseover') {
+                        helper.addDOMEvent(
+                            me, targetElement, 'mouseup', function (e) {
+                                e.stopPropagation();
+                            }
+                        );
+                        helper.addDOMEvent(
+                            me, me.main, 'mouseover',
+                            lib.bind(
+                                me.show, me, targetElement, options.positionOpt
+                            )
+                        );
+                    }
+                }
+
+                if (hideEvent == 'auto') {
+                    // 自动隐藏
+                    setTimeout(
+                        hideHandler,
+                        options.delayTime + options.showDuration
                     );
+                }
+                // 不处理mouseup，避免点击时又要展现又要隐藏，点击隐藏已经处理过了
+                else if (hideEvent != 'mouseup') {
                     helper.addDOMEvent(
-                        me, me.main, 'mouseout',
-                        lib.curry(delayHide, me, options.delayHideTime)
+                        me, me.main, hideEvent, function () {
+                            hideHandler();
+                            removeOnceClickHide();
+                        }
                     );
                 }
             },
