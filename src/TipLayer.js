@@ -630,7 +630,7 @@ define(
                         hideEvent = 'auto';
                     }
                     else {
-                        hideEvent = 'click';
+                        hideEvent = 'mouseup';
                     }
                 }
                 else if (showMode === 'over') {
