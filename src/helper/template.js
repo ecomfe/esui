@@ -89,6 +89,12 @@ define(
          *
          * 注意模板引擎实例是一个 **控件类** 一个，而非每个实例一个。
          * 由于引擎实例的隔离，在模板中不需要对`target`命名使用前缀等方式进行防冲突处理
+         * 但是如果在项目发布的过程中涉及到了模板合并的工作，如果`target`重名了，可能存在问题
+         * 因此如果一个 **控件类** 使用了模板，那么在项目发布的过程中需要注意选择合适的策略来
+         * 合并模板：
+         *
+         * - 将模板的代码内嵌到js中
+         * - 所有的模板合并为一个，然后统一通过插件来加载
          *
          * 随后在控件的构造函数中，为{@link Helper}添加模板引擎实现：
          *
@@ -104,12 +110,11 @@ define(
          *
          *     MyClass.prototype.initStructure = function () {
          *         this.main.innerHTML = 
-         *             this.helper.renderTemplate('content', {});
+         *             this.helper.renderTemplate('content', data);
          *     }
          *
          * 需要注意，使用此方法时，仅满足以下所有条件时，才可以使用内置的过滤器：
          *
-         * - `data`参数为一个不包含`get`方法的普通对象
          * - `data`对象仅一层属性，即不能使用`${user.name}`这一形式访问深层的属性
          * - `data`对象不能包含名为`instance`的属性，此属性会强制失效
          *
@@ -140,7 +145,7 @@ define(
                     var filter = null;
 
                     var indexOfDot = name.lastIndexOf('.');
-                    if (indexOfDot >= 0) {
+                    if (indexOfDot > 0) {
                         propertyName = name.substring(0, indexOfDot);
                         var filterName = name.substring(indexOfDot + 1);
                         if (filterName && FILTERS.hasOwnProperty(filterName)) {

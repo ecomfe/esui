@@ -742,7 +742,7 @@ define(
              * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
              * @param {Object} [options] 初始化的配置参数
              * @param {Object} [options.properties] 属性集合，通过id映射
-             * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
+             * @deprecated 将在4.0中移除，使用{@link Helper#initChildren}代替
              */
             initChildren: function (wrap, options) {
                 this.helper.initChildren(wrap, options);
