@@ -206,7 +206,7 @@ define(
          */
         function isOutOfRange(calendar, shortItem) {
             var range = calendar.range;
-            var itemValue = shortItem.getValue.call(calendar);
+            var itemValue = shortItem.getValue.call(calendar, calendar.now);
 
             // 得先格式化一下，去掉时间
             if (startOfDay(range.begin) > startOfDay(range.begin)
@@ -377,7 +377,7 @@ define(
 
             for (var i = 0; i < len; i++) {
                 var item = shortcutItems[i];
-                var itemValue = item.getValue.call(calendar);
+                var itemValue = item.getValue.call(calendar, calendar.now);
 
                 if (isSameDate(value.begin, itemValue.begin)
                     && isSameDate(value.end, itemValue.end)) {
@@ -403,7 +403,7 @@ define(
                 return;
             }
 
-            var value = shortcutItems[index].getValue.call(me);
+            var value = shortcutItems[index].getValue.call(me, me.now);
             var begin = value.begin;
             var end = value.end;
 
@@ -860,7 +860,7 @@ define(
                     properties.shortCutItems[options.miniMode];
                 if (shortcutItem) {
                     options.rawValue =
-                        shortcutItem.getValue.call(this);
+                        shortcutItem.getValue.call(this, this.now);
                     options.miniMode = parseInt(options.miniMode, 10);
                 }
                 else {
