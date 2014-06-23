@@ -161,6 +161,17 @@ define(
             );
         }
 
+        /**
+         * 默认延迟展现时间
+         * @type {number}
+         */
+        var DEFAULT_DELAY_SHOW = 0;
+
+        /**
+         * 默认延迟隐藏时间
+         * @type {number}
+         */
+        var DEFAULT_DELAY_HIDE = 150;
 
         /**
          * 延迟展现
@@ -172,6 +183,7 @@ define(
          * @inner
          */
         function delayShow(tipLayer, delayTime, targetElement, options) {
+            delayTime = delayTime || DEFAULT_DELAY_SHOW;
             if (delayTime) {
                 clearTimeout(tipLayer.showTimeout);
                 clearTimeout(tipLayer.hideTimeout);
@@ -193,7 +205,7 @@ define(
          * @inner
          */
         function delayHide(tipLayer, delayTime) {
-            delayTime = delayTime || 150;
+            delayTime = delayTime || DEFAULT_DELAY_HIDE;
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
             tipLayer.hideTimeout =
@@ -366,8 +378,8 @@ define(
                             targetDOM: targetDOM,
                             targetControl: targetControl,
                             showMode: showMode,
-                            delayTime: delayTime,
-                            showDuration: showDuration
+                            delayTime: delayTime || DEFAULT_DELAY_SHOW,
+                            showDuration: showDuration || DEFAULT_DELAY_HIDE
                         };
                         if (positionOpt) {
                             positionOpt = positionOpt.split('|');
@@ -650,7 +662,7 @@ define(
                 );
                 // 隐藏，使用默认延迟时间
                 var hideHandler = lib.curry(
-                    delayHide, me, 0
+                    delayHide, me
                 );
 
                 var onceClickHide = function () {
