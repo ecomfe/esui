@@ -562,14 +562,9 @@ define(
         main.createGlobalExtensions = function () {
             var options = globalExtensionOptions;
             var extensions = [];
-            for (var i = 0, len = options.length; i < len; i++) {
-                var option = options[i];
-                var type = option.type;
-                var extension;
 
-                if (type) {
-                    extension = main.create(type, option);
-                }
+            for (var type in options) {
+                var extension = main.createExtension(type, options[type] || {});
                 extension && extensions.push(extension);
             }
 
