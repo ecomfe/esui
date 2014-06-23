@@ -564,8 +564,12 @@ define(
             var extensions = [];
 
             for (var type in options) {
-                var extension = main.createExtension(type, options[type] || {});
-                extension && extensions.push(extension);
+                if (options.hasOwnProperty(type)) {
+                    var extension = main.createExtension(
+                        type, options[type] || {}
+                    );
+                    extension && extensions.push(extension);
+                }
             }
 
             return extensions;
