@@ -43,6 +43,15 @@ define(
         Layer.prototype.nodeName = 'div';
 
         /**
+         * 控制是否在页面滚动等交互发生时自动隐藏，默认为`true`
+         *
+         * 如果需要改变此属性，必须在初始化后立即设置，仅在第一次创建层时生效
+         *
+         * @type {boolean}
+         */
+        Layer.prototype.autoHide = true;
+
+        /**
          * 通过点击关闭弹层的处理方法
          *
          * @param {Event} e DOM事件对象
@@ -66,6 +75,15 @@ define(
             }
         }
 
+        Layer.prototype.enableAutoHide = function () {
+            var eventName = 'onwheel' in document.body ? 'wheel' : 'mousewheel';
+            this.control.helper.addDOMEvent(
+                document.documentElement,
+                eventName,
+                u.bind(this.hide, this)
+            );
+        };
+
         /**
          * 创建浮层
          *
@@ -75,6 +93,11 @@ define(
             var element =
                 this.control.helper.createPart('layer', this.nodeName);
             lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
+
+            if (this.autoHide) {
+                this.enableAutoHide();
+            }
+
             return element;
         };
 

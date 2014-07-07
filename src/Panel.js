@@ -152,7 +152,7 @@ define(
             var children = [];
             for (var i = 0; i < childNodes.length; i++) {
                 children.push(childNodes[i]);
-            };
+            }
 
             var ui = require('./main');
             u.each(children, function (child) {
