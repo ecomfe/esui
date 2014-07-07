@@ -75,12 +75,23 @@ define(
             }
         }
 
-        Layer.prototype.enableAutoHide = function () {
+        /**
+         * 启用自动隐藏功能
+         *
+         * @param {HTMLElement} element 需要控制隐藏的层元素
+         */
+        Layer.prototype.enableAutoHide = function (element) {
             var eventName = 'onwheel' in document.body ? 'wheel' : 'mousewheel';
             this.control.helper.addDOMEvent(
                 document.documentElement,
                 eventName,
                 u.bind(this.hide, this)
+            );
+            // 自己的滚动不要关掉
+            this.control.helper.addDOMEvent(
+                element,
+                eventName,
+                function (e) { e.stopPropagation(); }
             );
         };
 
@@ -95,7 +106,7 @@ define(
             lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
 
             if (this.autoHide) {
-                this.enableAutoHide();
+                this.enableAutoHide(element);
             }
 
             return element;
