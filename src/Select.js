@@ -329,7 +329,14 @@ define(
          */
         Select.prototype.initEvents = function () {
             this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
+            this.layer.on('rendered', u.bind(addLayerClass, this));
         };
+
+        function addLayerClass() {
+            var layerClasses = this.helper.getPartClasses('layer');
+            this.layer.addCustomClasses(layerClasses);
+            this.fire('layerrendered', { layer: this.layer });
+        }
 
         /**
          * 根据控件的值更新其视图
