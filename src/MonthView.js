@@ -1390,7 +1390,7 @@ define(
 
                 yearSel.on(
                     'layerrendered',
-                    lib.curry(addCustomClassesForSelectLayer, this, 'month-select')
+                    lib.curry(addCustomClassesForSelectLayer, this, 'year-select')
                 );
 
                 // 为日期绑定点击事件
