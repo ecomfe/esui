@@ -333,8 +333,6 @@ define(
         };
 
         function addLayerClass() {
-            var layerClasses = this.helper.getPartClasses('layer');
-            this.layer.addCustomClasses(layerClasses);
             this.fire('layerrendered', { layer: this.layer });
         }
 

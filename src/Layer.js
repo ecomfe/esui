@@ -109,6 +109,7 @@ define(
                 this.enableAutoHide(element);
             }
 
+            this.fire('elementcreated', { element: element });
             return element;
         };
 
@@ -178,6 +179,7 @@ define(
             if (!element && create !== false) {
                 element = this.create();
                 this.render(element);
+
                 lib.addClasses(element, getHiddenClasses(this));
 
                 this.initBehavior(element);
@@ -196,7 +198,7 @@ define(
                 if (!element.parentElement) {
                     document.body.appendChild(element);
                 }
-                
+
                 this.fire('rendered');
             }
 
