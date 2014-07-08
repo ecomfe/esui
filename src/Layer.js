@@ -113,6 +113,16 @@ define(
         };
 
         /**
+         * 给Layer增加自定义class
+         *
+         * @return {array} layerClassNames样式集合
+         */
+        Layer.prototype.addCustomClasses = function (layerClassNames) {
+           var element = this.getElement();
+            lib.addClasses(element, layerClassNames);
+        };
+
+        /**
          * 渲染层内容
          *
          * @param {HTMLElement} element 层元素
@@ -186,6 +196,8 @@ define(
                 if (!element.parentElement) {
                     document.body.appendChild(element);
                 }
+                
+                this.fire('rendered');
             }
 
             return element;
@@ -200,6 +212,7 @@ define(
             var element = this.getElement();
             lib.addClasses(element, classes);
             this.control.removeState('active');
+            this.fire('hide');
         };
 
         /**
@@ -214,6 +227,7 @@ define(
             var classes = getHiddenClasses(this);
             lib.removeClasses(element, classes);
             this.control.addState('active');
+            this.fire('show');
         };
 
         /**
@@ -506,6 +520,9 @@ define(
                 }
             }
         }
+
+        var EventTarget = require('mini-event/EventTarget');
+        lib.inherits(Layer, EventTarget);
 
         return Layer;
     }
