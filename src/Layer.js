@@ -109,7 +109,6 @@ define(
                 this.enableAutoHide(element);
             }
 
-            this.fire('elementcreated', { element: element });
             return element;
         };
 
