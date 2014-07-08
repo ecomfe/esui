@@ -1204,6 +1204,20 @@ define(
             }
         }
 
+
+        /**
+         * 给select的layer人肉增加class命名空间
+         *
+         * @inner
+         * @param {Event} e layer渲染事件
+         */
+        function addCustomClassesForSelectLayer(monthView, selectClass, e) {
+            var layerClasses = monthView.helper.getPartClasses(selectClass + '-layer');
+            var layer = e.layer;
+            layer.addCustomClasses(layerClasses);
+            monthView.fire('selectlayerrendered', { layer: layer });
+        }
+
         MonthView.prototype = {
             /**
              * 控件类型
@@ -1361,11 +1375,22 @@ define(
                     lib.curry(changeMonth, this, monthSel)
                 );
 
+                // 给layer人肉增加class命名空间
+                monthSel.on(
+                    'layerrendered',
+                    lib.curry(addCustomClassesForSelectLayer, this, 'month-select')
+                );
+
                 // 年份选择
                 var yearSel = this.getChild('yearSel');
                 yearSel.on(
                     'change',
                     lib.curry(changeYear, this, yearSel)
+                );
+
+                yearSel.on(
+                    'layerrendered',
+                    lib.curry(addCustomClassesForSelectLayer, this, 'month-select')
                 );
 
                 // 为日期绑定点击事件
