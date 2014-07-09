@@ -128,9 +128,9 @@ define(
                     };
 
                     // 由于pageType需要由外部指定，当指定的模板不存在时默认匹配anchor
-                    tpl = templates[pager.pageType] || templates['anchor'];
+                    tpl = templates[pager.pageType] || templates.anchor;
                 }
-                
+
                 return lib.format(tpl, obj);
             }
 
@@ -236,7 +236,7 @@ define(
             pager.pageSize = pageSize;
             // 将修正后的每页显示数量更新至Select控件
             pager.getChild('select').set('value', pageSize + '');
-            
+
             // 修正页码
             var totalPage = Math.ceil(pager.count / pageSize);
             var page = pager.page;
@@ -341,7 +341,7 @@ define(
          * @ignore
          */
         function changePageSize(e) {
-            var pageSize = parseInt(e.target.getValue(), 10);
+            var pageSize = parseInt(this.getChild('select').getValue(), 10);
             this.pageSize = pageSize;
 
             // 重绘页码
@@ -464,7 +464,7 @@ define(
                 };
 
                 u.extend(
-                    properties, 
+                    properties,
                     this.defaultProperties, // 这么是向后兼容，以后准备去掉
                     Pager.defaultProperties,
                     options
@@ -484,11 +484,8 @@ define(
                 // 创建控件树
                 this.helper.initChildren();
 
-                // 每页显示的select控件
-                var select = this.getChild('select');
-                select.on('change', changePageSize, this);
-
                 // 当初始化pageSizes属性不存在或为空数组时，隐藏控件显示
+                var select = this.getChild('select');
                 if (!this.pageSizes || !this.pageSizes.length) {
                     hideSelect(this);
                 }
@@ -500,13 +497,28 @@ define(
                     select.setProperties(properties);
                 }
 
+                // 同步一次状态
+                changePageSize.call(this);
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                // 每页显示的select控件
+                var select = this.getChild('select');
+                select.on('change', changePageSize, this);
+
                 // pager主元素绑定事件
                 this.helper.addDOMEvent('main', 'click', pagerClick);
             },
 
             /**
              * 批量设置控件的属性值
-             * 
+             *
              * @param {Object} properties 属性值集合
              * @override
              */
@@ -543,7 +555,7 @@ define(
                     }
                 );
 
-                var changes = 
+                var changes =
                     Control.prototype.setProperties.apply(this, arguments);
 
                 if (changes.hasOwnProperty('page')) {

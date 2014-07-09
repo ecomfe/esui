@@ -46,7 +46,10 @@ define(
          * @override
          */
         Label.prototype.createMain = function (options) {
-            return document.createElement(options.tagName || 'span');
+            if (!options.tagName) {
+                return Control.prototype.createMain.call(this);
+            }
+            return document.createElement(options.tagName);
         };
 
         /**
@@ -80,12 +83,12 @@ define(
         };
 
         /**
-         * 初始化DOM结构
+         * 初始化事件交互
          *
          * @protected
          * @override
          */
-        Label.prototype.initStructure = function () {
+        Label.prototype.initEvents = function () {
             /**
              * @event click
              *
@@ -95,7 +98,7 @@ define(
         };
 
         var allProperties = [
-            { name: 'title' }, 
+            { name: 'title' },
             { name: 'text' }
         ];
 

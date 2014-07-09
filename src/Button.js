@@ -15,7 +15,7 @@ define(
 
         /**
          * 按钮控件
-         * 
+         *
          * @extends Control
          * @constructor
          */
@@ -25,7 +25,7 @@ define(
 
         /**
          * 获取元素border信息
-         * 
+         *
          * @param {HTMLElement} dom 目标元素
          * @return {Object}
          * @ignore
@@ -70,8 +70,8 @@ define(
                     properties.text = lib.getText(this.main);
                 }
                 var innerDiv = this.main.firstChild;
-                if (!properties.content 
-                    && innerDiv 
+                if (!properties.content
+                    && innerDiv
                     && innerDiv.nodeName.toLowerCase() !== 'div'
                 ) {
                     properties.content = this.main.innerHTML;
@@ -98,12 +98,12 @@ define(
             },
 
             /**
-             * 初始化DOM结构
+             * 初始化事件交互
              *
              * @protected
              * @override
              */
-            initStructure: function () {
+            initEvents: function () {
                 /**
                  * @event click
                  *
@@ -111,7 +111,7 @@ define(
                  */
                 this.helper.delegateDOMEvent(this.main, 'click');
             },
-            
+
             /**
              * 重新渲染
              *
@@ -147,12 +147,12 @@ define(
                         // 说明是border-box模式
                         if (offsetHeight === value) {
                             var borderInfo = getBorderInfo(main);
-                            height = value
+                            var height = value
                                 + borderInfo.borderTop
                                 + borderInfo.borderBottom;
                             main.style.height = height + 'px';
                         }
-                    } 
+                    }
                 },
                 /**
                  * @property {string} [content=""]

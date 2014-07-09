@@ -4,9 +4,43 @@
     <meta charset="utf-8" />
     <title>TextBox - ESUI Demo</title>
     <script src="loader/esl.js"></script>
-    <script src="loader/config.js"></script>
-    <script src="jquery-1.9.1.min.js"></script>
-    <link rel="stylesheet" href="demo.css" />
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
     <style>
         label {
             display: block;
@@ -76,20 +110,24 @@
                         data-ui-id="text-box-normal"
                         data-ui-type="TextBox"
                         data-ui-mode="text" />
+                    <esui-text-box></esui-text-box>
                 </div>
                 <div>
                     <label for="text-box-password">密码框</label>
                     <input id="text-box-password"
                         data-ui-id="text-box-password"
                         data-ui-type="TextBox"
+                        type="password"
                         data-ui-mode="password" />
+                    <esui-text-box data-ui-mode="password"></esui-text-box>
                 </div>
                 <div>
                     <label for="text-box-textarea">多行文本框</label>
                     <textarea id="text-box-textarea"
-                        data-ui-id="text-box-textarea" 
+                        data-ui-id="text-box-textarea"
                         data-ui-type="TextBox"
                         data-ui-mode="textarea"></textarea>
+                    <esui-text-box data-ui-mode="textarea"></esui-text-box>
                 </div>
                 <pre class="source source-markup">&lt;div&gt;
     &lt;label for=&quot;text-box-normal&quot;&gt;&#x6587;&#x672c;&#x6846;&lt;/label&gt;
@@ -108,7 +146,7 @@
 &lt;div&gt;
     &lt;label for=&quot;text-box-textarea&quot;&gt;&#x591a;&#x884c;&#x6587;&#x672c;&#x6846;&lt;/label&gt;
     &lt;textarea id=&quot;text-box-textarea&quot;
-        data-ui-id=&quot;text-box-textarea&quot; 
+        data-ui-id=&quot;text-box-textarea&quot;
         ata-ui-type=&quot;TextBox&quot;
         data-ui-mode=&quot;textarea&quot;&gt;&lt;/textarea&gt;
 &lt;/div&gt;</pre>
@@ -239,9 +277,8 @@ textbox.on(
     <script>
         require(
             [
-                'esui', 
-                'esui/TextBox',
-                'css!esui/css/main.css'
+                'esui',
+                'esui/TextBox'
             ],
             function (ui) {
                 ui.init();

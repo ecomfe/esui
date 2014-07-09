@@ -4,10 +4,10 @@ define(function (require) {
 
     describe('Panel', function () {
         describe('created via script', function () {
-            it('should create a `<div>` element if `tagName` is not specified', function () {
+            it('should create a `<esui-panel>` element if `tagName` is not specified', function () {
                 var panel = new Panel();
                 panel.appendTo(container);
-                expect(panel.main.nodeName.toLowerCase()).toBe('div');
+                expect(panel.main.nodeName.toLowerCase()).toBe('esui-panel');
             });
 
             it('should create a specified element if `tagName` is given', function () {

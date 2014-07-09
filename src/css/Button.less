@@ -1,7 +1,7 @@
  /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
+  *
   * @file 按钮样式
   * @author dbear
   */
@@ -11,7 +11,8 @@
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-button {
+
+.@{ui-class-prefix}-button {
     .user-select();
     overflow:hidden;
     cursor:pointer;
@@ -31,7 +32,7 @@
     &:before {
         content: '.';
         visibility: hidden;
-        display: inline-block; 
+        display: inline-block;
         width: 0;
     }
 
@@ -39,7 +40,7 @@
     line-height: 23px;
 }
 
-button.ui-button {
+button.@{ui-class-prefix}-button {
     // IE7下不支持设置box-sizing，且显示属性是按照border-box的
     // 所以这里做下兼容
     *height: 25px;
@@ -48,36 +49,36 @@ button.ui-button {
 /**
  * 基础按钮样式状态
  */
- .ui-button:hover {
+.@{ui-class-prefix}-button:hover {
      .interactive-cursor ();
  }
-.ui-button:active {
+.@{ui-class-prefix}-button:active {
     border: 1px solid #BEBEBE;
     .linear-gradient-background (top, #f6f6f6, #ffffff, #f6f6f6);
 }
 
-.ui-button-disabled {
+.@{ui-class-prefix}-button-disabled {
     background: #f6f6f6;
     border-color: #cfcfcf;
     color: #999;
 }
 
-.ui-button-lf-icon {
+.@{ui-class-prefix}-button-lf-icon {
     float: left;
 }
 
-.ui-button-rt-icon {
+.@{ui-class-prefix}-button-rt-icon {
     float: right;
 }
 
 /** 春天系列 */
-.skin-spring-button,
-.skin-spring-add-button {
+.@{skin-class-prefix}-spring-button,
+.@{skin-class-prefix}-spring-add-button {
     border: 1px solid #519D30;
     color: white;
     font-weight: bold;
 }
-.skin-spring-button {
+.@{skin-class-prefix}-spring-button {
     .linear-gradient-background (top, #6cbb4c, #519c30, #65b445);
     padding: 0 10px;
     height: 30px;
@@ -85,52 +86,52 @@ button.ui-button {
 }
 
 
-button.skin-spring-button {
+button.@{skin-class-prefix}-spring-button {
     // IE7下不支持设置box-sizing，且显示属性是按照border-box的
     // 所以这里做下兼容
     *height: 32px;
 }
 
 
-.skin-spring-add-button {
+.@{skin-class-prefix}-spring-add-button {
     .linear-gradient-background-with-image (
-        top, #6cbb4c, #519c30, "../img/esui-button-plus.gif", 9px, center, #65b445);
+        top, #6cbb4c, #519c30, url(../img/esui-button-plus.gif), 9px, center, #65b445);
     padding: 0 13px 0 27px;
 }
 
-.skin-spring-button:active,
-.skin-spring-add-button:active {
+.@{skin-class-prefix}-spring-button:active,
+.@{skin-class-prefix}-spring-add-button:active {
     border: 1px solid #509c2f;
 }
-.skin-spring-button:active {
+.@{skin-class-prefix}-spring-button:active {
     .linear-gradient-background (top, #519c30, #6cbb4c, #65b445);
 }
-.skin-spring-add-button:active {
+.@{skin-class-prefix}-spring-add-button:active {
     .linear-gradient-background-with-image (
-        top, #519c30, #6cbb4c, "../img/esui-button-plus.gif", 9px, center, #65b445);
+        top, #519c30, #6cbb4c, url(../img/esui-button-plus.gif), 9px, center, #65b445);
 }
 
-.skin-spring-button:hover,
-.skin-spring-add-button:hover {
+.@{skin-class-prefix}-spring-button:hover,
+.@{skin-class-prefix}-spring-add-button:hover {
     border: 1px solid #157106;
 }
 
 
 /** 下载系列 */
-.skin-download-button {
+.@{skin-class-prefix}-download-button {
     .linear-gradient-background-with-image (
-        top, #FFF, #f6f6f6, "../img/esui-btn-download.png", 40px, center, #65b445);
+        top, #FFF, #f6f6f6, url(../img/esui-btn-download.png), 40px, center, #65b445);
     padding-left: 12px;
     padding-right: 25px;
 }
-.skin-download-button:active {
+.@{skin-class-prefix}-download-button:active {
     .linear-gradient-background-with-image (
-        top, #f6f6f6, #FFF, "../img/esui-btn-download.png", 40px, center, #65b445);
+        top, #f6f6f6, #FFF, url(../img/esui-btn-download.png), 40px, center, #65b445);
 }
 
 /** 关闭layer按钮 */
-.skin-layerClose-button {
-    .background("../img/esui.png", repeat, -37px, -88px, transparent);
+.@{skin-class-prefix}-layerClose-button {
+    .background(url(../img/esui.png), repeat, -37px, -88px, transparent);
     border: 0 none;
     height: 12px;
     overflow: hidden;
@@ -140,8 +141,8 @@ button.skin-spring-button {
     width: 12px;
     padding: 0;
 }
-.skin-layerClose-button:active {
-    .background("../img/esui.png", repeat, -37px, -88px, transparent);
+.@{skin-class-prefix}-layerClose-button:active {
+    .background(url(../img/esui.png), repeat, -37px, -88px, transparent);
     border: 1px solid #f6f6f6;
     height: 12px;
     width: 12px;
@@ -150,7 +151,7 @@ button.skin-spring-button {
 }
 
 /** 文字按钮 */
-.skin-link-button {
+.@{skin-class-prefix}-link-button {
     background: none;
     border: 0 none;
     height: 26px;
@@ -158,12 +159,12 @@ button.skin-spring-button {
     overflow: hidden;
 }
 
-button.skin-link-button {
+button.@{skin-class-prefix}-link-button {
     *height: 28px;
 }
 
-.skin-link-button:active,
-.skin-link-button:hover {
+.@{skin-class-prefix}-link-button:active,
+.@{skin-class-prefix}-link-button:hover {
     background: none;
     border: 0 none;
     height: 26px;
@@ -172,7 +173,7 @@ button.skin-link-button {
     color: blue;
 }
 
-button.skin-link-button:active,
-button.skin-link-button:hover {
+button.@{skin-class-prefix}-link-button:active,
+button.@{skin-class-prefix}-link-button:hover {
     height: 28px;
 }

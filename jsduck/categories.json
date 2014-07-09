@@ -61,6 +61,7 @@
                     "TextBox",
                     "TextLine",
                     "Tip",
+                    "Toast",
                     "Tree",
                     "Validity",
                     "Wizard"

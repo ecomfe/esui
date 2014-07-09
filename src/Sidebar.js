@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file Sidebar控件
  * @author miaojian
  */
@@ -34,7 +34,10 @@ define(
          * @protected
          */
         Sidebar.prototype.createMain = function (options) {
-            return document.createElement(options.tagName || 'aside');
+            if (!options.tagName) {
+               return Control.prototype.createMain.call(this);
+            }
+            return document.createElement(options.tagName);
         };
 
         /**
@@ -62,14 +65,14 @@ define(
             var parentPos   = lib.getOffset(parent);
             var pos         = lib.getOffset(main);
 
-            //记录开始初始化时的位置
-            if (this._mOffsetTop == null) {
-                this._mOffsetTop = pos.top - parentPos.top;
+            // 记录开始初始化时的位置
+            if (this.initialOffsetTop == null) {
+                this.initialOffsetTop = pos.top - parentPos.top;
                 properties.top  = pos.top;
-                properties.left = pos.left; 
+                properties.left = pos.left;
 
             } else {
-                properties.top = parentPos.top + this._mOffsetTop;
+                properties.top = parentPos.top + this.initialOffsetTop;
             }
 
             lib.extend(this, properties);
@@ -98,18 +101,18 @@ define(
          */
         function initContent(sidebar) {
             var head = lib.dom.first(sidebar.main);
-            
+
             if (head) {
 
                 lib.addClasses(head, helper.getPartClasses(sidebar, 'head'));
                 sidebar.headEl = head;
 
                 var body = lib.dom.next(head);
-                
+
                 if (body) {
                     sidebar.bodyEl = body;
                     lib.addClasses(
-                        body, 
+                        body,
                         helper.getPartClasses(sidebar, 'body')
                     );
 
@@ -153,13 +156,13 @@ define(
             var me   = sidebar;
             var div  = document.createElement('div');
             var html = [];
-            
+
             // 构建minibar的html
             // 以主sidebar的标题为标题
             var textClasses = helper.getPartClasses(me, 'minibar-text');
             me.headEl && html.push(''
                 + '<div class="' + textClasses.join(' ') + '">'
-                     + me.headEl.innerHTML 
+                     + me.headEl.innerHTML
                 + '</div>');
 
             var arrowClasses = helper.getPartClasses(me, 'minibar-arrow');
@@ -168,16 +171,16 @@ define(
                     + arrowClasses.join(' ') + '">'
                 + '</div>'
             );
-            
+
             // 初始化minibar
             div.innerHTML   = html.join('');
             div.id          = helper.getId(me, 'minibar');
             div.className   = helper.getPartClasses(me, 'minibar').join(' ');
-            
+
             // 挂载行为
-            helper.addDOMEvent(me, div, 'mouseover', 
+            helper.addDOMEvent(me, div, 'mouseover',
                 lib.bind(miniOverHandler, null, me, div));
-            helper.addDOMEvent(me, div, 'mouseout', 
+            helper.addDOMEvent(me, div, 'mouseout',
                 lib.bind(miniOutHandler, null, me, div));
 
             document.body.appendChild(div);
@@ -201,15 +204,15 @@ define(
                 id      : helper.getId(me, 'fixed'),
                 skin    : 'fixed'
             });
-            
+
             // 将按钮append到sidebarbar
             btnAutoHide.appendTo(main);
             btnFixed.appendTo(main);
-            
+
             // 持有控件引用
             me.addChild(btnAutoHide, 'btnAutoHide');
             me.addChild(btnFixed, 'btnFixed');
-            
+
             // 挂载行为
             btnAutoHide.onclick = lib.curry(autoHideClickHandler, me);
             btnFixed.onclick    = lib.curry(fixedClickHandler, me);
@@ -233,7 +236,7 @@ define(
 
             main.style.top  = curTop + 'px';
             mini.style.top  = curTop + 'px';
-            mat.style.top   = curTop - marginTop + 'px';          
+            mat.style.top   = curTop - marginTop + 'px';
         }
 
         /**
@@ -251,9 +254,9 @@ define(
             //计算main位置
             var main = me.main;
             main.style.cssText += ';'
-                + 'left: '  
+                + 'left: '
                     + (me.marginLeft ? me.marginLeft + 'px' : 0) + ';'
-                + 'bottom:' 
+                + 'bottom:'
                     + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
 
             //计算body位置
@@ -263,12 +266,12 @@ define(
             //计算minibar的位置
             var minibar = getMiniBar(me);
             minibar.style.bottom = me.marginBottom ? me.marginBottom + 'px' : 0;
-            
-            
+
+
             //初始化top
             resetTop(me);
         }
-        
+
         /**
          * 隐藏mat区域
          * @param  {Sidebar} sidebar Sidebar实例
@@ -284,7 +287,7 @@ define(
          * @inner
          */
         function show(sidebar) {
-                    
+
             //
             getMat(sidebar).style.display = 'block';
             sidebar.main.style.display = 'block';
@@ -292,17 +295,17 @@ define(
             getMiniBar(sidebar).style.display = 'none';
 
             if (!sidebar.isAutoHide()) {
-                hideMat(sidebar);               
+                hideMat(sidebar);
             }
         }
-        
+
         /**
          * 隐藏侧边导航
          * @param  {Sidebar} sidebar Sidebar实例
          * @inner
          */
         function hide(sidebar) {
-            
+
             hideMat(sidebar);
 
             //隐藏主区域
@@ -325,10 +328,10 @@ define(
             if (!lib.hasClass(element, hoverClass[0])) {
 
                 lib.addClasses(element, hoverClass);
-                me._autoTimer = setTimeout(
-                    function () {
-                        show(me);
-                    }, me.autoDelay);
+                me.minibarDisplayTick = setTimeout(
+                    function () { show(me); },
+                    me.autoDelay
+                );
             }
         }
 
@@ -343,7 +346,7 @@ define(
             var hoverClass = helper.getPartClasses(me, 'minibar-hover');
 
             lib.removeClasses(element, hoverClass);
-            clearTimeout(me._autoTimer);
+            clearTimeout(me.minibarDisplayTick);
         }
 
         /**
@@ -356,7 +359,7 @@ define(
 
             sidebar.setMode('fixed');
         }
-        
+
         /**
          * “自动隐藏”按钮的clickhandler
          * @param  {Sidebar} sidebar Sidebar实例
@@ -397,7 +400,7 @@ define(
          */
         function mainOverHandler(sidebar) {
 
-            clearTimeout(sidebar._autoTimer);
+            clearTimeout(sidebar.minibarDisplayTick);
         }
 
         /**
@@ -413,13 +416,13 @@ define(
                 var tar = event.relatedTarget || event.toElement;
 
                 if (!lib.dom.contains(sidebar.main, tar)) {
-                    me._autoTimer = setTimeout(
+                    me.minibarDisplayTick = setTimeout(
                         function () {
                             hide(me);
                         },
                         me.autoDelay
-                    );                      
-                }                                        
+                    );
+                }
             }
         }
 
@@ -429,37 +432,39 @@ define(
          * @protected
          */
         Sidebar.prototype.initStructure = function () {
-            
+
             // 初始化控制按钮，内容区域，mat和minibar
             initContent(this);
             renderMat(this);
             renderMiniBar(this);
             initCtrlBtn(this);
-            
+
             // 挂载scorll的listener
             // ie6下不做滚动
             if (!lib.ie || lib.ie >= 7) {
                 this.topReset    = lib.curry(resetTop, this);
-                lib.on(window, 'scroll', this.topReset);   
+                lib.on(window, 'scroll', this.topReset);
             }
-
-            // 给主元素添加over和out的事件handler
-            helper.addDOMEvent(
-                this, this.main, 'mouseover', 
-                lib.bind(mainOverHandler, null, this)
-            );
-            helper.addDOMEvent(
-                this, this.main, 'mouseout', 
-                lib.bind(mainOutHandler, null, this)
-            );
 
             // 初始化位置
             initPosition(this);
-            
+
             // 初始化显示状态
             if (this.isAutoHide()) {
                 hide(this);
             }
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Sidebar.prototype.initEvents = function () {
+            // 给主元素添加over和out的事件handler
+            this.helper.addDOMEvent(this.main, 'mouseover', lib.bind(mainOverHandler, null, this));
+            this.helper.addDOMEvent(this.main, 'mouseout', lib.bind(mainOutHandler, null, this));
         };
 
         /**
@@ -527,7 +532,7 @@ define(
             var panel = this.getPanel();
 
             if (panel) {
-                panel.setProperties({content: content}); 
+                panel.setProperties({content: content});
             }
         },
 
@@ -542,14 +547,14 @@ define(
 
         /**
          * 销毁释放控件
-         * 
+         *
          * @override
          */
         Sidebar.prototype.dispose = function () {
             if (helper.isInStage(this, 'DISPOSED')) {
                 return;
             }
-            
+
             helper.beforeDispose(this);
 
             // remove scroll事件listener

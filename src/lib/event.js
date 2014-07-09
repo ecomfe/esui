@@ -9,7 +9,7 @@
 define(
     function (require) {
         var dom = require('./dom');
-        var page = require('./page');
+        var page = require('./page').page;
 
         /**
          * @class lib.event

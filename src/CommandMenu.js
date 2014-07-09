@@ -69,10 +69,7 @@ define(
         CommandMenuLayer.prototype.nodeName = 'ul';
 
         CommandMenuLayer.prototype.dock = {
-            top: 'bottom',
-            left: 'left',
-            right: 'right',
-            spaceDetection: 'vertical'
+            strictWidth: true
         };
 
         CommandMenuLayer.prototype.render = function (element) {
@@ -149,17 +146,13 @@ define(
         };
 
         /**
-         * 初始化DOM结构
+         * 初始化事件交互
          *
          * @protected
          * @override
          */
-        CommandMenu.prototype.initStructure = function () {
-            this.helper.addDOMEvent(
-                this.main, 
-                'click', 
-                u.bind(this.layer.toggle, this.layer)
-            );
+        CommandMenu.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
         };
 
         var paint = require('./painters');
@@ -220,7 +213,7 @@ define(
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
-                
+
             if (this.layer) {
                 this.layer.dispose();
                 this.layer = null;

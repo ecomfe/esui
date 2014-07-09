@@ -46,17 +46,6 @@ define(
         Crumb.prototype.type = 'Crumb';
 
         /**
-         * 创建控件主元素，默认使用`<nav>`元素
-         *
-         * @return {HTMLElement}
-         * @protected
-         * @override
-         */
-        Crumb.prototype.createMain = function () {
-            return document.createElement('nav');
-        };
-
-        /**
          * 初始化参数
          *
          * 如果初始化时未提供{@link Crumb#path}属性，则按以下规则构建该属性：
@@ -100,6 +89,37 @@ define(
         };
 
 
+        Crumb.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'click', click);
+        };
+
+        function click(e) {
+            var node = e.target;
+            var children = lib.getChildren(this.main);
+            while (node !== this.main) {
+                if (this.helper.isPart(node, 'node')) {
+                    var index = lib.hasAttribute(node, 'data-index') ? node.getAttribute('data-index')
+                        : getPathIndex(children, node);
+                    var event = this.fire('click', { item: this.path[index] });
+                    event.isDefaultPrevented() && e.preventDefault();
+                    event.isPropagationStopped() && e.stopPropagation();
+
+                    return;
+                }
+
+                node = node.parentNode;
+            }
+        }
+
+        function getPathIndex(children, node) {
+            for (var i = children.length - 1; i > -1; i -= 2) {
+                if (children[i] === node) {
+                    // separator 的插入使得索引要除个2
+                    return i / 2;
+                }
+            }
+        }
+
         /**
          * 无链接的文字节点的内容HTML模板
          *
@@ -109,8 +129,8 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.textNodeTemplate = 
-            '<span class="${classes}">${text}</span>';
+        Crumb.prototype.textNodeTemplate =
+            '<span class="${classes}" data-index="${index}">${text}</span>';
 
         /**
          * 链接节点的内容HTML模板
@@ -122,8 +142,8 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.linkNodeTemplate = 
-            '<a class="${classes}" href="${href}">${text}</a>';
+        Crumb.prototype.linkNodeTemplate =
+            '<a class="${classes}" href="${href}" data-index="${index}">${text}</a>';
 
         /**
          * 分隔符HTML模板
@@ -135,7 +155,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.separatorTemplate = 
+        Crumb.prototype.separatorTemplate =
             '<span class="${classes}">${text}</span>';
 
         /**
@@ -158,7 +178,6 @@ define(
                     classes,
                     this.helper.getPartClasses('node-last')
                 );
-                separator = '';
             }
 
             var template = node.href
@@ -167,6 +186,7 @@ define(
             var data = {
                 href: u.escape(node.href),
                 text: u.escape(node.text),
+                index: index,
                 classes: classes.join(' ')
             };
             return lib.format(template, data);

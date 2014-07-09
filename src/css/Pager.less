@@ -10,32 +10,32 @@
 /** Pager 文字配色 */
 @pager-text-color: #333;
 
-.ui-pager {
+.@{ui-class-prefix}-pager {
     font-size: 12px;
     height: 25px;
     line-height: 25px;
 }
 
-.ui-pager-label {
+.@{ui-class-prefix}-pager-label {
     color: @pager-text-color;
     text-align: center;
 }
 
-.ui-pager-select-wrapper {
+.@{ui-class-prefix}-pager-select-wrapper {
     margin-left: 5px;
     .inline-block();
 }
 
-.ui-pager .ui-select {
+.@{ui-class-prefix}-pager .@{ui-class-prefix}-select {
     vertical-align: top;
     .inline-block();
 }
 
-.ui-pager-select-hidden {
+.@{ui-class-prefix}-pager-select-hidden {
     display: none;
 }
 
-.ui-pager-main {
+.@{ui-class-prefix}-pager-main {
     margin: 0;
     padding: 0;
     .inline-block();
@@ -44,7 +44,7 @@
 /*
  * 部分沿用button控件的样式
  */
-.ui-pager-main li {
+.@{ui-class-prefix}-pager-main li {
     /* Hack 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
      * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
      * 为兼容Mac下显示效果，前面增加STHeiti */
@@ -56,19 +56,19 @@
     .inline-block();
 }
 
-.ui-pager-main a {
+.@{ui-class-prefix}-pager-main a {
     color: @pager-text-color;
     .inline-block();
 }
 
-.ui-pager-main a:hover {
+.@{ui-class-prefix}-pager-main a:hover {
     text-decoration: none;
 }
 
 /*
  * 部分沿用button控件的样式
  */
-.ui-pager-item, .ui-pager-item-extend {
+.@{ui-class-prefix}-pager-item, .@{ui-class-prefix}-pager-item-extend {
     .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
     width: 23px;
     height: 23px;
@@ -78,25 +78,25 @@
     .box-sizing(content-box);
 }
 
-.ui-pager-item a {
+.@{ui-class-prefix}-pager-item a {
     width: 23px;
 }
 
-.ui-pager-item-extend, .ui-pager-item-extend a {
+.@{ui-class-prefix}-pager-item-extend, .@{ui-class-prefix}-pager-item-extend a {
     width: 50px;
 }
 
-.ui-pager-item-current, .ui-pager-item-omit {
+.@{ui-class-prefix}-pager-item-current, .@{ui-class-prefix}-pager-item-omit {
     width: 25px;
     height: 25px;
 }
 
-.ui-pager-item-current {
+.@{ui-class-prefix}-pager-item-current {
     font-weight: 600;
     line-height: 26px;
 }
 
-.ui-pager-item-omit {
+.@{ui-class-prefix}-pager-item-omit {
     line-height: 36px;
 }
 
@@ -104,26 +104,26 @@
  * 布局皮肤样式
  */
 /* 左侧正序、左侧逆序 */
-.ui-pager-alignLeft, .ui-pager-alignLeftReverse {
+.@{ui-class-prefix}-pager-alignLeft, .@{ui-class-prefix}-pager-alignLeftReverse {
     float: left;
 }
 /* 左侧逆序 */
-.ui-pager-alignLeftReverse .ui-pager-select-wrapper {
+.@{ui-class-prefix}-pager-alignLeftReverse .@{ui-class-prefix}-pager-select-wrapper {
     float: right;
 }
 /* 右侧正序、右侧逆序 */
-.ui-pager-alignRight, .ui-pager-alignRightReverse {
+.@{ui-class-prefix}-pager-alignRight, .@{ui-class-prefix}-pager-alignRightReverse {
     float: right;
 }
 /* 右侧逆序 */
-.ui-pager-alignRightReverse .ui-pager-select-wrapper {
+.@{ui-class-prefix}-pager-alignRightReverse .@{ui-class-prefix}-pager-select-wrapper {
     float: right;
 }
 /* 分散正序 */
-.ui-pager-distributed .ui-pager-main {
+.@{ui-class-prefix}-pager-distributed .@{ui-class-prefix}-pager-main {
     float: right;
 }
 /* 分散逆序 */
-.ui-pager-distributedReverse .ui-pager-select-wrapper {
+.@{ui-class-prefix}-pager-distributedReverse .@{ui-class-prefix}-pager-select-wrapper {
     float: right;
 }

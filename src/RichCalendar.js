@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 无限区间日历
  * @author dbear
  */
@@ -21,7 +21,7 @@ define(
 
         /**
          * 控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -89,8 +89,8 @@ define(
             var layer = calendar.layer;
             layer.style.zIndex = helper.layer.getZIndex(calendar.main);
             helper.layer.attachTo(
-                layer, 
-                calendar.main, 
+                layer,
+                calendar.main,
                 { top: 'bottom', left: 'left', spaceDetection: 'both' }
             );
             helper.removePartClasses(calendar, 'layer-hidden', calendar.layer);
@@ -184,7 +184,7 @@ define(
                     monthView.un('changeyear');
                     var scope = (index - i);
                     var newDate;
-                    if (scope > 0) { 
+                    if (scope > 0) {
                         newDate = m(syncDate).subtract('month', scope);
                     }
                     else {
@@ -323,7 +323,7 @@ define(
         /**
          * 清空数据
          *
-         * @inner         
+         * @inner
          * @param {RichCalendar} calendar RichCalendar控件实例
          */
         function deleteAll(calendar) {
@@ -333,7 +333,7 @@ define(
         /**
          * 根据下拉弹层当前状态打开或关闭之
          *
-         * @inner         
+         * @inner
          * @param {RichCalendar} calendar RichCalendar控件实例
          */
         function toggleLayer(calendar) {
@@ -364,7 +364,7 @@ define(
          * @param {string} value 20110301222222,20110401235959
          * @return {{begin:Date,end:Date}=}
          */
-        function convertToRaw(value) {            
+        function convertToRaw(value) {
             var strDates = value.split(',');
             // 可能会只输入一个，默认是begin
             if (strDates.length === 1) {
@@ -378,7 +378,7 @@ define(
             else if (strDates[1] === ''){
                 strDates[1] = '2046-11-04';
             }
-            
+
             return {
                 begin: parseToDate(strDates[0]),
                 end: parseToDate(strDates[1])
@@ -527,26 +527,26 @@ define(
          * @return {boolean}
          */
         function isDate(date) {
-            var reg = /^(\d{4})(-)(\d{2})\2(\d{2})$/; 
-            var r = date.match(reg); 
+            var reg = /^(\d{4})(-)(\d{2})\2(\d{2})$/;
+            var r = date.match(reg);
             if (r == null) {
                 return false;
-            } 
-            var d= new Date(r[1], r[3]-1, r[4]); 
+            }
+            var d= new Date(r[1], r[3]-1, r[4]);
             var newStr = ''
                 + d.getFullYear()
                 + r[2]
                 + (d.getMonth() + 1)
                 + r[2]
-                + d.getDate(); 
-            date = r[1] + r[2] + ((r[3] - 1) + 1) + r[2] + ((r[4] - 1) + 1); 
-            return newStr==date; 
+                + d.getDate();
+            date = r[1] + r[2] + ((r[3] - 1) + 1) + r[2] + ((r[4] - 1) + 1);
+            return newStr==date;
         }
 
         RichCalendar.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'RichCalendar',
@@ -605,7 +605,7 @@ define(
                     properties.startMonth = startDate.getMonth() + 1;
                 }
 
-                var changes = 
+                var changes =
                     InputControl.prototype.setProperties.apply(this, arguments);
 
                 return changes;
@@ -659,35 +659,25 @@ define(
                 );
 
                 this.initChildren(this.main);
-                var modifyBtn = this.getChild('modifyBtn');
-                modifyBtn.on('click', lib.curry(toggleLayer, this));
-
-                var deleteAllBtn = 
-                    this.getChild('generalPanel').getChild('deleteBtn');
-                deleteAllBtn.on('click', lib.curry(deleteAll, this));
-
-                var textInput = this.getChild('textInput');
-                // textInput.on(
-                //     'input',
-                //     lib.curry(updateRawValueByTyping, this)
-                // );
-                textInput.on(
-                    'blur',
-                    lib.curry(updateRawValueByTyping, this)
-                );
-
-                helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },
 
             /**
-             * 创建控件主元素
+             * 初始化事件交互
              *
-             * @param {Object=} options 构造函数传入的参数
-             * @return {HTMLElement}
+             * @protected
              * @override
              */
-            createMain: function (options) {
-                return document.createElement('div');
+            initEvents: function () {
+                var modifyBtn = this.getChild('modifyBtn');
+                modifyBtn.on('click', lib.curry(toggleLayer, this));
+
+                var deleteAllBtn = this.getChild('generalPanel').getChild('deleteBtn');
+                deleteAllBtn.on('click', lib.curry(deleteAll, this));
+
+                var textInput = this.getChild('textInput');
+                textInput.on('blur', lib.curry(updateRawValueByTyping, this));
+
+                helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },
 
             /**
@@ -746,8 +736,8 @@ define(
 
             /**
              * 获取选取日期值
-             * 
-             * @return {Date} 
+             *
+             * @return {Date}
              */
             getRawValue: function () {
                 return this.rawValue;
@@ -756,7 +746,7 @@ define(
 
             /**
              * 将value从原始格式转换成string
-             * 
+             *
              * @param {*} rawValue 原始值，就是包含了区段中的所有日期的数组
              * @return {string}
              */
@@ -803,7 +793,7 @@ define(
              * 获得
              * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
              * 形式的数据
-             * 
+             *
              * @return {array}
              */
             getRanges: function () {
@@ -857,17 +847,17 @@ define(
                 rawDates.sort(function (a, b) {
                     return a - b;
                 });
-                
+
                 this.set('rawValue', rawDates);
             },
 
             /**
              * 将string类型的value转换成原始格式
-             * 
+             *
              * @param {string} value 字符串值
              * @return {Array}
              */
-            parseValue: function (value) {             
+            parseValue: function (value) {
                 var dateStrs = value.split(',');
                 var dates = {};
                 for (var i = 0; i < dateStrs.length - 1; i += 2) {
@@ -905,7 +895,7 @@ define(
                 if (helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
-                
+
                 var layer = this.layer;
                 if (layer) {
                     layer.parentNode.removeChild(layer);

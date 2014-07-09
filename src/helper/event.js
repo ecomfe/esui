@@ -243,6 +243,14 @@ define(
             var handler = function (e) {
                 var event = require('mini-event').fromDOMEvent(e);
                 this.fire(newType || e.type, event);
+
+                if (event.isDefaultPrevented()) {
+                    lib.event.preventDefault(e);
+                }
+
+                if (event.isPropagationStopped()) {
+                    lib.event.stopPropagation(e);
+                }
             };
 
             this.addDOMEvent(element, type, handler);

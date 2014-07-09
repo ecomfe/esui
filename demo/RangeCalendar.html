@@ -4,8 +4,43 @@
         <meta charset="UTF-8" />
         <title>RangeCalendar - ESUI Demo</title>
         <script src="loader/esl.js"></script>
-        <script src="loader/config.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
         <header>RangeCalendar</header>
@@ -55,12 +90,16 @@
                     data-ui-value="2013-03-02 00:00:00,2013-05-01"
                     data-ui-endless-check="false"
                     data-ui-is-endless="true"
-                    data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59",
+                    data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59"
                     data-ui-showed-short-cut="昨天,最近7天,上周"></div>
                 <input data-ui-type="RangeCalendar" name="test2"
                     data-ui-id="test2"
                     data-ui-mini-mode="1"
-                    data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59"></input>
+                    data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59" />
+                <esui-range-calendar name="test3"
+                    data-ui-id="test3"
+                    data-ui-mini-mode="1"
+                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></esui-range-calendar>
                 </div>
                 <!--
                 <div class="control-panel">
@@ -84,8 +123,8 @@
                 </div>-->
             </div>
             <h2>非连续时间段选择控件</h2>
-            <div data-ui-type="RichCalendar" data-ui-name="test3"
-                data-ui-id="test3"
+            <div data-ui-type="RichCalendar" data-ui-name="test4"
+                data-ui-id="test4"
                 data-ui-range="2013-07-03,2013-09-29"
                 data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27">
         </div>
@@ -94,8 +133,7 @@
             [
                 'esui',
                 'esui/RangeCalendar',
-                'esui/RichCalendar',
-                'css!esui/css/main.css'
+                'esui/RichCalendar'
             ],
             function (ui) {
                 var calendar = ui.init()[0];

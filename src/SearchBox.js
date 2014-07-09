@@ -45,7 +45,7 @@ define(
 
             if (lib.isInput(this.main)) {
                 if (!properties.placeholder) {
-                    properties.placeholder = 
+                    properties.placeholder =
                         lib.getAttribute(this.main, 'placeholder');
                 }
 
@@ -53,15 +53,11 @@ define(
                     properties.text = this.main.value;
                 }
 
-                if (!properties.maxLength
-                    && (
-                        lib.hasAttribute(this.main, 'maxlength')
-                        || this.main.maxLength > 0
-                    )
-                ) {
+                if (!properties.maxLength && ( lib.hasAttribute(this.main, 'maxlength') || this.main.maxLength > 0)) {
                     properties.maxLength = this.main.maxLength;
                 }
             }
+            //TODO: custom elments 的兼容
             else {
                 if (!properties.text) {
                     properties.text = lib.getText(this.main);
@@ -84,11 +80,11 @@ define(
         SearchBox.prototype.initStructure = function () {
             // 一个搜索框由一个文本框和一个按钮组成
             var textboxOptions = {
-                mode: 'text', 
-                skin: 'search', 
+                mode: 'text',
                 childName: 'text',
                 height: this.height,
-                viewContext: this.viewContext
+                viewContext: this.viewContext,
+                placeholder: this.placeholder
             };
 
             if (lib.isInput(this.main)) {
@@ -99,7 +95,27 @@ define(
             textbox.appendTo(this.main);
             this.addChild(textbox);
 
+            var buttonOptions = {
+                main: document.createElement('span'),
+                childName: 'button',
+                content: '搜索',
+                viewContext: this.viewContext
+            };
+            var button = ui.create('Button', buttonOptions);
+            button.appendTo(this.main);
+            this.addChild(button);
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        SearchBox.prototype.initEvents = function () {
+            var textbox = this.getChild('text');
             var delegate = require('mini-event').delegate;
+
             delegate(textbox, this, 'input');
             delegate(textbox, 'enter', this, 'search');
             // 回车时要取消掉默认行为，否则会把所在的表单给提交了
@@ -111,21 +127,25 @@ define(
                     }
                 }
             );
-            textbox.on('focus', lib.bind(this.addState, this, 'focus'));
+            textbox.on('focus', focus, this);
             textbox.on('blur', lib.bind(this.removeState, this, 'focus'));
 
-            var buttonOptions = {
-                main: document.createElement('span'),
-                skin: 'search',
-                childName: 'button',
-                content: '搜索',
-                viewContext: this.viewContext
-            };
-            var button = ui.create('Button', buttonOptions);
-            button.appendTo(this.main);
-            this.addChild(button);
-            delegate(button, 'click', this, 'search');
+            var button = this.getChild('button');
+            button.on('click', click, this);
         };
+
+        function focus() {
+            this.removeState('clear');
+            this.addState('focus');
+        }
+
+        function click() {
+            if (this.hasState('clear')) {
+                this.getChild('text').setValue('');
+                this.removeState('clear');
+            }
+            this.fire('search');
+        }
 
         /**
          * 获取输入值
@@ -154,9 +174,7 @@ define(
                     'maxLength', 'placeholder', 'text',
                     'width', 'disabled', 'readOnly'
                 ],
-                paint: function (box, maxLength, placeholder,
-                    text, width, disabled, readOnly
-                ) {
+                paint: function (box, maxLength, placeholder, text, width, disabled, readOnly) {
                     var properties = {
                         /**
                          * @property {number} maxLength
