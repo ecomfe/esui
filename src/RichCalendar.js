@@ -627,7 +627,8 @@ define(
                     '<div class="${className}" id="${id}">',
                       '<textarea data-ui-type="TextBox"',
                       ' data-ui-mode="textarea"',
-                      ' data-ui-height="100"',
+                      ' data-ui-width="${textBoxWidth}"',
+                      ' data-ui-height="${textBoxHeight}"',
                       ' data-ui-child-name="textInput"></textarea>',
                       '<div data-ui-type="Panel" class="${generalPanelClass}"',
                       ' data-ui-child-name="generalPanel">',
@@ -649,6 +650,8 @@ define(
                     {
                         className: getClass(this, 'text').join(' '),
                         id: helper.getId(this, 'text'),
+                        textBoxWidth: this.textBoxWidth || 200,
+                        textBoxHeight: this.textBoxHeight || 100,
                         name: this.name,
                         inputId: helper.getId(this, 'param-value'),
                         generalPanelClass:
