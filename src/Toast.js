@@ -182,6 +182,20 @@ define(
             return element;
         }
 
+        function createHandler(messageType) {
+            return function (content, options) {
+                if (messageType === 'show') {
+                    messageType = 'normal';
+                }
+                options = lib.extend({ content: content }, options);
+                options.messageType = options.messageType || messageType;
+                var toast = new Toast(options);
+                Control.prototype.hide.apply(toast);
+                toast.appendTo(getContainer.call(toast));
+                return toast;
+            };
+        }
+
         /**
          * 快捷显示信息的方法
          *
@@ -192,19 +206,8 @@ define(
         var allType = ['show', 'info', 'alert', 'error', 'success'];
         for (var key in allType) {
             if (allType.hasOwnProperty(key)) {
-                (function (messageType) {
-                    Toast[messageType] = function (content, options) {
-                        if (messageType === 'show') {
-                            messageType = 'normal';
-                        }
-                        options = lib.extend({ content: content }, options);
-                        options.messageType = options.messageType || messageType;
-                        var toast = new Toast(options);
-                        Control.prototype.hide.apply(toast);
-                        toast.appendTo(getContainer.call(toast));
-                        return toast;
-                    };
-                })(allType[key]);
+                var messageType = allType[key];
+                Toast[messageType] = createHandler(messageType);
             }
         }
 

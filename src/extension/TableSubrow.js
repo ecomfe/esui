@@ -102,7 +102,7 @@ define(
          */
         function getSubrowArgs(table, rowIndex){
             return {
-                subrow : table.subrow && table.subrow != 'false'
+                subrow : table.subrow && table.subrow !== 'false'
             };
         }
 

@@ -149,7 +149,7 @@ define(
                 context.selectedIndex = -1;
                 var value = context.rawValue || context.value;
                 for (var i = 0; i < context.datasource.length; i++) {
-                    if (context.datasource[i].value == value) {
+                    if (context.datasource[i].value == value) {   // jshint ignore:line
                         context.selectedIndex = i;
                         break;
                     }

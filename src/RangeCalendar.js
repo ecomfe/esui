@@ -307,7 +307,7 @@ define(
             return lib.format(tpl, {
                 frameClass: calendar.helper.getPartClassName(type),
                 labelClass: calendar.helper.getPartClassName('label'),
-                labelTitle: type == 'begin' ? '开始日期' : '结束日期',
+                labelTitle: type === 'begin' ? '开始日期' : '结束日期',
                 titleId: calendar.helper.getId(type + 'Label'),
                 calClass: calendar.helper.getPartClassName(type + '-cal'),
                 calName: type + 'Cal'
@@ -496,7 +496,7 @@ define(
             var disableClasses =
                 this.helper.getPartClasses('shortcut-item-disabled');
 
-            while (tar && tar != document.body) {
+            while (tar && tar !== document.body) {
                 if (lib.hasClass(tar, classes[0])
                     && !lib.hasClass(tar, disableClasses[0])) {
                     var index = tar.getAttribute('data-index');
