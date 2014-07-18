@@ -123,7 +123,7 @@ define(
                 return '';
             }
 
-            var doc = element.nodeType == 9
+            var doc = element.nodeType === 9
                 ? element
                 : element.ownerDocument || element.document;
 
@@ -235,7 +235,7 @@ define(
 
             var node = element.firstChild;
             for (; node; node = node.nextSibling) {
-                if (node.nodeType == 1) {
+                if (node.nodeType === 1) {
                     return node;
                 }
             }
@@ -281,7 +281,7 @@ define(
 
             var node = element.nextSibling;
             for (; node; node = node.nextSibling) {
-                if (node.nodeType == 1) {
+                if (node.nodeType === 1) {
                     return node;
                 }
             }
@@ -302,7 +302,7 @@ define(
 
             //fixme: 无法处理文本节点的情况(IE)
             return container.contains
-                ? container != contained && container.contains(contained)
+                ? container !== contained && container.contains(contained)
                 : !!(container.compareDocumentPosition(contained) & 16);
         };
 

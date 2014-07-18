@@ -363,7 +363,7 @@ define(
          */
         function hideMask(dialog) {
             var mask = getMask(dialog);
-            if ('undefined' != typeof mask) {
+            if ('undefined' !== typeof mask) {
                 lib.removeNode(mask);
             }
         }
@@ -527,7 +527,7 @@ define(
                 else {
                     mainDOM = document.createElement('div');
 
-                    if (type == 'body') {
+                    if (type === 'body') {
                         // 找到head
                         var head = this.getChild('head');
                         if (head) {

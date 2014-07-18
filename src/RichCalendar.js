@@ -118,12 +118,12 @@ define(
          */
         function closeLayer(e) {
             var tar = e.target || e.srcElement;
-            while (tar && tar != document.body) {
-                if (tar == this.layer) {
+            while (tar && tar !== document.body) {
+                if (tar === this.layer) {
                     return;
                 }
                 var button = this.getChild('modifyBtn').main;
-                if (tar == button) {
+                if (tar === button) {
                     return;
                 }
                 tar = tar.parentNode;
@@ -234,7 +234,7 @@ define(
                         end: realEnd
                     };
                 }
-                else if (i == (displayNum - 1)) {
+                else if (i === (displayNum - 1)) {
                     realBegin = new Date(
                         rangeBeginYear, rangeBeginMonth + displayNum - 1, 1
                     );
@@ -462,7 +462,7 @@ define(
                         tempDate.push(rawValue[i]);
                         tempIndex++;
                     }
-                    else if (i == (rawValue.length - 1)) {
+                    else if (i === (rawValue.length - 1)) {
                         dateStrs.push('至');
                         dateStrs.push(
                             lib.date.format(
@@ -540,7 +540,7 @@ define(
                 + r[2]
                 + d.getDate();
             date = r[1] + r[2] + ((r[3] - 1) + 1) + r[2] + ((r[4] - 1) + 1);
-            return newStr==date;
+            return newStr === date;
         }
 
         RichCalendar.prototype = {

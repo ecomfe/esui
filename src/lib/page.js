@@ -10,7 +10,7 @@ define(
     function (require) {
         var documentElement = document.documentElement;
         var body = document.body;
-        var viewRoot = document.compatMode == 'BackCompat'
+        var viewRoot = document.compatMode === 'BackCompat'
             ? body
             : documentElement;
 

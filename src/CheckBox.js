@@ -116,12 +116,12 @@ define(
                         this.checked = u.any(
                             datasource,
                             function (item) {
-                                return item.value == this.value;
+                                return item.value == this.value;    // jshint ignore:line
                             },
                             this
                         );
                     }
-                    else if (this.rawValue == datasource) {
+                    else if (this.rawValue == datasource) {         // jshint ignore:line
                         this.checked = true;
                     }
                 }
