@@ -16,18 +16,36 @@ define(
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
+        var Layer = require('./Layer');
+
         var ui = require('./main');
-        var m = require('moment');
+        var moment = require('moment');
+        var u = require('underscore');
 
         /**
-         * 控件类
+         * 日历用浮层
          *
+         * @extends Layer
+         * @ignore
          * @constructor
-         * @param {Object} options 初始化参数
          */
-        function RichCalendar(options) {
-            InputControl.apply(this, arguments);
+        function RichCalendarLayer() {
+            Layer.apply(this, arguments);
         }
+
+        lib.inherits(RichCalendarLayer, Layer);
+
+
+        RichCalendarLayer.prototype.render = function (element) {
+            document.body.appendChild(element);
+
+            var calendar = this.control;
+            element.innerHTML = getLayerHtml(calendar);
+            calendar.helper.initChildren(element);
+
+            // 渲染日历集
+            paintCals(calendar, true);
+        };
 
         /**
          * 搭建弹出层内容
@@ -45,17 +63,23 @@ define(
                     lib.format(
                         monthViewContainerTpl,
                         {
-                            id: helper.getId(calendar, 'month-' + i),
+                            id: calendar.helper.getId('month-' + i),
                             className:
-                                helper.getPartClasses(
-                                    calendar, 'month-container'
-                                ),
+                                calendar.helper.getPartClassName('month-container'),
                             monthView: getCalendarHtml(calendar, i)
                         }
                     )
                 );
             }
-            return monthViews.join('');
+
+            return lib.format(
+                '<div id="${id}" class="${className}">${monthViews}</div>',
+                {
+                    id: calendar.helper.getId('months'),
+                    className: calendar.helper.getPartClassName('months'),
+                    monthViews: monthViews.join('')
+                }
+            );
         }
 
 
@@ -80,79 +104,29 @@ define(
             });
         }
 
-        /**
-         * 显示下拉弹层
-         *
-         * @param {RichCalendar} calendar RichCalendar控件实例
-         */
-        function showLayer(calendar) {
-            var layer = calendar.layer;
-            layer.style.zIndex = helper.layer.getZIndex(calendar.main);
-            helper.layer.attachTo(
-                layer,
-                calendar.main,
-                { top: 'bottom', left: 'left', spaceDetection: 'both' }
-            );
-            helper.removePartClasses(calendar, 'layer-hidden', calendar.layer);
-            calendar.addState('active');
-        }
-
-        /**
-         * 隐藏下拉弹层
-         *
-         * @param {RichCalendar} calendar RichCalendar控件实例
-         */
-        function hideLayer(calendar) {
-            if (calendar.layer) {
-                helper.addPartClasses(calendar, 'layer-hidden', calendar.layer);
-                calendar.removeState('active');
+        RichCalendarLayer.prototype.toggle = function () {
+            var element = this.getElement();
+            if (!element
+                || this.control.helper.isPart(element, 'layer-hidden')
+            ) {
+                // 渲染日历集
+                paintCals(this.control, true);
+                this.show();
             }
-        }
+            else {
+                this.hide();
+            }
+        };
 
         /**
-         * 点击自动隐藏的处理
+         * 控件类
          *
-         * @inner
-         * @param {RichCalendar} calendar RichCalendar控件实例
-         * @param {Event} 触发事件的事件对象
+         * @constructor
+         * @param {Object} options 初始化参数
          */
-        function closeLayer(e) {
-            var tar = e.target || e.srcElement;
-            while (tar && tar !== document.body) {
-                if (tar === this.layer) {
-                    return;
-                }
-                var button = this.getChild('modifyBtn').main;
-                if (tar === button) {
-                    return;
-                }
-                tar = tar.parentNode;
-            }
-            hideLayer(this);
-        }
-
-
-        /**
-         * 打开下拉弹层
-         *
-         * @inner
-         * @param {RichCalendar} calendar RichCalendar控件实例
-         */
-        function openLayer(calendar) {
-            var layer = calendar.layer;
-            if (!layer) {
-                layer = helper.layer.create('div');
-                helper.addPartClasses(calendar, 'layer', layer);
-                layer.innerHTML = getLayerHtml(calendar);
-                calendar.layer = layer;
-                hideLayer(calendar);
-                document.body.appendChild(layer);
-                // 创建控件树
-                calendar.initChildren(layer);
-            }
-            // 渲染日历集
-            paintCals(calendar, true);
-            showLayer(calendar);
+        function RichCalendar(options) {
+            InputControl.apply(this, arguments);
+            this.layer = new RichCalendarLayer(this);
         }
 
         function syncValueOfMonthViews(calendar, index) {
@@ -185,10 +159,10 @@ define(
                     var scope = (index - i);
                     var newDate;
                     if (scope > 0) {
-                        newDate = m(syncDate).subtract('month', scope);
+                        newDate = moment(syncDate).subtract('month', scope);
                     }
                     else {
-                        newDate = m(syncDate).add('month', -scope);
+                        newDate = moment(syncDate).add('month', -scope);
                     }
                     monthView.setProperties({
                         month: newDate.month() + 1,
@@ -328,33 +302,6 @@ define(
          */
         function deleteAll(calendar) {
             calendar.set('rawValue', []);
-        }
-
-        /**
-         * 根据下拉弹层当前状态打开或关闭之
-         *
-         * @inner
-         * @param {RichCalendar} calendar RichCalendar控件实例
-         */
-        function toggleLayer(calendar) {
-            if (calendar.disabled) {
-                return;
-            }
-
-            if (!calendar.layer) {
-                openLayer(calendar);
-            }
-            else {
-                var layer = calendar.layer;
-                var classes =
-                    helper.getPartClasses(calendar, 'layer-hidden');
-                if (lib.hasClass(layer, classes[0])) {
-                    openLayer(calendar);
-                }
-                else {
-                    hideLayer(calendar);
-                }
-            }
         }
 
         /**
@@ -627,7 +574,8 @@ define(
                     '<div class="${className}" id="${id}">',
                       '<textarea data-ui-type="TextBox"',
                       ' data-ui-mode="textarea"',
-                      ' data-ui-height="100"',
+                      ' data-ui-width="${textBoxWidth}"',
+                      ' data-ui-height="${textBoxHeight}"',
                       ' data-ui-child-name="textInput"></textarea>',
                       '<div data-ui-type="Panel" class="${generalPanelClass}"',
                       ' data-ui-child-name="generalPanel">',
@@ -649,6 +597,8 @@ define(
                     {
                         className: getClass(this, 'text').join(' '),
                         id: helper.getId(this, 'text'),
+                        textBoxWidth: this.textBoxWidth || 200,
+                        textBoxHeight: this.textBoxHeight || 100,
                         name: this.name,
                         inputId: helper.getId(this, 'param-value'),
                         generalPanelClass:
@@ -669,15 +619,13 @@ define(
              */
             initEvents: function () {
                 var modifyBtn = this.getChild('modifyBtn');
-                modifyBtn.on('click', lib.curry(toggleLayer, this));
+                modifyBtn.on('click', u.bind(this.layer.toggle, this.layer));
 
                 var deleteAllBtn = this.getChild('generalPanel').getChild('deleteBtn');
                 deleteAllBtn.on('click', lib.curry(deleteAll, this));
 
                 var textInput = this.getChild('textInput');
                 textInput.on('blur', lib.curry(updateRawValueByTyping, this));
-
-                helper.addDOMEvent(this, document, 'mousedown', closeLayer);
             },
 
             /**
@@ -710,7 +658,7 @@ define(
                         if (rawValue) {
                             updateMain(calendar, rawValue);
                         }
-                        if (calendar.layer) {
+                        if (calendar.helper.getPart('months')) {
                             paintCals(calendar);
                         }
                     }
@@ -719,7 +667,7 @@ define(
                     name: ['disabled', 'hidden', 'readOnly'],
                     paint: function (calendar, disabled, hidden, readOnly) {
                         if (disabled || hidden || readOnly) {
-                            hideLayer(calendar);
+                            calendar.layer.hide();
                         }
                     }
                 }
