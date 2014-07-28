@@ -434,19 +434,7 @@ define(
                 var elementWidth = element.offsetWidth;
                 element.style.display = 'none';
 
-                // options可能会有个属性是targetControl，这是个环引用
-                var config = {};
-                if (options.hasOwnProperty('targetControl')) {
-                    u.each(options, function (item, key) {
-                        if (key != 'targetControl') {
-                            config[key] = lib.clone(item);
-                        }
-                    });
-                    config.targetControl = options.targetControl;
-                }
-                else {
-                    config = lib.clone(options);
-                }
+                var config = u.omit(options, 'targetControl');
 
                 var viewWidth = lib.page.getViewWidth();
                 var viewHeight = lib.page.getViewHeight();
@@ -634,126 +622,222 @@ define(
                     return;
                 }
 
-                var showEvent;  // 展现触发方式
-                var hideEvent;  // 隐藏触发方式
-                if (showMode === 'auto') {
-                    showEvent = 'auto';
-                    if (options.showDuration > 0) {
-                        hideEvent = 'auto';
-                    }
-                    else {
-                        hideEvent = 'mouseup';
-                    }
+                switch (showMode) {
+                    case 'auto':
+                        me.initAutoMode(targetElement, options);
+                        break;
+                    case 'over':
+                        me.initOverMode(targetElement, options);
+                        break;
+                    case 'click':
+                        me.initClickMode(targetElement, options);
+                        break;
                 }
-                else if (showMode === 'over') {
-                    showEvent = 'mouseover';
-                    hideEvent = 'mouseout';
-                }
-                else if (showMode === 'click') {
-                    showEvent = 'mouseup';
-                    hideEvent = 'mouseup';
-                }
+            },
 
-                // 准备相关的方法
-                // 延迟展现
-                var showHandler = lib.curry(
-                    delayShow, me, options.delayTime,
-                    targetElement, options.positionOpt
-                );
-                // 隐藏，使用默认延迟时间
-                var hideHandler = lib.curry(
-                    delayHide, me
-                );
+            /**
+             * 获取初始化时的事件方法集
+             *
+             * @param {HtmlElement} 目标DOM
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             * @returns {Object}
+             */
+            getInitHandlers: function (targetElement, options) {
+                var me = this;
 
-                var onceClickHide = function () {
-                    hideHandler();
-                    helper.removeDOMEvent(
-                        me, document.documentElement, 'mouseup',
-                        onceClickHide
-                    );
-                };
-                var bindOnceClickHide = function () {
-                    helper.addDOMEvent(
-                        me, document.documentElement,
-                        'mouseup', onceClickHide
-                    );
-                };
-                var removeOnceClickHide = function () {
-                    helper.removeDOMEvent(
-                        me, document.documentElement,
-                        'mouseup', onceClickHide
-                    );
-                };
+                // 处理方法集
+                var handler = {
+                    // 浮层相关方法
+                    layer: {
+                        /**
+                         * 展现浮层
+                         */
+                        show: lib.curry(
+                            delayShow, me, options.delayTime,
+                            targetElement, options.positionOpt
+                        ),
 
-                // 根据showEvent和hideEvent进行事件绑定
-                if (showEvent) {
-                    // 自动展现处理
-                    if (showEvent == 'auto') {
-                        // 直接展现
-                        showHandler();
+                        /**
+                         * 隐藏浮层
+                         */
+                        hide: lib.curry(delayHide, me),
 
-                        // 如果不是自动隐藏，则配置点击其他位置关闭
-                        if (hideEvent != 'auto') {
-                            // 点击其他区域隐藏事件绑定
-                            bindOnceClickHide();
+                        /**
+                         * 绑定浮层展现的默认事件，针对于targetDOM
+                         * @param {string=} showEvent 事件名称，例如click、mouseup
+                         * @param {Function=} callback 回调方法
+                         */
+                        bind: function (showEvent, callback) {
+                            showEvent = showEvent || 'mouseup';
+                            // 配置展现的触发事件
+                            helper.addDOMEvent(
+                                me, targetElement, showEvent, function (e) {
+                                    handler.layer.show();
+                                    // 点击其他区域隐藏事件绑定
+                                    handler.clickOutsideHide.bind();
+                                    if (typeof callback == 'function') {
+                                        callback();
+                                    }
+                                    e.stopPropagation();
+                                }
+                            );
                         }
+                    },
 
-                        // 之后showEvent转为mouseup
-                        showEvent = 'mouseup';
-                    }
-
-                    // 配置展现的触发事件
-                    helper.addDOMEvent(
-                        me, targetElement, showEvent, function (e) {
-                            showHandler();
-                            // 点击其他区域隐藏事件绑定
-                            bindOnceClickHide();
+                    /**
+                     * 点击外部隐藏浮层的相应处理
+                     */
+                    clickOutsideHide: {
+                        /**
+                         * 绑定于浮层元素上的阻止冒泡的方法
+                         */
+                        preventPopMethod: function (e) {
                             e.stopPropagation();
-                        }
-                    );
+                        },
 
-                    // 阻止浮层上mouseup触发时的冒泡，避免将浮层隐藏
-                    helper.addDOMEvent(
-                        me, me.main,
-                        'mouseup',
-                        function (e) {
-                            e.stopPropagation();
-                        }
-                    );
+                        /**
+                         * 绑定于body主体上面的隐藏layer的方法
+                         */
+                        method: function () {
+                            handler.layer.hide();
+                            handler.clickOutsideHide.unbind();
+                        },
 
-                    // 如果是mouseover，还要配置main的mouseover事件
-                    // 否则浮层会自动隐藏
-                    if (showEvent == 'mouseover') {
-                        helper.addDOMEvent(
-                            me, targetElement, 'mouseup', function (e) {
-                                e.stopPropagation();
-                            }
-                        );
-                        helper.addDOMEvent(
-                            me, me.main, 'mouseover',
-                            lib.bind(
-                                me.show, me, targetElement, options.positionOpt
-                            )
-                        );
+                        /**
+                         * 绑定
+                         */
+                        bind: function () {
+                            helper.addDOMEvent(
+                                me, document.documentElement,
+                                'mouseup',
+                                handler.clickOutsideHide.method
+                            );
+
+                            // 为主体layer元素配置阻止冒泡，防止点击关闭
+                            helper.addDOMEvent(
+                                me, me.main, 'mouseup',
+                                handler.clickOutsideHide.preventPopMethod
+                            );
+                        },
+
+                        /**
+                         * 解除绑定
+                         */
+                        unbind: function () {
+                            helper.removeDOMEvent(
+                                me, document.documentElement,
+                                'mouseup',
+                                handler.clickOutsideHide.method
+                            );
+                            helper.removeDOMEvent(
+                                me, me.main, 'mouseup',
+                                handler.clickOutsideHide.preventPopMethod
+                            );
+                        }
                     }
-                }
+                };
 
-                if (hideEvent == 'auto') {
+                return handler;
+            },
+
+            /**
+             * 在绑定提示层至目标DOM时，初始化自动展现（showMode为auto）的相应行为
+             *
+             * @param {HtmlElement} 目标DOM
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             */
+            initAutoMode: function (targetElement, options) {
+                var me = this;
+                var handler = me.getInitHandlers(targetElement, options);
+
+                // 直接展现浮层
+                handler.layer.show();
+
+                // 如果不是自动隐藏，则配置点击其他位置关闭
+                if (!options.showDuration) {
+                    // 点击其他区域隐藏事件绑定
+                    handler.clickOutsideHide.bind();
+                    // 之后行为变为click隐藏行为
+                    handler.layer.bind('mouseup');
+                }
+                else {
                     // 自动隐藏
-                    setTimeout(
-                        hideHandler,
-                        options.delayTime + options.showDuration
-                    );
+                    setTimeout(function () {
+                        // 执行隐藏
+                        handler.layer.hide(options.showDuration);
+                        // 之后行为变为click隐藏行为
+                        handler.layer.bind('mouseup');
+
+                    }, options.delayTime);
                 }
-                // 不处理mouseup，避免点击时又要展现又要隐藏，点击隐藏已经处理过了
-                else if (hideEvent != 'mouseup') {
-                    helper.addDOMEvent(
-                        me, me.main, hideEvent, function () {
-                            hideHandler();
-                            removeOnceClickHide();
-                        }
-                    );
-                }
+            },
+
+            /**
+             * 在绑定提示层至目标DOM时，初始化点击展现（showMode为click）的相应行为
+             *
+             * @param {HtmlElement} 目标DOM
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             */
+            initClickMode: function (targetElement, options) {
+                var me = this;
+                var handler = me.getInitHandlers(targetElement, options);
+
+                // 鼠标点击在目标DOM上展现提示层
+                handler.layer.bind('mouseup');
+            },
+
+            /**
+             * 在绑定提示层至目标DOM时，初始化悬浮触发展现（showMode为over）的相应行为
+             *
+             * @param {HtmlElement} 目标DOM
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             */
+            initOverMode: function (targetElement, options) {
+                var me = this;
+                var handler = me.getInitHandlers(targetElement, options);
+
+                // 鼠标悬浮在目标DOM上展现提示层
+                handler.layer.bind('mouseover');
+
+                // 防止点击targetElement导致浮层关闭
+                helper.addDOMEvent(
+                    me, targetElement, 'mouseup', function (e) {
+                        e.stopPropagation();
+                    }
+                );
+
+                // 如果是mouseover，还要配置main的mouseover事件
+                // 否则浮层会自动隐藏
+                helper.addDOMEvent(
+                    me, me.main, 'mouseover',
+                    lib.bind(
+                        me.show, me, targetElement, options.positionOpt
+                    )
+                );
             },
 
             /**
