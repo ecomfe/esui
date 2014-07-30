@@ -370,6 +370,9 @@ define(
                     label = new ValidityLabel(options);
                     if (this.main.nextSibling) {
                         label.insertBefore(this.main.nextSibling);
+                        // 这是为了对付IE8的二逼paint的，节点插入以后，强制paint一下
+                        this.main.style.fontSize = '14px';
+                        this.main.style.fontSize = '';
                     }
                     else {
                         label.appendTo(this.main.parentNode);
