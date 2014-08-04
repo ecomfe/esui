@@ -369,16 +369,19 @@ define(
                     };
                     label = new ValidityLabel(options);
                     if (this.main.nextSibling) {
-                        label.insertBefore(this.main.nextSibling);
-                        // 这是为了对付IE8的二逼paint的，节点插入以后，强制paint一下
-                        this.main.style.fontSize = '14px';
-                        this.main.style.fontSize = '';
+                        var nextSibling = this.main.nextSibling;
+                        label.insertBefore(nextSibling);
                     }
                     else {
                         label.appendTo(this.main.parentNode);
                     }
-
                     this.validityLabel = label.id;
+                }
+
+                // Adjacent sibling selector not working with dynamically added class in IE7/8
+                // Put the class on a parent to force repainting 
+                if ((lib.ie === 8 || lib.ie === 7) && label) {
+                    lib.toggleClass(label.main.parentNode, 'ie-8-fix');
                 }
 
                 return label;
