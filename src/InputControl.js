@@ -381,7 +381,8 @@ define(
                 // Adjacent sibling selector not working with dynamically added class in IE7/8
                 // Put the class on a parent to force repainting 
                 if ((lib.ie === 8 || lib.ie === 7) && label) {
-                    lib.toggleClass(label.main.parentNode, 'ie-8-fix');
+                    // otakustay赐名
+                    lib.toggleClass(label.main.parentNode, 'fuck-the-ie');
                 }
 
                 return label;
