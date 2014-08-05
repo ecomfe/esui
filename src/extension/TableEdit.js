@@ -537,11 +537,7 @@ define(
         function getColHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
-            var fieldEditable = field.editable;
-            if ('function' == typeof fieldEditable) {
-                fieldEditable = fieldEditable.call(table, data, rowIndex, fieldIndex, extraArgs);
-            }
-            if (table.editable && fieldEditable) {
+            if (table.editable && field.editable) {
                 return {
                     textClass: table.getClass('cell-editable'),
                     html: lib.format(
