@@ -844,9 +844,8 @@ define(
                     return;
                 }
 
-                var layer = this.layer;
-                if (layer) {
-                    layer.parentNode.removeChild(layer);
+                if (this.layer) {
+                    this.layer.dispose();
                     this.layer = null;
                 }
 
