@@ -1044,6 +1044,32 @@ define(
              */
             parseValue: function (value) {
                 return value.split(',');
+            },
+            
+            /**
+             * 勾选指定地域
+             *
+             * @param {string} id 地域id
+             * @public
+             */
+            checkRegion: function(id) {
+                var checkbox = getOptionDOM(this, id);
+                // 有就更新勾选状态
+                if (checkbox) {
+                    checkbox.checked = true;
+                    optionClick(this, checkbox);
+                }
+                // 没有就只修改值
+                else {
+                    var item = this.regionDataIndex[id];
+                    if (item) {
+                        item.isSelected = true;
+
+                        // 重复调一次，主要是为了更新“选中了几个城市”的显示信息
+                        updateMulti(this);
+                        updateParamValue(this);
+                    }
+                }
             }
 
         };
