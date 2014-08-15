@@ -30,7 +30,7 @@ define(
                         '<span id="${labelId}" class="${labelClass}">',
                         '${labelText}</span>',
                         '<div data-ui="type:Select;childName:select;',
-                        'id:${selectId};width:40;"></div>',
+                        'id:${selectId};skin:${skin}"></div>',
                     '</div>',
                     '<ul id="${mainId}" class="${mainClass}"></ul>',
                 '</div>'
@@ -50,7 +50,8 @@ define(
                     labelText: '每页显示',
                     selectId: pager.helper.getId('select'),
                     mainId: pager.helper.getId('main'),
-                    mainClass: pager.helper.getPartClassName('main')
+                    mainClass: pager.helper.getPartClassName('main'),
+                    skin: pager.skin
                 }
             );
         }
