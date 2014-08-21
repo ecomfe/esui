@@ -138,11 +138,12 @@ define(
          */
         function syncCheckedState(element) {
             var label = element.parentNode;
-            var method = 'removeClasses';
             if (element.checked === true) {
-                method = 'addClasses';
+                lib.addClasses(label, this.helper.getPartClasses('item-wrapper-checked'));
             }
-            lib[method](label, this.helper.getPartClasses('wrapper-checked'));
+            else {
+                lib.removeClasses(label, this.helper.getPartClasses('item-wrapper-checked'));
+            }
         }
 
         /**
@@ -151,12 +152,12 @@ define(
          * @ignore
          */
         function syncValue() {
-            var group = this;
             u.each(
                 this.getBoxElements(),
                 function (element) {
-                    syncCheckedState.call(group, element);
-                }
+                    syncCheckedState.call(this, element);
+                },
+                this
             );
 
             var result = u.chain(this.getBoxElements())
@@ -201,9 +202,9 @@ define(
             var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
-                var wrapperClass = ' ' + group.helper.getPartClassName('wrapper-' + i);
+                var wrapperClass = ' ' + group.helper.getPartClassName('item-wrapper-' + i);
                 if (valueIndex[item.value]) {
-                    wrapperClass += ' ' + group.helper.getPartClassName('wrapper-checked');
+                    wrapperClass += ' ' + group.helper.getPartClassName('item-wrapper-checked');
                 }
                 var data = {
                     wrapperClass: classes.join(' ') + wrapperClass,
