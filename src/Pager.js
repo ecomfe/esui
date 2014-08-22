@@ -30,7 +30,7 @@ define(
                         '<span id="${labelId}" class="${labelClass}">',
                         '${labelText}</span>',
                         '<div data-ui="type:Select;childName:select;',
-                        'id:${selectId};width:40;"></div>',
+                        'id:${selectId};></div>',
                     '</div>',
                     '<ul id="${mainId}" class="${mainClass}"></ul>',
                 '</div>'
