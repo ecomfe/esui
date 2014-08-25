@@ -55,7 +55,8 @@ define(
             sortWidth: 9,
             fontSize: 13,
             colPadding: 8,
-            zIndex: 0
+            zIndex: 0,
+            overflowX: 'hidden'
         };
 
         /**
@@ -208,6 +209,17 @@ define(
                 return !!table.selectedIndexMap[index];
             }
             return false;
+        }
+
+        function getBodyWidth(table) {
+            var bodyWidth = 0;
+            var fields = table.realFields;
+            var minColsWidth = table.minColsWidth;
+            for (var i = 0, len = fields.length; i < len; i++) {
+                var field = fields[i];
+                bodyWidth += ( field.width || minColsWidth[i] );
+            }
+            return bodyWidth;
         }
 
         /**
@@ -435,8 +447,14 @@ define(
 
             table.colsWidth = [];
 
+            var bodyWidth = table.overflowX === 'auto'
+                                ? getBodyWidth(table)
+                                : table.realWidth;
+            bodyWidth = Math.max(bodyWidth, table.realWidth);
+            table.bodyWidth = bodyWidth;
+
             // 减去边框的宽度
-            var leftWidth = table.realWidth - 1;
+            var leftWidth = bodyWidth - 1;
 
             // 读取列宽并保存
             for (var i = 0, len = fields.length; i < len; i++) {
@@ -628,8 +646,8 @@ define(
             }
 
             head.style.display = '';
-            if (table.realWidth) {
-                head.style.width = table.realWidth + 'px';
+            if (table.bodyWidth) {
+                head.style.width = table.bodyWidth + 'px';
             }
 
             lib.g(headPanelId).innerHTML = getHeadHtml(table);
@@ -1257,10 +1275,10 @@ define(
             }
 
             var style = tBody.style;
-            style.overflowX = 'hidden';
+            style.overflowX = 'auto';
             style.overflowY = 'auto';
-            if (table.realWidth) {
-                style.width = table.realWidth + 'px';
+            if (table.bodyWidth) {
+                style.width = table.bodyWidth + 'px';
             }
 
             table.bodyPanel.disposeChildren();
@@ -1751,16 +1769,21 @@ define(
             table.realWidth = getWidth(table);
             var widthStr = table.realWidth + 'px';
 
-            // 设置主区域宽度
             if (table.realWidth) {
                 table.main.style.width = widthStr;
-                getBody(table).style.width = widthStr;
-                head && (head.style.width = widthStr);
+            }
+
+            // 重新绘制每一列
+            initColsWidth(table);               // 这一步也将重设bodyWidth
+            resetColumns(table);
+
+            var bodyWidthStr = table.bodyWidth + 'px';
+            // 设置主区域宽度
+            if (table.realWidth) {
+                getBody(table).style.width = bodyWidthStr;
+                head && (head.style.width = bodyWidthStr);
                 foot && (foot.style.width = widthStr);
             }
-            // 重新绘制每一列
-            initColsWidth(table);
-            resetColumns(table);
 
             if (table.followHead) {
                 resetFollowDomsWidth(table);
