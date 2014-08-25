@@ -35,7 +35,7 @@ define(
          * 获取表单数据，形成以`name`为键，`fetchValue`指定方法的返回值为值，
          * 如果有同`name`的多个控件，则值为数组
          *
-         * @param {InputControl[]} 输入控件集合
+         * @param {InputControl[]} inputs 输入控件集合
          * @param {Function} fetchValue 获取值的函数
          * @return {Object} 表单的数据
          * @ignore
@@ -76,7 +76,9 @@ define(
         InputCollection.prototype.getData = function () {
             return getData(
                 this,
-                function (control) { return control.getRawValue(); }
+                function (control) {
+                    return control.getRawValue();
+                }
             );
         };
 
@@ -411,7 +413,7 @@ define(
         }
 
         /**
-         * 根据名称及可选的类型获取输入控件
+         * 根据名称及可选的类型从dom树中获取输入控件
          *
          * 这个方法返回符合以下要求的控件：
          *
@@ -423,9 +425,9 @@ define(
          *
          * @param {string} [name] 指定过滤的控件的`name`属性，不提供则获取所有输入控件
          * @param {string} [type] 指定过滤的控件的类型，不提供则获取所有输入控件
-         * @return {InputCollection}
+         * @return {Control[]}
          */
-        Form.prototype.getInputControls = function (name, type) {
+        Form.prototype.getInputControlsFromDom = function (name, type) {
             var result = [];
 
             // 自上向下遍历整个子树，遇到任何输入控件就不再深入
@@ -459,6 +461,27 @@ define(
             }
 
             walk(this, this.main);
+
+            return result;
+        };
+
+        /**
+         * 根据名称及可选的类型获取输入控件
+         *
+         * 这个方法返回符合以下要求的控件：
+         *
+         * - 是{@link InputControl}
+         * - `name`和`type`符合要求
+         * - 主元素在当前控件的主元素下
+         * - 与当前的控件使用同一个{@link ViewContext}
+         * - 不作为另一个{@link InputControl}的子控件
+         *
+         * @param {string} [name] 指定过滤的控件的`name`属性，不提供则获取所有输入控件
+         * @param {string} [type] 指定过滤的控件的类型，不提供则获取所有输入控件
+         * @return {InputCollection}
+         */
+        Form.prototype.getInputControls = function (name, type) {
+            var result = this.getInputControlsFromDom(name, type);
 
             return new InputCollection(result);
         };
