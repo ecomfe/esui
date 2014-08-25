@@ -606,7 +606,6 @@ define(
              *    {Object=} positionOpt 层布局参数
              */
             attachTo: function (options) {
-                var me = this;
                 var showMode = options.showMode || 'over';
 
                 var targetElement;
@@ -615,7 +614,7 @@ define(
                 }
                 else if (options.targetControl) {
                     targetElement =
-                        getElementByControl(me, options.targetControl);
+                        getElementByControl(this, options.targetControl);
                 }
 
                 if (!targetElement) {
@@ -624,13 +623,13 @@ define(
 
                 switch (showMode) {
                     case 'auto':
-                        me.initAutoMode(targetElement, options);
+                        this.initAutoMode(options);
                         break;
                     case 'over':
-                        me.initOverMode(targetElement, options);
+                        this.initOverMode(options);
                         break;
                     case 'click':
-                        me.initClickMode(targetElement, options);
+                        this.initClickMode(options);
                         break;
                 }
             },
@@ -638,7 +637,6 @@ define(
             /**
              * 获取初始化时的事件方法集
              *
-             * @param {HtmlElement} 目标DOM
              * @param {Object=} options 绑定参数
              *    {string} showMode 展示触发模式
              *    {string} targetDOM 绑定元素的id
@@ -648,11 +646,25 @@ define(
              *    {Object=} positionOpt 层布局参数
              * @returns {Object}
              */
-            getInitHandlers: function (targetElement, options) {
+            getInitHandlers: function (options) {
                 var me = this;
+
+                var targetElement;
+                if (options.targetDOM) {
+                    targetElement = lib.g(options.targetDOM);
+                }
+                else if (options.targetControl) {
+                    targetElement =
+                        getElementByControl(this, options.targetControl);
+                }
+
+                if (!targetElement) {
+                    return;
+                }
 
                 // 处理方法集
                 var handler = {
+                    targetElement: targetElement,
                     // 浮层相关方法
                     layer: {
                         /**
@@ -749,7 +761,6 @@ define(
             /**
              * 在绑定提示层至目标DOM时，初始化自动展现（showMode为auto）的相应行为
              *
-             * @param {HtmlElement} 目标DOM
              * @param {Object=} options 绑定参数
              *    {string} showMode 展示触发模式
              *    {string} targetDOM 绑定元素的id
@@ -758,9 +769,8 @@ define(
              *    {number} showDuration 展示后自动隐藏的延迟时间
              *    {Object=} positionOpt 层布局参数
              */
-            initAutoMode: function (targetElement, options) {
-                var me = this;
-                var handler = me.getInitHandlers(targetElement, options);
+            initAutoMode: function (options) {
+                var handler = this.getInitHandlers(options);
 
                 // 直接展现浮层
                 handler.layer.show();
@@ -787,7 +797,6 @@ define(
             /**
              * 在绑定提示层至目标DOM时，初始化点击展现（showMode为click）的相应行为
              *
-             * @param {HtmlElement} 目标DOM
              * @param {Object=} options 绑定参数
              *    {string} showMode 展示触发模式
              *    {string} targetDOM 绑定元素的id
@@ -796,9 +805,8 @@ define(
              *    {number} showDuration 展示后自动隐藏的延迟时间
              *    {Object=} positionOpt 层布局参数
              */
-            initClickMode: function (targetElement, options) {
-                var me = this;
-                var handler = me.getInitHandlers(targetElement, options);
+            initClickMode: function (options) {
+                var handler = this.getInitHandlers(options);
 
                 // 鼠标点击在目标DOM上展现提示层
                 handler.layer.bind('mouseup');
@@ -816,16 +824,15 @@ define(
              *    {number} showDuration 展示后自动隐藏的延迟时间
              *    {Object=} positionOpt 层布局参数
              */
-            initOverMode: function (targetElement, options) {
-                var me = this;
-                var handler = me.getInitHandlers(targetElement, options);
+            initOverMode: function (options) {
+                var handler = this.getInitHandlers(options);
 
                 // 鼠标悬浮在目标DOM上展现提示层
                 handler.layer.bind('mouseover');
 
                 // 防止点击targetElement导致浮层关闭
                 helper.addDOMEvent(
-                    me, targetElement, 'mouseup', function (e) {
+                    this, handler.targetElement, 'mouseup', function (e) {
                         e.stopPropagation();
                     }
                 );
@@ -833,9 +840,10 @@ define(
                 // 如果是mouseover，还要配置main的mouseover事件
                 // 否则浮层会自动隐藏
                 helper.addDOMEvent(
-                    me, me.main, 'mouseover',
+                    this, this.main, 'mouseover',
                     lib.bind(
-                        me.show, me, targetElement, options.positionOpt
+                        this.show, this, handler.targetElement,
+                        options.positionOpt
                     )
                 );
             },
