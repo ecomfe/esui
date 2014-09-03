@@ -1,0 +1,84 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file TokenField样式
+  * @author maoquan
+  */
+
+@import "mixin.less";
+
+.@{ui-class-prefix}-tokenfield {
+    height: auto;
+    min-height: 34px;
+    padding-bottom: 0px;
+
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555;
+    vertical-align: middle;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    .border-radius(4px);
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,0.075));
+    .transition(border-color ease-in-out .15s,box-shadow ease-in-out .15s);
+
+    input {
+        border: 0;
+        background: none;
+        width: 60px;
+        min-width: 60px;
+        height: 20px;
+        padding: 0;
+        margin-bottom: 6px;
+        .box-shadow(none);
+
+        &:hover {
+            border: 0;
+        }
+    }
+
+    .@{ui-class-prefix}-tokenfield-token {
+        .box-sizing(border-box);
+        .border-radius(3px);
+        .inline-block;
+        border: 1px solid #d9d9d9;
+        background-color: #ededed;
+        white-space: nowrap;
+        margin: -1px 5px 5px 0;
+        height: 22px;
+        vertical-align: top;
+
+        .@{ui-class-prefix}-tokenfield-close {
+            font-family: Arial;
+            .inline-block;
+            line-height: 100%;
+            font-size: 1.1em;
+            line-height: 1.49em;
+            margin-left: 5px;
+            height: 100%;
+            vertical-align: top;
+            padding-right: 4px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .@{ui-class-prefix}-tokenfield-label {
+            .inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-left: 4px;
+            vertical-align: top;
+        }
+    }
+}
+
+.@{ui-class-prefix}-tokenfield-focus {
+    outline: 0;
+    border: 1px solid #6e8ab8;
+}
