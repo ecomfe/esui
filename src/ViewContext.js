@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 视图环境类 用于对控件视图的管理
  * @author DBear, errorrik, otakustay
@@ -82,7 +82,7 @@ define(
 
         /**
          * 获取唯一id
-         * 
+         *
          * @return {string}
          */
         function getGUID() {
@@ -91,7 +91,7 @@ define(
 
         /**
          * 视图环境对象池
-         * 
+         *
          * @type {Object}
          * @private
          */
@@ -108,7 +108,7 @@ define(
         function ViewContext(id) {
             /**
              * 视图环境控件集合
-             * 
+             *
              * @type {Object}
              * @private
              */
@@ -135,8 +135,8 @@ define(
 
             /**
              * 视图环境id
-             * 
-             * @type {string} 
+             *
+             * @type {string}
              * @readonly
              */
             this.id = id;
@@ -225,7 +225,16 @@ define(
         ViewContext.prototype.get = function (id) {
             return this.controls[id];
         };
-        
+
+        /**
+         * 获取viewContext内所有控件
+         *
+         * @return {Control[]} viewContext内所有控件
+         */
+        ViewContext.prototype.getControls = function () {
+            return this.controls;
+        };
+
         var SafeWrapper = require('./SafeWrapper');
 
         /**
@@ -288,7 +297,7 @@ define(
         };
 
         /**
-         * 销毁视图环境 
+         * 销毁视图环境
          */
         ViewContext.prototype.dispose = function () {
             this.clean();
