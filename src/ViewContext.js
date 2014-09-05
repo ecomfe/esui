@@ -232,7 +232,7 @@ define(
          * @return {Control[]} viewContext内所有控件
          */
         ViewContext.prototype.getControls = function () {
-            return this.controls;
+            return require('./lib').extend({}, this.controls);
         };
 
         var SafeWrapper = require('./SafeWrapper');
