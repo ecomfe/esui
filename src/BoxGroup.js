@@ -132,11 +132,34 @@ define(
         };
 
         /**
+         * 同步选择状态
+         *
+         * @ignore
+         */
+        function syncCheckedState(element) {
+            var label = element.parentNode;
+            if (element.checked === true) {
+                lib.addClasses(label, this.helper.getPartClasses('wrapper-checked'));
+            }
+            else {
+                lib.removeClasses(label, this.helper.getPartClasses('wrapper-checked'));
+            }
+        }
+
+        /**
          * 同步值
          *
          * @ignore
          */
         function syncValue() {
+            u.each(
+                this.getBoxElements(),
+                function (element) {
+                    syncCheckedState.call(this, element);
+                },
+                this
+            );
+
             var result = u.chain(this.getBoxElements())
                 .where({ checked: true })
                 .pluck('value')
@@ -148,9 +171,8 @@ define(
 
         var itemTemplate = [
             '<label title="${title}" class="${wrapperClass}">',
-                '<input type="${type}" name="${name}" id="${id}"'
-                    + ' title="${title}" value="${value}"${checked} />',
-                '<span>${title}</span>',
+            '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
+            '    <span>${title}</span>',
             '</label>'
         ];
         itemTemplate = itemTemplate.join('');
@@ -180,8 +202,12 @@ define(
             var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
+                var wrapperClass = ' ' + group.helper.getPartClassName('wrapper-' + i);
+                if (valueIndex[item.value]) {
+                    wrapperClass += ' ' + group.helper.getPartClassName('wrapper-checked');
+                }
                 var data = {
-                    wrapperClass: classes.join(' '),
+                    wrapperClass: classes.join(' ') + wrapperClass,
                     id: group.helper.getId('box-' + i),
                     type: group.boxType,
                     name: name,
@@ -295,6 +321,7 @@ define(
                         group.getBoxElements(),
                         function (box) {
                             box.checked = map.hasOwnProperty(box.value);
+                            syncCheckedState.call(group, box);
                         }
                     );
                 }
