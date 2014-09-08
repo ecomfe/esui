@@ -297,6 +297,7 @@ define(
                 + '<div class="${frameClass}">'
                 +   '<div class="${labelClass}">'
                 +     '<h3>${labelTitle}</h3>'
+                +     '<span id="${labelId}"></span>'
                 +     endlessCheckDOM
                 +   '</div>'
                 +   '<div class="${calClass}">'
@@ -310,6 +311,7 @@ define(
                 labelClass: calendar.helper.getPartClassName('label'),
                 labelTitle: type == 'begin' ? '开始日期' : '结束日期',
                 titleId: calendar.helper.getId(type + 'Label'),
+                labelId: calendar.helper.getId(type + '-label'),
                 calClass: calendar.helper.getPartClassName(type + '-cal'),
                 calName: type + 'Cal'
             });
@@ -343,6 +345,8 @@ define(
                     'shortcut-disabled', shortCutItems
                 );
             }
+            // 更新结束日历的日期文字
+            updateLabel(calendar, 'end');
         }
 
         /**
@@ -460,6 +464,8 @@ define(
             if (!monthView) {
                 return;
             }
+            // 设置日历中的日期文字
+            updateLabel(calendar, type);
             monthView.setProperties({
                 rawValue: value,
                 range: calendar.range
@@ -469,6 +475,25 @@ define(
                     'change',
                     u.bind(updateView, calendar, monthView, type)
                 );
+            }
+        }
+
+        /**
+         * 更新显示的日期文字
+         *
+         * @inner
+         * @param {RangeCalendar} calendar RangeCalendar控件实例
+         * @param {string} type 日历类型，'begin'|'end'
+         */
+        function updateLabel(calendar, type) {
+            var label = calendar.helper.getPart(type + '-label');
+            // 若为无限日历，则日期文字置空
+            if (calendar.isEndless && type === 'end') {
+                label.innerHTML = '';
+            } else {
+                var monthView = calendar.getChild(type + 'Cal');
+                var value = monthView.getValue();
+                label.innerHTML = ':' + value;
             }
         }
 
@@ -517,6 +542,8 @@ define(
             // 更新shortcut
             var selectedIndex = getSelectedIndex(this, this.view);
             paintMiniCal(this, selectedIndex);
+            // 更新日历中的日期文字
+            updateLabel(this, type);
         }
 
         /**
