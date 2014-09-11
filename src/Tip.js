@@ -69,6 +69,16 @@ define(
                 showMode: 'over',
 
                 /**
+                 * @property {string} isHideOnOut
+                 *
+                 * 指定当鼠标移出Tip控件以及Tip浮层后，是否自动隐藏浮层。
+                 * 为了方便从DOM生成，此属性在初始化时如果为字符串`"false"`，
+                 * 将被认为是布尔值`false`处理。
+                 * 只有当showMode是over时才生效。
+                 */
+                isHideOnOut: false,
+
+                /**
                  * @property {number} delayTime
                  *
                  * 指定信息浮层的显示的延迟时间，以毫秒为单位，
@@ -86,6 +96,10 @@ define(
             };
             if (options.arrow === 'false') {
                 options.arrow = false;
+            }
+
+            if (options.isHideOnOut === 'false') {
+                options.isHideOnOut = false;
             }
 
             extractDOMProperties(this.main, properties);
@@ -140,6 +154,7 @@ define(
 
             var attachOptions = {
                 showMode: this.showMode,
+                isHideOnOut: this.isHideOnOut,
                 delayTime: +this.delayTime,
                 showDuration: +this.showDuration,
                 targetControl: this,
