@@ -89,7 +89,8 @@ define(
                             var tab = children[i];
                             var config = {
                                 title: lib.getText(tab),
-                                panel: tab.getAttribute('data-for')
+                                panel: tab.getAttribute('data-for'),
+                                classes: tab.className && tab.className.split(/\s+/)
                             };
                             properties.tabs.push(config);
                         }
@@ -230,6 +231,10 @@ define(
             var element = document.createElement('li');
 
             tab.helper.addPartClasses('item', element);
+
+            if (config.classes) {
+                lib.addClasses(element, config.classes);
+            }
 
             if (isActive) {
                 tab.helper.addPartClasses('item-active', element);
