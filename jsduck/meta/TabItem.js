@@ -20,4 +20,11 @@ function TabItem() {
      * 显示和隐藏使用简单的`display`样式控制
      */
     this.panel;
+
+    /**
+     * @property {string[]} [classes]
+     *
+     * 导航标签样式，通过此属性可为标签设置个性化样式
+     */
+    this.classes;
 }
