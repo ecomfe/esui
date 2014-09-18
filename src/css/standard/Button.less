@@ -8,44 +8,52 @@
 /**
  * 基础按钮样式
  */
-@import "./mixin.less";
 @import "./variable.less";
+@import "../mixin/util.less";
+@import "../mixin/Button.less";
 
-// normal
-@button-background: #6ccdc0;
-@button-color: #fff;
-
-// other status
-@button-background-hover: #73dacc;
-@button-background-active: #5fb4a8;
-@button-background-disabled: #9b9b9b;
-
-// normal
 .@{ui-class-prefix}-button {
-    .user-select();
-    .inline-block();
-    .box-sizing(content-box);
-    .middle-text(40px);
-    width: 100px - 10*2;
-    padding: 0 10px;
-    border: none;
-    text-align: center;
-    background: @button-background;
-    color: #fff;
-    font-size: 14px;
-    font-family: "Heiti SC", sans-serif;
-    cursor: pointer;
-    overflow: hidden;
-    outline: none;
+    .button();
+}
 
-    vertical-align: top;
+.@{ui-class-prefix}-button-disabled {
+    .button-disabled();
+}
 
-    &:after {
-        content: '.';
-        visibility: hidden;
-        display: inline-block;
-        width: 0;
-    }
+.@{ui-class-prefix}-button-xlarge {
+    .button-xlarge();
+}
+
+.@{ui-class-prefix}-button-large {
+    .button-large();
+}
+
+.@{ui-class-prefix}-button-small {
+    .button-small();
+}
+
+.@{ui-class-prefix}-button-xsmall {
+    .button-xsmall();
+}
+
+.@{ui-class-prefix}-button-icon {
+    .button-icon();
+}
+
+.@{ui-class-prefix}-button-pure-icon {
+    .button-pure-icon();
+}
+
+.@{ui-class-prefix}-button-icon-suffix {
+    .button-icon-suffix();
+}
+
+.@{ui-class-prefix}-button-adaptive {
+    .button-adaptive();
+}
+
+.@{ui-class-prefix}-button-full {
+    .button-full();
 }
 
 button.@{ui-class-prefix}-button {
@@ -53,91 +61,6 @@ button.@{ui-class-prefix}-button {
     // 所以这里做下兼容
     *height: 40px;
     *width: 80px;
-}
-
-// statuses
-.@{ui-class-prefix}-button:hover {
-    background: @button-background-hover;
-}
-
-.@{ui-class-prefix}-button:active {
-    background: @button-background-active;
-}
-
-.@{ui-class-prefix}-button-disabled {
-    background: @button-background-disabled;
-
-    &:hover,
-    &:active {
-        background: @button-background-disabled;
-    }
-}
-
-// sizes
-.@{ui-class-prefix}-button-xlarge {
-    .middle-text(50px);
-    width: 150px - 10*2;
-    font-size: 16px;
-}
-
-.@{ui-class-prefix}-button-large {
-    .middle-text(45px);
-    width: 120px - 10*2;
-}
-
-.@{ui-class-prefix}-button-small {
-    .middle-text(35px);
-    width: 80px - 10*2;
-}
-
-.@{ui-class-prefix}-button-xsmall {
-    .middle-text(30px);
-    width: 80px - 10*2;
-    font-size: 12px;
-}
-
-// with icon
-// todo: 和 ue 确认 icon 尺寸
-.@{ui-class-prefix}-button-icon,
-.@{ui-class-prefix}-button-pure-icon {
-    &:before {
-        content: '';
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        margin-right: 10px;
-        overflow: hidden;
-        vertical-align: middle;
-    }
-}
-
-.@{ui-class-prefix}-button-icon-suffix {
-    &:after {
-        content: '';
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        margin-left: 10px;
-        margin-right: 0;
-        overflow: hidden;
-        vertical-align: middle;
-        visibility: visible;
-    }
-}
-
-.@{ui-class-prefix}-button-pure-icon:before {
-    margin-right: 0;
-}
-
-// 自适应
-.@{ui-class-prefix}-button-adaptive {
-    width: auto;
-}
-
-// 全宽
-.@{ui-class-prefix}-button-full {
-    display: block;
-    width: auto;
 }
 
 esui-button {

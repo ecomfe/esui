@@ -1,0 +1,116 @@
+@import "./util.less";
+@import "../standard/variable.less";
+
+.button() {
+    .user-select();
+    .inline-block();
+    .box-sizing(content-box);
+    .middle-text(40px);
+    width: 100px - 10*2;
+    padding: 0 10px;
+    border: none;
+    text-align: center;
+    background: @button-background;
+    color: #fff;
+    font-size: 14px;
+    font-family: "Heiti SC", sans-serif;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+
+    vertical-align: top;
+
+    &:after {
+        content: '.';
+        visibility: hidden;
+        display: inline-block;
+        width: 0;
+    }
+
+    // statuses
+    &:hover {
+        background: @button-background-hover;
+    }
+
+    &:active {
+        background: @button-background-active;
+    }
+}
+
+.button-disabled() {
+    background: @button-background-disabled;
+
+    &:hover,
+    &:active {
+        background: @button-background-disabled;
+    }
+}
+
+// size
+.button-xlarge() {
+    .middle-text(50px);
+    width: 150px - 10*2;
+    font-size: 16px;
+}
+
+.button-large() {
+    .middle-text(45px);
+    width: 120px - 10*2;
+}
+
+.button-small() {
+    .middle-text(35px);
+    width: 80px - 10*2;
+}
+
+.button-xsmall() {
+    .middle-text(30px);
+    width: 80px - 10*2;
+    font-size: 12px;
+}
+
+// with icon
+// todo: 和 ue 确认 icon 尺寸
+.button-icon() {
+    &:before {
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+        overflow: hidden;
+        vertical-align: middle;
+    }
+}
+
+.button-pure-icon() {
+    .button-icon();
+    &:before {
+        margin-right: 0;
+    }
+}
+
+.button-icon-suffix() {
+    &:after {
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-left: 10px;
+        margin-right: 0;
+        overflow: hidden;
+        vertical-align: middle;
+        visibility: visible;
+    }
+}
+
+// 自适应
+.button-adaptive() {
+    width: auto;
+}
+
+// 全宽
+.button-full() {
+    display: block;
+    width: auto;
+}
