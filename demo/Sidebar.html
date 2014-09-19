@@ -3,43 +3,16 @@
     <head>
         <meta charset="UTF-8" />
         <title>Sidebar - ESUI Demo</title>
-        <script src="loader/esl.js"></script>
-        <script>
-            require.config({
-                'baseUrl': '../src',
-                'paths': {},
-                'packages': [
-                    {
-                        'name': 'mini-event',
-                        'location': '../dep/mini-event/1.0.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'underscore',
-                        'location': '../dep/underscore/1.5.2/src',
-                        'main': 'underscore'
-                    },
-                    {
-                        'name': 'moment',
-                        'location': '../dep/moment/2.0.1/src',
-                        'main': 'moment'
-                    },
-                    {
-                        'name': 'etpl',
-                        'location': '../dep/etpl/2.1.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'esui',
-                        'location': '../src',
-                        'main': 'main'
-                    }
-                ]
-            });
-        </script>
+        <script src="assets/loader/esl.js"></script>
         <script src="../src/customShim.js"></script>
-        <script src="jquery-1.9.1.min.js"></script>
-        <link rel="stylesheet" href="demo.css" />
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/demo.js"></script>
+        <script src="assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="assets/prism.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
         <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
@@ -55,11 +28,13 @@
                         <div data-ui-type="Tree" data-ui-id="testTree"></div>
                     </div>
                 </esui-sidebar>
-                <div id="neighbor" style="height:900px;background:#f7f7f7;border:1px solid #999;padding:10px;margin-top:10px" class="ui-sidebar-neighbor-hide">main</div>
+                <div id="neighbor" style="height:900px;background:#f7f7f7;border:1px solid #999;padding:10px;margin-top:10px" class="ui-sidebar-neighbor-hide">
+                    <ul id="navigator">
+                    </ul>
+                </div>
             </div>
         </div>
     <script>
-
         require(
             [
                 'esui',

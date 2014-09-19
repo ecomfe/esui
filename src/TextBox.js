@@ -92,7 +92,19 @@ define(
                  *
                  * 指定文本框获得焦点时是否自动全选
                  */
-                autoSelect: false
+                autoSelect: false,
+                /**
+                 * @property {string} [icon=null]
+                 *
+                 * 指定文本框的图标选择器名称
+                 */
+                icon: null,
+                /**
+                 * @property {string} [iconPosition=null]
+                 *
+                 * 指定文本框的图标位置选择器名称
+                 */
+                iconPosition: null
             };
             u.extend(properties, TextBox.defaultProperties);
 
@@ -319,6 +331,18 @@ define(
                     : ' />';
 
                 this.main.innerHTML = html;
+            }
+
+            var iconPos = this.iconPosition;
+            var icon = this.icon;
+            if (icon) {
+                var iconElement = document.createElement('span');
+                iconElement.className = icon;
+                this.main.appendChild(iconElement);
+                lib.addClass(this.main, iconPos);
+            }
+            if (iconPos) {
+                lib.addClass(this.main, iconPos);
             }
 
             if (!supportPlaceholder) {

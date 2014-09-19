@@ -3,71 +3,60 @@
     <head>
         <meta charset="UTF-8" />
         <title>Toast - ESUI Demo</title>
-        <script src="loader/esl.js"></script>
-        <script>
-            require.config({
-                'baseUrl': '../src',
-                'paths': {},
-                'packages': [
-                    {
-                        'name': 'mini-event',
-                        'location': '../dep/mini-event/1.0.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'underscore',
-                        'location': '../dep/underscore/1.5.2/src',
-                        'main': 'underscore'
-                    },
-                    {
-                        'name': 'moment',
-                        'location': '../dep/moment/2.0.1/src',
-                        'main': 'moment'
-                    },
-                    {
-                        'name': 'etpl',
-                        'location': '../dep/etpl/2.1.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'esui',
-                        'location': '../src',
-                        'main': 'main'
-                    }
-                ]
-            });
-        </script>
+        <script src="assets/loader/esl.js"></script>
         <script src="../src/customShim.js"></script>
-        <script src="jquery-1.9.1.min.js"></script>
-        <link rel="stylesheet" href="demo.css" />
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/demo.js"></script>
+        <script src="assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="assets/prism.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
         <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
-        <header>Toast</header>
-        <div class="container">
-            <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
-                data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
-            <div>
-                <button id="op-show">show</button>
-            </div>
-            <div>
-                <button id="op-info">info</button>
-            </div>
-            <div>
-                <button id="op-alert">alert</button>
-            </div>
-            <div>
-                <button id="op-success">success</button>
-            </div>
-            <div>
-                <button id="op-error">error</button>
-            </div>
-            <div>
-                <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
-                    data-ui-hint-type="suffix"/>
-                <button id="op-time">time</button>
+        <h1>Toast</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Buttons</h2>
+                <section class="intro">
+                    <p>基本Button。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
+                            data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
+                        <div>
+                            <button id="op-show">show</button>
+                        </div>
+                        <div>
+                            <button id="op-info">info</button>
+                        </div>
+                        <div>
+                            <button id="op-alert">alert</button>
+                        </div>
+                        <div>
+                            <button id="op-success">success</button>
+                        </div>
+                        <div>
+                            <button id="op-error">error</button>
+                        </div>
+                        <div>
+                            <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
+                                data-ui-hint-type="suffix"/>
+                            <button id="op-time">time</button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
+
         <script>
         require(
             [

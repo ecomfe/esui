@@ -3,64 +3,50 @@
     <head>
         <meta charset="UTF-8" />
         <title>schedule - ESUI Demo</title>
-        <script src="loader/esl.js"></script>
-        <script>
-            require.config({
-                'baseUrl': '../src',
-                'paths': {},
-                'packages': [
-                    {
-                        'name': 'mini-event',
-                        'location': '../dep/mini-event/1.0.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'underscore',
-                        'location': '../dep/underscore/1.5.2/src',
-                        'main': 'underscore'
-                    },
-                    {
-                        'name': 'moment',
-                        'location': '../dep/moment/2.0.1/src',
-                        'main': 'moment'
-                    },
-                    {
-                        'name': 'etpl',
-                        'location': '../dep/etpl/2.1.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'esui',
-                        'location': '../src',
-                        'main': 'main'
-                    }
-                ]
-            });
-        </script>
+        <script src="assets/loader/esl.js"></script>
         <script src="../src/customShim.js"></script>
-        <script src="jquery-1.9.1.min.js"></script>
-        <link rel="stylesheet" href="demo.css" />
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/demo.js"></script>
+        <script src="assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="assets/prism.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
         <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
-        <header>schedule</header>
-        <div class="container">
-            <h3>普通</h3>
-            <div style="width:750px;">
-                <div style="margin:10px;"><strong>日程投放控件</strong></div>
-                <esui-schedule name="launchMode" data-ui="id:mySchedule"></esui-schedule>
+        <h1>schedule</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>schedule</h2>
+                <section class="intro">
+                    <p>schedule。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <div style="width:750px;">
+                            <div style="margin:10px;"><strong>日程投放控件</strong></div>
+                            <esui-schedule name="launchMode" data-ui="id:mySchedule"></esui-schedule>
+                        </div>
+                        <button id='getRaw'> 获取raw值 </button>
+                        <button id='get'> 获取值 </button>
+                        <button id='set'> 赋值(setValue) </button>
+                        <button id='setRaw'> 赋值(setRawValue) </button>
+                        <button id='setD1'> disabled(1) </button>
+                        <button id='setD2'> disabled(0) </button>
+                        <button id='sel'> select([0,0], [6,23]) </button>
+                        <button id='unsel'> unselect([0,0],[6,23]) </button>
+                    </div>
+                </section>
             </div>
-            <button id='getRaw'> 获取raw值 </button>
-            <button id='get'> 获取值 </button>
-            <button id='set'> 赋值(setValue) </button>
-            <button id='setRaw'> 赋值(setRawValue) </button>
-            <button id='setD1'> disabled(1) </button>
-            <button id='setD2'> disabled(0) </button>
-            <button id='sel'> select([0,0], [6,23]) </button>
-            <button id='unsel'> unselect([0,0],[6,23]) </button>
         </div>
     <script>
-
         require(
             [
                 'esui',

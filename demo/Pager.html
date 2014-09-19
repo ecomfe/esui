@@ -3,52 +3,40 @@
     <head>
         <meta charset="utf-8" />
         <title>Pager - ESUI Demo</title>
-        <script src="loader/esl.js"></script>
-        <script>
-            require.config({
-                'baseUrl': '../src',
-                'paths': {},
-                'packages': [
-                    {
-                        'name': 'mini-event',
-                        'location': '../dep/mini-event/1.0.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'underscore',
-                        'location': '../dep/underscore/1.5.2/src',
-                        'main': 'underscore'
-                    },
-                    {
-                        'name': 'moment',
-                        'location': '../dep/moment/2.0.1/src',
-                        'main': 'moment'
-                    },
-                    {
-                        'name': 'etpl',
-                        'location': '../dep/etpl/2.1.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'esui',
-                        'location': '../src',
-                        'main': 'main'
-                    }
-                ]
-            });
-        </script>
+        <script src="assets/loader/esl.js"></script>
         <script src="../src/customShim.js"></script>
-        <script src="jquery-1.9.1.min.js"></script>
-        <link rel="stylesheet" href="demo.css" />
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/demo.js"></script>
+        <script src="assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="assets/prism.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
         <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
-        <header>Pager</header>
-        <div class="container">
-            <div data-ui="type:Pager;id:test;"></div>
-            <esui-pager data-ui-id="test1"></esui-pager>
+        <h1>Pager</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Pager</h2>
+                <section class="intro">
+                    <p>基本Pager。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <div data-ui="type:Pager;id:test;"></div>
+                        <esui-pager data-ui-id="test1"></esui-pager>
+                        <div id="message"></div>
+                    </div>
+                </section>
+            </div>
         </div>
-        <div id="message"></div>
         <script>
             var url = location.href;
             var params = url.split('?');
