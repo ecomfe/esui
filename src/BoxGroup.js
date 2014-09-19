@@ -87,7 +87,11 @@ define(
                     // 可能导致box.checked属性不符合预期,
                     // 所以这里采用getAttribute
                     // 参考：http://t.cn/zRTdrVR
-                    if (box.getAttribute('checked') !== null) {
+
+                    // 之前这里用了 getAttribute，在 ie8下，未设置 checked，返回的是空字符串，会导致逻辑问题
+                    // if (box.getAttribute('checked') !== null) {
+
+                    if (lib.hasAttribute(box, 'checked')) {
                         values.push(box.value);
                     }
                 }
@@ -137,10 +141,15 @@ define(
          * @ignore
          */
         function syncValue() {
+            var cls = this.helper.getPartClassName('selected');
             var result = u.chain(this.getBoxElements())
-                .where({ checked: true })
-                .pluck('value')
-                .value();
+                .filter(function (box) {
+                    if (box.checked) {
+                        lib.addClass(box.parentNode, cls);
+                        return true;
+                    }
+                    lib.removeClass(box.parentNode, cls);
+                }).pluck('value').value();
 
             this.rawValue = result;
             this.fire('change');
@@ -149,8 +158,8 @@ define(
         var itemTemplate = [
             '<label title="${title}" class="${wrapperClass}">',
                 '<input type="${type}" name="${name}" id="${id}"'
-                    + ' title="${title}" value="${value}"${checked} />',
-                '<span>${title}</span>',
+                + ' title="${title}" value="${value}"${checked} />',
+            '<span>${title}</span>',
             '</label>'
         ];
         itemTemplate = itemTemplate.join('');
@@ -180,8 +189,12 @@ define(
             var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
+                var wrapClass = classes.join(' ');
+                if (valueIndex[item.value]) {
+                    wrapClass += ' ' + group.helper.getPartClassName('selected');
+                }
                 var data = {
-                    wrapperClass: classes.join(' '),
+                    wrapperClass: wrapClass,
                     id: group.helper.getId('box-' + i),
                     type: group.boxType,
                     name: name,
