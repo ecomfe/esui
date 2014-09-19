@@ -7,6 +7,8 @@
  */
 @import "mixin.less";
 @import "variable.less";
+@import "./standard/Box.less";
+
 .@{ui-class-prefix}-checkbox,
 .@{ui-class-prefix}-radio,
 .@{ui-class-prefix}-boxgroup-checkbox,
@@ -25,19 +27,13 @@
     }
 }
 
-.@{ui-class-prefix}-boxgroup-horizontal label {
-    .inline-block ();
-    margin-right: .5em;
-}
-
 .@{ui-class-prefix}-boxgroup-vertical label {
     display: block;
 }
 
-
 /** 验证 */
 .@{ui-class-prefix}-checkbox-validity-label {
-    zoom:1;
+    zoom: 1;
     color: #CC0000;
     padding-left: 10px;
 }
