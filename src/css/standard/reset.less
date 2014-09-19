@@ -1,0 +1,73 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 重置样式
+ * @author DBear
+ */
+.@{ui-class-prefix}-ctrl {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+
+    table {
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    fieldset, iframe, img {
+        border: 0;
+    }
+
+    a img {
+        display: block;
+    }
+
+    ol, ul, li {
+        list-style: none;
+    }
+
+    address, caption, cite, code, dfn, em, strong, th, var, i {
+        font-style: normal;
+        font-weight: normal;
+    }
+}
+
+table {
+    &.@{ui-class-prefix}-ctrl {
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+}
+
+fieldset, iframe, img {
+    &.@{ui-class-prefix}-ctrl {
+        border: 0;
+    }
+}
+
+a img {
+    &.@{ui-class-prefix}-ctrl {
+        display: block;
+    }
+}
+
+li {
+    &.@{ui-class-prefix}-ctrl {
+        list-style: none;
+    }
+}
+
+address, caption, cite, code, dfn, em, strong, th, var, i {
+    &.@{ui-class-prefix}-ctrl {
+        font-style: normal;
+    }
+}
+
+esui- {
+    &calendar, &crumb, &dialog, &label, &month-view, &pager, &panel, &range-calendar,
+    &region, &rich-calendar, &schedule, &search-box, &sidebar, &select, &tab, &table,
+    &text-box, &text-line, &tip, &tip-layer, &tree, &wizard {
+        display: block;
+    }
+}
