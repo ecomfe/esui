@@ -681,13 +681,14 @@ define(
          * 取消一个节点的选中状态
          *
          * @param {string} id 节点id
+         * @param {boolean} [silent=false] 是否禁止触发事件
          * @fires unselectnode
          */
-        Tree.prototype.unselectNode = function (id) {
+        Tree.prototype.unselectNode = function (id, silent) {
             unselectNode(
                 this,
                 id,
-                { force: true, silent: false, modifyDOM: true }
+                { force: true, silent: silent, modifyDOM: true }
             );
         };
 
