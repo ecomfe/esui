@@ -139,7 +139,7 @@ define(
         function syncCheckedState(element) {
             var label = element.parentNode;
             var checkedClass = this.helper.getPartClasses('wrapper-checked');
-            if (element.checked === true) {
+            if (element.checked) {
                 lib.addClasses(label, checkedClass);
             }
             else {
@@ -153,14 +153,10 @@ define(
          * @ignore
          */
         function syncValue() {
-            var group = this;
-            u.each(
-                this.getBoxElements(),
-                function (element) {
-                    syncCheckedState.call(group, element);
-                }
-            );
+            // 同步样式
+            u.each(this.getBoxElements(), syncCheckedState, this);
 
+            // 同步值
             var result = u.chain(this.getBoxElements())
                 .where({ checked: true })
                 .pluck('value')
