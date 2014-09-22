@@ -136,20 +136,39 @@ define(
         };
 
         /**
+         * 同步选择状态
+         *
+         * @ignore
+         */
+        function syncCheckedState(element) {
+            var label = element.parentNode;
+            var checkedClass = this.helper.getPartClasses('wrapper-checked');
+            if (element.checked === true) {
+                lib.addClasses(label, checkedClass);
+            }
+            else {
+                lib.removeClasses(label, checkedClass);
+            }
+        }
+
+        /**
          * 同步值
          *
          * @ignore
          */
         function syncValue() {
-            var cls = this.helper.getPartClassName('selected');
+            var group = this;
+            u.each(
+                this.getBoxElements(),
+                function (element) {
+                    syncCheckedState.call(group, element);
+                }
+            );
+
             var result = u.chain(this.getBoxElements())
-                .filter(function (box) {
-                    if (box.checked) {
-                        lib.addClass(box.parentNode, cls);
-                        return true;
-                    }
-                    lib.removeClass(box.parentNode, cls);
-                }).pluck('value').value();
+                .where({ checked: true })
+                .pluck('value')
+                .value();
 
             this.rawValue = result;
             this.fire('change');
@@ -157,9 +176,8 @@ define(
 
         var itemTemplate = [
             '<label title="${title}" class="${wrapperClass}">',
-                '<input type="${type}" name="${name}" id="${id}"'
-                + ' title="${title}" value="${value}"${checked} />',
-            '<span>${title}</span>',
+            '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
+            '    <span>${title}</span>',
             '</label>'
         ];
         itemTemplate = itemTemplate.join('');
@@ -189,12 +207,12 @@ define(
             var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
-                var wrapClass = classes.join(' ');
+                var wrapperClass = '';
                 if (valueIndex[item.value]) {
-                    wrapClass += ' ' + group.helper.getPartClassName('selected');
+                    wrapperClass += ' ' + group.helper.getPartClassName('wrapper-checked');
                 }
                 var data = {
-                    wrapperClass: wrapClass,
+                    wrapperClass: classes.join(' ') + wrapperClass,
                     id: group.helper.getId('box-' + i),
                     type: group.boxType,
                     name: name,
@@ -308,6 +326,7 @@ define(
                         group.getBoxElements(),
                         function (box) {
                             box.checked = map.hasOwnProperty(box.value);
+                            syncCheckedState.call(group, box);
                         }
                     );
                 }
