@@ -66,7 +66,7 @@
 // placeholder color
 @esf-input-placeholder-color: #ccc;
 
-.@{esf-class-prefix}textbox {
+.@{ui-class-prefix}-textbox {
     position: relative;
     display: inline-block;
     font-family: @esf-input-font-family;
@@ -89,34 +89,34 @@
     input {
         height: @esf-input-height;
     }
-    .@{esf-class-prefix}textbox-icon {
+    .@{ui-class-prefix}-textbox-icon {
         width: @esf-input-height + 0.5em;
         height: @esf-input-height;
         line-height: @esf-input-height;
         position: absolute;
         top: 0;
         text-align: center;
-        &.@{esf-class-prefix}textbox-left {
+        &.@{ui-class-prefix}-textbox-left {
             .border-left-radius(@esf-box-border-radius);
             left: 0;
         }
-        &.@{esf-class-prefix}textbox-right {
+        &.@{ui-class-prefix}-textbox-right {
             .border-right-radius(@esf-box-border-radius);
             right: 0;
         }
     }
-    .@{esf-class-prefix}textbox-left ~ input {
+    .@{ui-class-prefix}-textbox-left ~ input {
         padding-left: @esf-input-height + 0.2em;
     }
-    .@{esf-class-prefix}textbox-right ~ input {
+    .@{ui-class-prefix}-textbox-right ~ input {
         padding-right: @esf-input-height + 0.2em;
     }
-    &.@{esf-class-prefix}fluid {
+    &.@{ui-class-prefix}-fluid {
         display: block;
     }
 }
 
-.@{esf-class-prefix}textbox {
+.@{ui-class-prefix}-textbox {
     color: @esf-input-text-color;
     > input,
     > textarea {
@@ -127,7 +127,7 @@
         );
         .placeholder(@esf-input-placeholder-color);
     }
-    &.@{esf-class-prefix}active > input,
+    &.@{ui-class-prefix}-textbox-active > input,
     > input:active,
     > textarea:active {
         .esf-input-color-def(
@@ -136,7 +136,7 @@
             @esf-input-active-text-color
         );
     } 
-    &.@{esf-class-prefix}focus > input,
+    &.@{ui-class-prefix}-textbox-focus > input,
     > input:focus,
     > textarea:focus {
         .esf-input-color-def(
@@ -145,7 +145,7 @@
             @esf-input-focus-text-color
         );
     }
-    &.@{esf-class-prefix}disabled > input,
+    &.@{ui-class-prefix}-textbox-disabled > input,
     > input[disabled],
     > textarea[disabled] {
         .esf-input-color-def(
@@ -154,14 +154,14 @@
             @esf-input-disabled-text-color
         );
     }
-    &.@{esf-class-prefix}error > input {
+    &.@{ui-class-prefix}-textbox-error > input {
         .esf-input-color-def(
             @esf-input-error-border-color,
             @esf-input-error-background-color,
             @esf-input-error-text-color
         );
     }
-    &.@{esf-class-prefix}readonly > input,
+    &.@{ui-class-prefix}-textbox-readonly > input,
     > input[readonly],
     > textarea[readonly] {
         .esf-input-color-def(
@@ -170,23 +170,23 @@
             @esf-input-readonly-text-color
         );
     }
-    &.@{esf-class-prefix}success > input,
-    &.@{esf-class-prefix}success > textarea {
+    &.@{ui-class-prefix}-textbox-success > input,
+    &.@{ui-class-prefix}-textbox-success > textarea {
         .esf-input-color-def(
             @esf-input-success-border-color,
             @esf-input-success-background-color,
             @esf-input-success-text-color
         );
     }
-    &.@{esf-class-prefix}warning > input,
-    &.@{esf-class-prefix}warning > textarea {
+    &.@{ui-class-prefix}-textbox-warning > input,
+    &.@{ui-class-prefix}-textbox-warning > textarea {
         .esf-input-color-def(
             @esf-input-warning-border-color,
             @esf-input-warning-background-color,
             @esf-input-warning-text-color
         );
     }
-    .@{esf-class-prefix}textbox-placeholder {
+    .@{ui-class-prefix}-textbox-placeholder {
         color: @esf-input-placeholder-color;
     }
 }
@@ -203,8 +203,8 @@
 }
 
 // ESUI Custom
-.@{esf-class-prefix}textbox {
-    .@{esf-class-prefix}textbox-hint {
+.@{ui-class-prefix}-textbox {
+    .@{ui-class-prefix}-textbox-hint {
         display: inline-block;
         height: @esf-input-height;
         line-height: @esf-input-height;
@@ -216,7 +216,7 @@
         padding-right: 1em;
         vertical-align: middle;
     }
-    .@{esf-class-prefix}textbox-placeholder {
+    .@{ui-class-prefix}-textbox-placeholder {
         height: @esf-input-height;
         line-height: @esf-input-height;
         padding-left: @esf-input-padding;
@@ -228,13 +228,13 @@
     }
 }
 
-.@{esf-class-prefix}textbox-hint-suffix {
+.@{ui-class-prefix}-textbox-hint-suffix {
     .@{ui-class-prefix}-textbox-hint {
         border-left: 0;
     }
 }
 
-.@{esf-class-prefix}textbox-hint-prefix {
+.@{ui-class-prefix}-textbox-hint-prefix {
     .@{ui-class-prefix}-textbox-hint {
         border-right: 0;
     }
@@ -273,7 +273,7 @@
 
 .@{ui-class-prefix}-textbox-validity-label-notice,
 .@{ui-class-prefix}-textarea-validity-label-notice {
-    color: @esf-input-error-border-color;;
+    color: @esf-input-error-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-warn,
