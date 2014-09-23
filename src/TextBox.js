@@ -96,13 +96,13 @@ define(
                 /**
                  * @property {string} [icon=null]
                  *
-                 * 指定文本框的图标选择器名称
+                 * 指定文本框的图标选择器名称, 目前组件创建后不支持动态修改。
                  */
                 icon: null,
                 /**
                  * @property {string} [iconPosition='left']
                  *
-                 * 指定文本框的图标位置选择器名称
+                 * 指定文本框的图标位置选择器名称, 目前组件创建后不支持动态修改。
                  */
                 iconPosition: 'left'
             };
@@ -292,7 +292,7 @@ define(
          */
         function iconClick(e) {
             /**
-             * @event blur
+             * @event iconclick
              *
              * 图标被点击时触发
              *
@@ -359,7 +359,6 @@ define(
                 if (iconPos) {
                     this.helper.addPartClasses(iconPos, iconElement);
                 }
-                this.iconElement = iconElement;
             }
 
             if (!supportPlaceholder) {
@@ -388,9 +387,8 @@ define(
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
             this.helper.delegateDOMEvent(input, 'change');
-            var iconElement = this.iconElement;
-            if (iconElement) {
-                this.helper.addDOMEvent(iconElement, 'click', iconClick);
+            if (this.icon) {
+                this.helper.addDOMEvent(this.main.firstChild, 'click', iconClick);
             }
         };
 
