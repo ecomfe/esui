@@ -1,5 +1,5 @@
 require.config({
-    'baseUrl': '../../src',
+    'baseUrl': '../../../src',
     'paths': { 'css': '../demo/loader/css' },
     'packages': [
         {
@@ -9,7 +9,7 @@ require.config({
         },
         {
             'name': 'mini-event',
-            'location': '../dep/mini-event/1.0.0/src',
+            'location': '../dep/mini-event/1.0.2/src',
             'main': 'main'
         },
         {
@@ -19,12 +19,12 @@ require.config({
         },
         {
             'name': 'moment',
-            'location': '../dep/moment/2.0.1/src',
+            'location': '../dep/moment/2.7.0/src',
             'main': 'moment'
         },
         {
             'name': 'etpl',
-            'location': '../dep/etpl/2.1.0/src',
+            'location': '../dep/etpl/3.0.0/src',
             'main': 'main'
         }
     ]
