@@ -100,11 +100,11 @@ define(
                  */
                 icon: null,
                 /**
-                 * @property {string} [iconPosition=null]
+                 * @property {string} [iconPosition='left']
                  *
                  * 指定文本框的图标位置选择器名称
                  */
-                iconPosition: null
+                iconPosition: 'left'
             };
             u.extend(properties, TextBox.defaultProperties);
 
@@ -285,6 +285,22 @@ define(
         }
 
         /**
+         * 图标点击事件
+         *
+         * @param {Event} e DOM事件对象
+         * @ignore
+         */
+        function iconClick(e) {
+            /**
+             * @event blur
+             *
+             * 图标被点击时触发
+             *
+             * @member TextBox
+             */
+            this.fire('iconclick');
+        }
+        /**
          * 初始化DOM结构
          *
          * @protected
@@ -333,20 +349,21 @@ define(
                 this.main.innerHTML = html;
             }
 
-            var iconPos = this.iconPosition;
+            var input = lib.g(this.inputId);
             var icon = this.icon;
             if (icon) {
                 var iconElement = document.createElement('span');
-                iconElement.className = icon;
-                this.main.appendChild(iconElement);
-                lib.addClass(this.main, iconPos);
-            }
-            if (iconPos) {
-                lib.addClass(this.main, iconPos);
+                iconElement.className = icon + ' ' + this.helper.getPartClasses('icon');
+                lib.insertBefore(iconElement, input);
+                var iconPos = this.iconPosition;
+                if (iconPos) {
+                    this.helper.addPartClasses(iconPos, iconElement);
+                }
+                this.iconElement = iconElement;
             }
 
             if (!supportPlaceholder) {
-                var input = lib.g(this.inputId);
+                
                 var placeholder = document.createElement('label');
                 placeholder.id = this.helper.getId('placeholder');
                 lib.setAttribute(placeholder, 'for', input.id);
@@ -371,6 +388,10 @@ define(
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
             this.helper.delegateDOMEvent(input, 'change');
+            var iconElement = this.iconElement;
+            if (iconElement) {
+                this.helper.addDOMEvent(iconElement, 'click', iconClick);
+            }
         };
 
         /**

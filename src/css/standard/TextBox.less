@@ -7,42 +7,64 @@
  */
 @import "variable.less";
 
-@padding-vertical: 2px;
-@padding-horizon: 4px;
-@border-width: 1px;
-
 // =========
 // Input
 // =========
-@esf-input-height: 2.4em; // keep the same height as button
-@esf-input-background-color: #FFF;
-@esf-input-border-color: #666;
-@esf-input-text-color: #333;
+
+// keep the same height as button
+@esf-input-height: 2.4em;
+@esf-input-font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "微软雅黑", SimSun, "宋体", STXihei, "华文细黑", sans-serif;
 @esf-input-text-size: 14px;
-@esf-input-placeholder-color: #ccc;
 
 // padding
 @esf-input-padding: 0.65em;
 
+// normal
+@esf-input-border-color: #666;
+@esf-input-background-color: #FFF;
+@esf-input-text-color: #333;
+
 // active state
-@esf-input-active-border-color: #6ccdc0;
+@esf-input-active-border-color: #6CCDC0;
 @esf-input-active-background-color: #FFF;
+@esf-input-active-text-color: #333;
+
 // focus state
 @esf-input-focus-border-color: #6ccdc0;
 @esf-input-focus-background-color: #FFF;
+@esf-input-focus-text-color: #333;
+
 // error state
-@esf-input-error-border-color: #E7BEBE;
+@esf-input-error-border-color: #cc0000;
 @esf-input-error-background-color: #FFFAFA;
-@esf-input-error-text-color: #D95C5C;
+@esf-input-error-text-color: #333;
+
 // disabled state
-@esf-input-disabled-border-color: #f2f2f2;
-@esf-input-disabled-background-color: #f2f2f2;
+@esf-input-disabled-border-color: #797979;
+@esf-input-disabled-background-color: #F2F2F2;
+@esf-input-disabled-text-color: #999;
 
-// validation label
-@esf-input-validate-label-color: #CC0000;
+// readonly state
+@esf-input-readonly-border-color: #CCC;
+@esf-input-readonly-background-color: #FFF;
+@esf-input-readonly-text-color: #CCC;
 
-@esf-input-font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "微软雅黑", SimSun, "宋体", STXihei, "华文细黑", sans-serif;
+// success state
+@esf-input-success-border-color: #009900;
+@esf-input-success-background-color: #FFF;
+@esf-input-success-text-color: #333;
 
+// warning state
+@esf-input-warning-border-color: #ff9900;
+@esf-input-warning-background-color: #FFF;
+@esf-input-warning-text-color: #333;
+
+// esf input pre/postfix color
+@esf-input-hint-text-color: #333;
+@esf-input-hint-background-color: #f2f2f2;
+
+// placeholder color
+@esf-input-placeholder-color: #ccc;
 
 .@{esf-class-prefix}textbox {
     position: relative;
@@ -67,74 +89,129 @@
     input {
         height: @esf-input-height;
     }
-
-    &.@{esf-modifier-prefix}left {
-        input {
-            padding-left: @esf-input-height + 0.2em;
-        }
-        .@{esf-modifier-prefix}icon {
-            .border-left-radius(@esf-box-border-radius);
-            left: 0;
-        }
-    }
-    &.@{esf-modifier-prefix}right {
-        input {
-            padding-right: @esf-input-height + 0.2em;
-        }
-        .@{esf-modifier-prefix}icon {
-            .border-right-radius(@esf-box-border-radius);
-            right: 0;
-        }
-    }
-    .@{esf-modifier-prefix}icon {
+    .@{esf-class-prefix}textbox-icon {
         width: @esf-input-height + 0.5em;
         height: @esf-input-height;
         line-height: @esf-input-height;
         position: absolute;
         top: 0;
         text-align: center;
+        &.@{esf-class-prefix}textbox-left {
+            .border-left-radius(@esf-box-border-radius);
+            left: 0;
+        }
+        &.@{esf-class-prefix}textbox-right {
+            .border-right-radius(@esf-box-border-radius);
+            right: 0;
+        }
     }
-    &.@{esf-modifier-prefix}fluid {
+    .@{esf-class-prefix}textbox-left ~ input {
+        padding-left: @esf-input-height + 0.2em;
+    }
+    .@{esf-class-prefix}textbox-right ~ input {
+        padding-right: @esf-input-height + 0.2em;
+    }
+    &.@{esf-class-prefix}fluid {
         display: block;
     }
-    &.@{esf-modifier-prefix}action {
-        display: table;
-        input {
-            display: table-cell;
-            width: 100%;
-            &:first-child { 
-                border-right: none;
-                border-top-right-radius: 0px !important;
-                border-bottom-right-radius: 0px !important;
-            }
-            &:last-child {
-                border-left: none;
-                border-top-left-radius: 0px !important;
-                border-bottom-left-radius: 0px !important;
-            }
-        }
-        .@{esf-modifier-prefix}action-container {
-            display: table-cell !important;
-            width: 0.01%;
-            vertical-align: top;
-            white-space: nowrap;
-            &:last-child .@{esf-class-prefix}button {
-                border-top-left-radius: 0px !important;
-                border-bottom-left-radius: 0px !important;
-            }
-            &:first-child .@{esf-class-prefix}button {
-                border-top-right-radius: 0px !important;
-                border-bottom-right-radius: 0px !important; 
-            }
-        }
+}
+
+.@{esf-class-prefix}textbox {
+    color: @esf-input-text-color;
+    > input,
+    > textarea {
+        .esf-input-color-def(
+            @esf-input-border-color,
+            @esf-input-background-color,
+            @esf-input-text-color
+        );
+        .placeholder(@esf-input-placeholder-color);
     }
+    &.@{esf-class-prefix}active > input,
+    > input:active,
+    > textarea:active {
+        .esf-input-color-def(
+            @esf-input-active-border-color,
+            @esf-input-active-background-color,
+            @esf-input-active-text-color
+        );
+    } 
+    &.@{esf-class-prefix}focus > input,
+    > input:focus,
+    > textarea:focus {
+        .esf-input-color-def(
+            @esf-input-focus-border-color,
+            @esf-input-focus-background-color,
+            @esf-input-focus-text-color
+        );
+    }
+    &.@{esf-class-prefix}disabled > input,
+    > input[disabled],
+    > textarea[disabled] {
+        .esf-input-color-def(
+            @esf-input-disabled-border-color,
+            @esf-input-disabled-background-color,
+            @esf-input-disabled-text-color
+        );
+    }
+    &.@{esf-class-prefix}error > input {
+        .esf-input-color-def(
+            @esf-input-error-border-color,
+            @esf-input-error-background-color,
+            @esf-input-error-text-color
+        );
+    }
+    &.@{esf-class-prefix}readonly > input,
+    > input[readonly],
+    > textarea[readonly] {
+        .esf-input-color-def(
+            @esf-input-readonly-border-color,
+            @esf-input-readonly-background-color,
+            @esf-input-readonly-text-color
+        );
+    }
+    &.@{esf-class-prefix}success > input,
+    &.@{esf-class-prefix}success > textarea {
+        .esf-input-color-def(
+            @esf-input-success-border-color,
+            @esf-input-success-background-color,
+            @esf-input-success-text-color
+        );
+    }
+    &.@{esf-class-prefix}warning > input,
+    &.@{esf-class-prefix}warning > textarea {
+        .esf-input-color-def(
+            @esf-input-warning-border-color,
+            @esf-input-warning-background-color,
+            @esf-input-warning-text-color
+        );
+    }
+    .@{esf-class-prefix}textbox-placeholder {
+        color: @esf-input-placeholder-color;
+    }
+}
+
+// mixins
+.esf-input-color-def(
+    @border,
+    @background,
+    @text,
+) {
+    border: 1px solid @border;
+    background-color: @background;
+    color: @text;
+}
+
+// ESUI Custom
+.@{esf-class-prefix}textbox {
     .@{esf-class-prefix}textbox-hint {
         display: inline-block;
         height: @esf-input-height;
         line-height: @esf-input-height;
         box-sizing: border-box;
-        background-color: #f2f2f2;
-        border: 1px solid #a8adb6;
+        color: @esf-input-hint-text-color;
+        background-color: @esf-input-hint-background-color;
+        border: 1px solid @esf-input-border-color;
         padding-left: 1em;
         padding-right: 1em;
         vertical-align: middle;
@@ -149,21 +226,6 @@
         top: 0;
         box-sizing: border-box;
     }
-    .esf-input-variant(
-        @esf-input-text-color,
-        @esf-input-background-color,
-        @esf-input-border-color,
-        @esf-input-active-border-color,
-        @esf-input-active-background-color,
-        @esf-input-focus-border-color,
-        @esf-input-focus-background-color,
-        @esf-input-disabled-border-color,
-        @esf-input-disabled-background-color,
-        @esf-input-error-border-color,
-        @esf-input-error-background-color,
-        @esf-input-error-text-color,
-        @esf-input-placeholder-color
-    );
 }
 
 .@{esf-class-prefix}textbox-hint-suffix {
@@ -178,55 +240,11 @@
     }
 }
 
-.esf-input-variant(
-    @text-color,
-    @background-color,
-    @border-color,
-    @active-border-color,
-    @active-background-color,
-    @focus-border-color,
-    @focus-background-color,
-    @disabled-border-color,
-    @disabled-background-color,
-    @error-background-color,
-    @error-border-color,
-    @error-text-color,
-    @placeholder-color
-) {
-    color: @text-color;
-    .@{esf-class-prefix}textbox-placeholder {
-        color: @placeholder-color;
+.@{ui-class-prefix}-textbox-validity-invalid {
+    input, textarea {
+        border-color: @esf-input-error-border-color !important;
+        color: @esf-input-error-text-color !important;
     }
-    // states
-    > input, > textarea {
-        background-color: @background-color;
-        border: 1px solid @border-color;
-        .placeholder(@placeholder-color);
-    }
-    &.@{esf-modifier-prefix}active > input, > input:active {
-        border-color: @active-border-color;
-        background-color: @active-background-color;
-    } 
-    &.@{esf-modifier-prefix}focus > input, > input:focus {
-        border-color: @focus-border-color;
-        background-color: @focus-background-color;
-    }
-    &.@{esf-modifier-prefix}disabled > input, > input[disabled] {
-        background-color: @disabled-background-color;
-        border-color: @disabled-border-color;
-    }
-    &.@{esf-modifier-prefix}error > input {
-        background-color: @error-background-color;
-        border-color: @error-border-color;
-        color: @error-text-color;
-    }
-}
-
-.@{ui-class-prefix}-textbox-validity-invalid input,
-.@{ui-class-prefix}-textbox-validity-invalid textarea {
-    background-color: @esf-input-error-background-color !important;
-    border-color: @esf-input-error-border-color !important;
-    color: @esf-input-error-text-color !important;
 }
 
 .@{ui-class-prefix}-textbox-placeholder-hidden {
@@ -245,25 +263,25 @@
     }
 }
 
-/** 验证 */
+// 验证
 .@{ui-class-prefix}-textbox-validity-label,
 .@{ui-class-prefix}-textarea-validity-label {
     display:inline-block;
-    color: @esf-input-validate-label-color;
+    color: @esf-input-error-border-color;
     padding-left: 1em;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-notice,
 .@{ui-class-prefix}-textarea-validity-label-notice {
-    color: #FF0000;
+    color: @esf-input-error-border-color;;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-warn,
 .@{ui-class-prefix}-textarea-validity-label-warn {
-    color: red;
+    color: @esf-input-warning-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-invalid,
 .@{ui-class-prefix}-textarea-validity-label-invalid {
-    color: @esf-input-validate-label-color;
+    color: @esf-input-error-border-color;
 }

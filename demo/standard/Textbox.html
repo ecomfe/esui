@@ -177,7 +177,7 @@ textbox.on(
                         </div>
                     </div>
                     <div class="row">
-                       <label>不可用</label>
+                       <label>禁用</label>
                        <input disabled="disabled"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-disabled"
@@ -191,6 +191,33 @@ textbox.on(
                         data-ui-id="text-box-with-input-readonly"
                         data-ui-type="TextBox"
                         data-ui-mode="text" />
+                    </div>
+                    <div class="row">
+                       <label>成功</label>
+                       <div class="ui-success"
+                        placeholder="使用placeholder属性"
+                        data-ui-id="text-box-with-input-success"
+                        data-ui-type="TextBox"
+                        data-ui-mode="text">
+                       </div>
+                    </div>
+                    <div class="row">
+                       <label>警告</label>
+                       <div class="ui-warning"
+                        placeholder="使用placeholder属性"
+                        data-ui-id="text-box-with-input-warning"
+                        data-ui-type="TextBox"
+                        data-ui-mode="text">
+                       </div>
+                    </div>
+                    <div class="row">
+                       <label>焦点</label>
+                       <div class="ui-focus"
+                        placeholder="使用placeholder属性"
+                        data-ui-id="text-box-with-input-focus"
+                        data-ui-type="TextBox"
+                        data-ui-mode="text">
+                       </div>
                     </div>
                 </div>
             </section>
@@ -211,9 +238,7 @@ textbox.on(
                             data-ui-type="TextBox"
                             data-ui-mode="text"
                             data-ui-icon="icon icon-text"
-                            data-ui-icon-position="right"
-                            >
-                            <input />
+                            data-ui-icon-position="right">
                         </div>
                     </div>
                     <div class="row">
@@ -224,7 +249,6 @@ textbox.on(
                         data-ui-type="TextBox"
                         data-ui-mode="text"
                         data-ui-icon="icon icon-text"
-                        data-ui-icon-position="left"
                         />
                     </div>
                 </div>
@@ -240,6 +264,9 @@ textbox.on(
             function (ui) {
                 ui.init();
                 ui.get('text-box-with-invalid').showValidationMessage('invalid', '不能为空！');
+                ui.get('text-box-with-input-after').on('iconclick', function (e) {
+                    alert('hello');
+                });
                 ready();
             }
         );
