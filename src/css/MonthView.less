@@ -18,13 +18,17 @@
     background: none repeat scroll 0 0 #CCCED4;
     height: 27px;
     padding: 2px 5px;
+    font-size: 13px;
 
     table {width:200px;}
 
     /** 先前向后按钮 */
     .@{ui-class-prefix}-monthview-month-select,
     .@{ui-class-prefix}-monthview-year-select {
-        width: 30px;
+        width: 35px;
+    }
+    .@{ui-class-prefix}-monthview-month-select {
+        padding-right: 5px;
     }
 
     .@{ui-class-prefix}-monthview-month-forward,
@@ -43,7 +47,7 @@
 
     .@{ui-class-prefix}-monthview-month-forward {
         background-position: -20px -200px;
-        margin-left: 15px;
+        margin-left: -1px;
         &:active {
             background-position: -20px -200px;
         }

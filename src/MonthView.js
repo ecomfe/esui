@@ -85,24 +85,30 @@ define(
         function getMainHTML(monthView) {
             var tpl = [
                 '<div class="${headClass}"><table><tr>',
-                    '<td width="40" align="left">',
+                    '<td width="25" align="left">',
                         '<div class="${monthBackClass}"',
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthBack"',
                         ' data-ui-id="${monthBackId}"',
                         '></div>',
                     '</td>',
-                    '<td>',
+                    '<td width="55">',
                         '<div class="${yearSelectClass}"',
                         ' data-ui="type:Select;childName:yearSel;',
                         ' id:${yearSelId};"></div>',
                     '</td>',
-                    '<td>',
+                    '<td width="15">',
+                        '<div>年</div>',
+                    '</td>',
+                    '<td width="43">',
                         '<div class="${monthSelectClass}"',
                         ' data-ui="type:Select;childName:monthSel;',
                         ' id:${monthSelId};"></div>',
                     '</td>',
-                    '<td width="40" align="right">',
+                    '<td width="15">',
+                        '<div>月</div>',
+                    '</td>',
+                    '<td width="20" align="right">',
                         '<div class="${monthForClass}"',
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthForward"',
@@ -930,7 +936,7 @@ define(
             // 如果year选择的数据没改变，
             // 但可能还是需要重回日历，
             // 因此要手动触发year的change
-            if (lastYear === me.year) {
+            if (lastYear === String(me.year)) {
                 yearSelect.fire('change');
             }
 
