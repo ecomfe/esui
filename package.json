@@ -42,7 +42,8 @@
             "mini-event": "1.x",
             "underscore": "1.5.x",
             "moment": "2.x",
-            "etpl": ">=2.0.8"
+            "etpl": ">=2.0.8",
+            "est": "~1.3.0"
         }
     }
 }
