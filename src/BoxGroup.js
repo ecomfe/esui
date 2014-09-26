@@ -114,7 +114,13 @@ define(
             var properties = {
                 datasource: [],
                 orientation: 'horizontal',
-                boxType: 'radio'
+                boxType: 'radio',
+                /**
+                 * @property {string} [customLook='']
+                 *
+                 * 自定义外观selector
+                 */
+                customLook: ''
             };
             u.extend(properties, options);
 
@@ -171,10 +177,10 @@ define(
         }
 
         var itemTemplate = [
-            '<label title="${title}" class="${wrapperClass}">',
+            '<div title="${title}" class="${wrapperClass}">',
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
-            '    <span>${title}</span>',
-            '</label>'
+            '    <label for="${id}">${title}</label>',
+            '</div>'
         ];
         itemTemplate = itemTemplate.join('');
 
@@ -196,6 +202,11 @@ define(
                 group.helper.getPartClasses(boxType),
                 group.helper.getPartClasses('wrapper')
             );
+
+            var customLookCls = group.customLook;
+            if (customLookCls) {
+                classes.push(group.helper.getPartClasses(boxType + '-' + customLookCls));
+            }
 
             var valueIndex = lib.toDictionary(group.rawValue);
 

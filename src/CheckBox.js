@@ -51,7 +51,7 @@ define(
              * @override
              */
             createMain: function () {
-                return document.createElement('label');
+                return document.createElement('div');
             },
 
             /**
@@ -95,8 +95,24 @@ define(
              */
             initOptions: function (options) {
                 var properties = {
+                    /**
+                     * @property {string} [value='on']
+                     *
+                     * Checkbox的Value值
+                     */
                     value: this.main.value || 'on',
-                    checked: this.main.checked || false
+                    /**
+                     * @property {boolean} [checked=false]
+                     *
+                     * 是否check对钩
+                     */
+                    checked: this.main.checked || false,
+                    /**
+                     * @property {string} [customLook='']
+                     *
+                     * 自定义外观selector
+                     */
+                    customLook: ''
                 };
 
                 u.extend(properties, options);
@@ -149,8 +165,17 @@ define(
                     this.boxId = this.helper.getId('box');
                 }
 
+                var customLook = this.customLook;
+                // TODO: 测试是否支持checked选择器。
+                if (this.customLook) {
+                    this.helper.addPartClasses(customLook, this.main);
+                }
+
                 var html = '<input type="checkbox" name="${name}" id="${id}" />'
-                    + '<span id="${textId}"></span>';
+                    + '<label id="${textId}" for="${id}" class="'
+                    + this.helper.getPartClasses('box')
+                    + '"></label>';
+
                 this.main.innerHTML = lib.format(
                     html,
                     {
@@ -236,6 +261,16 @@ define(
                 lib.setAttribute(this.boxId, 'title', title);
             },
 
+            /**
+             * 更新checkbox状态
+             *
+             * @param {boolean} title 新的标签文本内容，未经HTML转义
+             * @protected
+             */
+            updateIndeterminate: function (indeterminate) {
+                this.helper.getPart('box').indeterminate = indeterminate;
+            },
+
 
             /**
              * 重渲染
@@ -277,6 +312,19 @@ define(
                     name: 'title',
                     paint: function (box, title) {
                         box.updateTitle(title);
+                    }
+                },
+                {
+                    /**
+                     * @property {boolean} indeterminate
+                     *
+                     * 设置不确定状态
+                     */
+                    name: 'indeterminate',
+                    paint: function (box, indeterminate) {
+                        if (indeterminate !== undefined) {
+                            box.updateIndeterminate(indeterminate);
+                        }
                     }
                 }
             ),
