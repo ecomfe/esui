@@ -26,14 +26,14 @@ define(
         function getMainHTML(pager) {
             var template = [
                 '<div id="${pagerWrapperId}" class="${pagerWrapperClass}">',
-                    '<div id="${selectWrapperId}" ',
-                    'class="${selectWrapperClass}">',
-                        '<span id="${labelId}" class="${labelClass}">',
-                        '${labelText}</span>',
-                        '<div data-ui="type:Select;childName:select;',
-                        'id:${selectPagerId};width:40;" class="${selectClass}"></div>',
-                    '</div>',
-                    '<ul id="${mainId}" class="${mainClass}"></ul>',
+                '<div id="${selectWrapperId}" ',
+                'class="${selectWrapperClass}">',
+                '<span id="${labelId}" class="${labelClass}">',
+                '${labelText}</span>',
+                '<div data-ui="type:Select;childName:select;',
+                'id:${selectPagerId};width:40;" class="${selectClass}"></div>',
+                '</div>',
+                '<ul id="${mainId}" class="${mainClass}"></ul>',
                 '</div>'
             ];
 
@@ -41,11 +41,9 @@ define(
                 template.join(''),
                 {
                     pagerWrapperId: pager.helper.getId('pager-wrapper'),
-                    pagerWrapperClass:
-                        pager.helper.getPartClasses(pager.layout)[0],
+                    pagerWrapperClass: pager.helper.getPartClasses(pager.layout)[0],
                     selectWrapperId: pager.helper.getId('select-wrapper'),
-                    selectWrapperClass:
-                        pager.helper.getPartClassName('select-wrapper'),
+                    selectWrapperClass: pager.helper.getPartClassName('select-wrapper'),
                     labelId: pager.helper.getId('label'),
                     labelClass: pager.helper.getPartClassName('label'),
                     labelText: '每页显示：',
@@ -151,6 +149,7 @@ define(
 
                 html.push(segment);
             }
+
             var isCompleteMode = pager.isCompleteMode;
             var page = pager.page;
             var backCount = pager.backCount;
@@ -160,14 +159,14 @@ define(
             // 数组html用于存储页码区域的元素代码
             var html = [];
             if (page > 1) {
-                if( isCompleteMode ){
+                if (isCompleteMode) {
                     //首页
                     var objFirst = getTplObj(
                         'item-extend ui-pager-item-first', 0, 'page-first', pager.firstText);
                     addSegmentToHTML(objFirst);
                 }
 
-            // 上一页
+                // 上一页
 
                 var obj = getTplObj(
                     'item-extend', page - 1, 'page-back', pager.backText);
@@ -198,7 +197,7 @@ define(
             var obj = getTplObj(
                 'item-current',
                 page,
-                'page-' + page,
+                    'page-' + page,
                 page
             );
             addSegmentToHTML(obj, plainTpl);
@@ -227,14 +226,14 @@ define(
                 var obj = getTplObj(
                     'item-extend', page + 1, 'page-forward', pager.forwardText);
                 addSegmentToHTML(obj);
-                 if(isCompleteMode){
+                if (isCompleteMode) {
                     //末页
                     var objLast = getTplObj(
                         'item-extend ui-pager-item-last', Math.ceil(pager.count / pager.pageSize), 'page-last', pager.lastText);
                     addSegmentToHTML(objLast);
                 }
             }
-                return html.join('');
+            return html.join('');
 
         }
 
@@ -317,11 +316,11 @@ define(
 
             if (this.helper.isPart(target, 'item')
                 || this.helper.isPart(target, 'item-extend')
-            ) {
+                ) {
                 if (target.id === backId) {
                     page--;
                 }
-                else if (target.id === lastId){
+                else if (target.id === lastId) {
                     page = Math.ceil(this.count / this.pageSize);
                 }
                 else if (target.id === forwardId) {
@@ -388,7 +387,7 @@ define(
              *
              * @member Pager
              */
-          this.fire('pagesizechange');
+            this.fire('pagesizechange');
         }
 
         /**
@@ -480,9 +479,9 @@ define(
                     page: 1,
                     backCount: 3,
                     forwardCount: 3,
-                    firstText:'首页',
-                    lastText:'末页',
-                    isCompleteMode:false,
+                    firstText: '首页',
+                    lastText: '末页',
+                    isCompleteMode: false,
                     backText: '上一页',
                     forwardText: '下一页',
                     urlTemplate: '',
@@ -544,7 +543,7 @@ define(
                     layer.addCustomClasses(layerClasses);
                     pager.fire('selectlayerrendered', { layer: layer });
                 }
-
+                //为了重写本控件引用的select控件的样式，增加新类
                 select.on(
                     'layerrendered',
                     lib.curry(addCustomClassesForSelectLayer, this, 'select')
@@ -565,7 +564,7 @@ define(
                 // `pageIndex`提供从0开始的页码，但是以`page`为准
                 if (properties.hasOwnProperty('pageIndex')
                     && !properties.hasOwnProperty('page')
-                ) {
+                    ) {
                     /**
                      * @property {number} pageIndex
                      *
@@ -668,95 +667,93 @@ define(
                 },
                 {
                     name: [
-                        /**
-                         * @property {string} [pageType="anchor"]
-                         *
-                         * 页码元素类型，可以为：
-                         *
-                         * - `plain`：页码为普通文本，点击后不跳转链接，
-                         * 仅触发{@link Pager#pagechange}事件
-                         * - `anchor`：页码为`<a>`元素，点击后直接跳转
-                         */
+                    /**
+                     * @property {string} [pageType="anchor"]
+                     *
+                     * 页码元素类型，可以为：
+                     *
+                     * - `plain`：页码为普通文本，点击后不跳转链接，
+                     * 仅触发{@link Pager#pagechange}事件
+                     * - `anchor`：页码为`<a>`元素，点击后直接跳转
+                     */
                         'pageType',
 
-                        /**
-                         * @property {number} [count=0]
-                         *
-                         * 总条目数量
-                         */
+                    /**
+                     * @property {number} [count=0]
+                     *
+                     * 总条目数量
+                     */
                         'count',
 
-                        /**
-                         * @property {number} pageSize
-                         *
-                         * 每页显示条目数量
-                         */
+                    /**
+                     * @property {number} pageSize
+                     *
+                     * 每页显示条目数量
+                     */
                         'pageSize',
 
-                        /**
-                         * @property {number} [page=1]
-                         *
-                         * 当前页码，以1为起始，即1表示第1页
-                         */
+                    /**
+                     * @property {number} [page=1]
+                     *
+                     * 当前页码，以1为起始，即1表示第1页
+                     */
                         'page',
 
-                        /**
-                         * @property {number} backCount
-                         *
-                         * 在当前页前面显示的页数
-                         *
-                         * 如{@link Pager#page}值为5，`backCount`为3，
-                         * 则显示`[2] [3] [4]  [5]`
-                         */
+                    /**
+                     * @property {number} backCount
+                     *
+                     * 在当前页前面显示的页数
+                     *
+                     * 如{@link Pager#page}值为5，`backCount`为3，
+                     * 则显示`[2] [3] [4]  [5]`
+                     */
                         'backCount',
 
-                        /**
-                         * @property {number} forwardCount
-                         *
-                         * 在当前页后面显示的页数
-                         *
-                         * 如{@link Pager#page}值为5，`forwardCount`为3，
-                         * 则显示`[5] [6] [7] [8]`
-                         */
+                    /**
+                     * @property {number} forwardCount
+                     *
+                     * 在当前页后面显示的页数
+                     *
+                     * 如{@link Pager#page}值为5，`forwardCount`为3，
+                     * 则显示`[5] [6] [7] [8]`
+                     */
                         'forwardCount',
 
-                        /**
-                         * @property {string} lastText
-                         *
-                         * “末页”元素的显示文字
-                         */
-                            'lastText',
-                        /**
-                         * @property {string} backText
-                         *
-                         * “下一页”元素的显示文字
-                         */
+                    /**
+                     * @property {string} lastText
+                     *
+                     * “末页”元素的显示文字
+                     */
+                        'lastText',
+                    /**
+                     * @property {string} backText
+                     *
+                     * “下一页”元素的显示文字
+                     */
                         'backText',
-                        /**
-                         * @property {boolen} isCompleteMode
-                         *
-                         * 是否完整模式,默认false，不显示“首页”与“末页”标签
-                         */
-                            'isCompleteMode',
-
-
-                        /**
-                         * @property {string} forwardText
-                         *
-                         * “上一页”元素的显示文字
-                         */
+                    /**
+                     * @property {boolen} isCompleteMode
+                     *
+                     * 是否完整模式,默认false，不显示“首页”与“末页”标签
+                     */
+                        'isCompleteMode',
+                    /**
+                     * @property {string} forwardText
+                     *
+                     * “上一页”元素的显示文字
+                     */
                         'forwardText',
 
-                        /**
-                         * @property {string} urlTemplate
-                         *
-                         * 用于生成链接地址的URL模板
-                         *
-                         * 模板中可以使用以下占位符：
-                         *
-                         * - `page`：当前页码
-                         * - `pageSize`：每页显示条目数
-                         */
+                    /**
+                     * @property {string} urlTemplate
+                     *
+                     * 用于生成链接地址的URL模板
+                     *
+                     * 模板中可以使用以下占位符：
+                     *
+                     * - `page`：当前页码
+                     * - `pageSize`：每页显示条目数
+                     */
                         'urlTemplate'
                     ],
                     paint: repaintPager

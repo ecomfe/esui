@@ -112,9 +112,6 @@ ol.@{ui-class-prefix}-select-layer-hidden {
   display: none;
 }
 
-/*.@{ui-class-prefix}-pager-select-hidden {
-  display: none;
-}*/
 .@{ui-class-prefix}-select-disabled,
 .@{ui-class-prefix}-select-read-only {
   color: #999;
@@ -155,9 +152,7 @@ ol.@{ui-class-prefix}-select-layer-hidden {
   margin: 0;
   padding: 0;
   .inline-block();
-}
 
-.@{ui-class-prefix}-pager-main {
   li {
     font-family: "Arial";
     margin-left: 8px;
@@ -189,13 +184,13 @@ ol.@{ui-class-prefix}-select-layer-hidden {
   .@{ui-class-prefix}-pager-item-omit {
     cursor: text;
   }
+  a,a:hover{
+    color: @pager-text-color;
+    text-decoration: none;
+    .inline-block();
+  }
 }
 
-.@{ui-class-prefix}-pager-main a, .@{ui-class-prefix}-pager-main a:hover {
-  color: @pager-text-color;
-  text-decoration: none;
-  .inline-block();
-}
 
 .@{ui-class-prefix}-pager-item-extend a, .@{ui-class-prefix}-pager-item-extend a:hover {
   color: #000;
