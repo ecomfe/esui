@@ -1,0 +1,97 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 输入日历样式
+ * @author dbear
+ */
+
+@import "./variable.less";
+@import "../mixin/util.less";
+
+
+@calendar-button-border-color: transparent;
+@calendar-button-border-color-hover: transparent;
+@calendar-button-border-color-disabled: transparent;
+@calendar-button-background-color: #ebebeb;
+@calendar-button-width: 110px;
+@calendar-button-height: 23px;
+@calendar-button-color: #333;
+@calendar-button-color-disabled: #999;
+
+
+@calendar-layer-background-color: #fff;
+
+.@{ui-class-prefix}-calendar {
+    width: @calendar-button-width;
+    height: @calendar-button-height;
+    line-height: @calendar-button-height;
+    border: 1px solid @calendar-button-border-color;
+    background-color: @calendar-button-background-color;
+    padding-left: 8px;
+    font-size: 12px;
+    .interactive-cursor ();
+    .user-select ();
+}
+
+.@{ui-class-prefix}-calendar-text {
+    padding-left: 3px;
+    width: 75px;
+    float: left;
+}
+
+.@{ui-class-prefix}-calendar:hover,
+.@{ui-class-prefix}-calendar:active {
+    border-color: @calendar-button-border-color-hover;
+}
+
+.@{ui-class-prefix}-calendar-arrow {
+    float: right;
+    height: 16px;
+    width: 16px;
+    margin-top: 3px;
+    margin-right: 10px;
+}
+
+.@{ui-class-prefix}-calendar-arrow::after {
+    display: inline-block;
+    content: ' ';
+    width: 16px;
+    height: 16px;
+    background-color: #F00;
+    .border-radius (16px);
+}
+
+.@{ui-class-prefix}-calendar-layer {
+    background: @calendar-layer-background-color;
+    width: 210px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.@{ui-class-prefix}-calendar-layer-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-calendar-disabled,
+.@{ui-class-prefix}-calendar-read-only {
+    color: @calendar-button-color-disabled;
+    border-color: @calendar-button-border-color-disabled;
+}
+
+/* 验证 */
+.@{ui-class-prefix}-calendar-validity-invalid {
+    border: 1px solid red;
+}
+
+.@{ui-class-prefix}-calendar-validity-label {
+    display: block;
+    margin-top: 5px;
+}
+
+.@{ui-class-prefix}-calendar-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
+}
