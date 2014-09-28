@@ -150,7 +150,7 @@ define(
                 html.push(segment);
             }
 
-            var isCompleteMode = pager.isCompleteMode;
+            var pagePattern = pager.pagePattern;
             var page = pager.page;
             var backCount = pager.backCount;
             var forwardCount = pager.forwardCount;
@@ -159,7 +159,7 @@ define(
             // 数组html用于存储页码区域的元素代码
             var html = [];
             if (page > 1) {
-                if (isCompleteMode) {
+                if (pagePattern === 'fullPattern') {
                     //首页
                     var objFirst = getTplObj(
                         'item-extend ui-pager-item-first', 0, 'page-first', pager.firstText);
@@ -167,7 +167,6 @@ define(
                 }
 
                 // 上一页
-
                 var obj = getTplObj(
                     'item-extend', page - 1, 'page-back', pager.backText);
                 addSegmentToHTML(obj);
@@ -221,12 +220,12 @@ define(
                 addSegmentToHTML(totalPage);
             }
 
-            // 下一页
             if (page < totalPage) {
+                // 下一页
                 var obj = getTplObj(
                     'item-extend', page + 1, 'page-forward', pager.forwardText);
                 addSegmentToHTML(obj);
-                if (isCompleteMode) {
+                if (pagePattern === 'fullPattern') {
                     //末页
                     var objLast = getTplObj(
                         'item-extend ui-pager-item-last', Math.ceil(pager.count / pager.pageSize), 'page-last', pager.lastText);
@@ -481,7 +480,7 @@ define(
                     forwardCount: 3,
                     firstText: '首页',
                     lastText: '末页',
-                    isCompleteMode: false,
+                    //pagePattern: 'middlePattern',
                     backText: '上一页',
                     forwardText: '下一页',
                     urlTemplate: '',
@@ -732,11 +731,13 @@ define(
                      */
                         'backText',
                     /**
-                     * @property {boolen} isCompleteMode
+                     * @property {string} pagePattern
                      *
-                     * 是否完整模式,默认false，不显示“首页”与“末页”标签
+                     * 分页模式,默认中间分页模式'middlePattern'，不显示“首页”与“末页”标签。
+                     * 可选完整模式'fullPattern'，后继会增加简化模式'simplePattern'与
+                     * 极简模式'verySimplePattern'
                      */
-                        'isCompleteMode',
+                        'pagePattern',
                     /**
                      * @property {string} forwardText
                      *
