@@ -203,9 +203,9 @@ define(
                 group.helper.getPartClasses('wrapper')
             );
 
-            var customLookCls = group.customLook;
-            if (customLookCls) {
-                classes.push(group.helper.getPartClasses(boxType + '-' + customLookCls));
+            var customLookClass = group.customLook;
+            if (customLookClass) {
+                classes.concat(group.helper.getPartClasses(boxType + '-' + customLookClass));
             }
 
             var valueIndex = lib.toDictionary(group.rawValue);
