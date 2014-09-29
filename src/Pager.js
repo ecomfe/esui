@@ -46,7 +46,7 @@ define(
                     selectWrapperClass: pager.helper.getPartClassName('select-wrapper'),
                     labelId: pager.helper.getId('label'),
                     labelClass: pager.helper.getPartClassName('label'),
-                    labelText: '每页显示：',
+                    labelText: '每页显示',
                     selectPagerId: pager.helper.getId('selectPager'),
                     selectClass: pager.helper.getPartClassName('select'),
                     mainId: pager.helper.getId('main'),
