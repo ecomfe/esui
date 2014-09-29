@@ -55,15 +55,20 @@
   &:hover, &:focus {
     &:after {
       background-image: none;
+      //background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -30px;
     }
+  }
+
+
+}
+.@{ui-class-prefix}-pager-select-wrapper{
+  .@{ui-class-prefix}-select-active,
+  .@{ui-class-prefix}-select-active:hover,
+  .@{ui-class-prefix}-select-active:focus {
+    background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -67px;
   }
 }
 
-.@{ui-class-prefix}-select-active,
-.@{ui-class-prefix}-select-active:hover,
-.@{ui-class-prefix}-select-active:focus {
-  background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -67px;
-}
 
 .@{ui-class-prefix}-pager-select-layer {
   .reset-list ();
