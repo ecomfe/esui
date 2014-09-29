@@ -542,6 +542,7 @@ define(
                     layer.addCustomClasses(layerClasses);
                     pager.fire('selectlayerrendered', { layer: layer });
                 }
+
                 //为了重写本控件引用的select控件的样式，增加新类
                 select.on(
                     'layerrendered',
