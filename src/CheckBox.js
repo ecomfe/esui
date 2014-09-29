@@ -283,6 +283,19 @@ define(
                 InputControl.prototype.repaint,
                 {
                     /**
+                     * @property {boolean} indeterminate
+                     *
+                     * 设置不确定状态
+                     */
+                    name: 'indeterminate',
+                    paint: function (box, indeterminate) {
+                        if (indeterminate !== undefined) {
+                            box.updateIndeterminate(indeterminate);
+                        }
+                    }
+                },
+                {
+                    /**
                      * @property {boolean} checked
                      *
                      * 标识是否为选中状态
@@ -291,6 +304,9 @@ define(
                     paint: function (box, rawValue, checked) {
                         var value = box.stringifyValue(rawValue);
                         var box = lib.g(box.boxId);
+                        if(box.indeterminate){
+                            checked = false;
+                        }
                         box.value = value;
                         box.checked = checked;
                     }
@@ -312,19 +328,6 @@ define(
                     name: 'title',
                     paint: function (box, title) {
                         box.updateTitle(title);
-                    }
-                },
-                {
-                    /**
-                     * @property {boolean} indeterminate
-                     *
-                     * 设置不确定状态
-                     */
-                    name: 'indeterminate',
-                    paint: function (box, indeterminate) {
-                        if (indeterminate !== undefined) {
-                            box.updateIndeterminate(indeterminate);
-                        }
                     }
                 }
             ),
