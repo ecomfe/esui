@@ -25,17 +25,17 @@ define(
          */
         function getMainHTML(pager) {
             var template = [
-                '<div id="${pagerWrapperId}" class="${pagerWrapperClass}">',
-                '<div id="${selectWrapperId}" ',
-                'class="${selectWrapperClass}">',
-                '<span id="${labelId}" class="${labelClass}">',
-                '${labelText}</span>',
-                '<div data-ui="type:Select;childName:select;',
-                'id:${selectPagerId};width:40;" class="${selectClass}"></div>',
-                '</div>',
-                '<ul id="${mainId}" class="${mainClass}"></ul>',
-                '</div>'
-            ];
+                    '<div id="${pagerWrapperId}" class="${pagerWrapperClass}">',
+                        '<div id="${selectWrapperId}" ',
+                        'class="${selectWrapperClass}">',
+                            '<span id="${labelId}" class="${labelClass}">',
+                            '${labelText}</span>',
+                            '<div data-ui="type:Select;childName:select;',
+                            'id:${selectPagerId};width:40;" class="${selectClass}"></div>',
+                        '</div>',
+                        '<ul id="${mainId}" class="${mainClass}"></ul>',
+                    '</div>'
+                ];
 
             return lib.format(
                 template.join(''),
@@ -196,7 +196,7 @@ define(
             var obj = getTplObj(
                 'item-current',
                 page,
-                    'page-' + page,
+                'page-' + page,
                 page
             );
             addSegmentToHTML(obj, plainTpl);
@@ -233,7 +233,6 @@ define(
                 }
             }
             return html.join('');
-
         }
 
         /**
@@ -315,7 +314,7 @@ define(
 
             if (this.helper.isPart(target, 'item')
                 || this.helper.isPart(target, 'item-extend')
-                ) {
+            ) {
                 if (target.id === backId) {
                     page--;
                 }
@@ -564,7 +563,7 @@ define(
                 // `pageIndex`提供从0开始的页码，但是以`page`为准
                 if (properties.hasOwnProperty('pageIndex')
                     && !properties.hasOwnProperty('page')
-                    ) {
+                ) {
                     /**
                      * @property {number} pageIndex
                      *

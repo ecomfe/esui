@@ -13,189 +13,185 @@
 @pager-item-current-color: #F2F2F2;
 
 .@{ui-class-prefix}-pager {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 .@{ui-class-prefix}-pager-label {
-  color: #000;
-  line-height: 20px;
-  text-align: center;
-  width: 65px;
-  height: 20px;
-  .inline-block();
-  font-family: "Heiti SC Light", "Heiti SC";
+    color: #000;
+    line-height: 20px;
+    text-align: center;
+    width: 65px;
+    height: 20px;
+    .inline-block();
+    font-family: "Heiti SC Light", "Heiti SC";
 }
 
 /** selector 样式--start **/
 .@{ui-class-prefix}-pager-select-wrapper .@{ui-class-prefix}-pager-select {
-  background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -6px;
-  .ellipse-overflow ();
-  .interactive-cursor ();
-  font-size: 12px;
-  vertical-align: top;
-  .inline-block();
-  corlor: #f00;
-  color: #000000;
-  width: 50px;
-  height: 20px;
-  line-height: 20px;
-  padding-right: 10px;
-  outline: none;
-  text-align: center;
+    background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -6px;
+    .ellipse-overflow ();
+    .interactive-cursor ();
+    font-size: 12px;
+    vertical-align: top;
+    .inline-block();
+    color: #000;
+    width: 50px;
+    height: 20px;
+    line-height: 20px;
+    padding-right: 10px;
+    outline: none;
+    text-align: center;
 
-  &:after {
-    background-image: none;
-  }
-
-  &:hover,
-  &:focus, &:active {
-    background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -36px;
-  }
-
-  &:hover, &:focus {
     &:after {
-      background-image: none;
+        background-image: none;
     }
-  }
 
+    &:hover, &:focus, &:active {
+        background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -36px;
+    }
+
+    &:hover, &:focus {
+        &:after {
+            background-image: none;
+        }
+    }
 }
 
 .@{ui-class-prefix}-pager-select-wrapper {
-  .@{ui-class-prefix}-select-active,
-  .@{ui-class-prefix}-select-active:hover,
-  .@{ui-class-prefix}-select-active:focus {
-    background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -67px;
-  }
+    .@{ui-class-prefix}-select-active,
+    .@{ui-class-prefix}-select-active:hover,
+    .@{ui-class-prefix}-select-active:focus {
+        background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -67px;
+    }
 }
 
 .@{ui-class-prefix}-pager-select-layer {
-  .reset-list ();
-  .box-sizing (border-box);
-  background: none repeat scroll 0 0 #FFFFFF;
-  border: 1px solid #A8ADB6;
-  font-size: 12px;
-  overflow-x: hidden;
-  *height: 152px;
-  max-height: 152px;
-  overflow-y: auto;
-  //padding: 0 1px;
-  position: absolute;
-  text-align: left;
-  z-index: @layer-z-index;
-  .@{ui-class-prefix}-select-item-disabled {
-    color: #999;
-  }
-
-  .@{ui-class-prefix}-select-item-selected {
-    background-color: #E0E0E0;
-    border: 1px solid #DDDDDD;
-    padding: 0 3px;
-  }
-  .@{ui-class-prefix}-select-item {
-    color: #333333;
-    .interactive-cursor ();
-    line-height: 22px;
-    height: auto;
-    margin: 0 0 1px;
-    padding: 0 4px;
-    span {
-      display: block;
-      .ellipse-overflow ();
-      margin-left: -5px;
-      text-align: center;
+    .reset-list ();
+    .box-sizing (border-box);
+    background: none repeat scroll 0 0 #FFF;
+    border: 1px solid #A8ADB6;
+    font-size: 12px;
+    overflow-x: hidden;
+    *height: 152px;
+    max-height: 152px;
+    overflow-y: auto;
+    position: absolute;
+    text-align: left;
+    z-index: @layer-z-index;
+    .@{ui-class-prefix}-select-item-disabled {
+        color: #999;
     }
 
-    &:hover {
-      background-color: #F1F1F1;
+    .@{ui-class-prefix}-select-item-selected {
+        background-color: #E0E0E0;
+        border: 1px solid #DDD;
+        padding: 0 3px;
     }
-  }
+    .@{ui-class-prefix}-select-item {
+        color: #333;
+        .interactive-cursor ();
+        line-height: 22px;
+        height: auto;
+        margin: 0 0 1px;
+        padding: 0 4px;
+        span {
+            display: block;
+            .ellipse-overflow ();
+            margin-left: -5px;
+            text-align: center;
+        }
+
+        &:hover {
+            background-color: #F1F1F1;
+        }
+    }
 }
 
 ol.@{ui-class-prefix}-select-layer-hidden {
-  display: none;
+    display: none;
 }
 
 .@{ui-class-prefix}-select-disabled,
 .@{ui-class-prefix}-select-read-only {
-  color: #999;
-  border-color: #D8D8D8;
-  &:hover,
-  &:focus {
-    background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -6px;
-  }
+    color: #999;
+    border-color: #D8D8D8;
+    &:hover,
+    &:focus {
+        background: #F2F2F2 url(../../img/esui-combo-arrow.png) no-repeat  right -6px;
+    }
 }
 
 /** 验证 */
 .@{ui-class-prefix}-select-validity-invalid {
-  border: 1px solid red;
+    border: 1px solid red;
 }
 
 .@{ui-class-prefix}-select-validity-label {
-  display: block;
-  margin-top: 5px;
+    display: block;
+    margin-top: 5px;
 }
 
 .@{ui-class-prefix}-select-validity-label-invalid {
-  .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-  border: 1px solid #F0CCCC;
-  color: #dd6767;
-  padding-left: 50px;
+    .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
 }
 
 .@{ui-class-prefix}-pager {
-  .@{ui-class-prefix}-pager-select-wrapper {
-    margin-left: 5px;
-    .inline-block();
-  }
+    .@{ui-class-prefix}-pager-select-wrapper {
+        margin-left: 5px;
+        .inline-block();
+    }
 }
 
 /** selector 样式--end **/
 
 .@{ui-class-prefix}-pager-main {
-  margin: 0;
-  padding: 0;
-  .inline-block();
+    margin: 0;
+    padding: 0;
+    .inline-block();
 
-  li {
-    font-family: "Arial";
-    margin-left: 8px;
-    padding: 0px 3px;
-    height: 20px;
-    text-align: center;
-    line-height: 20px;
-    color: @pager-text-color;
-    .inline-block();
-    .interactive-cursor ();
-  }
-  .@{ui-class-prefix}-pager-item-current {
-    font: 700 12px/20px "Arial Bold", "Arial";
-    color: #000;
-    background-color: @pager-item-current-color;
-    cursor: text;
-  }
-  .@{ui-class-prefix}-pager-item-extend {
-    font-family: "Heiti SC Light", "Heiti SC";
-    width: auto;
-    padding: 0px 12px;
-    color: #000;
-    font-weight: 200;
-    background-color: @pager-item-current-color;
-  }
-  .@{ui-class-prefix}-pager-item-first, .@{ui-class-prefix}-pager-item-last {
-    padding: 0px 8px;
-  }
-  .@{ui-class-prefix}-pager-item-omit {
-    cursor: text;
-  }
-  a, a:hover {
-    color: @pager-text-color;
-    text-decoration: none;
-    .inline-block();
-  }
+    li {
+        font-family: "Arial";
+        margin-left: 8px;
+        padding: 0px 3px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        color: @pager-text-color;
+        .inline-block();
+        .interactive-cursor ();
+    }
+    .@{ui-class-prefix}-pager-item-current {
+        font: 700 12px/20px "Arial Bold", "Arial";
+        color: #000;
+        background-color: @pager-item-current-color;
+        cursor: text;
+    }
+    .@{ui-class-prefix}-pager-item-extend {
+        font-family: "Heiti SC Light", "Heiti SC";
+        width: auto;
+        padding: 0px 12px;
+        color: #000;
+        font-weight: 200;
+        background-color: @pager-item-current-color;
+    }
+    .@{ui-class-prefix}-pager-item-first, .@{ui-class-prefix}-pager-item-last {
+        padding: 0px 8px;
+    }
+    .@{ui-class-prefix}-pager-item-omit {
+        cursor: text;
+    }
+    a, a:hover {
+        color: @pager-text-color;
+        text-decoration: none;
+        .inline-block();
+    }
 }
 
 .@{ui-class-prefix}-pager-item-extend a, .@{ui-class-prefix}-pager-item-extend a:hover {
-  color: #000;
+    color: #000;
 }
 
 /*
@@ -203,30 +199,30 @@ ol.@{ui-class-prefix}-select-layer-hidden {
  */
 /* 左侧正序、左侧逆序 */
 .@{ui-class-prefix}-pager-alignLeft, .@{ui-class-prefix}-pager-alignLeftReverse {
-  float: left;
+    float: left;
 }
 
 /* 左侧逆序 */
 .@{ui-class-prefix}-pager-alignLeftReverse .@{ui-class-prefix}-pager-select-wrapper {
-  float: right;
+    float: right;
 }
 
 /* 右侧正序、右侧逆序 */
 .@{ui-class-prefix}-pager-alignRight, .@{ui-class-prefix}-pager-alignRightReverse {
-  float: right;
+    float: right;
 }
 
 /* 右侧逆序 */
 .@{ui-class-prefix}-pager-alignRightReverse .@{ui-class-prefix}-pager-select-wrapper {
-  float: right;
+    float: right;
 }
 
 /* 分散正序 */
 .@{ui-class-prefix}-pager-distributed .@{ui-class-prefix}-pager-main {
-  float: right;
+    float: right;
 }
 
 /* 分散逆序 */
 .@{ui-class-prefix}-pager-distributedReverse .@{ui-class-prefix}-pager-select-wrapper {
-  float: right;
+    float: right;
 }
