@@ -205,7 +205,7 @@ define(
 
             var customLookClass = group.customLook;
             if (customLookClass) {
-                classes.concat(group.helper.getPartClasses(boxType + '-' + customLookClass));
+                classes.push(group.helper.getPartClassName(boxType + '-' + customLookClass));
             }
 
             var valueIndex = lib.toDictionary(group.rawValue);
