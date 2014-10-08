@@ -4,7 +4,7 @@ require.config({
     'packages': [
         {
             'name': 'mini-event',
-            'location': '../dep/mini-event/1.0.2/src',
+            'location': '../dep/mini-event/1.0.0/src',
             'main': 'main'
         },
         {
@@ -14,7 +14,7 @@ require.config({
         },
         {
             'name': 'moment',
-            'location': '../dep/moment/2.7.0/src',
+            'location': '../dep/moment/2.0.1/src',
             'main': 'moment'
         },
         {
@@ -26,6 +26,10 @@ require.config({
             'name': 'esui',
             'location': '../src',
             'main': 'main'
+        },
+        {
+            'name': 'est',
+            'location': '../dep/est/1.3.0/src'
         }
     ]
 });

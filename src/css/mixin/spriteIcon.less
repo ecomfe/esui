@@ -1,0 +1,56 @@
+.sprite-icon(none) {
+    background: none;
+}
+
+.sprite-icon(@img) {
+    .background(@img);
+}
+
+// repeat背景
+.repeat-x(@img, @bg-color:transparent) {
+    .background(@img);
+    background-repeat: repeat-x;
+    background-color: @bg-color;
+}
+
+// 一般元素型icon
+.normal-icon (@img, @width:0, @height:0) {
+    .sprite-icon(@img);
+    width: @width;
+    height: @height;
+}
+
+
+.pseudo-icon (@img, @width:0, @height:0, @horizontal:left, @hDuration:0, @vertical:center, @vDuration:0, @relativePos:relative) {
+    .relative(@relativePos) when not (@relativePos = none) {
+        position: @relativePos;
+    }
+    .relative(@relativePos);
+    &:after {
+        content: '';
+        position: absolute;
+        .position-vertical(@vertical) when (@vertical = center) {
+            top: 50%;
+            margin-top: -(@height/2);
+        }
+        .position-vertical(@vertical) when not (@vertical = center) {
+            @{vertical}: @vDuration;
+        }
+
+        .position-horizontal(@horizontal) when (@horizontal = center) {
+            left: 50%;
+            margin-left: -(@width/2);
+        }
+        .position-horizontal(@horizontal) when not (@horizontal = center) {
+            @{horizontal}: @hDuration;
+        }
+
+        .position-vertical(@vertical);
+        .position-horizontal(@horizontal);
+
+        .sprite-icon(@img);
+        width: @width;
+        height: @height;
+
+    }
+}
