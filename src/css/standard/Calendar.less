@@ -9,27 +9,32 @@
 @import "./variable.less";
 @import "../mixin/util.less";
 
+@calendar-width: 110px;
+@calendar-height: 23px;
 
-@calendar-button-border-color: transparent;
-@calendar-button-border-color-hover: transparent;
-@calendar-button-border-color-disabled: transparent;
-@calendar-button-background-color: #ebebeb;
-@calendar-button-width: 110px;
-@calendar-button-height: 23px;
-@calendar-button-color: #333;
-@calendar-button-color-disabled: #999;
+@calendar-border: 1px solid transparent;
+@calendar-border-hover: 1px solid transparent;
+@calendar-border-disabled: 1px solid transparent;
 
+@calendar-background: #ebebeb;
+
+@calendar-color: #333;
+@calendar-color-disabled: #999;
+
+@calendar-arrow-icon-background: url(../../img/esui-cal.png);
+@calendar-arrow-icon-height: 16px;
+@calendar-arrow-icon-width: 16px;
 
 @calendar-layer-background-color: #fff;
 
 .@{ui-class-prefix}-calendar {
-    width: @calendar-button-width;
-    height: @calendar-button-height;
-    line-height: @calendar-button-height;
-    border: 1px solid @calendar-button-border-color;
-    background-color: @calendar-button-background-color;
+    width: @calendar-width;
+    height: @calendar-height;
+    line-height: @calendar-height;
+    border: @calendar-border;
     padding-left: 8px;
     font-size: 12px;
+    background-color: @calendar-background;
     .interactive-cursor ();
     .user-select ();
 }
@@ -42,7 +47,7 @@
 
 .@{ui-class-prefix}-calendar:hover,
 .@{ui-class-prefix}-calendar:active {
-    border-color: @calendar-button-border-color-hover;
+    border: @calendar-border-hover;
 }
 
 .@{ui-class-prefix}-calendar-arrow {
@@ -51,15 +56,12 @@
     width: 16px;
     margin-top: 3px;
     margin-right: 10px;
-}
-
-.@{ui-class-prefix}-calendar-arrow::after {
-    display: inline-block;
-    content: ' ';
-    width: 16px;
-    height: 16px;
-    background-color: #F00;
-    .border-radius (16px);
+    .pseudo-icon(
+        @calendar-arrow-icon-background,
+        @calendar-arrow-icon-width,
+        @calendar-arrow-icon-height,
+        right
+    );
 }
 
 .@{ui-class-prefix}-calendar-layer {
@@ -75,8 +77,8 @@
 
 .@{ui-class-prefix}-calendar-disabled,
 .@{ui-class-prefix}-calendar-read-only {
-    color: @calendar-button-color-disabled;
-    border-color: @calendar-button-border-color-disabled;
+    color: @calendar-color-disabled;
+    border: @calendar-border-disabled;
 }
 
 /* 验证 */

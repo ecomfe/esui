@@ -9,127 +9,151 @@
 @import "./variable.less";
 @import "../mixin/util.less";
 
-/* 按钮 */
-@rangecalendar-button-border-color: transparent;
-@rangecalendar-button-border-color-hover: transparent;
-@rangecalendar-button-border-color-disabled: #999;
-@rangecalendar-button-background-color: #f5f5f5;
-@rangecalendar-button-background-color-disabled: #999;
-@rangecalendar-button-width: 235px;
-@rangecalendar-button-height: 23px;
-@rangecalendar-button-arrow-color: #666;
+// 主按钮
+@range-calendar-main-background: #f5f5f5;
+@range-calendar-main-background-disabled: #999;
+@range-calendar-main-border: 1px solid transparent;
+@range-calendar-main-border-hover: 1px solid transparent;
+@range-calendar-main-border-disabled: 1px solid #999;
 
-/* 浮层 */
-@rangecalendar-layer-background-color: #f6f6f6;
-@rangecalendar-layer-border-top-color: #dfdfdf;
-@rangecalendar-layer-border-bottom-color: transparent;
-@rangecalendar-layer-border-leftright-color: transparent;
+@range-calendar-main-width: 235px;
+@range-calendar-main-height: 23px;
+@range-calendar-main-font-size: 12px;
+@range-calendar-main-font-color: #666;
 
-/* 快捷按钮 */
-@rangecalendar-shortcut-item-color: #6cc9ab;
-@rangecalendar-shortcut-item-color-selected: #666;
-@rangecalendar-shortcut-item-color-disabled: #999;
-@rangecalendar-shortcut-item-separator-color: #c8caca;
+@range-calendar-arrow-icon: url(../../img/esui-monthview-select-icon.png);
+@range-calendar-arrow-icon-active: url(../../img/esui-monthview-select-icon-active.png);
+@range-calendar-arrow-icon-width: 9px;
+@range-calendar-arrow-icon-height: 5px;
 
+// 浮层
+@range-calendar-layer-background: #f6f6f6;
+@range-calendar-layer-border-top-color: #dfdfdf;
+@range-calendar-layer-border-top: 3px solid @range-calendar-layer-border-top-color;
+@range-calendar-layer-border-bottom: none;
+@range-calendar-layer-border-left: none;
+@range-calendar-layer-border-right: none;
+@range-calendar-layer-padding: 11px;
+
+// 关闭浮层
+@range-calendar-layer-close-icon: url(../../img/esui-rangecalendar-layer-close-icon.png);
+@range-calendar-layer-close-icon-width: 10px;
+@range-calendar-layer-close-icon-height: 10px;
+
+// 快捷按钮
+@range-calendar-shortcut-item-color: #6cc9ab;
+@range-calendar-shortcut-item-color-selected: #666;
+@range-calendar-shortcut-item-color-disabled: #999;
+@range-calendar-shortcut-item-separator-color: #c8caca;
+
+// 取消按钮颜色
+@range-calendar-link-text-color: #66c4a5;
+@range-calendar-link-text-color-hover: #74dcce;
+
+// 验证
+@range-calendar-validity-invalid-color: #ff8555;
+@range-calendar-validity-label-invalid-color: #ff8555;
+@range-calendar-validity-label-invalid-border-color: #f0cccc;
 .@{ui-class-prefix}-rangecalendar {
-    border: 1px solid @rangecalendar-button-border-color;
-    width: @rangecalendar-button-width;
-    height: @rangecalendar-button-height;
-    line-height: @rangecalendar-button-height;
+    width: @range-calendar-main-width;
+    height: @range-calendar-main-height;
+    line-height: @range-calendar-main-height;
+    border: @range-calendar-main-border;
     padding-left: 8px;;
-    font-size: 12px;
+    font-size: @range-calendar-main-font-size;
     cursor: pointer;
-    background-color: @rangecalendar-button-background-color;
+    background-color: @range-calendar-main-background;
     .user-select();
 }
 
 .@{ui-class-prefix}-rangecalendar-text {
     padding-left: 3px;
     float: left;
+    color: @range-calendar-main-font-color;
 }
 
 .@{ui-class-prefix}-rangecalendar:hover,
 .@{ui-class-prefix}-rangecalendar:active {
-    border-color: @rangecalendar-button-border-color-hover;
+    border: @range-calendar-main-border-hover;
 }
 
 .@{ui-class-prefix}-rangecalendar-arrow {
     float: right;
-    width: 16px;
-    height: 16px;
-    margin-top: 3px;
+    width: @range-calendar-arrow-icon-width;
+    height: @range-calendar-main-height;
     margin-right: 5px;
-}
 
-.@{ui-class-prefix}-rangecalendar-arrow::after {
-    display: inline-block;
-    content: ' ';
-    width: 0;
-    height: 0;
-    background: transparent;
-    border: 5px solid @rangecalendar-button-arrow-color;
-    border-color: @rangecalendar-button-arrow-color transparent transparent transparent;
+    .pseudo-icon(
+        @range-calendar-arrow-icon,
+        @range-calendar-arrow-icon-width,
+        @range-calendar-arrow-icon-height,
+        center
+    );
 }
 
 .@{ui-class-prefix}-rangecalendar-active {
-    .@{ui-class-prefix}-rangecalendar-arrow::after {
-        border-color: transparent transparent @rangecalendar-button-arrow-color transparent;
-        margin-bottom: 3px;
+    .@{ui-class-prefix}-rangecalendar-arrow {
+        background: none;
+        .pseudo-icon(
+            @range-calendar-arrow-icon-active,
+            @range-calendar-arrow-icon-width,
+            @range-calendar-arrow-icon-height,
+            center
+        );
     }
 }
 
 .@{ui-class-prefix}-rangecalendar-layer {
-    background: none repeat scroll 0 0 @rangecalendar-layer-background-color;
-    border-color: @rangecalendar-layer-border-top-color @rangecalendar-layer-border-leftright-color @rangecalendar-layer-border-bottom-color;
-    border-image: none;
-    border-right: 1px solid @rangecalendar-layer-border-leftright-color;
-    border-style: solid;
-    border-width: 2px 1px 1px;
-    padding: 8px;
-    width: 430px;
+    background: @range-calendar-layer-background;
+    border-top: @range-calendar-layer-border-top;
+    border-bottom: @range-calendar-layer-border-bottom;
+    border-left: @range-calendar-layer-border-left;
+    border-right: @range-calendar-layer-border-right;
+    padding: @range-calendar-layer-padding;
+    width: auto;
 
     .@{ui-class-prefix}-rangecalendar-shortcut {
-        font-size: 12px;
+        font-size: @range-calendar-main-font-size;
         height: 20px;
         line-height: 20px;
         padding-right: 10px;
     }
 
     .@{ui-class-prefix}-rangecalendar-shortcut-item {
-        color: @rangecalendar-shortcut-item-color;
-        .interactive-cursor ();
-        text-decoration: none;
-        border-left: 1px solid @rangecalendar-shortcut-item-separator-color;
+        border-left: 1px solid @range-calendar-shortcut-item-separator-color;
         margin-left: 5px;
         padding-left: 5px;
+        color: @range-calendar-shortcut-item-color;
+        text-decoration: none;
+        .interactive-cursor ();
         &.@{ui-class-prefix}-rangecalendar-shortcut-item-first {
             border-left: none;
             margin-left: 0;
             padding-left: 0;
         }
+
     }
 
     .@{ui-class-prefix}-rangecalendar-shortcut-item-selected {
-        color: @rangecalendar-shortcut-item-color-selected;
+        color: @range-calendar-shortcut-item-color-selected;
         cursor: default;
         text-decoration: none;
         font-weight: bold;
     }
 
     .@{ui-class-prefix}-rangecalendar-shortcut-item-disabled {
-        color: @rangecalendar-shortcut-item-color-disabled;
+        color: @range-calendar-shortcut-item-color-disabled;
         cursor: default;
         text-decoration: none;
     }
 
     .@{ui-class-prefix}-rangecalendar-shortcut-disabled {
         .@{ui-class-prefix}-rangecalendar-shortcut-item {
-            color: @rangecalendar-shortcut-item-color-disabled;
+            color: @range-calendar-shortcut-item-color-disabled;
             cursor: default;
             text-decoration: none;
         }
     }
-
 
     .@{ui-class-prefix}-rangecalendar-begin,
     .@{ui-class-prefix}-rangecalendar-end {
@@ -174,30 +198,15 @@
 
     .skin-layerClose-button {
         position: absolute;
-        background-color: transparent;
-        width: 12px;
-        height: 12px;
-        top: 5px;
-        right: 5px;
-    }
-
-    .skin-layerClose-button::after {
-        display: inline-block;
-        visibility: visible;
-        content: 'x';
-        width: 12px;
-        height: 12px;
-        color: #bcbcbc;
-        font-family: Arial;
-        font-size: 16px;
-    }
-
-    .skin-layerClose-button:hover {
-        .skin-layerClose-button::after {
-            color: #000;
-            font-weight: bold;
-            font-size: 16px;
-        }
+        .normal-icon(
+            @range-calendar-layer-close-icon,
+            @range-calendar-layer-close-icon-width,
+            @range-calendar-layer-close-icon-height
+        );
+        right: 11px;
+        top: 12px;
+        border: none;
+        padding: 0;
     }
 }
 
@@ -207,42 +216,44 @@
 
 .@{ui-class-prefix}-rangecalendar-disabled,
 .@{ui-class-prefix}-rangecalendar-read-only {
-    color: @rangecalendar-button-background-color-disabled;
-    border-color: @rangecalendar-button-border-color-disabled;
+    color: @range-calendar-main-background-disabled;
+    border-color: @range-calendar-main-border-disabled;
 }
 
-/** 验证 */
+// 验证
 .@{ui-class-prefix}-rangecalendar-validity-invalid {
-    border: 1px solid red;
+    border: 1px solid @range-calendar-validity-invalid-color;
 }
+
 .@{ui-class-prefix}-rangecalendar-validity-label {
     display: block;
     margin-top: 5px;
 }
+
 .@{ui-class-prefix}-rangecalendar-validity-label-invalid {
-    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-    border: 1px solid #F0CCCC;
-    color: #dd6767;
+    .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid @range-calendar-validity-label-invalid-border-color;
+    color: @range-calendar-validity-label-invalid-color;
     padding-left: 50px;
 }
 
-/* 覆盖按钮 */
+// 覆盖按钮
 .@{ui-class-prefix}-rangecalendar-okBtn {
     width: 60px;
     height: 30px;
     line-height: 30px;
+    font-weight: bold;
 }
 
 .@{ui-class-prefix}-rangecalendar-cancelBtn {
     width: 30px;
     height: 30px;
     line-height: 30px;
-    color: #6cc9ab;
+    color: @range-calendar-link-text-color;
     background-color: transparent;
     text-align: left;
+    &:hover {
+        color: @range-calendar-link-text-color-hover;
+        background-color: transparent;
+    }
 }
-
-.@{ui-class-prefix}-rangecalendar-cancelBtn:hover {
-    background-color: transparent;
-}
-
