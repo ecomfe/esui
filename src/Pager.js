@@ -15,6 +15,7 @@ define(
 
         require('./Select');
 
+
         /**
          * 获取控件主元素HTML
          *
@@ -25,14 +26,14 @@ define(
         function getMainHTML(pager) {
             var template = [
                 '<div id="${pagerWrapperId}" class="${pagerWrapperClass}">',
-                    '<div id="${selectWrapperId}" ',
-                    'class="${selectWrapperClass}">',
-                        '<span id="${labelId}" class="${labelClass}">',
-                        '${labelText}</span>',
-                        '<div data-ui="type:Select;childName:select;',
-                        'id:${selectId};width:40;"></div>',
-                    '</div>',
-                    '<ul id="${mainId}" class="${mainClass}"></ul>',
+                '<div id="${selectWrapperId}" ',
+                'class="${selectWrapperClass}">',
+                '<span id="${labelId}" class="${labelClass}">',
+                '${labelText}</span>',
+                '<div data-ui="type:Select;childName:select;',
+                'id:${selectPagerId};width:40;" class="${selectClass}"></div>',
+                '</div>',
+                '<ul id="${mainId}" class="${mainClass}"></ul>',
                 '</div>'
             ];
 
@@ -40,15 +41,14 @@ define(
                 template.join(''),
                 {
                     pagerWrapperId: pager.helper.getId('pager-wrapper'),
-                    pagerWrapperClass:
-                        pager.helper.getPartClasses(pager.layout)[0],
+                    pagerWrapperClass: pager.helper.getPartClasses(pager.layout)[0],
                     selectWrapperId: pager.helper.getId('select-wrapper'),
-                    selectWrapperClass:
-                        pager.helper.getPartClassName('select-wrapper'),
+                    selectWrapperClass: pager.helper.getPartClassName('select-wrapper'),
                     labelId: pager.helper.getId('label'),
                     labelClass: pager.helper.getPartClassName('label'),
                     labelText: '每页显示',
-                    selectId: pager.helper.getId('select'),
+                    selectPagerId: pager.helper.getId('selectPager'),
+                    selectClass: pager.helper.getPartClassName('select'),
                     mainId: pager.helper.getId('main'),
                     mainClass: pager.helper.getPartClassName('main')
                 }
@@ -150,6 +150,7 @@ define(
                 html.push(segment);
             }
 
+            var pagePattern = pager.pagePattern;
             var page = pager.page;
             var backCount = pager.backCount;
             var forwardCount = pager.forwardCount;
@@ -157,11 +158,25 @@ define(
             var totalPage = Math.ceil(pager.count / pager.pageSize);
             // 数组html用于存储页码区域的元素代码
             var html = [];
-
-            // 上一页
             if (page > 1) {
+                if (pagePattern === 'fullPattern') {
+                    // 首页
+                    var objFirst = getTplObj(
+                        'item-extend ui-pager-item-first',
+                        0,
+                        'page-first',
+                        pager.firstText
+                    );
+                    addSegmentToHTML(objFirst);
+                }
+
+                // 上一页
                 var obj = getTplObj(
-                    'item-extend', page - 1, 'page-back', pager.backText);
+                    'item-extend',
+                    page - 1,
+                    'page-back',
+                    pager.backText
+                );
                 addSegmentToHTML(obj);
             }
 
@@ -189,7 +204,7 @@ define(
             var obj = getTplObj(
                 'item-current',
                 page,
-                'page-' + page,
+                    'page-' + page,
                 page
             );
             addSegmentToHTML(obj, plainTpl);
@@ -213,13 +228,26 @@ define(
                 addSegmentToHTML(totalPage);
             }
 
-            // 下一页
             if (page < totalPage) {
+                // 下一页
                 var obj = getTplObj(
-                    'item-extend', page + 1, 'page-forward', pager.forwardText);
+                    'item-extend',
+                    page + 1,
+                    'page-forward',
+                    pager.forwardText
+                );
                 addSegmentToHTML(obj);
+                if (pagePattern === 'fullPattern') {
+                    // 末页
+                    var objLast = getTplObj(
+                        'item-extend ui-pager-item-last',
+                        Math.ceil(pager.count / pager.pageSize),
+                        'page-last',
+                        pager.lastText
+                    );
+                    addSegmentToHTML(objLast);
+                }
             }
-
             return html.join('');
         }
 
@@ -236,7 +264,6 @@ define(
             pager.pageSize = pageSize;
             // 将修正后的每页显示数量更新至Select控件
             pager.getChild('select').set('value', pageSize + '');
-
             // 修正页码
             var totalPage = Math.ceil(pager.count / pageSize);
             var page = pager.page;
@@ -288,24 +315,31 @@ define(
         /**
          * 页码点击事件触发
          *
-         * @param {Pager} this Pager控件实例
          * @param {Event} e 事件对象
          * @ignore
          */
         function pagerClick(e) {
             var target = e.target;
+            var lastId = this.helper.getId('page-last');
             var backId = this.helper.getId('page-back');
             var forwardId = this.helper.getId('page-forward');
+            var firstId = this.helper.getId('page-first');
             var page = this.page;
 
             if (this.helper.isPart(target, 'item')
                 || this.helper.isPart(target, 'item-extend')
-            ) {
+                ) {
                 if (target.id === backId) {
                     page--;
                 }
+                else if (target.id === lastId) {
+                    page = Math.ceil(this.count / this.pageSize);
+                }
                 else if (target.id === forwardId) {
                     page++;
+                }
+                else if (target.id === firstId) {
+                    page = 1;
                 }
                 else {
                     page = +lib.getAttribute(target, 'data-page');
@@ -457,6 +491,8 @@ define(
                     page: 1,
                     backCount: 3,
                     forwardCount: 3,
+                    firstText: '首页',
+                    lastText: '末页',
                     backText: '上一页',
                     forwardText: '下一页',
                     urlTemplate: '',
@@ -512,6 +548,18 @@ define(
                 var select = this.getChild('select');
                 select.on('change', changePageSize, this);
 
+                function addCustomClassesForSelectLayer(pager, selectClass, e) {
+                    var layerClasses = pager.helper.getPartClasses(selectClass + '-layer');
+                    var layer = e.layer;
+                    layer.addCustomClasses(layerClasses);
+                    pager.fire('selectlayerrendered', { layer: layer });
+                }
+
+                // 为了重写本控件引用的select控件的样式，增加新类
+                select.on(
+                    'layerrendered',
+                    lib.curry(addCustomClassesForSelectLayer, this, 'select')
+                );
                 // pager主元素绑定事件
                 this.helper.addDOMEvent('main', 'click', pagerClick);
             },
@@ -528,7 +576,7 @@ define(
                 // `pageIndex`提供从0开始的页码，但是以`page`为准
                 if (properties.hasOwnProperty('pageIndex')
                     && !properties.hasOwnProperty('page')
-                ) {
+                    ) {
                     /**
                      * @property {number} pageIndex
                      *
@@ -640,6 +688,7 @@ define(
                          * 仅触发{@link Pager#pagechange}事件
                          * - `anchor`：页码为`<a>`元素，点击后直接跳转
                          */
+
                         'pageType',
 
                         /**
@@ -684,12 +733,25 @@ define(
                         'forwardCount',
 
                         /**
+                         * @property {string} lastText
+                         *
+                         * “末页”元素的显示文字
+                         */
+                        'lastText',
+                        /**
                          * @property {string} backText
                          *
                          * “下一页”元素的显示文字
                          */
                         'backText',
-
+                        /**
+                         * @property {string} pagePattern
+                         *
+                         * 分页模式,默认中间分页模式'middlePattern'，不显示“首页”与“末页”标签。
+                         * 可选完整模式'fullPattern'，后继会增加简化模式'simplePattern'与
+                         * 极简模式'verySimplePattern'
+                         */
+                        'pagePattern',
                         /**
                          * @property {string} forwardText
                          *
