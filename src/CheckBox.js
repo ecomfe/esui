@@ -106,13 +106,7 @@ define(
                      *
                      * 是否check对钩
                      */
-                    checked: this.main.checked || false,
-                    /**
-                     * @property {string} [customLook='']
-                     *
-                     * 自定义外观selector
-                     */
-                    customLook: ''
+                    checked: this.main.checked || false
                 };
 
                 u.extend(properties, options);
@@ -155,8 +149,11 @@ define(
              * @override
              */
             initStructure: function () {
+                var classList = [];
                 // 如果用的是一个`<input>`，替换成`<div>`
                 if (this.main.nodeName.toLowerCase() === 'input') {
+                    this.main.className && (classList = [].slice.call(this.main.classList));
+                    lib.removeClasses(this.main, classList);
                     this.boxId = this.main.id || this.helper.getId('box');
                     this.helper.replaceMain();
                     this.main.id = this.helper.getId();
@@ -165,10 +162,10 @@ define(
                     this.boxId = this.helper.getId('box');
                 }
 
-                var customLook = this.customLook;
+                
                 // TODO: 测试是否支持checked选择器。
-                if (this.customLook) {
-                    this.helper.addPartClasses(customLook, this.main);
+                if (classList.length) {
+                    lib.addClasses(this.main, classList);
                 }
 
                 var html = '<input type="checkbox" name="${name}" id="${id}" />'
@@ -283,25 +280,15 @@ define(
                 InputControl.prototype.repaint,
                 {
                     /**
-                     * @property {boolean} indeterminate
-                     *
-                     * 设置不确定状态
-                     */
-                    name: 'indeterminate',
-                    paint: function (box, indeterminate) {
-                        if (indeterminate !== undefined) {
-                            box.updateIndeterminate(indeterminate);
-                        }
-                    }
-                },
-                {
-                    /**
                      * @property {boolean} checked
                      *
                      * 标识是否为选中状态
                      */
-                    name: ['rawValue', 'checked'],
-                    paint: function (box, rawValue, checked) {
+                    name: ['rawValue', 'checked', 'indeterminate'],
+                    paint: function (box, rawValue, checked, indeterminate) {
+                        if (indeterminate !== undefined) {
+                            box.updateIndeterminate(indeterminate);
+                        }
                         var value = box.stringifyValue(rawValue);
                         var box = lib.g(box.boxId);
                         if(box.indeterminate){
