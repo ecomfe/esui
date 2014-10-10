@@ -40,13 +40,12 @@
     padding-left: 8px;
     font-size: 12px;
     background-color: @calendar-background;
-    .interactive-cursor ();
-    .user-select ();
+    .interactive-cursor();
+    .user-select();
 }
 
 .@{ui-class-prefix}-calendar-text {
     padding-left: 3px;
-    width: 75px;
     float: left;
 }
 
@@ -71,9 +70,7 @@
 
 .@{ui-class-prefix}-calendar-layer {
     background: @calendar-layer-background-color;
-    width: 210px;
-    -moz-user-select: none;
-    -webkit-user-select: none;
+    .user-select();
 }
 
 .@{ui-class-prefix}-calendar-layer-hidden {

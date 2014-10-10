@@ -122,6 +122,16 @@
     padding: @range-calendar-layer-padding;
     width: auto;
 
+    &.ui-layer-bl {
+        .top-pointer(@range-calendar-layer-border-top-color, 60px, 0);
+        position: absolute;
+    }
+
+    &.ui-layer-br {
+        .top-pointer(@range-calendar-layer-border-top-color, 0, 60px);
+        position: absolute;
+    }
+    
     .@{ui-class-prefix}-rangecalendar-shortcut {
         font-size: @range-calendar-main-font-size;
         height: 20px;

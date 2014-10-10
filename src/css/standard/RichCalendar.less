@@ -9,41 +9,127 @@
 @import "./variable.less";
 @import "../mixin/util.less";
 
+@rich-calendar-width: 200px;
+@rich-calendar-height: 150px;
+@rich-calendar-padding: 10px;
+@rich-calendar-background: #ebebeb;
+
+@rich-calendar-general-info-height: 45px;
+@rich-calendar-general-info-color: #333;
+@rich-calendar-general-info-font-size: 13px;
+@rich-calendar-general-info-linkbutton-color: #6cc9ab;
+@rich-calendar-general-info-total-num-color: #6cc9ab;
+
+@rich-calendar-textbox-font-size: 12px;
+
+@rich-calendar-icon-background: url(../../img/esui-cal.png);
+@rich-calendar-icon-width: 16px;
+@rich-calendar-icon-height: 16px;
+
+@rich-calendar-lay-background: transparent;
+@rich-calendar-lay-border: none;
+@rich-calendar-lay-padding: 0 0 2px 0;
+
+@rich-calendar-color-disabled: #999;
+
+.@{ui-class-prefix}-richcalendar {
+    width: @rich-calendar-width;
+    height: @rich-calendar-height;
+    padding: @rich-calendar-padding;
+    padding-top: 0;
+    background-color: @rich-calendar-background;
+}
+
+.@{ui-class-prefix}-richcalendar-text {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    
+    // 文字面板
+    .@{ui-class-prefix}-richcalendar-general-info {
+        position: absolute;
+        left: 0;
+        height: @rich-calendar-general-info-height;
+        line-height: @rich-calendar-general-info-height;
+        color: @rich-calendar-general-info-color;
+        font-size: @rich-calendar-general-info-font-size;
+
+        // 全部删除
+        .skin-link-button {
+            color: @rich-calendar-general-info-linkbutton-color;
+            background-color: transparent;
+            height: 1.5em;
+            line-height: 1.5em;
+            width: auto;
+            vertical-align: middle;
+            padding: 0;
+            font-size: @rich-calendar-general-info-font-size;
+
+            &:hover {
+                background-color: transparent;
+            }
+        }
+
+        .ui-richcalendar-total-num {
+            color: @rich-calendar-general-info-total-num-color;
+        }
+    }
+
+    // 文本框
+    .@{ui-class-prefix}-textbox {
+        position: absolute;
+        left: 0;
+        top: @rich-calendar-general-info-height;
+
+        textarea {
+            border: none;
+            font-size: @rich-calendar-textbox-font-size;
+        }
+    }
+    
+    // 日历图标
+    .skin-calendar-button {
+        right: 0;
+        padding: 0;
+        width: @rich-calendar-icon-width;
+        height: @rich-calendar-general-info-height;
+
+        .pseudo-icon(
+            @rich-calendar-icon-background,
+            @rich-calendar-icon-width,
+            @rich-calendar-icon-height,
+            right
+        );
+
+        position: absolute;
+        background: none;
+        text-indent: -99999px;
+        overflow: hidden;
+
+        &:after {
+            visibility: visible;
+        }
+    }
+}
+
+// 浮层
 .@{ui-class-prefix}-richcalendar-layer {
-    background: #fff;
     .clear-float();
-    border: 1px solid #A8ADB6;
-    .box-shadow(3px 4px 4px -4px);
     margin-top: 1px;
-    padding: 5px 5px 5px 0;
+    padding: @rich-calendar-lay-padding;
+    border: @rich-calendar-lay-border;
+    background: @rich-calendar-lay-background;
+
     .@{ui-class-prefix}-richcalendar-month-container {
         float: left;
         margin-left: 5px;
+    }
+
+    .@{ui-class-prefix}-richcalendar-month-container:first-child {
+        margin-left: 0;
     }
 }
 
 .@{ui-class-prefix}-richcalendar-layer-hidden {
     display: none;
-}
-
-.@{ui-class-prefix}-richcalendar-text {
-    .@{ui-class-prefix}-richcalendar-general-info {
-        margin-top: 5px;
-
-        .skin-link-button {
-            color: #6cc9ab;
-            background-color: transparent;
-            height: 1.5em;
-            line-height: 1.5em;
-            width: auto;
-        }
-
-        .ui-richcalendar-total-num {
-            color: #6cc9ab;
-        }
-
-        .skin-link-button:hover {
-            background-color: transparent;
-        }
-    }
 }

@@ -49,6 +49,7 @@
 @month-view-forward-button-background-active: url(../../img/esui-monthview-next-icon-active.png);
 @month-view-forward-button-background-disabled: url(../../img/esui-monthview-next-icon-disable.png);
 
+@month-view-select-color: #333;
 @month-view-select-background: #fff;
 @month-view-select-background-hover: #fff;
 @month-view-select-background-active: #fff;
@@ -66,10 +67,14 @@
 @month-view-month-select-width: 40px;
 @month-view-month-select-margin: 3px 6px 0;
 
+@month-view-select-layer-max-height: 152px;
 @month-view-select-layer-background: #f7f7f7;
 @month-view-select-item-background-selected: #e0e0e0;
 @month-view-select-item-background-disabled: #999;
 @month-view-select-item-background-hover: #f1f1f1;
+@month-view-select-item-border-selected: 1px solid #ddd;
+@month-view-select-item-height: 22px;
+
 
 @month-view-font-family: STHeiti, SimSun;
 @month-view-color-disabled: #999;
@@ -160,7 +165,7 @@
             text-align: left;
             font-family: @month-view-font-family;
             font-weight: normal;
-            color: #333;
+            color: @month-view-select-color;
             background: @month-view-select-background;
             .pseudo-icon(
                 @month-view-select-icon,
@@ -201,6 +206,26 @@
             width: @month-view-year-select-width;
             margin: @month-view-year-select-margin;
         }
+        
+        .@{ui-class-prefix}-monthview-month-back-td {
+            width: 30px;
+        }
+        
+        .@{ui-class-prefix}-monthview-year-select-td {
+            width: 55px;
+        }
+
+        .@{ui-class-prefix}-monthview-month-forward-td {
+            width: 30px;            
+        }
+
+        .@{ui-class-prefix}-monthview-month-select-td {
+            width: 40px;
+        }
+
+        .@{ui-class-prefix}-monthview-select-label {
+            width: 20px;
+        }
     }
 }
 
@@ -209,17 +234,17 @@
 .@{ui-class-prefix}-monthview-month-select-layer {
     .reset-list ();
     .box-sizing (border-box);
-    *height: 152px;
-    max-height: 152px;
+    *height: @month-view-select-layer-max-height;
+    max-height: @month-view-select-layer-max-height;
     overflow: hidden auto;
     font-size: 13px;
     background: @month-view-select-layer-background;
 
     .@{ui-class-prefix}-select-item {
-        color: #333333;
+        color: @month-view-select-color;
         .interactive-cursor ();
-        height: 22px;
-        line-height: 22px;
+        height: @month-view-select-item-height;
+        line-height: @month-view-select-item-height;
         padding: 0 4px;
         margin: 0 0 1px;
         font-family: @month-view-font-family;
@@ -227,7 +252,7 @@
 
     .@{ui-class-prefix}-select-item-selected {
         background-color: @month-view-select-item-background-selected;
-        border: 1px solid #DDDDDD;
+        border: @month-view-select-item-border-selected;
         padding: 0 3px;
     }
 
