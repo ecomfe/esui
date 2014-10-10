@@ -23,6 +23,7 @@
 
 @range-calendar-arrow-icon: url(../../img/esui-monthview-select-icon.png);
 @range-calendar-arrow-icon-active: url(../../img/esui-monthview-select-icon-active.png);
+@range-calendar-arrow-icon-disabled: url(../../img/esui-combo-arrow-normal.png);
 @range-calendar-arrow-icon-width: 9px;
 @range-calendar-arrow-icon-height: 5px;
 
@@ -49,11 +50,20 @@
 // 取消按钮颜色
 @range-calendar-link-text-color: #66c4a5;
 @range-calendar-link-text-color-hover: #74dcce;
+@range-calendar-ok-button-background: #6ccdc0;
+@range-calendar-ok-button-background-hover: #73dacc;
+@range-calendar-ok-button-width: 60px;
+@range-calendar-ok-button-height: 30px;
+@range-calendar-cancel-button-width: 30px;
+@range-calendar-cancel-button-height: 30px;
 
 // 验证
 @range-calendar-validity-invalid-color: #ff8555;
 @range-calendar-validity-label-invalid-color: #ff8555;
 @range-calendar-validity-label-invalid-border-color: #f0cccc;
+
+@range-calendar-color-disabled: #999;
+
 .@{ui-class-prefix}-rangecalendar {
     width: @range-calendar-main-width;
     height: @range-calendar-main-height;
@@ -239,21 +249,45 @@
 
 // 覆盖按钮
 .@{ui-class-prefix}-rangecalendar-okBtn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
+    width: @range-calendar-ok-button-width;
+    height: @range-calendar-ok-button-height;
+    line-height: @range-calendar-ok-button-height;
     font-weight: bold;
+    background-color: @range-calendar-ok-button-background;
+
+    &:active,
+    &:hover {
+        background-color: @range-calendar-ok-button-background-hover;
+    }
 }
 
 .@{ui-class-prefix}-rangecalendar-cancelBtn {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
+    width: @range-calendar-cancel-button-width;
+    height: @range-calendar-cancel-button-height;
+    line-height: @range-calendar-cancel-button-height;
     color: @range-calendar-link-text-color;
     background-color: transparent;
     text-align: left;
+
+    &:active,
     &:hover {
         color: @range-calendar-link-text-color-hover;
         background-color: transparent;
+    }
+}
+
+// disable状态
+.@{ui-class-prefix}-rangecalendar-disabled {
+    .@{ui-class-prefix}-rangecalendar-text {
+        color: @range-calendar-color-disabled;
+    }
+    
+    .@{ui-class-prefix}-rangecalendar-arrow {
+        .pseudo-icon(
+            @range-calendar-arrow-icon-disabled,
+            @range-calendar-arrow-icon-width,
+            @range-calendar-arrow-icon-height,
+            center
+        );
     }
 }

@@ -55,6 +55,7 @@
 @month-view-select-icon: url(../../img/esui-monthview-select-icon.png);
 @month-view-select-icon-hover: url(../../img/esui-monthview-select-icon-active.png);
 @month-view-select-icon-active: url(../../img/esui-monthview-select-icon-active.png);
+@month-view-select-icon-disabled: url(../../img/esui-combo-arrow-normal.png);
 
 @month-view-select-icon-height: 5px;
 @month-view-select-icon-width: 9px;
@@ -69,6 +70,10 @@
 @month-view-select-item-background-selected: #e0e0e0;
 @month-view-select-item-background-disabled: #999;
 @month-view-select-item-background-hover: #f1f1f1;
+
+@month-view-font-family: STHeiti, SimSun;
+@month-view-color-disabled: #999;
+@month-view-background-disabled: #999;
 
 .@{ui-class-prefix}-monthview {
     background: @month-view-background;
@@ -153,6 +158,7 @@
             height: @month-view-select-height;
             line-height: @month-view-select-height;
             text-align: left;
+            font-family: @month-view-font-family;
             font-weight: normal;
             color: #333;
             background: @month-view-select-background;
@@ -216,6 +222,7 @@
         line-height: 22px;
         padding: 0 4px;
         margin: 0 0 1px;
+        font-family: @month-view-font-family;
     }
 
     .@{ui-class-prefix}-select-item-selected {
@@ -268,7 +275,7 @@
     background: @month-view-month-item-background;
     text-align: center;
     cursor: pointer;
-    font-family: monospace, "Helvetica Neue", Helvetica, Arial;
+    font-family: @month-view-font-family;
 }
 
 .@{ui-class-prefix}-monthview-month-item:hover {
@@ -329,22 +336,76 @@
     }
 }
 
+// disable状态
 .@{ui-class-prefix}-monthview-disabled {
-    .@{ui-class-prefix}-monthview-month-forward:hover,
-    .@{ui-class-prefix}-monthview-month-forward:active {
-        background: @month-view-forward-button-background-disabled;
+    color: @month-view-color-disabled;
+
+    .@{ui-class-prefix}-monthview-head {
+        .@{ui-class-prefix}-monthview-month-forward,
+        .@{ui-class-prefix}-monthview-month-forward:hover,
+        .@{ui-class-prefix}-monthview-month-forward:active {
+            .pseudo-icon(
+                @month-view-forward-button-background-disabled,
+                @month-view-head-button-icon-width,
+                @month-view-head-button-icon-height,
+                center
+            );
+        }
+
+        .@{ui-class-prefix}-monthview-month-back,
+        .@{ui-class-prefix}-monthview-month-back:active,
+        .@{ui-class-prefix}-monthview-month-back:hover {
+            .pseudo-icon(
+                @month-view-back-button-background-disabled,
+                @month-view-head-button-icon-width,
+                @month-view-head-button-icon-height,
+                center
+            );
+        }
+
+        .@{ui-class-prefix}-monthview-month-item {
+            background: @month-view-month-item-background-disabled;
+            cursor: default;
+            &:hover {
+                background: @month-view-month-item-background-disabled;
+            }
+        }
+
+        .@{ui-class-prefix}-select {
+            color: @month-view-color-disabled;
+            background: @month-view-select-background;
+            .pseudo-icon(
+                @month-view-select-icon-disabled,
+                @month-view-select-icon-width,
+                @month-view-select-icon-height,
+                right,
+                5px
+            );
+
+            &:focus,
+            &:active,
+            &:hover {
+                color: @month-view-color-disabled;
+                .pseudo-icon(
+                    @month-view-select-icon-disabled,
+                    @month-view-select-icon-width,
+                    @month-view-select-icon-height,
+                    right,
+                    5px
+                );
+            }
+        }
+
+
     }
 
-    .@{ui-class-prefix}-monthview-month-back:active,
-    .@{ui-class-prefix}-monthview-month-back:hover {
-        background: @month-view-back-button-background-disabled;
-    }
+    .@{ui-class-prefix}-monthview-month {
+        .@{ui-class-prefix}-monthview-month-title {
+            color: @month-view-color-disabled;
+        }
 
-    .@{ui-class-prefix}-monthview-month-item {
-        background: #ddd;
-        cursor: default;
-        &:hover {
-            background: #ddd;
+        .@{ui-class-prefix}-monthview-month-item {
+            color: @month-view-color-disabled;
         }
     }
 }

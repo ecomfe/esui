@@ -27,6 +27,11 @@
 
 @calendar-layer-background-color: #fff;
 
+// 验证
+@range-calendar-validity-invalid-color: #ff8555;
+@range-calendar-validity-label-invalid-color: #ff8555;
+@range-calendar-validity-label-invalid-border-color: #f0cccc;
+
 .@{ui-class-prefix}-calendar {
     width: @calendar-width;
     height: @calendar-height;
@@ -52,8 +57,8 @@
 
 .@{ui-class-prefix}-calendar-arrow {
     float: right;
-    height: 16px;
-    width: 16px;
+    height: @calendar-arrow-icon-height;
+    width: @calendar-arrow-icon-width;
     margin-top: 3px;
     margin-right: 10px;
     .pseudo-icon(
@@ -81,9 +86,9 @@
     border: @calendar-border-disabled;
 }
 
-/* 验证 */
+// 验证
 .@{ui-class-prefix}-calendar-validity-invalid {
-    border: 1px solid red;
+    border: 1px solid @range-calendar-validity-invalid-color;
 }
 
 .@{ui-class-prefix}-calendar-validity-label {
@@ -92,8 +97,8 @@
 }
 
 .@{ui-class-prefix}-calendar-validity-label-invalid {
-    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-    border: 1px solid #F0CCCC;
-    color: #dd6767;
+    .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid @range-calendar-validity-label-invalid-border-color;
+    color: @range-calendar-validity-label-invalid-color;
     padding-left: 50px;
 }
