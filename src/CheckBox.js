@@ -288,10 +288,11 @@ define(
                     paint: function (box, rawValue, checked, indeterminate) {
                         if (indeterminate !== undefined) {
                             box.updateIndeterminate(indeterminate);
+                            delete box.indeterminate;
                         }
                         var value = box.stringifyValue(rawValue);
-                        var box = lib.g(box.boxId);
-                        if(box.indeterminate){
+                        box = lib.g(box.boxId);
+                        if(indeterminate){
                             checked = false;
                         }
                         box.value = value;
