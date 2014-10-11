@@ -63,6 +63,8 @@
 @range-calendar-validity-label-invalid-border-color: #f0cccc;
 
 @range-calendar-color-disabled: #999;
+@range-calendar-month-item-color-highlight: #e2f4ef;
+@range-calendar-month-item-color-highlight-hover: #fffaee;
 
 .@{ui-class-prefix}-rangecalendar {
     width: @range-calendar-main-width;
@@ -175,36 +177,48 @@
         }
     }
 
-    .@{ui-class-prefix}-rangecalendar-begin,
-    .@{ui-class-prefix}-rangecalendar-end {
-        float: left;
-        width: 210px;
-    }
+    .@{ui-class-prefix}-rangecalendar-body {
+        .clearfix();
 
-    .@{ui-class-prefix}-rangecalendar-begin {
-        margin-right: 10px;
-    }
-
-    .@{ui-class-prefix}-rangecalendar-label {
-        font-size: 12px;
-        height: 18px;
-        padding-top: 7px;
-        overflow: hidden;
-        zoom: 1;
-        h3 {
-            float: left;
-            font-size: 12px;
-            line-height: 18px;
-            margin: 0;
-            font-weight: normal;
-        }
-        .@{ui-class-prefix}-checkbox {
-            float: right;
-            input {
-                vertical-align: text-bottom;
-                *margin-bottom: -3px;
+        .@{ui-class-prefix}-rangecalendar-label {
+            padding: 12px 0 7px;
+            height: 18px;
+            overflow: hidden;
+            zoom: 1;
+            font-size: @range-calendar-main-font-size;
+            
+            h3 {
+                float: left;
+                font-size: @range-calendar-main-font-size;
+                line-height: 18px;
+                margin: 0;
+                font-weight: normal;
             }
-            line-height: 18px;
+
+            .@{ui-class-prefix}-checkbox {
+                float: right;
+                input {
+                    vertical-align: text-bottom;
+                    *margin-bottom: -3px;
+                }
+                line-height: 18px;
+            }
+        }
+
+        .@{ui-class-prefix}-rangecalendar-begin,
+        .@{ui-class-prefix}-rangecalendar-end {
+            float: left;
+            width: 210px;
+            .@{ui-class-prefix}-monthview-month-item-highlight {
+                background: @range-calendar-month-item-color-highlight;
+            }
+            .@{ui-class-prefix}-monthview-month-item:hover {
+                background: @range-calendar-month-item-color-highlight-hover;
+            }
+        }
+
+        .@{ui-class-prefix}-rangecalendar-begin {
+            margin-right: 10px;
         }
     }
 
