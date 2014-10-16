@@ -1,0 +1,119 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 多月份多选日历
+ * @author dbear
+ */
+
+@import "./variable.less";
+@import "../mixin/util.less";
+
+@rich-calendar-width: 200px;
+@rich-calendar-height: 150px;
+@rich-calendar-padding: 40px 10px 20px 10px;
+@rich-calendar-background: #ebebeb;
+
+@rich-calendar-general-info-height: 40px;
+@rich-calendar-general-info-color: #333;
+@rich-calendar-general-info-font-size: 12px;
+@rich-calendar-general-info-linkbutton-color: #6cc9ab;
+@rich-calendar-general-info-total-num-color: #6cc9ab;
+
+@rich-calendar-textbox-font-size: 12px;
+
+@rich-calendar-icon-background: url(../../img/esui-cal.png);
+@rich-calendar-icon-width: 16px;
+@rich-calendar-icon-height: 16px;
+
+@rich-calendar-layer-background: transparent;
+@rich-calendar-layer-border: none;
+@rich-calendar-layer-padding: 0 0 2px 0;
+
+@rich-calendar-color-disabled: #999;
+
+.@{ui-class-prefix}-richcalendar {
+    position: relative;
+    width: @rich-calendar-width;
+    padding: @rich-calendar-padding;
+    background-color: @rich-calendar-background;
+
+    textarea {
+        border: none;
+        font-size: @rich-calendar-textbox-font-size;
+
+        &:focus {
+            border: none;
+        }
+    }
+
+    // 文字面板
+    .@{ui-class-prefix}-richcalendar-general-info,
+    .skin-link-button {
+        font-size: @rich-calendar-general-info-font-size;
+        line-height: @rich-calendar-general-info-height;
+    }
+
+    .@{ui-class-prefix}-richcalendar-total-num {
+        color: @rich-calendar-general-info-total-num-color;
+    }
+
+    .skin-link-button {
+        padding: 0;
+        color: @rich-calendar-general-info-linkbutton-color;
+        background-color: transparent;
+        &:hover {
+            background-color: transparent;
+        }
+    }
+
+    .@{ui-class-prefix}-richcalendar-general-info {
+        position: absolute;
+        top: 0;
+        left: 10px;
+    }
+
+    .skin-calendar-button {
+        top: 10px;
+        right: 10px;
+        border: none;
+        border-radius: 0;
+        background: none;
+        padding: 0;
+        width: @rich-calendar-icon-width;
+        height: @rich-calendar-icon-height;
+        .indent-text();
+        .pseudo-icon(
+            @rich-calendar-icon-background,
+            @rich-calendar-icon-width,
+            @rich-calendar-icon-height,
+            center, 0, center, 0, absolute
+        );
+
+        &:after {
+            visibility: visible;
+        }
+    }
+}
+
+// 浮层
+.@{ui-class-prefix}-richcalendar-layer {
+    .clear-float();
+    margin-top: 1px;
+    padding: @rich-calendar-layer-padding;
+    border: @rich-calendar-layer-border;
+    background: @rich-calendar-layer-background;
+
+    .@{ui-class-prefix}-richcalendar-month-container {
+        float: left;
+        margin-left: 5px;
+    }
+
+    .@{ui-class-prefix}-richcalendar-month-container:first-child {
+        margin-left: 0;
+    }
+}
+
+.@{ui-class-prefix}-richcalendar-layer-hidden {
+    display: none;
+}
