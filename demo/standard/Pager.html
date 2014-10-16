@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pager - ESUI Demo</title>
+    <script src="../assets/loader/esl.js"></script>
+    <script src="../../src/customShim.js"></script>
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/demo.css" />
+    <link rel="stylesheet" href="../../src/css/standard/main.css" />
+</head>
+<body>
+<h1>Pager</h1>
+<div id="page">
+    <ul id="navigator">
+    </ul>
+    <div id="main">
+        <h2>Pager</h2>
+        <section class="intro">
+            <p>基本Pager。</p>
+        </section>
+        <section class="view">
+            <ul class="viewer">
+                <li class="view-markup">结构</li>
+            </ul>
+            <div class="example">
+                <div data-ui="type:Pager;id:test;"></div>
+                <br /> <br />
+                <esui-pager data-ui-id="test1"></esui-pager>
+                <br /> <br />
+                <div id="message"></div>
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    var url = location.href;
+    var params = url.split('?');
+    if (params.length > 1) {
+        params = params[1].split('&');
+        var page = undefined;
+        var pageSize = undefined;
+        for (var i = 0, len = params.length; i < len; i++) {
+            var param = params[i].split('=');
+            var key = param[0];
+            var value = param[1];
+            if (key === 'page') {
+                page = parseInt(value);
+            }
+            else if (key === 'pageSize') {
+                pageSize = parseInt(value);
+            }
+        }
+    }
+</script>
+<script>
+    require(
+            [
+                'esui',
+                'esui/Pager'
+            ],
+            function (ui) {
+                var pager = ui.init()[0];
+
+                pager.set('pageType', 'plain');
+
+                pager.set('count', 260);
+                if (page) {
+                    pager.set('page', page);
+                }
+                else {
+                    pager.set('page', 10);
+                }
+                pager.set('backCount', 4);
+                pager.set('forwardCount', 4);
+                pager.set('backName', '←');
+                pager.set('forwardName', '→');
+                pager.set('pagePattern', 'fullPattern');
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: [13, 21, 101]
+                    });
+                }, 3000);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: []
+                    });
+                }, 4000);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: [1, 13, 20, 101]
+                    });
+                }, 5000);
+
+                setTimeout(function () {
+                    if (pageSize) {
+                        pager.setProperties({
+                            pageSize: pageSize
+                        });
+                    }
+                    else {
+                        pager.setProperties({
+                            pageSize: 20
+                        });
+                    }
+                }, 2000);
+
+                pager.set('urlTemplate', 'Pager.html?page=${page}&pageSize=${pageSize}');
+
+                // pager.set('layout', 'alignLeft');
+                // pager.set('layout', 'alignLeftReverse');
+                // pager.set('layout', 'alignRight');
+                // pager.set('layout', 'alignRightReverse');
+                // pager.set('layout', 'distributed');
+                // pager.set('layout', 'distributedReverse');
+                pager.set('layout', 'something');
+
+
+                pager.onchangepage = function () {
+                    document.getElementById('message').innerHTML += '<p>Change page to ' + this.get('page') + '</p>';
+                }
+
+                pager.onchangepagesize = function () {
+                    document.getElementById('message').innerHTML += '<p>Change page size to ' + this.get('pageSize') + '</p>';
+                }
+            }
+    );
+</script>
+</body>
+</html>
