@@ -734,7 +734,7 @@ define(
                         /**
                          * @property {string} firstText
                          *
-                         * “末页”元素的显示文字
+                         * “首页”元素的显示文字
                          */
                         'firstText',
                         /**
