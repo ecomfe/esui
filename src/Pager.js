@@ -204,7 +204,7 @@ define(
             var obj = getTplObj(
                 'item-current',
                 page,
-                    'page-' + page,
+                'page-' + page,
                 page
             );
             addSegmentToHTML(obj, plainTpl);
@@ -328,7 +328,7 @@ define(
 
             if (this.helper.isPart(target, 'item')
                 || this.helper.isPart(target, 'item-extend')
-                ) {
+            ) {
                 if (target.id === backId) {
                     page--;
                 }
@@ -576,7 +576,7 @@ define(
                 // `pageIndex`提供从0开始的页码，但是以`page`为准
                 if (properties.hasOwnProperty('pageIndex')
                     && !properties.hasOwnProperty('page')
-                    ) {
+                ) {
                     /**
                      * @property {number} pageIndex
                      *
@@ -731,7 +731,12 @@ define(
                          * 则显示`[5] [6] [7] [8]`
                          */
                         'forwardCount',
-
+                        /**
+                         * @property {string} firstText
+                         *
+                         * “末页”元素的显示文字
+                         */
+                        'firstText',
                         /**
                          * @property {string} lastText
                          *
