@@ -369,15 +369,18 @@ define(
                 {
                     name: [
                         'targetDOM', 'targetControl',
-                        'showMode', 'positionOpt', 'delayTime', 'showDuration'
+                        'showMode', 'isHideOnOut', 'positionOpt', 'delayTime',
+                        'showDuration'
                     ],
                     paint:
                         function (tipLayer, targetDOM, targetControl,
-                            showMode, positionOpt, delayTime, showDuration) {
+                            showMode, isHideOnOut, positionOpt, delayTime,
+                            showDuration) {
                         var options = {
                             targetDOM: targetDOM,
                             targetControl: targetControl,
                             showMode: showMode,
+                            isHideOnOut: isHideOnOut,
                             delayTime: delayTime || DEFAULT_DELAY_SHOW,
                             showDuration: showDuration || DEFAULT_DELAY_HIDE
                         };
@@ -846,6 +849,24 @@ define(
                         options.positionOpt
                     )
                 );
+
+                // 如果设置了isHideOnOut，则mouseout this.main和mouseout
+                // targetElement的时候，隐藏浮层
+                var isHideOnOut = options.isHideOnOut;
+                if (isHideOnOut === true || isHideOnOut === 'true') {
+                    helper.addDOMEvent(
+                        this, handler.targetElement, 'mouseout',
+                        function () {
+                            handler.layer.hide();
+                        }
+                    );
+                    helper.addDOMEvent(
+                        this, this.main, 'mouseout',
+                        function () {
+                            handler.layer.hide();
+                        }
+                    );
+                }
             },
 
             /**
