@@ -201,8 +201,9 @@ define(
             if (customLookClass) {
                 classes.push(group.helper.getPartClassName(boxType + '-' + customLookClass));
             }*/
-            var classList = group.main && group.main.classList || [];
-            if(classList.length){
+            var classList = group.main && group.main.classList 
+                        || (group.main.className ? group.main.className.split(/\s+/) : []);
+            if (classList.length) {
                 classes = classes.concat(classList);
             }
 
