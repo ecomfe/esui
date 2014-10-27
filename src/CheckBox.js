@@ -294,9 +294,7 @@ define(
                         }
                         var value = box.stringifyValue(rawValue);
                         box = lib.g(box.boxId);
-                        if (indeterminate) {
-                            checked = false;
-                        }
+
                         box.value = value;
                         box.checked = checked;
                     }
