@@ -298,3 +298,30 @@
     height: @height;
     line-height: @height;
 }
+
+// 提示层气泡尖角
+.top-pointer(@color, @left, @right) {
+    border-top: 3px solid @color;
+    position: relative;
+    &:before {
+        border-style: solid;
+        border-width: 0 5px 5px;
+        border-color: transparent transparent @color transparent;
+        content: "";
+        position: absolute;
+        top: 0;
+        margin-top: -8px;
+    }
+}
+
+.top-pointer(@color, @left, @right) when (@left > 0) {
+    &:before {
+        left: @left;
+    }
+}
+
+.top-pointer(@color, @left, @right) when (@right > 0) {
+    &:before {
+        right: @right;
+    }
+}

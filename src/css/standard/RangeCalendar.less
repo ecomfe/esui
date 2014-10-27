@@ -1,0 +1,317 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 区间日历样式
+ * @author dbear
+ */
+
+@import "./variable.less";
+@import "../mixin/util.less";
+
+// 主按钮
+@range-calendar-main-background: #f5f5f5;
+@range-calendar-main-background-disabled: #999;
+@range-calendar-main-border: 1px solid transparent;
+@range-calendar-main-border-hover: 1px solid transparent;
+@range-calendar-main-border-disabled: 1px solid #999;
+
+@range-calendar-main-width: 235px;
+@range-calendar-main-height: 23px;
+@range-calendar-main-font-size: 12px;
+@range-calendar-main-font-color: #666;
+
+@range-calendar-arrow-icon: url(../../img/esui-monthview-select-icon.png);
+@range-calendar-arrow-icon-active: url(../../img/esui-monthview-select-icon-active.png);
+@range-calendar-arrow-icon-disabled: url(../../img/esui-combo-arrow-normal.png);
+@range-calendar-arrow-icon-width: 9px;
+@range-calendar-arrow-icon-height: 5px;
+
+// 浮层
+@range-calendar-layer-background: #f6f6f6;
+@range-calendar-layer-border-top-color: #dfdfdf;
+@range-calendar-layer-border-top: 3px solid @range-calendar-layer-border-top-color;
+@range-calendar-layer-border-bottom: none;
+@range-calendar-layer-border-left: none;
+@range-calendar-layer-border-right: none;
+@range-calendar-layer-padding: 11px;
+
+// 关闭浮层
+@range-calendar-layer-close-icon: url(../../img/esui-rangecalendar-layer-close-icon.png);
+@range-calendar-layer-close-icon-width: 10px;
+@range-calendar-layer-close-icon-height: 10px;
+
+// 快捷按钮
+@range-calendar-shortcut-item-color: #6cc9ab;
+@range-calendar-shortcut-item-color-selected: #666;
+@range-calendar-shortcut-item-color-disabled: #999;
+@range-calendar-shortcut-item-separator-color: #c8caca;
+
+// 取消按钮颜色
+@range-calendar-link-text-color: #66c4a5;
+@range-calendar-link-text-color-hover: #74dcce;
+@range-calendar-ok-button-background: #6ccdc0;
+@range-calendar-ok-button-background-hover: #73dacc;
+@range-calendar-ok-button-width: 60px;
+@range-calendar-ok-button-height: 30px;
+@range-calendar-cancel-button-width: 30px;
+@range-calendar-cancel-button-height: 30px;
+
+// 验证
+@range-calendar-validity-invalid-color: #ff8555;
+@range-calendar-validity-label-invalid-color: #ff8555;
+@range-calendar-validity-label-invalid-border-color: #f0cccc;
+
+@range-calendar-color-disabled: #999;
+@range-calendar-month-item-color-highlight: #e2f4ef;
+@range-calendar-month-item-color-highlight-hover: #fffaee;
+
+.@{ui-class-prefix}-rangecalendar {
+    width: @range-calendar-main-width;
+    height: @range-calendar-main-height;
+    line-height: @range-calendar-main-height;
+    border: @range-calendar-main-border;
+    padding-left: 8px;;
+    font-size: @range-calendar-main-font-size;
+    cursor: pointer;
+    background-color: @range-calendar-main-background;
+    .user-select();
+}
+
+.@{ui-class-prefix}-rangecalendar-text {
+    padding-left: 3px;
+    float: left;
+    color: @range-calendar-main-font-color;
+}
+
+.@{ui-class-prefix}-rangecalendar:hover,
+.@{ui-class-prefix}-rangecalendar:active {
+    border: @range-calendar-main-border-hover;
+}
+
+.@{ui-class-prefix}-rangecalendar-arrow {
+    float: right;
+    width: @range-calendar-arrow-icon-width;
+    height: @range-calendar-main-height;
+    margin-right: 5px;
+
+    .pseudo-icon(
+        @range-calendar-arrow-icon,
+        @range-calendar-arrow-icon-width,
+        @range-calendar-arrow-icon-height,
+        center
+    );
+}
+
+.@{ui-class-prefix}-rangecalendar-active {
+    .@{ui-class-prefix}-rangecalendar-arrow {
+        background: none;
+        .pseudo-icon(
+            @range-calendar-arrow-icon-active,
+            @range-calendar-arrow-icon-width,
+            @range-calendar-arrow-icon-height,
+            center
+        );
+    }
+}
+
+.@{ui-class-prefix}-rangecalendar-layer {
+    background: @range-calendar-layer-background;
+    border-top: @range-calendar-layer-border-top;
+    border-bottom: @range-calendar-layer-border-bottom;
+    border-left: @range-calendar-layer-border-left;
+    border-right: @range-calendar-layer-border-right;
+    padding: @range-calendar-layer-padding;
+    width: auto;
+
+    &.ui-layer-bl {
+        .top-pointer(@range-calendar-layer-border-top-color, 60px, 0);
+        position: absolute;
+    }
+
+    &.ui-layer-br {
+        .top-pointer(@range-calendar-layer-border-top-color, 0, 60px);
+        position: absolute;
+    }
+    
+    .@{ui-class-prefix}-rangecalendar-shortcut {
+        font-size: @range-calendar-main-font-size;
+        height: 20px;
+        line-height: 20px;
+        padding-right: 10px;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-item {
+        border-left: 1px solid @range-calendar-shortcut-item-separator-color;
+        margin-left: 5px;
+        padding-left: 5px;
+        color: @range-calendar-shortcut-item-color;
+        text-decoration: none;
+        .interactive-cursor ();
+        &.@{ui-class-prefix}-rangecalendar-shortcut-item-first {
+            border-left: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-item-selected {
+        color: @range-calendar-shortcut-item-color-selected;
+        cursor: default;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-item-disabled {
+        color: @range-calendar-shortcut-item-color-disabled;
+        cursor: default;
+        text-decoration: none;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-disabled {
+        .@{ui-class-prefix}-rangecalendar-shortcut-item {
+            color: @range-calendar-shortcut-item-color-disabled;
+            cursor: default;
+            text-decoration: none;
+        }
+    }
+
+    .@{ui-class-prefix}-rangecalendar-body {
+        .clearfix();
+
+        .@{ui-class-prefix}-rangecalendar-label {
+            padding: 12px 0 7px;
+            height: 18px;
+            overflow: hidden;
+            zoom: 1;
+            font-size: @range-calendar-main-font-size;
+            
+            h3 {
+                float: left;
+                font-size: @range-calendar-main-font-size;
+                line-height: 18px;
+                margin: 0;
+                font-weight: normal;
+            }
+
+            .@{ui-class-prefix}-checkbox {
+                float: right;
+                input {
+                    vertical-align: text-bottom;
+                    *margin-bottom: -3px;
+                }
+                line-height: 18px;
+            }
+        }
+
+        .@{ui-class-prefix}-rangecalendar-begin,
+        .@{ui-class-prefix}-rangecalendar-end {
+            float: left;
+            width: 210px;
+            .@{ui-class-prefix}-monthview-month-item-highlight {
+                background: @range-calendar-month-item-color-highlight;
+            }
+            .@{ui-class-prefix}-monthview-month-item:hover {
+                background: @range-calendar-month-item-color-highlight-hover;
+            }
+        }
+
+        .@{ui-class-prefix}-rangecalendar-begin {
+            margin-right: 10px;
+        }
+    }
+
+    .@{ui-class-prefix}-rangecalendar-foot {
+        clear: both;
+        padding-top: 8px;
+        .@{ui-class-prefix}-button {
+            margin-right: 5px;
+        }
+    }
+
+    .skin-layerClose-button {
+        position: absolute;
+        .normal-icon(
+            @range-calendar-layer-close-icon,
+            @range-calendar-layer-close-icon-width,
+            @range-calendar-layer-close-icon-height
+        );
+        right: 11px;
+        top: 12px;
+        border: none;
+        padding: 0;
+    }
+}
+
+.@{ui-class-prefix}-rangecalendar-layer-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-rangecalendar-disabled,
+.@{ui-class-prefix}-rangecalendar-read-only {
+    color: @range-calendar-main-background-disabled;
+    border-color: @range-calendar-main-border-disabled;
+}
+
+// 验证
+.@{ui-class-prefix}-rangecalendar-validity-invalid {
+    border: 1px solid @range-calendar-validity-invalid-color;
+}
+
+.@{ui-class-prefix}-rangecalendar-validity-label {
+    display: block;
+    margin-top: 5px;
+}
+
+.@{ui-class-prefix}-rangecalendar-validity-label-invalid {
+    .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid @range-calendar-validity-label-invalid-border-color;
+    color: @range-calendar-validity-label-invalid-color;
+    padding-left: 50px;
+}
+
+// 覆盖按钮
+.@{ui-class-prefix}-rangecalendar-okBtn {
+    width: @range-calendar-ok-button-width;
+    height: @range-calendar-ok-button-height;
+    line-height: @range-calendar-ok-button-height;
+    font-weight: bold;
+    background-color: @range-calendar-ok-button-background;
+
+    &:active,
+    &:hover {
+        background-color: @range-calendar-ok-button-background-hover;
+    }
+}
+
+.@{ui-class-prefix}-rangecalendar-cancelBtn {
+    width: @range-calendar-cancel-button-width;
+    height: @range-calendar-cancel-button-height;
+    line-height: @range-calendar-cancel-button-height;
+    color: @range-calendar-link-text-color;
+    background-color: transparent;
+    text-align: left;
+
+    &:active,
+    &:hover {
+        color: @range-calendar-link-text-color-hover;
+        background-color: transparent;
+    }
+}
+
+// disable状态
+.@{ui-class-prefix}-rangecalendar-disabled {
+    .@{ui-class-prefix}-rangecalendar-text {
+        color: @range-calendar-color-disabled;
+    }
+    
+    .@{ui-class-prefix}-rangecalendar-arrow {
+        .pseudo-icon(
+            @range-calendar-arrow-icon-disabled,
+            @range-calendar-arrow-icon-width,
+            @range-calendar-arrow-icon-height,
+            center
+        );
+    }
+}
