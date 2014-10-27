@@ -8,9 +8,9 @@
 @import "mixin.less";
 @import "variable.less";
 
-@paddingVertical: 2px;
-@paddingHorizon: 4px;
-@borderWidth: 1px;
+@padding-vertical: 2px;
+@padding-horizon: 4px;
+@border-width: 1px;
 
 .@{ui-class-prefix}-textbox {
     position: relative;
@@ -19,10 +19,10 @@
 
     input, textarea {
         color: #333;
-        padding: @paddingVertical @paddingHorizon;
+        padding: @padding-vertical @padding-horizon;
         font-size: 13px;
         background: #FFF;
-        border: @borderWidth solid #a8adb6;
+        border: @border-width solid #a8adb6;
         height: 19px;
         line-height: 19px;
         width: 200px;
@@ -51,7 +51,7 @@
     .inline-block ();
     .box-sizing (content-box);
     background-color: #f2f2f2;
-    padding: @paddingVertical 12px;
+    padding: @padding-vertical 12px;
     border: 1px solid #a8adb6;
     vertical-align: middle;
     height: 19px;
@@ -64,7 +64,7 @@
     height: 19px;
     line-height: 19px;
     left: 3px;
-    top: @paddingVertical + @borderWidth;
+    top: @padding-vertical + @border-width;
 }
 
 .@{ui-class-prefix}-textbox-placeholder-hidden {

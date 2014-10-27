@@ -94,7 +94,7 @@ define(
                  */
                 name: 'content',
                 paint: function (toast, content) {
-                    var container = toast.helper.getPart('content');
+                    var container = toast.main.firstChild;
                     container.innerHTML = content;
                 }
             },
@@ -106,7 +106,7 @@ define(
                  */
                 name: 'messageType',
                 paint: function (toast, messageType) {
-                    toast.helper.addPartClasses(this.messageType);
+                    toast.helper.addPartClasses(toast.messageType);
                 }
             }
         );
@@ -119,6 +119,11 @@ define(
         Toast.prototype.show = function () {
             if (this.helper.isInStage('DISPOSED')) {
                 return;
+            }
+
+            // 如果没放到DOM中，这里放进去
+            if (!this.main.parentElement && !this.main.parentNode) {
+                this.appendTo(getContainer.call(this));
             }
 
             Control.prototype.show.apply(this, arguments);
@@ -177,6 +182,20 @@ define(
             return element;
         }
 
+        function createHandler(messageType) {
+            return function (content, options) {
+                if (messageType === 'show') {
+                    messageType = 'normal';
+                }
+                options = lib.extend({ content: content }, options);
+                options.messageType = options.messageType || messageType;
+                var toast = new Toast(options);
+                Control.prototype.hide.apply(toast);
+                toast.appendTo(getContainer.call(toast));
+                return toast;
+            };
+        }
+
         /**
          * 快捷显示信息的方法
          *
@@ -187,19 +206,8 @@ define(
         var allType = ['show', 'info', 'alert', 'error', 'success'];
         for (var key in allType) {
             if (allType.hasOwnProperty(key)) {
-                (function (messageType) {
-                    Toast[messageType] = function (content, options) {
-                        if (messageType === 'show') {
-                            messageType = 'normal';
-                        }
-                        options.messageType = options.messageType || messageType;
-                        options = lib.extend({ content: content }, options);
-                        var toast = new Toast(options);
-                        Control.prototype.hide.apply(toast);
-                        toast.appendTo(getContainer.call(toast));
-                        return toast;
-                    };
-                })(allType[key]);
+                var messageType = allType[key];
+                Toast[messageType] = createHandler(messageType);
             }
         }
 

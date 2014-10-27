@@ -236,12 +236,16 @@ define(
                         arrow: this.helper.getPartClassName('arrow')
                     }
                 );
+            },
 
-                this.helper.addDOMEvent(
-                    this.main,
-                    'click',
-                    u.bind(this.layer.toggle, this.layer)
-                );
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
             },
 
             /**
@@ -261,14 +265,8 @@ define(
                      */
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (calendar.disabled || calendar.readOnly) {
-                            return;
-                        }
-
                         updateDisplayText(calendar);
 
-                        // if (calendar.layer) {
-                        // 更新日历
                         var monthView = calendar.getChild('monthView');
                         if (monthView) {
                             monthView.setProperties({
@@ -276,8 +274,6 @@ define(
                                 range: range
                             });
                         }
-                        // }
-
                     }
                 },
                 {

@@ -17,7 +17,8 @@
 .@{ui-class-prefix}-monthview-head {
     background: none repeat scroll 0 0 #CCCED4;
     height: 27px;
-    padding: 2px 5px;
+    padding: 2px 0;
+    font-size: 13px;
 
     table {width:200px;}
 
@@ -25,6 +26,10 @@
     .@{ui-class-prefix}-monthview-month-select,
     .@{ui-class-prefix}-monthview-year-select {
         width: 30px;
+    }
+
+    .@{ui-class-prefix}-monthview-month-select {
+        width: 14px;
     }
 
     .@{ui-class-prefix}-monthview-month-forward,
@@ -41,12 +46,38 @@
         }
     }
 
+    .@{ui-class-prefix}-monthview-month-back {
+        float: left;
+        margin-left: 5px;
+    }
+
     .@{ui-class-prefix}-monthview-month-forward {
+        float: right;
+        margin-right: 5px;
         background-position: -20px -200px;
-        margin-left: 15px;
         &:active {
             background-position: -20px -200px;
         }
+    }
+
+    .@{ui-class-prefix}-monthview-month-back-td {
+        width: 30px;
+    }
+    
+    .@{ui-class-prefix}-monthview-year-select-td {
+        width: 55px;
+    }
+
+    .@{ui-class-prefix}-monthview-month-forward-td {
+        width: 30px;            
+    }
+
+    .@{ui-class-prefix}-monthview-month-select-td {
+        width: 40px;
+    }
+
+    .@{ui-class-prefix}-monthview-select-label {
+        width: 20px;
     }
 }
 

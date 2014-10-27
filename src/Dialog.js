@@ -11,10 +11,6 @@ define(
         require('./Button');
         require('./Panel');
 
-        // 仅在调试的时候打开
-        //require('css!./css/Button.css');
-        //require('css!./css/Dialog.css');
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
@@ -137,14 +133,21 @@ define(
          * @inner
          */
         function closeClickHandler() {
+            var event = this.fire('beforeclose');
+
+            // 阻止事件，则不继续运行
+            if (event.isDefaultPrevented()) {
+                return false;
+            }
+
+            this.hide();
+
             this.fire('close');
 
             if (this.closeOnHide) {
                 this.dispose();
             }
-            else {
-                this.hide();
-            }
+
         }
 
 
@@ -360,7 +363,7 @@ define(
          */
         function hideMask(dialog) {
             var mask = getMask(dialog);
-            if ('undefined' != typeof mask) {
+            if ('undefined' !== typeof mask) {
                 lib.removeNode(mask);
             }
         }
@@ -432,12 +435,12 @@ define(
                     defaultFoot: ''
                         + '<div '
                         + 'class="'
-                        + this.helper.getPartClassNames('ok-btn')
+                        + this.helper.getPartClassName('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
                         + 'childName:btnOk;skin:spring;">确定</div>'
                         + '<div '
                         + 'class="'
-                        + this.helper.getPartClassNames('cancel-btn')
+                        + this.helper.getPartClassName('cancel-btn') + '" '
                         + 'data-ui="type:Button;'
                         + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
                     needFoot: true,
@@ -488,8 +491,15 @@ define(
                 if (this.needFoot) {
                     this.createBF('foot', this.roles.foot);
                 }
+            },
 
-                // 初始化控件主元素上的行为
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 if (this.closeButton) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
                     if (close) {
@@ -502,6 +512,7 @@ define(
                     }
                 }
             },
+
             /**
              * 构建对话框主内容和底部内容
              *
@@ -516,7 +527,7 @@ define(
                 else {
                     mainDOM = document.createElement('div');
 
-                    if (type == 'body') {
+                    if (type === 'body') {
                         // 找到head
                         var head = this.getChild('head');
                         if (head) {
@@ -1005,7 +1016,7 @@ define(
 
             dialog.setFoot(''
                 + '<div '
-                + 'class="' + dialog.helper.getPartClassNames('ok-btn') + '"'
+                + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
                 + okText

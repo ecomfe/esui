@@ -83,12 +83,12 @@ define(
         };
 
         /**
-         * 初始化DOM结构
+         * 初始化事件交互
          *
          * @protected
          * @override
          */
-        Label.prototype.initStructure = function () {
+        Label.prototype.initEvents = function () {
             /**
              * @event click
              *
@@ -97,10 +97,7 @@ define(
             this.helper.delegateDOMEvent(this.main, 'click');
         };
 
-        var allProperties = [
-            { name: 'title' },
-            { name: 'text' }
-        ];
+        var paint = require('./painters');
 
         /**
          * 重渲染
@@ -109,36 +106,51 @@ define(
          * @protected
          * @override
          */
-        Label.prototype.repaint = function (changes) {
-            Control.prototype.repaint.apply(this, arguments);
-            changes = changes || allProperties;
+        Label.prototype.repaint = paint.createRepaint(
+            Control.prototype.repaint,
+            /**
+             * @property {string} title
+             *
+             * 鼠标放置在控件上时的提示信息
+             */
+            paint.attribute('title'),
+            /**
+             * @property {string} text
+             *
+             * 文本内容，会被自动HTML转义
+             */
+            paint.text('text'),
+            /**
+             * @property {string} forTarget
+             *
+             * 与当前标签关联的输入控件的id，仅当主元素为`<label>`元素时生效，相当于`for`属性的效果，但指定的是控件的id
+             */
+            {
+                name: 'forTarget',
+                paint: function (label, forTarget) {
+                    // 仅对`<label>`元素生效
+                    if (label.main.nodeName.toLowerCase() !== 'label') {
+                        return;
+                    }
 
-            var shouldRepaint = false;
-            for (var i = 0; i < changes.length; i++) {
-                var record = changes[i];
+                    label.helper.addDOMEvent(
+                        label.main,
+                        'mousedown',
+                        function fixForAttribute() {
+                            var targetControl = this.viewContext.get(forTarget);
+                            var targetElement = targetControl
+                                && (typeof targetControl.getFocusTarget === 'function')
+                                && targetControl.getFocusTarget();
+                            if (targetElement && targetElement.id) {
+                                lib.setAttribute(this.main, 'for', targetElement.id);
+                            }
 
-                /**
-                 * @property {string} title
-                 *
-                 * 鼠标放置在控件上时的提示信息
-                 */
-                if (record.name === 'title') {
-                    this.main.title = u.escape(this.title);
-                }
-                else {
-                    shouldRepaint = true;
+                            this.helper.removeDOMEvent(this.main, 'mousedown', fixForAttribute);
+                        }
+                    );
                 }
             }
-
-            if (shouldRepaint) {
-                /**
-                 * @property {string} text
-                 *
-                 * 文本内容，会被自动HTML转义
-                 */
-                this.main.innerHTML = u.escape(this.text);
-            }
-        };
+        );
 
         /**
          * 设置文本

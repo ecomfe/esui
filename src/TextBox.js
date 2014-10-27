@@ -92,7 +92,19 @@ define(
                  *
                  * 指定文本框获得焦点时是否自动全选
                  */
-                autoSelect: false
+                autoSelect: false,
+                /**
+                 * @property {string} [icon=null]
+                 *
+                 * 指定文本框的图标选择器名称, 目前组件创建后不支持动态修改。
+                 */
+                icon: null,
+                /**
+                 * @property {string} [iconPosition='left']
+                 *
+                 * 指定文本框的图标位置选择器名称, 目前组件创建后不支持动态修改。
+                 */
+                iconPosition: 'left'
             };
             u.extend(properties, TextBox.defaultProperties);
 
@@ -273,6 +285,22 @@ define(
         }
 
         /**
+         * 图标点击事件
+         *
+         * @param {Event} e DOM事件对象
+         * @ignore
+         */
+        function iconClick(e) {
+            /**
+             * @event iconclick
+             *
+             * 图标被点击时触发
+             *
+             * @member TextBox
+             */
+            this.fire('iconclick');
+        }
+        /**
          * 初始化DOM结构
          *
          * @protected
@@ -322,6 +350,35 @@ define(
             }
 
             var input = lib.g(this.inputId);
+            var icon = this.icon;
+            if (icon) {
+                var iconElement = document.createElement('span');
+                iconElement.className = icon + ' ' + this.helper.getPartClasses('icon');
+                lib.insertBefore(iconElement, input);
+                var iconPos = this.iconPosition;
+                if (iconPos) {
+                    this.helper.addPartClasses(iconPos, iconElement);
+                }
+            }
+
+            if (!supportPlaceholder) {
+                
+                var placeholder = document.createElement('label');
+                placeholder.id = this.helper.getId('placeholder');
+                lib.setAttribute(placeholder, 'for', input.id);
+                this.helper.addPartClasses('placeholder', placeholder);
+                lib.insertAfter(placeholder, input);
+            }
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        TextBox.prototype.initEvents = function () {
+            var input = lib.g(this.inputId);
             this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
             this.helper.addDOMEvent(input, 'focus', focus);
             this.helper.addDOMEvent(input, 'blur', blur);
@@ -330,13 +387,8 @@ define(
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
             this.helper.delegateDOMEvent(input, 'change');
-
-            if (!supportPlaceholder) {
-                var placeholder = document.createElement('label');
-                placeholder.id = this.helper.getId('placeholder');
-                lib.setAttribute(placeholder, 'for', input.id);
-                this.helper.addPartClasses('placeholder', placeholder);
-                lib.insertAfter(placeholder, input);
+            if (this.icon) {
+                this.helper.addDOMEvent(this.main.firstChild, 'click', iconClick);
             }
         };
 

@@ -146,17 +146,13 @@ define(
         };
 
         /**
-         * 初始化DOM结构
+         * 初始化事件交互
          *
          * @protected
          * @override
          */
-        CommandMenu.prototype.initStructure = function () {
-            this.helper.addDOMEvent(
-                this.main,
-                'click',
-                u.bind(this.layer.toggle, this.layer)
-            );
+        CommandMenu.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
         };
 
         var paint = require('./painters');

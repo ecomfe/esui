@@ -11,6 +11,7 @@ define(
         var Control = require('./Control');
         var lib = require('./lib');
         var helper = require('./controlHelper');
+        var u = require('underscore');
 
         var TreeStrategy = require('./TreeStrategy');
 
@@ -384,8 +385,17 @@ define(
          * @override
          */
         Tree.prototype.initStructure = function () {
-            helper.addDOMEvent(this, this.main, 'click', this.clickNode);
             this.strategy.attachTo(this);
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Tree.prototype.initEvents = function () {
+            helper.addDOMEvent(this, this.main, 'click', this.clickNode);
         };
 
         /**
@@ -408,6 +418,29 @@ define(
 
             return index;
         }
+
+        /**
+         * 从索引中移除一个节点
+         *
+         * @param {string} id 节点的id
+         * @protected
+         */
+        Tree.prototype.removeNodeFromIndex = function (id) {
+            var node = this.nodeIndex[id];
+
+            if (!node) {
+                return;
+            }
+
+            this.nodeIndex[id] = undefined;
+
+            if (!node.children) {
+                return;
+            }
+
+            // 需要把子节点也移掉
+            u.each(node.children, this.removeNodeFromIndex, this);
+        };
 
         /**
          * 重渲染
@@ -648,13 +681,14 @@ define(
          * 取消一个节点的选中状态
          *
          * @param {string} id 节点id
+         * @param {boolean} [silent=false] 是否禁止触发事件
          * @fires unselectnode
          */
-        Tree.prototype.unselectNode = function (id) {
+        Tree.prototype.unselectNode = function (id, silent) {
             unselectNode(
                 this,
                 id,
-                { force: true, silent: false, modifyDOM: true }
+                { force: true, silent: silent, modifyDOM: true }
             );
         };
 
@@ -693,7 +727,7 @@ define(
                                 node.children[i].id,
                                 { force: true, silent: true, modifyDOM: false }
                             );
-                            this.nodeIndex[node.children[i].id] = undefined;
+                            this.removeNodeFromIndex(node.children[i].id);
                         }
                     }
                     node.children = children;

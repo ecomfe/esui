@@ -105,7 +105,7 @@ define(
             }
             else {
                 mainDOM = document.createElement('div');
-                if (type == 'body') {
+                if (type === 'body') {
                     // 找到head
                     var head = control.getChild('title');
                     if (head) {
@@ -199,7 +199,7 @@ define(
         }
 
         function getElementByControl(tipLayer, control) {
-            if (typeof control == 'string') {
+            if (typeof control === 'string') {
                 control = tipLayer.viewContext.get(control);
             }
             return control.main;
@@ -268,8 +268,6 @@ define(
                         helper.getPartClasses(this, 'arrow').join(' ');
                     this.main.appendChild(arrow);
                 }
-
-
             },
 
 
@@ -799,7 +797,7 @@ define(
             function btnClickHandler(tipLayer) {
                 // 有可能在参数里设置了处理函数
                 var handler = tipLayer.onok;
-                var isFunc = (typeof handler == 'function');
+                var isFunc = (typeof handler === 'function');
                 if (isFunc) {
                     handler(tipLayer);
                 }

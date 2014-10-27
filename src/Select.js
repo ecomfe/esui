@@ -149,7 +149,7 @@ define(
                 context.selectedIndex = -1;
                 var value = context.rawValue || context.value;
                 for (var i = 0; i < context.datasource.length; i++) {
-                    if (context.datasource[i].value == value) {
+                    if (context.datasource[i].value == value) {   // jshint ignore:line
                         context.selectedIndex = i;
                         break;
                     }
@@ -319,13 +319,22 @@ define(
             this.main.tabIndex = 0;
 
             this.main.innerHTML = this.helper.getPartHTML('text', 'span');
-
-            this.helper.addDOMEvent(
-                this.main,
-                'click',
-                u.bind(this.layer.toggle, this.layer)
-            );
         };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Select.prototype.initEvents = function () {
+            this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
+            this.layer.on('rendered', u.bind(addLayerClass, this));
+        };
+
+        function addLayerClass() {
+            this.fire('layerrendered', { layer: this.layer });
+        }
 
         /**
          * 根据控件的值更新其视图
@@ -533,6 +542,15 @@ define(
             }
 
             InputControl.prototype.dispose.apply(this, arguments);
+        };
+
+        /**
+         * 获取当前选中的{@link meta.SelectItem}对象
+         *
+         * @return {meta.SelectItem}
+         */
+        Select.prototype.getSelectedItem = function () {
+            return this.get('datasource')[this.get('selectedIndex')];
         };
 
         lib.inherits(Select, InputControl);

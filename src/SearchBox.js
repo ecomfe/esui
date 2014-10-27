@@ -45,7 +45,7 @@ define(
 
             if (lib.isInput(this.main)) {
                 if (!properties.placeholder) {
-                    properties.placeholder = 
+                    properties.placeholder =
                         lib.getAttribute(this.main, 'placeholder');
                 }
 
@@ -85,7 +85,7 @@ define(
         SearchBox.prototype.initStructure = function () {
             // 一个搜索框由一个文本框和一个按钮组成
             var textboxOptions = {
-                mode: 'text', 
+                mode: 'text',
                 childName: 'text',
                 height: this.height,
                 viewContext: this.viewContext,
@@ -100,7 +100,27 @@ define(
             textbox.appendTo(this.main);
             this.addChild(textbox);
 
+            var buttonOptions = {
+                main: document.createElement('span'),
+                childName: 'button',
+                content: '搜索',
+                viewContext: this.viewContext
+            };
+            var button = ui.create('Button', buttonOptions);
+            button.appendTo(this.main);
+            this.addChild(button);
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        SearchBox.prototype.initEvents = function () {
+            var textbox = this.getChild('text');
             var delegate = require('mini-event').delegate;
+
             delegate(textbox, this, 'input');
             delegate(textbox, 'enter', this, 'search');
             // 回车时要取消掉默认行为，否则会把所在的表单给提交了
@@ -115,15 +135,8 @@ define(
             textbox.on('focus', lib.bind(this.addState, this, 'focus'));
             textbox.on('blur', lib.bind(this.removeState, this, 'focus'));
 
-            var buttonOptions = {
-                main: document.createElement('span'),
-                childName: 'button',
-                content: '搜索',
-                viewContext: this.viewContext
-            };
-            var button = ui.create('Button', buttonOptions);
-            button.appendTo(this.main);
-            this.addChild(button);
+            var button = this.getChild('button');
+
             delegate(button, 'click', this, 'search');
         };
 

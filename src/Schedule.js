@@ -386,7 +386,7 @@ define(
                      + 'px;top:0;left:' + start * 25 + 'px;';
 
                 //设置星期checkbox的选中值
-                checkInput.checked = length == 24 ? true : false;
+                checkInput.checked = length === 24 ? true : false;
 
                 coverDiv.setAttribute('data-start-time', start);
                 coverDiv.setAttribute('data-end-time', end);
@@ -399,7 +399,7 @@ define(
                     {
                         start: start,
                         end: end,
-                        text: length == 24
+                        text: length === 24
                             ? '全天投放' : start + '.00-' + end + '.00',
                         coverClass: getClass(me, 'covertimes-tip')
                     }
@@ -514,11 +514,9 @@ define(
          *
          */
         function dayClickHandler(e) {
-
             var target = lib.event.getTarget(e);
 
-            if (target.nodeName.toLowerCase() != 'input') {
-
+            if (target.nodeName.toLowerCase() !== 'input') {
                 return;
             }
 
@@ -557,16 +555,14 @@ define(
             var index = target.getAttribute('data-item');
 
             var func = this.shortcut[index].getValue;
-            typeof func == 'function' && func.call(this);
+            typeof func === 'function' && func.call(this);
 
             var rawValue;
 
-            if (typeof func == 'function') {
-
+            if (typeof func === 'function') {
                 rawValue = func.call(this);
             }
             else {
-
                 rawValue = func;
             }
 
@@ -729,17 +725,15 @@ define(
                     parseInt(item.getAttribute('data-start-time'), 10);
                 var endCT =
                     parseInt(item.getAttribute('data-end-time'), 10);
-                var CoverDay =
+                var coverDay =
                     parseInt(item.getAttribute('data-day'), 10);
 
                 if (time >= startCT
                     && time < endCT
-                    && day == CoverDay) {
-
+                    && day === coverDay) {
                     item.style.display = 'none';
                 }
                 else {
-
                     item.style.display = 'block';
                 }
             }
@@ -772,60 +766,6 @@ define(
         var getTimeBodyMoveHandler; //drag mousemove的句柄
         var getTimeBodyUpHandler; //drag mouseup的句柄
 
-        /**
-         * 绑定事件
-         * @param  {Schedule} schedule
-         */
-        function bindEvent(schedule) {
-            var me = schedule;
-
-            var timebody = lib.g( getId(me, 'time-body') );
-            //绑定拖动drag事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mousedown', timeBodyDownHandler);
-
-            //绑定timebody mouseover事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mouseover', timeOverHandler);
-
-            //绑定timebody mouseout事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mouseout', timeOutHandler);
-
-            //绑定选择星期事件
-            helper.addDOMEvent(
-                schedule,
-                lib.g( getId(me, 'day-head') ),
-                'click',
-                dayClickHandler
-            );
-
-
-            var shortcut = lib.g( getId(me, 'shortcut') );
-            //绑定点击shortcut事件
-            helper.addDOMEvent(
-                schedule, shortcut, 'click', shortcutClickHandler);
-
-            //shortcut mouseover
-            helper.addDOMEvent(
-                schedule,
-                lib.g( getId(me, 'shortcut') ),
-                'mouseover',
-                lib.curry(shortcutOverOutHandler, true)
-            );
-
-            //shortover mouseout
-            helper.addDOMEvent(
-                schedule,
-                shortcut,
-                'mouseout',
-                lib.curry(shortcutOverOutHandler, false)
-            );
-
-            //shortcut mousemove
-            helper.addDOMEvent(
-                schedule, shortcut, 'mousemove', shortcutMoveHandler);
-        }
 
         /**
          * drag时 mousedown的事件处理函数
@@ -1278,7 +1218,41 @@ define(
                 );
 
                 initBody(me);
-                bindEvent(me);
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                var timebody = lib.g( getId(this, 'time-body') );
+                //绑定拖动drag事件
+                this.helper.addDOMEvent(timebody, 'mousedown', timeBodyDownHandler);
+
+                //绑定timebody mouseover事件
+                this.helper.addDOMEvent(timebody, 'mouseover', timeOverHandler);
+
+                //绑定timebody mouseout事件
+                this.helper.addDOMEvent(timebody, 'mouseout', timeOutHandler);
+
+                //绑定选择星期事件
+                this.helper.addDOMEvent(lib.g(getId(this, 'day-head')), 'click', dayClickHandler);
+
+
+                var shortcut = this.helper.getPart('shortcut');
+                //绑定点击shortcut事件
+                this.helper.addDOMEvent(shortcut, 'click', shortcutClickHandler);
+
+                //shortcut mouseover
+                this.helper.addDOMEvent(shortcut, 'mouseover', lib.curry(shortcutOverOutHandler, true));
+
+                //shortover mouseout
+                this.helper.addDOMEvent(shortcut, 'mouseout', lib.curry(shortcutOverOutHandler, false));
+
+                //shortcut mousemove
+                this.helper.addDOMEvent(shortcut, 'mousemove', shortcutMoveHandler);
             },
 
             /**

@@ -380,12 +380,11 @@ define(
             var me = sidebar;
             mode = mode.toLowerCase();
 
-            if (mode == 'fixed') {
-
+            if (mode === 'fixed') {
                 me.getChild('btnAutoHide').show();
                 me.getChild('btnFixed').hide();
-            } else {
-
+            }
+            else {
                 me.getChild('btnAutoHide').hide();
                 me.getChild('btnFixed').show();
             }
@@ -446,16 +445,6 @@ define(
                 lib.on(window, 'scroll', this.topReset);
             }
 
-            // 给主元素添加over和out的事件handler
-            helper.addDOMEvent(
-                this, this.main, 'mouseover',
-                lib.bind(mainOverHandler, null, this)
-            );
-            helper.addDOMEvent(
-                this, this.main, 'mouseout',
-                lib.bind(mainOutHandler, null, this)
-            );
-
             // 初始化位置
             initPosition(this);
 
@@ -463,6 +452,18 @@ define(
             if (this.isAutoHide()) {
                 hide(this);
             }
+        };
+
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Sidebar.prototype.initEvents = function () {
+            // 给主元素添加over和out的事件handler
+            this.helper.addDOMEvent(this.main, 'mouseover', lib.bind(mainOverHandler, null, this));
+            this.helper.addDOMEvent(this.main, 'mouseout', lib.bind(mainOutHandler, null, this));
         };
 
         /**
@@ -526,7 +527,6 @@ define(
          * @param  {string} content html内容
          */
         Sidebar.prototype.setContent = function (content) {
-
             var panel = this.getPanel();
 
             if (panel) {
@@ -540,7 +540,7 @@ define(
          * @return {boolean}
          */
         Sidebar.prototype.isAutoHide = function () {
-            return this.mode == 'autohide';
+            return this.mode === 'autohide';
         };
 
         /**
