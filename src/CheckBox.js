@@ -152,9 +152,7 @@ define(
                 var classList = [];
                 // 如果用的是一个`<input>`，替换成`<div>`
                 if (this.main.nodeName.toLowerCase() === 'input') {
-                    this.main.className && (classList = this.main.classList 
-                        ? [].slice.call(this.main.classList) 
-                        : this.main.className.split(/\s+/));
+                    classList = this.main.classList ? [].slice.call(this.main.classList) : lib.getClasses(this.main);
                     lib.removeClasses(this.main, classList);
                     this.boxId = this.main.id || this.helper.getId('box');
                     this.helper.replaceMain();
