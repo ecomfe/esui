@@ -1,0 +1,38 @@
+@icon-small-font-size:                          150%;
+@icon-medium-font-size:                         200%;
+@icon-large-font-size:                          250%;
+
+@icon-small-vertical-align:                     -10%;
+@icon-medium-vertical-align:                    -16%;
+@icon-large-vertical-align:                     -22%;
+
+.@{ui-class-prefix}-icon-small:before { font-size: @icon-small-font-size; vertical-align: @icon-small-vertical-align; }
+.@{ui-class-prefix}-icon-medium:before { font-size: @icon-medium-font-size; vertical-align: @icon-medium-vertical-align; }
+.@{ui-class-prefix}-icon-large:before { font-size: @icon-large-font-size; vertical-align: @icon-large-vertical-align; }
+
+.@{ui-class-prefix}-spin {
+  -webkit-animation: esui-spin 2s infinite linear;
+          animation: esui-spin 2s infinite linear;
+}
+
+@-webkit-keyframes esui-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+            transform: rotate(359deg);
+  }
+}
+
+@keyframes esui-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+            transform: rotate(359deg);
+  }
+}

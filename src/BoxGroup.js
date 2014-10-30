@@ -171,10 +171,10 @@ define(
         }
 
         var itemTemplate = [
-            '<label title="${title}" class="${wrapperClass}">',
+            '<div title="${title}" class="${wrapperClass}">',
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
-            '    <span>${title}</span>',
-            '</label>'
+            '    <label for="${id}">${title}</label>',
+            '</div>'
         ];
         itemTemplate = itemTemplate.join('');
 
@@ -196,6 +196,16 @@ define(
                 group.helper.getPartClasses(boxType),
                 group.helper.getPartClasses('wrapper')
             );
+
+            /*var customLookClass = group.customLook;
+            if (customLookClass) {
+                classes.push(group.helper.getPartClassName(boxType + '-' + customLookClass));
+            }*/
+            var classList = group.main && group.main.classList 
+                        || lib.getClasses(group.main);
+                        
+            classes = classes.concat(classList);
+
 
             var valueIndex = lib.toDictionary(group.rawValue);
 

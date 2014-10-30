@@ -9,9 +9,14 @@
 @import "../mixin/Button.less";
 @import "./variable.less";
 
-.@{ui-class-prefix}-boxgroup-horizontal label {
+.@{ui-class-prefix}-boxgroup-horizontal .ui-boxgroup-wrapper {
     .inline-block();
     margin-right: .5em;
+}
+
+.@{ui-class-prefix}-boxgroup-vertical .ui-boxgroup-wrapper {
+    display: block;
+    margin: 0.3em;
 }
 
 .@{ui-class-prefix}-boxgroup-button-style {
