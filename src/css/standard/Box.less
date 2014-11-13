@@ -6,8 +6,13 @@
  * @author dbear
  */
 @import "../mixin/util.less";
-@import "../mixin/Button.less";
+//@import "../mixin/Button.less";
 @import "./variable.less";
+
+@esui-boxgroup-button-text-color: @esf-button-text-color;
+@esui-boxgroup-button-background-color: @esf-button-background-color;
+@esui-boxgroup-button-border-color: @esf-button-border-color;
+@esui-boxgroup-button-separator-color: @white;
 
 .@{ui-class-prefix}-boxgroup-horizontal .ui-boxgroup-wrapper {
     .inline-block();
@@ -20,21 +25,20 @@
 }
 
 .@{ui-class-prefix}-boxgroup-button-style {
-
+    .@{ui-class-prefix}-boxgroup-wrapper {
+        margin-right: 0;
+    }
     label {
-        .button();
-        position: relative;
-        margin-right: 1px;
-        color: @box-group-button-color;
-        background: @box-group-button-background;
-
-        &:hover {
-            background: @box-group-button-background-hover;
+        .esf-button();
+        .button-variant(
+            @esui-boxgroup-button-text-color,
+            @esui-boxgroup-button-background-color,
+            @esui-boxgroup-button-border-color
+        );
+        &:first-child {
+            margin-left: 0px;
         }
-
-        &:active {
-            background: @box-group-button-background-active;
-        }
+        margin-left: -1px;
     }
 
     input[type="radio"],
@@ -45,46 +49,23 @@
         width: 0;
         overflow: hidden;
     }
+    
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background-color: darken(@esui-boxgroup-button-background-color, 15%);
+        border-color: darken(@esui-boxgroup-button-border-color, 15%);
+    }
 
-    .@{ui-class-prefix}-boxgroup-selected {
-        background: @box-group-button-background-selected;
+    &.@{ui-class-prefix}-separated {
+        label {
+            border: 0;
+            margin-left: 0;
+        }
 
-        &:hover {
-            background: @box-group-button-background-selected;
+        .@{ui-class-prefix}-boxgroup-wrapper:not(:last-child) label{
+            border-right: 1px solid @esui-boxgroup-button-separator-color;
         }
     }
 
-    &-xlarge label {
-        .button-xlarge();
-    }
-
-    &-large label {
-        .button-large();
-    }
-
-    &-small label {
-        .button-small();
-    }
-
-    &-xsmall label {
-        .button-xsmall();
-    }
-
-    &-icon label {
-        .button-icon();
-    }
-
-    &-icon-suffix label {
-        .button-icon-suffix();
-    }
-
-    &-pure-icon label {
-        .button-pure-icon();
-    }
-
-    &-adaptive label {
-        .button-adaptive();
-    }
 }
 
 esui-box-group {

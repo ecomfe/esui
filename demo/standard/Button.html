@@ -27,7 +27,7 @@
         <ul id="navigator">
         </ul>
         <div id="main">
-            <h2>Buttons</h2>
+            <h2>尺寸</h2>
             <section class="intro">
                 <p>基本Button。</p>
             </section>
@@ -36,17 +36,68 @@
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example">
-                    <button data-ui="type:Button;id:defaultBtn;">默认按钮</button>
-                    <span data-ui="type:Button;id:springBtn" class="ui-button-xlarge">最大尺寸</span>
-
-                    <div data-ui="type:Button;disabled:true" class="ui-button-large">大尺寸禁用</div>
-                    <div data-ui="type:Button" class="ui-button-small">小尺寸</div>
-                    <div data-ui="type:Button" class="ui-button-xsmall">最小尺寸</div>
-                    <div data-ui="type:Button" class="ui-button-icon ui-button-xlarge">前置图标按钮</div>
-                    <div data-ui="type:Button" class="ui-button-icon-suffix ui-button-xlarge">后置图标按钮</div>
-                    <div data-ui="type:Button" class="ui-button-adaptive">自适应按钮12121212121</div>
-                    <div data-ui="type:Button" class="ui-button-adaptive ui-button-pure-icon"></div>
-                    <div data-ui="type:Button" class="ui-button-full" style="margin-top: 30px">全宽按钮</div>
+                    <button data-ui="type:Button" class="ui-mini">最小尺寸</button>
+                    <a data-ui="type:Button" class="ui-small">小尺寸</a>
+                    <div data-ui="type:Button;id:defaultBtn;">默认按钮</div>
+                    <span data-ui="type:Button;" class="ui-large">大尺寸</span>
+                    <button data-ui="type:Button" class="ui-big">Big</button>
+                    <button data-ui="type:Button" class="ui-huge">Huge</button>
+                    <button data-ui="type:Button" class="ui-massive">Massive</button>
+                </div>
+            </section>
+            <h2>全宽</h2>
+            <section class="intro">
+                <p>Fluid Button.</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example">
+                    <div data-ui="type:Button" class="ui-fluid">Fluid</div>
+                </div>
+            </section>
+            <h2>状态</h2>
+            <section class="intro">
+                <p>状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example">
+                    <div data-ui="type:Button;" class="ui-hover">Hover</div>
+                    <div data-ui="type:Button;" class="ui-active">Active</div>
+                    <div data-ui="type:Button;" class="ui-link">Link Button</div>
+                </div>
+            </section>
+            <h2>组合</h2>
+            <section class="intro">
+                <p>状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example">
+                    <div class="ui-button-group ui-separated">
+                        <div data-ui="type:Button;" >Hover</div>
+                        <div data-ui="type:Button;" >Active</div>
+                        <div data-ui="type:Button;">Active</div>
+                    </div>
+                </div>
+            </section>
+            <h2>图标</h2>
+            <section class="intro">
+                <p>状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example">
+                    <div data-ui="type:Button;" class="ui-hover"><span class="ui-icon-user"></span> Hover</div>
+                    <div data-ui="type:Button;" class="ui-active">Active <span class="ui-icon-user"></span></div>
                 </div>
             </section>
         </div>
@@ -62,7 +113,6 @@
                     var defaultBtn = controls[0];
                     var actBtn = controls[4];
                     var labelText = controls[5];
-
 
                     actBtn.onclick = function () {
                         defaultBtn.setContent('新文字');
