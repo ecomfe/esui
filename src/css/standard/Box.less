@@ -71,3 +71,13 @@
 esui-box-group {
     display: block;
 }
+
+// ESUI 扩展的
+.@{ui-class-prefix}-boxgroup-radio-custom,
+.@{ui-class-prefix}-boxgroup-checkbox-custom {
+    &:extend(.esf-checkbox-custom all);
+}
+
+.@{ui-class-prefix}-boxgroup-radio-custom {
+    &:extend(.esf-radio-custom all);
+}
