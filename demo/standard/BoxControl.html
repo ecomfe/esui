@@ -78,7 +78,7 @@
                 <div class="example">
                     <h3>Radio Group</h3>
                     <h4>Vertical Radio Group</h4>
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" data-ui-name="frameworks" data-ui-box-type="radio" class="ui-boxgroup-radio-custom" data-ui-orientation="vertical">
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" data-ui-name="frameworks" data-ui-box-type="radio" data-ui-box-class="ui-boxgroup-radio-custom" data-ui-orientation="vertical">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er" name="frameworks" value="er">
@@ -99,7 +99,7 @@
                         </ul>
                     </div>
                     <h4>Horizontal Radio Group</h4>
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" data-ui-name="frameworks" data-ui-box-type="radio" class="ui-boxgroup-radio-custom">
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" data-ui-name="frameworks" data-ui-box-type="radio" data-ui-box-class="ui-boxgroup-checkbox-custom">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er1" name="frameworks" value="er">
@@ -121,7 +121,7 @@
                     </div>
                     <h3>Checkbox Group</h3>
                     <h4>Vertical Checkbox Group</h4>
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change-vertical2" data-ui-name="frameworks" data-ui-box-type="checkbox" class="ui-boxgroup-checkbox-custom" data-ui-orientation="vertical">
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change-vertical2" data-ui-name="frameworks" data-ui-box-type="checkbox" data-ui-box-class="ui-boxgroup-checkbox-custom" data-ui-orientation="vertical">
                         <ul>
                             <li>
                                 <input type="checkbox" id="framework-er2" name="frameworks" value="er">
@@ -142,7 +142,7 @@
                         </ul>
                     </div>
                     <h4>Horizontal Checkbox Group</h4>
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change-horizontal" data-ui-name="frameworks" data-ui-box-type="checkbox" class="ui-boxgroup-checkbox-custom">
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change-horizontal" data-ui-name="frameworks" data-ui-box-type="checkbox" data-ui-box-class="ui-boxgroup-checkbox-custom">
                         <ul>
                             <li>
                                 <input type="checkbox" id="framework-er3" name="frameworks" value="er">
@@ -211,7 +211,29 @@
             <div>
                 <div data-ui-type="BoxGroup" data-ui-id="box-group-button"
                      data-ui-name="frameworks" data-ui-box-type="radio"
-                     class="ui-boxgroup-button-style">
+                     class="ui-boxgroup-button-style ui-separated">
+                    <ul>
+                        <li>
+                            <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                            <label for="framework-er4">ER</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                            <label for="framework-esui4">ESUI</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                            <label for="framework-ef4">EF</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                            <label for="framework-tangram4">Tangram</label>
+                        </li>
+                    </ul>
+                </div>
+                <div data-ui-type="BoxGroup" data-ui-id="box-group-button3"
+                     data-ui-name="frameworks" data-ui-box-type="radio"
+                     class="ui-boxgroup-button-style" style="margin-top: 10px;">
                     <ul>
                         <li>
                             <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
@@ -236,27 +258,28 @@
                 <h3>change事件</h3>
 
                 <div data-ui-type="BoxGroup" data-ui-id="box-group-button2"
-                     data-ui-name="frameworks" data-ui-box-type="radio"
-                        class="ui-boxgroup-button-style ui-boxgroup-button-style-xlarge" >
+                     data-ui-name="frameworks" data-ui-box-type="checkbox"
+                        class="ui-boxgroup-button-style ui-separated" >
                     <ul>
                         <li>
-                            <input type="radio" id="framework-er5" name="frameworks" value="er"/>
+                            <input type="checkbox" id="framework-er5" name="frameworks" value="er"/>
                             <label for="framework-er5">ER</label>
                         </li>
                         <li>
-                            <input type="radio" id="framework-esui5" name="frameworks" value="esui"/>
+                            <input type="checkbox" id="framework-esui5" name="frameworks" value="esui"/>
                             <label for="framework-esui5">ESUI</label>
                         </li>
                         <li>
-                            <input type="radio" id="framework-ef5" name="frameworks" value="ef"/>
+                            <input type="checkbox" id="framework-ef5" name="frameworks" value="ef"/>
                             <label for="framework-ef5">EF</label>
                         </li>
                         <li>
-                            <input type="radio" id="framework-tangram5" name="frameworks" value="tangram"/>
+                            <input type="checkbox" id="framework-tangram5" name="frameworks" value="tangram"/>
                             <label for="framework-tangram5">Tangram</label>
                         </li>
                     </ul>
                 </div>
+
                 <p id="box-group-change-log">已选值：</p>
                 <script>
                     ready(

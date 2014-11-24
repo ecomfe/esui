@@ -114,7 +114,14 @@ define(
             var properties = {
                 datasource: [],
                 orientation: 'horizontal',
-                boxType: 'radio'
+                boxType: 'radio',
+                /**
+                 * @property {string} boxClass
+                 *
+                 * 附加在boxgroup-wrapper上的css selector 名称。
+                 * 做自定义boxgroup的时候用到。加在这里主要是想复用checkbox现成的样式。
+                 */
+                boxClass: ''
             };
             u.extend(properties, options);
 
@@ -197,13 +204,12 @@ define(
                 group.helper.getPartClasses('wrapper')
             );
 
-            /*var customLookClass = group.customLook;
-            if (customLookClass) {
-                classes.push(group.helper.getPartClassName(boxType + '-' + customLookClass));
-            }*/
-            var classList = group.main && group.main.classList 
-                        || lib.getClasses(group.main);
-                        
+            var classList = [];
+            var boxClass = group.boxClass;
+            if (boxClass) {
+                classList.push(boxClass);
+            }
+
             classes = classes.concat(classList);
 
 
