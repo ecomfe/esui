@@ -33,7 +33,7 @@
         "mini-event": "1.x",
         "underscore": "1.5.x",
         "moment": "2.x",
-        "etpl": ">=2.0.8"
+        "etpl": "2.x"
     },
     "main": "main",
     "description": "ESUI是一个轻巧灵活的高性能UI组件库。",
