@@ -357,6 +357,12 @@ define(
                     && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
                 ) {
                     lib.setAttribute(main, name, attribute.value);
+
+                    // 原主元素的ui属性需要移除，否则若再次init会重复处理
+                    if (name.indexOf(ui.getConfig('uiPrefix')) === 0) {
+                        initialMain.removeAttribute(name);
+                        i--;
+                    }
                 }
             }
 
