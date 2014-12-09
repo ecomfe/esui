@@ -5,136 +5,174 @@
  * @file 下拉选择样式
  * @author dbear
  */
-@import "../mixin/util.less";
-@import "variable.less";
+
+// Select
+@esui-select-color: #fff;
+@esui-select-background: @esf-button-background-color;
+@esui-select-background-hover: lighten(@esf-button-background-color, 5%);
+@esui-select-background-active: darken(@esf-button-background-color, 15%);
+@esui-select-background-disabled: @button-background-disabled;
+@esui-select-radius: @default-border-radius;
+@esui-select-height: @esf-button-height;
+@esui-select-line-height: @esf-button-height;
+@esui-select-padding: 1em;
+@esui-select-error-border-color: red;
+@esui-select-error-text-color: red;
+
+// Select-toolbar-style
+@esui-select-color-toolbar-style: #666;
+@esui-select-background-toolbar-style: #f1f1f1;
+@esui-select-background-toolbar-style-hover: #e0e0e0;
+@esui-select-background-toolbar-style-active: @esui-select-background-toolbar-style-hover;
+
+// layer
+@esui-select-layer-background: #f1f1f1;
+@esui-select-item-color: #666;
+@esui-select-item-background-hover: #e1e1e1;
+@esui-select-item-disabled-color: #d1d1d1;
+@esui-select-item-selected-color: @esf-button-background-color;
+@esui-select-item-background-selected: #e1e1e1;
 
 .@{ui-class-prefix}-select {
-    .ellipse-overflow ();
     cursor: pointer;
-    font-size: 14px;
-    height: 40px;
-    line-height: 40px;
-    padding: 0 20px 0 5px;
+    padding: 0 @esui-select-padding;
     outline: none;
-    background: @select-background;
-    border: none;
-    border-radius: 0;
-    width: auto;
-    color: @select-color;
-    text-align: center;
-    .pseudo-icon(url(../../img/arrow-down.png), 9px, 5px, right, 10px);
+    display: inline-block;
+    position: relative;
+    border-radius: @esui-select-radius;
+
+    height: @esui-select-height;
+    line-height: @esui-select-line-height;
+    background: @esui-select-background;
+    color: @esui-select-color;
+    vertical-align: middle;
+    .box-sizing(border-box);
+    .transition(background-color 0.3s ease);
 }
 
 .@{ui-class-prefix}-select:hover,
 .@{ui-class-prefix}-select:focus {
-    background: @select-background-hover;
-    .pseudo-icon(url(../../img/arrow-down.png), 9px, 5px, right, 10px);
+    background: @esui-select-background-hover;
 }
 
-.@{ui-class-prefix}-select-active,
-.@{ui-class-prefix}-select-active:hover,
-.@{ui-class-prefix}-select-active:focus {
-    background: @select-background-active;
-    .pseudo-icon(url(../../img/arrow-up.png), 9px, 5px, right, 10px);
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-active,
+.@{ui-class-prefix}-select:active {
+    background: @esui-select-background-active;
+}
+
+.@{ui-class-prefix}-select-active {
+    .@{ui-class-prefix}-select-arrow {
+        .transform(rotate(180deg));
+        .transition(transform 0.3s ease);
+    }
+}
+
+.@{ui-class-prefix}-select-text {
+    padding-right: 1em;
+    display: block;
+    .ellipsis();
+}
+
+.@{ui-class-prefix}-select-arrow {
+    margin-left: 0.5em;
+    position: absolute;
+    right: @esui-select-padding;
+    top:0.7em;
 }
 
 .@{ui-class-prefix}-select-toolbar-style {
-    color: @select-color-toolbar-style;
-    background: @select-background-toolbar-style;
-    .pseudo-icon(url(../../img/esui-combo-arrow-normal.png), 9px, 5px, right, 10px);
+    color: @esui-select-color-toolbar-style;
+    background: @esui-select-background-toolbar-style;
     &:hover,
     &:focus {
-        background: @select-background-toolbar-style-hover;
-        .pseudo-icon(url(../../img/esui-combo-arrow-hover.png), 9px, 5px, right, 10px);
-
+        background: @esui-select-background-toolbar-style-hover;
     }
 
     &.@{ui-class-prefix}-select-active,
-    &.@{ui-class-prefix}-select-active:hover,
-    &.@{ui-class-prefix}-select-active:focus {
-        background: @select-background-toolbar-style-active;
-        .pseudo-icon(url(../../img/esui-combo-arrow-active.png), 9px, 5px, right, 10px);
+    &:active {
+        background: @esui-select-background-toolbar-style-active;
     }
 }
 
 .@{ui-class-prefix}-select-layer {
-    .reset-list ();
-    .box-sizing (border-box);
-    background: @select-layer-background;
-    font-size: 14px;
+    .reset-list-style;
+    .box-sizing(border-box);
+    background: @esui-select-layer-background;
     overflow-x: hidden;
-    *height: 152px;
-    max-height: 152px;
+    *height: 13em;
+    max-height: 13em;
     overflow-y: auto;
-    padding: 0 1px;
     position: absolute;
-    text-align: left;
     z-index: @layer-z-index;
+    padding: 0;
+    margin: 0;
 }
 
 .@{ui-class-prefix}-select-item {
-    height: 38px;
-    line-height: 38px;
-    color: @select-item-color;
+    .transition(background-color 0.3s ease);
+    color: @esui-select-item-color;
     cursor: pointer;
-    margin: 0 0 1px;
-    padding: 0 10px;
+    padding: 0.7em 1em;
+    line-height: 1.2;
 
+    > span {
+        display: block;
+        .ellipse-overflow ();
+    }
     &:hover {
-        background: @select-item-background-hover;
+        background: @esui-select-item-background-hover;
     }
 }
 
 .@{ui-class-prefix}-select-item-disabled {
-    color: @select-item-disabled-color;
-
+    &:extend(.esf-disabled);
     &:hover {
-        background: @select-layer-background;
+        background: none;
     }
 }
 
 .@{ui-class-prefix}-select-item-selected {
-    background: @select-item-background-selected;
-    color: @select-item-selected-color;
+    background: @esui-select-item-background-selected;
+    color: @esui-select-item-selected-color;
 
     &:hover {
-        background: @select-item-background-selected;
+        background: @esui-select-item-background-selected;
     }
-}
-
-.@{ui-class-prefix}-select-item span {
-    display: block;
-    .ellipse-overflow ();
 }
 
 .@{ui-class-prefix}-select-layer-hidden {
     display: none;
 }
 
-.@{ui-class-prefix}-select-disabled,
-.@{ui-class-prefix}-select-read-only,
-.@{ui-class-prefix}-select-disabled:hover,
-.@{ui-class-prefix}-select-read-only:hover {
-    color: #d8d8d8;
-    border-color: #d8d8d8;
-    background: @select-background-disabled;
-    .pseudo-icon(url(../../img/arrow-down.png), 9px, 5px, right, 10px);
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-disabled {
+    &:extend(.esf-disabled);
+}
+
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only,
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only:hover {
+    background: @esui-select-background-disabled;
 }
 
 /** 验证 */
 .@{ui-class-prefix}-select-validity-invalid {
-    border: 1px solid red;
-}
-
-.@{ui-class-prefix}-select-validity-label {
-    display: block;
-    margin-top: 5px;
+    border: 1px solid @esui-select-error-border-color;
+    margin-right: 1em;
 }
 
 .@{ui-class-prefix}-select-validity-label-invalid {
-    .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-    border: 1px solid #F0CCCC;
-    color: #dd6767;
-    padding-left: 50px;
+    color: @esui-select-error-text-color;
 }
 
+.@{ui-class-prefix}-textbox-wrapper {
+    :first-child.@{ui-class-prefix}-select {
+        .border-right-radius(0);
+        border-right: 0;
+    }
+    :last-child.@{ui-class-prefix}-select {
+        .border-left-radius(0);
+        border-left: 0;
+    }
+    >.@{ui-class-prefix}-select {
+        float: left;
+    }
+}

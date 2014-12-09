@@ -311,14 +311,19 @@ define(
          * @override
          */
         Select.prototype.initStructure = function () {
+            var helper = this.helper;
+            var arrow = 'arrow';
+            var span = 'span';
+
             // 如果主元素是`<select>`，删之替换成`<div>`
             if (this.main.nodeName.toLowerCase() === 'select') {
-                this.helper.replaceMain();
+                helper.replaceMain();
             }
 
             this.main.tabIndex = 0;
 
-            this.main.innerHTML = this.helper.getPartHTML('text', 'span');
+            this.main.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
+            lib.addClass(helper.getPart(arrow), helper.getIconClass('caret-down'));
         };
 
         /**
@@ -348,7 +353,11 @@ define(
             var selectedItem = select.selectedIndex === -1
                 ? null
                 : select.datasource[select.selectedIndex];
-            textHolder.innerHTML = select.getDisplayHTML(selectedItem);
+            var text = select.getDisplayHTML(selectedItem);
+
+            textHolder.innerHTML = text;
+            // to show hidden text as tool tip.
+            textHolder.title = text;
 
             var layerElement = select.layer.getElement(false);
             if (layerElement) {
@@ -552,6 +561,16 @@ define(
         Select.prototype.getSelectedItem = function () {
             return this.get('datasource')[this.get('selectedIndex')];
         };
+
+        /**
+         * 创建wrapper元素
+         *
+         * @override
+         */
+        Select.prototype.createMain = function () {
+            // 用 a 元素来获取tab 焦点
+            return document.createElement('a');
+        }
 
         lib.inherits(Select, InputControl);
         require('./main').register(Select);
