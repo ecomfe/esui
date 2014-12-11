@@ -12,6 +12,7 @@ define(
         var lib = require('./lib');
         var Control = require('./Control');
         var Layer = require('./Layer');
+        var main = require('./main');
 
         /**
          * 选中某一项
@@ -221,6 +222,15 @@ define(
 
             Control.prototype.dispose.apply(this, arguments);
         };
+
+        /**
+         * 创建wrapper元素
+         *
+         * @override
+         */
+        CommandMenu.prototype.createMain = function () {
+            return document.createElement('button');
+        }
 
         lib.inherits(CommandMenu, Control);
         require('./main').register(CommandMenu);

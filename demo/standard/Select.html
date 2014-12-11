@@ -14,6 +14,22 @@
     <link rel="stylesheet" href="../assets/prism.css" />
     <link rel="stylesheet" href="../assets/demo.css" />
     <link rel="stylesheet" href="../assets/themes/standard.css" />
+    <style>
+        /* TODO remove this \*/
+        .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+        }
+        .clearfix { display: inline-table; }
+        /* Hides from IE-mac \*/
+        * html .clearfix { height: 1%; }
+        .clearfix { display: block; }
+        /* End hide from IE-mac */
+    </style>
 </head>
 <body>
     <h1>Select</h1>
@@ -30,24 +46,104 @@
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example">
-                    <select data-ui-type="Select" data-ui-id="test" data-ui-width="200" name="test" data-ui-selected-index="1">
-                        <option value="1">A long way to go</option>
-                        <option value="2">b</option>
-                        <option value="3">c</option>
-                        <option value="1" disabled>dadadadadada</option>
-                        <option value="2">ejkjlkjlkjljlkjkljlkjljkljlkejkjlkjlkjljlkjkljlkjljkljlkejkjlkjlkjljlkjkljlkjljkljlk</option>
-                        <option value="3">f</option>
-                    </select>
-                     <select class="ui-select-toolbar-style"
-                             data-ui-type="Select"
-                             data-ui-id="toolbar" data-ui-width="200" name="test" data-ui-selected-index="1">
-                        <option value="1">A long way to go</option>
-                        <option value="2">b</option>
-                        <option value="3">c</option>
-                        <option value="1" disabled>dadadadadada</option>
-                        <option value="2">ejkjlkjlkjljlkjkljlkjljkljlkejkjlkjlkjljlkjkljlkjljkljlkejkjlkjlkjljlkjkljlkjljkljlk</option>
-                        <option value="3">f</option>
-                    </select>
+                    <button class="ui-button">一个按钮的高度</button>
+                    <div class="ui-mt15">
+                        <label>请选择: </label>
+                        <select data-ui-type="Select" data-ui-id="test" data-ui-width="200" name="test" data-ui-selected-index="1">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+
+                    <div class="ui-mt15">
+                        <label>灰色: </label>
+                        <select class="ui-select-toolbar-style"
+                                 data-ui-type="Select"
+                                 data-ui-id="toolbar" data-ui-width="200" name="test" data-ui-selected-index="1">
+                            <option value="All">I can use all those programming languages. Do you believe it?</option>
+                            <option value="ActionScript">ActionScript</option>
+                            <option value="AppleScript">AppleScript</option>
+                            <option value="Asp">Asp</option>
+                            <option value="BASIC">BASIC</option>
+                            <option value="C">C</option>
+                            <option value="C++">C++</option>
+                            <option value="Clojure">Clojure</option>
+                            <option value="COBOL">COBOL</option>
+                            <option value="ColdFusion">ColdFusion</option>
+                            <option value="Erlang">Erlang</option>
+                            <option value="Fortran">Fortran</option>
+                            <option value="Groovy">Groovy</option>
+                            <option value="Haskell">Haskell</option>
+                            <option value="Java">Java</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Lisp">Lisp</option>
+                            <option value="Perl">Perl</option>
+                            <option value="PHP">PHP</option>
+                            <option value="Python">Python</option>
+                            <option value="Ruby">Ruby</option>
+                            <option value="Scala">Scala</option>
+                            <option value="Scheme">Scheme"</option>
+                        </select>
+                    </div>
+                    <div class="ui-mt15">
+                        <label>不可用状态: </label>
+                        <select
+                                 data-ui-type="Select"
+                                 data-ui-id="toolbar2" data-ui-width="200" name="test" data-ui-selected-index="1" disabled="disabled">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                        <select
+                                 data-ui-type="Select"
+                                 data-ui-id="toolbar3" data-ui-width="200" name="test" data-ui-selected-index="1" readonly="readonly">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <div class="ui-mt15">
+                        <div class="ui-textbox-wrapper" style="height: 2.4em; font-size: 18px;">
+                            <select data-ui-type="Select" data-ui-id="test2" data-ui-width="150" name="test" data-ui-selected-index="1">
+                                <option value="1">选项 1</option>
+                                <option value="2">选项 2</option>
+                                <option value="3">选项 3</option>
+                                <option value="1" disabled>禁用的选项 4</option>
+                                <option value="2">Group</option>
+                                <option value="3">选项</option>
+                            </select>
+                            <input id="text-box-normal"
+                                data-ui-id="text-box-normal"
+                                data-ui-type="TextBox"
+                                data-ui-mode="text" />
+                        </div>
+                    </div>
+                    <div class="ui-mt15">
+                        <div class="ui-textbox-wrapper" style="height: 2.4em;">
+                            <input id="text-box-normal"
+                                data-ui-id="text-box-normal2"
+                                data-ui-type="TextBox"
+                                data-ui-mode="text" />
+                            <select data-ui-type="Select" data-ui-id="test3" name="test" data-ui-selected-index="1">
+                                <option value="1">选项 1</option>
+                                <option value="2">选项 2</option>
+                                <option value="3">选项 3</option>
+                                <option value="1" disabled>禁用的选项 4</option>
+                                <option value="2">Group</option>
+                                <option value="3">选项</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
@@ -56,7 +152,8 @@
         require(
             [
                 'esui',
-                'esui/Select'
+                'esui/Select',
+                'esui/Textbox'
             ],
             function (ui) {
                 // var datasource = [
@@ -65,6 +162,7 @@
                 //     { name: 'custom3', value: '12123' }
                 // ]
                 var select = ui.init()[0];
+                select.showValidationMessage('invalid', 'There is an error.');
                 // var select2 = ui.create('Select', {
                 //     width: 200,
                 //     datasource: datasource
