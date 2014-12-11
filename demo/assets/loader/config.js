@@ -26,6 +26,14 @@ require.config({
             'name': 'etpl',
             'location': '../dep/etpl/3.0.0/src',
             'main': 'main'
+        },
+        {
+            'name': 'esf',
+            'location': '../dep/esf/1.0.0-alpha/src'
+        },
+        {
+            'name': 'est',
+            'location': '../dep/est/1.3.0/src'
         }
     ]
 });
