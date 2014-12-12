@@ -711,8 +711,10 @@ define(
                     options
                 );
 
-                this.fire('show');
-                this.isShow = true;
+                if (!this.isShow) {
+                    this.fire('show');
+                    this.isShow = true;
+                }
             },
 
 
@@ -723,10 +725,9 @@ define(
             hide: function () {
                 if (this.isShow) {
                     this.addState('hidden');
+                    this.fire('hide');
+                    this.isShow = false;
                 }
-
-                this.fire('hide');
-                this.isShow = false;
             },
 
 
