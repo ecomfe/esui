@@ -170,6 +170,7 @@ define(
         /**
          * 获取的容器,可自行添加样式，使其呈现堆叠效果。
          *
+         * @return {HTMLElement}
          * @ignore
          */
         function getContainer() {
@@ -191,7 +192,7 @@ define(
                 if (messageType === 'show') {
                     messageType = 'normal';
                 }
-                options = lib.extend({ content: content }, options);
+                options = lib.extend({content: content}, options);
                 options.messageType = options.messageType || messageType;
                 var toast = new Toast(options);
                 Control.prototype.hide.apply(toast);
