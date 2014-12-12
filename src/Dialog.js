@@ -763,8 +763,10 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                this.fire('show');
-                this.isShow = true;
+                if (!this.isShow) {
+                    this.fire('show');
+                    this.isShow = true;
+                }
 
             },
 
@@ -784,10 +786,11 @@ define(
                     if (mask) {
                         hideMask(this);
                     }
+
+                    this.fire('hide');
+                    this.isShow = false;
                 }
 
-                this.fire('hide');
-                this.isShow = false;
             },
 
 
