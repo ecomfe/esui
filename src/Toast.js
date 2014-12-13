@@ -126,13 +126,15 @@ define(
                 this.appendTo(getContainer.call(this));
             }
 
-            if (this.isHidden()) {
-                Control.prototype.show.apply(this, arguments);
-                this.fire('show');
-                clearTimeout(this.timer);
-                if (!isNaN(this.duration) && this.duration !== Infinity) {
-                    this.timer = setTimeout(lib.bind(this.hide, this), this.duration);
-                }
+            if (!this.isHidden()) {
+                return;
+            }
+
+            Control.prototype.show.apply(this, arguments);
+            this.fire('show');
+            clearTimeout(this.timer);
+            if (!isNaN(this.duration) && this.duration !== Infinity) {
+                this.timer = setTimeout(lib.bind(this.hide, this), this.duration);
             }
         };
 
@@ -142,13 +144,14 @@ define(
          * @override
          */
         Toast.prototype.hide = function () {
-            if (!this.isHidden()) {
-                Control.prototype.hide.apply(this, arguments);
-                clearTimeout(this.timer);
-                this.fire('hide');
-                if (this.disposeOnHide) {
-                    this.dispose();
-                }
+            if (this.isHidden()) {
+                return;
+            }
+            Control.prototype.hide.apply(this, arguments);
+            clearTimeout(this.timer);
+            this.fire('hide');
+            if (this.disposeOnHide) {
+                this.dispose();
             }
         };
 

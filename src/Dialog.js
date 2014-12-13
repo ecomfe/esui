@@ -763,11 +763,12 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                if (!this.isShow) {
-                    this.fire('show');
-                    this.isShow = true;
+                if (this.isShow) {
+                    return;
                 }
 
+                this.isShow = true;
+                this.fire('show');
             },
 
             /**
@@ -775,22 +776,21 @@ define(
              *
              */
             hide: function () {
-                if (this.isShow) {
-                    helper.removeDOMEvent(
-                        this, window, 'resize', resizeHandler
-                    );
-                    var mask = this.mask;
-
-                    this.addState('hidden');
-
-                    if (mask) {
-                        hideMask(this);
-                    }
-
-                    this.fire('hide');
-                    this.isShow = false;
+                if (!this.isShow) {
+                    return;
                 }
 
+                this.isShow = false;
+
+                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
+
+                this.addState('hidden');
+
+                if (this.mask) {
+                    hideMask(this);
+                }
+
+                this.fire('hide');
             },
 
 
