@@ -711,23 +711,26 @@ define(
                     options
                 );
 
-                if (!this.isShow) {
-                    this.fire('show');
-                    this.isShow = true;
+                if (this.isShow) {
+                    return;
                 }
-            },
 
+                this.isShow = true;
+                this.fire('show');
+            },
 
             /**
              * 隐藏提示层
              *
              */
             hide: function () {
-                if (this.isShow) {
-                    this.addState('hidden');
-                    this.fire('hide');
-                    this.isShow = false;
+                if (!this.isShow) {
+                    return;
                 }
+
+                this.isShow = false;
+                this.addState('hidden');
+                this.fire('hide');
             },
 
 
