@@ -117,7 +117,7 @@
 
     > span {
         display: block;
-        .ellipse-overflow ();
+        .ellipse-overflow();
     }
     &:hover {
         background: @esui-select-item-background-hover;
@@ -125,7 +125,7 @@
 }
 
 .@{ui-class-prefix}-select-item-disabled {
-    .esf-disabled;
+    .esf-disabled();
     &:hover {
         background: none;
     }
@@ -145,7 +145,7 @@
 }
 
 .@{ui-class-prefix}-select.@{ui-class-prefix}-select-disabled {
-    .esf-disabled;
+    .esf-disabled();
 }
 
 .@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only,
@@ -170,6 +170,32 @@
     }
     :last-child.@{ui-class-prefix}-select {
         .border-left-radius(0);
+        border-left: 0;
+    }
+    >.@{ui-class-prefix}-select {
+        float: left;
+    }
+}
+
+.esf-select-textbox-wrapper() when (@esui-select-radius > 0) {
+    :first-child.@{ui-class-prefix}-select {
+        .border-right-radius(0);
+        border-right: 0;
+    }
+    :last-child.@{ui-class-prefix}-select {
+        .border-left-radius(0);
+        border-left: 0;
+    }
+    >.@{ui-class-prefix}-select {
+        float: left;
+    }
+}
+
+.esf-select-textbox-wrapper() {
+    :first-child.@{ui-class-prefix}-select {
+        border-right: 0;
+    }
+    :last-child.@{ui-class-prefix}-select {
         border-left: 0;
     }
     >.@{ui-class-prefix}-select {
