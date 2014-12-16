@@ -1,18 +1,3 @@
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- *
- * @file 组合框样式
- * @author dbear
- */
-@import "../mixin/util.less";
-//@import "../mixin/Button.less";
-@import "./variable.less";
-
-@esui-boxgroup-button-text-color: @esf-button-text-color;
-@esui-boxgroup-button-background-color: @esf-button-background-color;
-@esui-boxgroup-button-border-color: @esf-button-border-color;
-@esui-boxgroup-button-separator-color: @white;
 
 .@{ui-class-prefix}-boxgroup-horizontal .ui-boxgroup-wrapper {
     .inline-block();
@@ -29,16 +14,7 @@
         margin-right: 0;
     }
     label {
-        .esf-button();
-        .button-variant(
-            @esui-boxgroup-button-text-color,
-            @esui-boxgroup-button-background-color,
-            @esui-boxgroup-button-border-color
-        );
-        &:first-child {
-            margin-left: 0px;
-        }
-        margin-left: -1px;
+        .esui-boxgroup-button-style-label-hook;
     }
 
     input[type="radio"],
@@ -50,22 +26,10 @@
         overflow: hidden;
     }
     
-    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
-        background-color: darken(@esui-boxgroup-button-background-color, 15%);
-        border-color: darken(@esui-boxgroup-button-border-color, 15%);
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label {
+        .esui-boxgroup-button-style-label-checked-hook;
     }
-
-    &.@{ui-class-prefix}-separated {
-        label {
-            border: 0;
-            margin-left: 0;
-        }
-
-        .@{ui-class-prefix}-boxgroup-wrapper:not(:last-child) label{
-            border-right: 1px solid @esui-boxgroup-button-separator-color;
-        }
-    }
-
+    .esui-boxgroup-button-style-hook;
 }
 
 esui-box-group {
@@ -75,9 +39,13 @@ esui-box-group {
 // ESUI 扩展的
 .@{ui-class-prefix}-boxgroup-radio-custom,
 .@{ui-class-prefix}-boxgroup-checkbox-custom {
-    &:extend(.esf-checkbox-custom all);
+    &:extend(.esf-checkbox-style-base all);
 }
 
 .@{ui-class-prefix}-boxgroup-radio-custom {
     &:extend(.esf-radio-custom all);
 }
+
+.esui-boxgroup-button-style-hook() {}
+.esui-boxgroup-button-style-label-hook() {}
+.esui-boxgroup-button-style-label-checked-hook() {}

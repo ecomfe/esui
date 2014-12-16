@@ -253,6 +253,17 @@ define(
         };
 
         /**
+         * 获取图标class
+         *
+         * 格式为:ui-icon-xxx
+          
+         * @param {string} name 图标名称
+         */
+        helper.getIconClass = function (name) {
+            return joinByStrike(ui.getConfig('uiClassPrefix'), 'icon', name);
+        };
+
+        /**
          * 获取用于控件DOM元素的id
          *
          * @param {string} [part] 部件名称，如不提供则生成控件主元素的id

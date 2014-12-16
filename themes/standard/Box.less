@@ -1,0 +1,38 @@
+@esui-boxgroup-button-text-color: @white;
+@esui-boxgroup-button-background-color: @primary-color;
+@esui-boxgroup-button-separator-color: @white;
+
+.esui-boxgroup-button-style-label-hook() {
+    .esf-button();
+    .esf-button-variant(
+        @esui-boxgroup-button-text-color,
+        @esui-boxgroup-button-background-color
+    );
+}
+.esui-boxgroup-button-style-hook() {
+    &.@{ui-class-prefix}-boxgroup-separated {
+        .@{ui-class-prefix}-boxgroup-wrapper:not(:last-child) label{
+            border-right: 1px solid @esui-boxgroup-button-separator-color;
+        }
+    }
+}
+
+.esui-boxgroup-button-style-label-checked-hook() {
+    background: darken(@primary-color, 10%);
+}
+
+.esui-boxgroup-button-style-variant(
+    @text-color,
+    @background-color
+) {
+    label {
+        .esf-button-variant(
+            @text-color,
+            @background-color
+        );
+    }
+
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background: darken(@background-color, 10%);
+    }
+}
