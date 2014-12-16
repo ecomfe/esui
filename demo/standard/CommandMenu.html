@@ -31,8 +31,12 @@
                     </ul>
                     <div class="example">
                         <div id="container">
+                            <button
+                            id="test"
+                            class="ui-button"
+                            data-ui-type="CommandMenu"
+                            data-ui-id="cmdMenu">Command Menu <span class="ui-icon-caret-down"></span></button>
                         </div>
-                        <button data-ui="type:Button">最小尺寸</button>
                     </div>
                 </section>
             </div>
@@ -41,22 +45,21 @@
         require(
             [
                 'esui',
-                'esui/Button',
                 'esui/CommandMenu'
             ],
             function (ui, CommandMenu) {
                 var options = {
-                    displayText: '我是个命令菜单',
                     datasource: [
-                        { text: 'a' },
-                        { text: 'b', handler: function () { console.log('b'); } },
-                        { text: 'c', handler: function () { console.log('c'); } },
-                        { text: 'd', handler: function () { this.hide(); } }
-                    ]
+                        { text: 'Item 1' },
+                        { text: 'Item 2', handler: function () { console.log('b'); } },
+                        { text: 'Item 3', handler: function () { console.log('c'); } },
+                        { text: 'Item 4', handler: function () {  } }
+                    ],
+                    main: document.getElementById('test')
                 };
                 var menu = new CommandMenu(options);
                 menu.on('select', function (e) { console.log(e.item, e.index); });
-                menu.appendTo(document.getElementById('container'));
+                menu.render();
             }
         )
         </script>

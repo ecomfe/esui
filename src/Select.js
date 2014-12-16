@@ -71,7 +71,10 @@ define(
         };
 
         SelectLayer.prototype.initBehavior = function (element) {
-            this.control.helper.addDOMEvent(element, 'click', selectValue);
+            var helper = this.control.helper;
+
+            helper.addDOMEvent(element, 'click', selectValue);
+            element.className += ' ' + helper.getPrefixClass('dropdown');
         };
 
         SelectLayer.prototype.syncState = function (element) {

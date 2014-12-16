@@ -27,7 +27,9 @@
 
 // layer
 @esui-select-layer-background: #f1f1f1;
+@esui-select-layer-border: none;
 @esui-select-item-color: #666;
+@esui-select-item-hover-color: #666;
 @esui-select-item-background-hover: #e1e1e1;
 @esui-select-item-disabled-color: #d1d1d1;
 @esui-select-item-selected-color: @primary-color;
@@ -95,33 +97,19 @@
 }
 
 .@{ui-class-prefix}-select-layer {
-    .reset-list-style;
-    .box-sizing(border-box);
-    background: @esui-select-layer-background;
+    margin-top: 0;
     overflow-x: hidden;
     *height: 13em;
     max-height: 13em;
     overflow-y: auto;
-    position: absolute;
-    z-index: @layer-z-index;
-    padding: 0;
-    margin: 0;
-}
 
-.@{ui-class-prefix}-select-item {
-    .transition(background-color 0.3s ease);
-    color: @esui-select-item-color;
-    cursor: pointer;
-    padding: 0.7em 1em;
-    line-height: 1.2;
-
-    > span {
-        display: block;
-        .ellipse-overflow();
-    }
-    &:hover {
-        background: @esui-select-item-background-hover;
-    }
+    .esf-dropdown-variant(
+        @esui-select-layer-background,
+        @esui-select-layer-border,
+        @esui-select-item-color,
+        @esui-select-item-hover-color,
+        @esui-select-item-background-hover
+    );
 }
 
 .@{ui-class-prefix}-select-item-disabled {
@@ -131,9 +119,9 @@
     }
 }
 
-.@{ui-class-prefix}-select-item-selected {
+.@{ui-class-prefix}-select-item-selected > * {
     background: @esui-select-item-background-selected;
-    color: @esui-select-item-selected-color;
+    color: @esui-select-item-selected-color !important;
 
     &:hover {
         background: @esui-select-item-background-selected;
@@ -164,17 +152,7 @@
 }
 
 .@{ui-class-prefix}-textbox-wrapper {
-    :first-child.@{ui-class-prefix}-select {
-        .border-right-radius(0);
-        border-right: 0;
-    }
-    :last-child.@{ui-class-prefix}-select {
-        .border-left-radius(0);
-        border-left: 0;
-    }
-    >.@{ui-class-prefix}-select {
-        float: left;
-    }
+    .esf-select-textbox-wrapper();
 }
 
 .esf-select-textbox-wrapper() when (@esui-select-radius > 0) {

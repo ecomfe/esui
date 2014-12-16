@@ -136,6 +136,30 @@ define(
         };
 
         /**
+         * 获取class
+         *
+         * 格式为:ui-xxx
+          
+         * @param {string} name Class名称
+         */
+        helper.getPrefixClass = function (name) {
+            var pre = ui.getConfig('uiClassPrefix')
+
+            return joinByStrike(pre, name);
+        };
+
+        /**
+         * 获取图标class
+         *
+         * 格式为:ui-icon-xxx
+          
+         * @param {string} name 图标名称
+         */
+        helper.getIconClass = function (name) {
+            return joinByStrike(ui.getConfig('uiClassPrefix'), 'icon', name);
+        };
+
+        /**
          * 添加控件部件相关的class，具体可参考{@link Helper#getPartClasses}方法
          *
          * @param {string} [part] 部件名称
@@ -250,17 +274,6 @@ define(
                     this.getStateClasses(state)
                 );
             }
-        };
-
-        /**
-         * 获取图标class
-         *
-         * 格式为:ui-icon-xxx
-          
-         * @param {string} name 图标名称
-         */
-        helper.getIconClass = function (name) {
-            return joinByStrike(ui.getConfig('uiClassPrefix'), 'icon', name);
         };
 
         /**
