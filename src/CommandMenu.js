@@ -104,7 +104,7 @@ define(
             var helper = this.control.helper;
 
             helper.addDOMEvent(element, 'click', selectItem);
-            element.className += ' ' + helper.getPrefixClass('dropdown');
+            lib.addClass(element, helper.getPrefixClass('dropdown'));
         };
 
         /**

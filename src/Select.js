@@ -74,7 +74,7 @@ define(
             var helper = this.control.helper;
 
             helper.addDOMEvent(element, 'click', selectValue);
-            element.className += ' ' + helper.getPrefixClass('dropdown');
+            lib.addClass(element, helper.getPrefixClass('dropdown'));
         };
 
         SelectLayer.prototype.syncState = function (element) {

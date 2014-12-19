@@ -33,9 +33,13 @@
                         <div id="container">
                             <button
                             id="test"
-                            class="ui-button"
-                            data-ui-type="CommandMenu"
-                            data-ui-id="cmdMenu">Command Menu <span class="ui-icon-caret-down"></span></button>
+                            class="ui-button">Command Menu <span class="ui-icon-caret-down"></span></button>
+                            <div class="ui-button-group ui-button-separated">
+                                <button class="ui-button">Split Button</button>
+                                <button
+                                id="test2"
+                                class="ui-button"><span class="ui-icon-caret-down"></span></button>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -48,18 +52,22 @@
                 'esui/CommandMenu'
             ],
             function (ui, CommandMenu) {
-                var options = {
-                    datasource: [
-                        { text: 'Item 1' },
-                        { text: 'Item 2', handler: function () { console.log('b'); } },
-                        { text: 'Item 3', handler: function () { console.log('c'); } },
-                        { text: 'Item 4', handler: function () {  } }
-                    ],
-                    main: document.getElementById('test')
-                };
-                var menu = new CommandMenu(options);
-                menu.on('select', function (e) { console.log(e.item, e.index); });
-                menu.render();
+                function newMenu(id) {
+                    var options = {
+                        datasource: [
+                            { text: 'Item 1 Item 1 ' },
+                            { text: 'Item 2 Item 2 ', handler: function () { console.log('b'); } },
+                            { text: 'Item 3 Item 3 ', handler: function () { console.log('c'); } },
+                            { text: 'Item 4 Item 4 ', handler: function () {  } }
+                        ],
+                        main: document.getElementById(id)
+                    };
+                    var menu = new CommandMenu(options);
+                    menu.on('select', function (e) { console.log(e.item, e.index); });
+                    menu.render();
+                }
+                newMenu('test');
+                newMenu('test2');
             }
         )
         </script>
