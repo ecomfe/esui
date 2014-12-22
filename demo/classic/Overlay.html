@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Overlay - ESUI Demo</title>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+        <style>
+            .demo-field {
+                overflow: hidden;
+                zoom: 1;
+            }
+            .demo-field .ui-label,
+            .demo-field .ui-textbox,
+            .demo-field .ui-select {
+                float: left;
+            }
+            .demo-field .ui-label {
+                margin-right: 8px;
+                line-height: 29px;
+                width: 100px;
+                text-align: right;
+            }
+
+            .ui-select {
+                width: 100px;
+            }
+
+            .demo-content {
+                padding: 10px;
+            }
+
+            .ui-overlay {
+                background: white;
+                padding: 10px;
+            }
+
+            .attached-overlay {
+                border: 1px solid #ddd;
+            }
+
+        </style>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+    </head>
+    <body>
+        <header>Overlay</header>
+        <div class="container">
+            <h2>浮层</h2>
+            <h3 class="desc-title">
+            属性设置
+            </h3>
+            <table class="desc-table" border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr style="background:">
+                        <th width="50">属性名</th>
+                        <th width="150">描述</th>
+                        <th width="450">格式</th>
+                        <th width="150">默认值</th>
+                    </tr>
+                    <tr>
+                        <td>height</td>
+                        <td>浮层高度</td>
+                        <td>{number | string} 如：20、'20'、 'auto'</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>width</td>
+                        <td>浮层宽度</td>
+                        <td>{number | string} 如：20、'20'、 'auto'</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>top</td>
+                        <td>浮层元素的上外边距边界与视图上边界之间的偏移</td>
+                        <td>{number | string}</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>left</td>
+                        <td>浮层元素的左外边距边界与视图左边界之间的偏移</td>
+                        <td>{number | string}</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>bottom</td>
+                        <td>浮层元素的下外边距边界与视图下边界之间的偏移</td>
+                        <td>{number | string}</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>right</td>
+                        <td>浮层元素的右外边距边界与视图右边界之间的偏移</td>
+                        <td>{number | string}</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>attachedControl</td>
+                        <td>浮层元素要贴附展示的控件</td>
+                        <td>{string | esui.Control} id或控件</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>attachedDOM</td>
+                        <td>浮层元素要贴附展示的节点元素id</td>
+                        <td>{string}</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>attachedLayout</td>
+                        <td>贴附型浮层元素的方位配置</td>
+                        <td>{string | Array}<br>目前支持12种方位，配置详情详见下面的实例</td>
+                        <td>无</td>
+                    </tr>
+                    <tr>
+                        <td>hasMask</td>
+                        <td>是否有遮罩</td>
+                        <td>{boolean}</td>
+                        <td>false</td>
+                    </tr>
+                    <tr>
+                        <td>fixed</td>
+                        <td>位置是否固定</td>
+                        <td>{boolean}</td>
+                        <td>false</td>
+                    </tr>
+                    <tr>
+                        <td>autoClose</td>
+                        <td>点击浮层外部，是否自动关闭</td>
+                        <td>{boolean}</td>
+                        <td>true</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="desc-title">
+            实例展示
+            </h3>
+            <div class="demo-container">
+                <h4>粘附浮层</h4>
+                <div class="demo-field">
+                    <label data-ui-type="Label">12个方位：</label>
+                    <select data-ui-type="Select" data-ui-id="positions">
+                    <option value="top,right">Top Right</option>
+                    <option value="top,left">Top Left</option>
+                    <option value="top,center">Top Center</option>
+                    <option value="bottom,right">Bottom Right</option>
+                    <option value="bottom,left">Bottom Left</option>
+                    <option value="bottom,center">Bottom Center</option>
+                    <option value="left,top">Left Top</option>
+                    <option value="left,bottom">Left Bottom</option>
+                    <option value="left,center">Left Center</option>
+                    <option value="right,top">Right Top</option>
+                    <option value="right,bottom">Right Bottom</option>
+                    <option value="right,center">Right Center</option>
+                    </select>
+                </div>
+                <div class="demo-content">
+                    <div data-ui-type="Button" data-ui-id="attach-target">点出我的浮层</div>
+                    <div class="attached-overlay" data-ui-type="Overlay" data-ui-id="attached-overlay"
+                    data-ui-attached-control="attach-target">
+                        <div data-ui-type="Button" data-ui-id="test1">我是浮层第一按钮！</div>
+                        <input data-ui-type="TextBox" data-ui-id="test2">我是浮层第一输入框</input>
+                    </div>
+                </div>
+                <h4>独立浮层</h4>
+                <div>
+                    <h5>各种参数</h5>
+                    <div class="demo-field">
+                        <label data-ui-type="Label">width：</label>
+                        <input data-ui-type="TextBox" data-ui-id="width"></input>
+                    </div>
+                    <div class="demo-field">
+                        <label data-ui-type="Label">height：</label>
+                        <input data-ui-type="TextBox" data-ui-id="height"></input>
+                    </div>
+                    <div class="demo-field">
+                        <label data-ui-type="Label">top：</label>
+                        <input data-ui-type="TextBox" data-ui-id="top"></input>
+                    </div>
+                    <div class="demo-field">
+                        <label data-ui-type="Label">left：</label>
+                        <input data-ui-type="TextBox" data-ui-id="left"></input>
+                    </div>
+                    <div class="demo-field">    
+                        <label data-ui-type="Label">bottom：</label>
+                        <input data-ui-type="TextBox" data-ui-id="bottom"></input>
+                    </div>
+                    <div class="demo-field">    
+                        <label data-ui-type="Label">right：</label>
+                        <input data-ui-type="TextBox" data-ui-id="right"></input>
+                    </div>
+                    <div class="demo-field">    
+                        <label data-ui-type="Label">是否遮罩：</label>
+                        <select data-ui-type="Select" data-ui-id="hasMask">
+                            <option value="true">需要</option>
+                            <option value="false">不需要</option>
+                        </select>
+                    </div>
+                    <div class="demo-field">    
+                        <label data-ui-type="Label">是否固定：</label>
+                        <select data-ui-type="Select" data-ui-id="fixed">
+                            <option value="true">固定</option>
+                            <option value="false">不固定</option>
+                        </select>
+                    </div>
+                </div>
+                <div data-ui-type="Button" data-ui-id="dialog-trigger">点出覆盖浮层</div>
+                <div data-ui-type="Overlay" data-ui-id="independent-overlay"></div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Overlay',
+                'esui/Label',
+                'esui/Select',
+                'esui/TextBox',
+                'esui/Button'
+            ],
+            function (ui, Overlay, Label, Select, TextBox, Button) {
+                ui.init();
+                var attachTarget = ui.get('attach-target');
+                var attachedOverlay = ui.get('attached-overlay');
+                attachTarget.on('click', function () {
+                    // 搜集参数
+                    var attachedLayout = ui.get('positions').getValue();
+                    attachedOverlay.setProperties(
+                        {
+                            attachedLayout: attachedLayout
+                        }
+                    );
+                    attachedOverlay.show();
+                });
+
+                var dialogTrigger = ui.get('dialog-trigger');
+                var independentOverlay = ui.get('independent-overlay');
+                dialogTrigger.on('click', function () {
+                    // 搜集参数
+                    var properties = {
+                        top: ui.get('top').getValue(),
+                        right: ui.get('right').getValue(),
+                        left: ui.get('left').getValue(),
+                        bottom: ui.get('bottom').getValue(),
+                        width: ui.get('width').getValue(),
+                        height: ui.get('height').getValue(),
+                        hasMask: ui.get('hasMask').getValue(),
+                        fixed: ui.get('fixed').getValue()
+                    }
+                    independentOverlay.setProperties(properties);
+                    independentOverlay.show();
+                });
+            }
+        )
+        </script>
+    </body>
+</html>
