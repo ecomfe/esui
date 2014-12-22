@@ -156,9 +156,11 @@ define(
         };
 
         CommandMenu.prototype.initStructure = function () {
-            if (!this.displayText) {
-                this.displayText = this.main.innerHTML;
+            var mainElement = this.main;
+            if (!this.displayHTML) {
+                this.displayHTML = mainElement.innerHTML;
             }
+            lib.addClass(mainElement, this.helper.getPrefixClass('button'));
         },
 
         /**
@@ -207,9 +209,22 @@ define(
             /**
              * @property {string} displayText
              *
-             * 显示在可点击元素上的文本。
+             * 显示在可点击元素上的文本, 为了保持向后兼容，此属性优先于displayHTML属性
              */
-            paint.html('displayText'),
+            paint.text('displayText'),
+            {
+                /**
+                 * @property {string} displayHTML
+                 *
+                 * 显示在可点击元素上的HTML。
+                 */
+                name: 'displayHTML',
+                paint: function (menu, displayHTML) {
+                    if (!menu.displayText) {
+                        menu.main.innerHTML = displayHTML;
+                    }
+                }
+            },
             {
                 name: ['disabled', 'hidden', 'readOnly'],
                 paint: function (menu, disabled, hidden, readOnly) {
@@ -219,6 +234,20 @@ define(
                 }
             }
         );
+
+        /**
+         * 创建控件主元素，默认使用`<button type="button">`元素
+         *
+         * 如果需要使用其它类型作为主元素，
+         * 需要在始终化时提供{@link Control#main}属性
+         *
+         * @return {HTMLElement}
+         * @protected
+         * @override
+         */
+        CommandMenu.prototype.createMain = function () {
+            return lib.dom.createElement('<button type="button"></button>');
+        },
 
         /**
          * 销毁控件

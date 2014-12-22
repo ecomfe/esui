@@ -34,7 +34,7 @@
                             <button
                             id="test"
                             class="ui-button">Command Menu <span class="ui-icon-caret-down"></span></button>
-                            <div class="ui-button-group ui-button-separated">
+                            <div id="createElement" class="ui-button-group ui-button-separated">
                                 <button class="ui-button">Split Button</button>
                                 <button
                                 id="test2"
@@ -68,6 +68,31 @@
                 }
                 newMenu('test');
                 newMenu('test2');
+
+                var menuCreated = new CommandMenu({
+                    datasource: [
+                        { text: 'Item 1' },
+                        { text: 'Item 2', handler: function () { console.log('b'); } },
+                        { text: 'Item 3 Item 3 ', handler: function () { console.log('c'); } },
+                        { text: 'Item 4 Item 4 ', handler: function () {  } }
+                    ],
+                    displayText: 'Dynamic Created',
+                    // displayHTML should not work
+                    displayHTML: 'Dynamic Created HTML'
+                });
+                menuCreated.appendTo(document.getElementById('createElement'));
+
+                var menuCreated2 = new CommandMenu({
+                    datasource: [
+                        { text: 'Item 1' },
+                        { text: 'Item 2', handler: function () { console.log('b'); } },
+                        { text: 'Item 3 Item 3 ', handler: function () { console.log('c'); } },
+                        { text: 'Item 4 Item 4 ', handler: function () {  } }
+                    ],
+                    // displayHTML should work
+                    displayHTML: 'Dynamic Created HTML <span class="ui-icon-users"></span>'
+                });
+                menuCreated2.appendTo(document.getElementById('createElement'));
             }
         )
         </script>

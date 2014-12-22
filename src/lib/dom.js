@@ -306,6 +306,23 @@ define(
                 : !!(container.compareDocumentPosition(contained) & 16);
         };
 
+        /**
+         * 从HTML创建一个HTMLELement
+         *
+         * @param {string} html string
+         * @return {HTMLElement | HTMLElement[]} HTML Element 或数组
+        */
+        lib.dom.createElement = function (html) {
+            var div = document.createElement('div');
+            div.innerHTML = html;
+            var nodes = div.childNodes;
+            if (nodes.length === 1) {
+                return nodes[0]
+            }
+            else {
+                return nodes;
+            }
+        };
         return lib;
     }
 );
