@@ -307,10 +307,10 @@ define(
         };
 
         /**
-         * 从HTML创建一个HTMLELement
+         * 从HTML创建 HTML elements
          *
          * @param {string} html string
-         * @return {HTMLElement | HTMLElement[]} HTML Element 或数组
+         * @return {HTMLElement | NodeList} HTML Element 或数组
         */
         lib.dom.createElement = function (html) {
             var div = document.createElement('div');
