@@ -315,7 +315,7 @@ define(
         lib.dom.createElement = function (html) {
             var div = document.createElement('div');
             div.innerHTML = html;
-            var nodes = div.childNodes;
+            var nodes = div.children;
             if (nodes.length === 1) {
                 return nodes[0]
             }
