@@ -29,7 +29,7 @@ require.config({
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-alpha.1/src'
+            'location': '../dep/esf/1.0.0-alpha.4/src'
         },
         {
             'name': 'est',

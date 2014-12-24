@@ -91,10 +91,7 @@ define(
              * @override
              */
             createMain: function () {
-                // IE创建带`type`属性的元素很麻烦，干脆这么来
-                var div = document.createElement('div');
-                div.innerHTML = '<button type="button"></button>';
-                return div.firstChild;
+                return lib.dom.createElement('<button type="button"></button>');
             },
 
             /**

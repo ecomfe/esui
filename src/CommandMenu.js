@@ -94,8 +94,17 @@ define(
             element.innerHTML = html;
         };
 
+        /**
+         * 初始化层的交互行为
+         *
+         * @param {HTMLElement} element 层元素
+         * @override
+         */
         CommandMenuLayer.prototype.initBehavior = function (element) {
-            this.control.helper.addDOMEvent(element, 'click', selectItem);
+            var helper = this.control.helper;
+
+            helper.addDOMEvent(element, 'click', selectItem);
+            lib.addClass(element, helper.getPrefixClass('dropdown'));
         };
 
         /**
@@ -146,6 +155,14 @@ define(
             return lib.format(this.itemTemplate, data);
         };
 
+        CommandMenu.prototype.initStructure = function () {
+            var mainElement = this.main;
+            if (!this.displayHTML) {
+                this.displayHTML = mainElement.innerHTML;
+            }
+            lib.addClass(mainElement, this.helper.getPrefixClass('button'));
+        },
+
         /**
          * 初始化事件交互
          *
@@ -192,9 +209,22 @@ define(
             /**
              * @property {string} displayText
              *
-             * 显示在可点击元素上的文本，会自动进行HTML转义
+             * 显示在可点击元素上的文本, 为了保持向后兼容，此属性优先于displayHTML属性
              */
             paint.text('displayText'),
+            {
+                /**
+                 * @property {string} displayHTML
+                 *
+                 * 显示在可点击元素上的HTML。
+                 */
+                name: 'displayHTML',
+                paint: function (menu, displayHTML) {
+                    if (!menu.displayText) {
+                        menu.main.innerHTML = displayHTML;
+                    }
+                }
+            },
             {
                 name: ['disabled', 'hidden', 'readOnly'],
                 paint: function (menu, disabled, hidden, readOnly) {
@@ -204,6 +234,20 @@ define(
                 }
             }
         );
+
+        /**
+         * 创建控件主元素，默认使用`<button type="button">`元素
+         *
+         * 如果需要使用其它类型作为主元素，
+         * 需要在始终化时提供{@link Control#main}属性
+         *
+         * @return {HTMLElement}
+         * @protected
+         * @override
+         */
+        CommandMenu.prototype.createMain = function () {
+            return lib.dom.createElement('<button type="button"></button>');
+        },
 
         /**
          * 销毁控件
@@ -222,15 +266,6 @@ define(
 
             Control.prototype.dispose.apply(this, arguments);
         };
-
-        /**
-         * 创建wrapper元素
-         *
-         * @override
-         */
-        CommandMenu.prototype.createMain = function () {
-            return document.createElement('button');
-        }
 
         lib.inherits(CommandMenu, Control);
         require('./main').register(CommandMenu);
