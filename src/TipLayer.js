@@ -106,7 +106,7 @@ define(
             }
             else {
                 mainDOM = document.createElement('div');
-                if (type == 'body') {
+                if (type === 'body') {
                     // 找到head
                     var head = control.getChild('title');
                     if (head) {
@@ -213,7 +213,7 @@ define(
         }
 
         function getElementByControl(tipLayer, control) {
-            if (typeof control == 'string') {
+            if (typeof control === 'string') {
                 control = tipLayer.viewContext.get(control);
             }
             return control.main;
@@ -910,22 +910,26 @@ define(
                     options
                 );
 
-                this.fire('show');
-                this.isShow = true;
-            },
+                if (this.isShow) {
+                    return;
+                }
 
+                this.isShow = true;
+                this.fire('show');
+            },
 
             /**
              * 隐藏提示层
              *
              */
             hide: function () {
-                if (this.isShow) {
-                    this.addState('hidden');
+                if (!this.isShow) {
+                    return;
                 }
 
-                this.fire('hide');
                 this.isShow = false;
+                this.addState('hidden');
+                this.fire('hide');
             },
 
 
@@ -996,7 +1000,7 @@ define(
             function btnClickHandler(tipLayer) {
                 // 有可能在参数里设置了处理函数
                 var handler = tipLayer.onok;
-                var isFunc = (typeof handler == 'function');
+                var isFunc = (typeof handler === 'function');
                 if (isFunc) {
                     handler(tipLayer);
                 }

@@ -157,7 +157,7 @@ define(
          * @ignore
          */
         function disposeEditorControl(table) {
-            if (table == currentTable) {
+            if (table === currentTable) {
                 hideLayer();
 
                 inputCtrl.dispose();
@@ -323,7 +323,7 @@ define(
          * @ignore
          */
         function tableEndDragHandler() {
-            if (this == currentTable) {
+            if (this === currentTable) {
                 layerFollow(this);
             }
         }
@@ -334,7 +334,7 @@ define(
          * @ignore
          */
         function tableResizeHandler() {
-            if (this == currentTable) {
+            if (this === currentTable) {
                 layerFollow(this);
             }
         }
@@ -503,7 +503,7 @@ define(
          * @ignore
          */
         function cancelEdit() {
-            if (this == currentTable) {
+            if (this === currentTable) {
                 stop();
             }
         }
@@ -537,7 +537,11 @@ define(
         function getColHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
-            if (table.editable && field.editable) {
+            var fieldEditable = field.editable;
+            if ('function' == typeof fieldEditable) {
+                fieldEditable = fieldEditable.call(table, data, rowIndex, fieldIndex, extraArgs);
+            }
+            if (table.editable && fieldEditable) {
                 return {
                     textClass: table.getClass('cell-editable'),
                     html: lib.format(
@@ -555,7 +559,7 @@ define(
         function fieldHanlder(table, eventType, args) {
             var handler = args.field['on' + eventType];
             if (handler
-                && '[object Function]' == Object.prototype.toString.call(handler)) {
+                && '[object Function]' === Object.prototype.toString.call(handler)) {
                 handler.call(table, args);
             }
         }

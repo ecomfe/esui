@@ -363,7 +363,7 @@ define(
          */
         function hideMask(dialog) {
             var mask = getMask(dialog);
-            if ('undefined' != typeof mask) {
+            if ('undefined' !== typeof mask) {
                 lib.removeNode(mask);
             }
         }
@@ -527,7 +527,7 @@ define(
                 else {
                     mainDOM = document.createElement('div');
 
-                    if (type == 'body') {
+                    if (type === 'body') {
                         // 找到head
                         var head = this.getChild('head');
                         if (head) {
@@ -763,9 +763,12 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                this.fire('show');
-                this.isShow = true;
+                if (this.isShow) {
+                    return;
+                }
 
+                this.isShow = true;
+                this.fire('show');
             },
 
             /**
@@ -773,21 +776,21 @@ define(
              *
              */
             hide: function () {
-                if (this.isShow) {
-                    helper.removeDOMEvent(
-                        this, window, 'resize', resizeHandler
-                    );
-                    var mask = this.mask;
+                if (!this.isShow) {
+                    return;
+                }
 
-                    this.addState('hidden');
+                this.isShow = false;
 
-                    if (mask) {
-                        hideMask(this);
-                    }
+                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
+
+                this.addState('hidden');
+
+                if (this.mask) {
+                    hideMask(this);
                 }
 
                 this.fire('hide');
-                this.isShow = false;
             },
 
 

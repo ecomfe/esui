@@ -25,7 +25,7 @@ define(
          * @type {string}
          * @readonly
          */
-        main.version = '3.1.0-beta.3';
+        main.version = '3.1.0-beta.6';
 
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
@@ -198,7 +198,7 @@ define(
          * @ignore
          */
         function registerClass(classFunc, container) {
-            if (typeof classFunc == 'function') {
+            if (typeof classFunc === 'function') {
                 var type = classFunc.prototype.type;
                 if (type in container) {
                     throw new Error(type + ' is exists!');
@@ -419,7 +419,7 @@ define(
                         extendToOption(extOption, terms, value);
                     }
                     else if (name.indexOf(uiPrefix) === 0) {
-                        var terms = name.length == uiPrefixLen
+                        var terms = name.length === uiPrefixLen
                             ? []
                             : name.slice(uiPrefixLen + 1).split('-');
                         extendToOption(controlOptions, terms, value);
@@ -432,10 +432,13 @@ define(
                     var nodeName = element.nodeName.toLowerCase();
                     var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
                     if (esuiPrefixIndex === 0) {
-                        var typeFromCustomElement = nodeName.replace(
+                        var typeFromCustomElement;
+                        /* jshint ignore:start */
+                        typeFromCustomElement = nodeName.replace(
                             /-(\S)/g,
                             function (match, ch) { return ch.toUpperCase(); }
                         );
+                        /* jshint ignore:end */
                         typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
                         controlOptions.type = typeFromCustomElement;
                         type = typeFromCustomElement;
@@ -562,12 +565,9 @@ define(
         main.createGlobalExtensions = function () {
             var options = globalExtensionOptions;
             var extensions = [];
-
-            for (var type in options) {
-                if (options.hasOwnProperty(type)) {
-                    var extension = main.createExtension(
-                        type, options[type] || {}
-                    );
+            for (var type in globalExtensionOptions) {
+                if (globalExtensionOptions.hasOwnProperty(type)) {
+                    var extension = main.createExtension(type, globalExtensionOptions[type]);
                     extension && extensions.push(extension);
                 }
             }

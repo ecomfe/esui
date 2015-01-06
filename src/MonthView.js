@@ -61,11 +61,11 @@ define(
 
             var i = 0;
 
-            if (year == range.begin.getFullYear()) {
+            if (year === range.begin.getFullYear()) {
                 i = range.begin.getMonth();
             }
 
-            if (year == range.end.getFullYear()) {
+            if (year === range.end.getFullYear()) {
                 len = range.end.getMonth();
             }
 
@@ -248,7 +248,7 @@ define(
                 }
 
                 // 不属于当月的日期
-                var virtual = (repeater.getMonth() != month);
+                var virtual = (repeater.getMonth() !== month);
 
                 // 不可选的日期
                 var disabled = false;
@@ -330,7 +330,7 @@ define(
                 helper.getPartClasses(this, 'month-item-virtual');
             var disabledClasses =
                 helper.getPartClasses(this, 'month-item-disabled');
-            while (tar && tar != document.body) {
+            while (tar && tar !== document.body) {
                 if (lib.hasClass(tar, itemClasses[0])
                     && !lib.hasClass(tar, virClasses[0])
                     && !lib.hasClass(tar, disabledClasses[0])) {
@@ -811,7 +811,7 @@ define(
         }
 
         /**
-         * 通过item的dom元素选择日期
+         * 通过点击日期单元dom元素选择日期
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
@@ -930,7 +930,7 @@ define(
             // 如果year选择的数据没改变，
             // 但可能还是需要重回日历，
             // 因此要手动触发year的change
-            if (lastYear == me.year) {
+            if (lastYear === me.year) {
                 yearSelect.fire('change');
             }
 
@@ -1166,42 +1166,56 @@ define(
         }
 
         function updateSelectStateByValue(monthView) {
+            // 单选模式
+            if (monthView.mode !== 'multi') {
+                updateSingleSelectState(monthView, null, monthView.rawValue);
+                return;
+            }
+
             // 多选模式
-            if (monthView.mode === 'multi') {
-                var viewValue = monthView.viewValue;
-                for (var key in viewValue) {
-                    var item = lib.g(helper.getId(monthView, key));
-                    if (item) {
-                        // 有可能这个item是不可选的
-                        var isSelectable = isItemSelectable(monthView, item);
-                        if (isSelectable === 1) {
-                            if (viewValue[key].isSelected) {
-                                helper.addPartClasses(
-                                    monthView, 'month-item-selected', item
-                                );
-                            }
-                            else {
-                                helper.removePartClasses(
-                                    monthView, 'month-item-selected', item
-                                );
-                            }
+            var viewValue = monthView.viewValue;
+            for (var key in viewValue) {
+                var item = lib.g(helper.getId(monthView, key));
+                if (item) {
+                    // 有可能这个item是不可选的
+                    var isSelectable = isItemSelectable(monthView, item);
+                    if (isSelectable === 1) {
+                        if (viewValue[key].isSelected) {
+                            helper.addPartClasses(
+                                monthView, 'month-item-selected', item
+                            );
                         }
-                        // 应该修正了rawValue和viewValue
-                        else if (isSelectable === 0) {
-                            // 有可能是virtual的，这种不应该更新数据
-                            viewValue[key].isSelected = false;
-                            updateMultiRawValue(monthView);
+                        else {
+                            helper.removePartClasses(
+                                monthView, 'month-item-selected', item
+                            );
                         }
                     }
+                    // 应该修正了rawValue和viewValue
+                    else if (isSelectable === 0) {
+                        // 有可能是virtual的，这种不应该更新数据
+                        viewValue[key].isSelected = false;
+                        updateMultiRawValue(monthView);
+                    }
                 }
-                batchRepaintRowTag(monthView);
-                batchRepaintColumnTag(monthView);
-                repaintAllSelectTag(monthView);
             }
-            // 单选模式
-            else {
-                updateSingleSelectState(monthView, null, monthView.rawValue);
-            }
+            batchRepaintRowTag(monthView);
+            batchRepaintColumnTag(monthView);
+            repaintAllSelectTag(monthView);
+        }
+
+
+        /**
+         * 给select的layer人肉增加class命名空间
+         *
+         * @inner
+         * @param {Event} e layer渲染事件
+         */
+        function addCustomClassesForSelectLayer(monthView, selectClass, e) {
+            var layerClasses = monthView.helper.getPartClasses(selectClass + '-layer');
+            var layer = e.layer;
+            layer.addCustomClasses(layerClasses);
+            monthView.fire('selectlayerrendered', { layer: layer });
         }
 
         MonthView.prototype = {
@@ -1361,11 +1375,22 @@ define(
                     lib.curry(changeMonth, this, monthSel)
                 );
 
+                // 给layer人肉增加class命名空间
+                monthSel.on(
+                    'layerrendered',
+                    lib.curry(addCustomClassesForSelectLayer, this, 'month-select')
+                );
+
                 // 年份选择
                 var yearSel = this.getChild('yearSel');
                 yearSel.on(
                     'change',
                     lib.curry(changeYear, this, yearSel)
+                );
+
+                yearSel.on(
+                    'layerrendered',
+                    lib.curry(addCustomClassesForSelectLayer, this, 'year-select')
                 );
 
                 // 为日期绑定点击事件
@@ -1505,7 +1530,7 @@ define(
                                     )
                                 );
                             }
-                            else if (i == (rawValue.length - 1)) {
+                            else if (i === (rawValue.length - 1)) {
                                 dateStrs.push(
                                     lib.date.format(
                                         rawValue[i], this.paramFormat
@@ -1528,6 +1553,10 @@ define(
             setRawValueWithoutFireChange: function (value) {
                 this.rawValue = value;
                 parseToCache(this);
+            },
+
+            getDateItemHTML: function (date) {
+                return lib.g(getItemId(this, date));
             }
 
         };

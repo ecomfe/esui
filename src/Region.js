@@ -191,7 +191,7 @@ define(
                 }
 
                 // 节点处在倒数第二层，需计算下其下选中的节点个数，并更新信息
-                if (level == 3) {
+                if (level === 3) {
                     if (!isChecked) {
                         updateSelectedTip(region, selChildLength, len, data.id);
                     }
@@ -304,13 +304,14 @@ define(
             if (children != null) {
                 item.isSelected = false;
                 // 省（直辖市）级具有弹出层
-                if (item.level == 3) {
+                if (item.level === 3) {
                     // 按需加载，先保存到缓存里
                     if (item.children && item.children.length > 0) {
                         region.cityCache[item.id] =
                             formatItemChildren(region, item);
                     }
-                } else {
+                }
+                else {
                     var len = children instanceof Array && children.length;
                     for (var i = 0; i < len; i++) {
                         subItemHtml.push(
@@ -443,7 +444,7 @@ define(
          * @return {string}
          */
         function formatItemChildren(region, item) {
-            if (item.level == 3 && item.children != null) {
+            if (item.level === 3 && item.children != null) {
                 var itemHtml = [];
                 var leftLength = 0, rightLength = 0;
                 for (var i = 0; i < item.children.length; i++) {
@@ -540,7 +541,7 @@ define(
                 return;
             }
             var tar = e.target;
-            while (tar && tar != document.body) {
+            while (tar && tar !== document.body) {
                 var hit = false;
                 if (tar.nodeName.toLowerCase() === 'input') {
                     hit = true;
@@ -592,7 +593,7 @@ define(
             }
             else if (len === 0) {
                 //获取第三层checkbox
-                if (lib.getAttribute(dom, 'level') == 3) {
+                if (lib.getAttribute(dom, 'level') === 3) {
                     var selCityIdsLength = 0;
                     var cityTotal = region.regionDataIndex[id].parent.children;
                     u.each(cityTotal, function (city) {
@@ -635,12 +636,12 @@ define(
                 this, 'city-box');
 
             var handler = showSubCity;
-            if (type == 'hide') {
+            if (type === 'hide') {
                 handler = hideSubCity;
             }
 
             var itemId;
-            while (tar && tar != document.body) {
+            while (tar && tar !== document.body) {
                 var optionChildLayer;
                 if (lib.hasClass(tar, textClass[0])) {
                     itemId = lib.getAttribute(tar.firstChild, 'value');
@@ -877,7 +878,7 @@ define(
 
                 lib.extend(properties, options);
 
-                if (properties.mode == 'multi') {
+                if (properties.mode === 'multi') {
                     //增加map型地域数据
                     initMultiData(this, properties);
 
@@ -889,7 +890,7 @@ define(
                     initSingleData(this, properties);
                 }
 
-                if (properties.pureSelect == 'false') {
+                if (properties.pureSelect === 'false') {
                     properties.pureSelect = false;
                 }
 
@@ -909,7 +910,7 @@ define(
                     helper.replaceMain(this);
                 }
 
-                if (this.mode == 'multi') {
+                if (this.mode === 'multi') {
                     createMultiRegion(this);
                 }
                 else {
@@ -928,7 +929,7 @@ define(
              * @override
              */
             initEvents: function () {
-                if (this.mode == 'multi') {
+                if (this.mode === 'multi') {
                     //点击事件
                     this.helper.addDOMEvent(this.main, 'click', mainClick);
 
@@ -956,7 +957,7 @@ define(
                 {
                     name: 'rawValue',
                     paint: function (region, value) {
-                        if (region.mode == 'multi') {
+                        if (region.mode === 'multi') {
                             selectMulti(region, value);
                         }
                         else {
@@ -1003,7 +1004,7 @@ define(
              * @return {Array}
              */
             getRawValue: function () {
-                if (this.mode == 'single') {
+                if (this.mode === 'single') {
                     return this.getChild('regionSel').getValue();
                 }
 
@@ -1028,7 +1029,7 @@ define(
              * @return {string}
              */
             stringifyValue: function (rawValue) {
-                if (this.mode == 'multi') {
+                if (this.mode === 'multi') {
                     return rawValue.join(',');
                 }
                 else {
@@ -1044,6 +1045,32 @@ define(
              */
             parseValue: function (value) {
                 return value.split(',');
+            },
+            
+            /**
+             * 勾选指定地域
+             *
+             * @param {string} id 地域id
+             * @public
+             */
+            checkRegion: function(id) {
+                var checkbox = getOptionDOM(this, id);
+                // 有就更新勾选状态
+                if (checkbox) {
+                    checkbox.checked = true;
+                    optionClick(this, checkbox);
+                }
+                // 没有就只修改值
+                else {
+                    var item = this.regionDataIndex[id];
+                    if (item) {
+                        item.isSelected = true;
+
+                        // 重复调一次，主要是为了更新“选中了几个城市”的显示信息
+                        updateMulti(this);
+                        updateParamValue(this);
+                    }
+                }
             }
 
         };

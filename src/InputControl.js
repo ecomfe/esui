@@ -369,13 +369,20 @@ define(
                     };
                     label = new ValidityLabel(options);
                     if (this.main.nextSibling) {
-                        label.insertBefore(this.main.nextSibling);
+                        var nextSibling = this.main.nextSibling;
+                        label.insertBefore(nextSibling);
                     }
                     else {
                         label.appendTo(this.main.parentNode);
                     }
-
                     this.validityLabel = label.id;
+                }
+
+                // Adjacent sibling selector not working with dynamically added class in IE7/8
+                // Put the class on a parent to force repainting 
+                if ((lib.ie === 8 || lib.ie === 7) && label) {
+                    // otakustay赐名
+                    lib.toggleClass(label.main.parentNode, 'fuck-the-ie');
                 }
 
                 return label;

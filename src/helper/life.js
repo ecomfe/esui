@@ -77,7 +77,7 @@ define(
                 throw new Error('Invalid life cycle stage: ' + stage);
             }
 
-            return this.control.stage == LifeCycle[stage];
+            return this.control.stage === LifeCycle[stage];
         };
 
         /**

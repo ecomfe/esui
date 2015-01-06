@@ -43,6 +43,15 @@ define(
         Layer.prototype.nodeName = 'div';
 
         /**
+         * 控制是否在页面滚动等交互发生时自动隐藏，默认为`true`
+         *
+         * 如果需要改变此属性，必须在初始化后立即设置，仅在第一次创建层时生效
+         *
+         * @type {boolean}
+         */
+        Layer.prototype.autoHide = true;
+
+        /**
          * 通过点击关闭弹层的处理方法
          *
          * @param {Event} e DOM事件对象
@@ -67,6 +76,26 @@ define(
         }
 
         /**
+         * 启用自动隐藏功能
+         *
+         * @param {HTMLElement} element 需要控制隐藏的层元素
+         */
+        Layer.prototype.enableAutoHide = function (element) {
+            var eventName = 'onwheel' in document.body ? 'wheel' : 'mousewheel';
+            this.control.helper.addDOMEvent(
+                document.documentElement,
+                eventName,
+                u.bind(this.hide, this)
+            );
+            // 自己的滚动不要关掉
+            this.control.helper.addDOMEvent(
+                element,
+                eventName,
+                function (e) { e.stopPropagation(); }
+            );
+        };
+
+        /**
          * 创建浮层
          *
          * @return {HTMLElement}
@@ -75,7 +104,22 @@ define(
             var element =
                 this.control.helper.createPart('layer', this.nodeName);
             lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
+
+            if (this.autoHide) {
+                this.enableAutoHide(element);
+            }
+
             return element;
+        };
+
+        /**
+         * 给Layer增加自定义class
+         *
+         * @return {array} layerClassNames样式集合
+         */
+        Layer.prototype.addCustomClasses = function (layerClassNames) {
+           var element = this.getElement();
+            lib.addClasses(element, layerClassNames);
         };
 
         /**
@@ -134,6 +178,7 @@ define(
             if (!element && create !== false) {
                 element = this.create();
                 this.render(element);
+
                 lib.addClasses(element, getHiddenClasses(this));
 
                 this.initBehavior(element);
@@ -152,6 +197,8 @@ define(
                 if (!element.parentElement) {
                     document.body.appendChild(element);
                 }
+
+                this.fire('rendered');
             }
 
             return element;
@@ -166,6 +213,7 @@ define(
             var element = this.getElement();
             lib.addClasses(element, classes);
             this.control.removeState('active');
+            this.fire('hide');
         };
 
         /**
@@ -180,6 +228,7 @@ define(
             var classes = getHiddenClasses(this);
             lib.removeClasses(element, classes);
             this.control.addState('active');
+            this.fire('show');
         };
 
         /**
@@ -472,6 +521,9 @@ define(
                 }
             }
         }
+
+        var EventTarget = require('mini-event/EventTarget');
+        lib.inherits(Layer, EventTarget);
 
         return Layer;
     }

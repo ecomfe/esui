@@ -126,6 +126,10 @@ define(
                 this.appendTo(getContainer.call(this));
             }
 
+            if (!this.isHidden()) {
+                return;
+            }
+
             Control.prototype.show.apply(this, arguments);
             this.fire('show');
             clearTimeout(this.timer);
@@ -140,6 +144,9 @@ define(
          * @override
          */
         Toast.prototype.hide = function () {
+            if (this.isHidden()) {
+                return;
+            }
             Control.prototype.hide.apply(this, arguments);
             clearTimeout(this.timer);
             this.fire('hide');
@@ -166,6 +173,7 @@ define(
         /**
          * 获取的容器,可自行添加样式，使其呈现堆叠效果。
          *
+         * @return {HTMLElement}
          * @ignore
          */
         function getContainer() {
@@ -182,6 +190,20 @@ define(
             return element;
         }
 
+        function createHandler(messageType) {
+            return function (content, options) {
+                if (messageType === 'show') {
+                    messageType = 'normal';
+                }
+                options = lib.extend({content: content}, options);
+                options.messageType = options.messageType || messageType;
+                var toast = new Toast(options);
+                Control.prototype.hide.apply(toast);
+                toast.appendTo(getContainer.call(toast));
+                return toast;
+            };
+        }
+
         /**
          * 快捷显示信息的方法
          *
@@ -192,19 +214,8 @@ define(
         var allType = ['show', 'info', 'alert', 'error', 'success'];
         for (var key in allType) {
             if (allType.hasOwnProperty(key)) {
-                (function (messageType) {
-                    Toast[messageType] = function (content, options) {
-                        if (messageType === 'show') {
-                            messageType = 'normal';
-                        }
-                        options = lib.extend({ content: content }, options);
-                        options.messageType = options.messageType || messageType;
-                        var toast = new Toast(options);
-                        Control.prototype.hide.apply(toast);
-                        toast.appendTo(getContainer.call(toast));
-                        return toast;
-                    };
-                })(allType[key]);
+                var messageType = allType[key];
+                Toast[messageType] = createHandler(messageType);
             }
         }
 

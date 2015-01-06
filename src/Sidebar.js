@@ -380,12 +380,11 @@ define(
             var me = sidebar;
             mode = mode.toLowerCase();
 
-            if (mode == 'fixed') {
-
+            if (mode === 'fixed') {
                 me.getChild('btnAutoHide').show();
                 me.getChild('btnFixed').hide();
-            } else {
-
+            }
+            else {
                 me.getChild('btnAutoHide').hide();
                 me.getChild('btnFixed').show();
             }
@@ -528,7 +527,6 @@ define(
          * @param  {string} content html内容
          */
         Sidebar.prototype.setContent = function (content) {
-
             var panel = this.getPanel();
 
             if (panel) {
@@ -542,7 +540,7 @@ define(
          * @return {boolean}
          */
         Sidebar.prototype.isAutoHide = function () {
-            return this.mode == 'autohide';
+            return this.mode === 'autohide';
         };
 
         /**

@@ -351,7 +351,7 @@ define(
             get: function (name) {
                 var method = this['get' + lib.pascalize(name)];
 
-                if (typeof method == 'function') {
+                if (typeof method === 'function') {
                     return method.call(this);
                 }
 
@@ -367,7 +367,7 @@ define(
             set: function (name, value) {
                 var method = this['set' + lib.pascalize(name)];
 
-                if (typeof method == 'function') {
+                if (typeof method === 'function') {
                     return method.call(this, value);
                 }
 
@@ -472,7 +472,7 @@ define(
             setViewContext: function (viewContext) {
                 // 为了避免程序流转，降低性能，以及死循环，做一次判断
                 var oldViewContext = this.viewContext;
-                if (oldViewContext == viewContext) {
+                if (oldViewContext === viewContext) {
                     return;
                 }
 
@@ -661,7 +661,7 @@ define(
                 }
 
                 // 将子视图环境设置与父控件一致
-                if (this.viewContext != control.viewContext) {
+                if (this.viewContext !== control.viewContext) {
                     control.setViewContext(this.viewContext);
                 }
             },
@@ -742,7 +742,7 @@ define(
              * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
              * @param {Object} [options] 初始化的配置参数
              * @param {Object} [options.properties] 属性集合，通过id映射
-             * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
+             * @deprecated 将在4.0中移除，使用{@link Helper#initChildren}代替
              */
             initChildren: function (wrap, options) {
                 this.helper.initChildren(wrap, options);

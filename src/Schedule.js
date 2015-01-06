@@ -386,7 +386,7 @@ define(
                      + 'px;top:0;left:' + start * 25 + 'px;';
 
                 //设置星期checkbox的选中值
-                checkInput.checked = length == 24 ? true : false;
+                checkInput.checked = length === 24 ? true : false;
 
                 coverDiv.setAttribute('data-start-time', start);
                 coverDiv.setAttribute('data-end-time', end);
@@ -399,7 +399,7 @@ define(
                     {
                         start: start,
                         end: end,
-                        text: length == 24
+                        text: length === 24
                             ? '全天投放' : start + '.00-' + end + '.00',
                         coverClass: getClass(me, 'covertimes-tip')
                     }
@@ -514,11 +514,9 @@ define(
          *
          */
         function dayClickHandler(e) {
-
             var target = lib.event.getTarget(e);
 
-            if (target.nodeName.toLowerCase() != 'input') {
-
+            if (target.nodeName.toLowerCase() !== 'input') {
                 return;
             }
 
@@ -557,16 +555,14 @@ define(
             var index = target.getAttribute('data-item');
 
             var func = this.shortcut[index].getValue;
-            typeof func == 'function' && func.call(this);
+            typeof func === 'function' && func.call(this);
 
             var rawValue;
 
-            if (typeof func == 'function') {
-
+            if (typeof func === 'function') {
                 rawValue = func.call(this);
             }
             else {
-
                 rawValue = func;
             }
 
@@ -729,17 +725,15 @@ define(
                     parseInt(item.getAttribute('data-start-time'), 10);
                 var endCT =
                     parseInt(item.getAttribute('data-end-time'), 10);
-                var CoverDay =
+                var coverDay =
                     parseInt(item.getAttribute('data-day'), 10);
 
                 if (time >= startCT
                     && time < endCT
-                    && day == CoverDay) {
-
+                    && day === coverDay) {
                     item.style.display = 'none';
                 }
                 else {
-
                     item.style.display = 'block';
                 }
             }
