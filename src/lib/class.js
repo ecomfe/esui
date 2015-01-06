@@ -16,19 +16,11 @@ define(
          */
         var lib = {};
 
-        /**
-         * 获取元素class列表 当element.classList不存在时可使用该方法
-         *
-         * @param {HTMLElement} element 目标元素
-         * @return {String[]} class列表
-         */
         function getClassList(element) {
             return element.className
                 ? element.className.split(/\s+/)
                 : [];
         }
-
-        lib = getClasses = getClassList;
 
         /**
          * 判断元素是否拥有指定的class

@@ -5,77 +5,111 @@
  * @file 下拉选择样式
  * @author dbear
  */
-@import "standard/Select.less";
-
+@import "mixin.less";
+@import "variable.less";
 .@{ui-class-prefix}-select {
     .linear-gradient-background-with-image (
-    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
-    border: 1px solid #d8d8d8;
-    border-radius: 3px;
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
+    .ellipse-overflow ();
+    .interactive-cursor ();
+    border: 1px solid #D8D8D8;
+    border-radius: 3px 3px 3px 3px;
     font-size: 12px;
     height: 17px;
     line-height: 17px;
-    padding: 3px 20px 3px 5px;
+    padding: 3px 3px 3px 5px;
     width: 50px;
-    color: #666;
+    padding-right: 20px;
+    outline: none;
 }
 
 .@{ui-class-prefix}-select:hover,
 .@{ui-class-prefix}-select:focus {
     .linear-gradient-background-with-image (
-    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -36px, #fff);
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -36px, #fff);
 }
 
 .@{ui-class-prefix}-select:active {
     .linear-gradient-background-with-image (
-    top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png", right, -36px, #fff);
+        top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png", right, -36px, #fff);
 }
 
 .@{ui-class-prefix}-select-active,
 .@{ui-class-prefix}-select-active:hover,
 .@{ui-class-prefix}-select-active:focus {
     .linear-gradient-background-with-image (
-    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -67px, #fff);
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -67px, #fff);
 }
 
 .@{ui-class-prefix}-select-layer {
-    background: #fff;
-    border: 1px solid #a8adb6;
+    .reset-list ();
+    .box-sizing (border-box);
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #A8ADB6;
     font-size: 12px;
+    overflow-x: hidden;
+    *height: 152px;
+    max-height: 152px;
     overflow-y: auto;
+    padding: 0 1px;
+    position: absolute;
+    text-align: left;
+    z-index: @layer-z-index;
 }
 
 .@{ui-class-prefix}-select-item {
-    color: #333;
-    height: auto;
+    color: #333333;
+    .interactive-cursor ();
     line-height: 22px;
+    margin: 0 0 1px;
     padding: 0 4px;
-}
-
-.@{ui-class-prefix}-select-item-selected {
-    background-color: #e0e0e0;
-    border: 1px solid #ddd;
-    padding: 0 3px;
-}
-
-.@{ui-class-prefix}-select-item:hover {
-    background-color: #f1f1f1;
 }
 
 .@{ui-class-prefix}-select-item-disabled {
     color: #999;
+}
 
-    &:hover {
-        background: transparent;
-    }
+.@{ui-class-prefix}-select-item-selected {
+    background-color: #E0E0E0;
+    border: 1px solid #DDDDDD;
+    padding: 0 3px;
+}
+
+.@{ui-class-prefix}-select-item:hover {
+    background-color: #F1F1F1;
+}
+
+.@{ui-class-prefix}-select-item span {
+    display: block;
+    .ellipse-overflow ();
+}
+
+.@{ui-class-prefix}-select-layer-hidden {
+    display: none;
 }
 
 .@{ui-class-prefix}-select-disabled,
 .@{ui-class-prefix}-select-read-only {
-    color: #d8d8d8;
+    color: #999;
+    border-color: #D8D8D8;
     &:hover,
     &:focus {
         .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #f3f3f3);
+            top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #f3f3f3);
     }
+}
+
+/** 验证 */
+.@{ui-class-prefix}-select-validity-invalid {
+    border: 1px solid red;
+}
+.@{ui-class-prefix}-select-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.@{ui-class-prefix}-select-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
 }

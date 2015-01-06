@@ -87,11 +87,7 @@ define(
                     // 可能导致box.checked属性不符合预期,
                     // 所以这里采用getAttribute
                     // 参考：http://t.cn/zRTdrVR
-
-                    // 之前这里用了 getAttribute，在 ie8下，未设置 checked，返回的是空字符串，会导致逻辑问题
-                    // if (box.getAttribute('checked') !== null) {
-
-                    if (lib.hasAttribute(box, 'checked')) {
+                    if (box.getAttribute('checked') !== null) {
                         values.push(box.value);
                     }
                 }
@@ -114,14 +110,7 @@ define(
             var properties = {
                 datasource: [],
                 orientation: 'horizontal',
-                boxType: 'radio',
-                /**
-                 * @property {string} boxClass
-                 *
-                 * 附加在boxgroup-wrapper上的css selector 名称。
-                 * 做自定义boxgroup的时候用到。加在这里主要是想复用checkbox现成的样式。
-                 */
-                boxClass: ''
+                boxType: 'radio'
             };
             u.extend(properties, options);
 
@@ -143,31 +132,11 @@ define(
         };
 
         /**
-         * 同步选择状态
-         *
-         * @ignore
-         */
-        function syncCheckedState(element) {
-            var label = element.parentNode;
-            var checkedClass = this.helper.getPartClasses('wrapper-checked');
-            if (element.checked) {
-                lib.addClasses(label, checkedClass);
-            }
-            else {
-                lib.removeClasses(label, checkedClass);
-            }
-        }
-
-        /**
          * 同步值
          *
          * @ignore
          */
         function syncValue() {
-            // 同步样式
-            u.each(this.getBoxElements(), syncCheckedState, this);
-
-            // 同步值
             var result = u.chain(this.getBoxElements())
                 .where({ checked: true })
                 .pluck('value')
@@ -178,10 +147,11 @@ define(
         }
 
         var itemTemplate = [
-            '<div title="${title}" class="${wrapperClass}">',
-            '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
-            '    <label for="${id}">${title}</label>',
-            '</div>'
+            '<label title="${title}" class="${wrapperClass}">',
+                '<input type="${type}" name="${name}" id="${id}"'
+                    + ' title="${title}" value="${value}"${checked} />',
+                '<span>${title}</span>',
+            '</label>'
         ];
         itemTemplate = itemTemplate.join('');
 
@@ -204,27 +174,14 @@ define(
                 group.helper.getPartClasses('wrapper')
             );
 
-            var classList = [];
-            var boxClass = group.boxClass;
-            if (boxClass) {
-                classList.push(boxClass);
-            }
-
-            classes = classes.concat(classList);
-
-
             var valueIndex = lib.toDictionary(group.rawValue);
 
             // 分组的选择框必须有相同的`name`属性，所以哪怕没有也给造一个
             var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
-                var wrapperClass = '';
-                if (valueIndex[item.value]) {
-                    wrapperClass += ' ' + group.helper.getPartClassName('wrapper-checked');
-                }
                 var data = {
-                    wrapperClass: classes.join(' ') + wrapperClass,
+                    wrapperClass: classes.join(' '),
                     id: group.helper.getId('box-' + i),
                     type: group.boxType,
                     name: name,
@@ -338,7 +295,6 @@ define(
                         group.getBoxElements(),
                         function (box) {
                             box.checked = map.hasOwnProperty(box.value);
-                            syncCheckedState.call(group, box);
                         }
                     );
                 }

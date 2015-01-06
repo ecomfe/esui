@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>CheckBox and Radio - ESUI Demo</title>
+    <script src="loader/esl.js"></script>
+    <script>
+        require.config({
+            'baseUrl': '../src',
+            'paths': {},
+            'packages': [
+                {
+                    'name': 'mini-event',
+                    'location': '../dep/mini-event/1.0.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'underscore',
+                    'location': '../dep/underscore/1.5.2/src',
+                    'main': 'underscore'
+                },
+                {
+                    'name': 'moment',
+                    'location': '../dep/moment/2.0.1/src',
+                    'main': 'moment'
+                },
+                {
+                    'name': 'etpl',
+                    'location': '../dep/etpl/2.1.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'esui',
+                    'location': '../src',
+                    'main': 'main'
+                }
+            ]
+        });
+    </script>
+    <script src="../src/customShim.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="demo.css" />
+    <link rel="stylesheet" href="../src/css/main.css" />
+    <script>
+        var ready = (function () {
+            var list = [];
+            return function (callback) {
+                if (callback) {
+                    list.push(callback);
+                }
+                else {
+                    for (var i = 0; i < list.length; i++) {
+                        list[i]();
+                    }
+                    ready = function (callback) {
+                        callback();
+                    };
+                }
+            }
+        }());
+    </script>
+</head>
+<body>
+    <h1>CheckBox and Radio</h1>
+    <div id="page">
+        <ul id="navigator">
+            <li><a href="Panel.html">Panel</a></li>
+            <li><a href="Label.html">Label</a></li>
+            <li><a href="Link.html">Link</a></li>
+            <li><a href="Button.html">Button</a></li>
+            <li><a href="Tip.html">Tip</a></li>
+            <li><a href="TextBox.html">TextBox</a></li>
+            <li><a href="BoxControl.html">BoxControl</a></li>
+            <li><a href="Select.html">Select</a></li>
+            <li><a href="MonthView.html">MonthView</a></li>
+            <li><a href="Calendar.html">Calendar</a></li>
+            <li><a href="RangeCalendar.html">RangeCalendar</a></li>
+            <li><a href="Region.html">Region</a></li>
+            <li><a href="Schedule.html">Schedule</a></li>
+            <li><a href="Crumb.html">Crumb</a></li>
+            <li><a href="CommandMenu.html">CommandMenu</a></li>
+            <li><a href="Wizard.html">Wizard</a></li>
+            <li><a href="Tab.html">Tab</a></li>
+            <li><a href="Pager.html">Pager</a></li>
+            <li><a href="Sidebar.html">Sidebar</a></li>
+            <li><a href="Dialog.html">Dialog</a></li>
+            <li><a href="Tree.html">Tree</a></li>
+            <li><a href="Table.html">Table</a></li>
+        </ul>
+        <div id="main">
+            <h2>CheckBox组件</h2>
+            <section class="intro">
+                <p>支持从已有元素生成。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div>
+                    <input type="checkbox" name="from-dom" title="从DOM生成" data-ui-type="CheckBox" />
+                </div>
+                <pre class="source source-markup">&lt;input type=&quot;checkbox&quot; name=&quot;from-dom&quot; title=&quot;&#x4ece;DOM&#x751f;&#x6210;&quot; data-ui-type=&quot;CheckBox&quot; /&gt;</pre>
+            </section>
+            <h2>change事件</h2>
+            <sectoin class="intro">
+                <p>使用<code>change</code>事件监听选中状态的变化。</p>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                    <li class="view-script">脚本</li>
+                </ul>
+                <div>
+                    <input type="checkbox" title="打开高级功能" data-ui-type="CheckBox" data-ui-id="change-event" />
+                    <p id="more-info" style="display: none;">已经打开高级功能</p>
+                </div>
+                <script>
+                    ready(
+                        function () {
+                            require('esui').get('change-event').on(
+                                'change',
+                                function () {
+                                    if (this.isChecked()) {
+                                        $('#more-info').show();
+                                    }
+                                    else {
+                                        $('#more-info').hide();
+                                    }
+                                }
+                            );
+                        }
+                    );
+                </script>
+                <pre class="source source-markup">&lt;input type=&quot;checkbox&quot; title=&quot;&#x6253;&#x5f00;&#x9ad8;&#x7ea7;&#x529f;&#x80fd;&quot; data-ui-type=&quot;CheckBox&quot; data-ui-id=&quot;change-event&quot; /&gt;
+&lt;p id=&quot;more-info&quot;&gt;&#x5df2;&#x7ecf;&#x6253;&#x5f00;&#x9ad8;&#x7ea7;&#x529f;&#x80fd;&lt;/p&gt;</pre>
+                <pre class="source source-script">require(&#039;esui&#039;).get(&#039;change-event&#039;).on(
+    &#039;change&#039;,
+    function () {
+        if (this.isChecked()) {
+            $(&#039;#more-info&#039;).show();
+        }
+        else {
+            $(&#039;#more-info&#039;).hide();
+        }
+    }
+);</pre>
+            </section>
+            </sectoin>
+            <h2>选择框组</h2>
+            <section class="intro">
+                <p>可将多个分为一组，使用<code>boxType</code>属性控制选择框类型，<code>orientation</code>属性控制排列方向。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                    <li class="view-script">脚本</li>
+                </ul>
+                <div>
+                    <h3>纵向排列</h3>
+                        <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical"
+                            data-ui-name="frameworks" data-ui-box-type="radio"
+                            data-ui-orientation="vertical">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er" name="frameworks" value="er" />
+                                    <label for="framework-er">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui" name="frameworks" value="esui" checked="checked" />
+                                    <label for="framework-esui">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef" name="frameworks" value="ef" />
+                                    <label for="framework-ef">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram" name="frameworks" value="tangram" />
+                                    <label for="framework-tangram">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                </div>
+                <div>
+                    <h3>横向排列</h3>
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal"
+                        data-ui-name="frameworks" data-ui-box-type="checkbox">
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="framework-er" name="frameworks" value="er" />
+                                <label for="framework-er">ER</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-esui" name="frameworks" value="esui" />
+                                <label for="framework-esui">ESUI</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-ef" name="frameworks" value="ef" />
+                                <label for="framework-ef">EF</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-tangram" name="frameworks" value="tangram" />
+                                <label for="framework-tangram">Tangram</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h3>change事件</h3>
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change"
+                        data-ui-name="frameworks" data-ui-box-type="checkbox">
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="framework-er" name="frameworks" value="er" />
+                                <label for="framework-er">ER</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-esui" name="frameworks" value="esui" />
+                                <label for="framework-esui">ESUI</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-ef" name="frameworks" value="ef" />
+                                <label for="framework-ef">EF</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-tangram" name="frameworks" value="tangram" />
+                                <label for="framework-tangram">Tangram</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <p id="box-group-change-log">已选值：</p>
+                    <script>
+                        ready(
+                            function () {
+                                require('esui').get('box-group-change').on(
+                                    'change',
+                                    function () {
+                                        $('#box-group-change-log').text('已选值：' + this.getValue());
+                                    }
+                                );
+                            }
+                        );
+                    </script>
+                </div>
+                <pre class="source source-markup">&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-vertical&quot;
+    data-ui-name=&quot;frameworks&quot; data-ui-box-type=&quot;radio&quot;
+    data-ui-orientation=&quot;vertical&quot;&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;radio&quot; id=&quot;framework-er&quot; name=&quot;frameworks&quot; value=&quot;er&quot; /&gt;
+            &lt;label for=&quot;framework-er&quot;&gt;ER&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;radio&quot; id=&quot;framework-esui&quot; name=&quot;frameworks&quot; value=&quot;esui&quot; checked=&quot;checked&quot; /&gt;
+            &lt;label for=&quot;framework-esui&quot;&gt;ESUI&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;radio&quot; id=&quot;framework-ef&quot; name=&quot;frameworks&quot; value=&quot;ef&quot; /&gt;
+            &lt;label for=&quot;framework-ef&quot;&gt;EF&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;radio&quot; id=&quot;framework-tangram&quot; name=&quot;frameworks&quot; value=&quot;tangram&quot; /&gt;
+            &lt;label for=&quot;framework-tangram&quot;&gt;Tangram&lt;/label&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-horizontal&quot;
+    data-ui-name=&quot;frameworks&quot; data-ui-box-type=&quot;checkbox&quot;&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-er&quot; name=&quot;frameworks&quot; value=&quot;er&quot; /&gt;
+            &lt;label for=&quot;framework-er&quot;&gt;ER&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-esui&quot; name=&quot;frameworks&quot; value=&quot;esui&quot; /&gt;
+            &lt;label for=&quot;framework-esui&quot;&gt;ESUI&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-ef&quot; name=&quot;frameworks&quot; value=&quot;ef&quot; /&gt;
+            &lt;label for=&quot;framework-ef&quot;&gt;EF&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-tangram&quot; name=&quot;frameworks&quot; value=&quot;tangram&quot; /&gt;
+            &lt;label for=&quot;framework-tangram&quot;&gt;Tangram&lt;/label&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-change&quot;
+    data-ui-name=&quot;frameworks&quot; data-ui-box-type=&quot;checkbox&quot;&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-er&quot; name=&quot;frameworks&quot; value=&quot;er&quot; /&gt;
+            &lt;label for=&quot;framework-er&quot;&gt;ER&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-esui&quot; name=&quot;frameworks&quot; value=&quot;esui&quot; /&gt;
+            &lt;label for=&quot;framework-esui&quot;&gt;ESUI&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-ef&quot; name=&quot;frameworks&quot; value=&quot;ef&quot; /&gt;
+            &lt;label for=&quot;framework-ef&quot;&gt;EF&lt;/label&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;framework-tangram&quot; name=&quot;frameworks&quot; value=&quot;tangram&quot; /&gt;
+            &lt;label for=&quot;framework-tangram&quot;&gt;Tangram&lt;/label&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+&lt;p id=&quot;box-group-change-log&quot;&gt;&#x5df2;&#x9009;&#x503c;&#xff1a;&lt;/p&gt;</pre>
+                <pre class="source source-script">require(&#039;esui&#039;).get(&#039;box-group-change&#039;).on(
+    &#039;change&#039;,
+    function () {
+        $(&#039;#box-group-change-log&#039;).text(&#039;&#x5df2;&#x9009;&#x503c;&#xff1a;&#039; + this.getValue());
+    }
+);</pre>
+            </section>
+        </div>
+    </div>
+    <script>
+    require(
+        [
+            'esui',
+            'esui/CheckBox',
+            'esui/BoxGroup'
+        ],
+        function (ui) {
+            ui.init();
+            ready();
+        }
+    );
+    </script>
+    <script src="demo.js"></script>
+</body>
+</html>

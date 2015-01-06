@@ -73,7 +73,7 @@ define(
         };
 
         /**
-         * 获取事件目标对象
+         * 阻止事件冒泡
          *
          * @param {Event | undefined} event 事件对象
          * @return {HTMLElement} 事件目标对象

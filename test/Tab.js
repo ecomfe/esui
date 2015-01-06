@@ -68,27 +68,6 @@ define(function (require) {
                 expect(tab.get('tabs')).toEqual(tabs);
             });
 
-            it('should extract `tabs` with `classes` property from a `[data-role]="navigator"` child if the child has attribute `class`', function () {
-                var main = document.createElement('div');
-                var html = [
-                    '<div title="tab1" id="a"></div>',
-                    '<ul data-role="navigator">',
-                        '<li data-for="a">tab1</li>',
-                        '<li data-for="b" class="item-b">tab2</li>',
-                        '<li data-for="c" class="item-c">tab3</li>',
-                    '</ul>',
-                    '<div title="tab2" id="b"></div>'
-                ];
-                main.innerHTML = html.join('\n');
-                var tab = new Tab({ main: main });
-                var tabs = [
-                    { title: 'tab1', panel: 'a' },
-                    { title: 'tab2', panel: 'b', classes: ['item-b'] },
-                    { title: 'tab3', panel: 'c', classes: ['item-c'] }
-                ];
-                expect(tab.get('tabs')).toEqual(tabs);
-            });
-
             it('should override `tabs` option given from constructor if the main element has a `[data-role="navigator"]` child', function () {
                 var main = document.createElement('div');
                 var html = [
@@ -216,7 +195,7 @@ define(function (require) {
                         { title: 'tab1', panel: 'a' },
                         { title: 'tab2', panel: 'b' },
                         { title: 'tab3' }
-                    ],
+                    ], 
                     activeIndex: 2
                 });
                 tab.appendTo(container);

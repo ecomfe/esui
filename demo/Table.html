@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Table - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Table</header>
+        <div id="console"></div>
+        <div id="HeadTopDiv" style="text-align:center;height:100px;">&nbsp;</div>
+        <div class="container" id="container" style="margin:0 auto;">
+            <h3>普通</h3>
+            <div data-follow-thead="myTable" style="background:#fff;padding:1px 0;z-index:100;">
+                <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
+                <button  id="changeWidthBtn" data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>&nbsp;
+                <button  id="SortableBtn" data-ui="id:SortableBtn;type:Button;">toggleSortable</button>&nbsp;
+                <button  id="ColumnResizableBtn" data-ui="id:ColumnResizableBtn;type:Button;">toggleColumnResizable</button>
+                <button  id="SetDataSourceBtn" data-ui="id:SetDataSourceBtn;type:Button;">setDataSource</button>
+                <button  id="changeHeadPositionBtn" data-ui="id:changeHeadPositionBtn;type:Button;">changeHeadPosition</button>
+                <button  id="resetFollowHeadBtn" data-ui="id:resetFollowHeadBtn;type:Button;">resetFollowHead</button>
+                <button  id="getSelectedItemsBtn" data-ui="id:getSelectedItemsBtn;type:Button;">getSelectedItems</button>
+                <button  id="updateRowBtn" data-ui="id:updateRowBtn;type:Button;">updateRow</button>
+            </div>
+            <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
+
+            <br/>
+        <!--
+            <div style="width:1024px;margin: 0 auto;overflow:hidden;">
+                <div data-follow-thead="myTable2">I am not</div>
+                <div data-ui="type:Table;id:myTable2;"  data-ui-extension-tableedit-type="TableEdit"></div>
+            </div>
+        -->
+        </div>
+        <script>
+        var data = [
+            {id:1, name: 'erik', sex: 1},
+            {id:2, name: 'tony', sex: 0},
+            {id:3, name: 'frank', sex: 1},
+            {id:4, name: 'meimei', sex: 1},
+            {id:5, name: 'false', sex: 1},
+            {id:6, name: '0', sex: 1}
+        ];
+        data = data.concat(data);
+        data = data.concat(data);
+        var myTable = null;
+        var testFuns = {}
+        require(
+            [
+                'esui',
+                'esui/Dialog',
+                'esui/Panel',
+                'esui/extension/TableEdit',
+                'esui/extension/TableSubrow',
+                'esui/Tip',
+                'esui/Table',
+                'esui/Button',
+                'esui/TextBox',
+                'esui/Select'
+            ],
+            function (ui) {
+                var lib = require('esui/lib');
+                ui.init(document.body,{
+                    properties : {
+                        myTable: {
+                            datasource: data,
+                            sortable: true,
+                            columnResizable: true,
+                            followHead: true,
+                            subrow:true,
+                            select:'multi',
+                            selectMode: 'line',
+                            editable: 1,
+                            subrowMutex: 0,
+                            contentEncode: 1,
+                            zIndex: 1214,
+                            noFollowHeadCache: true,//默认为false,如无必要也最好设置为false,效率更高。
+                            //selectMode :'line',
+                            noDataHtml: '<p style="margin:0;">nothing</p>',
+                            fields: [
+                                {
+                                    title: '编号',
+                                    field: 'id' ,
+                                    sortable: true,
+                                    tip :'编号',
+                                    resizable: true,
+                                    subEntry: 1,
+                                    editable: 1,
+                                    editRules: {
+                                        pattern: /\d/g,
+                                        min: 1
+                                    },
+                                    editContent: function(item){
+                                        return item.id;
+                                    },
+                                    width: 100,
+                                    content: function (item) {
+                                        return item.id;
+                                    }
+                                },
+                                {
+                                    title: '姓名',
+                                    field: 'name' ,
+                                    tip :'姓名',
+                                    align: 'right',
+                                    editable: 1,
+                                    comparer : function( a,b ){
+                                        return a.name.localeCompare( b.name );
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 100,
+                                    content: function (item) {
+                                        return item.name;
+                                    }
+                                },
+                                {
+                                    title: '性别',
+                                    field: 'sex' ,
+                                    tip :'性别',
+                                    comparer : function( a,b ){
+                                        return a.sex - b.sex;
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 200,
+                                    content: function (item) {
+                                        return item.sex ? '男' : '女';
+                                    }
+                                }
+                            ]
+                        },
+                        myTable2: {
+                            noScroll: true,
+                            datasource: data,
+                            sortable: true,
+                            columnResizable: true,
+                            followHead: true,
+                            select:'multi',
+                            breakLine: 1,
+                            editable: 1,
+                            noFollowHeadCache: true,
+                            //bodyMaxHeight: 300,
+                            //selectMode :'line',
+                            noDataHtml: '<p style="margin:0;">nothing</p>',
+                            fields: [
+                                {
+                                    title: '编号',
+                                    field: 'id' ,
+                                    sortable: true,
+                                    tip :'编号',
+                                    resizable: true,
+                                    subEntry: 1,
+                                    editable: 1,
+                                    width: 50,
+                                    content: function (item) {
+                                        return item.id;
+                                    }
+                                },
+                                {
+                                    title: '姓名',
+                                    field: 'name' ,
+                                    tip :'姓名',
+                                    editable: 1,
+                                    comparer : function( a,b ){
+                                        return a.name.localeCompare( b.name );
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 300,
+                                    content: function (item) {
+                                        return item.name;
+                                    }
+                                },
+                                {
+                                    title: '性别',
+                                    field: 'sex' ,
+                                    tip :'性别',
+                                    comparer : function( a,b ){
+                                        return a.sex - b.sex;
+                                    },
+                                    sortable: true,
+                                    resizable : true,
+                                    width: 300,
+                                    content: function (item) {
+                                        return item.sex ? '男' : '女';
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                });
+
+                myTable = ui.get('myTable');
+                myTable.onsubrowopen = function ( arg ) {
+                    this.setSubrowContent(
+                        '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>',
+                        arg.index
+                    );
+                };
+
+                myTable.onsubrowclose = function ( arg ) {
+                    this.getSubrowContainer(arg.index).setContent('');
+                };
+
+                myTable.onselect = function ( arg ) {
+                    alert(arg.selectedIndex.toString());
+                };
+
+                myTable.onresize = function ( arg ) {
+                   myTable.set('tableHeight', myTable.tableHeight + 100);
+                };
+
+                ui.get('disabledBtn').onclick = function () {
+                    ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
+                };
+
+                ui.get('SortableBtn').onclick = function () {
+                    myTable.set( 'sortable', !myTable.get('sortable'));
+                };
+
+                ui.get('ColumnResizableBtn').onclick = function () {
+                    myTable.set( 'columnResizable', !myTable.get('columnResizable'));
+                };
+
+                ui.get('SetDataSourceBtn').onclick = function(){
+                     myTable.setDatasource(data.concat(data));
+                };
+
+                ui.get('changeWidthBtn').onclick = function () {
+                   var container = document.getElementById('container');
+                   var width = container.style.width;
+                   switch(width){
+                        case '640px':
+                        width = 960;
+                        break;
+                        case '960px':
+                        width = 1280;
+                        break;
+                        case '1280px':
+                        width = 640;
+                        break;
+                        default:
+                        width = 960;
+                        break;
+                   }
+                   container.style.width = width + 'px';
+                   myTable.adjustWidth();
+                   //myTable.set('width', width);
+                };
+
+                ui.get('changeHeadPositionBtn').onclick = function(){
+                    var headTopDiv = document.getElementById('HeadTopDiv');
+                    var height = parseInt(headTopDiv.style.height) || 0;
+                    height = height > 0 ? height - 50 : height + 50;
+                    headTopDiv.style.height = height + 'px';
+                };
+
+                ui.get('resetFollowHeadBtn').onclick = function(){
+                    myTable.resetFollowHead();
+                };
+
+                ui.get('getSelectedItemsBtn').onclick = function() {
+                    var items= myTable.getSelectedItems();
+                    alert(items[0].name);
+                };
+
+                ui.get('updateRowBtn').onclick = function() {
+                    myTable.updateRowAt(0,  {id:1, name: 'erik', sex: 0});
+                };
+
+                myTable.onsort = function ( arg ) {
+                    var orderBy = arg.field.field;
+                    var lib = require('esui/lib');
+                    if (arg.order) {
+                        data.sort( function (a, b) {
+                            var compareResult;
+                            switch ( orderBy ) {
+                            case 'name':
+                                compareResult = a.name.localeCompare( b.name );
+                                break;
+
+                            case 'sex':
+                                compareResult = a.sex > b.sex ;
+                                break;
+                            }
+
+                            if ( arg.order == 'desc' ) {
+                                compareResult = -compareResult;
+                            }
+
+                            return compareResult;
+                        } );
+                    }
+
+                    myTable.setDatasource(data);
+                };
+
+                myTable.onsaveedit = function(arg) {
+                    if ( arg.value.length > 4 ) {
+                        arg.returnResult = false;
+                        arg.errorMsg = '亲，出错了哟';
+                    } else {
+                        myTable.setCellText(
+                            arg.value,
+                            arg.rowIndex,
+                            arg.columnIndex
+                        );
+                    }
+                    alert(arg.field.field);
+                };
+
+                myTable.oncanceledit = function(arg) {
+                    //alert(arg.field.field);
+                };
+
+                myTable.onstartedit = function(arg) {
+                    alert(arg.field.field);
+                };
+
+                myTable.setAllRowSelected(true);
+                /*
+                myTable2 = ui.get('myTable2');
+                myTable2.onsaveedit = function(arg) {
+                   //alert('table2'+ arg.field.field);
+                };
+
+                myTable2.oncanceledit = function(arg) {
+                    //alert('table2'+ arg.rowIndex);
+                };
+
+                myTable2.onstartedit = function(arg) {
+                    //alert('table2'+ arg.rowIndex);
+                };
+                */
+            }
+        );
+        </script>
+    </body>
+</html>

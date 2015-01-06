@@ -763,12 +763,9 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                if (this.isShow) {
-                    return;
-                }
-
-                this.isShow = true;
                 this.fire('show');
+                this.isShow = true;
+
             },
 
             /**
@@ -776,21 +773,21 @@ define(
              *
              */
             hide: function () {
-                if (!this.isShow) {
-                    return;
-                }
+                if (this.isShow) {
+                    helper.removeDOMEvent(
+                        this, window, 'resize', resizeHandler
+                    );
+                    var mask = this.mask;
 
-                this.isShow = false;
+                    this.addState('hidden');
 
-                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
-
-                this.addState('hidden');
-
-                if (this.mask) {
-                    hideMask(this);
+                    if (mask) {
+                        hideMask(this);
+                    }
                 }
 
                 this.fire('hide');
+                this.isShow = false;
             },
 
 

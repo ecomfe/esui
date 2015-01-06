@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Button - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Button</header>
+        <div class="container">
+            <button data-ui="type:Button;id:defaultBtn;">默认按钮</button>
+            <span data-ui="type:Button;id:springBtn;skin:spring">创建</span>
+            <div data-ui="type:Button;id:springAddBtn;skin:spring-add">添加</div>
+            <div data-ui="type:Button;id:downloadBtn;skin:download">下载</div>
+            <div data-ui="type:Button;id:actBtn;">改变文字</div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Button'
+            ],
+            function (ui) {
+                var controls = ui.init();
+                var defaultBtn = controls[0];
+                var actBtn = controls[4];
+                var labelText = controls[5];
+
+
+                actBtn.onclick = function () {
+                    defaultBtn.setContent('新文字');
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

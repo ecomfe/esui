@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Wizard</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    <style>
+    </style>
+</head>
+<body>
+    <div id="container">
+        <button data-ui="type:Button;id:prev;">上一步</button>
+        <button data-ui="type:Button;id:next;">下一步</button>
+        <br>
+        <br>
+    </div>
+    <div>
+        <div id="a">
+            Fill your personal info.
+        </div>
+        <div id="b">
+            Fill your address.
+        </div>
+        <div id="c">
+            Payment
+        </div>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Button',
+                'esui/Wizard'
+            ],
+            function (ui, Button, Wizard) {
+                var buttons = ui.init();
+                var prev = buttons[0];
+                var next = buttons[1];
+                var steps = [
+                    { text: '1', panel: 'a' },
+                    { text: '2', panel: 'b' },
+                    { text: '3', panel: 'c' }
+                    // { text: '4' },
+                    // { text: '5' },
+                    //{ text: '6' }
+                ];
+
+                var wizard = new Wizard({ steps: steps, activeIndex: 1, skin: 'default' });
+                wizard.appendTo(document.getElementById('container'));
+                prev.on('click', function(){
+                    wizard.stepPrevious();
+                });
+                next.on('click', function(){
+                    wizard.stepNext();
+                });
+            }
+        );
+    </script>
+</body>
+</html>

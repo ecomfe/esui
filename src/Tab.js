@@ -32,38 +32,6 @@ define(
         Tab.prototype.type = 'Tab';
 
         /**
-         * 从存在`data-role="navigator"`属性的元素元素中抽取tab配置信息
-         *
-         * 1. 遍历此元素的所有子元素
-         * 2. 将子元素的文本内容属性作为标签的`title`属性
-         * 3. 将子元素的`data-for`属性作为标签的`panel`属性
-         * 4. 将子元素的`class`属性作为标签`classes`属性，用于控制导航标签的样式
-         *
-         * @param {Element} element dom元素
-         * @return {Object}
-         * @ignore
-         */
-        function extractTabsFromNavigatorElement(element) {
-            var tabs = [];
-            var children = lib.getChildren(element);
-            for (var i = 0; i < children.length; i++) {
-                var tab = children[i];
-                var config = {
-                    title: lib.getText(tab),
-                    panel: tab.getAttribute('data-for')
-                };
-
-                if (tab.className) {
-                    config.classes = tab.className.split(/\s+/);
-                }
-
-                tabs.push(config);
-            }
-
-            return tabs;
-        }
-
-        /**
          * 初始化参数
          *
          * 如果初始化时未给定{@link Tab#tabs}属性，则按以下规则从DOM中获取：
@@ -72,7 +40,6 @@ define(
          * 2. 遍历此元素的所有子元素
          * 3. 将子元素的文本内容属性作为标签的`title`属性
          * 4. 将子元素的`data-for`属性作为标签的`panel`属性
-         * 5. 将子元素的`class`属性作为标签`classes`属性，用于控制导航标签的样式
          *
          * 需要注意的是，此元素仅在初始化时起效果，随后会被移除，
          * 因此不要依赖此元素上的`id`或者`class`、`style`等属性
@@ -110,14 +77,23 @@ define(
                 for (var i = 0; i < children.length; i++) {
                     var element = children[i];
                     if (element.getAttribute('data-role') === 'navigator') {
+                        // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
+                        // 且这个配置会覆盖用户传入的`tabs`选项
+                        properties.tabs = [];
                         // 在`initOptions`时没有`viewContext`，
                         // 因此不能计算DOM元素的id，
                         // 所以在这里临时保留一下，到`initStructure`里去给id
                         this.navigatorElement = element;
-                        // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
-                        // 且这个配置会覆盖用户传入的`tabs`选项
-                        properties.tabs = extractTabsFromNavigatorElement(element);
-
+                        var children = lib.getChildren(element);
+                        for (var i = 0; i < children.length; i++) {
+                            var tab = children[i];
+                            var config = {
+                                title: lib.getText(tab),
+                                panel: tab.getAttribute('data-for'),
+                                classes: tab.className && tab.className.split(/\s+/)
+                            };
+                            properties.tabs.push(config);
+                        }
                         break;
                     }
                     else {

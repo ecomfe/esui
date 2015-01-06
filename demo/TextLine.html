@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TextLine - ESUI Demo</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Region</h1>
+    <div class="container">
+        <div>
+            <h2>展示</h2>
+            <section class="intro">
+                <p>描述</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div>
+                    <div data-ui="type:TextLine;id:test;name:textLine;">
+                    </div>
+                    <esui-text-line></esui-text-line>
+                </div>
+            </section>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/TextLine'
+            ],
+            function (ui) {
+                var controls = ui.init();
+                var textLine = controls[0];
+
+                textLine.setProperties({
+                    value: 'value1\nvalue2\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf'
+                });
+            }
+        )
+        </script>
+    </div>
+</body>
+</html>
