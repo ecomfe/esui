@@ -545,6 +545,8 @@ define(
                     var button = this.viewContext.get(this.submitButton[i]);
                     if (button) {
                         button.on('click', this.validateAndSubmit, this);
+                        // 如果外层有其它表单，不要让它触发其它表单的提交
+                        button.on('click', function (e) { e.preventDefault(); });
                     }
                 }
             }
