@@ -32,15 +32,36 @@ define(
         Tab.prototype.type = 'Tab';
 
         /**
-         * 创建主元素，默认使用`<div>`元素
+         * 从存在`data-role="navigator"`属性的元素元素中抽取tab配置信息
          *
-         * @return {HTMLElement} 主元素
-         * @protected
-         * @override
+         * 1. 遍历此元素的所有子元素
+         * 2. 将子元素的文本内容属性作为标签的`title`属性
+         * 3. 将子元素的`data-for`属性作为标签的`panel`属性
+         * 4. 将子元素的`class`属性作为标签`classes`属性，用于控制导航标签的样式
+         *
+         * @param {Element} element dom元素
+         * @return {Object}
+         * @ignore
          */
-        Tab.prototype.createMain = function () {
-            return document.createElement('div');
-        };
+        function extractTabsFromNavigatorElement(element) {
+            var tabs = [];
+            var children = lib.getChildren(element);
+            for (var i = 0; i < children.length; i++) {
+                var tab = children[i];
+                var config = {
+                    title: lib.getText(tab),
+                    panel: tab.getAttribute('data-for')
+                };
+
+                if (tab.className) {
+                    config.classes = tab.className.split(/\s+/);
+                }
+
+                tabs.push(config);
+            }
+
+            return tabs;
+        }
 
         /**
          * 初始化参数
@@ -51,6 +72,7 @@ define(
          * 2. 遍历此元素的所有子元素
          * 3. 将子元素的文本内容属性作为标签的`title`属性
          * 4. 将子元素的`data-for`属性作为标签的`panel`属性
+         * 5. 将子元素的`class`属性作为标签`classes`属性，用于控制导航标签的样式
          *
          * 需要注意的是，此元素仅在初始化时起效果，随后会被移除，
          * 因此不要依赖此元素上的`id`或者`class`、`style`等属性
@@ -78,7 +100,7 @@ define(
             // 如果子元素中有一个`[data-role="navigator"]`的元素，
             // 则应该从元素中去找出对应的标签页配置，然后这个元素就不要了，
             // 控件会自动生成正确的`navigator`格式并放在`main`的最前面
-            // 
+            //
             // 而如果有子元素且没有`[data-role="navigator"]`元素，
             // 同时构造控件的时候没给`tabs`选项，
             // 则认为每个子元素是一个标签页，从`title`属性中找出对应的`title`
@@ -88,22 +110,14 @@ define(
                 for (var i = 0; i < children.length; i++) {
                     var element = children[i];
                     if (element.getAttribute('data-role') === 'navigator') {
-                        // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
-                        // 且这个配置会覆盖用户传入的`tabs`选项
-                        properties.tabs = [];
                         // 在`initOptions`时没有`viewContext`，
                         // 因此不能计算DOM元素的id，
                         // 所以在这里临时保留一下，到`initStructure`里去给id
                         this.navigatorElement = element;
-                        var children = lib.getChildren(element);
-                        for (var i = 0; i < children.length; i++) {
-                            var tab = children[i];
-                            var config = {
-                                title: lib.getText(tab),
-                                panel: tab.getAttribute('data-for')
-                            };
-                            properties.tabs.push(config);
-                        }
+                        // 找到了`[data-role="navigator"]`的元素，抛弃其它配置，
+                        // 且这个配置会覆盖用户传入的`tabs`选项
+                        properties.tabs = extractTabsFromNavigatorElement(element);
+
                         break;
                     }
                     else {
@@ -125,6 +139,11 @@ define(
                     properties.tabs = tabs;
                 }
             }
+
+            if (typeof properties.activeIndex === 'string') {
+                properties.activeIndex = +properties.activeIndex;
+            }
+
             this.setProperties(properties);
         };
 
@@ -178,8 +197,16 @@ define(
             navigator.id = this.helper.getId('navigator');
 
             this.helper.addPartClasses('navigator', navigator);
+        };
 
-            this.helper.addDOMEvent(navigator, 'click', clickTab);
+        /**
+         * 初始化事件交互
+         *
+         * @protected
+         * @override
+         */
+        Tab.prototype.initEvents = function () {
+            this.helper.addDOMEvent('navigator', 'click', clickTab);
         };
 
         /**
@@ -226,8 +253,12 @@ define(
          */
         function createTabElement(tab, config, isActive, allowClose) {
             var element = document.createElement('li');
-            
+
             tab.helper.addPartClasses('item', element);
+
+            if (config.classes) {
+                lib.addClasses(element, config.classes);
+            }
 
             if (isActive) {
                 tab.helper.addPartClasses('item-active', element);
@@ -236,7 +267,7 @@ define(
             element.innerHTML = tab.getContentHTML(config, allowClose);
 
             return element;
-        } 
+        }
 
         /**
          * 获取导航条的HTML
@@ -254,7 +285,7 @@ define(
             for (var i = 0; i < tab.tabs.length; i++) {
                 var config = tab.tabs[i];
                 var isActive = tab.activeIndex === i;
-                var tabElement = 
+                var tabElement =
                     createTabElement(tab, config, isActive, tab.allowClose);
                 navigator.appendChild(tabElement);
             }
@@ -336,7 +367,7 @@ define(
                 var navigator = tab.helper.getPart('navigator');
                 var children = lib.getChildren(navigator);
                 var tabElement = children[i];
-                var methodName = 
+                var methodName =
                     i === index ? 'addPartClasses' : 'removePartClasses';
                 tab.helper[methodName]('item-active', tabElement);
             }
@@ -362,7 +393,7 @@ define(
          *
          * @method
          * @protected
-         * @override       
+         * @override
          */
         Tab.prototype.repaint = require('./painters').createRepaint(
             Control.prototype.repaint,
@@ -446,7 +477,7 @@ define(
 
             this.tabs.splice(index, 0, config);
             // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
-            var tabElement = 
+            var tabElement =
                 createTabElement(this, config, false, this.allowClose);
             var navigator = this.helper.getPart('navigator');
             var children = lib.getChildren(navigator);
@@ -527,7 +558,7 @@ define(
                 else if (index === this.activeIndex) {
                     // 由于可能`activeIndex`没变，因此不能走`setProperties`流程
                     this.activeIndex = Math.min(
-                        this.activeIndex, 
+                        this.activeIndex,
                         this.tabs.length - 1
                     );
                     activateTab(this, this.activeIndex);
@@ -554,6 +585,15 @@ define(
         };
 
         // TODO: 添加`allowClose`属性的控制
+
+        /**
+         * 获取当前激活的{@link meta.TabItem}对象
+         *
+         * @return {meta.TabItem}
+         */
+        Tab.prototype.getActiveTab = function () {
+            return this.get('tabs')[this.get('activeIndex')];
+        };
 
         lib.inherits(Tab, Control);
         require('./main').register(Tab);

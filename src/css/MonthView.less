@@ -1,50 +1,56 @@
  /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 单日历样式
  * @author dbear
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-monthview {
+
+.@{ui-class-prefix}-monthview {
     background:#fff;
     width:210px;
-    .user-select();   
+    .user-select();
 }
 
-.ui-monthview-head {
+.@{ui-class-prefix}-monthview-head {
     background: none repeat scroll 0 0 #CCCED4;
     height: 27px;
     padding: 2px 5px;
 
     table {width:200px;}
-}
 
-/** 先前向后按钮 */
-.ui-monthview-month-forward,
-.ui-monthview-month-back {
-    .background("esui.png", repeat, 0px, -200px);
-    font-size: 1px;
-    height: 20px;
-    width: 20px;
-    padding: 0;
-    float: left;
-    &:active {
-        .background("esui.png", repeat, 0px, -200px);
+    /** 先前向后按钮 */
+    .@{ui-class-prefix}-monthview-month-select,
+    .@{ui-class-prefix}-monthview-year-select {
+        width: 30px;
+    }
+
+    .@{ui-class-prefix}-monthview-month-forward,
+    .@{ui-class-prefix}-monthview-month-back {
+        .background(url(../img/esui.png), repeat, 0px, -200px);
+        font-size: 1px;
         height: 20px;
+        width: 20px;
+        padding: 0;
+        float: left;
+        &:active {
+            .background(url(../img/esui.png), repeat, 0px, -200px);
+            height: 20px;
+        }
     }
-}
 
-.ui-monthview-month-forward {
-    background-position: -20px -200px;
-    margin-left: 15px;
-    &:active {
+    .@{ui-class-prefix}-monthview-month-forward {
         background-position: -20px -200px;
+        margin-left: 15px;
+        &:active {
+            background-position: -20px -200px;
+        }
     }
 }
 
-.ui-monthview-month {
+.@{ui-class-prefix}-monthview-month {
     border:1px solid #ccced4;
     font-size:13px;
 
@@ -53,7 +59,7 @@
     }
 }
 
-.ui-monthview-month-title {
+.@{ui-class-prefix}-monthview-month-title {
     width:29px;
     height:21px;
     line-height:21px;
@@ -62,11 +68,11 @@
     text-align:center;
 }
 
-.ui-monthview-month-title-selected {
+.@{ui-class-prefix}-monthview-month-title-selected {
     background: #CCCED4;
 }
 
-.ui-monthview-month-item {
+.@{ui-class-prefix}-monthview-month-item {
     width: 19px;
     height: 21px;
     line-height: 21px;
@@ -76,22 +82,22 @@
     border-bottom: 1px solid #f1f1f1;
 }
 
-.ui-monthview-last-row .ui-monthview-month-item {
+.@{ui-class-prefix}-monthview-last-row .@{ui-class-prefix}-monthview-month-item {
     border-bottom: none;
 }
 
-.ui-monthview-month-item:hover {
+.@{ui-class-prefix}-monthview-month-item:hover {
     background:#e4eaf9;
 }
 
-.ui-monthview-month-item-selected {
+.@{ui-class-prefix}-monthview-month-item-selected {
     background:#fff6bd;
     color:#333;
     font-weight:bold;
 }
 
-.ui-monthview-month-item-virtual,
-.ui-monthview-month-item-out {
+.@{ui-class-prefix}-monthview-month-item-virtual,
+.@{ui-class-prefix}-monthview-month-item-out {
     color:#888;
     cursor:default;
     background:#fff;
@@ -100,7 +106,7 @@
     }
 }
 
-.ui-monthview-month-item-disabled {
+.@{ui-class-prefix}-monthview-month-item-disabled {
     background: #ddd;
     cursor:default;
     &:hover {
@@ -109,13 +115,13 @@
 }
 
 // 多选模式
-.ui-monthview-multi-select {
+.@{ui-class-prefix}-monthview-multi-select {
     width: 220px;
-    .ui-monthview-head {
+    .@{ui-class-prefix}-monthview-head {
         table {width:215px;}
     }
 
-    .ui-monthview-month-select-all {
+    .@{ui-class-prefix}-monthview-month-select-all {
         width: 15px;
         height:21px;
         line-height: 21px;
@@ -127,11 +133,11 @@
         }
     }
 
-    .ui-monthview-month-select-all-selected {
+    .@{ui-class-prefix}-monthview-month-select-all-selected {
         background: #CCCED4;
     }
- 
-    .ui-monthview-month-row-select {
+
+    .@{ui-class-prefix}-monthview-month-row-select {
         background: #f1f1f1;
         height: 21px;
         line-height: 21px;
@@ -139,32 +145,32 @@
         border-bottom: 1px solid #f1f1f1;
         cursor: pointer;
     }
-    .ui-monthview-month-row-select-selected {
+    .@{ui-class-prefix}-monthview-month-row-select-selected {
         background: #CCCED4;
     }
 }
 
-.ui-monthview-disabled {
+.@{ui-class-prefix}-monthview-disabled {
     /** 先前向后按钮 */
-    .ui-monthview-month-forward,
-    .ui-monthview-month-back {
-        background-position: 0 -240px; 
+    .@{ui-class-prefix}-monthview-month-forward,
+    .@{ui-class-prefix}-monthview-month-back {
+        background-position: 0 -240px;
         &:active {
-            .background("esui.png", repeat, 0px, -240px);
+            .background(url(../img/esui.png), repeat, 0px, -240px);
             height: 20px;
             border-color: #CFCFCF;
         }
     }
 
-    .ui-monthview-month-forward {
-        background-position: -20px -240px; 
+    .@{ui-class-prefix}-monthview-month-forward {
+        background-position: -20px -240px;
         &:active {
             background-position: -20px -240px;
             border-color: #CFCFCF;
         }
     }
 
-    .ui-monthview-month-item {
+    .@{ui-class-prefix}-monthview-month-item {
         background: #ddd;
         cursor:default;
         &:hover {

@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file Schedule控件
  * @author miaojian
  */
@@ -55,7 +55,7 @@ define(
 
                 var value = [];
                 for (var i = 0; i < 7 && i < dayStates.length; i++) {
-                
+
                     value[i] = [];
 
                     for (var j = 0; j < 24; j++) {
@@ -178,8 +178,8 @@ define(
         function initBody(schedule) {
             lib.g(getId(schedule, 'body')).innerHTML = ''
                 + getBodyTimeHtml(schedule) // 拼接html: 头部time列表
-                + getBodyDayHtml(schedule) // 拼接html: 星期列表 
-                + getBodyItemHtml(schedule); // 拼接html: 时间item列表 
+                + getBodyDayHtml(schedule) // 拼接html: 星期列表
+                + getBodyItemHtml(schedule); // 拼接html: 时间item列表
         }
 
         /**
@@ -201,10 +201,10 @@ define(
             var timeHClass = getClass(me, 'time-head');
             for (var i = 0; i <= 24; i = i + 2) {
                 html.push(
-                    '<div class="', timeHClass, 
+                    '<div class="', timeHClass,
                     '" data-time="', i, '" ',
                     'id="', getId(me, 'time-head' + i), '">',
-                     i + ':00', 
+                     i + ':00',
                      '</div>'
                 );
             }
@@ -255,7 +255,7 @@ define(
         }
 
         /**
-         * 拼接html: body 时间item列表 
+         * 拼接html: body 时间item列表
          * @param  {Schedule} schedule Schedule实例
          * @inner
          */
@@ -267,7 +267,7 @@ define(
                 + '<div class="${timeClass}"'
                     + ' id="${itemId}"'
                     + ' data-day="${dayIndex}"'
-                    + ' data-time-item="1"' 
+                    + ' data-time-item="1"'
                     + ' data-time="${timeIndex}">'
                 + '</div>';
 
@@ -279,13 +279,13 @@ define(
             var lineClass = getClass(me, 'line');
             for (var i = 0; i < 7; i++) {
 
-                var lineId    = getId(me, 'line' + i); 
+                var lineId    = getId(me, 'line' + i);
                 html.push(
                     '<div class="', lineClass, '" id="', lineId, '">'
                 );
 
                 //24小时
-                for (j = 0; j < 24; j++) {
+                for (var j = 0; j < 24; j++) {
 
                     var itemId = getId(me, 'time_' + i + '_' + j);
 
@@ -329,7 +329,7 @@ define(
                 removeSelectedLineCoverTip(schedule, lineEl);
 
                 for (var j = 0; j < 24; j++) {
-                    
+
                     var item = lib.g(getId(me, 'time_' + i + '_' + j));
                     var val  = value[i][j];
 
@@ -386,7 +386,7 @@ define(
                      + 'px;top:0;left:' + start * 25 + 'px;';
 
                 //设置星期checkbox的选中值
-                checkInput.checked = length == 24 ? true : false;
+                checkInput.checked = length === 24 ? true : false;
 
                 coverDiv.setAttribute('data-start-time', start);
                 coverDiv.setAttribute('data-end-time', end);
@@ -399,7 +399,7 @@ define(
                     {
                         start: start,
                         end: end,
-                        text: length == 24 
+                        text: length === 24
                             ? '全天投放' : start + '.00-' + end + '.00',
                         coverClass: getClass(me, 'covertimes-tip')
                     }
@@ -409,9 +409,9 @@ define(
 
                 //挂载事件
                 helper.addDOMEvent(
-                    me, 
-                    coverDiv, 
-                    'mouseover', 
+                    me,
+                    coverDiv,
+                    'mouseover',
                     lib.curry(coverTipOverHandler, coverDiv)
                 );
             }
@@ -419,8 +419,8 @@ define(
 
         /**
          * coverTip command hanlder
-         * 遮罩的hover 事件句柄 
-         * 
+         * 遮罩的hover 事件句柄
+         *
          */
         function coverTipOverHandler(element) {
 
@@ -509,16 +509,14 @@ define(
         }
 
         /**
-         * dayWord click handle 
+         * dayWord click handle
          * 点击星期checkbox的处理函数
-         * 
+         *
          */
         function dayClickHandler(e) {
-
             var target = lib.event.getTarget(e);
 
-            if (target.nodeName.toLowerCase() != 'input') {
-
+            if (target.nodeName.toLowerCase() !== 'input') {
                 return;
             }
 
@@ -542,9 +540,9 @@ define(
         }
 
         /**
-         * shortcut click handle 
+         * shortcut click handle
          * 点击shortcut的处理函数
-         * 
+         *
          * @param  {Object} arg 选项
          */
         function shortcutClickHandler(e) {
@@ -557,16 +555,14 @@ define(
             var index = target.getAttribute('data-item');
 
             var func = this.shortcut[index].getValue;
-            typeof func == 'function' && func.call(this);
+            typeof func === 'function' && func.call(this);
 
             var rawValue;
 
-            if (typeof func == 'function') {
-
+            if (typeof func === 'function') {
                 rawValue = func.call(this);
             }
             else {
-
                 rawValue = func;
             }
 
@@ -668,7 +664,7 @@ define(
         /**
          * timeItem mouseover handler
          * 时间的mouseover的处理函数
-         * 
+         *
          */
         function timeOverHandler(e) {
 
@@ -683,10 +679,10 @@ define(
 
             //添加hover class
             lib.addClasses(
-                element, 
+                element,
                 helper.getPartClasses(this, 'time-hover')
             );
-            
+
             //获取鼠标位置
             lib.event.getMousePosition(e);
             var mousepos = {};
@@ -695,7 +691,7 @@ define(
 
 
             var me = this;
-            
+
             //获取当前元素所代表的时间
             var time = parseInt(element.getAttribute('data-time'), 10);
             var day  = parseInt(element.getAttribute('data-day'), 10);
@@ -704,7 +700,7 @@ define(
             //创立并显示提示tip
             var tipText = lib.format(timeTipTpl,
                 {
-                    time: '<strong>' + time 
+                    time: '<strong>' + time
                         + ':00</strong>&nbsp;—&nbsp;<strong>'
                         + (time + 1) + ':00</strong>',
                    text: '点击/拖动鼠标选择',
@@ -725,30 +721,28 @@ define(
 
             for (var i = 0, len = timeCovers.length; i < len; i++) {
                 var item = timeCovers[i];
-                var startCT = 
+                var startCT =
                     parseInt(item.getAttribute('data-start-time'), 10);
-                var endCT = 
+                var endCT =
                     parseInt(item.getAttribute('data-end-time'), 10);
-                var CoverDay = 
+                var coverDay =
                     parseInt(item.getAttribute('data-day'), 10);
 
                 if (time >= startCT
                     && time < endCT
-                    && day == CoverDay) {
-
+                    && day === coverDay) {
                     item.style.display = 'none';
                 }
                 else {
-                    
                     item.style.display = 'block';
                 }
             }
         }
 
         /**
-         * timeItem mouseout handler 
+         * timeItem mouseout handler
          * 时间的mouseout的处理函数
-         * 
+         *
          */
         function timeOutHandler(e) {
 
@@ -759,11 +753,9 @@ define(
                 return;
             }
 
-            element = target;
-
             //移除hover效果
             lib.removeClasses(
-                element, 
+                target,
                 helper.getPartClasses(this, 'time-hover')
             );
 
@@ -774,60 +766,6 @@ define(
         var getTimeBodyMoveHandler; //drag mousemove的句柄
         var getTimeBodyUpHandler; //drag mouseup的句柄
 
-        /**
-         * 绑定事件
-         * @param  {Schedule} schedule
-         */
-        function bindEvent(schedule) {
-            var me = schedule;
-
-            var timebody = lib.g( getId(me, 'time-body') );
-            //绑定拖动drag事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mousedown', timeBodyDownHandler);
-
-            //绑定timebody mouseover事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mouseover', timeOverHandler);
-
-            //绑定timebody mouseout事件
-            helper.addDOMEvent(
-                schedule, timebody, 'mouseout', timeOutHandler);
-
-            //绑定选择星期事件
-            helper.addDOMEvent(
-                schedule, 
-                lib.g( getId(me, 'day-head') ), 
-                'click', 
-                dayClickHandler
-            );
-
-
-            var shortcut = lib.g( getId(me, 'shortcut') );
-            //绑定点击shortcut事件
-            helper.addDOMEvent(
-                schedule, shortcut, 'click', shortcutClickHandler);
-
-            //shortcut mouseover
-            helper.addDOMEvent(
-                schedule, 
-                lib.g( getId(me, 'shortcut') ), 
-                'mouseover', 
-                lib.curry(shortcutOverOutHandler, true)
-            );
-
-            //shortover mouseout
-            helper.addDOMEvent(
-                schedule, 
-                shortcut, 
-                'mouseout', 
-                lib.curry(shortcutOverOutHandler, false)
-            );
-
-            //shortcut mousemove
-            helper.addDOMEvent(
-                schedule, shortcut, 'mousemove', shortcutMoveHandler);
-        }
 
         /**
          * drag时 mousedown的事件处理函数
@@ -867,7 +805,7 @@ define(
             ondragHuck(timebody);
 
             // 显示follow区域
-            var cellPos = getTragTimeCellPos(this, 
+            var cellPos = getTragTimeCellPos(this,
                 { x: e.pageX, y: e.pageY }
             );
 
@@ -887,7 +825,7 @@ define(
             lib.event.getMousePosition(e);
 
             //计算当前显示区域
-            var cellPos = getTragTimeCellPos(this, 
+            var cellPos = getTragTimeCellPos(this,
                 { x: e.pageX, y: e.pageY }
             );
 
@@ -913,7 +851,7 @@ define(
             lib.event.getMousePosition(e);
 
             //为了修正，up的时候再重新计算下位置
-            var cellPos = getTragTimeCellPos(me, 
+            var cellPos = getTragTimeCellPos(me,
                 { x: e.pageX, y: e.pageY }
             );
 
@@ -956,10 +894,9 @@ define(
                     else {
                         rawValueCopy[i][j] = 1;
                     }
-                    
+
                 }
             }
-            timebodyCellRange = null;
 
             me.setRawValue(rawValueCopy);
         }
@@ -977,33 +914,33 @@ define(
             var rangePos = {};
 
             //计算拖动遮罩层的结束鼠标点
-            if (mousepos.x <= timeBodyPos[1] 
+            if (mousepos.x <= timeBodyPos[1]
                 && mousepos.x  >= timeBodyPos[3]) {
                 rangePos.x = mousepos.x;
             }
             else {
-                rangePos.x = mousepos.x - dragStartPos.x < 0 
+                rangePos.x = mousepos.x - dragStartPos.x < 0
                     ? timeBodyPos[3] : timeBodyPos[1];
             }
 
-            if (mousepos.y  <= timeBodyPos[2] 
+            if (mousepos.y  <= timeBodyPos[2]
                 && mousepos.y >= timeBodyPos[0]) {
                 rangePos.y = mousepos.y;
             }
             else {
-                rangePos.y = mousepos.y - dragStartPos.y < 0 
+                rangePos.y = mousepos.y - dragStartPos.y < 0
                 ? timeBodyPos[0] : timeBodyPos[2];
             }
 
             var cellrange = { startcell: {}, endcell: {} };
             //计算拖动遮罩层覆盖区域位置
-            cellrange.startcell.x = 
+            cellrange.startcell.x =
                 Math.floor((dragStartPos.x - me.dragRange[3]) / 25);
-            cellrange.startcell.y = 
+            cellrange.startcell.y =
                 Math.floor((dragStartPos.y - me.dragRange[0]) / 25);
-            cellrange.endcell.x = 
+            cellrange.endcell.x =
                 Math.floor((rangePos.x - me.dragRange[3]) / 25);
-            cellrange.endcell.y = 
+            cellrange.endcell.y =
                 Math.floor((rangePos.y - me.dragRange[0]) / 25);
 
             if (cellrange.endcell.x >= 23) {
@@ -1089,9 +1026,9 @@ define(
             //设置鼠标粘滞
             if (target.setCapture) {
                 target.setCapture();
-            } 
+            }
             else if (window.captureEvents) {
-                window.captureEvents(Event.MOUSEMOVE|Event.MOUSEUP);
+                window.captureEvents(window.Event.MOUSEMOVE | window.Event.MOUSEUP);
             }
 
             //清除鼠标已选择元素
@@ -1114,10 +1051,9 @@ define(
             //解除鼠标粘滞
             if (target.releaseCapture) {
                 target.releaseCapture();
-            } 
+            }
             else if (window.releaseEvents) {
-
-                window.releaseEvents(Event.MOUSEMOVE|Event.MOUSEUP);
+                window.releaseEvents(window.Event.MOUSEMOVE | window.Event.MOUSEUP);
             }
 
             lib.un(doc, 'selectstart', dragUnSelect);
@@ -1147,7 +1083,7 @@ define(
         }
 
         /**
-         * 设置星期checkbox的状态  
+         * 设置星期checkbox的状态
          * @param {Schedule} schedule 当前控件
          * @param {string} state    状态
          * @param {boolean} value    值
@@ -1203,8 +1139,10 @@ define(
              * @return {HTMLElement}
              */
             createMain: function (options) {
-
-                return document.createElement(options.tagName || 'div');
+                if (!options.tagName) {
+                    return InputControl.prototype.createMain.call(this);
+                }
+                return document.createElement(options.tagName);
             },
 
             /**
@@ -1216,7 +1154,7 @@ define(
              */
             initOptions: function (options) {
                 var properties = {};
-                
+
                 lib.extend(properties, Schedule.defaultProperties, options);
 
                 this.setProperties(properties);
@@ -1280,7 +1218,41 @@ define(
                 );
 
                 initBody(me);
-                bindEvent(me);
+            },
+
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                var timebody = lib.g( getId(this, 'time-body') );
+                //绑定拖动drag事件
+                this.helper.addDOMEvent(timebody, 'mousedown', timeBodyDownHandler);
+
+                //绑定timebody mouseover事件
+                this.helper.addDOMEvent(timebody, 'mouseover', timeOverHandler);
+
+                //绑定timebody mouseout事件
+                this.helper.addDOMEvent(timebody, 'mouseout', timeOutHandler);
+
+                //绑定选择星期事件
+                this.helper.addDOMEvent(lib.g(getId(this, 'day-head')), 'click', dayClickHandler);
+
+
+                var shortcut = this.helper.getPart('shortcut');
+                //绑定点击shortcut事件
+                this.helper.addDOMEvent(shortcut, 'click', shortcutClickHandler);
+
+                //shortcut mouseover
+                this.helper.addDOMEvent(shortcut, 'mouseover', lib.curry(shortcutOverOutHandler, true));
+
+                //shortover mouseout
+                this.helper.addDOMEvent(shortcut, 'mouseout', lib.curry(shortcutOverOutHandler, false));
+
+                //shortcut mousemove
+                this.helper.addDOMEvent(shortcut, 'mousemove', shortcutMoveHandler);
             },
 
             /**
@@ -1293,9 +1265,9 @@ define(
                 var changes = InputControl.prototype.setProperties.call(
                     this, properties);
 
-                var rawValueObj = changes['rawValue'];
+                var rawValueObj = changes.rawValue;
 
-                if (rawValueObj 
+                if (rawValueObj
                     && (this.stringifyValue(rawValueObj.oldValue)
                     !== this.stringifyValue(rawValueObj.newValue))) {
 
@@ -1368,9 +1340,9 @@ define(
 
             /**
              * 将value从原始格式转换成string
-             * 
+             *
              * @override
-             * 
+             *
              * @param {Array} rawValue 原始值
              * @return {string}
              */

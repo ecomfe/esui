@@ -4,9 +4,43 @@
     <meta charset="utf-8" />
     <title>CheckBox and Radio - ESUI Demo</title>
     <script src="loader/esl.js"></script>
-    <script src="loader/config.js"></script>
+    <script>
+        require.config({
+            'baseUrl': '../src',
+            'paths': {},
+            'packages': [
+                {
+                    'name': 'mini-event',
+                    'location': '../dep/mini-event/1.0.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'underscore',
+                    'location': '../dep/underscore/1.5.2/src',
+                    'main': 'underscore'
+                },
+                {
+                    'name': 'moment',
+                    'location': '../dep/moment/2.0.1/src',
+                    'main': 'moment'
+                },
+                {
+                    'name': 'etpl',
+                    'location': '../dep/etpl/2.1.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'esui',
+                    'location': '../src',
+                    'main': 'main'
+                }
+            ]
+        });
+    </script>
+    <script src="../src/customShim.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <link rel="stylesheet" href="demo.css" />
+    <link rel="stylesheet" href="../src/css/main.css" />
     <script>
         var ready = (function () {
             var list = [];
@@ -122,7 +156,7 @@
                 </ul>
                 <div>
                     <h3>纵向排列</h3>
-                        <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" 
+                        <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical"
                             data-ui-name="frameworks" data-ui-box-type="radio"
                             data-ui-orientation="vertical">
                             <ul>
@@ -147,7 +181,7 @@
                 </div>
                 <div>
                     <h3>横向排列</h3>
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" 
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal"
                         data-ui-name="frameworks" data-ui-box-type="checkbox">
                         <ul>
                             <li>
@@ -171,7 +205,7 @@
                 </div>
                 <div>
                     <h3>change事件</h3>
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change" 
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change"
                         data-ui-name="frameworks" data-ui-box-type="checkbox">
                         <ul>
                             <li>
@@ -206,7 +240,7 @@
                         );
                     </script>
                 </div>
-                <pre class="source source-markup">&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-vertical&quot; 
+                <pre class="source source-markup">&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-vertical&quot;
     data-ui-name=&quot;frameworks&quot; data-ui-box-type=&quot;radio&quot;
     data-ui-orientation=&quot;vertical&quot;&gt;
     &lt;ul&gt;
@@ -229,7 +263,7 @@
     &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-horizontal&quot; 
+&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-horizontal&quot;
     data-ui-name=&quot;frameworks&quot; data-ui-box-type=&quot;checkbox&quot;&gt;
     &lt;ul&gt;
         &lt;li&gt;
@@ -251,7 +285,7 @@
     &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-change&quot; 
+&lt;div data-ui-type=&quot;BoxGroup&quot; data-ui-id=&quot;box-group-change&quot;
     data-ui-name=&quot;frameworks&quot; data-ui-box-type=&quot;checkbox&quot;&gt;
     &lt;ul&gt;
         &lt;li&gt;
@@ -285,10 +319,9 @@
     <script>
     require(
         [
-            'esui', 
+            'esui',
             'esui/CheckBox',
-            'esui/BoxGroup',
-            'css!esui/css/main.css'
+            'esui/BoxGroup'
         ],
         function (ui) {
             ui.init();

@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>ESUI Nagivation</title>
+        <script src="loader/esl.js"></script>
+        <script>
+        require.config({
+            'baseUrl': '../../src',
+            'paths': {},
+            'packages': [
+                {
+                    'name': 'mini-event',
+                    'location': '../dep/mini-event/1.0.2/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'underscore',
+                    'location': '../dep/underscore/1.5.2/src',
+                    'main': 'underscore'
+                },
+                {
+                    'name': 'moment',
+                    'location': '../dep/moment/2.7.0/src',
+                    'main': 'moment'
+                },
+                {
+                    'name': 'etpl',
+                    'location': '../dep/etpl/3.0.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'esui',
+                    'location': '../src',
+                    'main': 'main'
+                }
+            ]
+        });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+    <div id="container"></div>
+    <script>
+    require(
+        [
+            'esui/Tree',
+            'esui/TreeStrategy'
+        ],
+        function (Tree, TreeStrategy) {
+            var datasource = {
+                id: '1',
+                text: 'esui',
+                children:[
+                    // { id: "BoxGroup", text: "BoxGroup" },
+                    { id: "Button", text: "Button" },
+                    { id: "Calendar", text: "Calendar" },
+                    // { id: "CheckBox", text: "CheckBox" },
+                    { id: "CommandMenu", text: "CommandMenu" },
+                    // { id: "Control", text: "Control" },
+                    // { id: "ControlCollection", text: "ControlCollection" },
+                    { id: "Crumb", text: "Crumb" },
+                    { id: "Dialog", text: "Dialog" },
+                    // { id: "Extension", text: "Extension" },
+                    { id: "Form", text: "Form" },
+                    // { id: "Frame", text: "Frame" },
+                    // { id: "Helper", text: "Helper" },
+                    // { id: "InputControl", text: "InputControl" },
+                    { id: "Label", text: "Label" },
+                    // { id: "Layer", text: "Layer" },
+                    { id: "Link", text: "Link" },
+                    { id: "MonthView", text: "MonthView" },
+                    { id: "Pager", text: "Pager" },
+                    { id: "Panel", text: "Panel" },
+                    { id: "RangeCalendar", text: "RangeCalendar" },
+                    { id: "Region", text: "Region" },
+                    // { id: "RichCalendar", text: "RichCalendar" },
+                    // { id: "SafeWrapper", text: "SafeWrapper" },
+                    { id: "Schedule", text: "Schedule" },
+                    { id: "SearchBox", text: "SearchBox" },
+                    { id: "Select", text: "Select" },
+                    { id: "Sidebar", text: "Sidebar" },
+                    { id: "Tab", text: "Tab" },
+                    { id: "Table", text: "Table" },
+                    { id: "TextBox", text: "TextBox" },
+                    { id: "TextLine", text: "TextLine" },
+                    { id: "Tip", text: "Tip" },
+                    // { id: "TipLayer", text: "TipLayer" },
+                    { id: "Toast", text: "Toast" },
+                    { id: "Tree", text: "Tree" },
+                    // { id: "TreeStrategy", text: "TreeStrategy" },
+                    // { id: "Validity", text: "Validity" },
+                    // { id: "ViewContext", text: "ViewContext" },
+                    // { id: "Wizard", text: "Wizard" },
+                    // { id: "controlHelper", text: "controlHelper" },
+                    // { id: "customShim", text: "customShim" },
+                    // { id: "lib", text: "lib" },
+                    // { id: "main", text: "main" },
+                    // { id: "painters", text: "painters" },
+                ]
+            };
+
+            var tree = new Tree({
+                id: 'normal',
+                datasource: datasource,
+                strategy: new TreeStrategy(),
+                wideToggleArea: true
+            });
+            tree.appendTo( document.getElementById('container') );
+            tree.on( 'select', function( event ){
+                var id = event.node.id;
+                top.frames[ 'main' ].location = id + '.html';
+            });
+        }
+    );
+    </script>
+    </body>
+</html>

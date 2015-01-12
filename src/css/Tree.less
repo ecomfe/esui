@@ -1,106 +1,106 @@
 /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
+  *
   * @file 树样式
   * @author dbear
   */
 @import "mixin.less";
 @import "variable.less";
-.ui-tree {
+.@{ui-class-prefix}-tree {
     ul, li {
         .reset-list();
     }
 }
-.ui-tree-node {
+.@{ui-class-prefix}-tree-node {
     .interactive-cursor ();
     overflow: hidden;
     line-height: 22px;
 }
 
-.ui-tree-node-empty {
+.@{ui-class-prefix}-tree-node-empty {
     cursor: default;
 }
 
-.ui-tree-content-wrapper {
+.@{ui-class-prefix}-tree-content-wrapper {
     border-left: 4px solid #fff;
     padding-left: 15px;
 }
 
 // 图标
-.ui-tree-node-indicator {
+.@{ui-class-prefix}-tree-node-indicator {
     .indent-text();
     vertical-align: middle;
-    margin-right: 3px;
-    .inline-block();
+    margin: 4px 3px 0 0;
+    float: left;
     width: 14px;
     height: 14px;
     overflow: hidden;
-    .background("esui-open-icon.png", no-repeat, 0, 0, transparent);
+    .background(url(../img/esui-open-icon.png), no-repeat, 0, 0, transparent);
 }
 
 // 展开
-.ui-tree-node-indicator-expanded {
-    .background("esui-close-icon.png", no-repeat, 0, 0, transparent);
+.@{ui-class-prefix}-tree-node-indicator-expanded {
+    .background(url(../img/esui-close-icon.png), no-repeat, 0, 0, transparent);
 }
 
 // 收起
-.ui-tree-node-indicator-collapsed {
+.@{ui-class-prefix}-tree-node-indicator-collapsed {
 }
 
 // 无子节点或占位
-.ui-tree-node-indicator-empty,
-.ui-tree-node-indicator-previous,
-.ui-tree-node-indicator-far-previous {
+.@{ui-class-prefix}-tree-node-indicator-empty,
+.@{ui-class-prefix}-tree-node-indicator-previous,
+.@{ui-class-prefix}-tree-node-indicator-far-previous {
     background-image: none;
 }
 
 // 节点文字
-.ui-tree-item-content {
-    .inline-block();
+.@{ui-class-prefix}-tree-item-content {
+    .ellipse-overflow();
 }
 
-.ui-tree-content-wrapper-selected {
+.@{ui-class-prefix}-tree-content-wrapper-selected {
     background: #c9c9c9;
     border-left: 4px solid #4765ca;
 }
 
-.ui-tree-sub-root-expanded {
+.@{ui-class-prefix}-tree-sub-root-expanded {
     display: block;
 }
-.ui-tree-sub-root-collapsed {
+.@{ui-class-prefix}-tree-sub-root-collapsed {
     display: none;
 }
 
-.ui-tree-hide-root {
-    .ui-tree-root {
-        .ui-tree-content-wrapper {
+.@{ui-class-prefix}-tree-hide-root {
+    .@{ui-class-prefix}-tree-root {
+        .@{ui-class-prefix}-tree-content-wrapper {
             display: none;
-            .ui-tree-node-indicator-level-0 {
+            .@{ui-class-prefix}-tree-node-indicator-level-0 {
                 width: 0;
             }
         }
-        .ui-tree-sub-root {
-            .ui-tree-content-wrapper {
+        .@{ui-class-prefix}-tree-sub-root {
+            .@{ui-class-prefix}-tree-content-wrapper {
                 display: block;
             }
         }
     }
 }
 
-.skin-folder-tree-node-indicator {
-    .background("esui-folder.png", no-repeat, 0, -6px, transparent);
+.@{skin-class-prefix}-folder-tree-node-indicator {
+    .background(url(../img/esui-folder.png), no-repeat, 0, -6px, transparent);
 }
-.skin-folder-tree-node-indicator-expanded {
+.@{skin-class-prefix}-folder-tree-node-indicator-expanded {
     background-position: 0 -30px;
 }
 // 收起
-.skin-folder-tree-node-indicator-collapsed {
+.@{skin-class-prefix}-folder-tree-node-indicator-collapsed {
 }
 
 // 无子节点或占位
-.skin-folder-tree-node-indicator-empty,
-.skin-folder-tree-node-indicator-previous,
-.skin-folder-tree-node-indicator-far-previous {
+.@{skin-class-prefix}-folder-tree-node-indicator-empty,
+.@{skin-class-prefix}-folder-tree-node-indicator-previous,
+.@{skin-class-prefix}-folder-tree-node-indicator-far-previous {
     background-image: none;
 }

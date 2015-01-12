@@ -42,14 +42,14 @@ define(
          */
         function extractDatasourceFromDOM(element, options) {
             // 提取符合以下条件的子`<input>`控件：
-            // 
+            //
             // - `type`属性已知（基本就是`radio`和`checkbox`）
             // - 二选一：
             //     - 当前控件和`<input>`控件都没有`name`属性
             //     - `<input>`和当前控件的`name`属性相同
-            // 
+            //
             // 根据以下优先级获得`title`属性：
-            // 
+            //
             // 1. 有一个`for`属性等于`<input>`的`id`属性的`<label>`元素，则取其文字
             // 2. 取`<input>`的`title`属性
             // 3. 取`<input>`的`value`
@@ -78,7 +78,7 @@ define(
                     var label = box.id && labelIndex[box.id];
                     item.title = label ? lib.getText(label) : '';
                     if (!item.title) {
-                        item.title = 
+                        item.title =
                             box.title || (box.value === 'on' ? box.value : '');
                     }
                     datasource.push(item);
@@ -114,15 +114,38 @@ define(
             };
             u.extend(properties, options);
 
-            if (!properties.datasource.length) {
+            var datasource = properties.datasource;
+            if (!datasource.length) {
                 extractDatasourceFromDOM(this.main, properties);
             }
-            if (!properties.rawValue && !properties.value) {
-                properties.rawValue = [];
+            if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
+                // 单选框组在没有指定`value`时默认选中第一项
+                if (properties.boxType === 'radio' && datasource.length) {
+                    properties.rawValue = [datasource[0].value];
+                }
+                else {
+                    properties.rawValue = [];
+                }
             }
 
             this.setProperties(properties);
         };
+
+        /**
+         * 同步选择状态
+         *
+         * @ignore
+         */
+        function syncCheckedState(element) {
+            var label = element.parentNode;
+            var checkedClass = this.helper.getPartClasses('wrapper-checked');
+            if (element.checked) {
+                lib.addClasses(label, checkedClass);
+            }
+            else {
+                lib.removeClasses(label, checkedClass);
+            }
+        }
 
         /**
          * 同步值
@@ -130,6 +153,10 @@ define(
          * @ignore
          */
         function syncValue() {
+            // 同步样式
+            u.each(this.getBoxElements(), syncCheckedState, this);
+
+            // 同步值
             var result = u.chain(this.getBoxElements())
                 .where({ checked: true })
                 .pluck('value')
@@ -141,9 +168,8 @@ define(
 
         var itemTemplate = [
             '<label title="${title}" class="${wrapperClass}">',
-                '<input type="${type}" name="${name}" id="${id}"'
-                    + ' title="${title}" value="${value}"${checked} />',
-                '<span>${title}</span>',
+            '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
+            '    <span>${title}</span>',
             '</label>'
         ];
         itemTemplate = itemTemplate.join('');
@@ -173,8 +199,12 @@ define(
             var name = group.name || lib.getGUID();
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
+                var wrapperClass = '';
+                if (valueIndex[item.value]) {
+                    wrapperClass += ' ' + group.helper.getPartClassName('wrapper-checked');
+                }
                 var data = {
-                    wrapperClass: classes.join(' '),
+                    wrapperClass: classes.join(' ') + wrapperClass,
                     id: group.helper.getId('box-' + i),
                     type: group.boxType,
                     name: name,
@@ -216,7 +246,7 @@ define(
                 properties.rawValue = [];
             }
 
-            var changes = 
+            var changes =
                 InputControl.prototype.setProperties.apply(this, arguments);
             if (changes.hasOwnProperty('rawValue')) {
                 /**
@@ -288,6 +318,7 @@ define(
                         group.getBoxElements(),
                         function (box) {
                             box.checked = map.hasOwnProperty(box.value);
+                            syncCheckedState.call(group, box);
                         }
                     );
                 }
@@ -309,7 +340,7 @@ define(
 
         /**
          * 将字符串类型的值转换成原始格式
-         * 
+         *
          * @param {string} value 字符串值
          * @return {string[]}
          * @protected

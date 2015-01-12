@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 地域选择
  * @author dbear
  */
@@ -17,7 +17,7 @@ define(
 
         /**
          * 地域控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -50,19 +50,6 @@ define(
 
             region.main.innerHTML = html.join('');
 
-            //点击事件
-            helper.addDOMEvent(region, region.main, 'click', mainClick);
-
-            //鼠标悬浮事件
-            helper.addDOMEvent(
-                region, region.main, 'mouseover',
-                lib.curry(mainMouseHandler, 'show')
-            );
-            //鼠标悬浮事件
-            helper.addDOMEvent(
-                region, region.main, 'mouseout',
-                lib.curry(mainMouseHandler, 'hide')
-            );
         }
 
         /**
@@ -204,7 +191,7 @@ define(
                 }
 
                 // 节点处在倒数第二层，需计算下其下选中的节点个数，并更新信息
-                if (level == 3) {
+                if (level === 3) {
                     if (!isChecked) {
                         updateSelectedTip(region, selChildLength, len, data.id);
                     }
@@ -234,6 +221,15 @@ define(
             }
         }
 
+        /**
+         * 获取hidden状态的class
+         *
+         * @return {string}
+         */
+        function getHiddenClassName() {
+            return ui.getConfig('stateClassPrefix') + '-hidden';
+        }
+
         /*
          * 更新城市选择状态，比如'2/30'
          *
@@ -246,11 +242,11 @@ define(
         function updateSelectedTip(region, selCityIdsLength, cLength, id) {
             var infoTag = lib.g(helper.getId(region, 'info-' + id));
             if (selCityIdsLength !== 0 && selCityIdsLength !== cLength) {
-                lib.removeClass(infoTag, 'state-hidden');
+                lib.removeClass(infoTag, getHiddenClassName());
                 infoTag.innerHTML = selCityIdsLength + '/' + cLength + '';
             }
             else {
-                lib.addClass(infoTag, 'state-hidden');
+                lib.addClass(infoTag, getHiddenClassName());
                 infoTag.innerHTML = '';
             }
         }
@@ -264,7 +260,7 @@ define(
                 ' data-optionId="${itemValue}" data-level="${level}">',
                 '<label for="${itemId}">${text}</label>',
             '</div>'].join('');
-    
+
         // 国家、地区外包
         var tplBoxWrapper = [
             '<div class="${boxClass}">',
@@ -275,15 +271,15 @@ define(
         // 省级别下市弹出层
         var tplPopLayer = [
             '<div class="${popLayerClass}">',
-                '<div class="state-hidden ${layerBoxClass}" id="${id}">',
+                '<div class="${hiddenClass} ${layerBoxClass}" id="${id}">',
                 '${innerHTML}</div>',
-                '<b class="state-hidden" id="${infoId}"></b>',
+                '<b class="${hiddenClass}" id="${infoId}"></b>',
             '</div>'].join('');
         // 省外包
         var tplProvinceWrapper = '<div class="${classes}">${content}</div>';
 
         var tempIdx = 0;
-   
+
         /**
          * 创建不同层级的选项html
          *
@@ -301,20 +297,21 @@ define(
              * height: 5px
              * width: 25px;
              *
-             */      
+             */
             item.level = level;
             var subItemHtml = [];
             var children = item.children;
             if (children != null) {
                 item.isSelected = false;
                 // 省（直辖市）级具有弹出层
-                if (item.level == 3) {
+                if (item.level === 3) {
                     // 按需加载，先保存到缓存里
                     if (item.children && item.children.length > 0) {
                         region.cityCache[item.id] =
                             formatItemChildren(region, item);
                     }
-                } else {
+                }
+                else {
                     var len = children instanceof Array && children.length;
                     for (var i = 0; i < len; i++) {
                         subItemHtml.push(
@@ -366,7 +363,7 @@ define(
                             itemId: helper.getId(region, 'item-' + item.id),
                             level: item.level,
                             text: item.text,
-                            contentClass: 
+                            contentClass:
                                 helper.getPartClasses(
                                     region, 'province-box'
                                 ).join(' '),
@@ -388,6 +385,7 @@ define(
                                     region,
                                     'city-box'
                                 ).join(' '),
+                            hiddenClass: getHiddenClassName(),
                             id: helper.getId(region, 'sub-' + item.id),
                             infoId: helper.getId(region, 'info-' + item.id),
                             innerHTML: subItemHtml.join('')
@@ -411,7 +409,7 @@ define(
                     return lib.format(
                         tplProvinceWrapper,
                         {
-                            classes: 
+                            classes:
                                 helper.getPartClasses(
                                     region, 'province-item'
                                 ).join(' '),
@@ -446,7 +444,7 @@ define(
          * @return {string}
          */
         function formatItemChildren(region, item) {
-            if (item.level == 3 && item.children != null) {
+            if (item.level === 3 && item.children != null) {
                 var itemHtml = [];
                 var leftLength = 0, rightLength = 0;
                 for (var i = 0; i < item.children.length; i++) {
@@ -455,22 +453,22 @@ define(
                     itemHtml.push(
                         getLevelHtml(region, item.children[i], item.level + 1)
                     );
-                    
+
                     if (i % 2 === 0
                         && item.children[i].text.length > leftLength) {
                         leftLength = item.children[i].text.length;
                     }
-                    
+
                     if (i % 2 === 1
                         && item.children[i].text.length > rightLength) {
                         rightLength = item.children[i].text.length;
                     }
                 }
-                
+
                 if (itemHtml.length % 2 === 1) {
                     itemHtml.push('');
                 }
-                
+
                 var html = [
                     '<table border="0" cellspacing="0" cellpadding="0"',
                     ' width="',
@@ -490,12 +488,12 @@ define(
                 for (var j = 0; j < itemHtml.length; j += 2) {
                     html += lib.format(
                         tpl, {
-                            firstItem: itemHtml[j], 
+                            firstItem: itemHtml[j],
                             secondItem: itemHtml[j + 1]
                         }
                     );
                 }
-                
+
                 return html + '</table>';
             }
             return '';
@@ -543,15 +541,15 @@ define(
                 return;
             }
             var tar = e.target;
-            while (tar && tar != document.body) {
+            while (tar && tar !== document.body) {
                 var hit = false;
                 if (tar.nodeName.toLowerCase() === 'input') {
                     hit = true;
                 }
                 else if (tar.nodeName.toLowerCase() === 'label') {
-                    var checkId = tar.getAttribute('for');
+                    var checkId = lib.getAttribute(tar, 'for');
                     tar = lib.g(checkId);
-                    hit = true; 
+                    hit = true;
                 }
                 if (hit) {
                     optionClick(this, tar);
@@ -573,7 +571,7 @@ define(
          * @param {boolean} dontRefreshView 是否需要更新状态.
          */
         function optionClick(region, dom, dontRefreshView) {
-            var id = dom.getAttribute('data-optionId');
+            var id = lib.getAttribute(dom, 'data-optionId');
             var isChecked = dom.checked;
             var data = region.regionDataIndex[id];
             data.isSelected = isChecked;
@@ -595,7 +593,7 @@ define(
             }
             else if (len === 0) {
                 //获取第三层checkbox
-                if (dom.getAttribute('level') == 3) {
+                if (lib.getAttribute(dom, 'level') === 3) {
                     var selCityIdsLength = 0;
                     var cityTotal = region.regionDataIndex[id].parent.children;
                     u.each(cityTotal, function (city) {
@@ -638,15 +636,15 @@ define(
                 this, 'city-box');
 
             var handler = showSubCity;
-            if (type == 'hide') {
+            if (type === 'hide') {
                 handler = hideSubCity;
             }
 
             var itemId;
-            while (tar && tar != document.body) {
+            while (tar && tar !== document.body) {
                 var optionChildLayer;
                 if (lib.hasClass(tar, textClass[0])) {
-                    itemId = tar.firstChild.getAttribute('value');
+                    itemId = lib.getAttribute(tar.firstChild, 'value');
                     optionChildLayer = tar.previousSibling.firstChild;
                 }
                 else if (lib.hasClass(tar, layerClass[0])) {
@@ -681,7 +679,7 @@ define(
                 selectMulti(region, region.rawValue);
             }
 
-            lib.removeClass(dom, 'state-hidden');
+            lib.removeClass(dom, getHiddenClassName());
             var wrapper = dom.parentNode.nextSibling;
             helper.addPartClasses(region, 'text-over', wrapper);
         }
@@ -695,7 +693,7 @@ define(
          * @param {string} itemId 弹出层对应的父城市id.
          */
         function hideSubCity(region, dom, itemId) {
-            lib.addClass(dom, 'state-hidden');
+            lib.addClass(dom, getHiddenClassName());
             var wrapper = dom.parentNode.nextSibling;
             helper.removePartClasses(region, 'text-over', wrapper);
         }
@@ -784,7 +782,7 @@ define(
          * @param {Region} region Region控件实例
          * @param {boolean} disabled 是否不可用
          */
-        function changeToDisabled(region, disabled) { 
+        function changeToDisabled(region, disabled) {
             if (region.mode === 'multi') {
                 // 遍历素有checkbox，设置为disabled
                 var elements =
@@ -834,11 +832,11 @@ define(
                 ids.push(node.id);
             }
             else {
-                u.each(node.children, function (child) { 
+                u.each(node.children, function (child) {
                     // 带状态选择信息的节点在index下
-                    var indexChild = dataIndex[child['id']];
+                    var indexChild = dataIndex[child.id];
                     ids.push.apply(
-                        ids, 
+                        ids,
                         getPureSelected(region, indexChild)
                     );
                 });
@@ -849,7 +847,7 @@ define(
         Region.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'Region',
@@ -880,7 +878,7 @@ define(
 
                 lib.extend(properties, options);
 
-                if (properties.mode == 'multi') {
+                if (properties.mode === 'multi') {
                     //增加map型地域数据
                     initMultiData(this, properties);
 
@@ -892,7 +890,7 @@ define(
                     initSingleData(this, properties);
                 }
 
-                if (properties.pureSelect == 'false') {
+                if (properties.pureSelect === 'false') {
                     properties.pureSelect = false;
                 }
 
@@ -912,7 +910,7 @@ define(
                     helper.replaceMain(this);
                 }
 
-                if (this.mode == 'multi') {
+                if (this.mode === 'multi') {
                     createMultiRegion(this);
                 }
                 else {
@@ -922,8 +920,29 @@ define(
                         helper.getPartClasses(this, 'single').join(' ')
                     );
                 }
+            },
 
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+                if (this.mode === 'multi') {
+                    //点击事件
+                    this.helper.addDOMEvent(this.main, 'click', mainClick);
 
+                    //鼠标悬浮事件
+                    this.helper.addDOMEvent(this.main, 'mouseover', lib.curry(mainMouseHandler, 'show'));
+                    //鼠标悬浮事件
+                    this.helper.addDOMEvent(this.main, 'mouseout', lib.curry(mainMouseHandler, 'hide'));
+                }
+                else {
+                    var regionSel = this.getChild('regionSel');
+
+                    regionSel.on('change', lib.bind(changeSingleRegion, null, this, regionSel));
+                }
             },
 
             /**
@@ -938,7 +957,7 @@ define(
                 {
                     name: 'rawValue',
                     paint: function (region, value) {
-                        if (region.mode == 'multi') {
+                        if (region.mode === 'multi') {
                             selectMulti(region, value);
                         }
                         else {
@@ -948,7 +967,7 @@ define(
                             });
                         }
                     }
-                }, 
+                },
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (region, disabled, readOnly) {
@@ -957,16 +976,16 @@ define(
                         if (disabled || readOnly) {
                             editable = false;
                         }
-                        
+
                         changeToDisabled(region, !editable);
-                        // 只读状态下要开放input的读属性    
+                        // 只读状态下要开放input的读属性
                         if (!disabled && readOnly) {
                             var input =
                                 lib.g(helper.getId(region, 'param-value'));
                             input.disabled = false;
                         }
                     }
-                    
+
                 }
             ),
 
@@ -981,11 +1000,11 @@ define(
 
             /**
              * 获取选中的地域，数组格式。
-             * 
-             * @return {Array} 
+             *
+             * @return {Array}
              */
             getRawValue: function () {
-                if (this.mode == 'single') {
+                if (this.mode === 'single') {
                     return this.getChild('regionSel').getValue();
                 }
 
@@ -1005,12 +1024,12 @@ define(
 
             /**
              * 将value从原始格式转换成string
-             * 
+             *
              * @param {*} rawValue 原始值
              * @return {string}
              */
             stringifyValue: function (rawValue) {
-                if (this.mode == 'multi') {
+                if (this.mode === 'multi') {
                     return rawValue.join(',');
                 }
                 else {
@@ -1020,12 +1039,38 @@ define(
 
             /**
              * 将string类型的value转换成原始格式
-             * 
+             *
              * @param {string} value 字符串值
              * @return {*}
              */
             parseValue: function (value) {
                 return value.split(',');
+            },
+            
+            /**
+             * 勾选指定地域
+             *
+             * @param {string} id 地域id
+             * @public
+             */
+            checkRegion: function(id) {
+                var checkbox = getOptionDOM(this, id);
+                // 有就更新勾选状态
+                if (checkbox) {
+                    checkbox.checked = true;
+                    optionClick(this, checkbox);
+                }
+                // 没有就只修改值
+                else {
+                    var item = this.regionDataIndex[id];
+                    if (item) {
+                        item.isSelected = true;
+
+                        // 重复调一次，主要是为了更新“选中了几个城市”的显示信息
+                        updateMulti(this);
+                        updateParamValue(this);
+                    }
+                }
             }
 
         };

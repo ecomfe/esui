@@ -18,7 +18,17 @@
 
 // 背景函数
 .background (@image-url, @repeat-type:no-repeat, @s-x:0, @s-y:0, @b-color:transparent) {
-    background-image: url("@{base-url}@{image-url}");
+    @url: ~"@{image-url}";
+    @is-url-exp: ~`/^url\([^()]+\)$/i.test("@{url}") ? 'true' : 'false'`;
+
+    .background-image(@is-url-exp) when not (@is-url-exp) {
+        background-image: url(@url);
+    }
+    .background-image(@is-url-exp) when (@is-url-exp) {
+        background-image: @url;
+    }
+    .background-image(@is-url-exp);
+
     background-repeat: @repeat-type;
     background-position: @s-x @s-y;
     background-color: @b-color;
@@ -82,33 +92,65 @@
     @left: 0% 0%, 100% 0%;
     @bottom: 0% 100%, 0% 0%;
     @right: 100% 0%, 0% 0%;
-    background: 
-        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y @b-color;
 
-    // Safari 4-5, Chrome 1-9
-    background: 
-        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
-        -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
-  
-    // Safari 5.1, Chrome 10+
-    background:
-        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
-        -webkit-linear-gradient(@direction, @from-color, @to-color);
-  
-    // Firefox 3.6+
-    background:
-        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
-        -moz-linear-gradient(@direction, @from-color, @to-color);
-  
-    // IE 10
-    background:
-        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
-        -ms-linear-gradient(@direction, @from-color, @to-color);
-  
-    // Opera 11.10+
-    background:
-        url("@{base-url}@{image-url}") @repeat-type scroll @s-x @s-y,
-        -o-linear-gradient(@direction, @from-color, @to-color);
+    @url: ~"@{image-url}";
+    @is-url-exp: ~`/^url\([^()]+\)$/i.test("@{url}") ? 'true' : 'false'`;
+
+    .background(@is-url-exp) when not (@is-url-exp) {
+        background: url(@url) @repeat-type scroll @s-x @s-y @b-color;
+        // Safari 4-5, Chrome 1-9
+        background: 
+            url(@url),
+            -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
+        // Safari 5.1, Chrome 10+
+        background:
+            url(@url),
+            -webkit-linear-gradient(@direction, @from-color, @to-color);
+        // Firefox 3.6+
+        background:
+            url(@url),
+            -moz-linear-gradient(@direction, @from-color, @to-color);
+        // IE 10
+        background:
+            url(@url),
+            -ms-linear-gradient(@direction, @from-color, @to-color);
+        // Opera 11.10+
+        background:
+            url(@url),
+            -o-linear-gradient(@direction, @from-color, @to-color);
+        background-repeat: @repeat-type, no-repeat;
+        background-position: @s-x @s-y, 0 0;
+    }
+
+    .background(@is-url-exp) when (@is-url-exp) {
+        background: 
+            @url @repeat-type scroll @s-x @s-y @b-color;
+        // Safari 4-5, Chrome 1-9
+        background: 
+            @url,
+            -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
+        // Safari 5.1, Chrome 10+
+        background:
+            @url,
+            -webkit-linear-gradient(@direction, @from-color, @to-color);
+        // Firefox 3.6+
+        background:
+            @url,
+            -moz-linear-gradient(@direction, @from-color, @to-color);
+        // IE 10
+        background:
+            @url,
+            -ms-linear-gradient(@direction, @from-color, @to-color);
+        // Opera 11.10+
+        background:
+            @url,
+            -o-linear-gradient(@direction, @from-color, @to-color);
+            
+        background-repeat: @repeat-type, no-repeat;
+        background-position: @s-x @s-y, 0 0;
+    }
+
+    .background(@is-url-exp);
 }
 
 // CSS3 相关
@@ -221,6 +263,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    word-wrap: normal;
 }
 
 // 重设列表的样式

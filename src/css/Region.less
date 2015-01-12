@@ -1,13 +1,13 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 地域选择样式
  * @author dbear
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-region {
+.@{ui-class-prefix}-region {
     text-align: left;
     margin: 0;
     padding: 0;
@@ -33,13 +33,13 @@
         display: inline;
     }
 
-    .ui-region-country-box {
+    .@{ui-class-prefix}-region-country-box {
         overflow: hidden;
         zoom: 1;
         border-bottom: 1px solid #DDD;
     }
 
-    .ui-region-country-check {
+    .@{ui-class-prefix}-region-country-check {
         width: 600px;
         height: 14px;
         padding: 8px 0 8px 10px;
@@ -47,7 +47,7 @@
         border-top: none;
     }
 
-    .ui-region-region-box0 {
+    .@{ui-class-prefix}-region-region-box0 {
         width: 610px;
         border-top:solid 1px #E6EEF6;
         background: #F9FCFE;
@@ -55,7 +55,7 @@
         .clear-float();
     }
 
-    .ui-region-region-box1 {
+    .@{ui-class-prefix}-region-region-box1 {
         width: 610px;
         clear: both;
         background: none repeat scroll 0 0 #FFFFFF;
@@ -63,28 +63,28 @@
         .clear-float();
     }
 
-    .ui-region-region-check {
+    .@{ui-class-prefix}-region-region-check {
         width: 90px;
         padding: 6px 0 6px 10px;
         float: left;
 
     }
 
-    .ui-region-province-box {
+    .@{ui-class-prefix}-region-province-box {
         width: 510px;
         float: left;
     }
-    .ui-region-province-item {
+    .@{ui-class-prefix}-region-province-item {
         width: 100px;
         float: left;
 
-        .ui-region-locator {
+        .@{ui-class-prefix}-region-locator {
             float: right;
             width: 35px;
             height: 14px;
         }
 
-        .ui-region-city-box {
+        .@{ui-class-prefix}-region-city-box {
             border: solid 1px #97A5B2;
             position: absolute;
             padding: 3px 0;
@@ -93,14 +93,14 @@
             z-index: 998;
             _height: 26px;
 
-            .ui-region-city {
+            .@{ui-class-prefix}-region-city {
                 height:18px;
                 float: left;
                 padding: 3px 8px;
             }
         }
 
-        .ui-region-city-box-over {
+        .@{ui-class-prefix}-region-city-box-over {
             border: solid 1px #97A5B2;
             border-right: none;
             background-color: #FFF;
@@ -122,7 +122,7 @@
             border-radius: 3px;
         }
 
-        .ui-region-text {
+        .@{ui-class-prefix}-region-text {
             position: relative;
             zoom: 1;
             width: 58px;
@@ -131,7 +131,7 @@
             float: right;
         }
 
-        .ui-region-text-over {
+        .@{ui-class-prefix}-region-text-over {
             border: solid 1px #97A5B2;
             border-right:none;
             background-color:#FFF;
@@ -141,7 +141,7 @@
     }
 }
 
-.ui-region-single {
+.@{ui-class-prefix}-region-single {
     margin:0;
     padding:0;
     width: auto;
@@ -149,22 +149,22 @@
     border: none;
 }
 
-.ui-region-disabled,
-.ui-region-read-only {
+.@{ui-class-prefix}-region-disabled,
+.@{ui-class-prefix}-region-read-only {
     color: #999;
     border-color: #D8D8D8;
 }
 
 /** 验证 */
-.ui-region-validity-invalid {
+.@{ui-class-prefix}-region-validity-invalid {
     border: 1px solid red;
 }
-.ui-region-validity-label {
+.@{ui-class-prefix}-region-validity-label {
     display:block;
     margin-top: 5px;
 }
-.ui-region-validity-label-invalid {
-    .background('esui-icon-alert.png', no-repeat, 15px, center, #FEDBDC);
+.@{ui-class-prefix}-region-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
     border: 1px solid #F0CCCC;
     color: #dd6767;
     padding-left: 50px;

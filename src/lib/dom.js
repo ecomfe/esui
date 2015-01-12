@@ -123,7 +123,7 @@ define(
                 return '';
             }
 
-            var doc = element.nodeType == 9
+            var doc = element.nodeType === 9
                 ? element
                 : element.ownerDocument || element.document;
 
@@ -229,9 +229,13 @@ define(
         lib.dom.first = function (element) {
             element = lib.g(element);
 
-            var node = element['firstChild'];
-            for (; node; node = node['nextSibling']) {
-                if (node.nodeType == 1) {
+            if (element.firstElementChild) {
+                return element.firstElementChild;
+            }
+
+            var node = element.firstChild;
+            for (; node; node = node.nextSibling) {
+                if (node.nodeType === 1) {
                     return node;
                 }
             }
@@ -275,9 +279,9 @@ define(
                 return element.nextElementSibling;
             }
 
-            var node = element['nextSibling'];
-            for (; node; node = node['nextSibling']) {
-                if (node.nodeType == 1) {
+            var node = element.nextSibling;
+            for (; node; node = node.nextSibling) {
+                if (node.nodeType === 1) {
                     return node;
                 }
             }
@@ -298,7 +302,7 @@ define(
 
             //fixme: 无法处理文本节点的情况(IE)
             return container.contains
-                ? container != contained && container.contains(contained)
+                ? container !== contained && container.contains(contained)
                 : !!(container.compareDocumentPosition(contained) & 16);
         };
 

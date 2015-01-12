@@ -1,0 +1,96 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file 搜索框控件
+  * @author otakustay
+  */
+@import "mixin.less";
+@import "variable.less";
+
+.normal-search-icon() {
+    background: transparent url(../img/search.png) no-repeat center -25px;
+}
+.active-search-icon() {
+    background: transparent url(../img/search.png) no-repeat center 0;
+}
+
+.@{ui-class-prefix}-searchbox {
+    .inline-block();
+    position: relative;
+    overflow: hidden;
+
+    .@{ui-class-prefix}-textbox {
+        input {
+            padding-right: 25px;
+            border: 1px solid #d8d8d8;
+
+            &:hover {
+                border-color: #d0d0d0;
+            }
+
+            &:focus {
+                border-color: #bbbbbb; 
+            }
+        }
+    }
+
+    .@{ui-class-prefix}-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25px;
+        height: 25px;
+        border: 0;
+        padding: 0;
+        text-indent: -5000px;
+        .normal-search-icon();
+
+        &:active {
+            border: 0;
+            .active-search-icon();
+        }
+    }
+
+    .@{ui-class-prefix}-button-disabled {
+        &:hover {
+            cursor: default;
+        }
+        &:active {
+            .active-search-icon();
+        }
+    }
+}
+
+.@{ui-class-prefix}-searchbox-fit-width {
+    .@{ui-class-prefix}-textbox {
+        width: 100% !important;
+    }
+}
+
+.@{ui-class-prefix}-searchbox-focus {
+    .@{ui-class-prefix}-button {
+        .active-search-icon();
+    }
+}
+
+.searchbox-2x() {
+    background-image: url(../img/search@2x.png);
+    background-size: 15px 50px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+    .@{ui-class-prefix}-searchbox .@{ui-class-prefix}-button {
+        .searchbox-2x();
+
+        &:active {
+            .searchbox-2x();
+        }
+    }
+
+    .@{ui-class-prefix}-searchbox-focus {
+        .@{ui-class-prefix}-button {
+            .searchbox-2x();
+        }
+    }
+}

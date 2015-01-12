@@ -30,13 +30,6 @@ define(
 
         lib.inherits(CalendarLayer, Layer);
 
-        CalendarLayer.prototype.dock = {
-            top: 'bottom',
-            left: 'left',
-            right: 'right',
-            spaceDetection: 'vertical'
-        };
-
         CalendarLayer.prototype.render = function (element) {
             document.body.appendChild(element);
             element.innerHTML = '<div data-ui-type="MonthView" '
@@ -134,7 +127,7 @@ define(
         Calendar.prototype = {
             /**
              * 控件类型，始终为`"Calendar"`
-             * 
+             *
              * @type {string}
              * @readonly
              * @override
@@ -197,6 +190,9 @@ define(
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
 
+                // parseValue 需要用到 paramFormat
+                this.paramFormat = properties.paramFormat;
+
                 if (properties.value) {
                     properties.rawValue = this.parseValue(properties.value);
                 }
@@ -226,7 +222,7 @@ define(
                 if (lib.isInput(this.main)) {
                     this.helper.replaceMain();
                 }
-                
+
                 var template = [
                     '<div class="${classes}" id="${id}">${value}</div>',
                     '<div class="${arrow}"></div>'
@@ -240,23 +236,16 @@ define(
                         arrow: this.helper.getPartClassName('arrow')
                     }
                 );
-
-                this.helper.addDOMEvent(
-                    this.main, 
-                    'click', 
-                    u.bind(this.layer.toggle, this.layer)
-                );
             },
 
             /**
-             * 创建控件主元素，默认使用`<div>`元素
+             * 初始化事件交互
              *
-             * @return {HTMLElement}
              * @protected
              * @override
              */
-            createMain: function (options) {
-                return document.createElement('div');
+            initEvents: function () {
+                this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
             },
 
             /**
@@ -276,14 +265,8 @@ define(
                      */
                     name: ['rawValue', 'range'],
                     paint: function (calendar, rawValue, range) {
-                        if (calendar.disabled || calendar.readOnly) {
-                            return;
-                        }
-
                         updateDisplayText(calendar);
 
-                        // if (calendar.layer) {
-                        // 更新日历
                         var monthView = calendar.getChild('monthView');
                         if (monthView) {
                             monthView.setProperties({
@@ -291,8 +274,6 @@ define(
                                 range: range
                             });
                         }
-                        // }
-
                     }
                 },
                 {
@@ -317,7 +298,7 @@ define(
 
             /**
              * 将值从原始格式转换成字符串，复杂类型的输入控件需要重写此接口
-             * 
+             *
              * @param {Date} rawValue 原始值
              * @return {string}
              * @protected
@@ -329,14 +310,14 @@ define(
 
             /**
              * 将字符串类型的值转换成原始格式，复杂类型的输入控件需要重写此接口
-             * 
+             *
              * @param {string} value 字符串值
              * @return {Date}
              * @protected
              * @override
              */
             parseValue: function (value) {
-                var date = moment(value, this.pareamFormat).toDate();
+                var date = moment(value, this.paramFormat).toDate();
                 return date;
             },
 
@@ -349,7 +330,7 @@ define(
                 if (this.helper.isInStage('DISPOSED')) {
                     return;
                 }
-                
+
                 if (this.layer) {
                     this.layer.dispose();
                     this.layer = null;

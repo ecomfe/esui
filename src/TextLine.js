@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 多行带行码输入框
  * @author dbear, otakustay
@@ -34,22 +34,31 @@ define(
          * @ignore
          */
         function getMainHTML(textLine) {
-            var textarea = [
-                '<textarea ',
-                    'data-ui-type="TextBox" ',
-                    'data-ui-child-name="text" ',
-                    'data-ui-mode="textarea" ',
-                    'wrap="off">',
-                '</textarea>'
-            ];
+            var textareaHTML = ''
+                + '<textarea wrap="off" '
+                + 'id="'+ textLine.helper.getId('text') + '"'
+                + '</textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                     '1', // 默认至少有一行
                 textLine.helper.getPartEndTag('num-line', 'div'),
-                textarea.join('')
+                textLine.helper.getPartBeginTag('text-container', 'div'),
+                    textareaHTML,
+                textLine.helper.getPartEndTag('text-container', 'div')
             ];
-
             return html.join('');
+        }
+
+        /**
+         * 输入时刷新其它部件
+         *
+         * @param {Event} e DOM事件对象
+         * @ignore
+         */
+        function refreshOnInput(e) {
+            if (e.type === 'input' || e.propertyName === 'value') {
+                refreshLineNum.call(this);
+            }
         }
 
 
@@ -59,7 +68,7 @@ define(
          * @ignore
          */
         function refreshLineNum() {
-            var num = this.getChild('text').getValue().split('\n').length;
+            var num = this.helper.getPart('text').value.split('\n').length;
             if (num !== this.number) {
                 this.number = num;
                 var numLine = this.helper.getPart('num-line');
@@ -80,7 +89,7 @@ define(
         TextLine.prototype = {
             /**
              * 控件类型，始终为`"TextLine"`
-             * 
+             *
              * @type {string}
              * @readonly
              * @override
@@ -105,6 +114,11 @@ define(
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
                 u.extend(properties, options);
+
+                if (!properties.hasOwnProperty('title') && this.main.title) {
+                    properties.title = this.main.title;
+                }
+
                 this.setProperties(properties);
             },
 
@@ -120,21 +134,26 @@ define(
                 if (lib.isInput(this.main)) {
                     this.helper.replaceMain();
                 }
-                
+
                 this.main.innerHTML = getMainHTML(this);
                 // 创建控件树
                 this.helper.initChildren();
+            },
 
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 // 输入区变化监听
-                var textArea = this.getChild('text');
-                textArea.on('input', refreshLineNum, this);
-
-                // 主体滚动监听
-                this.helper.addDOMEvent(
-                    textArea.main.firstChild, 
-                    'scroll', 
-                    this.resetScroll
-                );
+                var textArea = this.helper.getPart('text');
+                var inputEvent = ('oninput' in textArea)
+                    ? 'input'
+                    : 'propertychange';
+                this.helper.addDOMEvent(textArea, inputEvent, refreshOnInput);
+                this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
             },
 
             /**
@@ -159,13 +178,9 @@ define(
                         // 渲染行号区高度
                         var lineNumDiv = textLine.helper.getPart('num-line');
                         lineNumDiv.style.height = height + 'px';
-                        
+
                         // 主体高度
                         textLine.main.style.height = height + 'px';
-
-                        // 输入区
-                        var textArea = textLine.getChild('text');
-                        textArea.set('height', height);
                     }
                 },
                 {
@@ -177,14 +192,9 @@ define(
                     name: 'width',
                     paint: function (textLine, width) {
                         width = width || 300;
-                        
+
                         // 主体高度
                         textLine.main.style.width = width + 'px';
-
-                        // 输入区
-                        var textArea = textLine.getChild('text');
-                        // TODO: 用`offsetWidth`代替这个30的常量？
-                        textArea.set('width', width - 30);
                     }
                 },
                 {
@@ -198,7 +208,7 @@ define(
                     name: 'rawValue',
                     paint: function (textLine, value) {
                         // 输入区
-                        var textArea = textLine.getChild('text');
+                        var textArea = textLine.helper.getPart('text');
 
                         if (value) {
                             if (u.isArray(value)) {
@@ -209,21 +219,25 @@ define(
                                 textLine.value = u.unescape(value);
                             }
 
-                            textArea.setRawValue(textLine.value);
+                            var inputEvent = 'oninput' in textArea
+                                ? 'input'
+                                : 'propertychange';
+                            textLine.helper.removeDOMEvent(
+                                textArea, inputEvent, refreshOnInput);
+                            textArea.value = textLine.value;
+                            textLine.helper.addDOMEvent(
+                                textArea, inputEvent, refreshOnInput);
 
                             refreshLineNum.call(textLine);
                         }
                     }
-                }, 
+                },
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (textLine, disabled, readOnly) {
-                        var textArea = textLine.getChild('text');
-                        var properties = {
-                            disabled: disabled,
-                            readOnly: readOnly
-                        };
-                        textArea.setProperties(properties);
+                        var textArea = textLine.helper.getPart('text');
+                        textArea.disabled = !!disabled;
+                        textArea.readOnly = !!readOnly;
                     }
                 }
             ),
@@ -232,17 +246,16 @@ define(
              * 滚动文本输入框
              */
             resetScroll: function () {
-                var textArea = this.getChild('text').main.firstChild;
+                var textArea = this.helper.getPart('text');
                 var lineNumber = this.helper.getPart('num-line');
                 // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
                 lineNumber.style.height = textArea.clientHeight + 'px';
-                this.helper.getPart('num-line').scrollTop =
-                    this.getChild('text').main.firstChild.scrollTop;
+                lineNumber.scrollTop = textArea.scrollTop;
             },
 
             /**
              * 将值从原始格式转换成字符串
-             * 
+             *
              * @param {string[]} rawValue 原始值
              * @return {string}
              * @protected
@@ -254,7 +267,7 @@ define(
 
             /**
              * 将字符串类型的值转换成原始格式
-             * 
+             *
              * @param {string} value 字符串值
              * @return {string[]}
              * @protected
@@ -280,7 +293,7 @@ define(
              * @return {string[]}
              */
             getValueRepeatableItems: function() {
-                var text = this.getChild('text').getValue();
+                var text = this.helper.getPart('text').value;
                 var items = text.split('\n');
 
                 return u.chain(items).map(lib.trim).compact().value();
@@ -304,11 +317,11 @@ define(
             addLines: function(lines) {
                 var content = lines.join('\n');
                 var value = this.getValue();
-        
+
                 if (value.length > 0) {
                     content = value + '\n' + content;
                 }
-        
+
                 this.setRawValue(content);
             }
 

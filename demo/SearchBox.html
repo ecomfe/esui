@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>SearchBox</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+</head>
+<body>
+    <h1 id="title">SearchBox</h1>
+    <div class="container">
+        <input data-ui-id="search" data-ui-type="SearchBox" data-ui-width="300"
+            value="abc" placeholder="haha" maxlength="10" title="!!!" />
+        <esui-search-box data-ui-width="300"
+            value="abadadc" placeholder="haha" maxlength="10" title="!!!"></esui-search-box>
+    </div>
+
+    <script>
+        require(
+            [
+                'esui', 'esui/SearchBox'
+            ],
+            function (ui, SearchBox) {
+                ui.init(document.body);
+                var search = ui.get('search');
+                search.on(
+                    'search',
+                    function (e) {
+                        console.log(e.type, e.target);
+                    }
+                );
+            }
+        );
+    </script>
+</body>
+</html>

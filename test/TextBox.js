@@ -24,10 +24,10 @@ define(function (require) {
         });
 
         describe('created via script', function () {
-            it('should create a `<div>` element as its main element', function () {
+            it('should create a `<esui-text-box>` element as its main element', function () {
                 var textbox = new TextBox();
                 textbox.appendTo(container);
-                expect(textbox.main.nodeName.toLowerCase()).toBe('div');
+                expect(textbox.main.nodeName.toLowerCase()).toBe('esui-text-box');
             });
 
             it('should create a correct `<input type="text" />` element if `mode` is "text"', function () {
@@ -104,6 +104,16 @@ define(function (require) {
                 var textbox = new TextBox({ main: main });
                 textbox.appendTo(container);
                 expect(findInput(textbox).getAttribute('maxlength')).toBe('3');
+            });
+
+            it('should remove `tabindex` attribute to prevent tab navigation problem', function () {
+                var div = document.createElement('div');
+                div.innerHTML = '<input type="text" tabindex="1" />';
+                var main = div.firstChild;
+
+                var textbox = new TextBox({ main: main });
+                textbox.appendTo(container);
+                expect(hasAttribute(textbox.main, 'tabindex')).toBe(false);
             });
         });
 
@@ -185,7 +195,8 @@ define(function (require) {
                 textbox.appendTo(container);
                 textbox.set('placeholder', 'test');
                 var input = findInput(textbox);
-                if ('placeholder' in input) {
+                if ('placeholder' in document.createElement('input')) {
+                    // ie8中对 input 设置了 placeholder，会造成 'placeholder' in input 为 true
                     expect(input.getAttribute('placeholder')).toBe('test');
                 }
                 else {
@@ -289,8 +300,11 @@ define(function (require) {
                     textbox.appendTo(container);
                     var input = textbox.main.getElementsByTagName('input')[0];
                     var hintLabel = input.nextSibling;
+
                     textbox.set('hint', '');
-                    expect(hintLabel.parentNode).toBe(null);
+                    var hasNotParent =
+                           hintLabel.parentNode === null || hintLabel.parentElement == null;
+                    expect(hasNotParent).toBe(true);
                 });
             });
 

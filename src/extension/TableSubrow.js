@@ -15,9 +15,11 @@ define(
         var Table = require('../Table');
         
         /**
-         * 元素属性 自动加上data-前缀
-         * 
-         * @protected
+         * 获取元素Id
+         * @private
+         * @param {Object} table Table示例
+         * @param {string} name
+         * @return {string}
          */
         function getId(table, name) {
             return helper.getId(table, name);
@@ -25,8 +27,10 @@ define(
 
         /**
          * 获取dom子部件的css class
-         * 
-         * @protected
+         * @private
+         * @param {Object} table Table示例
+         * @param {string} name
+         *
          * @return {string}
          */
         function getClass(table, name) {
@@ -35,8 +39,10 @@ define(
 
         /**
          * 获取dom带有data-前缀的属性值
-         * 
          * @private
+         * @param {Object} element dom元素
+         * @param {string} key
+         *
          * @return {string}
          */
         function getAttr(element, key){
@@ -45,8 +51,11 @@ define(
 
         /**
          * 设置元素属性 自动加上data-前缀
-         * 
          * @private
+         * @param {Object} element dom元素
+         * @param {string} key
+         * @param {string} value
+         *
          */
         function setAttr(element, key, value){
             lib.setAttribute(element, 'data-' + key, value);
@@ -54,8 +63,8 @@ define(
 
         /**
          * 判断值是否为空
-         * 
          * @private
+         * @param {Object} obj
          * @return {bool}
          */
         function hasValue(obj) {
@@ -64,8 +73,8 @@ define(
 
         /**
          * 获取表格子行的元素id
-         *
          * @private
+         * @param {Object} table Table示例
          * @param {number} index 行序号
          * @return {string}
          */
@@ -75,8 +84,8 @@ define(
 
         /**
          * 获取表格子行入口元素的id
-         *
          * @private
+         * @param {Object} table Table示例
          * @param {number} index 行序号
          * @return {string}
          */
@@ -86,21 +95,23 @@ define(
 
         /**
          * subrow行绘制每行基本参数
-         *
+         * @private
+         * @param {Object} table Table示例
+         * @param {number} rowIndex 行序号
          * @private
          */
         function getSubrowArgs(table, rowIndex){
             return {
-                subrow : table.subrow && table.subrow != 'false'
+                subrow : table.subrow && table.subrow !== 'false'
             };
         }
 
 
         /**
-         * 处理子行入口元素鼠标移入的行为
-         *
+         * 处理子行入口元素鼠标移入的行为x
          * @private
-         * @param {number} index 入口元素的序号
+         * @param {Object} element dom元素
+         * @param {Object} e 事件对象
          */
         function entryOverHandler(element, e) {
             entryOver(this, element);
@@ -117,10 +128,10 @@ define(
         }
 
         /**
-         * 处理子行入口元素鼠标移出的行为
-         *
+         * 处理子行入口元素鼠标移出的行为x
          * @private
-         * @param {number} index 入口元素的序号
+         * @param {Object} element dom元素
+         * @param {Object} e 事件对象
          */
         function entryOutHandler(element, e) {
             entryOut(this, element);
@@ -133,7 +144,6 @@ define(
 
         /**
          * 触发subrow的打开|关闭
-         *
          * @private
          * @param {object} el 事件元素
          * @param {object} e 事件对象
@@ -167,9 +177,11 @@ define(
         
         /**
          * 关闭子行
-         *
          * @private
+         * @param {Object} table Table示例
          * @param {number} index 子行的序号
+         * @param {Object} entry dom元素
+         * @return {bool}
          */
         function closeSubrow(table, index, entry) {
             var eventArgs = { 
@@ -207,9 +219,10 @@ define(
         
         /**
          * 打开子行
-         *
          * @private
+         * @param {Object} table Table示例
          * @param {number} index 子行的序号
+         * @param {Object} entry dom元素
          */
         function openSubrow(table, index, entry) {
             var currentIndex = table.subrowIndex;
@@ -250,6 +263,29 @@ define(
                         + 'data-index="${index}">'
                         + '</div>';
 
+        /**
+         * subrowPanel的html模板
+         *
+         * @private
+         *
+         */
+        var tplSubPanel = '<div '
+                        + 'data-ui="type:Panel;id:${id}" '
+                        + 'data-index="${index}">'
+                        + '</div>';
+
+        /**
+         * 生成子行点击打开区域的Htmlx
+         * @private
+         * @param {Object} table Table示例
+         * @param {Object} data 某行某列对应的数据
+         * @param {Object} field 列配置
+         * @param {number} rowIndex 行序号
+         * @param {number} fieldIndex 列序号
+         * @param {Object} extraArgs 额外参数
+         *
+         * @return {Object}
+         */
         function getSubEntryHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
@@ -286,16 +322,60 @@ define(
 
         /**
          * 获取子内容区域的html
-         *
          * @private
          * @return {string}
          */
         function getSubrowHtml(table, index, extraArgs) {
+            var dataLen = table.datasource ? table.datasource.length : 0;
             return extraArgs.subrow
                     ? '<div id="' + getSubrowId(table, index)
-                    +  '" class="' + getClass(table, 'subrow') + '"'
+                    +  '" class="' + getClass(table, 'subrow') + ' '
+                    +  ( dataLen === index + 1 ? getClass(table, 'subrow-last') : '' ) + '"'
                     +  ' style="display:none"></div>'
                     : '';
+        }
+
+
+        /**
+         * 获取子行的容器
+         * @private
+         * @param {Object} table Table示例
+         * @param {number} index 行序号
+         * @return {Object}
+         */
+        function getSubrow(table, index) {
+            return lib.g(getSubrowId(table, index));
+        }
+
+        /**
+         * 获取子行的Panel
+         * @private
+         *
+         * @param {Object} table Table示例
+         * @param {number} index 行序号
+         *
+         * @return {Object}
+         */
+        function getSubrowContainer(table, index) {
+            var subrowWrapper = getSubrow(table, index);
+            var subrowPanelId = getId(table, 'subrow-panel-' + index);
+            var subrowPanel = table.viewContext.get(subrowPanelId);
+
+            if (!subrowPanel) {
+                subrowWrapper.innerHTML = lib.format(
+                    tplSubPanel,
+                    {
+                        id: subrowPanelId,
+                        index: index
+                    }
+                );
+
+                table.initChildren(subrowWrapper);
+                subrowPanel = table.viewContext.get(subrowPanelId);
+                table.addChild(subrowPanel);
+            }
+
+            return subrowPanel;
         }
 
 
@@ -372,9 +452,38 @@ define(
              * @return {HTMLElement}
              */
             target.getSubrow = function(index) {
-                return lib.g(getSubrowId(this, index));    
+                return getSubrow(this, index);
             };
 
+            /**
+             * 设置子行内容
+             *
+             * @public
+             *
+             * @param {string} content 内容
+             * @param {number} index 行序号
+             *
+             */
+            target.setSubrowContent = function(content, index){
+                var subrowPanel = getSubrowContainer(this, index);
+
+                if (subrowPanel) {
+                    subrowPanel.set('content', content);
+                }
+            };
+
+            /**
+             * 获取子行Panel
+             *
+             * @public
+             *
+             * @param {number} index 行序号
+             *
+             * @return {Object}
+             */
+            target.getSubrowContainer = function(index){
+                return getSubrowContainer(this, index);
+            };
 
             Extension.prototype.activate.apply(this, arguments);
         };

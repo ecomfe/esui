@@ -7,14 +7,14 @@
  */
 @import "mixin.less";
 @import "variable.less";
-.ui-tab-navigator {
+.@{ui-class-prefix}-tab-navigator {
     margin: 0;
     padding:0;
     list-style: none;
     .box-sizing();
 }
 
-.ui-tab-item {
+.@{ui-class-prefix}-tab-item {
     margin: 0;
     padding:0;
     list-style: none;
@@ -22,18 +22,18 @@
     .interactive-cursor ();
 }
 
-.ui-tab-item-active {
+.@{ui-class-prefix}-tab-item-active {
     cursor: default;
 }
 
 /** 纵向tab */
-.ui-tab-vertical {
-    .ui-tab-navigator {
+.@{ui-class-prefix}-tab-vertical {
+    .@{ui-class-prefix}-tab-navigator {
         padding-top: 10px;
         border-right: 1px solid #DDD;
         float: left;
     }
-    .ui-tab-item {
+    .@{ui-class-prefix}-tab-item {
         display: block;
         .border-radius(2px, 0, 0, 2px);
         border: 1px solid #DFDFDF;
@@ -44,17 +44,17 @@
         padding: 3px 10px;
     }
 
-    .ui-tab-item-active {
+    .@{ui-class-prefix}-tab-item-active {
         background: #FFF;
         color: #333333;
     } 
 }
 
 /** 横向tab */
-.ui-tab-horizontal {
-    @tabPadding: 10px;
+.@{ui-class-prefix}-tab-horizontal {
+    @tab-padding: 10px;
 
-    .ui-tab-navigator {
+    .@{ui-class-prefix}-tab-navigator {
         overflow: hidden;
         zoom: 1;
         position: relative;
@@ -62,9 +62,9 @@
         border-bottom: 1px solid #DDD;
     }
 
-    .ui-tab-item {
+    .@{ui-class-prefix}-tab-item {
         float: left;
-        padding: 3px @tabPadding;
+        padding: 3px @tab-padding;
         text-align: center;
 
         .border-radius(2px, 2px, 0, 0);
@@ -75,7 +75,7 @@
         margin-right:2px;
     }
 
-    .ui-tab-item-active {
+    .@{ui-class-prefix}-tab-item-active {
         background: #FFF;
         color: #333333;
     }

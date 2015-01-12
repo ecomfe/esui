@@ -4,13 +4,50 @@
         <meta charset="UTF-8" />
         <title>Button - ESUI Demo</title>
         <script src="loader/esl.js"></script>
-        <script src="loader/config.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
         <header>Tip</header>
-        <div class="container" style="margin-left:100px">
+        <div class="container">
             <div data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里">content也可以写在这里</div>
+            <esui-tip data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里"></esui-tip>
+
             <br>
             <label id="tip-layer-label">
                 一行字也可以绑定提示
@@ -34,9 +71,7 @@
                 'esui',
                 'esui/Tip',
                 'esui/TipLayer',
-                'esui/Label',
-                'css!esui/css/main.css',
-                'css!esui/css/Tip.css'
+                'esui/Label'
             ],
             function (ui, Tip, TipLayer) {
                 var controls = ui.init();
@@ -47,15 +82,11 @@
                     targetDOM: 'tip-layer-label'
                 });
 
-                //创建main
-                var main = document.createElement('div');
-                document.body.appendChild(main);
-
                 var tipLayer = ui.create('TipLayer', {
-                    main: main,
                     title: '最普通的提示',
                     content: '随便提示一下随便提示一下随便提示一下'
                 });
+                tipLayer.appendTo(document.body)
                 tipLayer.render();
                 tipLayer.attachTo({
                     targetControl: 'control-tip',

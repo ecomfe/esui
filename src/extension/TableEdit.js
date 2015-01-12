@@ -1,12 +1,12 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 表格行内编辑扩展
  * @author wurongyao, otakustay
  */
-define( 
+define(
     function (require) {
         require('../validator/MaxLengthRule');
         require('../validator/MaxRule');
@@ -70,7 +70,7 @@ define(
             if (!layer) {
                 layer = helper.layer.create();
                 document.body.appendChild(layer);
-                layer.className = 'ui-table-editor';
+                layer.className = table.helper.getPartClassName('editor');
                 initLayer();
             }
 
@@ -78,7 +78,7 @@ define(
 
             initInputControl(options);
         }
-        
+
         /**
          * 初始化编辑器浮层
          *
@@ -88,7 +88,7 @@ define(
             fillLayer();
             initButtonControl();
         }
-        
+
         /**
          * 初始化浮层按钮的控件
          *
@@ -101,7 +101,7 @@ define(
 
             okButton.on('click', getOkHandler());
             cancelButton.on('click', getCancelHandler());
-        
+
             setButtonDisabled(1);
         }
 
@@ -130,7 +130,7 @@ define(
                     validTpl,
                     { validId: newValidId }
                 );
-                
+
                 var inputCtrlOptions = {properties:{}};
                 inputCtrlOptions.properties[newInputId] = lib.extend(
                     {
@@ -157,9 +157,9 @@ define(
          * @ignore
          */
         function disposeEditorControl(table) {
-            if (table == currentTable) {
+            if (table === currentTable) {
                 hideLayer();
-                
+
                 inputCtrl.dispose();
                 okButton.dispose();
                 cancelButton.dispose();
@@ -167,7 +167,7 @@ define(
                 try{
                     layer && document.body.removeChild(layer);
                 } catch (ex){}
-                
+
                 layer = null;
                 inputCtrl = null;
                 okButton = null;
@@ -176,7 +176,7 @@ define(
                 currentField = null;
             }
         }
-        
+
         /**
          * 填充浮层的内容
          *
@@ -184,15 +184,15 @@ define(
          */
         function fillLayer() {
             layer.innerHTML = lib.format(
-                layContentTpl, 
+                layContentTpl,
                 {
                     inputFieldId: inputFieldId,
                     okId: okId,
                     cancelId: cancelId,
                     okText: okText,
                     cancelText: cancelText,
-                    optClass: 'ui-table-editor-opt',
-                    errorClass: 'ui-table-editor-error',
+                    optClass: currentTable.helper.getPartClassName('editor-opt'),
+                    errorClass: currentTable.helper.getPartClassName('editor-error'),
                     errorId: errorId
                 }
             );
@@ -211,7 +211,7 @@ define(
                 }
             }
         }
-        
+
         /**
          * 隐藏浮层
          *
@@ -238,8 +238,8 @@ define(
         function showErrorMsg(error) {
             if (error) {
                 var validity = new Validity();
-                validity.addState( 
-                    'TableEditCustomRule', 
+                validity.addState(
+                    'TableEditCustomRule',
                     new ValidityState(false, error)
                 );
                 inputCtrl.showValidity(validity);
@@ -253,8 +253,8 @@ define(
          */
         function clearErrorMsg(error) {
             var validity = new Validity();
-            validity.addState( 
-                'TableEditCustomRule', 
+            validity.addState(
+                'TableEditCustomRule',
                 new ValidityState(true)
             );
             inputCtrl.showValidity(validity);
@@ -263,7 +263,7 @@ define(
         /**
          * 获取确定按钮的点击行为handler
          *
-         * @return {Function} 
+         * @return {Function}
          * @ignore
          */
         function getOkHandler() {
@@ -282,20 +282,33 @@ define(
                 };
 
                 eventArgs = currentTable.fire('saveedit', eventArgs);
+                fieldHanlder(currentTable, 'saveedit', eventArgs);
 
                 if (!eventArgs.isDefaultPrevented()) {
-                    hideLayer();
-                    currentState = 0;
-                } else if (eventArgs.errorMsg) {
-                    showErrorMsg(eventArgs.errorMsg);
-                } 
+                    saveSuccessHandler.call(currentTable, eventArgs);
+                } else {
+                    saveFailedHandler.call(currentTable, eventArgs);
+                }
             }
         }
-        
+
+        function saveSuccessHandler(eventArgs) {
+            if (this === currentTable) {
+                hideLayer();
+                currentState = 0;
+            }
+        }
+
+        function saveFailedHandler(eventArgs) {
+            if (this === currentTable && eventArgs.errorMsg) {
+                showErrorMsg(eventArgs.errorMsg);
+            }
+        }
+
         /**
          * 获取取消按钮的点击行为handler
          *
-         * @return {Function} 
+         * @return {Function}
          * @ignore
          */
         function getCancelHandler() {
@@ -310,7 +323,7 @@ define(
          * @ignore
          */
         function tableEndDragHandler() {
-            if (this == currentTable) {
+            if (this === currentTable) {
                 layerFollow(this);
             }
         }
@@ -321,7 +334,7 @@ define(
          * @ignore
          */
         function tableResizeHandler() {
-            if (this == currentTable) {
+            if (this === currentTable) {
                 layerFollow(this);
             }
         }
@@ -344,7 +357,7 @@ define(
                    helper.layer.attachTo(
                         layer,
                         entrance
-                    );   
+                    );
                 }
             }
         }
@@ -363,7 +376,9 @@ define(
                 columnIndex: currentColIndex,
                 field: currentTable.realFields[currentColIndex]
             };
-            currentTable.fire('canceledit', eventArgs);
+
+            eventArgs = currentTable.fire('canceledit', eventArgs);
+            fieldHanlder(currentTable, 'canceledit', eventArgs);
         }
 
         /**
@@ -403,9 +418,9 @@ define(
          * @param {boolean} disabled 按钮的disabled状态
          * @ignore
          */
-        function setButtonDisabled( disabled ) {
-            okButton.setDisabled( disabled );
-            cancelButton.setDisabled( disabled );
+        function setButtonDisabled(disabled) {
+            okButton.setDisabled(disabled);
+            cancelButton.setDisabled(disabled);
         }
 
         /**
@@ -421,10 +436,10 @@ define(
         /**
          * 获取当前编辑器所编辑的值
          *
-         * @return {Mixed} 
+         * @return {Mixed}
          * @ignore
          */
-        function getValue() { 
+        function getValue() {
             return inputCtrl.getValue();
         }
 
@@ -440,13 +455,14 @@ define(
             if (table.startEdit) {
                 var rowIndex = lib.getAttribute(element, 'data-row');
                 var columnIndex = lib.getAttribute(element, 'data-col');
-                table.startEdit(rowIndex, columnIndex, element); 
+                table.startEdit(rowIndex, columnIndex, element);
             }
         }
 
         /**
          * 开始某行的编辑逻辑，初始化子控件
-         * @param {number} index 行序号
+         * @param {number} rowIndex 行序号
+         * @param {number} columnIndex 列序号
          * @ignore
          */
         function startEdit(rowIndex, columnIndex, element) {
@@ -457,11 +473,13 @@ define(
                     columnIndex: columnIndex,
                     field: field
                 };
+
                 eventArgs = this.fire('startedit', eventArgs);
+                fieldHanlder(this, 'startedit', eventArgs);
 
                 if (!eventArgs.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
-                    var content = field.editContent; 
+                    var content = field.editContent;
                     var value = 'function' === typeof content
                         ? content.call(this, data, rowIndex, columnIndex)
                         : data[field.field];
@@ -485,8 +503,28 @@ define(
          * @ignore
          */
         function cancelEdit() {
-            if (this == currentTable) {
+            if (this === currentTable) {
                 stop();
+            }
+        }
+
+        /**
+         * 隐藏编辑浮层
+         * @ignore
+         */
+        function hideEditLayer() {
+            if (this === currentTable) {
+                hideLayer();
+            }
+        }
+
+        /**
+         * 显示编辑浮层
+         * @ignore
+         */
+        function showEditError () {
+            if (this === currentTable) {
+                showLayer();
             }
         }
 
@@ -499,7 +537,11 @@ define(
         function getColHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
-            if (table.editable && field.editable) {
+            var fieldEditable = field.editable;
+            if ('function' == typeof fieldEditable) {
+                fieldEditable = fieldEditable.call(table, data, rowIndex, fieldIndex, extraArgs);
+            }
+            if (table.editable && fieldEditable) {
                 return {
                     textClass: table.getClass('cell-editable'),
                     html: lib.format(
@@ -511,6 +553,14 @@ define(
                         }
                     )
                 };
+            }
+        }
+
+        function fieldHanlder(table, eventType, args) {
+            var handler = args.field['on' + eventType];
+            if (handler
+                && '[object Function]' === Object.prototype.toString.call(handler)) {
+                handler.call(table, args);
             }
         }
 
@@ -534,7 +584,7 @@ define(
          *
          * 以上3个事件的事件对象均提供以下属性：
          *
-         * 
+         *
          * - `{number} rowIndex`：行索引
          * - `{number} columnIndex`：列索引
          * - `{number} field`：对应的字段
@@ -572,6 +622,8 @@ define(
 
             target.startEdit = startEdit;
             target.cancelEdit = cancelEdit;
+            target.hideEditLayer = hideEditLayer;
+            target.showEditError = showEditError;
 
             target.addRowBuilders([
                 {
@@ -621,7 +673,7 @@ define(
 
         lib.inherits(TableEdit, Extension);
         main.registerExtension(TableEdit);
-        
+
         return TableEdit;
     }
 );

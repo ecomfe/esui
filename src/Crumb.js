@@ -46,17 +46,6 @@ define(
         Crumb.prototype.type = 'Crumb';
 
         /**
-         * 创建控件主元素，默认使用`<nav>`元素
-         *
-         * @return {HTMLElement}
-         * @protected
-         * @override
-         */
-        Crumb.prototype.createMain = function () {
-            return document.createElement('nav');
-        };
-
-        /**
          * 初始化参数
          *
          * 如果初始化时未提供{@link Crumb#path}属性，则按以下规则构建该属性：
@@ -109,7 +98,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.textNodeTemplate = 
+        Crumb.prototype.textNodeTemplate =
             '<span class="${classes}">${text}</span>';
 
         /**
@@ -122,7 +111,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.linkNodeTemplate = 
+        Crumb.prototype.linkNodeTemplate =
             '<a class="${classes}" href="${href}">${text}</a>';
 
         /**
@@ -135,7 +124,7 @@ define(
          *
          * @type {string}
          */
-        Crumb.prototype.separatorTemplate = 
+        Crumb.prototype.separatorTemplate =
             '<span class="${classes}">${text}</span>';
 
         /**
@@ -158,7 +147,6 @@ define(
                     classes,
                     this.helper.getPartClasses('node-last')
                 );
-                separator = '';
             }
 
             var template = node.href

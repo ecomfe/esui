@@ -4,64 +4,53 @@
     <meta charset="utf-8" />
     <title>TextBox - ESUI Demo</title>
     <script src="loader/esl.js"></script>
-    <script src="loader/config.js"></script>
-    <script src="jquery-1.9.1.min.js"></script>
-    <link rel="stylesheet" href="demo.css" />
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
     <style>
         label {
             display: block;
         }
-        .invalid {
-            color: #f00;
-        }
     </style>
-    <script>
-        var ready = (function () {
-            var list = [];
-            return function (callback) {
-                if (callback) {
-                    list.push(callback);
-                }
-                else {
-                    for (var i = 0; i < list.length; i++) {
-                        list[i]();
-                    }
-                    ready = function (callback) {
-                        callback();
-                    };
-                }
-            }
-        }());
-    </script>
-</head>
+    </head>
 <body>
     <h1>TextBox</h1>
-    <div id="page">
-        <ul id="navigator">
-            <li><a href="Panel.html">Panel</a></li>
-            <li><a href="Label.html">Label</a></li>
-            <li><a href="Link.html">Link</a></li>
-            <li><a href="Button.html">Button</a></li>
-            <li><a href="Tip.html">Tip</a></li>
-            <li><a href="TextBox.html">TextBox</a></li>
-            <li><a href="BoxControl.html">BoxControl</a></li>
-            <li><a href="Select.html">Select</a></li>
-            <li><a href="MonthView.html">MonthView</a></li>
-            <li><a href="Calendar.html">Calendar</a></li>
-            <li><a href="RangeCalendar.html">RangeCalendar</a></li>
-            <li><a href="Region.html">Region</a></li>
-            <li><a href="Schedule.html">Schedule</a></li>
-            <li><a href="Crumb.html">Crumb</a></li>
-            <li><a href="CommandMenu.html">CommandMenu</a></li>
-            <li><a href="Wizard.html">Wizard</a></li>
-            <li><a href="Tab.html">Tab</a></li>
-            <li><a href="Pager.html">Pager</a></li>
-            <li><a href="Sidebar.html">Sidebar</a></li>
-            <li><a href="Dialog.html">Dialog</a></li>
-            <li><a href="Tree.html">Tree</a></li>
-            <li><a href="Table.html">Table</a></li>
-        </ul>
-        <div id="main">
+    <div class="container">
+        <div>
             <h2>多种模式</h2>
             <section class="intro">
                 <p>文本框有3种模式：文本、密码、多行。</p>
@@ -76,20 +65,24 @@
                         data-ui-id="text-box-normal"
                         data-ui-type="TextBox"
                         data-ui-mode="text" />
+                    <esui-text-box></esui-text-box>
                 </div>
                 <div>
                     <label for="text-box-password">密码框</label>
                     <input id="text-box-password"
                         data-ui-id="text-box-password"
                         data-ui-type="TextBox"
+                        type="password"
                         data-ui-mode="password" />
+                    <esui-text-box data-ui-mode="password"></esui-text-box>
                 </div>
                 <div>
                     <label for="text-box-textarea">多行文本框</label>
                     <textarea id="text-box-textarea"
-                        data-ui-id="text-box-textarea" 
+                        data-ui-id="text-box-textarea"
                         data-ui-type="TextBox"
                         data-ui-mode="textarea"></textarea>
+                    <esui-text-box data-ui-mode="textarea"></esui-text-box>
                 </div>
                 <pre class="source source-markup">&lt;div&gt;
     &lt;label for=&quot;text-box-normal&quot;&gt;&#x6587;&#x672c;&#x6846;&lt;/label&gt;
@@ -108,7 +101,7 @@
 &lt;div&gt;
     &lt;label for=&quot;text-box-textarea&quot;&gt;&#x591a;&#x884c;&#x6587;&#x672c;&#x6846;&lt;/label&gt;
     &lt;textarea id=&quot;text-box-textarea&quot;
-        data-ui-id=&quot;text-box-textarea&quot; 
+        data-ui-id=&quot;text-box-textarea&quot;
         ata-ui-type=&quot;TextBox&quot;
         data-ui-mode=&quot;textarea&quot;&gt;&lt;/textarea&gt;
 &lt;/div&gt;</pre>
@@ -239,9 +232,8 @@ textbox.on(
     <script>
         require(
             [
-                'esui', 
-                'esui/TextBox',
-                'css!esui/css/main.css'
+                'esui',
+                'esui/TextBox'
             ],
             function (ui) {
                 ui.init();

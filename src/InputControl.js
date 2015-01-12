@@ -16,67 +16,6 @@ define(
         var main = require('./main');
 
         /**
-         * 校验
-         *
-         * @param {InputControl} control 目标控件
-         * @return {validator.Validity}
-         * @ignore
-         */
-        function checkValidity(control) {
-            var validity = new Validity();
-            var eventArg = {
-                validity: validity
-            };
-
-            /**
-             * @event beforevalidate
-             *
-             * 在验证前触发
-             *
-             * @param {validator.Validity} validity 验证结果
-             * @member InputControl
-             */
-            eventArg = control.fire('beforevalidate', eventArg);
-
-            // 验证合法性
-            var rules = main.createRulesByControl(control);
-            for (var i = 0, len = rules.length; i < len; i++) {
-                var rule = rules[i];
-                validity.addState( 
-                    rule.getName(), 
-                    rule.check(control.getValue(), control)
-                );
-            }
-
-            // 触发invalid和aftervalidate事件
-            // 这两个事件中用户可能会对validity进行修改操作
-            // 所以validity.isValid()结果不能缓存
-            if (!validity.isValid()) {
-                /**
-                 * @event invalid
-                 *
-                 * 在验证结果为错误时触发
-                 *
-                 * @param {validator.Validity} validity 验证结果
-                 * @member InputControl
-                 */
-                eventArg = control.fire('invalid', eventArg);
-            }
-
-            /**
-             * @event aftervalidate
-             *
-             * 在验证后触发
-             *
-             * @param {validator.Validity} validity 验证结果
-             * @member InputControl
-             */
-            control.fire('aftervalidate', eventArg);
-
-            return validity;
-        }
-
-        /**
          * 输入控件基类
          *
          * 输入控件用于表示需要在表单中包含的控件，
@@ -145,8 +84,8 @@ define(
 
             /**
              * 获取输入控件的值的字符串形式
-             * 
-             * @return {string} 
+             *
+             * @return {string}
              */
             getValue: function () {
                 /**
@@ -159,7 +98,7 @@ define(
 
             /**
              * 设置输入控件的值
-             * 
+             *
              * @param {string} value 输入控件的值
              */
             setValue: function (value) {
@@ -169,8 +108,8 @@ define(
 
             /**
              * 获取输入控件的原始值，原始值的格式由控件自身决定
-             * 
-             * @return {Mixed} 
+             *
+             * @return {Mixed}
              */
             getRawValue: function () {
                 /**
@@ -183,7 +122,7 @@ define(
 
             /**
              * 设置输入控件的原始值，原始值的格式由控件自身决定
-             * 
+             *
              * @param {Mixed} rawValue 输入控件的原始值
              */
             setRawValue: function (rawValue) {
@@ -192,7 +131,7 @@ define(
 
             /**
              * 批量设置控件的属性值
-             * 
+             *
              * @param {Object} properties 属性值集合
              * @override
              */
@@ -279,7 +218,7 @@ define(
 
             /**
              * 将值从原始格式转换成字符串，复杂类型的输入控件需要重写此接口
-             * 
+             *
              * @param {Mixed} rawValue 原始值
              * @return {string}
              * @protected
@@ -290,7 +229,7 @@ define(
 
             /**
              * 将字符串类型的值转换成原始格式，复杂类型的输入控件需要重写此接口
-             * 
+             *
              * @param {string} value 字符串值
              * @return {Mixed}
              * @protected
@@ -301,7 +240,7 @@ define(
 
             /**
              * 设置控件的只读状态
-             * 
+             *
              * @param {boolean} readOnly 是否只读
              */
             setReadOnly: function (readOnly) {
@@ -311,7 +250,7 @@ define(
 
             /**
              * 判读控件是否处于只读状态
-             * 
+             *
              * @return {boolean}
              */
             isReadOnly: function () {
@@ -319,28 +258,90 @@ define(
             },
 
             /**
+             * 获取验证结果的{@link validator.Validity}对象
+             *
+             * @return {validator.Validity}
+             * @fires beforevalidate
+             * @fires aftervalidate
+             * @fires invalid
+             */
+            getValidationResult: function () {
+                var validity = new Validity();
+                var eventArg = {
+                    validity: validity
+                };
+
+                /**
+                 * @event beforevalidate
+                 *
+                 * 在验证前触发
+                 *
+                 * @param {validator.Validity} validity 验证结果
+                 * @member InputControl
+                 */
+                eventArg = this.fire('beforevalidate', eventArg);
+
+                // 验证合法性
+                var rules = main.createRulesByControl(this);
+                for (var i = 0, len = rules.length; i < len; i++) {
+                    var rule = rules[i];
+                    validity.addState(
+                        rule.getName(),
+                        rule.check(this.getValue(), this)
+                    );
+                }
+
+                // 触发invalid和aftervalidate事件
+                // 这两个事件中用户可能会对validity进行修改操作
+                // 所以validity.isValid()结果不能缓存
+                if (!validity.isValid()) {
+                    /**
+                     * @event invalid
+                     *
+                     * 在验证结果为错误时触发
+                     *
+                     * @param {validator.Validity} validity 验证结果
+                     * @member InputControl
+                     */
+                    eventArg = this.fire('invalid', eventArg);
+                }
+
+                /**
+                 * @event aftervalidate
+                 *
+                 * 在验证后触发
+                 *
+                 * @param {validator.Validity} validity 验证结果
+                 * @member InputControl
+                 */
+                this.fire('aftervalidate', eventArg);
+
+                return validity;
+            },
+
+            /**
              * 验证控件，仅返回`true`或`false`
-             * 
+             *
              * @return {boolean}
              * @fires beforevalidate
              * @fires aftervalidate
              * @fires invalid
              */
             checkValidity: function () {
-                var validity = checkValidity(this);
+                var validity = this.getValidationResult();
                 return validity.isValid();
             },
 
             /**
              * 验证控件，当值不合法时显示错误信息
-             * 
+             *
              * @return {boolean}
              * @fires beforevalidate
              * @fires aftervalidate
              * @fires invalid
              */
             validate: function () {
-                var validity = checkValidity(this);
+                var validity = this.getValidationResult();
                 this.showValidity(validity);
                 return validity.isValid();
             },
@@ -368,13 +369,20 @@ define(
                     };
                     label = new ValidityLabel(options);
                     if (this.main.nextSibling) {
-                        label.insertBefore(this.main.nextSibling);
+                        var nextSibling = this.main.nextSibling;
+                        label.insertBefore(nextSibling);
                     }
                     else {
                         label.appendTo(this.main.parentNode);
                     }
-
                     this.validityLabel = label.id;
+                }
+
+                // Adjacent sibling selector not working with dynamically added class in IE7/8
+                // Put the class on a parent to force repainting 
+                if ((lib.ie === 8 || lib.ie === 7) && label) {
+                    // otakustay赐名
+                    lib.toggleClass(label.main.parentNode, 'fuck-the-ie');
                 }
 
                 return label;
@@ -400,11 +408,25 @@ define(
                 }
 
                 var properties = {
-                    target: this, 
+                    target: this,
                     focusTarget: this.getFocusTarget(),
                     validity: validity
                 };
                 label.setProperties(properties);
+            },
+
+            /**
+             * 直接显示验证消息
+             *
+             * @param {string} validState 验证状态，通常未通过验证为`"invalid"`
+             * @param {string} message 待显示的信息
+             */
+            showValidationMessage: function (validState, message) {
+                message = message || '';
+                var validity = new Validity();
+                validity.setCustomValidState(validState);
+                validity.setCustomMessage(message);
+                this.showValidity(validity);
             },
 
             /**
@@ -416,7 +438,7 @@ define(
                 if (helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
-                
+
                 var validityLabel = this.getValidityLabel(true);
                 if (validityLabel) {
                     validityLabel.dispose();

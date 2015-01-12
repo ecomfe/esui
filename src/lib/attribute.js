@@ -46,18 +46,18 @@
             };
 
             var div = document.createElement('div');
-            div.innerHTML = '<label for="test" className="test"></label>';
+            div.innerHTML = '<label for="test" class="test"></label>';
             var label = div.getElementsByTagName('label')[0];
 
-            if (label.getAttribute('class') === 'test') {
-                result['className'] = 'class';
+            if (label.getAttribute('className') === 'test') {
+                result['class'] = 'className';
             }
             else {
-                result['class'] = 'className';
+                result.className = 'class';
             }
 
             if (label.getAttribute('for') === 'test') {
-                result['htmlFor'] = 'for';
+                result.htmlFor = 'for';
             }
             else {
                 result['for'] = 'htmlFor';

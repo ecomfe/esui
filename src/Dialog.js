@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 弹出框
  * @author dbear
  */
@@ -10,10 +10,6 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
-        
-        // 仅在调试的时候打开
-        //require('css!./css/Button.css');
-        //require('css!./css/Dialog.css');
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
@@ -24,7 +20,7 @@ define(
 
         /**
          * 弹出框控件类
-         * 
+         *
          * @constructor
          * @param {Object} options 初始化参数
          */
@@ -34,7 +30,7 @@ define(
 
         /**
          * 渲染控件前重绘控件
-         * 
+         *
          */
         function parseMain(options) {
             var main = options.main;
@@ -62,7 +58,7 @@ define(
 
         /**
          * 构建对话框标题栏
-         * 
+         *
          * @param {ui.Dialog} 控件对象
          * @param {HTMLElement} mainDOM head主元素
          * @inner
@@ -71,7 +67,7 @@ define(
             var title = 'title';
             var close = 'close-icon';
 
-            var closeTpl = 
+            var closeTpl =
                 '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
             var closeIcon = '';
 
@@ -137,13 +133,20 @@ define(
          * @inner
          */
         function closeClickHandler() {
+            var event = this.fire('beforeclose');
+
+            // 阻止事件，则不继续运行
+            if (event.isDefaultPrevented()) {
+                return false;
+            }
+
+            this.hide();
+
+            this.fire('close');
+
             if (this.closeOnHide) {
                 this.dispose();
             }
-            else {
-                this.hide();
-            }
-            this.fire('close');
 
         }
 
@@ -162,7 +165,7 @@ define(
             var right = this.right;
             var bottom = this.bottom;
 
-            if (!left) {
+            if (left === undefined || left === null) {
                 left = (page.getViewWidth() - main.offsetWidth) / 2;
             }
 
@@ -170,7 +173,7 @@ define(
                 left = 0;
             }
 
-            if (!top) {
+            if (top === undefined || top === null) {
                 top = (page.getViewHeight() - main.offsetHeight) / 2;
             }
 
@@ -181,11 +184,11 @@ define(
             main.style.top = page.getScrollTop() + top + 'px';
 
             // 如果设置right，就用
-            if (right) {
+            if (right !== undefined && right !== null) {
                 main.style.right = right + 'px';
             }
             // 如果设置bottom，就用
-            if (bottom !== undefined) {
+            if (bottom !== undefined && bottom !== null) {
                 main.style.bottom = bottom + 'px';
             }
             // 设置的height是auto时的逻辑是
@@ -360,14 +363,14 @@ define(
          */
         function hideMask(dialog) {
             var mask = getMask(dialog);
-            if ('undefined' != typeof mask) {
+            if ('undefined' !== typeof mask) {
                 lib.removeNode(mask);
             }
         }
 
         /**
          * 遮盖层初始化
-         * 
+         *
          * @param {string} maskId 遮盖层domId
          * @inner
          */
@@ -404,7 +407,7 @@ define(
         Dialog.prototype = {
             /**
              * 控件类型
-             * 
+             *
              * @type {string}
              */
             type: 'Dialog',
@@ -430,9 +433,15 @@ define(
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
                     defaultFoot: ''
-                        + '<div data-ui="type:Button;id:btnFootOk;'
+                        + '<div '
+                        + 'class="'
+                        + this.helper.getPartClassName('ok-btn')
+                        + '" data-ui="type:Button;id:btnFootOk;'
                         + 'childName:btnOk;skin:spring;">确定</div>'
-                        + '<div data-ui="type:Button;'
+                        + '<div '
+                        + 'class="'
+                        + this.helper.getPartClassName('cancel-btn') + '" '
+                        + 'data-ui="type:Button;'
                         + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
                     needFoot: true,
                     roles: {}
@@ -482,8 +491,15 @@ define(
                 if (this.needFoot) {
                     this.createBF('foot', this.roles.foot);
                 }
+            },
 
-                // 初始化控件主元素上的行为
+            /**
+             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
                 if (this.closeButton) {
                     var close = lib.g(helper.getId(this, 'close-icon'));
                     if (close) {
@@ -496,6 +512,7 @@ define(
                     }
                 }
             },
+
             /**
              * 构建对话框主内容和底部内容
              *
@@ -510,7 +527,7 @@ define(
                 else {
                     mainDOM = document.createElement('div');
 
-                    if (type == 'body') {
+                    if (type === 'body') {
                         // 找到head
                         var head = this.getChild('head');
                         if (head) {
@@ -607,7 +624,7 @@ define(
                         var data = {
                             'class': bodyClass.join(' '),
                             'id': bodyId,
-                            'content': value 
+                            'content': value
                         };
                         body.setContent(
                             lib.format(bfTpl, data)
@@ -616,7 +633,7 @@ define(
                 },
                 {
                     name: 'foot',
-                    paint: function (dialog, value) { 
+                    paint: function (dialog, value) {
                         var bfTpl = ''
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
@@ -636,7 +653,7 @@ define(
                             var data = {
                                 'class': footClass.join(' '),
                                 'id': footId,
-                                'content': value 
+                                'content': value
                             };
                             if (!foot) {
                                 foot = dialog.createBF('foot');
@@ -665,9 +682,9 @@ define(
 
             /**
              * 获取对话框主体的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getBody: function () {
                 return this.getChild('body');
@@ -676,9 +693,9 @@ define(
 
             /**
              * 获取对话框头部的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getHead: function () {
                 return this.getChild('head');
@@ -687,9 +704,9 @@ define(
 
             /**
              * 获取对话框腿部的控件对象
-             * 
-             * 
-             * @return {ui.Panel} 
+             *
+             *
+             * @return {ui.Panel}
              */
             getFoot: function () {
                 return this.getChild('foot');
@@ -698,7 +715,7 @@ define(
 
             /**
              * 显示对话框
-             * 
+             *
              */
             show: function () {
                 var mask = this.mask;
@@ -728,9 +745,9 @@ define(
                     var dialogNum = 0;
                     for (var i = 0, len = rawElements.length; i < len; i++) {
                         if (rawElements[i].nodeType === 1) {
-                            if (lib.hasClass(rawElements[i], 'ui-dialog')
+                            if (lib.hasClass(rawElements[i], this.helper.getPrimaryClassName())
                                 && !lib.hasClass(
-                                    rawElements[i], 'ui-dialog-hidden')
+                                    rawElements[i], this.helper.getPrimaryClassName('hidden'))
                             ) {
                                 dialogNum ++;
                             }
@@ -746,37 +763,40 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                this.fire('show');
-                this.isShow = true;
+                if (this.isShow) {
+                    return;
+                }
 
+                this.isShow = true;
+                this.fire('show');
             },
 
             /**
              * 隐藏对话框
-             * 
+             *
              */
             hide: function () {
-                if (this.isShow) {
-                    helper.removeDOMEvent(
-                        this, window, 'resize', resizeHandler
-                    );
-                    var mask = this.mask;
+                if (!this.isShow) {
+                    return;
+                }
 
-                    this.addState('hidden');
- 
-                    if (mask) {
-                        hideMask(this);
-                    }
+                this.isShow = false;
+
+                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
+
+                this.addState('hidden');
+
+                if (this.mask) {
+                    hideMask(this);
                 }
 
                 this.fire('hide');
-                this.isShow = false;
             },
 
 
             /**
              * 设置标题文字
-             * 
+             *
              * @param {string} html 要设置的文字，支持html
              */
             setTitle: function (html) {
@@ -831,7 +851,7 @@ define(
              * 销毁控件
              */
             dispose: function () {
-                if (helper.isInStage(this, 'DISPOSED')) {
+                if (this.helper.isInStage('DISPOSED')) {
                     return;
                 }
                 this.hide();
@@ -853,7 +873,7 @@ define(
 
             /**
              * 获取按钮点击的处理函数
-             * 
+             *
              * @private
              * @param {ui.Dialog} 控件对象
              * @param {string} 事件类型
@@ -866,6 +886,8 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
+            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
+            var cancelText = lib.encodeHTML(args.cancelText) || Dialog.CANCEL_TEXT;
 
             var properties = {
                 type: 'confirm',
@@ -876,38 +898,43 @@ define(
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
-                '<div class="ui-dialog-text">${content}</div>'
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
-
-            //创建main
-            var main = document.createElement('div');
-            document.body.appendChild(main);
 
             properties.id = helper.getGUID(dialogPrefix);
             properties.closeButton = false;
             properties.mask = true;
-            properties.main = main;
             properties.alwaysTop = true;
 
             var type = properties.type;
             properties.type = null;
 
             var dialog = ui.create('Dialog', properties);
-
-            dialog.setTitle(title);
-            dialog.setContent(
-                lib.format(tpl, { type: type, content: content })
-            );
+            dialog.appendTo(document.body);
             dialog.show();
+
             //使用默认foot，改变显示文字
             var okBtn = dialog.getFoot().getChild('btnOk');
             var cancelBtn = dialog.getFoot().getChild('btnCancel');
-            okBtn.setContent(Dialog.OK_TEXT);
-            cancelBtn.setContent(Dialog.CANCEL_TEXT);
+            okBtn.setContent(okText);
+            cancelBtn.setContent(cancelText);
+
+            dialog.setTitle(title);
+            dialog.setContent(
+                lib.format(
+                    tpl,
+                    {
+                        type: type,
+                        content: content,
+                        prefix: dialog.helper.getPrimaryClassName()
+                    }
+                )
+            );
 
             // 也可以改宽高
+            // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
                 okBtn.set('height', properties.btnHeight);
                 cancelBtn.set('height', properties.btnHeight);
@@ -937,7 +964,7 @@ define(
 
             /**
              * 获取按钮点击的处理函数
-             * 
+             *
              * @private
              * @param {ui.Dialog} 控件对象
              * @param {string} 事件类型
@@ -951,6 +978,7 @@ define(
 
             var title = lib.encodeHTML(args.title) || '';
             var content = lib.encodeHTML(args.content) || '';
+            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
 
             var properties = {
                 type: 'warning',
@@ -961,37 +989,43 @@ define(
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="ui-dialog-icon ui-dialog-icon-${type}"></div>',
-                '<div class="ui-dialog-text">${content}</div>'
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-text">${content}</div>'
             ].join('');
-
-            //创建main
-            var main = document.createElement('div');
-            document.body.appendChild(main);
 
             var dialogId = helper.getGUID(dialogPrefix);
             properties.id = dialogId;
             properties.closeButton = false;
             properties.mask = true;
-            properties.main = main;
             properties.alwaysTop = true;
 
             var type = properties.type;
             properties.type = null;
 
             var dialog = ui.create('Dialog', properties);
+            dialog.appendTo(document.body);
+
             dialog.setTitle(title);
             dialog.setContent(
-                lib.format(tpl, { type: type, content: content })
+                lib.format(
+                    tpl,
+                    {
+                        type: type,
+                        content: content,
+                        prefix: dialog.helper.getPrimaryClassName()
+                    }
+                )
             );
 
             dialog.setFoot(''
-                + '<div data-ui="type:Button;childName:okBtn;id:' 
+                + '<div '
+                + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
+                + ' data-ui="type:Button;childName:okBtn;id:'
                 + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
-                + Dialog.OK_TEXT
+                + okText
                 + '</div>'
             );
-            
+
             dialog.show();
             var okBtn = dialog.getFoot().getChild('okBtn');
             okBtn.on(
@@ -1000,6 +1034,7 @@ define(
             );
 
             // 也可以改宽高
+            // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
                 okBtn.set('height', properties.btnHeight);
             }
@@ -1009,7 +1044,7 @@ define(
             }
 
             return dialog;
-        }; 
+        };
 
         lib.inherits(Dialog, Control);
         ui.register(Dialog);
