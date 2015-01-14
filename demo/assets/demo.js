@@ -26,19 +26,6 @@ require.config({
             'name': 'esui',
             'location': '../src',
             'main': 'main'
-        },
-        {
-            'name': 'esf',
-            'location': '../dep/esf/1.0.0-alpha.4/src'
-        },
-        {
-            'name': 'est',
-            'location': '../dep/est/1.3.0/src'
-        },
-        {
-            'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.1/src',
-            'main': 'main.less'
         }
     ]
 });
