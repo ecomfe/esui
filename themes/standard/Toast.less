@@ -1,0 +1,51 @@
+@esui-toast-default-background: #EAEAEA;
+@esui-toast-default-color: #555;
+
+@esui-toast-info-background: @info-color;
+@esui-toast-info-color: @white;
+
+@esui-toast-error-background: @danger-color;
+@esui-toast-error-color: @white;
+
+@esui-toast-alert-background: @warning-color;
+@esui-toast-alert-color: @white;
+
+@esui-toast-success-background: @success-color;
+@esui-toast-success-color: @white;
+
+.esui-toast-content-theme() {
+    background: @esui-toast-default-background;
+    margin: 0;
+}
+
+//通知类消息
+.@{ui-class-prefix}-toast-info {
+    .@{ui-class-prefix}-toast-content {
+        background: @esui-toast-info-background;
+        color: @esui-toast-info-color;
+    }
+}
+
+//错误类消息
+.@{ui-class-prefix}-toast-error {
+    .@{ui-class-prefix}-toast-content {
+        background: @esui-toast-error-background;
+        color: @esui-toast-error-color;
+    }
+}
+
+//警告类消息
+.@{ui-class-prefix}-toast-alert {
+    .@{ui-class-prefix}-toast-content {
+        background: @esui-toast-alert-background;
+        color: @esui-toast-alert-color;
+    }
+}
+
+//成功类消息
+.@{ui-class-prefix}-toast-success {
+    .@{ui-class-prefix}-toast-content {
+        background: @esui-toast-success-background;
+        color: @esui-toast-success-color;
+    }
+}

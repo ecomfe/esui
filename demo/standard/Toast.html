@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Toast - ESUI Demo</title>
+        <script src="../assets/loader/esl.js"></script>
+        <script src="../../src/customShim.js"></script>
+        <script src="../assets/jquery-1.9.1.min.js"></script>
+        <script src="../assets/demo.js"></script>
+        <script src="../assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/demo.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
+        <style>
+            .ui-mt1 {
+                margin-top: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Toast</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Buttons</h2>
+                <section class="intro">
+                    <p>基本Button。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
+                            data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
+                        <div class="ui-mt1">
+                            <button id="op-show" class="ui-button">show</button>
+                        </div>
+                        <div class="ui-mt1">
+                            <button id="op-info" class="ui-button ui-button-info">info</button>
+                        </div>
+                        <div class="ui-mt1">
+                            <button id="op-alert" class="ui-button ui-button-warning">alert</button>
+                        </div>
+                        <div class="ui-mt1">
+                            <button id="op-success" class="ui-button ui-button-success">success</button>
+                        </div>
+                        <div class="ui-mt1">
+                            <button id="op-error" class="ui-button ui-button-danger">error</button>
+                        </div>
+                        <div class="ui-mt1">
+                            <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
+                                data-ui-hint-type="suffix"/>
+                            <button id="op-time" class="ui-button">Set Display Time</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Toast',
+                'esui/TextBox'
+            ],
+            function (ui, toast) {
+                ui.init();
+                document.getElementById('op-show').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.show(content).show();
+                };
+                document.getElementById('op-info').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.info(content).show();
+                };
+                document.getElementById('op-alert').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.alert(content).show();
+                };
+                document.getElementById('op-success').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.success(content).show();
+                };
+                document.getElementById('op-error').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    toast.error(content).show();
+                };
+                document.getElementById('op-time').onclick = function () {
+                    var content = ui.get('messageContent').getValue();
+                    var time = ui.get('time').getValue();
+                    toast.show(content, {duration: +time}).show();
+                };
+            }
+        )
+        </script>
+    </body>
+</html>
