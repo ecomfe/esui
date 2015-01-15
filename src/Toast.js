@@ -35,12 +35,14 @@ define(
          *      `error`：错误信息：红色背景
          *      `success`：成功信息：绿色背景
          * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
+         * @cfg {boolean} [defaultProperties.autoShow=false] 是否自动展示，默认为否
          * @static
          */
         Toast.defaultProperties = {
             duration: 3000,
             messageType: 'normal',
-            disposeOnHide: true
+            disposeOnHide: true,
+            autoShow: false
         };
 
         /**
@@ -76,6 +78,8 @@ define(
          */
         Toast.prototype.initStructure = function () {
             this.main.innerHTML = this.helper.getPartHTML('content', 'p');
+            // 增加一个默认的状态hidden
+            this.addState('hidden');
         };
 
         /**
@@ -96,6 +100,10 @@ define(
                 paint: function (toast, content) {
                     var container = toast.main.firstChild;
                     container.innerHTML = content;
+                    // 检查autoShow，如果希望自动展示就show出来
+                    if (toast.autoShow) {
+                        toast.show();
+                    }
                 }
             },
             {
