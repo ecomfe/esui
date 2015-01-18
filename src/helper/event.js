@@ -126,7 +126,6 @@ define(
             for (var i = 0; i < controls.length; i++) {
                 if (controls[i] === control) {
                     controls[i] = null;
-                    controls.splice(i, 1);
                     break;
                 }
             }
