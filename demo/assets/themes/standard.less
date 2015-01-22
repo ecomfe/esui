@@ -23,3 +23,13 @@
 .ui-boxgroup-button-style.custom {
     .esui-boxgroup-button-style-variant(@white, rgb(28, 184, 65));
 }
+
+@esui-tab-vertical-width: 80px;
+@esui-tab-vertical-height: 300px;
+
+.@{ui-class-prefix}-tab-vertical-container {
+    .esui-vertical-tab-def(
+        @esui-tab-vertical-width,
+        @esui-tab-vertical-height
+    );
+}
