@@ -97,7 +97,6 @@
 }
 
 .@{ui-class-prefix}-select-layer {
-    margin-top: 0;
     overflow-x: hidden;
     *height: 13em;
     max-height: 13em;
@@ -119,17 +118,13 @@
     }
 }
 
-.@{ui-class-prefix}-select-item-selected > * {
+.@{ui-class-prefix}-select-item-selected > :first-child {
     background: @esui-select-item-background-selected;
     color: @esui-select-item-selected-color !important;
 
     &:hover {
         background: @esui-select-item-background-selected;
     }
-}
-
-.@{ui-class-prefix}-select-layer-hidden {
-    display: none;
 }
 
 .@{ui-class-prefix}-select.@{ui-class-prefix}-select-disabled {
