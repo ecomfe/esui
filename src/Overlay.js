@@ -105,7 +105,7 @@ define(
         Overlay.prototype.repaint = require('./painters').createRepaint(
             Panel.prototype.repaint,
             {
-                name: ['height', 'width'],
+                name: ['width', 'height'],
                 paint: function (overlay, width, height) {
                     if (!isPropertyEmpty(width)) {
                         if (width === 'auto') {
