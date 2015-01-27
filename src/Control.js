@@ -233,6 +233,13 @@ define(
 
                         u.each(this.states, this.addState, this);
                     }
+                    if (this.variants) {
+                        this.variants = typeof this.variants === 'string'
+                            ? this.variants.split(' ')
+                            : this.variants;
+
+                        this.helper.addVariantClasses(this.variants);
+                    }
                 }
 
                 // 由子控件实现

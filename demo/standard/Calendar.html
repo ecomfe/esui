@@ -13,7 +13,7 @@
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
         <link rel="stylesheet" href="../assets/demo.css" />
-        <link rel="stylesheet" href="../../src/css/standard/main.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
         <h1>Calendar</h1>
@@ -29,16 +29,16 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
-                        <div style="overflow:hidden;zoom:1;margin-bottom:10px;">
-                            <button data-ui="type:Button;id:unlock;" style="float:left;">解锁</button>
-                            <button data-ui="type:Button;id:update;" style="float:left;">更新日期</button>
-                            <span id="tip" style="float:left;"></span>
+                    <div class="example ui-demo-light-stage">
+                        <div>
+                            <button data-ui="type:Button;id:unlock;" >解锁</button>
+                            <button data-ui="type:Button;id:update;" >更新日期</button>
+                            <span id="tip" ></span>
                         </div>
-                        <div style="overflow:hidden;zoom:1">
-                            <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;disabled:1" style="margin-bottom: 10px"></div>
-                            <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;" style="margin-bottom: 10px"/>
-                            <esui-calendar value="2014-03-25" name="test2" data-ui="id:test3;range:2011-02-02,2014-02-01;" style="margin-bottom: 10px"></esui-calendar>
+                        <div style="margin-top: 2em;">
+                            <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;disabled:1;width:300"></div>
+                            <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;" />
+                            <esui-calendar value="2014-03-25" name="test2" data-ui="id:test3;range:2011-02-02,2014-02-01;"></esui-calendar>
                         </div>
                     </div>
                 </section>
@@ -77,6 +77,7 @@
                         end: new Date(2018, 3, 19)
                     });
                 });
+                calendar.showValidationMessage('invalid', '时间错误！');
             }
         )
         </script>

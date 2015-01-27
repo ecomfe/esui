@@ -148,6 +148,7 @@ define(
          * @return {string}
          */
         function getLayerHtml(calendar) {
+            var cHelper = calendar.helper;
             var tpl = ''
                 + '<div class="${shortCutClass}" id="${shortcutId}">'
                 + '${shortCut}</div>'
@@ -156,23 +157,25 @@ define(
                 + '</div>'
                 + '<div class="${footClass}">'
                 +   '<div class="${okBtnClass}"'
-                +   ' data-ui="type:Button;childName:okBtn;">确定</div>'
+                +   ' data-ui="type:Button;childName:okBtn;variants:primary">确定</div>'
                 +   '<div class="${cancelBtnClass}"'
-                +   ' data-ui="type:Button;childName:cancelBtn;">取消</div>'
+                +   ' data-ui="type:Button;childName:cancelBtn;variants:link">取消</div>'
                 + '</div>'
-                + '<div data-ui="type:Button;childName:'
-                + 'closeBtn;skin:layerClose;height:12;"></div>';
+                + '<div class="${closeIconContainer}" data-ui="type:Button;childName:'
+                + 'closeBtn;variants:link"><span class="${closeIcon}"></span></div>';
 
             return lib.format(tpl, {
-                bodyClass: calendar.helper.getPartClassName('body'),
-                shortcutId: calendar.helper.getId('shortcut'),
-                shortCutClass: calendar.helper.getPartClassName('shortcut'),
+                bodyClass: cHelper.getPartClassName('body'),
+                shortcutId: cHelper.getId('shortcut'),
+                shortCutClass: cHelper.getPartClassName('shortcut'),
                 shortCut: getMiniCalendarHtml(calendar),
                 beginCalendar: getCalendarHtml(calendar, 'begin'),
                 endCalendar: getCalendarHtml(calendar, 'end'),
-                footClass: calendar.helper.getPartClassName('foot'),
-                okBtnClass: calendar.helper.getPartClassName('okBtn'),
-                cancelBtnClass: calendar.helper.getPartClassName('cancelBtn')
+                footClass: cHelper.getPartClassName('foot'),
+                okBtnClass: cHelper.getPartClassName('okBtn'),
+                cancelBtnClass: cHelper.getPartClassName('cancelBtn'),
+                closeIconContainer: cHelper.getPartClassName('close-icon-container'),
+                closeIcon: cHelper.getIconClass('close')
             });
         }
 
@@ -289,7 +292,7 @@ define(
             if (calendar.endlessCheck && type === 'end') {
                 endlessCheckDOM = ''
                     + '<input type="checkbox" title="不限结束" '
-                    + 'data-ui-type="CheckBox" '
+                    + 'data-ui-type="CheckBox" data-ui-skin="custom"'
                     + 'data-ui-child-name="endlessCheck" />';
             }
             var tpl = ''
@@ -917,7 +920,7 @@ define(
 
             var tpl = [
                 '<div class="${className}" id="${id}"></div>',
-                '<div class="${arrow}"></div>'
+                '<div class="${arrow}"><span class="${iconCalendar}"></span></div>'
             ];
 
             this.main.innerHTML = lib.format(
@@ -925,7 +928,8 @@ define(
                 {
                     className: this.helper.getPartClassName('text'),
                     id: helper.getId(this, 'text'),
-                    arrow: this.helper.getPartClassName('arrow')
+                    arrow: this.helper.getPartClassName('arrow'),
+                    iconCalendar: this.helper.getIconClass('calendar')
                 }
             );
 

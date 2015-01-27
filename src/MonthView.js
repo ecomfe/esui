@@ -90,7 +90,7 @@ define(
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthBack"',
                         ' data-ui-id="${monthBackId}"',
-                        '></div>',
+                        '><span class="${monthBackIcon}"></span></div>',
                     '</td>',
                     '<td class="${yearSelectTdClass}">',
                         '<div class="${yearSelectClass}"',
@@ -113,7 +113,7 @@ define(
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthForward"',
                         ' data-ui-id="${monthForwardId}"',
-                        '></div>',
+                        '><span class="${monthForwardIcon}"></span></div>',
                     '</td>',
                 '</tr></table></div>',
                 '<div id="${monthMainId}" class="${monthMainClass}"></div>'
@@ -125,7 +125,9 @@ define(
                 {
                     headClass: monthView.helper.getPartClassName('head'),
                     monthBackId: monthView.helper.getId('monthBack'),
+                    monthBackIcon: monthView.helper.getIconClass('caret-left'),
                     monthForwardId: monthView.helper.getId('monthForward'),
+                    monthForwardIcon: monthView.helper.getIconClass('caret-right'),
                     yearSelId: monthView.helper.getId('yearSel'),
                     monthSelId: monthView.helper.getId('monthSel'),
                     monthMainId: monthView.helper.getId('monthMain'),

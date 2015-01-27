@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Panel - ESUI Demo</title>
+        <script src="../assets/loader/esl.js"></script>
+        <script src="../../src/customShim.js"></script>
+        <script src="../assets/jquery-1.9.1.min.js"></script>
+        <script src="../assets/demo.js"></script>
+        <script src="../assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/demo.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
+    </head>
+    <body>
+        <h1>Button</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Buttons</h2>
+                <section class="intro">
+                    <p>基本Button。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <div data-ui-type="Panel" data-ui-id="panel" data-ui-variants="custom">
+                            <div class="ui-panel-header">Panel heading title</div>
+                            <div class="ui-panel-body">
+                                Panel content
+                                <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
+                            </div>
+                        </div>
+                        <button data-ui-id="btnSetContent" data-ui-type="Button" type="button">set Content</button>
+                        <button data-ui-id="btnHide" data-ui-type="Button" type="button">Hide</button>
+                        <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Panel',
+                'esui/Link',
+                'esui/Button'
+            ],
+            function (ui) {
+                var link = ui.init();
+                var p = ui.get('panel');
+                ui.get('btnSetContent').onclick = function () {
+                    p.setContent('Date:' + new Date());
+                };
+                ui.get('btnHide').onclick = function () {
+                    p.hide();
+                };
+                ui.get('btnShow').onclick = function () {
+                    p.show();
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

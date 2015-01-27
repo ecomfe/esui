@@ -436,12 +436,12 @@ define(
                         + 'class="'
                         + this.helper.getPartClassName('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
-                        + 'childName:btnOk;skin:success;">确定</div> '
+                        + 'childName:btnOk;variants:success;">确定</div> '
                         + '<div '
                         + 'class="'
                         + this.helper.getPartClassName('cancel-btn')
                         + '" data-ui="type:Button;'
-                        + 'id:btnFootCancel;childName:btnCancel;skin:link">取消</div>',
+                        + 'id:btnFootCancel;childName:btnCancel;variants:link">取消</div>',
                     needFoot: true,
                     roles: {}
                 };
@@ -1019,7 +1019,7 @@ define(
                 + '<div '
                 + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
-                + dialogId + '-' + okPrefix + ';skin:success;">'
+                + dialogId + '-' + okPrefix + ';variants:success;">'
                 + okText
                 + '</div>'
             );

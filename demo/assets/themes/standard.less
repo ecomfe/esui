@@ -2,9 +2,11 @@
 @import "../../../dep/est/1.3.0/src/all.less";
 
 // import esf
-@import "../../../dep/esf/1.0.0-alpha.7/themes/standard/main-esui.less";
-// TODO: remove mask
-@import "../../../dep/esf/1.0.0-alpha.7/src/mask.less";
+@import "../../../dep/esf/1.0.0-alpha.8/themes/standard/main-esui.less";
+// optional esf styles
+@import "../../../dep/esf/1.0.0-alpha.8/src/panel.less";
+@import "../../../dep/esf/1.0.0-alpha.8/src/label.less";
+@import "../../../dep/esf/1.0.0-alpha.8/src/utils.less";
 
 // import esui
 @import "../../../themes/standard/main.less";
@@ -24,12 +26,14 @@
     .esui-boxgroup-button-style-variant(@white, rgb(28, 184, 65));
 }
 
-@esui-tab-vertical-width: 80px;
-@esui-tab-vertical-height: 300px;
-
-.@{ui-class-prefix}-tab-vertical-container {
+.ui-tab-vertical-container {
     .esui-vertical-tab-def(
-        @esui-tab-vertical-width,
-        @esui-tab-vertical-height
+        80px,
+        300px
     );
+}
+
+.ui-demo-light-stage {
+    background: @primary-bg-color;
+    padding: 1em;
 }

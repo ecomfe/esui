@@ -225,7 +225,7 @@ define(
 
                 var template = [
                     '<div class="${classes}" id="${id}">${value}</div>',
-                    '<div class="${arrow}"></div>'
+                    '<div class="${arrow}"><span class="${iconCalendar}"></span></div>'
                 ];
 
                 this.main.innerHTML = lib.format(
@@ -233,7 +233,8 @@ define(
                     {
                         classes: this.helper.getPartClassName('text'),
                         id: this.helper.getId('text'),
-                        arrow: this.helper.getPartClassName('arrow')
+                        arrow: this.helper.getPartClassName('arrow'),
+                        iconCalendar: this.helper.getIconClass('calendar')
                     }
                 );
             },

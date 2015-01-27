@@ -47,14 +47,14 @@
                         <div data-role="title">我来自静态html</div>
                         <div data-role="content">
                           <p>第一行</p>
-                          <span data-ui="type:Button;id:springBtn;skin:spring">显示文字</span>
+                          <span data-ui="type:Button;id:springBtn;variants:spring">显示文字</span>
                         </div>
                     </div>
                     <esui-dialog data-ui="width:400;draggable:true;mask:true;id:staticDg1;closeOnHide:false;">
                         <div data-role="title">我来自静态html</div>
                         <div data-role="content">
                           <p>第一行</p>
-                          <span data-ui="type:Button;id:springBtn;skin:spring" class="ui-button ui-button-primary">显示文字</span>
+                          <span data-ui="type:Button;id:springBtn;variants:spring" class="ui-button ui-button-primary">显示文字</span>
                         </div>
                     </esui-dialog>
                 </div>
@@ -216,7 +216,7 @@
                         id: 'test',
                         childName: 'test',
                         main: main,
-                        skin: 'shadow'
+                        variants: 'shadow'
                     });
                     dialog.render();
                     var btnOk = dialog.getFoot().getChild('btnOk');
