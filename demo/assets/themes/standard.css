@@ -2486,6 +2486,51 @@ esui-box-group {
 .ui-rangecalendar-read-only {
   border-color: 1px solid #999999;
 }
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Breadcrumbs样式
+  * @author yankun01
+  */
+.ui-crumb {
+  padding: 0;
+  margin: 0 0 0.5em 0;
+  line-height: 1.3;
+}
+.ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #cccccc;
+}
+span.ui-crumb-node {
+  color: #333333;
+}
+.ui-crumb-nav-container {
+  background: #f7f7f7;
+}
+.ui-crumb-nav {
+  height: 4em;
+  line-height: 4em;
+  overflow: hidden;
+}
+.ui-crumb-nav .ui-crumb-node {
+  padding: 0 20px;
+}
+.ui-crumb-nav span.ui-crumb-node {
+  color: #6ccdc0;
+}
+.ui-crumb-nav a.ui-crumb-node {
+  color: #666666;
+  text-decoration: none;
+}
+.ui-crumb-nav a.ui-crumb-node:hover {
+  color: #666666;
+  text-decoration: underline;
+}
+.ui-crumb-nav .ui-crumb-separator {
+  margin: 0 5px;
+  color: #666666;
+}
 /** 警告框，确认框 */
 .ui-dialog-alert .ui-dialog-icon,
 .ui-dialog-confirm .ui-dialog-icon {
