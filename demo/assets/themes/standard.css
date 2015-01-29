@@ -1390,6 +1390,10 @@ esui-wizard {
   filter: alpha(opacity=40);
   cursor: not-allowed !important;
 }
+.state-disabled .state-disabled {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
 .state-validity-invalid {
   border: 1px solid #d9534f !important;
 }
@@ -2613,6 +2617,52 @@ span.ui-crumb-node {
 }
 .ui-pager-distributedReverse .ui-pager-select-wrapper {
   float: right;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 多月份多选日历
+ * @author dbear
+ */
+.ui-richcalendar {
+  display: inline-block;
+  position: relative;
+  padding: 1em;
+  background: #ebebeb;
+}
+.ui-richcalendar .ui-button-link {
+  padding: 0;
+  line-height: 1em;
+  height: 1em;
+  min-height: 1em;
+}
+.ui-richcalendar-general-info {
+  line-height: 1;
+}
+.ui-richcalendar-total-num {
+  color: #6ccdc0;
+}
+.ui-richcalendar-text {
+  margin-top: 1em;
+}
+.ui-richcalendar-text .ui-button {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  color: #666666;
+}
+.ui-richcalendar-text .ui-button:hover {
+  color: #666666;
+}
+.ui-richcalendar-layer {
+  padding: 0 0 2px 0;
+  border: none;
+  background: transparent;
+}
+.ui-richcalendar-layer .ui-richcalendar-month-container {
+  float: left;
+  margin-right: 0.5em;
 }
 /** 警告框，确认框 */
 .ui-dialog-alert .ui-dialog-icon,

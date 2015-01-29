@@ -110,29 +110,13 @@
                             </div>-->
                     </div>
                 </section>
-                <h2>连续时间段选择控件</h2>
-                <section class="intro">
-                    <p>连续时间段选择控件。</p>
-                </section>
-                <section class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example">
-                        <div data-ui-type="RichCalendar" data-ui-name="test4"
-                        data-ui-id="test4" 
-                        data-ui-range="2013-07-03,2013-09-29"
-                        data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27" />
-                    </div>
-                </section>
             </div>
         </div>
         <script>
         require(
             [
                 'esui',
-                'esui/RangeCalendar',
-                'esui/RichCalendar'
+                'esui/RangeCalendar'
             ],
             function (ui) {
                 var calendar = ui.init()[0];
