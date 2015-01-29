@@ -17,19 +17,6 @@
 @esui-month-view-head-arrow-color-hover: #333;
 @esui-month-view-head-arrow-color-active: #222;
 
-@esui-month-view-select-color: #333;
-@esui-month-view-select-background: #fff;
-@esui-month-view-select-background-hover: #fff;
-@esui-month-view-select-background-active: #fff;
-@esui-month-view-select-height: 1.5em;
-@esui-month-view-select-padding: .5em;
-
-@esui-month-view-select-layer-max-height: 15em;
-@esui-month-view-select-layer-item-padding: .3em;
-@esui-month-view-select-layer-item-select-background: #FFFAED;
-@esui-month-view-select-layer-item-select-color: #333;
-@esui-month-view-select-layer-background: #F1F1F1;
-
 @esui-month-view-month-border: none;
 
 @esui-month-view-month-title-background: #f6f6f6;
@@ -64,18 +51,6 @@
         width: 100%;
         table-layout: auto;
     }
-    .@{ui-class-prefix}-select {
-        padding: 0 @esui-month-view-select-padding;
-        background: @esui-month-view-select-background;
-        height: @esui-month-view-select-height;
-        line-height: @esui-month-view-select-height;
-        color: @esui-month-view-select-color;
-
-        .@{ui-class-prefix}-select-arrow {
-            line-height: @esui-month-view-select-height !important;
-            right: @esui-month-view-select-padding;
-        }
-    }
 }
 
 // 单月日历头部
@@ -96,20 +71,6 @@
     &:active {
         color: @esui-month-view-head-arrow-color-active;
         background: none;
-    }
-}
-
-.@{ui-class-prefix}-monthview-month-select-layer,
-.@{ui-class-prefix}-monthview-year-select-layer {
-    margin: 0;
-    li :first-child {
-        padding: @esui-month-view-select-layer-item-padding;
-    }
-    max-height: @esui-month-view-select-layer-max-height;
-    background: @esui-month-view-select-layer-background;
-    .@{ui-class-prefix}-select-item-selected > :first-child {
-        background: @esui-month-view-select-layer-item-select-background;
-        color: @esui-month-view-select-layer-item-select-color !important;
     }
 }
 
@@ -219,9 +180,7 @@
 
 // disable状态
 .@{ui-class-prefix}-monthview-disabled {
-    .@{ui-class-prefix}-monthview-month {
-        .@{ui-class-prefix}-monthview-month-item {
-            cursor: not-allowed;
-        }
+    .@{ui-class-prefix}-monthview-month-item {
+        cursor: not-allowed;
     }
 }

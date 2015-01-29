@@ -175,3 +175,55 @@
         float: left;
     }
 }
+
+// compact variant select
+@esui-select-compact-color: #333;
+@esui-select-compact-background: @primary-bg-color;
+@esui-select-compact-height: 1.5em;
+@esui-select-compact-padding: .5em;
+
+@esui-select-compact-layer-item-padding: .3em;
+@esui-select-compact-layer-item-select-background: #FFFAED;
+@esui-select-compact-layer-item-select-color: #333;
+@esui-select-compact-layer-background: #F1F1F1;
+
+.@{ui-class-prefix}-select-compact {
+    padding: 0 @esui-select-compact-padding;
+    background: @esui-select-compact-background !important;
+    height: @esui-select-compact-height;
+    line-height: @esui-select-compact-height;
+    color: @esui-select-compact-color;
+
+    .@{ui-class-prefix}-select-arrow {
+        line-height: @esui-select-compact-height !important;
+        right: @esui-select-compact-padding;
+        .opacity(70);
+        &:hover {
+            .opacity(100);
+        }
+    }
+}
+
+.@{ui-class-prefix}-select-layer-compact {
+    background: @esui-select-compact-layer-background;
+    li :first-child {
+        padding: @esui-select-compact-layer-item-padding;
+    }
+    .@{ui-class-prefix}-select-item-selected > :first-child {
+        background: @esui-select-compact-layer-item-select-background;
+        color: @esui-select-compact-layer-item-select-color !important;
+    }
+    .@{ui-class-prefix}-select {
+        padding: 0 @esui-select-compact-padding;
+        background: @esui-select-compact-background;
+        height: @esui-select-compact-height;
+        line-height: @esui-select-compact-height;
+        color: @esui-select-compact-color;
+
+        .@{ui-class-prefix}-select-arrow {
+            line-height: @esui-select-compact-height !important;
+            right: @esui-select-compact-padding;
+        }
+    }
+}
+

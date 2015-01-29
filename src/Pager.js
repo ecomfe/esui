@@ -30,8 +30,8 @@ define(
                 'class="${selectWrapperClass}">',
                 '<span id="${labelId}" class="${labelClass}">',
                 '${labelText}</span>',
-                '<div data-ui="type:Select;childName:select;',
-                'id:${selectPagerId};width:40;" class="${selectClass}"></div>',
+                '<div data-ui="type:Select;childName:select;variants:compact;',
+                'id:${selectPagerId};" class="${selectClass}"></div>',
                 '</div>',
                 '<ul id="${mainId}" class="${mainClass}"></ul>',
                 '</div>'
