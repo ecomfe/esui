@@ -35,7 +35,7 @@ define(
          * 获取表单数据，形成以`name`为键，`fetchValue`指定方法的返回值为值，
          * 如果有同`name`的多个控件，则值为数组
          *
-         * @param {InputControl[]} 输入控件集合
+         * @param {InputControl[]} inputs 输入控件集合
          * @param {Function} fetchValue 获取值的函数
          * @return {Object} 表单的数据
          * @ignore
@@ -76,7 +76,9 @@ define(
         InputCollection.prototype.getData = function () {
             return getData(
                 this,
-                function (control) { return control.getRawValue(); }
+                function (control) {
+                    return control.getRawValue();
+                }
             );
         };
 
@@ -181,6 +183,7 @@ define(
          *
          * @extends Panel
          * @constructor
+         * @override
          */
         function Form(options) {
             Panel.apply(this, arguments);
@@ -233,8 +236,8 @@ define(
              * @member Form
              * @preventable
              */
-            var event = this.fire('beforevalidate');
-            if (event.isDefaultPrevented()) {
+            var beforeValidateEvent = this.fire('beforevalidate');
+            if (beforeValidateEvent.isDefaultPrevented()) {
                 return;
             }
             try {
@@ -255,8 +258,8 @@ define(
                  * @member Form
                  * @preventable
                  */
-                var event = this.fire('aftervalidate', { isValid: isValid });
-                if (event.isDefaultPrevented()) {
+                var afterValidateEvent = this.fire('aftervalidate', {isValid: isValid});
+                if (afterValidateEvent.isDefaultPrevented()) {
                     return;
                 }
 
@@ -293,7 +296,7 @@ define(
                  *
                  * @param {Error} error 错误对象
                  */
-                this.fire('submitfail', { error: ex });
+                this.fire('submitfail', {error: ex});
             }
         };
 
@@ -541,8 +544,8 @@ define(
             }
 
             if (shouldAttachSubmit) {
-                for (var i = 0; i < this.submitButton.length; i++) {
-                    var button = this.viewContext.get(this.submitButton[i]);
+                for (var j = 0; j < this.submitButton.length; j++) {
+                    var button = this.viewContext.get(this.submitButton[j]);
                     if (button) {
                         button.on('click', this.validateAndSubmit, this);
                     }
@@ -566,8 +569,9 @@ define(
              *
              * 为方便HTML生成控件，该属性可以使用逗号或空格分隔的字符串
              */
-            properties.submitButton =
-                lib.splitTokenList(properties.submitButton);
+            if (properties.hasOwnProperty('submitButton')) {
+                properties.submitButton = lib.splitTokenList(properties.submitButton);
+            }
             Panel.prototype.setProperties.call(this, properties);
         };
 
