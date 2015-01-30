@@ -536,6 +536,7 @@ define(
                             this.viewContext.get(record.oldValue[i]);
                         if (oldButton) {
                             oldButton.un('click', this.validateAndSubmit, this);
+                            oldButton.un('click', false);
                         }
                     }
 
@@ -548,6 +549,7 @@ define(
                     var button = this.viewContext.get(this.submitButton[j]);
                     if (button) {
                         button.on('click', this.validateAndSubmit, this);
+                        button.on('click', false);
                     }
                 }
             }
