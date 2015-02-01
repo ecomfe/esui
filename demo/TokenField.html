@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>TokenField - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>TokenField</header>
+        <div class="container">
+            <input data-ui-type="TokenField" data-ui-tokens="yankun01,lisijin,maoquan" data-ui-limit="10"/>
+            <input data-ui-type="TokenField" data-ui-tokens="yankun01+lisijin,maoquan" data-ui-delimiter=",+" />
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/TokenField'
+            ],
+            function (ui) {
+                var tokenField = ui.init()[0];
+            }
+        )
+        </script>
+    </body>
+</html>

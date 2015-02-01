@@ -267,6 +267,29 @@ define(
         };
 
         /**
+         * 获取目标元素的上一个兄弟元素节点
+         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @return {HTMLElement | null} 目标元素的上一个元素节点，查找不到时返回null
+         */
+        lib.dom.previous = function (element) {
+            element = lib.g(element);
+
+            if (element.previousElementSibling) {
+                return element.previousElementSibling;
+            }
+
+            var node = element.previousSibling;
+            for (; node; node = node.previousSibling) {
+                if (node.nodeType == 1) {
+                    return node;
+                }
+            }
+
+            return null;
+        };
+
+        /**
          * 获取目标元素的下一个兄弟元素节点
          *
          * @param {HTMLElement | string} element 目标元素或其id
