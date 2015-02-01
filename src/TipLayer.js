@@ -114,7 +114,7 @@ define(
                     // 放到第一个
                     else if (control.main.firstChild) {
                         lib.insertBefore(
-                            mainDOM, head, control.main.firstChild
+                            mainDOM, control.main.firstChild
                         );
                     }
                     else {
@@ -171,6 +171,24 @@ define(
          * @inner
          */
         function delayShow(tipLayer, delayTime, targetElement, options) {
+            // 移除老的绑在layer身上的事件
+            tipLayer.helper.removeDOMEvent(tipLayer.main, 'mouseover');
+            tipLayer.helper.removeDOMEvent(tipLayer.main, 'mouseout');
+
+            // 加上新的
+            tipLayer.helper.addDOMEvent(
+                tipLayer.main,
+                'mouseover',
+                lib.bind(
+                    tipLayer.show, tipLayer, targetElement, options
+                )
+            );
+
+            tipLayer.helper.addDOMEvent(
+                tipLayer.main,
+                'mouseout',
+                lib.curry(delayHide, tipLayer, 150)
+            );
             if (delayTime) {
                 clearTimeout(tipLayer.showTimeout);
                 clearTimeout(tipLayer.hideTimeout);
@@ -269,8 +287,6 @@ define(
                     this.main.appendChild(arrow);
                 }
             },
-
-
 
             /**
              * 重新渲染视图
@@ -580,6 +596,7 @@ define(
                     }
                 }
             },
+
             /**
              * 将提示层捆绑到一个DOM元素或控件上
              *
@@ -603,7 +620,6 @@ define(
                     hideEvent = 'click';
                 }
 
-
                 var targetElement;
                 if (options.targetDOM) {
                     targetElement = lib.g(options.targetDOM);
@@ -621,29 +637,20 @@ define(
                     this.show(targetElement, options);
                 }
                 else {
-                    helper.addDOMEvent(
-                        this, targetElement, showEvent,
+                    this.helper.addDOMEvent(
+                        targetElement,
+                        showEvent,
                         lib.curry(
                             delayShow, this, options.delayTime,
                             targetElement, options.positionOpt
                         )
                     );
-                    helper.addDOMEvent(
-                        this, this.main, 'mouseover',
-                        lib.bind(
-                            this.show, this, targetElement, options.positionOpt
-                        )
-                    );
-
-                    helper.addDOMEvent(
-                        this, this.main, 'mouseout',
-                        lib.curry(delayHide, this, 150)
-                    );
                 }
 
                 if (hideEvent === 'mouseout') {
-                    helper.addDOMEvent(
-                        this, targetElement, hideEvent,
+                    this.helper.addDOMEvent(
+                        targetElement,
+                        hideEvent,
                         lib.curry(delayHide, this, 150)
                     );
                 }
@@ -686,17 +693,15 @@ define(
              *
              */
             show: function (targetElement, options) {
-                if (helper.isInStage(this, 'INITED')) {
-                    this.render();
-                }
-                else if (helper.isInStage(this, 'DISPOSED')) {
+                if (helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
 
                 clearTimeout(this.hideTimeout);
 
-                helper.addDOMEvent(
-                    this, window, 'resize',
+                this.helper.addDOMEvent(
+                    window,
+                    'resize',
                     lib.curry(resizeHandler, this, targetElement, options)
                 );
 
@@ -770,7 +775,8 @@ define(
                     return;
                 }
                 this.hide();
-                //移除dom
+                
+                // 移除dom
                 var domId = this.main.id;
                 lib.removeNode(domId);
                 Control.prototype.dispose.apply(this, arguments);
@@ -809,12 +815,14 @@ define(
                 tipLayer.dispose();
             }
 
-            var content = lib.encodeHTML(args.content) || '';
+            args.content = lib.encodeHTML(args.content) || '';
 
             var properties = {
                 type: 'onceNotice',
                 skin: 'onceNotice',
-                arrow: true
+                arrow: true,
+                showMode: 'auto',
+                positionOpt: 'top|left'
             };
 
             lib.extend(properties, args);
@@ -830,8 +838,6 @@ define(
             properties.type = null;
 
             var tipLayer = ui.create('TipLayer', properties);
-
-            tipLayer.setContent(content);
 
             var okText = args.okText || '知道了';
             tipLayer.setFoot(''
@@ -851,14 +857,8 @@ define(
                 'click',
                 lib.curry(btnClickHandler, tipLayer, 'ok')
             );
-            tipLayer.attachTo({
-                targetDOM: args.targetDOM,
-                targetControl: args.targetControl,
-                showMode: 'auto',
-                positionOpt: { top: 'top', right: 'left' }
-            });
-            return tipLayer;
 
+            return tipLayer;
         };
 
 
