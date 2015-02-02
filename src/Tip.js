@@ -76,13 +76,14 @@ define(
                  */
                 delayTime: 500
             };
-            if (options.arrow === 'false') {
-                options.arrow = false;
+
+            u.extend(properties, options);
+
+            if (properties.arrow === 'false') {
+                properties.arrow = false;
             }
 
             extractDOMProperties(this.main, properties);
-
-            u.extend(properties, options);
 
             this.setProperties(properties);
         };
