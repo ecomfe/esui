@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>RangeCalendar - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>RangeCalendar</header>
+        <div class="container">
+            <h2>连续时间段选择控件</h2>
+            <p class="desc-title">
+            属性设置
+            </p>
+            <table class="desc-table" border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr style="background:">
+                        <th width="50">属性名</th>
+                        <th width="150">描述</th>
+                        <th width="450" colspan=2>格式</th>
+                        <th width="150">默认值</th>
+                    </tr>
+                    <tr>
+                        <td>range</td>
+                        <td>日历可选区间</td>
+                        <td>&lt;string&gt; 逗号分隔开始结束，如：<br>2013-07-03,2013-08-29</td>
+                        <td>&lt;Object&gt; 如：<br>{beign: new Date(2013, 7, 3), end:new Date(2016, 7, 3)}</td>
+                        <td>开始：1982-11-04 <br> 结束：2046-11-04</td></tr>
+                    <tr><td>value</td><td>选择区间</td><td colspan=2>&lt;string&gt; 逗号分隔开始结束，如：2013-07-01,2013-09-01。如果没有设置结束时间，日历默认当作“无结束”处理。</td><td>当天到当天</td></tr>
+                    <tr><td>rawValue</td><td>选择区间</td><td colspan=2>&lt;Object&gt; 如：{beign: new Date(2013, 7, 3), end:new Date(2016, 10, 3)}</td><td>当天到当天</td></tr>
+                    <tr><td>miniMode</td><td>默认显示的快捷区间</td><td colspan=2>&lt;number&gt; 是快捷链接的索引</td><td>不选</td></tr>
+                    <tr><td>showedShortCut</td><td>要显示的快捷日历链接</td><td colspan=2>&lt;string&gt; 如：'昨天,最近7天,上周'</td><td>默认全部。'昨天,最近7天,上周,本月,上个月,上个季度'</td></tr>
+                    <tr><td>endlessCheck</td><td>是否是无限日历</td><td colspan=2>&lt;boolean | string&gt;'true' 或 true代表日历为可无限型；'false' 或 false代表日历为区间型。setProperties设置无效。</td><td>false</td></tr>
+                    <tr><td>isEndless</td><td>无限日历是否置为无限</td><td colspan=2>&lt;boolean | string&gt; 'true' 或 true代表结束无限；'false' 或 false代表结束有限。</td><td>false</td></tr>
+                </tbody>
+            </table>
+            <p class="desc-title">
+            自动纠错
+            </p>
+            <ul>
+                <li>value超出range：无高亮日期显示，但并不会自动纠正value</li>
+                <li>value的设置优先级高于miniMode</li>
+                <li>如果没有设置endlessCheck，但是value没有结束时间，那么自动默认日历为无限日历，且已置为结束时间无限</li>
+                <li>如果设置了isEndless，value中又包含结束时间，则删除value中的结束时间信息</li>
+                <li>如果设置了isEndless，endlessCheck设置为false，则isEndless优先级高，即endlessCheck纠正为true</li>
+            </ul>
+            <p class="desc-title">
+            实例展示
+            </p>
+            <div class="demo-container">
+                <div data-ui-type="RangeCalendar" data-ui-name="test"
+                    data-ui-id="test"
+                    data-ui-value="2013-03-02 00:00:00,2013-05-01"
+                    data-ui-endless-check="false"
+                    data-ui-is-endless="true"
+                    data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59"
+                    data-ui-showed-short-cut="昨天,最近7天,上周"></div>
+                <input data-ui-type="RangeCalendar" name="test2"
+                    data-ui-id="test2"
+                    data-ui-mini-mode="1"
+                    data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59" />
+                <esui-range-calendar name="test3"
+                    data-ui-id="test3"
+                    data-ui-mini-mode="1"
+                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></esui-range-calendar>
+                </div>
+                <!--
+                <div class="control-panel">
+                    <button id="disposeBtn">dispose掉第一个！</button>
+                    <br>
+                    <button id="test1-btn0">改变value</button>
+                    <input type="textbox" id="test1-ipt0"></input>
+                    <br>
+                    <button id="test1-btn1">改变月</button>
+                    <input type="textbox" id="test1-ipt1"></input>
+                    <br>
+                    <button id="test1-btn2">改变年</button>
+                    <input type="textbox" id="test1-ipt2"></input>
+                    <br>
+                    <button id="test1-btn3">改变range</button>
+                    <input type="textbox" id="test1-ipt3"></input>
+                    <p>预期结果：
+                        <span id="test1-result">
+                        </span>
+                    </p>
+                </div>-->
+            </div>
+            <h2>非连续时间段选择控件</h2>
+            <div data-ui-type="RichCalendar" data-ui-name="test4"
+                data-ui-id="test4"
+                data-ui-range="2013-07-03,2013-09-29"
+                data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27">
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/RangeCalendar',
+                'esui/RichCalendar'
+            ],
+            function (ui) {
+                var calendar = ui.init()[0];
+                // document.getElementById('disposeBtn').onclick = function(){
+                //     calendar.dispose();
+                // };
+            }
+        )
+        </script>
+    </body>
+</html>

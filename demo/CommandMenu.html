@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>CommandMenu - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>CommandMenu</header>
+        <div id="container" class="container">
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/CommandMenu'
+            ],
+            function (ui, CommandMenu) {
+                var options = {
+                    displayText: '我是个命令菜单',
+                    datasource: [
+                        { text: 'a' },
+                        { text: 'b', handler: function () { console.log('b'); } },
+                        { text: 'c', handler: function () { console.log('c'); } },
+                        { text: 'd', handler: function () { this.hide(); } }
+                    ]
+                };
+                var menu = new CommandMenu(options);
+                menu.on('select', function (e) { console.log(e.item, e.index); });
+                menu.appendTo(document.getElementById('container'));
+            }
+        )
+        </script>
+    </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Label - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Label</header>
+        <div class="container">
+            <strong data-ui-type="Label">Hello Label!</strong>
+            <esui-label data-ui-type="Label">Custom Label!</esui-label>
+            <br />
+            <button id="op-show">show</button>
+            <button id="op-hide">hide</button>
+            <button id="op-toggle">toggle</button>
+            <button id="op-set-text">set text</button>
+            <button id="op-set-content">set content</button>
+            <br />
+            <label data-ui-type="Label" data-ui-for-target="username">Click to enter username</label>
+            <esui-text-box data-ui-id="username"></esui-text-box>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Label',
+                'esui/TextBox'
+            ],
+            function (ui) {
+                var label = ui.init()[0];
+                document.getElementById('op-show').onclick = function () {
+                    label.show();
+                };
+                document.getElementById('op-hide').onclick = function () {
+                    label.hide();
+                };
+                document.getElementById('op-toggle').onclick = function () {
+                    label.toggle();
+                };
+                document.getElementById('op-set-text').onclick = function () {
+                    label.setText('<a href="###">prevent hijack</a>');
+                };
+                document.getElementById('op-set-content').onclick = function () {
+                    label.setContent('<a href="###">prevent hijack</a>');
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

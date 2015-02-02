@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Validity Label - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Validity Label</header>
+        <div id="container" class="container">
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/TextBox',
+                'esui/Validity',
+                'esui/validator/RequiredRule'
+            ],
+            function (ui, TextBox, ValidityLabel) {
+                var validityLabel = new ValidityLabel({
+                    id: 'test-validity'
+                });
+                validityLabel.appendTo(document.getElementById('container'));
+                var textbox = new TextBox({
+                    id: 'test',
+                    validityLabel: 'test-validity',
+                    mode: 'textarea',
+                    required: true,
+                    requiredErrorMessage: '不能为空 <a href="http://www.baidu.com">百度一下</a>'
+                });
+                textbox.appendTo(document.getElementById('container'));
+                textbox.on('input', function () { this.validate(); });
+                // textbox.validate();
+            }
+        )
+        </script>
+    </body>
+</html>

@@ -1,6 +1,6 @@
 {
     "name": "esui",
-    "version": "3.1.0-beta.5",
+    "version": "3.1.0-beta.6",
     "maintainers": [
         {
             "name": "otakustay",
@@ -42,9 +42,7 @@
             "mini-event": "1.x",
             "underscore": "1.5.x",
             "moment": "2.x",
-            "etpl": ">=2.0.8",
-            "est": "~1.3.0",
-            "esf": "~1.0.0-alpha"
+            "etpl": ">=2.0.8"
         }
     }
 }

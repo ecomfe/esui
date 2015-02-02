@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Form - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+        <style>
+        /* 清除浮动 */
+        .form-row,
+        .form-line,
+        .form-value,
+        .edit-submit {
+            zoom:1;
+        }
+
+        .form-row:after,
+        .form-line:after,
+        .form-value:after,
+        .edit-submit:after {
+            content:"\0020";
+            display:block;
+            height:0;
+            visibility:hidden;
+            clear:both;
+        }
+
+
+        .form-row {
+            padding:2px 0;
+        }
+
+        .form-line,
+        .form-single-line,
+        .form-key,
+        .form-key-mini,
+        .form-value-mini,
+        .form-value {
+            float:left;
+            display:inline;
+            line-height:34px;
+        }
+
+        .form-line,
+        .form-value {
+            width: auto;
+        }
+        </style>
+    </head>
+    <body>
+        <header>Form</header>
+        <div class="container">
+        <form class="edit-form"
+              data-ui-type="Form"
+              data-ui-id="form"
+              data-ui-auto-validate="true"
+              data-ui-submit-button="submit-button,submit-and-continue-button">
+              <div class="form-body">
+                  <div class="form-row">
+                      <div class="form-key">当前余额：</div>
+                      <div class="form-value">
+                        <label data-ui-type="Label"
+                        data-ui-id="balance" data-ui-text="@detail.balance"></label>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="form-key">啥时候：</div>
+                      <div class="form-value">
+                        <div data-ui-type="Calendar" data-ui-id="time"
+                        data-ui-name="time" data-ui-value="${detail.time}"></div>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="form-key">谁：</div>
+                      <div class="form-value">
+                          <div data-ui-type="Select" data-ui-id="member"
+                          data-ui-name="member" data-ui-datasource="@members"
+                          data-ui-value="@detail.member.id"></div>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="form-key">充值\支出：</div>
+                      <div class="form-value">
+                          <div data-ui-type="Select" data-ui-id="type"
+                          data-ui-name="type" data-ui-datasource="@types"
+                          data-ui-value="@detail.type"></div>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="form-key">金额：</div>
+                      <div class="form-value">
+                            <input data-ui-type="TextBox" data-ui-id="amount"
+                            data-ui-child-name="amount"
+                            data-ui-name="amount" data-ui-mode="text"
+                            data-ui-title="金额"
+                            data-ui-required="required"
+                            data-ui-pattern="^[0-9]\d*(\.\d+)?$"
+                            data-ui-patternErrorMessage="金额必须为整数"
+                            data-ui-value="@detail.amount" />
+                      </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="form-key">备注：</div>
+                      <div class="form-value">
+                            <textarea data-ui-type="TextLine"
+                            data-ui-id="memo"
+                            data-ui-required="required"
+                            data-ui-name="memo" data-ui-mode="textarea"
+                            data-ui-value=""></textarea>
+                      </div>
+                  </div>
+              </div>
+              <div class="submit-row">
+                  <div class="form-row">
+                      <div class="form-value">
+                          <div data-ui-type="Button" data-ui-id="submit-button"
+                          data-ui-skin="spring">保存</div>
+                                  <div data-ui-type="Button" data-ui-id="submit-and-continue-button"
+                                  data-ui-skin="spring">保存并继续</div>
+                          <div data-ui-type="Button"
+                          data-ui-skin="link" data-ui-id="cancel-button">取消新建</div>
+                      </div>
+                  </div>
+              </div>
+            </form>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/lib',
+                'esui/validator/Validity',
+                'esui/Form',
+                'esui/Label',
+                'esui/Calendar',
+                'esui/Button',
+                'esui/TextLine',
+                'esui/validator/MaxRule',
+                'esui/validator/MinRule',
+                'esui/validator/MaxLengthRule',
+                'esui/validator/PatternRule',
+                'esui/validator/RequiredRule',
+                'esui/validator/MaxRule'
+            ],
+            function (ui, lib, Validity) {
+              var controls = ui.init();
+              var form = ui.get('form');
+              var nameText = form.getChild('amount');
+
+              function submit(e) {
+                    console.log(e.triggerSource.id);
+                var data = form.getData();
+            }
+
+              form.on('submit', submit);
+              var maxLength = 40;
+              nameText.on(
+                    'input',
+                    function () {
+                        var value = this.getValue();
+                        var leftLength = maxLength - value.length;
+                        var validity = new Validity();
+                        if (leftLength > 0) {
+                            validity.setCustomValidState('notice');
+                            validity.setCustomMessage('还可以输入' + leftLength + '个字符');
+                        }
+                        else {
+                            validity.setCustomValidState('warning');
+                            validity.setCustomMessage('还可以输入' + leftLength + '个字符');
+                        }
+                      this.showValidity(validity);
+                    }
+                );
+            }
+        )
+        </script>
+    </body>
+</html>

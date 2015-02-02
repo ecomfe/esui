@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Crumb</title>
+    <script src="loader/esl.js"></script>
+    <script>
+        require.config({
+            'baseUrl': '../src',
+            'paths': {},
+            'packages': [
+                {
+                    'name': 'mini-event',
+                    'location': '../dep/mini-event/1.0.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'underscore',
+                    'location': '../dep/underscore/1.5.2/src',
+                    'main': 'underscore'
+                },
+                {
+                    'name': 'moment',
+                    'location': '../dep/moment/2.0.1/src',
+                    'main': 'moment'
+                },
+                {
+                    'name': 'etpl',
+                    'location': '../dep/etpl/2.1.0/src',
+                    'main': 'main'
+                },
+                {
+                    'name': 'esui',
+                    'location': '../src',
+                    'main': 'main'
+                }
+            ]
+        });
+    </script>
+    <script src="../src/customShim.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="demo.css" />
+    <link rel="stylesheet" href="../src/css/main.css" />
+    <style>
+    </style>
+</head>
+<body>
+    <header>Crumb</header>
+    <div id="container" class="container">
+        <div data-ui-type="Crumb">
+            <a href="#1">Node1</a>
+            <a href="#2">Node2</a>
+            <a href="#3">Node3</a>
+            <a href="#4">Node4</a>
+            <span>Node5</span>
+        </div>
+        <esui-crumb>
+            <a href="#1">custom1</a>
+            <a href="#1">custom2</a>
+            <span>custom3</span>
+        </esui-crumb>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Crumb'
+            ],
+            function (ui, Crumb) {
+                ui.init(document.getElementById('container'));
+                var path = [
+                    { text: 'test', href: 'http://test.com' },
+                    { text: 'test2', href: 'http://test2.com' },
+                    { text: 'test3'}
+                ];
+
+                var crumb = new Crumb({ path: path });
+                crumb.appendTo(document.getElementById('container'));
+                var crumb2 = new Crumb({ path: path, separator: '|' });
+                crumb2.appendTo(document.getElementById('container'));
+            }
+        );
+    </script>
+</body>
+</html>

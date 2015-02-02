@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>schedule - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>schedule</header>
+        <div class="container">
+            <h3>普通</h3>
+            <div style="width:750px;">
+                <div style="margin:10px;"><strong>日程投放控件</strong></div>
+                <esui-schedule name="launchMode" data-ui="id:mySchedule"></esui-schedule>
+            </div>
+            <button id='getRaw'> 获取raw值 </button>
+            <button id='get'> 获取值 </button>
+            <button id='set'> 赋值(setValue) </button>
+            <button id='setRaw'> 赋值(setRawValue) </button>
+            <button id='setD1'> disabled(1) </button>
+            <button id='setD2'> disabled(0) </button>
+            <button id='sel'> select([0,0], [6,23]) </button>
+            <button id='unsel'> unselect([0,0],[6,23]) </button>
+        </div>
+    <script>
+
+        require(
+            [
+                'esui',
+                'esui/Schedule'
+            ],
+            function (ui) {
+                ui.init(document.body,{
+                    properties : {
+                        mySchedule: {
+                            rawValue: [
+                            [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1],
+                            [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                            [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0],
+                            [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1]
+                            ],
+                            name: 'shedule'
+                        }
+                    }
+                });
+
+                document.getElementById('get').onclick = function() {
+                    alert(ui.get('mySchedule').getValue());
+                }
+
+                document.getElementById('getRaw').onclick = function() {
+                    alert(ui.get('mySchedule').getRawValue());
+                }
+
+                document.getElementById('set').onclick = function() {
+                    ui.get('mySchedule').setValue('100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+                }
+
+                document.getElementById('setRaw').onclick = function() {
+                    ui.get('mySchedule').setRawValue([
+                            [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+                            ]);
+                }
+
+                document.getElementById('setD1').onclick = function() {
+                    ui.get('mySchedule').set('disabled', 1);
+                }
+
+                document.getElementById('setD2').onclick = function() {
+                    ui.get('mySchedule').set('disabled', 0);
+                }
+
+                document.getElementById('sel').onclick = function() {
+                    ui.get('mySchedule').select([0,0], [6,23]);
+                }
+
+                document.getElementById('unsel').onclick = function() {
+                    ui.get('mySchedule').unselect([0,0], [6,23]);
+                }
+
+                ui.get('mySchedule').onchange  = function (e) {
+
+                    console.info(this.stringifyValue(e.rawValue));
+                };
+
+            }
+        );
+        </script>
+    </body>
+</html>

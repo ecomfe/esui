@@ -525,11 +525,12 @@ define(
 
                 helper.extractValueFromInput(this, options);
 
-                if (options.range && typeof options.range === 'string') {
-                    options.range = convertToRaw(options.range);
+                lib.extend(properties, options);
+
+                if (properties.range && typeof properties.range === 'string') {
+                    properties.range = convertToRaw(properties.range);
                 }
 
-                lib.extend(properties, options);
                 this.setProperties(properties);
             },
 

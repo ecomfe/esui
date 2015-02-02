@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TextBox - ESUI Demo</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+    </head>
+<body>
+    <h1>TextBox</h1>
+    <div class="container">
+        <div>
+            <h2>多种模式</h2>
+            <section class="intro">
+                <p>文本框有3种模式：文本、密码、多行。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div>
+                    <label for="text-box-normal">文本框</label>
+                    <input id="text-box-normal"
+                        data-ui-id="text-box-normal"
+                        data-ui-type="TextBox"
+                        data-ui-mode="text" />
+                    <esui-text-box></esui-text-box>
+                </div>
+                <div>
+                    <label for="text-box-password">密码框</label>
+                    <input id="text-box-password"
+                        data-ui-id="text-box-password"
+                        data-ui-type="TextBox"
+                        type="password"
+                        data-ui-mode="password" />
+                    <esui-text-box data-ui-mode="password"></esui-text-box>
+                </div>
+                <div>
+                    <label for="text-box-textarea">多行文本框</label>
+                    <textarea id="text-box-textarea"
+                        data-ui-id="text-box-textarea"
+                        data-ui-type="TextBox"
+                        data-ui-mode="textarea"></textarea>
+                    <esui-text-box data-ui-mode="textarea"></esui-text-box>
+                </div>
+                <pre class="source source-markup">&lt;div&gt;
+    &lt;label for=&quot;text-box-normal&quot;&gt;&#x6587;&#x672c;&#x6846;&lt;/label&gt;
+    &lt;input id=&quot;text-box-normal&quot;
+        data-ui-id=&quot;text-box-normal&quot;
+        data-ui-type=&quot;TextBox&quot;
+        data-ui-mode=&quot;text&quot; /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+    &lt;label for=&quot;text-box-password&quot;&gt;&#x5bc6;&#x7801;&#x6846;&lt;/label&gt;
+    &lt;input id=&quot;text-box-password&quot;
+        data-ui-id=&quot;text-box-password&quot;
+        data-ui-type=&quot;TextBox&quot;
+        data-ui-mode=&quot;password&quot; /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+    &lt;label for=&quot;text-box-textarea&quot;&gt;&#x591a;&#x884c;&#x6587;&#x672c;&#x6846;&lt;/label&gt;
+    &lt;textarea id=&quot;text-box-textarea&quot;
+        data-ui-id=&quot;text-box-textarea&quot;
+        ata-ui-type=&quot;TextBox&quot;
+        data-ui-mode=&quot;textarea&quot;&gt;&lt;/textarea&gt;
+&lt;/div&gt;</pre>
+            </section>
+            <h2>前后缀提示</h2>
+            <section class="intro">
+                <p>使用<code>hint</code>和<code>hintType</code>属性灵活定义前后缀式的提示信息。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div>
+                    <label for="text-box-prefix">您的博客：</label>
+                    <input id="text-box-prefix"
+                        data-ui-type="TextBox"
+                        data-ui-hint="http://"
+                        data-ui-hint-type="prefix" />
+                </div>
+                <div>
+                    <label for="text-box-suffix">宽度</label>
+                    <input id="text-box-suffix"
+                        data-ui-type="TextBox"
+                        data-ui-hint="px"
+                        data-ui-hint-type="suffix"
+                        data-ui-height="40" />
+                </div>
+                <pre class="source source-markup">&lt;div&gt;
+    &lt;label for=&quot;text-box-prefix&quot;&gt;&#x60a8;&#x7684;&#x535a;&#x5ba2;&#xff1a;&lt;/label&gt;
+    &lt;input id=&quot;text-box-prefix&quot;
+        data-ui-type=&quot;TextBox&quot;
+        data-ui-hint=&quot;http://&quot;
+        data-ui-hint-type=&quot;prefix&quot; /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+    &lt;label for=&quot;text-box-suffix&quot;&gt;&#x5bbd;&#x5ea6;&lt;/label&gt;
+    &lt;input id=&quot;text-box-suffix&quot;
+        data-ui-type=&quot;TextBox&quot;
+        data-ui-hint=&quot;px&quot;
+        data-ui-hint-type=&quot;suffix&quot; /&gt;
+&lt;/div&gt;</pre>
+            </section>
+            <h2>输入提示</h2>
+            <section class="intro">
+                <p>使用<code>placeholder</code>属性为文本框加上输入提示信息。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <input id="text-box-with-placeholder"
+                    placeholder="使用placeholder属性"
+                    data-ui-id="text-box-with-placeholder"
+                    data-ui-type="TextBox"
+                    data-ui-mode="text" />
+                <pre class="source source-markup">&lt;input id=&quot;text-box-with-placeholder&quot;
+    placeholder=&quot;&#x4f7f;&#x7528;placeholder&#x5c5e;&#x6027;&quot;
+    data-ui-id=&quot;text-box-with-placeholder&quot;
+    data-ui-type=&quot;TextBox&quot;
+    data-ui-mode=&quot;text&quot; /&gt;</pre>
+            </section>
+            <h2>输入监听</h2>
+            <section class="intro">
+                <p>使用<code>input</code>事件监听输入的内容。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                    <li class="view-script">脚本</li>
+                </ul>
+                <input id="text-box-with-input-listener"
+                    placeholder="使用placeholder属性"
+                    data-ui-id="text-box-with-input-listener"
+                    data-ui-type="TextBox"
+                    data-ui-mode="text" />
+                <label id="left-length-hint" for="text-box-with-input-listener">还可以输入40个字符</label>
+                <script>
+                    ready(
+                        function () {
+                            var maxLength = 40;
+                            var textbox = require('esui').get('text-box-with-input-listener');
+                            var label = document.getElementById('left-length-hint');
+                            textbox.on(
+                                'input',
+                                function () {
+                                    var value = this.getValue();
+                                    var leftLength = maxLength - value.length;
+                                    if (leftLength > 0) {
+                                        label.innerHTML = '还可以输入' + leftLength + '个字符';
+                                        label.className = '';
+                                    }
+                                    else {
+                                        label.innerHTML = '已经超出了' + (-leftLength) + '个字符';
+                                        label.className = 'invalid';
+                                    }
+                                }
+                            );
+                        }
+                    );
+                </script>
+                <pre class="source source-markup">&lt;input id=&quot;text-box-with-input-listener&quot;
+    placeholder=&quot;&#x4f7f;&#x7528;placeholder&#x5c5e;&#x6027;&quot;
+    data-ui-id=&quot;text-box-with-input-listener&quot;
+    data-ui-type=&quot;TextBox&quot;
+    data-ui-mode=&quot;text&quot; /&gt;
+&lt;label id=&quot;left-length-hint&quot; for=&quot;text-box-with-input-listener&quot;&gt;&#x8fd8;&#x53ef;&#x4ee5;&#x8f93;&#x5165;40&#x4e2a;&#x5b57;&#x7b26;&lt;/label&gt;</pre>
+                <pre class="source source-script">var maxLength = 40;
+var textbox = require(&#039;esui&#039;).get(&#039;text-box-with-input-listener&#039;);
+var label = document.getElementById(&#039;left-length-hint&#039;);
+textbox.on(
+    &#039;input&#039;,
+    function () {
+        var value = this.getValue();
+        var leftLength = maxLength - value.length;
+        if (leftLength &gt; 0) {
+            label.innerHTML = &#039;&#x8fd8;&#x53ef;&#x4ee5;&#x8f93;&#x5165;&#039; + leftLength + &#039;&#x4e2a;&#x5b57;&#x7b26;&#039;;
+            label.className = &#039;&#039;;
+        }
+        else {
+            label.innerHTML = &#039;&#x5df2;&#x7ecf;&#x8d85;&#x51fa;&#x4e86;&#039; + (-leftLength) + &#039;&#x4e2a;&#x5b57;&#x7b26;&#039;;
+            label.className = &#039;invalid&#039;;
+        }
+    }
+);</pre>
+            </section>
+        </div>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/TextBox'
+            ],
+            function (ui) {
+                ui.init();
+                ready();
+            }
+        );
+    </script>
+    <script src="demo.js"></script>
+</body>
+</html>
