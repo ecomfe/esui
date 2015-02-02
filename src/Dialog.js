@@ -447,23 +447,23 @@ define(
                     roles: {}
                 };
 
-                if (options.closeOnHide === 'false') {
-                    options.closeOnHide = false;
-                }
-
-                if (options.closeButton === 'false') {
-                    options.closeButton = false;
-                }
-
-                if (options.mask === 'false') {
-                    options.mask = false;
-                }
-
-                if (options.needFoot === 'false') {
-                    options.needFoot = false;
-                }
-
                 lib.extend(properties, options);
+
+                if (properties.closeOnHide === 'false') {
+                    properties.closeOnHide = false;
+                }
+
+                if (properties.closeButton === 'false') {
+                    properties.closeButton = false;
+                }
+
+                if (properties.mask === 'false') {
+                    properties.mask = false;
+                }
+
+                if (properties.needFoot === 'false') {
+                    properties.needFoot = false;
+                }
 
                 if (properties.needFoot) {
                     if (!properties.foot) {
