@@ -872,11 +872,11 @@ define(
 
                 helper.extractValueFromInput(this, options);
 
-                if (options.value) {
-                    options.rawValue = options.value.split(',');
-                }
-
                 lib.extend(properties, options);
+
+                if (properties.value) {
+                    properties.rawValue = properties.value.split(',');
+                }
 
                 if (properties.mode === 'multi') {
                     //增加map型地域数据
@@ -1046,7 +1046,7 @@ define(
             parseValue: function (value) {
                 return value.split(',');
             },
-            
+
             /**
              * 勾选指定地域
              *
@@ -1076,6 +1076,7 @@ define(
         };
 
         /* jshint maxlen: 600 */
+        /* eslint-disable comma-spacing, fecs-key-spacing */
         Region.REGION_LIST = [
             {
                 'id':'90',
@@ -1739,12 +1740,9 @@ define(
                         'id':'87',
                         'text':'港澳台',
                         'children':[
-                            {'id':'5','text':'澳门'
-                            },
-                            {'id':'6','text':'香港'
-                            },
-                            {'id':'7','text':'台湾'
-                            }
+                            {'id':'5','text':'澳门'},
+                            {'id':'6','text':'香港'},
+                            {'id':'7','text':'台湾'}
                         ]
                     }
                 ]
@@ -1752,6 +1750,7 @@ define(
             {'id':'999','text':'国外'},
             {'id':'0','text':'其他'}
         ];
+        /* eslint-enable comma-spacing, fecs-key-spacing */
         lib.inherits(Region, InputControl);
         ui.register(Region);
         return Region;
