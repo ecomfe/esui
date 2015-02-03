@@ -64,30 +64,32 @@ $(function () {
     $('.source, .viewer li').on('mousedown', false);
     //$('html').on('mousedown', hideSource);
     
-    var navItems = 
-        '<li><a href="Panel.html">Panel</a></li>' +
+    var navItems =
+        '<li><a href="BoxControl.html">Box Control</a></li>' +
+        '<li><a href="Button.html">Button</a></li>' +
+        '<li><a href="Calendar.html">Calendar</a></li>' +
+        '<li><a href="CommandMenu.html">Command Menu</a></li>' +
+        '<li><a href="Crumb.html">Crumb</a></li>' +
+        '<li><a href="Dialog.html">Dialog</a></li>' +
+        '<li><a href="Form.html">Form</a></li>' +
         '<li><a href="Label.html">Label</a></li>' +
         '<li><a href="Link.html">Link</a></li>' +
-        '<li><a href="Button.html">Button</a></li>' +
-        '<li><a href="Tip.html">Tip</a></li>' +
-        '<li><a href="TextBox.html">TextBox</a></li>' +
-        '<li><a href="BoxControl.html">Box Control</a></li>' +
-        '<li><a href="Select.html">Select</a></li>' +
         '<li><a href="MonthView.html">Month View</a></li>' +
-        '<li><a href="Calendar.html">Calendar</a></li>' +
+        '<li><a href="Pager.html">Pager</a></li>' +
+        '<li><a href="Panel.html">Panel</a></li>' +
         '<li><a href="RangeCalendar.html">Range Calendar</a></li>' +
         '<li><a href="RichCalendar.html">Rich Calendar</a></li>' +
         '<li><a href="Region.html">Region</a></li>' +
         '<li><a href="Schedule.html">Schedule</a></li>' +
-        '<li><a href="Crumb.html">Crumb</a></li>' +
-        '<li><a href="CommandMenu.html">Command Menu</a></li>' +
-        '<li><a href="Wizard.html">Wizard</a></li>' +
-        '<li><a href="Tab.html">Tab</a></li>' +
-        '<li><a href="Pager.html">Pager</a></li>' +
+        '<li><a href="Select.html">Select</a></li>' +
         '<li><a href="Sidebar.html">Sidebar</a></li>' +
-        '<li><a href="Dialog.html">Dialog</a></li>' +
+        '<li><a href="Tab.html">Tab</a></li>' +
+        '<li><a href="Table.html">Table</a></li>' +
+        '<li><a href="TextBox.html">TextBox</a></li>' +
+        '<li><a href="Tip.html">Tip</a></li>' +
         '<li><a href="Tree.html">Tree</a></li>' +
-        '<li><a href="Table.html">Table</a></li>';
+        '<li><a href="Toast.html">Toast</a></li>' +
+        '<li><a href="Wizard.html">Wizard</a></li>';
 
     $('#navigator').html(navItems);
 

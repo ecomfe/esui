@@ -815,6 +815,93 @@
   -webkit-overflow-scrolling: touch;
   outline: 0;
 }
+.ui-form {
+  margin-bottom: 1em;
+}
+.ui-form fieldset {
+  border: 0;
+  border-top: 1px solid #c0c0c0;
+  margin: 0 0.2em;
+  padding: 0.35em 0.625em 0.75em;
+}
+.ui-form legend {
+  margin-left: -1em;
+  border: 0;
+  padding: 0;
+  white-space: normal;
+  *margin-left: -7px;
+  font-weight: bold;
+}
+.ui-form-row {
+  margin-bottom: 1em;
+}
+.ui-form-key {
+  padding-right: 1em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ui-form-field,
+.ui-form-key,
+.ui-form-value {
+  display: inline-block;
+  vertical-align: top;
+}
+.ui-form-required {
+  position: relative;
+}
+.ui-form-required:after {
+  content: '*';
+  color: #d9534f;
+  display: block;
+  right: 0;
+  top: .7em;
+  position: absolute;
+}
+.ui-form-key,
+.ui-form-valign {
+  padding-top: .5em;
+}
+.ui-form-hint {
+  display: inline-block;
+}
+.ui-form-wrap-hint .ui-form-hint {
+  display: block;
+  margin-top: .5em;
+}
+.ui-form-inline .ui-form-message,
+.ui-form-stack .ui-form-message,
+.ui-form-inline .ui-form-validity,
+.ui-form-stack .ui-form-validity {
+  display: inline-block;
+}
+.ui-form-inline .ui-form-message span,
+.ui-form-stack .ui-form-message span,
+.ui-form-inline .ui-form-validity span,
+.ui-form-stack .ui-form-validity span {
+  display: block;
+}
+.ui-form-stack .ui-form-key,
+.ui-form-stack .ui-form-value {
+  display: block;
+  margin-left: 0;
+}
+.ui-form-stack .ui-form-key {
+  padding-top: 0;
+  padding-bottom: .3em;
+}
+.ui-form-stack .ui-form-required:after {
+  display: inline-block;
+  position: static;
+  margin-top: .3em;
+  margin-left: .5em;
+}
+.ui-form-buttons {
+  padding: 25px 0;
+  background: none;
+  border-top: 1px solid #eaeaea;
+}
 .ui-panel-custom {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -1400,6 +1487,15 @@ esui-wizard {
 .ui-validity {
   color: #d9534f;
   margin: 0 0 0 1em;
+  display: inline-block;
+}
+.ui-form-wrap-hint .ui-validity {
+  display: block;
+  margin-top: .5em;
+  margin-left: 0;
+}
+.ui-validity:not(.state-hidden) ~ .ui-form-hint {
+  display: none;
 }
 /**
  * ESUI (Enterprise Simple UI)
@@ -1612,14 +1708,6 @@ esui-box-group {
 .ui-select.ui-select-read-only:hover {
   background: #9b9b9b;
 }
-/** 验证 */
-.ui-select-validity-invalid {
-  border: 1px solid #ff0000;
-  margin-right: 1em;
-}
-.ui-select-validity-label-invalid {
-  color: #ff0000;
-}
 .ui-textbox-wrapper :first-child.ui-select {
   border-right: 0;
 }
@@ -1695,6 +1783,9 @@ esui-box-group {
 .ui-textbox-hint-prefix .ui-textbox-hint {
   border-right: 0;
 }
+.ui-textbox-validity-invalid {
+  border: 0 !important;
+}
 .ui-textbox-validity-invalid input,
 .ui-textbox-validity-invalid textarea {
   border-color: #d9534f !important;
@@ -1708,12 +1799,6 @@ esui-box-group {
 }
 .ui-textbox-hint-prefix .ui-textbox-hint {
   border-right: 0;
-}
-.ui-textbox-validity-label,
-.ui-textarea-validity-label {
-  display: inline-block;
-  color: #d9534f;
-  padding-left: 1em;
 }
 .ui-textbox-validity-label-notice,
 .ui-textarea-validity-label-notice {
@@ -1985,6 +2070,7 @@ esui-box-group {
 .ui-textline {
   position: relative;
   border: 1px solid #666666;
+  display: inline-block;
 }
 .ui-textline-focus {
   border: 1px solid #6ccdc0;
@@ -2047,9 +2133,6 @@ esui-box-group {
 .ui-textline-validity-invalid textarea {
   background: #fefdfa;
   color: #333333;
-}
-.ui-textline-validity-label-invalid {
-  color: #d9534f;
 }
 /**
  * ESUI (Enterprise Simple UI)

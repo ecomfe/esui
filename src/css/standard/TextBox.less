@@ -41,6 +41,7 @@
 }
 
 .@{ui-class-prefix}-textbox-validity-invalid {
+    border: 0 !important;
     input, textarea {
         border-color: @esf-input-error-border-color !important;
         color: @esf-input-error-text-color !important;
@@ -64,13 +65,6 @@
 }
 
 // 验证
-.@{ui-class-prefix}-textbox-validity-label,
-.@{ui-class-prefix}-textarea-validity-label {
-    display:inline-block;
-    color: @esf-input-error-border-color;
-    padding-left: 1em;
-}
-
 .@{ui-class-prefix}-textbox-validity-label-notice,
 .@{ui-class-prefix}-textarea-validity-label-notice {
     color: @esf-input-error-border-color;
