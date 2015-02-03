@@ -836,7 +836,7 @@ define(
                 value: this.convertToParam(defaultRaw),
                 shownShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
             };
-            lib.extend(properties, RangeCalendar.defaultProperties);
+            lib.extend(properties, RangeCalendar.defaultProperties, options);
 
             helper.extractValueFromInput(this, options);
 
@@ -864,8 +864,6 @@ define(
                     properties.miniMode = null;
                 }
             }
-
-            lib.extend(properties, options);
 
             if (options.range && typeof options.range === 'string') {
                 properties.range = this.convertToRaw(properties.range);
