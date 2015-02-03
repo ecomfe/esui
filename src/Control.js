@@ -87,7 +87,7 @@ define(
              *
              * 完成初始化
              */
-            this.fire('init');
+            this.fire('init', {options: options});
         }
 
         /**

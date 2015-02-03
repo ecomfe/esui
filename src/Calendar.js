@@ -180,11 +180,11 @@ define(
                     autoHideLayer: false
                 };
 
-                if (options.autoHideLayer === 'false') {
-                    options.autoHideLayer = false;
-                }
-
                 u.extend(properties, options);
+
+                if (properties.autoHideLayer === 'false') {
+                    properties.autoHideLayer = false;
+                }
 
                 if (lib.isInput(this.main)) {
                     this.helper.extractOptionsFromInput(this.main, properties);

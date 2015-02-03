@@ -83,15 +83,12 @@ define(
                  */
                 icon: 'question-circle'
             };
-            if (options.arrow === 'false'
-                || options.arrow === '0') {
-                options.arrow = false;
-            }
-
-            extractDOMProperties(this, properties);
 
             u.extend(properties, options);
-
+            if (properties.arrow === 'false') {
+                properties.arrow = false;
+            }
+            extractDOMProperties(this, properties);
             this.setProperties(properties);
         };
 

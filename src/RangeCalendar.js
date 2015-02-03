@@ -844,29 +844,29 @@ define(
             helper.extractValueFromInput(this, options);
 
             // 设置了value，以value为准
-            if (options.value) {
-                options.rawValue = this.convertToRaw(options.value);
-                options.view = {
-                    begin: options.rawValue.begin,
-                    end: options.rawValue.end
+            if (properties.value) {
+                properties.rawValue = this.convertToRaw(properties.value);
+                properties.view = {
+                    begin: properties.rawValue.begin,
+                    end: properties.rawValue.end
                 };
-                options.miniMode = null;
+                properties.miniMode = null;
             }
             // 设置了rawValue，以rawValue为准，外部设置的miniMode先清空
-            else if (options.rawValue) {
-                options.miniMode = null;
+            else if (properties.rawValue) {
+                properties.miniMode = null;
             }
             // 没有设置rawValue，设置了‘miniMode’，rawValue按照miniMode计算
-            else if (!options.rawValue && options.miniMode != null) {
+            else if (!properties.rawValue && properties.miniMode != null) {
                 var shortcutItem =
-                    properties.shortCutItems[options.miniMode];
+                    properties.shortCutItems[properties.miniMode];
                 if (shortcutItem) {
-                    options.rawValue =
+                    properties.rawValue =
                         shortcutItem.getValue.call(this, this.now);
-                    options.miniMode = parseInt(options.miniMode, 10);
+                    properties.miniMode = parseInt(properties.miniMode, 10);
                 }
                 else {
-                    options.miniMode = null;
+                    properties.miniMode = null;
                 }
             }
 
