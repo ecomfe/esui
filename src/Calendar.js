@@ -182,7 +182,7 @@ define(
 
                 u.extend(properties, options);
 
-                if (properties.autoHideLayer === 'false') {
+                if (options.autoHideLayer === 'false') {
                     properties.autoHideLayer = false;
                 }
 
@@ -193,7 +193,7 @@ define(
                 // parseValue 需要用到 paramFormat
                 this.paramFormat = properties.paramFormat;
 
-                if (properties.value) {
+                if (options.value) {
                     properties.rawValue = this.parseValue(properties.value);
                 }
 
