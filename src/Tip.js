@@ -74,17 +74,21 @@ define(
                  * 指定信息浮层的显示的延迟时间，以毫秒为单位，
                  * 具体参考{@link TipLayer#attachTo}方法的`delayTime`参数的说明
                  */
-                delayTime: 500
+                delayTime: 500,
+
+                /**
+                 * @property {string} icon
+                 *
+                 * 用于输出内部icon
+                 */
+                icon: 'question-circle'
             };
 
             u.extend(properties, options);
-
-            if (options.arrow === 'false') {
+            if (properties.arrow === 'false') {
                 properties.arrow = false;
             }
-
-            extractDOMProperties(this.main, properties);
-
+            extractDOMProperties(this, properties);
             this.setProperties(properties);
         };
 
@@ -95,11 +99,18 @@ define(
          * @param  {Object} options 构造函数传入的参数
          * @ignore
          */
-        function extractDOMProperties(main, options) {
+        function extractDOMProperties(tip, options) {
+            var html = '';
+            var main = tip.main;
             options.title = options.title || main.getAttribute('title');
             main.removeAttribute('title');
             options.content = options.content || main.innerHTML;
-            main.innerHTML = '';
+            if (options.icon) {
+                html = '<span class="'
+                    + tip.helper.getIconClass(options.icon)
+                    + '"></span>';
+            }
+            main.innerHTML = html;
         }
 
         /**
@@ -125,7 +136,10 @@ define(
                      * 指定信息浮层的宽度，具体参考{@link TipLayer#width}属性
                      */
                     width: this.layerWidth || 200,
-                    viewContext: this.viewContext
+                    viewContext: this.viewContext,
+                    // 添加一个类以方便区别inline tiplayer和全局tiplayer
+                    variants: 'from-tip',
+                    size: this.size
                 }
             );
             this.addChild(tipLayer);

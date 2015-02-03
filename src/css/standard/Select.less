@@ -70,16 +70,16 @@
 }
 
 .@{ui-class-prefix}-select-text {
-    padding-right: 1em;
+    padding-right: 2em;
     display: block;
     .ellipsis();
 }
 
 .@{ui-class-prefix}-select-arrow {
-    margin-left: 0.5em;
     position: absolute;
     right: @esui-select-padding;
-    top:0.7em;
+    top: 0;
+    line-height: @esui-select-line-height !important;
 }
 
 .@{ui-class-prefix}-select-toolbar-style {
@@ -97,7 +97,6 @@
 }
 
 .@{ui-class-prefix}-select-layer {
-    margin-top: 0;
     overflow-x: hidden;
     *height: 13em;
     max-height: 13em;
@@ -119,17 +118,13 @@
     }
 }
 
-.@{ui-class-prefix}-select-item-selected > * {
+.@{ui-class-prefix}-select-item-selected > :first-child {
     background: @esui-select-item-background-selected;
     color: @esui-select-item-selected-color !important;
 
     &:hover {
         background: @esui-select-item-background-selected;
     }
-}
-
-.@{ui-class-prefix}-select-layer-hidden {
-    display: none;
 }
 
 .@{ui-class-prefix}-select.@{ui-class-prefix}-select-disabled {
@@ -139,16 +134,6 @@
 .@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only,
 .@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only:hover {
     background: @esui-select-background-disabled;
-}
-
-/** 验证 */
-.@{ui-class-prefix}-select-validity-invalid {
-    border: 1px solid @esui-select-error-border-color;
-    margin-right: 1em;
-}
-
-.@{ui-class-prefix}-select-validity-label-invalid {
-    color: @esui-select-error-text-color;
 }
 
 .@{ui-class-prefix}-textbox-wrapper {
@@ -178,5 +163,56 @@
     }
     >.@{ui-class-prefix}-select {
         float: left;
+    }
+}
+
+// compact variant select
+@esui-select-compact-color: #333;
+@esui-select-compact-background: @primary-bg-color;
+@esui-select-compact-height: 1.5em;
+@esui-select-compact-padding: .5em;
+
+@esui-select-compact-layer-item-padding: .3em;
+@esui-select-compact-layer-item-select-background: #FFFAED;
+@esui-select-compact-layer-item-select-color: #333;
+@esui-select-compact-layer-background: #F1F1F1;
+
+.@{ui-class-prefix}-select-compact {
+    padding: 0 @esui-select-compact-padding;
+    background: @esui-select-compact-background !important;
+    height: @esui-select-compact-height;
+    line-height: @esui-select-compact-height;
+    color: @esui-select-compact-color;
+
+    .@{ui-class-prefix}-select-arrow {
+        line-height: @esui-select-compact-height !important;
+        right: @esui-select-compact-padding;
+        .opacity(70);
+        &:hover {
+            .opacity(100);
+        }
+    }
+}
+
+.@{ui-class-prefix}-select-layer-compact {
+    background: @esui-select-compact-layer-background;
+    li :first-child {
+        padding: @esui-select-compact-layer-item-padding;
+    }
+    .@{ui-class-prefix}-select-item-selected > :first-child {
+        background: @esui-select-compact-layer-item-select-background;
+        color: @esui-select-compact-layer-item-select-color !important;
+    }
+    .@{ui-class-prefix}-select {
+        padding: 0 @esui-select-compact-padding;
+        background: @esui-select-compact-background;
+        height: @esui-select-compact-height;
+        line-height: @esui-select-compact-height;
+        color: @esui-select-compact-color;
+
+        .@{ui-class-prefix}-select-arrow {
+            line-height: @esui-select-compact-height !important;
+            right: @esui-select-compact-padding;
+        }
     }
 }

@@ -14,7 +14,7 @@
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
         <link rel="stylesheet" href="../assets/demo.css" />
-        <link rel="stylesheet" href="../../src/css/standard/main.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
         <h1>RangeCalendar</h1>
@@ -69,23 +69,24 @@
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example">
-                        <div class="demo-container">
+                        <div class="demo-container ui-demo-light-stage">
+                            <button class="ui-button">按钮</button>
                             <div data-ui-type="RangeCalendar" data-ui-name="test"
                                 data-ui-id="test"
                                 data-ui-value="2013-03-02 00:00:00,2013-05-01"
                                 data-ui-endless-check="false"
                                 data-ui-is-endless="true"
                                 data-ui-range="2011-03-02 00:00:00,2014-04-02 23:59:59"
-                                data-ui-showed-short-cut="昨天,最近7天,上周" style="margin-bottom: 10px;"></div>
+                                data-ui-showed-short-cut="昨天,最近7天,上周"></div>
                             <input data-ui-type="RangeCalendar" name="test2"
                                 data-ui-id="test2"
                                 data-ui-mini-mode="1"
                                 data-ui-disabled="1"
-                                data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59" style="margin-bottom: 10px;"/>
+                                data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59" />
                             <esui-range-calendar name="test3"
                                 data-ui-id="test3"
                                 data-ui-mini-mode="1"
-                                data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59" style="margin-bottom: 10px;"></esui-range-calendar>
+                                data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></esui-range-calendar>
                             </div>
                             <!--
                             <div class="control-panel">
@@ -109,30 +110,13 @@
                             </div>-->
                     </div>
                 </section>
-                <h2>连续时间段选择控件</h2>
-                <section class="intro">
-                    <p>连续时间段选择控件。</p>
-                </section>
-                <section class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example">
-                        <div data-ui-type="RichCalendar" data-ui-name="test4"
-                        data-ui-id="test4" 
-                        data-ui-disabled="1" 
-                        data-ui-range="2013-07-03,2013-09-29"
-                        data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27" />
-                    </div>
-                </section>
             </div>
         </div>
         <script>
         require(
             [
                 'esui',
-                'esui/RangeCalendar',
-                'esui/RichCalendar'
+                'esui/RangeCalendar'
             ],
             function (ui) {
                 var calendar = ui.init()[0];

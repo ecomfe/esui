@@ -14,22 +14,6 @@
     <link rel="stylesheet" href="../assets/prism.css" />
     <link rel="stylesheet" href="../assets/demo.css" />
     <link rel="stylesheet" href="../assets/themes/standard.css" />
-    <style>
-        /* TODO remove this \*/
-        .clearfix:after {
-        visibility: hidden;
-        display: block;
-        font-size: 0;
-        content: " ";
-        clear: both;
-        height: 0;
-        }
-        .clearfix { display: inline-table; }
-        /* Hides from IE-mac \*/
-        * html .clearfix { height: 1%; }
-        .clearfix { display: block; }
-        /* End hide from IE-mac */
-    </style>
 </head>
 <body>
     <h1>Select</h1>
@@ -143,6 +127,21 @@
                                 <option value="3">选项</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="ui-mt15">
+                            <select 
+                                data-ui-type="Select" 
+                                data-ui-id="variantTest" 
+                                name="test" 
+                                data-ui-selected-index="1"
+                                data-ui-variants="compact">
+                                <option value="1">选项 1</option>
+                                <option value="2">选项 2</option>
+                                <option value="3">选项 3</option>
+                                <option value="1" disabled>禁用的选项 4</option>
+                                <option value="2">Group</option>
+                                <option value="3">选项</option>
+                            </select>
                     </div>
                 </div>
             </section>

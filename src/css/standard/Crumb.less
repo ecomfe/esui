@@ -1,0 +1,73 @@
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Breadcrumbs样式
+  * @author yankun01
+  */
+
+@esui-crumb-padding: 0;
+@esui-crumb-margin: 0 0 .5em 0;
+@esui-crumb-line-height: 1.3;
+
+@esui-crumb-separator-margin: 0 .5em;
+@esui-crumb-separator-color: @black-20;
+
+@esui-crumb-node-text-color: @black-80;
+
+.@{ui-class-prefix}-crumb {
+    padding: @esui-crumb-padding;
+    margin: @esui-crumb-margin;
+    line-height: @esui-crumb-line-height;
+}
+
+.@{ui-class-prefix}-crumb-separator {
+    margin: @esui-crumb-separator-margin;
+    color: @esui-crumb-separator-color;
+}
+
+span.@{ui-class-prefix}-crumb-node {
+    color: @esui-crumb-node-text-color;
+}
+
+// nav breadcrumbs variant
+@esui-crumb-nav-height: 4em;
+@esui-crumb-nav-background: #F7F7F7;
+
+@esui-crumb-nav-node-padding: 0 20px;
+@esui-crumb-nav-node-link-color: #666;
+@esui-crumb-nav-node-link-hover-color: #666;
+@esui-crumb-nav-node-text-color: @primary-color;
+
+@esui-crumb-nav-separator-color: #666;
+@esui-crumb-nav-separator-margin: 0 5px;
+
+.@{ui-class-prefix}-crumb-nav-container {
+    background: @esui-crumb-nav-background;
+}
+
+.@{ui-class-prefix}-crumb-nav {
+    height: @esui-crumb-nav-height;
+    line-height: @esui-crumb-nav-height;
+    overflow: hidden;
+
+    .@{ui-class-prefix}-crumb-node {
+        padding: @esui-crumb-nav-node-padding;
+    }
+
+    span.@{ui-class-prefix}-crumb-node {
+        color: @esui-crumb-nav-node-text-color;
+    }
+    a.@{ui-class-prefix}-crumb-node {
+        color: @esui-crumb-nav-node-link-color;
+        text-decoration: none;
+        &:hover {
+            color: @esui-crumb-nav-node-link-hover-color;
+            text-decoration: underline;
+        }
+    }
+    .@{ui-class-prefix}-crumb-separator {
+        margin: @esui-crumb-nav-separator-margin;
+        color: @esui-crumb-nav-separator-color;
+    }
+}

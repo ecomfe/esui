@@ -1,7 +1,43 @@
-.@{state-class-prefix}-hidden {
+@esui-invalid-control-border: 1px solid @danger-color;
+@esui-invalid-control-message-color: @danger-color;
+@esui-invalid-control-message-margin: 0 0 0 1em;
+
+.@{state-class-prefix}-hidden,
+.@{ui-class-prefix}-layer-hidden {
     display: none !important;
 }
 
 .@{ui-class-prefix}-layer {
     position: absolute;
+    .user-select();
+    margin: 0;
+}
+
+.state-disabled {
+    .esf-disabled();
+    // 取消嵌套的透明度
+    .state-disabled {
+        .opacity(100);
+    }
+}
+
+// 错误状态样式
+.state-validity-invalid {
+    border: @esui-invalid-control-border !important;
+}
+
+.@{ui-class-prefix}-validity {
+    color: @danger-color;
+    margin: @esui-invalid-control-message-margin;
+    display: inline-block;
+}
+
+.@{ui-class-prefix}-form-wrap-hint .@{ui-class-prefix}-validity {
+    display: block;
+    margin-top: .5em;
+    margin-left: 0;
+}
+
+.@{ui-class-prefix}-validity:not(.state-hidden) ~ .@{ui-class-prefix}-form-hint {
+    display: none;
 }

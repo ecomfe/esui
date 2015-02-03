@@ -88,7 +88,7 @@ define(
          * 搭建单个日历
          *
          * @param {RichCalendar} calendar RichCalendar控件实例
-         * @param {string} type 日历类型 begin|end
+         * @param {number} index 日历序号
          * @return {string}
          */
         function getCalendarHtml(calendar, index) {
@@ -246,8 +246,8 @@ define(
          *
          * @inner
          * @param {RichCalendar} calendar RichCalendar控件实例
-         * @param {string} type 日历类型
-         * @param {Date} value 日期
+         * @param {Ojbect} options 日历属性
+         * @param {number} index 日历编号
          * @param {boolean} bindEvent 是否需要绑定事件
          */
         function paintCal(calendar, options, index, bindEvent) {
@@ -309,7 +309,7 @@ define(
          *
          * @inner
          * @param {string} value 20110301222222,20110401235959
-         * @return {{begin:Date,end:Date}=}
+         * @return {{begin:Date,end:Date}}
          */
         function convertToRaw(value) {
             var strDates = value.split(',');
@@ -318,11 +318,11 @@ define(
                 strDates.push('2046-11-04');
             }
             // 第一个是空的
-            else if (strDates[0] === ''){
+            else if (strDates[0] === '') {
                 strDates[0] = '1983-09-03';
             }
             // 第二个是空的
-            else if (strDates[1] === ''){
+            else if (strDates[1] === '') {
                 strDates[1] = '2046-11-04';
             }
 
@@ -331,14 +331,16 @@ define(
                 end: parseToDate(strDates[1])
             };
         }
+
         /**
          * 字符串日期转换为Date对象
          *
          * @inner
          * @param {string} dateStr 字符串日期
+         * @return {Date}
          */
         function parseToDate(dateStr) {
-            /** 2011-11-04 */
+            // 2011-11-04
             function parse(source) {
                 var dates = source.split('-');
                 if (dates) {
@@ -378,7 +380,7 @@ define(
             var tempDate = [];
             var tempIndex = 0;
             var oneDay = 86400000;
-            for (var i = 0; i < rawValue.length; i ++) {
+            for (var i = 0; i < rawValue.length; i++) {
                 if (i === 0) {
                     dateStrs.push(
                         lib.date.format(rawValue[i], calendar.paramFormat)
@@ -388,16 +390,16 @@ define(
                 }
                 else {
                     // 已跨越
-                    if ((rawValue[i] - rawValue[i-1]) > oneDay) {
+                    if ((rawValue[i] - rawValue[i - 1]) > oneDay) {
                         // 只一天
-                        if ((rawValue[i-1] - tempDate[tempIndex-1]) !== 0) {
+                        if ((rawValue[i - 1] - tempDate[tempIndex - 1]) !== 0) {
                             dateStrs.push('至');
                             dateStrs.push(
                                 lib.date.format(
-                                    rawValue[i-1], calendar.paramFormat
+                                    rawValue[i - 1], calendar.paramFormat
                                 )
                             );
-                            tempDate.push(rawValue[i-1]);
+                            tempDate.push(rawValue[i - 1]);
                             tempIndex++;
                         }
                         dateStrs.push('\n');
@@ -429,14 +431,14 @@ define(
          * 实时同步键盘输入与Raw数据
          *
          * @param {RichCalendar} calendar RichCalendar控件实例
-         * @return {string}
          */
         function updateRawValueByTyping(calendar) {
             var textInputValue = this.getValue();
             var items = textInputValue.replace(/\n{2,}/g, '\n').split('\n');
             var result = [];
             var container = {};
-            var invalid = false;
+            // var invalid = false;
+
             for (var i = 0, len = items.length; i < len; i++) {
                 var item = lib.trim(items[i]);
                 if (item.length === 0 || container[item]) {
@@ -454,9 +456,9 @@ define(
                     result.push(begin);
                     result.push(end);
                 }
-                else {
-                    invalid = true;
-                }
+                // else {
+                //    invalid = true;
+                // }
             }
             var value = result.join(',');
             calendar.rawValue = calendar.parseValue(value);
@@ -479,7 +481,7 @@ define(
             if (r == null) {
                 return false;
             }
-            var d= new Date(r[1], r[3]-1, r[4]);
+            var d = new Date(r[1], r[3] - 1, r[4]);
             var newStr = ''
                 + d.getFullYear()
                 + r[2]
@@ -572,21 +574,22 @@ define(
                 }
 
                 var tpl = [
+                    '<div data-ui-type="Panel" class="${generalPanelClass}"',
+                    ' data-ui-child-name="generalPanel">',
+                    '共<span id="${totalNumId}" ',
+                    'class="${totalNumClass}"></span>天,',
+                    '<button data-ui-type="Button" data-ui-variants="link"',
+                    ' data-ui-child-name="deleteBtn">全部删除</button>',
+                    '</div>',
                     '<div class="${className}" id="${id}">',
-                      '<textarea data-ui-type="TextBox"',
-                      ' data-ui-mode="textarea"',
-                      ' data-ui-width="${textBoxWidth}"',
-                      ' data-ui-height="${textBoxHeight}"',
-                      ' data-ui-child-name="textInput"></textarea>',
-                      '<div data-ui-type="Panel" class="${generalPanelClass}"',
-                      ' data-ui-child-name="generalPanel">',
-                          '共<span id="${totalNumId}" ',
-                          'class="${totalNumClass}"></span>天,',
-                          '<span data-ui-type="Button" data-ui-skin="link"',
-                          ' data-ui-child-name="deleteBtn">全部删除</span>',
-                      '</div>',
-                      '<div data-ui-type="Button" data-ui-skin="calendar"',
-                      ' data-ui-child-name="modifyBtn">修改时间</div>',
+                    '<textarea data-ui-type="TextBox"',
+                    ' data-ui-mode="textarea"',
+                    ' data-ui-width="${textBoxWidth}"',
+                    ' data-ui-height="${textBoxHeight}"',
+                    ' data-ui-child-name="textInput"></textarea>',
+                    '<button data-ui-type="Button" data-ui-variants="link"',
+                    ' data-ui-child-name="modifyBtn" type="button">',
+                    '<span class="${calendarIconClass}"></span></button>',
                     '</div>',
                     '<input type="hidden" id="${inputId}" name="${name}"',
                     ' value="" />'
@@ -605,7 +608,8 @@ define(
                         generalPanelClass:
                             getClass(this, 'general-info').join(' '),
                         totalNumId: helper.getId(this, 'total-num'),
-                        totalNumClass: getClass(this, 'total-num').join(' ')
+                        totalNumClass: getClass(this, 'total-num').join(' '),
+                        calendarIconClass: this.helper.getIconClass('calendar')
                     }
                 );
 
@@ -670,6 +674,16 @@ define(
                         if (disabled || hidden || readOnly) {
                             calendar.layer.hide();
                         }
+                        // TODO: read only 的情况没有考虑
+                        var panel = calendar.children[0];
+                        if (disabled) {
+                            panel.helper.disableChildren();
+                            calendar.helper.disableChildren();
+                        }
+                        else {
+                            panel.helper.enableChildren();
+                            calendar.helper.enableChildren();
+                        }
                     }
                 }
             ),
@@ -680,7 +694,7 @@ define(
              * @param {Date} date 选取的日期.
              */
             setRawValue: function (date) {
-                this.setProperties({ 'rawValue': date });
+                this.setProperties({'rawValue': date});
             },
 
             /**
@@ -702,7 +716,7 @@ define(
             stringifyValue: function (rawValue) {
                 var dateStrs = [];
                 var oneDay = 86400000;
-                for (var i = 0; i < rawValue.length; i ++) {
+                for (var i = 0; i < rawValue.length; i++) {
                     // 开个头
                     if (i === 0) {
                         dateStrs.push(
@@ -711,11 +725,11 @@ define(
                     }
                     else {
                         // 间隔超过1天，说明已中断，则
-                        if ((rawValue[i] - rawValue[i-1]) > oneDay) {
+                        if ((rawValue[i] - rawValue[i - 1]) > oneDay) {
                             // 1. 为前一段时间画结尾
                             dateStrs.push(
                                 lib.date.format(
-                                    rawValue[i-1], this.paramFormat
+                                    rawValue[i - 1], this.paramFormat
                                 )
                             );
                             // 2. 为下一段开头
@@ -743,7 +757,7 @@ define(
              * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
              * 形式的数据
              *
-             * @return {array}
+             * @return {Array}
              */
             getRanges: function () {
                 var rawValue = this.rawValue;
@@ -764,11 +778,13 @@ define(
              * 将
              * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
              * 型值转成raw形式
-             * @param {Array} rangeValue
+             *
+             * @param {Array} rangeValue 值数组
+             *
              */
             setRanges: function (rangeValue) {
                 var dates = {};
-                for (var i = 0; i < rangeValue.length; i ++) {
+                for (var i = 0; i < rangeValue.length; i++) {
                     var begin = rangeValue[i].begin;
                     var end = rangeValue[i].end;
                     var temp;
@@ -777,7 +793,8 @@ define(
                     }
                     if (begin - end === 0) {
                         dates[begin] = begin;
-                    } else {
+                    }
+                    else {
                         temp = begin;
                         while (temp <= end) {
                             dates[temp] = temp;
@@ -790,8 +807,10 @@ define(
                     }
                 }
                 var rawDates = [];
-                for(var key in dates) {
-                    rawDates.push(dates[key]);
+                for (var key in dates) {
+                    if (dates.hasOwnProperty(key)) {
+                        rawDates.push(dates[key]);
+                    }
                 }
                 rawDates.sort(function (a, b) {
                     return a - b;
@@ -818,7 +837,8 @@ define(
                     }
                     if (begin - end === 0) {
                         dates[begin] = begin;
-                    } else {
+                    }
+                    else {
                         temp = begin;
                         while (temp <= end) {
                             dates[temp] = temp;
@@ -831,8 +851,10 @@ define(
                     }
                 }
                 var rawDates = [];
-                for(var key in dates) {
-                    rawDates.push(dates[key]);
+                for (var key in dates) {
+                    if (dates.hasOwnProperty(key)) {
+                        rawDates.push(dates[key]);
+                    }
                 }
                 rawDates.sort(function (a, b) {
                     return a - b;

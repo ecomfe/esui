@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Wizard</title>
+    <script src="../assets/loader/esl.js"></script>
+    <script src="../../src/customShim.js"></script>
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/demo.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+    <style>
+        .panel {
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wizard</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>Wizard</h2>
+            <section class="intro">
+                <p>Wizard</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example">
+                    <div id="container">
+                        <div id="wizard-zone">
+                        </div>
+                        <div style="padding: 1em; border: 1px solid #d4d4d4;border-top:0">
+                            <div id="a" class="panel">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
+                            <div id="b" class="panel">Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</div>
+                            <div id="c" class="panel">Panel 3</div>
+                            <div id="d" class="panel">Panel 4</div>
+                        </div>
+                        <div style="text-align:center; padding: 1em">
+                            <button data-ui="type:Button;id:prev;">上一步</button>
+                            <button data-ui="type:Button;id:next;variants:primary">下一步</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Button',
+                'esui/Wizard'
+            ],
+            function (ui, Button, Wizard) {
+                var buttons = ui.init();
+                var prev = buttons[0];
+                var next = buttons[1];
+                var steps = [
+                    { text: '1. 基本信息', panel: 'a' },
+                    { text: '2. 地址', panel: 'b' },
+                    { text: '3. 其他', panel: 'c' },
+                    { text: '4. 结束', panel: 'd' }
+                ];
+
+                var wizard = new Wizard({ steps: steps, activeIndex: 1 });
+                wizard.appendTo(document.getElementById('wizard-zone'));
+                prev.on('click', function(){
+                    wizard.stepPrevious();
+                });
+                next.on('click', function(){
+                    wizard.stepNext();
+                });
+            }
+        );
+    </script>
+</body>
+</html>

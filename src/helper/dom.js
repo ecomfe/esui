@@ -77,6 +77,8 @@ define(
                 classes.push(joinByStrike(prefix, type, part));
                 if (skin) {
                     classes.push(joinByStrike(skinPrefix, skin, type, part));
+                    // 利用skin生成一个类似于variant的东西
+                    //classes.push(joinByStrike(prefix, type, skin, part));
                 }
 
                 // 缓存起来
@@ -94,6 +96,8 @@ define(
                         joinByStrike(skinPrefix, skin),
                         joinByStrike(skinPrefix, skin, type)
                     );
+                    // 利用skin生成一个类似于variant的东西
+                    //classes.push(joinByStrike(prefix, type, skin));
                 }
             }
 
@@ -272,6 +276,36 @@ define(
                 lib.removeClasses(
                     element,
                     this.getStateClasses(state)
+                );
+            }
+        };
+
+        /**
+         * 添加控件跟Variant相关的selector到主元素
+         * 添加这个方法是为了和原有skin和states实现隔离。
+         * 但是又无法完全确保名称不重复。
+         * 所以在使用state的selector的时候尽量用state-xxx这个selector。
+         * 使用skin时尽量用skin-xxx来区别三种类型的selector。
+         * 生成结果为
+         * -`ui-{styleType}-{variant1} ui-{styleType}-{variant2}...`
+         *
+         */
+        helper.addVariantClasses = function () {
+            var me = this;
+            var element = me.control.main;
+            var variants = me.control.variants;
+            var cls = [];
+
+            u.each(
+                variants,
+                function (variant) {
+                    cls.push(me.getPrimaryClassName(variant));
+                }
+            );
+            if (element) {
+                lib.addClasses(
+                    element,
+                    cls
                 );
             }
         };

@@ -53,7 +53,6 @@ define(
             }
 
             options.roles = roles;
-
         }
 
         /**
@@ -70,14 +69,17 @@ define(
             var closeTpl =
                 '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
             var closeIcon = '';
+            var cls = [];
 
             if (control.closeButton) {
+                cls = helper.getPartClasses(control, close);
+                cls.push(control.helper.getIconClass('close'));
                 closeIcon = lib.format(
                     closeTpl,
                     {
                         'clsId': helper.getId(control, close),
                         'clsClass':
-                             helper.getPartClasses(control, close).join(' ')
+                             cls.join(' ')
                     }
                 );
             }
@@ -123,9 +125,7 @@ define(
             panel.render();
             control.addChild(panel, 'head');
             return panel;
-
         }
-
 
         /**
          * 点击头部关闭按钮时事件处理函数
@@ -147,9 +147,7 @@ define(
             if (this.closeOnHide) {
                 this.dispose();
             }
-
         }
-
 
         var getResizeHandler; //resize的句柄
         /**
@@ -346,7 +344,10 @@ define(
          */
         function showMask(dialog, zIndex) {
             var mask = getMask(dialog);
-            var clazz = [];
+            var clazz = [
+                dialog.helper.getPrefixClass('mask'),
+                dialog.helper.getPrefixClass('mask-page')
+            ];
             var maskClass = helper.getPartClasses(dialog, 'mask').join(' ');
 
             clazz.push(maskClass);
@@ -380,7 +381,6 @@ define(
             document.body.appendChild(el);
         }
 
-
         /**
          * 获取遮盖层dom元素
          *
@@ -399,7 +399,6 @@ define(
 
             return lib.g(id);
         }
-
 
         Dialog.OK_TEXT = '确定';
         Dialog.CANCEL_TEXT = '取消';
@@ -437,12 +436,12 @@ define(
                         + 'class="'
                         + this.helper.getPartClassName('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
-                        + 'childName:btnOk;skin:spring;">确定</div>'
+                        + 'childName:btnOk;variants:success;">确定</div> '
                         + '<div '
                         + 'class="'
-                        + this.helper.getPartClassName('cancel-btn') + '" '
-                        + 'data-ui="type:Button;'
-                        + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
+                        + this.helper.getPartClassName('cancel-btn')
+                        + '" data-ui="type:Button;'
+                        + 'id:btnFootCancel;childName:btnCancel;variants:link">取消</div>',
                     needFoot: true,
                     roles: {}
                 };
@@ -895,7 +894,7 @@ define(
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
                 '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
@@ -925,7 +924,8 @@ define(
                     {
                         type: type,
                         content: content,
-                        prefix: dialog.helper.getPrimaryClassName()
+                        prefix: dialog.helper.getPrimaryClassName(),
+                        icon: dialog.helper.getIconClass('question-circle')
                     }
                 )
             );
@@ -986,7 +986,7 @@ define(
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
                 '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
@@ -1009,7 +1009,8 @@ define(
                     {
                         type: type,
                         content: content,
-                        prefix: dialog.helper.getPrimaryClassName()
+                        prefix: dialog.helper.getPrimaryClassName(),
+                        icon: dialog.helper.getIconClass('exclamation-circle')
                     }
                 )
             );
@@ -1018,7 +1019,7 @@ define(
                 + '<div '
                 + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
-                + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
+                + dialogId + '-' + okPrefix + ';variants:success;">'
                 + okText
                 + '</div>'
             );

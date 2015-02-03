@@ -82,13 +82,13 @@ define(
             lib.addClasses(mainDOM, headClasses);
             var properties = {
                 main: mainDOM,
-                childName: 'title'
+                childName: 'title',
+                title: ''
             };
             var label = ui.create('Label', properties);
             label.render();
             control.addChild(label);
             return label;
-
         }
 
         /**
@@ -520,6 +520,13 @@ define(
                     + helper.getPartClasses(tipLayer).join(' ')
                     + ' '
                     + helper.getPartClasses(tipLayer, arrowClass).join(' ');
+                // 这边似乎是为了避免remove arrow class 所以重新生成了className
+                // 需要补充一下variants和size的selector
+                tipLayer.helper.addVariantClasses();
+                if (tipLayer.size) {
+                    element.className += ' '
+                        + tipLayer.helper.getPrefixClass(tipLayer.size);
+                }
 
                 var arrow = lib.g(helper.getId(tipLayer, 'arrow'));
                 if (arrow) {
@@ -832,7 +839,7 @@ define(
             var okText = args.okText || '知道了';
             tipLayer.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:'
-                + tipLayerId + '-' + okPrefix + ';width:50;"'
+                + tipLayerId + '-' + okPrefix + ';"'
                 + 'class="'
                 + helper.getPartClasses(tipLayer, 'once-notice')
                 + '">'

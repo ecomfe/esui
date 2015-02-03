@@ -6,96 +6,61 @@
  * @author dbear
  */
 
-@import "./variable.less";
-@import "../mixin/util.less";
 
-@calendar-width: 110px;
-@calendar-height: 23px;
+@esui-calendar-height: 2.4em;
+@esui-calendar-padding: 1em;
 
-@calendar-border: 1px solid transparent;
-@calendar-border-hover: 1px solid transparent;
-@calendar-border-disabled: 1px solid transparent;
+@esui-calendar-border: 1px solid transparent;
+@esui-calendar-border-radius: @default-border-radius;
 
-@calendar-background: #ebebeb;
+@esui-calendar-background: #EBEBEB;
+@esui-calendar-background-hover: lighten(#EBEBEB, 2%);
+@esui-calendar-background-active: darken(#EBEBEB, 5%);
 
-@calendar-color: #333;
-@calendar-color-disabled: #999;
+@esui-calendar-color: #333;
+@esui-calendar-color-readonly: #999;
+@esui-calendar-background-readonly: #EBEBEB;
 
-@calendar-arrow-icon-background: url(../../img/esui-cal.png);
-@calendar-arrow-icon-height: 16px;
-@calendar-arrow-icon-width: 16px;
-
-@calendar-layer-background-color: #fff;
-
-// 验证
-@range-calendar-validity-invalid-color: #ff8555;
-@range-calendar-validity-label-invalid-color: #ff8555;
-@range-calendar-validity-label-invalid-border-color: #f0cccc;
+@esui-calendar-layer-background-color: #fff;
 
 .@{ui-class-prefix}-calendar {
-    width: @calendar-width;
-    height: @calendar-height;
-    line-height: @calendar-height;
-    border: @calendar-border;
-    padding-left: 8px;
-    font-size: 12px;
-    background-color: @calendar-background;
-    .interactive-cursor();
+    line-height: @esui-calendar-height;
+    border: @esui-calendar-border;
+    padding: 0 @esui-calendar-padding;
+    background: @esui-calendar-background;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    border-radius: @esui-calendar-border-radius;
     .user-select();
+    vertical-align: middle;
 }
 
 .@{ui-class-prefix}-calendar-text {
-    padding-left: 3px;
-    float: left;
+    padding-right: 2em;
+    .ellipsis();
 }
 
-.@{ui-class-prefix}-calendar:hover,
+.@{ui-class-prefix}-calendar:hover {
+    background: @esui-calendar-background-hover;
+}
+
+.@{ui-class-prefix}-calendar-active,
 .@{ui-class-prefix}-calendar:active {
-    border: @calendar-border-hover;
+    background: @esui-calendar-background-active !important;
 }
 
 .@{ui-class-prefix}-calendar-arrow {
-    float: right;
-    height: @calendar-arrow-icon-height;
-    width: @calendar-arrow-icon-width;
-    margin-top: 3px;
-    margin-right: 10px;
-    .pseudo-icon(
-        @calendar-arrow-icon-background,
-        @calendar-arrow-icon-width,
-        @calendar-arrow-icon-height,
-        right
-    );
+    position: absolute;
+    right: @esui-calendar-padding;
+    top: 0;
 }
 
 .@{ui-class-prefix}-calendar-layer {
-    background: @calendar-layer-background-color;
-    .user-select();
+    background: @esui-calendar-layer-background-color;
 }
 
-.@{ui-class-prefix}-calendar-layer-hidden {
-    display: none;
-}
-
-.@{ui-class-prefix}-calendar-disabled,
 .@{ui-class-prefix}-calendar-read-only {
-    color: @calendar-color-disabled;
-    border: @calendar-border-disabled;
-}
-
-// 验证
-.@{ui-class-prefix}-calendar-validity-invalid {
-    border: 1px solid @range-calendar-validity-invalid-color;
-}
-
-.@{ui-class-prefix}-calendar-validity-label {
-    display: block;
-    margin-top: 5px;
-}
-
-.@{ui-class-prefix}-calendar-validity-label-invalid {
-    .background(url(../../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-    border: 1px solid @range-calendar-validity-label-invalid-border-color;
-    color: @range-calendar-validity-label-invalid-color;
-    padding-left: 50px;
+    color: @esui-calendar-color-readonly;
+    background: @esui-calendar-background-readonly;
 }

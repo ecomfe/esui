@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../assets/themes/standard.css" />
 </head>
 <body>
+    <h1>Button</h1>
     <div id="page">
         <ul id="navigator">
         </ul>
@@ -29,13 +30,13 @@
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example">
-                    <button data-ui="type:Button" class="ui-mini">最小尺寸</button>
-                    <a data-ui="type:Button" class="ui-small">小尺寸</a>
-                    <div data-ui="type:Button;id:defaultBtn;">默认按钮</div>
-                    <span data-ui="type:Button;" class="ui-large">大尺寸</span>
-                    <button data-ui="type:Button" class="ui-big">Big</button>
-                    <button data-ui="type:Button" class="ui-huge">Huge</button>
-                    <button data-ui="type:Button" class="ui-massive">Massive</button>
+                    <button data-ui="type:Button;variants:primary;size:mini">最小尺寸</button>
+                    <a data-ui="type:Button;variants:info;size:small">小尺寸</a>
+                    <div data-ui="type:Button;id:defaultBtn;variants:primary">默认按钮</div>
+                    <span data-ui="type:Button;variants:primary;size:large">大尺寸</span>
+                    <button data-ui="type:Button;variants:primary;size:big">Big</button>
+                    <button data-ui="type:Button;variants:primary;size:huge">Huge</button>
+                    <button data-ui="type:Button;variants:success;size:massive">Massive</button>
                 </div>
             </section>
             <h2>全宽</h2>
@@ -47,7 +48,7 @@
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example">
-                    <div data-ui="type:Button" class="ui-button-fluid">Fluid</div>
+                    <div data-ui="type:Button;variants:primary" class="ui-button-fluid">Fluid</div>
                 </div>
             </section>
             <h2>状态</h2>
@@ -61,7 +62,7 @@
                 <div class="example">
                     <div data-ui="type:Button;" class="ui-hover">Hover</div>
                     <div data-ui="type:Button;" class="ui-active">Active</div>
-                    <div data-ui="type:Button;" class="ui-button-link">Link Button</div>
+                    <div data-ui="type:Button;variants:link">Link Button</div>
                 </div>
             </section>
             <h2>组合</h2>
@@ -74,9 +75,9 @@
                 </ul>
                 <div class="example">
                     <div class="ui-button-group ui-button-separated">
-                        <div data-ui="type:Button;">Hello</div>
-                        <div data-ui="type:Button;">World</div>
-                        <div data-ui="type:Button;">Wow</div>
+                        <div data-ui="type:Button;" class="ui-button-primary">Hello</div>
+                        <div data-ui="type:Button;" class="ui-button-primary">World</div>
+                        <div data-ui="type:Button;" class="ui-button-primary">Wow</div>
                     </div>
                 </div>
             </section>
@@ -89,8 +90,8 @@
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example">
-                    <div data-ui="type:Button;" class="ui-hover"><span class="ui-icon-user"></span> Hover</div>
-                    <div data-ui="type:Button;" class="ui-active">Active <span class="ui-icon-user"></span></div>
+                    <div data-ui="type:Button;" class="ui-hover ui-button-primary"><span class="ui-icon-user"></span> Hover</div>
+                    <div data-ui="type:Button;" class="ui-active ui-button-primary">Active <span class="ui-icon-user"></span></div>
                 </div>
             </section>
         </div>

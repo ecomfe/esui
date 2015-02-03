@@ -13,7 +13,7 @@
     <![endif]-->
     <link rel="stylesheet" href="../assets/prism.css" />
     <link rel="stylesheet" href="../assets/demo.css" />
-    <link rel="stylesheet" href="../../src/css/standard/main.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
 </head>
 <body>
     <h1>MonthView</h1>
@@ -64,22 +64,38 @@
                     </ul>
                     <div class="example">
                         <div class="demo-container">
-                            <div data-ui="type:MonthView;id:test1;disabled:1"
+                            <div data-ui="type:MonthView;id:test1;"
                              data-ui-range="2014-06-03,2014-12-03">
+                            </div>
+                            <div data-ui="type:MonthView;id:test10;disabled:1">
                             </div>
                             <div class="control-panel">
                                 <br>
-                                <button id="test1-btn0">改变value</button>
-                                <input type="textbox" id="test1-ipt0"></input>
                                 <br>
-                                <button id="test1-btn1">改变月</button>
-                                <input type="textbox" id="test1-ipt1"></input>
+                                <button id="test1-btn0" class="ui-button">改变value</button>
+                                <div class="ui-textbox">
+                                    <input type="textbox" id="test1-ipt0"></input>
+                                </div>
                                 <br>
-                                <button id="test1-btn2">改变年</button>
-                                <input type="textbox" id="test1-ipt2"></input>
                                 <br>
-                                <button id="test1-btn3">改变range</button>
-                                <input type="textbox" id="test1-ipt3"></input>
+                                <button id="test1-btn1" class="ui-button">改变月</button>
+                                <div class="ui-textbox">
+                                    <input type="textbox" id="test1-ipt1" class="ui-textbox"></input>
+                                </div>
+                                <br>
+                                <br>
+                                <button id="test1-btn2" class="ui-button">改变年</button>
+                                <div class="ui-textbox">
+                                    <input type="textbox" id="test1-ipt2" class="ui-textbox"></input>
+                                </div>
+                                <br>
+                                <br>
+                                <button id="test1-btn3" class="ui-button">改变range</button>
+                                <div class="ui-textbox">
+                                    <input type="textbox" id="test1-ipt3" class="ui-textbox"></input>
+                                </div>
+                                <br>
+                                <br>
                                 <p>预期结果：
                                     <span id="test1-result">
                                     </span>
