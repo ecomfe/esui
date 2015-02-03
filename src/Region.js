@@ -874,8 +874,12 @@ define(
 
                 lib.extend(properties, options);
 
-                if (properties.value) {
+                if (options.value) {
                     properties.rawValue = properties.value.split(',');
+                }
+
+                if (options.pureSelect === 'false') {
+                    properties.pureSelect = false;
                 }
 
                 if (properties.mode === 'multi') {
@@ -888,10 +892,6 @@ define(
                     properties.rawValue = '';
                     //增加单选型地域数据
                     initSingleData(this, properties);
-                }
-
-                if (properties.pureSelect === 'false') {
-                    properties.pureSelect = false;
                 }
 
                 this.setProperties(properties);
