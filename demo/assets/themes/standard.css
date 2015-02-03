@@ -2664,6 +2664,54 @@ span.ui-crumb-node {
   float: left;
   margin-right: 0.5em;
 }
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 通用提示用漂浮层
+  * @author dbear
+  */
+.ui-tiplayer {
+  background: #e9f9fa;
+  border: 1px solid #c7f3f6;
+  padding: 5px;
+  z-index: 1002;
+  position: absolute;
+  color: #666666;
+}
+.ui-tiplayer-title,
+.ui-tiplayer-body {
+  padding: 0;
+  margin: 0;
+}
+.ui-tiplayer-title {
+  margin: 0.5em 0;
+  font-size: 1.2em;
+}
+.ui-tiplayer-body {
+  margin: 0.5em 0;
+}
+.ui-tiplayer-rt,
+.ui-tiplayer-rb {
+  margin-left: -10px;
+}
+.ui-tiplayer-lt,
+.ui-tiplayer-lb {
+  margin-left: 10px;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 提示
+  * @author dbear
+  */
+.ui-tip {
+  display: inline-block;
+  vertical-align: middle;
+  color: #6ccdc0;
+  cursor: help;
+}
 /** 警告框，确认框 */
 .ui-dialog-alert .ui-dialog-icon,
 .ui-dialog-confirm .ui-dialog-icon {

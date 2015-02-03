@@ -289,11 +289,11 @@ define(
          * 生成结果为
          * -`ui-{styleType}-{variant1} ui-{styleType}-{variant2}...`
          *
-         * @param {Array} [variants] variant列表
          */
-        helper.addVariantClasses = function (variants) {
+        helper.addVariantClasses = function () {
             var me = this;
             var element = me.control.main;
+            var variants = me.control.variants;
             var cls = [];
 
             u.each(

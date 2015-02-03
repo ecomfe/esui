@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Button - ESUI Demo</title>
+        <script src="../assets/loader/esl.js"></script>
+        <script src="../../src/customShim.js"></script>
+        <script src="../assets/jquery-1.9.1.min.js"></script>
+        <script src="../assets/demo.js"></script>
+        <script src="../assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/demo.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
+    </head>
+    <body>
+        <h1>Tip</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>以下为分模式的Tip</h2>
+                <section class="intro">
+                    <p>基本Button。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <div>
+                            <h2>自动展现</h2>
+                            <dl>
+                                <dt>说明：</dt> 
+                                <dd>自动展现在隐藏之后，就自动转为点击触发展现</dd>
+                            </dl>
+                            <div>
+                                <h3>
+                                    普通自动展现
+                                    <div data-ui="type:Tip;id:auto-tip-normal;title:普通自动展现;content:普通自动展现内容;arrow:false;showMode:auto;size:mini">
+                                        
+                                    </div>
+                                </h3>
+                                <h3>
+                                    3s后隐藏
+                                    <div data-ui="type:Tip;id:auto-tip-auto;title:自动展现自动隐藏;content:3s后隐藏;arrow:1;showDuration:3000;showMode:auto;size:mini"></div>
+                                </h3>
+                            </div>
+                        </div>
+                        <div>
+                            <h2>点击展现</h2>
+                            <div>
+                                <h3>
+                                    点击展现
+                                    <div data-ui="type:Tip;id:click-tip-normal;title:点击展现;content:普通点击展现内容;arrow:1;showMode:click;size:mini"></div>
+                                </h3>
+                            </div>
+                        </div>
+                        <div>
+                            <h2>悬停展现</h2>
+                            <div>
+                                <h3>
+                                    悬停展现
+                                    <div data-ui="type:Tip;id:over-tip-normal;title:悬停展现;content:普通悬停展现内容;arrow:1;showMode:over;size:mini"></div>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Tip'
+            ],
+            function (ui, Tip) {
+                var controls = ui.init();
+            }
+        )
+        </script>
+    </body>
+</html>
