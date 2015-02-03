@@ -529,7 +529,7 @@ define(
 
                 lib.extend(properties, options);
 
-                if (properties.range && typeof properties.range === 'string') {
+                if (options.range && typeof options.range === 'string') {
                     properties.range = convertToRaw(properties.range);
                 }
 
