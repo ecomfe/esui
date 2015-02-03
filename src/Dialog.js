@@ -449,19 +449,19 @@ define(
 
                 lib.extend(properties, options);
 
-                if (properties.closeOnHide === 'false') {
+                if (options.closeOnHide === 'false') {
                     properties.closeOnHide = false;
                 }
 
-                if (properties.closeButton === 'false') {
+                if (options.closeButton === 'false') {
                     properties.closeButton = false;
                 }
 
-                if (properties.mask === 'false') {
+                if (options.mask === 'false') {
                     properties.mask = false;
                 }
 
-                if (properties.needFoot === 'false') {
+                if (options.needFoot === 'false') {
                     properties.needFoot = false;
                 }
 
