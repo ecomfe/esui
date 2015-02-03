@@ -57,7 +57,9 @@ define(
             u.each(
                 queue,
                 function (control) {
-                    triggerDOMEvent(control, element, e);
+                    if (control) {
+                        triggerDOMEvent(control, element, e);
+                    }
                 }
             );
         }
