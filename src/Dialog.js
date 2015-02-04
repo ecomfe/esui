@@ -447,23 +447,23 @@ define(
                     roles: {}
                 };
 
+                lib.extend(properties, options);
+
                 if (options.closeOnHide === 'false') {
-                    options.closeOnHide = false;
+                    properties.closeOnHide = false;
                 }
 
                 if (options.closeButton === 'false') {
-                    options.closeButton = false;
+                    properties.closeButton = false;
                 }
 
                 if (options.mask === 'false') {
-                    options.mask = false;
+                    properties.mask = false;
                 }
 
                 if (options.needFoot === 'false') {
-                    options.needFoot = false;
+                    properties.needFoot = false;
                 }
-
-                lib.extend(properties, options);
 
                 if (properties.needFoot) {
                     if (!properties.foot) {

@@ -20,21 +20,27 @@ define(
          * @ignore
          */
         function selectItem(e) {
-            this.layer.hide();
-
             var target = e.target;
+
             while (target !== e.currentTarget
                 && !lib.hasAttribute(target, 'data-index')
             ) {
                 target = target.parentNode;
             }
+            
+            var index = +target.getAttribute('data-index');
+            var item = this.datasource[index];
+
+            if (item.disabled) {
+                return;
+            }
+
+            this.layer.hide();
 
             if (target === e.currentTarget) {
                 return;
             }
 
-            var index = +target.getAttribute('data-index');
-            var item = this.datasource[index];
             if (item) {
                 if (typeof item.handler === 'function') {
                     item.handler.call(this, item, index);
@@ -82,6 +88,13 @@ define(
                         classes,
                         this.control.helper.getPartClasses('node-active')
                     );
+                }
+                // 为disabled的menu条目加上样式
+                if (this.control.datasource[i].disabled) {
+                    classes.push.apply(
+                        classes,
+                        this.control.helper.getPartClasses('node-disabled')
+                    );                    
                 }
 
                 html += '<li data-index="' + i + '"'
