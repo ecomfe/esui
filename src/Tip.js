@@ -85,7 +85,7 @@ define(
             };
 
             u.extend(properties, options);
-            if (properties.arrow === 'false') {
+            if (options.arrow === 'false') {
                 properties.arrow = false;
             }
             extractDOMProperties(this, properties);
