@@ -887,7 +887,7 @@ define(
 
             var properties = {
                 type: 'confirm',
-                skin: 'confirm',
+                variants: 'confirm',
                 title: ''
             };
 
@@ -979,7 +979,7 @@ define(
 
             var properties = {
                 type: 'warning',
-                skin: 'alert',
+                variants: 'alert',
                 title: ''
             };
 

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tree</title>
+    <script src="../assets/loader/esl.js"></script>
+    <script src="../../src/customShim.js"></script>
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/demo.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+</head>
+<body>
+    <h1>Tree</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>Tree</h2>
+            <section class="intro">
+                <p>默认样式</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>小箭头</h3>
+                    <div id="container"></div>
+                    <h3>文件夹</h3>
+                    <div id="container2"></div>
+                    <h3>三角</h3>
+                    <div id="container3"></div>
+                    <h3>没有根节点</h3>
+                    <div id="container4"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+        require(
+            [
+                'esui/Tree',
+                'esui/TreeStrategy'
+            ],
+            function (Tree, TreeStrategy) {
+                var datasource = {
+                    id: '1',
+                    text: '百度',
+                    children:[
+                        {
+                            id: '2',
+                            text: '联盟研发部',
+                            children: [
+                                { id: '21', text: 'RD' },
+                                { id: '22', text: 'FE' },
+                                { id: '23', text: 'QA' },
+                                { id: '24', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '3',
+                            text: '贴吧事业部',
+                            children: [
+                                { id: '31', text: 'RD' },
+                                { id: '32', text: 'FE' },
+                                { id: '33', text: 'QA' },
+                                { id: '34', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '4',
+                            text: '一半吃肉一般吃素部'
+                        }
+                    ]
+                };
+
+                var tree = new Tree({ id: 'normal', datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'hoverable icon angle', size: 'mini' });
+                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), variants: 'icon folder', selectMode: 'multiple', size: 'large'});
+                tree.appendTo(document.getElementById('container'));
+                tree2.appendTo(document.getElementById('container2'));
+                var tree3 = new Tree({ id: 'normal2', datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'icon caret' });
+                tree3.appendTo(document.getElementById('container3'));
+                var tree4 = new Tree({ hideRoot: true, datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'icon caret' });
+                tree4.appendTo(document.getElementById('container4'));
+            }
+        );
+    </script>
+</body>
+</html>

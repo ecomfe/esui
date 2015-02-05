@@ -29,7 +29,7 @@ require.config({
         },
         {
             'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.1/src',
+            'location': '../dep/eicons/1.0.0-alpha.3/src',
             'main': 'main.less'
         },
         {
