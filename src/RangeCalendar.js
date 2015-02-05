@@ -292,7 +292,7 @@ define(
             if (calendar.endlessCheck && type === 'end') {
                 endlessCheckDOM = ''
                     + '<input type="checkbox" title="不限结束" '
-                    + 'data-ui-type="CheckBox" data-ui-skin="custom"'
+                    + 'data-ui-type="CheckBox" data-ui-variants="custom"'
                     + 'data-ui-child-name="endlessCheck" />';
             }
             var tpl = ''

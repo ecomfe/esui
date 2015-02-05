@@ -299,6 +299,7 @@ define(
                 config.top = null;
             }
         }
+
         TipLayer.prototype = {
             /**
              * 控件类型
