@@ -14,6 +14,9 @@
 @esui-tree-node-icon-color: #666;
 @esui-tree-line-hover-background: #EBF2FC;
 
+.esui-tree {
+    display: block;
+}
 
 .@{ui-class-prefix}-tree {
     ul, li {
@@ -47,6 +50,11 @@
 .@{ui-class-prefix}-tree-content-wrapper-selected {
     .@{ui-class-prefix}-tree-item-content {
         font-weight: @esui-tree-selected-node-font-weight;
+        label {
+            .esf-checkbox-virtual-box-checked-theme();
+            // IE8 下就不显示了，谁让他不支持呢
+            // TODO: add indeterminate box
+        }
     }
 }
 

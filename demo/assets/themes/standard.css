@@ -3676,6 +3676,9 @@ span.ui-crumb-node {
   * @file 树样式
   * @author dbear
   */
+.esui-tree {
+  display: block;
+}
 .ui-tree {
   line-height: 2;
 }
@@ -3710,6 +3713,25 @@ span.ui-crumb-node {
 }
 .ui-tree-content-wrapper-selected .ui-tree-item-content {
   font-weight: bold;
+}
+.ui-tree-content-wrapper-selected .ui-tree-item-content label:before {
+  background: #6ccdc0;
+  border-color: #6ccdc0;
+}
+.ui-tree-content-wrapper-selected .ui-tree-item-content label:after {
+  position: absolute;
+  top: 0.2em;
+  left: 0.16em;
+  width: 0.7em;
+  height: 0.4em;
+  border: 0.2em solid #ffffff;
+  border-top: none;
+  border-right: none;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 .ui-tree-sub-root-expanded {
   display: block;

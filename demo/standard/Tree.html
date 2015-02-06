@@ -38,6 +38,9 @@
                     <div id="container3"></div>
                     <h3>没有根节点</h3>
                     <div id="container4"></div>
+
+                    <h3>checkbox</h3>
+                    <div id="container5"></div>
                 </div>
             </section>
         </div>
@@ -81,13 +84,15 @@
                 };
 
                 var tree = new Tree({ id: 'normal', datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'hoverable icon angle', size: 'mini' });
-                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), variants: 'icon folder', selectMode: 'multiple', size: 'large'});
+                var tree2 = new Tree({ checkboxes: true, datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), variants: 'icon folder', selectMode: 'multiple', size: 'large'});
                 tree.appendTo(document.getElementById('container'));
                 tree2.appendTo(document.getElementById('container2'));
                 var tree3 = new Tree({ id: 'normal2', datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'icon caret' });
                 tree3.appendTo(document.getElementById('container3'));
                 var tree4 = new Tree({ hideRoot: true, datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'icon caret' });
                 tree4.appendTo(document.getElementById('container4'));
+                var tree5 = new Tree({ checkboxes: true, datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true, variants: 'icon caret' });
+                tree5.appendTo(document.getElementById('container5'));
             }
         );
     </script>
