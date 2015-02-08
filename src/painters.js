@@ -61,11 +61,11 @@ define(
         painters.attribute = function (name, attribute, value) {
             return {
                 name: name,
-                attribute: attribute || name, 
+                attribute: attribute || name,
                 value: value,
                 paint: function (control, value) {
                     value = this.value == null ? value : this.value;
-                    control.main.setAttribute(this.attribute, value);
+                    control.main.setAttribute(this.attribute, value || '');
                 }
             };
         };
@@ -80,7 +80,7 @@ define(
             left: true,
             fontSize: true,
             padding: true,
-            paddingTop: true, 
+            paddingTop: true,
             paddingRight: true,
             paddingBottom: true,
             paddingLeft: true,
@@ -251,7 +251,7 @@ define(
                     var propertyNames = [].concat(painter.name);
 
                     // 以下2种情况下要调用：
-                    // 
+                    //
                     // - 第一次重会（没有`changes`）
                     // - `changesIndex`有任何一个负责的属性的变化
                     var shouldPaint = !changes;
@@ -274,14 +274,14 @@ define(
                         var name = propertyNames[j];
                         properties.push(this[name]);
                         // 从索引中删除，为了后续构建`unpainted`数组
-                        delete index[name]; 
+                        delete index[name];
                     }
                     // 绘制
                     try {
                         painter.paint.apply(painter, properties);
                     }
                     catch (ex) {
-                        var paintingPropertyNames = 
+                        var paintingPropertyNames =
                             '"' + propertyNames.join('", "') + '"';
                         var error = new Error(
                             'Failed to paint [' + paintingPropertyNames + '] '
