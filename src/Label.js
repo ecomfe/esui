@@ -64,7 +64,9 @@ define(
          * @protected
          */
         Label.prototype.initOptions = function (options) {
-            var properties = {};
+            var properties = {
+                title: ''
+            };
             u.extend(properties, options);
             /**
              * @property {string} tagName
