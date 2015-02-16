@@ -65,7 +65,8 @@ define(
                 value: value,
                 paint: function (control, value) {
                     value = this.value == null ? value : this.value;
-                    control.main.setAttribute(this.attribute, value || '');
+                    value = value == null ? '' : value;
+                    control.main.setAttribute(this.attribute, value);
                 }
             };
         };
