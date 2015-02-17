@@ -29,7 +29,7 @@ require.config({
         },
         {
             'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.1/src',
+            'location': '../dep/eicons/1.0.0-alpha.3/src',
             'main': 'main.less'
         },
         {
@@ -87,6 +87,7 @@ $(function () {
         '<li><a href="Table.html">Table</a></li>' +
         '<li><a href="TextBox.html">TextBox</a></li>' +
         '<li><a href="Tip.html">Tip</a></li>' +
+        '<li><a href="TipLayer.html">TipLayer</a></li>' +
         '<li><a href="Tree.html">Tree</a></li>' +
         '<li><a href="Toast.html">Toast</a></li>' +
         '<li><a href="Wizard.html">Wizard</a></li>';

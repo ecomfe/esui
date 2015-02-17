@@ -12,7 +12,6 @@ define(
         require('./MonthView');
         require('./TextBox');
 
-
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
@@ -34,7 +33,6 @@ define(
         }
 
         lib.inherits(RichCalendarLayer, Layer);
-
 
         RichCalendarLayer.prototype.render = function (element) {
             document.body.appendChild(element);
@@ -81,8 +79,6 @@ define(
                 }
             );
         }
-
-
 
         /**
          * 搭建单个日历
@@ -139,7 +135,6 @@ define(
                     // 这里直接赋值是因为不想触发这些日历的change事件
                     // 而且因为只是同步rawValue，不需要重绘页面
                     monthView.setRawValueWithoutFireChange(rawValue);
-
                 }
             }
             calendar.rawValue = rawValue;
@@ -181,7 +176,6 @@ define(
                 }
             }
         }
-
 
         function paintCals(calendar, bindEvent) {
             var displayNum = calendar.displayNum;
@@ -675,7 +669,7 @@ define(
                             calendar.layer.hide();
                         }
                         // TODO: read only 的情况没有考虑
-                        var panel = calendar.children[0];
+                        var panel = calendar.getChild('generalPanel');
                         if (disabled) {
                             panel.helper.disableChildren();
                             calendar.helper.disableChildren();
@@ -705,7 +699,6 @@ define(
             getRawValue: function () {
                 return this.rawValue;
             },
-
 
             /**
              * 将value从原始格式转换成string

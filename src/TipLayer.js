@@ -31,6 +31,7 @@ define(
         /**
          * 渲染控件前重绘控件
          *
+         * @param {Object} options 初始化参数
          */
         function parseMain(options) {
             var main = options.main;
@@ -53,14 +54,14 @@ define(
             }
 
             options.roles = roles;
-
         }
 
         /**
          * 构建提示层标题栏
          *
-         * @param {ui.TipLayer} 控件对象
+         * @param {ui.TipLayer} control 控件对象
          * @param {HTMLElement} mainDOM head主元素
+         * @return {ui.Label} Label控件
          * @inner
          */
         function createHead(control, mainDOM) {
@@ -98,6 +99,7 @@ define(
          * @param {string} type foot | body
          * @param {HTMLElement} mainDOM body或foot主元素
          * @inner
+         * @return {ui.Panel} Panel
          */
         function createBF(control, type, mainDOM) {
             if (mainDOM) {
@@ -146,7 +148,7 @@ define(
          *
          * @param {ui.TipLayer} tipLayer 控件
          * @param {HTMLElement} targetElement 提示层绑定元素
-         * @param {object} 定位参数
+         * @param {Object} options 定位参数
          * @inner
          */
         function resizeHandler(tipLayer, targetElement, options) {
@@ -159,7 +161,6 @@ define(
                 options
             );
         }
-
 
         /**
          * 延迟展现
@@ -205,6 +206,100 @@ define(
             return control.main;
         }
 
+        function addTipLayerClasses(tipLayer, element, arrowClass) {
+            var controlHelper = tipLayer.helper;
+            var selectors = [].concat(
+                controlHelper.getPartClasses(),
+                controlHelper.getPartClasses(arrowClass)
+            );
+
+            if (tipLayer.size) {
+                selectors.push(
+                    controlHelper.getPrefixClass(tipLayer.size)
+                );
+            }
+            lib.addClasses(element, selectors);
+            controlHelper.addVariantClasses();
+
+            var arrow = lib.g(controlHelper.getId('arrow'));
+            if (arrow) {
+                lib.addClasses(
+                    element,
+                    controlHelper.getPartClasses('arrow')
+                );
+                lib.addClasses(
+                    element,
+                    controlHelper.getPartClasses(
+                        'arrow-' + arrowClass
+                    )
+                );
+            }
+        }
+
+        function setupConfig(config, targetPosition, elementWidth, elementHeight) {
+            // 计算出所有的位置
+            // 目标元素 —— 层元素
+            // left —— right
+            var viewWidth = lib.page.getViewWidth();
+            var viewHeight = lib.page.getViewHeight();
+            var gapLR = targetPosition.left - elementWidth;
+            // right —— left
+            var gapRL = viewWidth - targetPosition.right - elementWidth;
+
+            // top —— top
+            var gapTT = viewHeight - targetPosition.top - elementHeight;
+            // bottom —— bottom
+            var gapBB = targetPosition.bottom - elementHeight;
+
+            if (gapLR >= 0) {
+                if (gapRL >= 0) {
+                    // 如果没有设置，哪边大放哪边
+                    if (!config.right && !config.left) {
+                        if (gapRL < gapLR) {
+                            config.left = 'right';
+                            config.right = null;
+                        }
+                        else {
+                            config.right = 'left';
+                            config.left = null;
+                        }
+                    }
+                }
+                else {
+                    config.left = 'right';
+                    config.right = null;
+                }
+            }
+            else {
+                config.right = 'left';
+                config.left = null;
+            }
+
+            if (gapTT >= 0) {
+                if (gapBB >= 0) {
+                    // 如果没有设置，哪边大放哪边
+                    if (!config.bottom && !config.top) {
+                        if (gapBB < gapTT) {
+                            config.top = 'top';
+                            config.bottom = null;
+                        }
+                        else {
+                            config.bottom = 'bottom';
+                            config.top = null;
+                        }
+                    }
+                }
+                else {
+                    config.top = 'top';
+                    config.bottom = null;
+                }
+            }
+            else {
+                config.bottom = 'bottom';
+                config.top = null;
+            }
+        }
+
         TipLayer.prototype = {
             /**
              * 控件类型
@@ -221,7 +316,7 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                //由main解析
+                // 由main解析
                 parseMain(options);
                 /**
                  * 默认TipLayer选项配置
@@ -269,8 +364,6 @@ define(
                     this.main.appendChild(arrow);
                 }
             },
-
-
 
             /**
              * 重新渲染视图
@@ -360,21 +453,21 @@ define(
                     paint:
                         function (tipLayer, targetDOM, targetControl,
                             showMode, positionOpt, delayTime) {
-                        var options = {
-                            targetDOM: targetDOM,
-                            targetControl: targetControl,
-                            showMode: showMode,
-                            delayTime: delayTime
-                        };
-                        if (positionOpt) {
-                            positionOpt = positionOpt.split('|');
-                            options.positionOpt = {
-                                top: positionOpt[0] || 'top',
-                                right: positionOpt[1] || 'left'
+                            var options = {
+                                targetDOM: targetDOM,
+                                targetControl: targetControl,
+                                showMode: showMode,
+                                delayTime: delayTime
                             };
+                            if (positionOpt) {
+                                positionOpt = positionOpt.split('|');
+                                options.positionOpt = {
+                                    top: positionOpt[0] || 'top',
+                                    right: positionOpt[1] || 'left'
+                                };
+                            }
+                            tipLayer.attachTo(options);
                         }
-                        tipLayer.attachTo(options);
-                    }
                 }
             ),
 
@@ -398,7 +491,7 @@ define(
             autoPosition: function (target, options) {
                 var tipLayer = this;
                 var element = this.main;
-                options = options || { left: 'right', top: 'top' };
+                options = options || {left: 'right', top: 'top'};
 
                 var rect = target.getBoundingClientRect();
                 var offset = lib.getOffset(target);
@@ -420,71 +513,10 @@ define(
                 element.style.display = 'none';
 
                 var config = lib.clone(options);
-
-
-                var viewWidth = lib.page.getViewWidth();
-                var viewHeight = lib.page.getViewHeight();
-
-                // 计算出所有的位置
-                // 目标元素 —— 层元素
-                // left —— right
-                var gapLR = targetPosition.left - elementWidth;
-                // right —— left
-                var gapRL = viewWidth - targetPosition.right - elementWidth;
-
-                // top —— top
-                var gapTT = viewHeight - targetPosition.top - elementHeight;
-                // bottom —— bottom
-                var gapBB = targetPosition.bottom - elementHeight;
-
-
-                if (gapLR >= 0) {
-                    if (gapRL >= 0){
-                        // 如果没有设置，哪边大放哪边
-                        if (!config.right && !config.left) {
-                            if (gapRL < gapLR) {
-                                config.left = 'right';
-                                config.right = null;
-                            }
-                            else {
-                                config.right = 'left';
-                                config.left = null;
-                            }
-                        }
-                    }
-                    else {
-                        config.left = 'right';
-                        config.right = null;
-                    }
-                }
-                else {
-                    config.right = 'left';
-                    config.left = null;
-                }
-
-                if (gapTT >= 0) {
-                    if (gapBB >= 0){
-                        // 如果没有设置，哪边大放哪边
-                        if (!config.bottom && !config.top) {
-                            if (gapBB < gapTT) {
-                                config.top = 'top';
-                                config.bottom = null;
-                            }
-                            else {
-                                config.bottom = 'bottom';
-                                config.top = null;
-                            }
-                        }
-                    }
-                    else {
-                        config.top = 'top';
-                        config.bottom = null;
-                    }
-                }
-                else {
-                    config.bottom = 'bottom';
-                    config.top = null;
-                }
+                setupConfig(
+                    config, targetPosition,
+                    elementWidth, elementHeight
+                );
 
                 var properties = {};
                 var arrowClass;
@@ -516,27 +548,8 @@ define(
 
                 element.style.display = previousDisplayValue;
 
-                element.className = ''
-                    + helper.getPartClasses(tipLayer).join(' ')
-                    + ' '
-                    + helper.getPartClasses(tipLayer, arrowClass).join(' ');
-                // 这边似乎是为了避免remove arrow class 所以重新生成了className
-                // 需要补充一下variants和size的selector
-                tipLayer.helper.addVariantClasses();
-                if (tipLayer.size) {
-                    element.className += ' '
-                        + tipLayer.helper.getPrefixClass(tipLayer.size);
-                }
+                addTipLayerClasses(tipLayer, element, arrowClass);
 
-                var arrow = lib.g(helper.getId(tipLayer, 'arrow'));
-                if (arrow) {
-                    arrow.className = ''
-                        + helper.getPartClasses(tipLayer, 'arrow').join(' ')
-                        + ' '
-                        + helper.getPartClasses(
-                            tipLayer, 'arrow' + '-' + arrowClass
-                        ).join(' ');
-                }
                 tipLayer.renderLayer(element, properties);
             },
 
@@ -544,7 +557,7 @@ define(
              * 渲染层样式
              *
              * @param {HTMLElement} element 提示层元素
-             * @param {object} 定位参数
+             * @param {Object} options 定位参数
              * @inner
              */
             renderLayer: function (element, options) {
@@ -690,6 +703,7 @@ define(
             /**
              * 显示提示层
              * @param {HTMLElement} targetElement 提示层的捆绑元素
+             * @param {Object} options 参数
              *
              */
             show: function (targetElement, options) {
@@ -764,7 +778,6 @@ define(
                 this.setProperties({'foot': foot});
             },
 
-
             /**
              * 销毁控件
              */
@@ -773,14 +786,12 @@ define(
                     return;
                 }
                 this.hide();
-                //移除dom
+                // 移除dom
                 var domId = this.main.id;
                 lib.removeNode(domId);
                 Control.prototype.dispose.apply(this, arguments);
             }
-
         };
-
 
         /**
          * 一次提醒提示
@@ -789,6 +800,7 @@ define(
          * {HTMLElement} attachedNode 绑定提示的节点
          * {Function} onok 点击底部按钮触发事件
          * {string} okText 按钮显示文字
+         * @return {ui.TipLayer} tipLayer
          */
         TipLayer.onceNotice = function (args) {
             var tipLayerPrefix = 'tipLayer-once-notice';
@@ -799,7 +811,6 @@ define(
              *
              * @private
              * @param {ui.TipLayer} tipLayer 控件对象
-             * @param {string} 事件类型
              */
             function btnClickHandler(tipLayer) {
                 // 有可能在参数里设置了处理函数
@@ -822,7 +833,7 @@ define(
 
             lib.extend(properties, args);
 
-            //创建main
+            // 创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
 
@@ -858,10 +869,9 @@ define(
                 targetDOM: args.targetDOM,
                 targetControl: args.targetControl,
                 showMode: 'auto',
-                positionOpt: { top: 'top', right: 'left' }
+                positionOpt: {top: 'top', right: 'left'}
             });
             return tipLayer;
-
         };
 
 
