@@ -5,64 +5,57 @@
   * @file 树样式
   * @author dbear
   */
-@import "mixin.less";
-@import "variable.less";
+
+@esui-tree-line-height: 2;
+@esui-tree-selected-node-font-weight: bold;
+@esui-tree-node-indent: 1.5em;
+@esui-tree-node-text-color: #666;
+
+@esui-tree-node-icon-color: #666;
+@esui-tree-line-hover-background: #EBF2FC;
+
+.esui-tree {
+    display: block;
+}
+
 .@{ui-class-prefix}-tree {
     ul, li {
         .reset-list();
     }
+    line-height: @esui-tree-line-height;
 }
+
 .@{ui-class-prefix}-tree-node {
-    .interactive-cursor ();
+    cursor: pointer;
     overflow: hidden;
-    line-height: 22px;
+}
+
+.@{ui-class-prefix}-tree-node-indicator {
+    .indent-text();
+    vertical-align: middle;
+    width: @esui-tree-node-indent;
+    float: left;
 }
 
 .@{ui-class-prefix}-tree-node-empty {
     cursor: default;
 }
 
-.@{ui-class-prefix}-tree-content-wrapper {
-    border-left: 4px solid #fff;
-    padding-left: 15px;
-}
-
-// 图标
-.@{ui-class-prefix}-tree-node-indicator {
-    .indent-text();
-    vertical-align: middle;
-    margin: 4px 3px 0 0;
-    float: left;
-    width: 14px;
-    height: 14px;
-    overflow: hidden;
-    .background(url(../img/esui-open-icon.png), no-repeat, 0, 0, transparent);
-}
-
-// 展开
-.@{ui-class-prefix}-tree-node-indicator-expanded {
-    .background(url(../img/esui-close-icon.png), no-repeat, 0, 0, transparent);
-}
-
-// 收起
-.@{ui-class-prefix}-tree-node-indicator-collapsed {
-}
-
-// 无子节点或占位
-.@{ui-class-prefix}-tree-node-indicator-empty,
-.@{ui-class-prefix}-tree-node-indicator-previous,
-.@{ui-class-prefix}-tree-node-indicator-far-previous {
-    background-image: none;
-}
-
 // 节点文字
 .@{ui-class-prefix}-tree-item-content {
     .ellipse-overflow();
+    color: @esui-tree-node-text-color;
 }
 
 .@{ui-class-prefix}-tree-content-wrapper-selected {
-    background: #c9c9c9;
-    border-left: 4px solid #4765ca;
+    .@{ui-class-prefix}-tree-item-content {
+        font-weight: @esui-tree-selected-node-font-weight;
+        label {
+            .esf-checkbox-virtual-box-checked-theme();
+            // IE8 下就不显示了，谁让他不支持呢
+            // TODO: add indeterminate box
+        }
+    }
 }
 
 .@{ui-class-prefix}-tree-sub-root-expanded {
@@ -88,19 +81,69 @@
     }
 }
 
-.@{skin-class-prefix}-folder-tree-node-indicator {
-    .background(url(../img/esui-folder.png), no-repeat, 0, -6px, transparent);
-}
-.@{skin-class-prefix}-folder-tree-node-indicator-expanded {
-    background-position: 0 -30px;
-}
-// 收起
-.@{skin-class-prefix}-folder-tree-node-indicator-collapsed {
+.@{ui-class-prefix}-tree-angle {
+    // 展开
+    .@{ui-class-prefix}-tree-node-indicator-expanded {
+        .eicons-icon(angle-down);
+    }
+
+    // 收起
+    .@{ui-class-prefix}-tree-node-indicator-collapsed {
+        .eicons-icon(angle-right);
+    }
 }
 
-// 无子节点或占位
-.@{skin-class-prefix}-folder-tree-node-indicator-empty,
-.@{skin-class-prefix}-folder-tree-node-indicator-previous,
-.@{skin-class-prefix}-folder-tree-node-indicator-far-previous {
-    background-image: none;
+// 文件夹图标
+.@{ui-class-prefix}-tree-folder {
+    .@{ui-class-prefix}-tree-node-indicator-expanded {
+        .eicons-icon(folder-open);
+    }
+    .@{ui-class-prefix}-tree-node-indicator-collapsed {
+        .eicons-icon(folder);
+    }
+    .@{ui-class-prefix}-tree-node-indicator-empty {
+        .eicons-icon(file);
+    }
+}
+
+// 小三角
+.@{ui-class-prefix}-tree-caret {
+    .@{ui-class-prefix}-tree-node-indicator-expanded {
+        .eicons-icon(caret-down);
+    }
+    .@{ui-class-prefix}-tree-node-indicator-collapsed {
+        .eicons-icon(caret-right);
+    }
+}
+
+// 要使用Web Font图标
+.@{ui-class-prefix}-tree-icon {
+    .@{ui-class-prefix}-tree-node-indicator {
+        position: relative;
+        &:before, span {
+            text-indent: 0;
+            .ecions-font-style();
+            position: absolute;
+            width: 100%;
+            line-height: @esui-tree-line-height;
+            left: 0;
+            top: 0;
+            text-align: center;
+            color: @esui-tree-node-icon-color;
+        }
+    }
+
+    .@{ui-class-prefix}-tree-node-indicator-previous,
+    .@{ui-class-prefix}-tree-node-indicator-far-previous {
+        &:before {
+            content: '';
+        }
+    }
+}
+
+// 行hover效果
+.@{ui-class-prefix}-tree-hoverable {
+    .@{ui-class-prefix}-tree-content-wrapper:hover {
+        background: @esui-tree-line-hover-background;
+    }
 }

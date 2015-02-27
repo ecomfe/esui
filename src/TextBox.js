@@ -300,6 +300,7 @@ define(
              */
             this.fire('iconclick');
         }
+
         /**
          * 初始化DOM结构
          *

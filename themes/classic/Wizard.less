@@ -1,0 +1,124 @@
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Wizard样式
+  * @author dbear
+  */
+@import "mixin.less";
+@import "variable.less";
+ol { 
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    zoom: 1;
+}
+.@{ui-class-prefix}-wizard {
+    .clear-float();
+
+    li {
+        list-style :none;
+        padding: 0;
+        float: left;
+    }
+}
+
+.@{ui-class-prefix}-wizard-panel-hidden {
+    display: none;
+}
+
+
+.@{skin-class-prefix}-default-wizard {
+    @common-color: #E4E4E4;
+    @done-color: #ccf9b8;
+    @active-color: #44ba0f;
+
+    @arrow-height: 24px;
+
+    @arrow-gap: 4px;
+    .@{ui-class-prefix}-wizard-node {
+        color: #404040;
+        font-size: 14px;
+        font-weight: bold;
+        height: @arrow-height;
+        line-height: @arrow-height;
+        padding: 0 15px 0 0;
+        *padding: 0;
+        text-align: center;
+        position: relative;
+        background: #fff;
+
+        span {
+            margin-right: @arrow-gap;
+            color: #000;
+            height: @arrow-height;
+            float: left;
+            position: relative;
+            text-align: center;
+            width: auto;
+            padding: 0 10px;
+            background-color: @common-color;
+
+            &:after {
+                border-bottom: (@arrow-height/2) solid transparent;
+                border-left: (@arrow-height/2) solid @common-color;
+                border-top: (@arrow-height/2) solid transparent;
+                content: " ";
+                height: 0;
+                position: absolute;
+                right: -(@arrow-height/2);
+                top: 0;
+                width: 0;
+            }
+            &:before {
+                border-bottom: (@arrow-height/2) solid @common-color;
+                border-left: (@arrow-height/2) solid transparent;
+                border-top: (@arrow-height/2) solid @common-color;
+                content: "";
+                height: 0;
+                left: -(@arrow-height/2);
+                position: absolute;
+                top: 0;
+                width: 0;
+            }
+        }
+    }
+
+    .@{ui-class-prefix}-wizard-node-done {
+        span {
+            background-color: @done-color;
+            color: #000;
+
+            &:after {
+                border-left: (@arrow-height/2) solid @done-color;
+            }
+            &:before {
+                border-bottom: (@arrow-height/2) solid @done-color;
+                border-top: (@arrow-height/2) solid @done-color;
+            }
+        }
+    }
+
+    .@{ui-class-prefix}-wizard-node-last {
+        background: none;
+    }
+
+    .@{ui-class-prefix}-wizard-node-active-prev {
+    }
+
+    .@{ui-class-prefix}-wizard-node-active {
+        span {
+            background-color: @active-color;
+            color: #FFFFFF;
+            &:after {
+                border-left: (@arrow-height/2) solid @active-color;
+            }
+            &:before {
+                border-bottom: (@arrow-height/2) solid @active-color;
+                border-top: (@arrow-height/2) solid @active-color;
+            }
+        }
+
+    }
+    
+}

@@ -213,11 +213,6 @@ define(
                 controlHelper.getPartClasses(arrowClass)
             );
 
-            if (tipLayer.size) {
-                selectors.push(
-                    controlHelper.getPrefixClass(tipLayer.size)
-                );
-            }
             lib.addClasses(element, selectors);
             controlHelper.addVariantClasses();
 

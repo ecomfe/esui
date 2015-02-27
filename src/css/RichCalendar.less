@@ -1,25 +1,70 @@
  /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @file 多月份多选日历
  * @author dbear
  */
-@import "mixin.less";
-@import "variable.less";
-.@{ui-class-prefix}-richcalendar-layer {
-    background: #fff;
-    .clear-float();
-    border: 1px solid #A8ADB6;
-    .box-shadow(3px 4px 4px -4px);
-    margin-top: 1px;
-    padding: 5px 5px 5px 0;
-    .@{ui-class-prefix}-richcalendar-month-container {
-        float: left;
-        margin-left: 5px;
+
+@esui-rich-calendar-padding: 1em;
+@esui-rich-calendar-background: #ebebeb;
+
+@esui-rich-calendar-calendar-icon-color: #666;
+
+@esui-rich-calendar-general-info-height: 40px;
+@esui-rich-calendar-general-info-color: #333;
+@esui-rich-calendar-general-info-font-size: 12px;
+@esui-rich-calendar-general-info-total-num-color: @primary-color;
+
+@esui-rich-calendar-layer-background: transparent;
+@esui-rich-calendar-layer-border: none;
+@esui-rich-calendar-layer-padding: 0 0 2px 0;
+
+@esui-rich-calendar-margin: .5em;
+
+.@{ui-class-prefix}-richcalendar {
+    display: inline-block;
+    position: relative;
+    padding: @esui-rich-calendar-padding;
+    background: @esui-rich-calendar-background;
+
+    .@{ui-class-prefix}-button-link {
+        padding: 0;
+        line-height: 1em;
+        height: 1em;
+        min-height: 1em;
     }
 }
 
-.@{ui-class-prefix}-richcalendar-layer-hidden {
-    display: none;
+.@{ui-class-prefix}-richcalendar-general-info {
+    line-height: 1;
+}
+
+.@{ui-class-prefix}-richcalendar-total-num {
+    color: @esui-rich-calendar-general-info-total-num-color;
+}
+
+.@{ui-class-prefix}-richcalendar-text {
+    margin-top: 1em;
+    .@{ui-class-prefix}-button {
+        position: absolute;
+        top: @esui-rich-calendar-padding;
+        right: @esui-rich-calendar-padding;
+        color: @esui-rich-calendar-calendar-icon-color;
+        &:hover {
+            color: @esui-rich-calendar-calendar-icon-color;
+        }
+    }
+}
+
+// 浮层
+.@{ui-class-prefix}-richcalendar-layer {
+    padding: @esui-rich-calendar-layer-padding;
+    border: @esui-rich-calendar-layer-border;
+    background: @esui-rich-calendar-layer-background;
+
+    .@{ui-class-prefix}-richcalendar-month-container {
+        float: left;
+        margin-right: @esui-rich-calendar-margin;
+    }
 }

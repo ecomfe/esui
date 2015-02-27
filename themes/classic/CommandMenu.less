@@ -1,0 +1,98 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 对话框样式
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-commandmenu {
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
+    border: 1px solid #D8D8D8;
+    border-radius: 3px 3px 3px 3px;
+    .interactive-cursor ();
+    .inline-block ();
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+    padding: 3px 3px 3px 5px;
+    width: 100px;
+
+    &:hover,
+	&:focus {
+    	.linear-gradient-background-with-image (
+       		top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png",
+            right, -36px, #f3f3f3);
+	}
+
+	&:active {
+    	.linear-gradient-background-with-image (
+       		top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png",
+            right, -36px, #f3f3f3);
+	}
+}
+
+.@{ui-class-prefix}-commandmenu-active,
+.@{ui-class-prefix}-commandmenu-active:hover,
+.@{ui-class-prefix}-commandmenu-active:focus {
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png",
+        right, -69px, #f3f3f3);
+}
+
+.@{ui-class-prefix}-commandmenu-layer {
+    .reset-list ();
+    .box-sizing (border-box);
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #A8ADB6;
+    font-size: 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0 1px;
+    position: absolute;
+    text-align: left;
+    z-index: 1002;
+}
+
+.@{ui-class-prefix}-commandmenu-node {
+    color: #333333;
+    .interactive-cursor ();
+    height: 22px;
+    line-height: 22px;
+    margin: 0 0 1px;
+    padding: 0 4px;
+    overflow: hidden;
+
+    span {
+        display: block;        
+    }
+
+    &:hover {
+        background-color: #F1F1F1;
+    }    
+}
+
+.@{ui-class-prefix}-commandmenu-node-disabled {
+    color: #999;
+}
+
+.@{ui-class-prefix}-commandmenu-layer-selected {
+    background-color: #E0E0E0;
+    border: 1px solid #DDDDDD;
+}
+
+.@{ui-class-prefix}-commandmenu-layer-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-commandmenu-disabled {
+    color: #999999;
+    &:hover,
+    &:focus,
+    &:active {
+        .linear-gradient-background-with-image (
+            top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
+    }
+}

@@ -1,0 +1,80 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 下拉选择样式
+ * @author dbear
+ */
+
+.@{ui-class-prefix}-select {
+    .linear-gradient-background-with-image (
+    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
+    border: 1px solid #d8d8d8;
+    border-radius: 3px;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+    padding: 3px 20px 3px 5px;
+    width: 50px;
+    color: #666;
+}
+
+.@{ui-class-prefix}-select:hover,
+.@{ui-class-prefix}-select:focus {
+    .linear-gradient-background-with-image (
+    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -36px, #fff);
+}
+
+.@{ui-class-prefix}-select:active {
+    .linear-gradient-background-with-image (
+    top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png", right, -36px, #fff);
+}
+
+.@{ui-class-prefix}-select-active,
+.@{ui-class-prefix}-select-active:hover,
+.@{ui-class-prefix}-select-active:focus {
+    .linear-gradient-background-with-image (
+    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -67px, #fff);
+}
+
+.@{ui-class-prefix}-select-layer {
+    background: #fff;
+    border: 1px solid #a8adb6;
+    font-size: 12px;
+    overflow-y: auto;
+}
+
+.@{ui-class-prefix}-select-item {
+    color: #333;
+    height: auto;
+    line-height: 22px;
+    padding: 0 4px;
+}
+
+.@{ui-class-prefix}-select-item-selected {
+    background-color: #e0e0e0;
+    border: 1px solid #ddd;
+    padding: 0 3px;
+}
+
+.@{ui-class-prefix}-select-item:hover {
+    background-color: #f1f1f1;
+}
+
+.@{ui-class-prefix}-select-item-disabled {
+    color: #999;
+
+    &:hover {
+        background: transparent;
+    }
+}
+
+.@{ui-class-prefix}-select-disabled,
+.@{ui-class-prefix}-select-read-only {
+    color: #d8d8d8;
+    &:hover,
+    &:focus {
+        .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #f3f3f3);
+    }
+}

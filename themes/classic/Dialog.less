@@ -1,0 +1,186 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 对话框样式
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+
+// 这是一个Dialog的基类mixin，方便子类继承
+.ui-dialog-mixin() {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 2px solid #394459;
+    .border-radius(3px, 3px, 3px, 3px);
+    position: absolute;
+    width: 600px;
+    z-index: @dialog-z-index;
+}
+
+.ui-dialog-head-mixin() {
+    .background(url(../img/esui-dialog-head-bg.png), repeat);
+    color: #FFFFFF;
+    font-weight: bold;
+    height: 26px;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    .user-select();
+}
+
+.ui-dialog-close-icon-mixin() {
+    .background(url(../img/esui-dialog-head-close.png));
+    height: 13px;
+    width: 13px;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    .interactive-cursor();
+}
+
+.ui-dialog-title-mixin() {
+    padding-left: 12px;
+    line-height: 28px;
+    font-size: 15px;
+    line-height: 26px;
+}
+
+.ui-dialog-body-mixin() {
+    padding: 10px 8px 8px;
+    overflow: hidden;
+    zoom: 1;
+}
+
+.ui-dialog-foot-panel-mixin() {
+    .user-select();
+    margin: 0px 8px 3px;
+    padding: 15px 0 20px 25px;
+    border-top: 1px solid #F0F0F0;
+    overflow: hidden;
+    zoom: 1;
+}
+
+
+.ui-dialog-foot-mixin() {
+    float: right;
+    .@{ui-class-prefix}-button {
+        margin-right: 6px;
+    }
+}
+
+.ui-dialog-draggable-mixin() {
+    .@{ui-class-prefix}-dialog-head {
+        cursor: move;
+    }
+}
+
+.ui-dialog-dragging-mixin() {
+    .user-select();
+}
+
+
+.ui-dialog-mask-mixin() {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // 兼容IE6
+    _position: absolute;
+    _width: 100%;
+    _height: 100%;
+    background: #333;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    z-index: @mask-z-index;
+}
+
+
+// mixin end
+.@{ui-class-prefix}-dialog {
+    .ui-dialog-mixin();
+}
+
+.@{ui-class-prefix}-dialog-head {
+    .ui-dialog-head-mixin();
+}
+
+.@{ui-class-prefix}-dialog-close-icon {
+    .ui-dialog-close-icon-mixin();
+}
+
+.@{ui-class-prefix}-dialog-title {
+    .ui-dialog-title-mixin();
+}
+
+.@{ui-class-prefix}-dialog-body {
+    .ui-dialog-body-mixin();
+}
+
+.@{ui-class-prefix}-dialog-foot-panel {
+    .ui-dialog-foot-panel-mixin();
+}
+
+.@{ui-class-prefix}-dialog-foot {
+    .ui-dialog-foot-mixin();
+    .@{ui-class-prefix}-button {
+        margin-right: 6px;
+        height: 26px;
+        line-height: 26px;
+        margin-right: 6px;
+        width: 50px;
+    }
+}
+
+.@{ui-class-prefix}-dialog-draggable {
+    .ui-dialog-draggable-mixin();
+}
+
+.@{ui-class-prefix}-dialog-dragging {
+    .ui-dialog-dragging-mixin();
+}
+
+.@{ui-class-prefix}-dialog-mask {
+    .ui-dialog-mask-mixin();
+}
+
+/** 警告框，确认框 */
+.@{skin-class-prefix}-alert-dialog,
+.@{skin-class-prefix}-confirm-dialog {
+    .@{ui-class-prefix}-dialog-body {
+        padding-bottom: 20px;
+    }
+
+    .@{ui-class-prefix}-dialog-icon {
+        display:none;
+    }
+
+    .@{ui-class-prefix}-dialog-icon-warning {
+        .background(url(../img/esui-dialog-notice.png));
+        display: block;
+        float: left;
+        height: 22px;
+        margin: 18px 10px 8px 40px;
+        _margin: 15px 10px 8px 25px;
+        width: 33px;
+    }
+
+    .@{ui-class-prefix}-dialog-icon-confirm {
+        .background(url(../img/esui-dialog-question.png));
+        display: block;
+        float: left;
+        height: 34px;
+        margin: 15px 10px 8px 40px;
+        _margin: 12px 10px 8px 25px;
+        width: 34px;
+    }
+
+    .@{ui-class-prefix}-dialog-text {
+        margin-top: 20px;
+        line-height: 18px;
+        margin-right: 40px;
+        overflow: hidden;
+    }
+}

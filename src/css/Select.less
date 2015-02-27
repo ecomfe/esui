@@ -6,75 +6,213 @@
  * @author dbear
  */
 
+// Select
+@esui-select-color: #fff;
+@esui-select-background: @primary-color;
+@esui-select-background-hover: lighten(@primary-color, 5%);
+@esui-select-background-active: darken(@primary-color, 15%);
+@esui-select-background-disabled: @button-background-disabled;
+@esui-select-radius: @default-border-radius;
+@esui-select-height: @esf-button-height;
+@esui-select-line-height: @esf-button-height;
+@esui-select-padding: 1em;
+@esui-select-error-border-color: red;
+@esui-select-error-text-color: red;
+
+// Select-toolbar-style
+@esui-select-color-toolbar-style: #666;
+@esui-select-background-toolbar-style: #f1f1f1;
+@esui-select-background-toolbar-style-hover: #e0e0e0;
+@esui-select-background-toolbar-style-active: @esui-select-background-toolbar-style-hover;
+
+// layer
+@esui-select-layer-background: #f1f1f1;
+@esui-select-layer-border: none;
+@esui-select-item-color: #666;
+@esui-select-item-hover-color: #666;
+@esui-select-item-background-hover: #e1e1e1;
+@esui-select-item-disabled-color: #d1d1d1;
+@esui-select-item-selected-color: @primary-color;
+@esui-select-item-background-selected: #e1e1e1;
+
 .@{ui-class-prefix}-select {
-    .linear-gradient-background-with-image (
-    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
-    border: 1px solid #d8d8d8;
-    border-radius: 3px;
-    font-size: 12px;
-    height: 17px;
-    line-height: 17px;
-    padding: 3px 20px 3px 5px;
-    width: 50px;
-    color: #666;
+    cursor: pointer;
+    padding: 0 @esui-select-padding;
+    outline: none;
+    display: inline-block;
+    position: relative;
+    border-radius: @esui-select-radius;
+
+    height: @esui-select-height;
+    line-height: @esui-select-line-height;
+    background: @esui-select-background;
+    color: @esui-select-color;
+    vertical-align: middle;
+    .box-sizing(border-box);
+    .transition(background-color 0.3s ease);
 }
 
 .@{ui-class-prefix}-select:hover,
 .@{ui-class-prefix}-select:focus {
-    .linear-gradient-background-with-image (
-    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -36px, #fff);
+    background: @esui-select-background-hover;
 }
 
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-active,
 .@{ui-class-prefix}-select:active {
-    .linear-gradient-background-with-image (
-    top, #f6f6f6, #ffffff, "../img/esui-combo-arrow.png", right, -36px, #fff);
+    background: @esui-select-background-active;
 }
 
-.@{ui-class-prefix}-select-active,
-.@{ui-class-prefix}-select-active:hover,
-.@{ui-class-prefix}-select-active:focus {
-    .linear-gradient-background-with-image (
-    top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -67px, #fff);
-}
-
-.@{ui-class-prefix}-select-layer {
-    background: #fff;
-    border: 1px solid #a8adb6;
-    font-size: 12px;
-    overflow-y: auto;
-}
-
-.@{ui-class-prefix}-select-item {
-    color: #333;
-    height: auto;
-    line-height: 22px;
-    padding: 0 4px;
-}
-
-.@{ui-class-prefix}-select-item-selected {
-    background-color: #e0e0e0;
-    border: 1px solid #ddd;
-    padding: 0 3px;
-}
-
-.@{ui-class-prefix}-select-item:hover {
-    background-color: #f1f1f1;
-}
-
-.@{ui-class-prefix}-select-item-disabled {
-    color: #999;
-
-    &:hover {
-        background: transparent;
+.@{ui-class-prefix}-select-active {
+    .@{ui-class-prefix}-select-arrow {
+        .transform(rotate(180deg));
+        .transition(transform 0.3s ease);
     }
 }
 
-.@{ui-class-prefix}-select-disabled,
-.@{ui-class-prefix}-select-read-only {
-    color: #d8d8d8;
+.@{ui-class-prefix}-select-text {
+    padding-right: 2em;
+    display: block;
+    .ellipsis();
+}
+
+.@{ui-class-prefix}-select-arrow {
+    position: absolute;
+    right: @esui-select-padding;
+    top: 0;
+    line-height: @esui-select-line-height !important;
+}
+
+.@{ui-class-prefix}-select-toolbar-style {
+    color: @esui-select-color-toolbar-style;
+    background: @esui-select-background-toolbar-style;
     &:hover,
     &:focus {
-        .linear-gradient-background-with-image (
-        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #f3f3f3);
+        background: @esui-select-background-toolbar-style-hover;
+    }
+
+    &.@{ui-class-prefix}-select-active,
+    &:active {
+        background: @esui-select-background-toolbar-style-active;
+    }
+}
+
+.@{ui-class-prefix}-select-layer {
+    overflow-x: hidden;
+    *height: 13em;
+    max-height: 13em;
+    overflow-y: auto;
+
+    .esf-dropdown-variant(
+        @esui-select-layer-background,
+        @esui-select-layer-border,
+        @esui-select-item-color,
+        @esui-select-item-hover-color,
+        @esui-select-item-background-hover
+    );
+}
+
+.@{ui-class-prefix}-select-item-disabled {
+    .esf-disabled();
+    &:hover {
+        background: none;
+    }
+}
+
+.@{ui-class-prefix}-select-item-selected > :first-child {
+    background: @esui-select-item-background-selected;
+    color: @esui-select-item-selected-color !important;
+
+    &:hover {
+        background: @esui-select-item-background-selected;
+    }
+}
+
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-disabled {
+    .esf-disabled();
+}
+
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only,
+.@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only:hover {
+    background: @esui-select-background-disabled;
+}
+
+.@{ui-class-prefix}-textbox-wrapper {
+    .esf-select-textbox-wrapper();
+}
+
+.esf-select-textbox-wrapper() when (@esui-select-radius > 0) {
+    :first-child.@{ui-class-prefix}-select {
+        .border-right-radius(0);
+        border-right: 0;
+    }
+    :last-child.@{ui-class-prefix}-select {
+        .border-left-radius(0);
+        border-left: 0;
+    }
+    >.@{ui-class-prefix}-select {
+        float: left;
+    }
+}
+
+.esf-select-textbox-wrapper() {
+    :first-child.@{ui-class-prefix}-select {
+        border-right: 0;
+    }
+    :last-child.@{ui-class-prefix}-select {
+        border-left: 0;
+    }
+    >.@{ui-class-prefix}-select {
+        float: left;
+    }
+}
+
+// compact variant select
+@esui-select-compact-color: #333;
+@esui-select-compact-background: @primary-bg-color;
+@esui-select-compact-height: 1.5em;
+@esui-select-compact-padding: .5em;
+
+@esui-select-compact-layer-item-padding: .3em;
+@esui-select-compact-layer-item-select-background: #FFFAED;
+@esui-select-compact-layer-item-select-color: #333;
+@esui-select-compact-layer-background: #F1F1F1;
+
+.@{ui-class-prefix}-select-compact {
+    padding: 0 @esui-select-compact-padding;
+    background: @esui-select-compact-background !important;
+    height: @esui-select-compact-height;
+    line-height: @esui-select-compact-height;
+    color: @esui-select-compact-color;
+
+    .@{ui-class-prefix}-select-arrow {
+        line-height: @esui-select-compact-height !important;
+        right: @esui-select-compact-padding;
+        .opacity(70);
+        &:hover {
+            .opacity(100);
+        }
+    }
+}
+
+.@{ui-class-prefix}-select-layer-compact {
+    background: @esui-select-compact-layer-background;
+    li :first-child {
+        padding: @esui-select-compact-layer-item-padding;
+    }
+    .@{ui-class-prefix}-select-item-selected > :first-child {
+        background: @esui-select-compact-layer-item-select-background;
+        color: @esui-select-compact-layer-item-select-color !important;
+    }
+    .@{ui-class-prefix}-select {
+        padding: 0 @esui-select-compact-padding;
+        background: @esui-select-compact-background;
+        height: @esui-select-compact-height;
+        line-height: @esui-select-compact-height;
+        color: @esui-select-compact-color;
+
+        .@{ui-class-prefix}-select-arrow {
+            line-height: @esui-select-compact-height !important;
+            right: @esui-select-compact-padding;
+        }
     }
 }

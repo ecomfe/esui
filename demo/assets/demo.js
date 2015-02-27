@@ -65,9 +65,10 @@ $(function () {
     //$('html').on('mousedown', hideSource);
     
     var navItems =
-        '<li><a href="BoxControl.html">Box Control</a></li>' +
         '<li><a href="Button.html">Button</a></li>' +
         '<li><a href="Calendar.html">Calendar</a></li>' +
+        '<li><a href="Checkbox.html">Checkbox</a></li>' +
+        '<li><a href="BoxGroup.html">Box Group</a></li>' +
         '<li><a href="CommandMenu.html">Command Menu</a></li>' +
         '<li><a href="Crumb.html">Crumb</a></li>' +
         '<li><a href="Dialog.html">Dialog</a></li>' +

@@ -1,70 +1,51 @@
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 单行、文本框样式
- * @author erik, zhaolei
- */
-@import "mixin.less";
-@import "variable.less";
-
-@padding-vertical: 2px;
-@padding-horizon: 4px;
-@border-width: 1px;
+// ESUI Custom
+// esf input pre/postfix color
+@esui-input-hint-text-color: #333;
+@esui-input-hint-background-color: #f2f2f2;
 
 .@{ui-class-prefix}-textbox {
-    position: relative;
-    display: inline-block;
-    *display: inline;
+    .@{ui-class-prefix}-textbox-hint {
+        display: inline-block;
+        height: @esf-input-height;
+        line-height: @esf-input-height;
+        box-sizing: border-box;
+        color: @esui-input-hint-text-color;
+        background-color: @esui-input-hint-background-color;
+        border: 1px solid @esf-input-border-color;
+        padding-left: 1em;
+        padding-right: 1em;
+        vertical-align: middle;
+    }
+    .@{ui-class-prefix}-textbox-placeholder {
+        height: @esf-input-height;
+        line-height: @esf-input-height;
+        padding-left: @esf-input-padding;
+        padding-right: @esf-input-padding;
+        position: absolute;
+        left: 0;
+        top: 0;
+        box-sizing: border-box;
+    }
+}
 
+.@{ui-class-prefix}-textbox-hint-suffix {
+    .@{ui-class-prefix}-textbox-hint {
+        border-left: 0;
+    }
+}
+
+.@{ui-class-prefix}-textbox-hint-prefix {
+    .@{ui-class-prefix}-textbox-hint {
+        border-right: 0;
+    }
+}
+
+.@{ui-class-prefix}-textbox-validity-invalid {
+    border: 0 !important;
     input, textarea {
-        color: #333;
-        padding: @padding-vertical @padding-horizon;
-        font-size: 13px;
-        background: #FFF;
-        border: @border-width solid #a8adb6;
-        height: 19px;
-        line-height: 19px;
-        width: 200px;
-        .box-sizing(content-box);
-        background-image: -webkit-gradient(linear, 0 0, 0 2, from(#ececec), to(#fff));
-        background-image: -moz-linear-gradient(top, #ececec, #fff 2px, #fff);
-        &:focus {
-            outline: 0;
-        }
-        &:hover {
-            border: 1px solid #6e8ab8;
-        }
+        border-color: @esf-input-error-border-color !important;
+        color: @esf-input-error-text-color !important;
     }
-    textarea {
-        height: 200px;
-        overflow: auto;
-        resize: none;
-    }
-}
-
-// 要跟hint保持一致
-.@{ui-class-prefix}-textbox-hint-suffix input {
-    vertical-align: middle;
-}
-.@{ui-class-prefix}-textbox-hint {
-    .inline-block ();
-    .box-sizing (content-box);
-    background-color: #f2f2f2;
-    padding: @padding-vertical 12px;
-    border: 1px solid #a8adb6;
-    vertical-align: middle;
-    height: 19px;
-    line-height: 19px;
-}
-
-.@{ui-class-prefix}-textbox-placeholder {
-    color: #999;
-    position: absolute;
-    height: 19px;
-    line-height: 19px;
-    left: 3px;
-    top: @padding-vertical + @border-width;
 }
 
 .@{ui-class-prefix}-textbox-placeholder-hidden {
@@ -83,42 +64,18 @@
     }
 }
 
-.@{ui-class-prefix}-textbox-disabled,
-.@{ui-class-prefix}-textbox-read-only {
-    input, textarea {
-        border: 1px solid #7E9DB9;
-        background: #f6f6f6;
-        color: #999;
-    }
-}
-
-
-/** 验证 */
-.@{ui-class-prefix}-textbox-validity-label,
-.@{ui-class-prefix}-textarea-validity-label {
-    display:inline-block;
-    *display:inline;
-    zoom:1;
-    color: #CC0000;
-    padding-left: 10px;
-}
-
+// 验证
 .@{ui-class-prefix}-textbox-validity-label-notice,
 .@{ui-class-prefix}-textarea-validity-label-notice {
-    color: #FF0000;
+    color: @esf-input-error-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-warn,
 .@{ui-class-prefix}-textarea-validity-label-warn {
-    color: red;
+    color: @esf-input-warning-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-invalid,
 .@{ui-class-prefix}-textarea-validity-label-invalid {
-    color: #CC0000;
-}
-
-.@{ui-class-prefix}-textbox-validity-invalid input,
-.@{ui-class-prefix}-textbox-validity-invalid textarea {
-    border: 1px solid red;
+    color: @esf-input-error-border-color;
 }

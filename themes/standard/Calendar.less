@@ -1,0 +1,37 @@
+@import "../../src/css/Calendar.less";
+@import "Common.less";
+
+@esui-calendar-border: none;
+@esui-calendar-background: #EBEBEB;
+@esui-calendar-color: #333;
+@esui-calendar-hover-background: lighten(#EBEBEB, 2%);
+@esui-calendar-active-background: darken(#EBEBEB, 5%);
+
+@esui-calendar-color-readonly: #999;
+@esui-calendar-background-readonly: #EBEBEB;
+
+@esui-calendar-layer-background: #fff;
+
+.esui-calendar-theme() {
+    background: @esui-calendar-background;
+    border: @esui-calendar-border;
+    color: @esui-calendar-color;
+}
+
+.esui-calendar-hover-theme() {
+    background: @esui-calendar-hover-background;
+}
+
+.esui-calendar-readonly-theme() {
+    color: @esui-calendar-color-readonly;
+    background: @esui-calendar-background-readonly;
+}
+
+.esui-calendar-active-theme() {
+    background: @esui-calendar-active-background !important;
+}
+
+.esui-calendar-layer-theme() {
+    background: @esui-calendar-layer-background;
+}
+

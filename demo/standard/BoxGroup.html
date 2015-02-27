@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Box Group - ESUI Demo</title>
+    <script src="../assets/loader/esl.js"></script>
+    <script src="../../src/customShim.js"></script>
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+</head>
+<body>
+    <h1 id="branding">ESUI - BoxGroups</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>Radiobox List</h2>
+            <section class="intro">
+                <p>Radiobox列表。支持从DOM元素直接创建。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>Vertical</h3>
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" data-ui-name="frameworks" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom" data-ui-orientation="vertical">
+                        <ul>
+                            <li>
+                                <input type="radio" id="framework-er" name="frameworks" value="er">
+                                <label for="framework-er">ER</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="framework-esui" name="frameworks" value="esui" checked="checked">
+                                <label for="framework-esui">ESUI</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="framework-ef" name="frameworks" value="ef">
+                                <label for="framework-ef">EF</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="framework-tangram" name="frameworks" value="tangram">
+                                <label for="framework-tangram">Tangram</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <h3>Horizontal</h3>
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" data-ui-name="frameworks" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
+                        <ul>
+                            <li>
+                                <input type="radio" id="framework-er1" name="frameworks" value="er">
+                                <label for="framework-er1">ER</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="framework-esui1" name="frameworks" value="esui" checked="checked">
+                                <label for="framework-esui1">ESUI</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="framework-ef1" name="frameworks" value="ef">
+                                <label for="framework-ef1">EF</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="framework-tangram1" name="frameworks" value="tangram">
+                                <label for="framework-tangram1">Tangram</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <h2>Checkbox List</h2>
+            <section class="intro">
+                <p>Checkbox列表。支持从DOM元素直接创建。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>Vertical</h3>
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change-vertical2" data-ui-name="frameworks" data-ui-box-type="checkbox" data-ui-box-class="ui-checkbox-custom" data-ui-orientation="vertical">
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="framework-er2" name="frameworks" value="er">
+                                <label for="framework-er2">ER</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-esui2" name="frameworks" value="esui">
+                                <label for="framework-esui2">ESUI</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-ef2" name="frameworks" value="ef">
+                                <label for="framework-ef2">EF</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-tangram2" name="frameworks" value="tangram">
+                                <label for="framework-tangram2">Tangram</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <h3>Horizontal</h3>
+                    <div data-ui-type="BoxGroup" data-ui-id="box-group-change-horizontal" data-ui-name="frameworks" data-ui-box-type="checkbox" data-ui-box-class="ui-checkbox-custom">
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="framework-er3" name="frameworks" value="er">
+                                <label for="framework-er3">ER</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-esui3" name="frameworks" value="esui">
+                                <label for="framework-esui3">ESUI</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-ef3" name="frameworks" value="ef">
+                                <label for="framework-ef3">EF</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="framework-tangram3" name="frameworks" value="tangram">
+                                <label for="framework-tangram3">Tangram</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <h2>自定义样式</h2>
+            <section class="intro">
+                <p>自定义Butotn样式。使用<code>change</code>事件监听选中状态的变化。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                    <li class="view-script">脚本</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>Button样式</h3>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup" data-ui-id="box-group-button"
+                             data-ui-name="frameworks" data-ui-box-type="radio"
+                             class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-primary">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                                    <label for="framework-er4">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                                    <label for="framework-esui4">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                                    <label for="framework-ef4">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram4">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup"
+                             data-ui-name="frameworks" data-ui-box-type="radio"
+                             class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-success">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                                    <label for="framework-er4">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                                    <label for="framework-esui4">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                                    <label for="framework-ef4">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram4">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup"
+                             data-ui-name="frameworks" data-ui-box-type="radio"
+                             class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-info">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                                    <label for="framework-er4">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                                    <label for="framework-esui4">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                                    <label for="framework-ef4">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram4">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup"
+                             data-ui-name="frameworks" data-ui-box-type="radio"
+                             class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-warning">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                                    <label for="framework-er4">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                                    <label for="framework-esui4">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                                    <label for="framework-ef4">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram4">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup"
+                             data-ui-name="frameworks" data-ui-box-type="radio"
+                             class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-danger">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                                    <label for="framework-er4">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                                    <label for="framework-esui4">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                                    <label for="framework-ef4">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram4">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <h3>Button样式，没有分割</h3>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup" data-ui-id="box-group-button3"
+                             data-ui-name="frameworks" data-ui-box-type="radio"
+                             class="ui-boxgroup-button-style">
+                            <ul>
+                                <li>
+                                    <input type="radio" id="framework-er4" name="frameworks" value="er" checked />
+                                    <label for="framework-er4">ER</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-esui4" name="frameworks" value="esui"/>
+                                    <label for="framework-esui4">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-ef4" name="frameworks" value="ef"/>
+                                    <label for="framework-ef4">EF</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="framework-tangram4" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram4">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <h3>Change Event</h3>
+                    <div class="row">
+                        <div data-ui-type="BoxGroup" data-ui-id="box-group-button2"
+                             data-ui-name="frameworks" data-ui-box-type="checkbox"
+                                class="ui-boxgroup-button-style ui-boxgroup-button-style-separated custom">
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="framework-er5" name="frameworks" value="er"/>
+                                    <label for="framework-er5">ER</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="framework-esui5" name="frameworks" value="esui"/>
+                                    <label for="framework-esui5">ESUI</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="framework-ef5" name="frameworks" value="ef"/>
+                                    <label for="framework-ef5">EF</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="framework-tangram5" name="frameworks" value="tangram"/>
+                                    <label for="framework-tangram5">Tangram</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p id="box-group-change-log">已选值：</p>
+                    <pre class="source source-script">
+<code class="language-javascript">
+    function () {
+        require('esui').get('box-group-button2').on(
+                'change',
+                function () {
+                    $('#box-group-change-log').text('已选值：' + this.getValue());
+                }
+        );
+    }
+</code>
+                    </pre>
+                </div>
+            </section>
+            <script>
+                require(
+                    [
+                        'esui',
+                        'esui/BoxGroup'
+                    ],
+                    function (ui) {
+                        ui.init();
+                        ready();
+                    }
+                );
+                ready(
+                    function () {
+                        require('esui').get('box-group-button2').on(
+                                'change',
+                                function () {
+                                    $('#box-group-change-log').text('已选值：' + this.getValue());
+                                }
+                        );
+                    }
+                );
+            </script>
+        </div>
+    </div>
+</body>
+</html>

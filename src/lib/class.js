@@ -28,7 +28,7 @@ define(
                 : [];
         }
 
-        lib = getClasses = getClassList;
+        lib.getClasses = getClassList;
 
         /**
          * 判断元素是否拥有指定的class

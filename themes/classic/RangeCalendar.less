@@ -1,0 +1,161 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 区间日历样式
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-rangecalendar {
+    border:1px solid #a9adb6;/*border:1px solid #dde0e9;*/
+    width:235px;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 8px;;
+    font-size:12px;
+    cursor:pointer;
+    background-color: white;
+    .linear-gradient-background (top, #ffffff, #f6f6f6);
+    .border-radius (3px, 3px, 3px, 3px);
+    .user-select();
+}
+
+.@{ui-class-prefix}-rangecalendar-text {
+    padding-left:3px;
+    float:left;
+}
+
+.@{ui-class-prefix}-rangecalendar:hover,
+.@{ui-class-prefix}-rangecalendar:active {
+    border-color:#a9adb6;
+}
+
+.@{ui-class-prefix}-rangecalendar-arrow {
+    float: right;
+    height: 16px;
+    margin-top: 3px;
+    margin-right: 5px;
+    width: 16px;
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", left, -9px, #f3f3f3);
+}
+
+.@{ui-class-prefix}-rangecalendar-layer {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #394459 #A8ADB6 #A8ADB6;
+    border-image: none;
+    border-right: 1px solid #A8ADB6;
+    border-style: solid;
+    border-width: 2px 1px 1px;
+    padding: 8px;
+    width: 430px;
+
+    .@{ui-class-prefix}-rangecalendar-shortcut {
+        font-size: 12px;
+        height: 20px;
+        line-height: 20px;
+        padding-right: 10px;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-item {
+        color: #3377AA;
+        .interactive-cursor ();
+        text-decoration: underline;
+        border-left: 1px solid #3377AA;
+        margin-left: 5px;
+        padding-left: 5px;
+        &.@{ui-class-prefix}-rangecalendar-shortcut-item-first {
+            border-left: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-item-selected {
+        color: #666666;
+        cursor: default;
+        text-decoration: none;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-item-disabled {
+        color: #999999;
+        cursor: default;
+        text-decoration: none;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-shortcut-disabled {
+        .@{ui-class-prefix}-rangecalendar-shortcut-item {
+            color: #999999;
+            cursor: default;
+            text-decoration: none;
+        }
+    }
+
+
+    .@{ui-class-prefix}-rangecalendar-begin,
+    .@{ui-class-prefix}-rangecalendar-end {
+        float: left;
+        width: 210px;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-begin {
+        margin-right: 10px;
+    }
+
+    .@{ui-class-prefix}-rangecalendar-label {
+        font-size: 12px;
+        height: 18px;
+        padding-top: 7px;
+        overflow: hidden;
+        zoom: 1;
+        h3 {
+            float: left;
+            font-size: 12px;
+            line-height: 18px;
+            margin: 0;
+        }
+        .@{ui-class-prefix}-checkbox {
+            float: right;
+            input {
+                vertical-align: text-bottom;
+                *margin-bottom: -3px;
+            }
+            line-height: 18px;
+        }
+    }
+
+    .@{ui-class-prefix}-rangecalendar-foot {
+        clear: both;
+        padding-top: 8px;
+        .@{ui-class-prefix}-button {
+            margin-right: 5px;
+        }
+    }
+}
+
+.@{ui-class-prefix}-rangecalendar-layer-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-rangecalendar-disabled,
+.@{ui-class-prefix}-rangecalendar-read-only {
+    color: #999;
+    border-color: #D8D8D8;
+}
+
+/** 验证 */
+.@{ui-class-prefix}-rangecalendar-validity-invalid {
+    border: 1px solid red;
+}
+.@{ui-class-prefix}-rangecalendar-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.@{ui-class-prefix}-rangecalendar-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
+}
+

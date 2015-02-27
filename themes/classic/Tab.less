@@ -1,0 +1,82 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 切换面板样式
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-tab-navigator {
+    margin: 0;
+    padding:0;
+    list-style: none;
+    .box-sizing();
+}
+
+.@{ui-class-prefix}-tab-item {
+    margin: 0;
+    padding:0;
+    list-style: none;
+    .box-sizing();
+    .interactive-cursor ();
+}
+
+.@{ui-class-prefix}-tab-item-active {
+    cursor: default;
+}
+
+/** 纵向tab */
+.@{ui-class-prefix}-tab-vertical {
+    .@{ui-class-prefix}-tab-navigator {
+        padding-top: 10px;
+        border-right: 1px solid #DDD;
+        float: left;
+    }
+    .@{ui-class-prefix}-tab-item {
+        display: block;
+        .border-radius(2px, 0, 0, 2px);
+        border: 1px solid #DFDFDF;
+        border-right: none;
+        background: #F2F2F2;
+        color: #666666;
+        margin-bottom:2px;
+        padding: 3px 10px;
+    }
+
+    .@{ui-class-prefix}-tab-item-active {
+        background: #FFF;
+        color: #333333;
+    } 
+}
+
+/** 横向tab */
+.@{ui-class-prefix}-tab-horizontal {
+    @tab-padding: 10px;
+
+    .@{ui-class-prefix}-tab-navigator {
+        overflow: hidden;
+        zoom: 1;
+        position: relative;
+        padding-left:10px;
+        border-bottom: 1px solid #DDD;
+    }
+
+    .@{ui-class-prefix}-tab-item {
+        float: left;
+        padding: 3px @tab-padding;
+        text-align: center;
+
+        .border-radius(2px, 2px, 0, 0);
+        border: 1px solid #DFDFDF;
+        border-bottom: none;
+        background: #F2F2F2;
+        color: #666666;
+        margin-right:2px;
+    }
+
+    .@{ui-class-prefix}-tab-item-active {
+        background: #FFF;
+        color: #333333;
+    }
+}

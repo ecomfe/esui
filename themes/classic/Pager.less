@@ -1,0 +1,129 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 翻页样式
+ * @author shenbin
+ */
+@import "mixin.less";
+@import "variable.less";
+/** Pager 文字配色 */
+@pager-text-color: #333;
+
+.@{ui-class-prefix}-pager {
+    font-size: 12px;
+    height: 25px;
+    line-height: 25px;
+}
+
+.@{ui-class-prefix}-pager-label {
+    color: @pager-text-color;
+    text-align: center;
+}
+
+.@{ui-class-prefix}-pager-select-wrapper {
+    margin-left: 5px;
+    .inline-block();
+}
+
+.@{ui-class-prefix}-pager .@{ui-class-prefix}-select {
+    vertical-align: top;
+    .inline-block();
+}
+
+.@{ui-class-prefix}-pager-select-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-pager-main {
+    margin: 0;
+    padding: 0;
+    .inline-block();
+}
+
+/*
+ * 部分沿用button控件的样式
+ */
+.@{ui-class-prefix}-pager-main li {
+    /* Hack 宋体是衬线字体，Arial是无衬线字体，一起用会高低不平。
+     * 因为按钮高度太小且无英文，此处统一改设为宋体来保持高度居中，
+     * 为兼容Mac下显示效果，前面增加STHeiti */
+    font-family:STHeiti, SimSun;
+    margin-left: 4px;
+    text-align: center;
+    vertical-align: top;
+    color: @pager-text-color;
+    .inline-block();
+}
+
+.@{ui-class-prefix}-pager-main a {
+    color: @pager-text-color;
+    .inline-block();
+}
+
+.@{ui-class-prefix}-pager-main a:hover {
+    text-decoration: none;
+}
+
+/*
+ * 部分沿用button控件的样式
+ */
+.@{ui-class-prefix}-pager-item, .@{ui-class-prefix}-pager-item-extend {
+    .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
+    width: 23px;
+    height: 23px;
+    border: 1px #ccc solid;
+    .interactive-cursor ();
+    .border-radius(2px, 2px, 2px, 2px);
+    .box-sizing(content-box);
+}
+
+.@{ui-class-prefix}-pager-item a {
+    width: 23px;
+}
+
+.@{ui-class-prefix}-pager-item-extend, .@{ui-class-prefix}-pager-item-extend a {
+    width: 50px;
+}
+
+.@{ui-class-prefix}-pager-item-current, .@{ui-class-prefix}-pager-item-omit {
+    width: 25px;
+    height: 25px;
+}
+
+.@{ui-class-prefix}-pager-item-current {
+    font-weight: 600;
+    line-height: 26px;
+}
+
+.@{ui-class-prefix}-pager-item-omit {
+    line-height: 36px;
+}
+
+/*
+ * 布局皮肤样式
+ */
+/* 左侧正序、左侧逆序 */
+.@{ui-class-prefix}-pager-alignLeft, .@{ui-class-prefix}-pager-alignLeftReverse {
+    float: left;
+}
+/* 左侧逆序 */
+.@{ui-class-prefix}-pager-alignLeftReverse .@{ui-class-prefix}-pager-select-wrapper {
+    float: right;
+}
+/* 右侧正序、右侧逆序 */
+.@{ui-class-prefix}-pager-alignRight, .@{ui-class-prefix}-pager-alignRightReverse {
+    float: right;
+}
+/* 右侧逆序 */
+.@{ui-class-prefix}-pager-alignRightReverse .@{ui-class-prefix}-pager-select-wrapper {
+    float: right;
+}
+/* 分散正序 */
+.@{ui-class-prefix}-pager-distributed .@{ui-class-prefix}-pager-main {
+    float: right;
+}
+/* 分散逆序 */
+.@{ui-class-prefix}-pager-distributedReverse .@{ui-class-prefix}-pager-select-wrapper {
+    float: right;
+}

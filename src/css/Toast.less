@@ -6,36 +6,35 @@
 * @author curarchy
 */
 
-@import "mixin.less";
-@import "variable.less";
+@esui-toast-top: 60px;
+@esui-toast-padding: 1em;
 
-@toast-show-keyframes-name: ~"@{ui-class-prefix}-toast-show";
+@esui-toast-radius: @default-border-radius;
+@esui-toast-zIndex: 99999999;
 
-@keyframes @toast-show-keyframes-name {
-    from {
-        opacity: 0;
-        margin-top: -30px;
-    }
-    to {
-        opacity: 1;
-        margin-top: -1px;
-    }
-}
 
-@-webkit-keyframes @toast-show-keyframes-name {
-    from {
-        opacity: 0;
-        margin-top: -30px;
-    }
-    to {
-        opacity: 1;
-        margin-top: -1px;
+//默认消息
+.@{ui-class-prefix}-toast-content {
+    padding: @esui-toast-padding;
+    display: inline-block;
+    pointer-events: auto;
+    .border-radius(@esui-toast-radius);
+
+    .esui-toast-content-theme();
+
+    strong {
+        display: inline-block;
+        max-width: 40em;
+        overflow: hidden;
+        .ellipsis();
+        vertical-align: top;
+        font-weight: bold;
     }
 }
 
 .@{ui-class-prefix}-toast {
     position: fixed;
-    top: 80px;
+    top: @esui-toast-top;
     text-align: center;
     // 这是个很神奇的事情，一般来说放一个占满宽度的元素会导致下面的东西不能点击，
     // 因此有`pointer-events`来处理，但是IE不支持这个所以有兼容性问题。
@@ -48,92 +47,38 @@
     // pointer-events: none;
     width: 100%;
     height: 0;
-    z-index: 99999999;
-    color: #555;
-    -webkit-animation: ui-toast-show .3s;
-    animation: ui-toast-show .3s;
+    z-index: @esui-toast-zIndex;
+    .animation(esui-toast-show .3s);
 }
+
+.esui-toast-content-theme() {}
 
 .@{ui-class-prefix}-toast-collection-area {
     position: fixed;
-    z-index: 99999999;
+    z-index: ;
     top: 0;
     width: 100%;
     height: 0;
 }
 
-//默认消息
-.@{ui-class-prefix}-toast-content {
-    margin: 0;
-    padding: 5px 15px;
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    line-height: 23px;
-    border: 1px solid;
-    pointer-events: auto;
-    border-radius: 4px;
-    font-size: 14px;
-
-    strong {
-        display: inline-block;
-        *display: inline;
-        zoom: 1;
-        max-width: 40em;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        vertical-align: top;
-        font-weight: bold;
+@keyframes esui-toast-show {
+    from {
+        opacity: 0;
+        margin-top: -30px;
+    }
+    to {
+        opacity: 1;
+        margin-top: -1px;
     }
 }
 
-//普通消息
-.@{ui-class-prefix}-toast-normal {
-    color: #565656;
-    .@{ui-class-prefix}-toast-content {
-        background-color: #EAEAEA;
-        border-color: #A0A0A0;
-        box-shadow: 0 2px 10px 0 #EAEAEA;
+@-webkit-keyframes esui-toast-show {
+    from {
+        opacity: 0;
+        margin-top: -30px;
     }
-}
-
-//通知类消息
-.@{ui-class-prefix}-toast-info {
-    color: #FFF;
-    .@{ui-class-prefix}-toast-content {
-        background-color: #57B6E1;
-        border-color: #007DB7;
-        box-shadow: 0 2px 10px 0 #80C5E4;
-    }
-}
-
-//错误类消息
-.@{ui-class-prefix}-toast-error {
-    color: #FFF;
-    .@{ui-class-prefix}-toast-content {
-        background-color: #F00;
-        border-color: #8B0000;
-        box-shadow: 0 2px 10px 0 #FF7E7E;
-    }
-}
-
-//警告类消息
-.@{ui-class-prefix}-toast-alert {
-    color: #AA6200;
-    .@{ui-class-prefix}-toast-content {
-        background-color: #FFEAA8;
-        border-color: #FFB72A;
-        box-shadow: 0 2px 10px 0 #FFF5C5;
-    }
-}
-
-//成功类消息
-.@{ui-class-prefix}-toast-success {
-    color: #006400;
-    .@{ui-class-prefix}-toast-content {
-        background-color: #8FEC8F;
-        border-color: #006400;
-        box-shadow: 0 2px 10px 0 #B1FF93;
+    to {
+        opacity: 1;
+        margin-top: -1px;
     }
 }

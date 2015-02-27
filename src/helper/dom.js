@@ -311,6 +311,23 @@ define(
         };
 
         /**
+         * 获取需要继承的selector数组
+         *
+         * @return {array} selector数组
+         */
+        helper.getInheriantClasses = function () {
+            var me = this;
+            var prefix = ui.getConfig('uiClassPrefix');
+            var element = me.control.main;
+            var selectors = element.className.split(' ');
+            var text = prefix + '-small|large|medium$';
+            var regex = new Regex(text);
+            return u.filter(selectors, function (selector) {
+                return regex.test(selector);
+            });
+        };
+
+        /**
          * 获取用于控件DOM元素的id
          *
          * @param {string} [part] 部件名称，如不提供则生成控件主元素的id

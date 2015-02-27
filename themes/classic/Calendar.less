@@ -1,0 +1,75 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 输入日历样式
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-calendar {
+    border: 1px solid #a9adb6;/*border:1px solid #dde0e9;*/
+    width: 110px;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 8px;
+    font-size: 12px;
+    .interactive-cursor ();
+    .user-select ();
+    background-color: white;
+    .linear-gradient-background (top, #ffffff, #f6f6f6);
+    .border-radius (3px, 3px, 3px, 3px);
+}
+
+.@{ui-class-prefix}-calendar-text {
+    padding-left: 3px;
+    width: 85px;
+    float: right;
+}
+
+.@{ui-class-prefix}-calendar:hover,
+.@{ui-class-prefix}-calendar:active {
+    border-color: #a9adb6;
+}
+
+.@{ui-class-prefix}-calendar-arrow {
+    float: left;
+    height: 16px;
+    margin-top: 3px;
+    width: 16px;
+    .linear-gradient-background-with-image (
+        top, #ffffff, #f6f6f6, "../img/esui-cal.png", left, 0px, #f3f3f3);
+}
+.@{ui-class-prefix}-calendar-layer {
+    background: #fff;
+    width: 210px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.@{ui-class-prefix}-calendar-layer-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-calendar-disabled,
+.@{ui-class-prefix}-calendar-read-only {
+    color: #999;
+    border-color: #D8D8D8;
+}
+
+/** 验证 */
+.@{ui-class-prefix}-calendar-validity-invalid {
+    border: 1px solid red;
+}
+.@{ui-class-prefix}-calendar-validity-label {
+    display:block;
+    margin-top: 5px;
+}
+.@{ui-class-prefix}-calendar-validity-label-invalid {
+    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
+    border: 1px solid #F0CCCC;
+    color: #dd6767;
+    padding-left: 50px;
+}
+
+
+

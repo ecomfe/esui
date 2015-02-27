@@ -1,0 +1,124 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 单行、文本框样式
+ * @author erik, zhaolei
+ */
+@import "mixin.less";
+@import "variable.less";
+
+@padding-vertical: 2px;
+@padding-horizon: 4px;
+@border-width: 1px;
+
+.@{ui-class-prefix}-textbox {
+    position: relative;
+    display: inline-block;
+    *display: inline;
+
+    input, textarea {
+        color: #333;
+        padding: @padding-vertical @padding-horizon;
+        font-size: 13px;
+        background: #FFF;
+        border: @border-width solid #a8adb6;
+        height: 19px;
+        line-height: 19px;
+        width: 200px;
+        .box-sizing(content-box);
+        background-image: -webkit-gradient(linear, 0 0, 0 2, from(#ececec), to(#fff));
+        background-image: -moz-linear-gradient(top, #ececec, #fff 2px, #fff);
+        &:focus {
+            outline: 0;
+        }
+        &:hover {
+            border: 1px solid #6e8ab8;
+        }
+    }
+    textarea {
+        height: 200px;
+        overflow: auto;
+        resize: none;
+    }
+}
+
+// 要跟hint保持一致
+.@{ui-class-prefix}-textbox-hint-suffix input {
+    vertical-align: middle;
+}
+.@{ui-class-prefix}-textbox-hint {
+    .inline-block ();
+    .box-sizing (content-box);
+    background-color: #f2f2f2;
+    padding: @padding-vertical 12px;
+    border: 1px solid #a8adb6;
+    vertical-align: middle;
+    height: 19px;
+    line-height: 19px;
+}
+
+.@{ui-class-prefix}-textbox-placeholder {
+    color: #999;
+    position: absolute;
+    height: 19px;
+    line-height: 19px;
+    left: 3px;
+    top: @padding-vertical + @border-width;
+}
+
+.@{ui-class-prefix}-textbox-placeholder-hidden {
+    display: none;
+}
+
+.@{ui-class-prefix}-textbox-hint-suffix {
+    .@{ui-class-prefix}-textbox-hint {
+        border-left: 0;
+    }
+}
+
+.@{ui-class-prefix}-textbox-hint-prefix {
+    .@{ui-class-prefix}-textbox-hint {
+        border-right: 0;
+    }
+}
+
+.@{ui-class-prefix}-textbox-disabled,
+.@{ui-class-prefix}-textbox-read-only {
+    input, textarea {
+        border: 1px solid #7E9DB9;
+        background: #f6f6f6;
+        color: #999;
+    }
+}
+
+
+/** 验证 */
+.@{ui-class-prefix}-textbox-validity-label,
+.@{ui-class-prefix}-textarea-validity-label {
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+    color: #CC0000;
+    padding-left: 10px;
+}
+
+.@{ui-class-prefix}-textbox-validity-label-notice,
+.@{ui-class-prefix}-textarea-validity-label-notice {
+    color: #FF0000;
+}
+
+.@{ui-class-prefix}-textbox-validity-label-warn,
+.@{ui-class-prefix}-textarea-validity-label-warn {
+    color: red;
+}
+
+.@{ui-class-prefix}-textbox-validity-label-invalid,
+.@{ui-class-prefix}-textarea-validity-label-invalid {
+    color: #CC0000;
+}
+
+.@{ui-class-prefix}-textbox-validity-invalid input,
+.@{ui-class-prefix}-textbox-validity-invalid textarea {
+    border: 1px solid red;
+}

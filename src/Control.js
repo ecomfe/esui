@@ -241,13 +241,6 @@ define(
 
                         this.helper.addVariantClasses();
                     }
-                    // 为组件添加尺寸大小的selector
-                    if (this.size) {
-                        lib.addClass(
-                            this.main,
-                            this.helper.getPrefixClass(this.size)
-                        );
-                    }
                 }
 
                 // 由子控件实现

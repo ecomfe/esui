@@ -5,78 +5,164 @@
  * @file 切换面板样式
  * @author dbear
  */
-@import "mixin.less";
-@import "variable.less";
+
+@esui-tab-horizontal-padding: 0 1em;
+@esui-tab-horizontal-border: 1px solid #DDD;
+@esui-tab-horizontal-item-margin-right: .5em;
+
+@esui-tab-vertical-padding: 1em 0;
+@esui-tab-vertical-item-margin-bottom: .5em;
+
+@esui-tab-radius: 5px;
+@esui-tab-item-border: 1px solid #DDD;
+
+@esui-tab-item-height: 2.4em;
+@esui-tab-item-padding: 1em;
+@esui-tab-item-background: #F2F2F2;
+@esui-tab-item-color: #666666;
+
+@esui-tab-item-active-background: @primary-bg-color;
+@esui-tab-item-active-color: #333333;
+
+// 总体样式
 .@{ui-class-prefix}-tab-navigator {
     margin: 0;
     padding:0;
     list-style: none;
-    .box-sizing();
 }
 
 .@{ui-class-prefix}-tab-item {
-    margin: 0;
-    padding:0;
-    list-style: none;
-    .box-sizing();
-    .interactive-cursor ();
+    cursor: pointer;
+    text-align: center;
+    border: @esui-tab-item-border;
+    background: @esui-tab-item-background;
+    color: @esui-tab-item-color;
+    line-height: @esui-tab-item-height;
+    padding: 0 @esui-tab-item-padding;
 }
 
 .@{ui-class-prefix}-tab-item-active {
     cursor: default;
+    background: @esui-tab-item-active-background;
+    color: @esui-tab-item-active-color;
 }
 
-/** 纵向tab */
-.@{ui-class-prefix}-tab-vertical {
+// 横向tab
+.@{ui-class-prefix}-tab-horizontal {
+    border-bottom: @esui-tab-horizontal-border;
     .@{ui-class-prefix}-tab-navigator {
-        padding-top: 10px;
-        border-right: 1px solid #DDD;
-        float: left;
+        padding: @esui-tab-horizontal-padding;
+    }
+
+    .@{ui-class-prefix}-tab-item {
+        display: inline-block;
+        margin-bottom: -1px;
+        .border-top-radius(@esui-tab-radius);
+        margin-right: @esui-tab-horizontal-item-margin-right;
+    }
+
+    .@{ui-class-prefix}-tab-item-active {
+        cursor: default;
+        background: @esui-tab-item-active-background;
+        color: @esui-tab-item-active-color;
+        border-bottom-color: @esui-tab-item-active-background;
+    }
+}
+
+.@{ui-class-prefix}-tab-horizontal-flip {
+    border-bottom: 0;
+    border-top: @esui-tab-horizontal-border;
+
+    .@{ui-class-prefix}-tab-item {
+        .border-top-radius(0);
+        .border-bottom-radius(@esui-tab-radius);
+        margin-bottom: 0;
+        margin-top: -1px;
+    }
+
+    .@{ui-class-prefix}-tab-item-active {
+        cursor: default;
+        background: @esui-tab-item-active-background;
+        border-bottom: @esui-tab-item-border;
+        border-top-color: @esui-tab-item-active-background;
+    }
+}
+
+.@{ui-class-prefix}-tab-align-left {
+    .@{ui-class-prefix}-tab-navigator {
+        text-align: left;
+    }
+}
+
+.@{ui-class-prefix}-tab-align-center {
+    .@{ui-class-prefix}-tab-navigator {
+        text-align: center;
+    }
+}
+
+.@{ui-class-prefix}-tab-align-right {
+    .@{ui-class-prefix}-tab-navigator {
+        text-align: right;
+    }
+}
+
+.@{ui-class-prefix}-tab-content {
+    .box-sizing(border-box);
+}
+
+.esui-vertical-tab-def(@tabWidth, @areaHeight) {
+    .@{ui-class-prefix}-tab-vertical {
+        width: @tabWidth;
+        height: @areaHeight;
+    }
+    .@{ui-class-prefix}-tab-content {
+        height: @areaHeight;
+        margin-left: @tabWidth;
+        border-left: 0;
+    }
+    .@{ui-class-prefix}-tab-vertical-flip ~ .@{ui-class-prefix}-tab-content {
+        margin-left: 0;
+        margin-right: @tabWidth;
+
+        border-right: 0;
+        border-left: @esui-tab-item-border;
+    }
+}
+
+// 纵向tab
+.@{ui-class-prefix}-tab-vertical {
+    float: left;
+    border-right: @esui-tab-item-border;
+    .@{ui-class-prefix}-tab-navigator {
+        padding: @esui-tab-vertical-padding;
     }
     .@{ui-class-prefix}-tab-item {
         display: block;
-        .border-radius(2px, 0, 0, 2px);
-        border: 1px solid #DFDFDF;
-        border-right: none;
-        background: #F2F2F2;
-        color: #666666;
-        margin-bottom:2px;
-        padding: 3px 10px;
+        .border-right-radius(0);
+        .border-left-radius(@esui-tab-radius);
+        margin-bottom: @esui-tab-vertical-item-margin-bottom;
+        margin-right: -1px;
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        background: #FFF;
-        color: #333333;
+        border-right-color: @esui-tab-item-active-background;
     } 
 }
 
-/** 横向tab */
-.@{ui-class-prefix}-tab-horizontal {
-    @tab-padding: 10px;
-
-    .@{ui-class-prefix}-tab-navigator {
-        overflow: hidden;
-        zoom: 1;
-        position: relative;
-        padding-left:10px;
-        border-bottom: 1px solid #DDD;
-    }
+.@{ui-class-prefix}-tab-vertical-flip {
+    float: right;
+    border-right: 0;
+    border-left: @esui-tab-item-border;
 
     .@{ui-class-prefix}-tab-item {
-        float: left;
-        padding: 3px @tab-padding;
-        text-align: center;
-
-        .border-radius(2px, 2px, 0, 0);
-        border: 1px solid #DFDFDF;
-        border-bottom: none;
-        background: #F2F2F2;
-        color: #666666;
-        margin-right:2px;
+        .border-left-radius(0);
+        .border-right-radius(@esui-tab-radius);
+        margin-right: 0;
+        margin-left: -1px;
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        background: #FFF;
-        color: #333333;
+        border-left-color: @esui-tab-item-active-background;
+        border-right: @esui-tab-item-border;
     }
 }

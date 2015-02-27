@@ -5,25 +5,51 @@
   * @file 带行号输入框
   * @author dbear
   */
-@import "mixin.less";
-@import "variable.less";
+
+
+@esui-textline-border: 1px solid #666;
+
+@esui-textline-line-height: 21px;
+@esui-textline-active-border: 1px solid @primary-color;
+
+@esui-textline-number-column-color: @black;
+@esui-textline-number-column-width: 30px;
+@esui-textline-number-column-font-size: 12px;
+
+@esui-textline-textarea-background: @primary-bg-color;
+@esui-textline-textarea-font-size: 14px;
+
+@esui-textline-disabled-border: 1px solid #797979;
+@esui-textline-disabled-background-color: @primary-bg-color;
+@esui-textline-disabled-text-color: #999;
+
+@esui-textline-readonly-border: 1px solid #CCC;
+@esui-textline-readonly-background-color: @primary-bg-color;
+@esui-textline-readonly-text-color: #CCC;
+
+@esui-textline-error-border: 1px solid @danger-color;
+@esui-textline-error-background-color: @primary-bg-color;
+@esui-textline-error-text-color: #333;
+
+@esui-textline-error-message-color: @danger-color;
+
 .@{ui-class-prefix}-textline {
-    padding: 0 4px;
     position: relative;
-    border: 1px solid #dddddd;
-    &:hover {
-        border: 1px solid #6e8ab8;
-    }
+    border: @esui-textline-border;
+    display: inline-block;
+}
+
+.@{ui-class-prefix}-textline-focus {
+    border: @esui-textline-active-border;
 }
 
 .@{ui-class-prefix}-textline-num-line {
-    background: #f8f9fb;
-    color: #000;
+    color: @esui-textline-number-column-color;
     font-weight: bold;
-    line-height: 21px;
+    line-height: @esui-textline-line-height;
     text-align: center;
-    width: 30px;
-    font-size: 12px;
+    width: @esui-textline-number-column-width;
+    font-size: @esui-textline-number-column-font-size;
     overflow-y: hidden;
     position: absolute;
     left: 0;
@@ -32,18 +58,17 @@
 
 .@{ui-class-prefix}-textline-text-container {
     position: absolute;
-    left: 30px;
+    left: @esui-textline-number-column-width;
     right: 0;
     top: 0;
     bottom: 0;
 
     textarea {
         position: absolute;
-        background: #fff;
-        width: 100%;
-        height: 100%;
-        line-height: 21px;
-        font-size: 14px;
+        background: @esui-textline-textarea-background;
+        .size(100%);
+        line-height: @esui-textline-line-height;
+        font-size: @esui-textline-textarea-font-size;
         padding: 0;
         margin: 0;
         border: 0 none;
@@ -52,23 +77,44 @@
     }
 }
 
-.@{ui-class-prefix}-textline-disabled,
-.@{ui-class-prefix}-textline-read-only {
-    color: #999;
-    border-color: #D8D8D8;
+.@{ui-class-prefix}-textline-disabled {
+    .esui-text-line-color(
+        @esui-textline-readonly-border,
+        @esui-textline-readonly-text-color,
+        @esui-textline-readonly-background-color
+    );
+    .esf-disabled();
+    textarea {
+        cursor: inherit;
+    }
 }
 
-/** 验证 */
+.@{ui-class-prefix}-textline-read-only {
+    .esui-text-line-color(
+        @esui-textline-disabled-border,
+        @esui-textline-disabled-text-color,
+        @esui-textline-disabled-background-color
+    );
+}
+
+// 验证
 .@{ui-class-prefix}-textline-validity-invalid {
-    border: 1px solid red;
+    .esui-text-line-color(
+        @esui-textline-error-border,
+        @esui-textline-error-text-color,
+        @esui-textline-error-background-color
+    );
 }
-.@{ui-class-prefix}-textline-validity-label {
-    display:block;
-    margin-top: 5px;
-}
-.@{ui-class-prefix}-textline-validity-label-invalid {
-    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-    border: 1px solid #F0CCCC;
-    color: #dd6767;
-    padding-left: 50px;
+
+// mixins
+.esui-text-line-color(
+    @border,
+    @textareaTextColor,
+    @textareaBackground
+) {
+    border: @border;
+    textarea {
+        background: @textareaBackground;
+        color: @textareaTextColor;
+    }
 }

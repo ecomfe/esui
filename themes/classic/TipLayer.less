@@ -1,0 +1,117 @@
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 通用提示用漂浮层
+  * @author dbear
+  */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-tiplayer {
+    background: #fff6bd;
+    border: 1px solid #d5ca81;
+    padding: 5px;
+    z-index: @layer-z-index;
+    position: absolute;
+}
+
+.@{ui-class-prefix}-tiplayer-rt,
+.@{ui-class-prefix}-tiplayer-rb {
+    margin-left: -10px;
+}
+
+.@{ui-class-prefix}-tiplayer-lt,
+.@{ui-class-prefix}-tiplayer-lb {
+    margin-left: 10px;
+}
+
+.@{ui-class-prefix}-tiplayer-title,
+.@{ui-class-prefix}-tiplayer-body {
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+}
+
+.@{ui-class-prefix}-tiplayer-title {
+    margin: .5em 0;
+}
+
+.@{ui-class-prefix}-tiplayer-body {
+    margin-bottom: 5px;
+}
+
+.@{ui-class-prefix}-tiplayer-arrow {
+    display: none;
+    position: absolute;
+    font-size: 1px;
+}
+
+.@{ui-class-prefix}-tiplayer-arrow-tl {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -24px, -12px);
+    width: 12px;
+    height: 13px;
+    top: -13px;
+    left: 12px;
+}
+.@{ui-class-prefix}-tiplayer-arrow-tr {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -36px, -12px);
+    width: 12px;
+    height: 13px;
+    top: -13px;
+    right: 12px;
+}
+.@{ui-class-prefix}-tiplayer-arrow-bl {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -12px, -12px);
+    width: 12px;
+    height: 13px;
+    bottom: -13px;
+    left: 12px;
+}
+.@{ui-class-prefix}-tiplayer-arrow-br {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, 0px, -12px);
+    width: 12px;
+    height: 13px;
+    bottom: -13px;
+    right: 12px;
+}
+
+.@{ui-class-prefix}-tiplayer-arrow-lt {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -26px, 0px);
+    width: 13px;
+    height: 12px;
+    top: 7px;
+    left: -13px;
+}
+.@{ui-class-prefix}-tiplayer-arrow-lb {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -39px, 0);
+    width: 13px;
+    height: 12px;
+    bottom: 7px;
+    left: -13px;
+}
+.@{ui-class-prefix}-tiplayer-arrow-rt {
+    display: block;
+    .background (url(../img/esui_transparent.gif));
+    width: 13px;
+    height: 12px;
+    top: 7px;
+    right: -13px;
+}
+.@{ui-class-prefix}-tiplayer-arrow-rb {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -13px, 0);
+    width: 13px;
+    height: 12px;
+    bottom: 7px;
+    right: -13px;
+}
+
+.@{ui-class-prefix}-tiplayer-hidden {
+    display: none;
+}

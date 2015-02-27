@@ -1,0 +1,25 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 多月份多选日历
+ * @author dbear
+ */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-richcalendar-layer {
+    background: #fff;
+    .clear-float();
+    border: 1px solid #A8ADB6;
+    .box-shadow(3px 4px 4px -4px);
+    margin-top: 1px;
+    padding: 5px 5px 5px 0;
+    .@{ui-class-prefix}-richcalendar-month-container {
+        float: left;
+        margin-left: 5px;
+    }
+}
+
+.@{ui-class-prefix}-richcalendar-layer-hidden {
+    display: none;
+}

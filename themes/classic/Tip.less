@@ -1,0 +1,121 @@
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 提示
+  * @author dbear
+  */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-tip-layer {
+    background: #FFF3D9;
+    border: 1px solid #D9CBA8;
+    padding: 10px;
+    margin-left: -5px;
+    margin-top: 13px;
+    z-index: @layer-z-index;
+}
+
+.@{ui-class-prefix}-tip-title,
+.@{ui-class-prefix}-tip-body {
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+}
+ui
+.-tip-title {
+    margin: 0 0 0.5em;
+}
+
+.@{ui-class-prefix}-tip-body {
+    margin-bottom: 5px;
+}
+
+.@{ui-class-prefix}-tip {
+    font-size: 1px;
+}
+
+.@{ui-class-prefix}-tip-arrow {
+    display: none;
+    position: absolute;
+    font-size: 1px;
+}
+
+.@{ui-class-prefix}-tip-arrow-tl .@{ui-class-prefix}-tip-arrow-1 {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -24px, -12px);
+    width: 12px;
+    height: 13px;
+    top: -13px;
+    left: 12px;
+}
+.@{ui-class-prefix}-tip-arrow-tr {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -36px, -12px);
+    width: 12px;
+    height: 13px;
+    top: -13px;
+    right: 12px;
+}
+.@{ui-class-prefix}-tip-arrow-bl {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -12px, -12px);
+    width: 12px;
+    height: 13px;
+    bottom: -13px;
+    left: 12px;
+}
+.@{ui-class-prefix}-tip-arrow-br {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, 0px, -12px);
+    width: 12px;
+    height: 13px;
+    bottom: -13px;
+    right: 12px;
+}
+
+.@{ui-class-prefix}-tip-arrow-lt {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -26px, 0px);
+    width: 13px;
+    height: 12px;
+    top: 7px;
+    left: -13px;
+}
+.@{ui-class-prefix}-tip-arrow-lb {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -39px, 0);
+    width: 13px;
+    height: 12px;
+    bottom: 7px;
+    left: -13px;
+}
+.@{ui-class-prefix}-tip-arrow-rt {
+    display: block;
+    .background (url(../img/esui_transparent.gif));
+    width: 13px;
+    height: 12px;
+    top: 7px;
+    right: -13px;
+}
+.@{ui-class-prefix}-tip-arrow-rb {
+    display: block;
+    .background (url(../img/esui_transparent.gif), no-repeat, -13px, 0);
+    width: 13px;
+    height: 12px;
+    bottom: 7px;
+    right: -13px;
+}
+
+.@{ui-class-prefix}-tip {
+    width: 14px;
+    height: 14px;
+    .background (url(../img/esui.png), no-repeat, -101px, -89px);
+    overflow: hidden;
+    .inline-block ();
+    vertical-align: middle;
+}
+
+.@{ui-class-prefix}-tip-layer-hidden {
+    display: none;
+}

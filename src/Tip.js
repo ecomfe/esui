@@ -11,6 +11,7 @@ define(
         var u = require('underscore');
         var Control = require('./Control');
         var ui = require('./main');
+        var lib = require('./lib');
 
         require('./TipLayer');
 
@@ -138,10 +139,10 @@ define(
                     width: this.layerWidth || 200,
                     viewContext: this.viewContext,
                     // 添加一个类以方便区别inline tiplayer和全局tiplayer
-                    variants: 'from-tip',
-                    size: this.size
+                    variants: 'from-tip'
                 }
             );
+            lib.addClasses(main, this.helper.getInheriantClasses());
             this.addChild(tipLayer);
             tipLayer.render();
 
@@ -183,7 +184,7 @@ define(
             }
         );
 
-        require('./lib').inherits(Tip, Control);
+        lib.inherits(Tip, Control);
         ui.register(Tip);
         return Tip;
     }

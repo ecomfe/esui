@@ -1,60 +1,72 @@
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 组合框样式
- * @author dbear
- */
-@import "mixin.less";
 @import "variable.less";
 
-.@{ui-class-prefix}-checkbox,
-.@{ui-class-prefix}-radio,
-.@{ui-class-prefix}-boxgroup-checkbox,
-.@{ui-class-prefix}-boxgroup-radio {
-    vertical-align: middle;
-    line-height: 1.8;
+@esui-boxgroup-horizontal-space: 0 1em 0 0;
+@esui-boxgroup-vertical-space: .5em 0;
 
-    input {
-        margin-right: .2em;
-        vertical-align: middle;;
-        margin-bottom: -.01em;
+.@{ui-class-prefix}-boxgroup-horizontal .@{ui-class-prefix}-boxgroup-wrapper {
+    display: inline-block;
+    margin: @esui-boxgroup-horizontal-space;
+}
+
+.@{ui-class-prefix}-boxgroup-vertical .@{ui-class-prefix}-boxgroup-wrapper {
+    display: block;
+    margin: @esui-boxgroup-vertical-space;
+}
+
+// button style variant
+.@{ui-class-prefix}-boxgroup-button-style {
+    .@{ui-class-prefix}-boxgroup-wrapper {
+        .esui-boxgroup-button-style-border();
+        margin: 0;
     }
+    input[type="radio"],
+    input[type="checkbox"] {
+        display: none;
+    }
+    .esui-boxgroup-button-style-theme();
+}
 
-    span {
-        vertical-align: middle;
+.@{ui-class-prefix}-boxgroup-button-style-primary {
+    .esui-boxgroup-button-style-primary-theme();
+}
+
+.@{ui-class-prefix}-boxgroup-button-style-success {
+    .esui-boxgroup-button-style-success-theme();
+}
+
+.@{ui-class-prefix}-boxgroup-button-style-info {
+    .esui-boxgroup-button-style-info-theme();
+}
+
+.@{ui-class-prefix}-boxgroup-button-style-warning {
+    .esui-boxgroup-button-style-warning-theme();
+}
+
+.@{ui-class-prefix}-boxgroup-button-style-danger {
+    .esui-boxgroup-button-style-danger-theme();
+}
+
+.esui-boxgroup-button-style-border() when (@esf-button-radius > 0) {
+    &:not(:first-child):not(:last-child) label {
+        .border-radius(0);
+    }
+    &:first-child:not(:last-child) label {
+        .border-right-radius(0);
+    }
+    &:last-child:not(:first-child) label {
+        .border-left-radius(0);
     }
 }
 
-.@{ui-class-prefix}-boxgroup-horizontal .ui-boxgroup-wrapper {
-    .inline-block ();
-    margin-right: .5em;
-}
+.esui-boxgroup-button-style-border() {}
 
-.@{ui-class-prefix}-boxgroup-vertical .ui-boxgroup-wrapper {
+esui-box-group {
     display: block;
 }
 
-
-/** 验证 */
-.@{ui-class-prefix}-checkbox-validity-label {
-    zoom:1;
-    color: #CC0000;
-    padding-left: 10px;
-}
-
-.@{ui-class-prefix}-checkbox-validity-label-notice {
-    color: #FF0000;
-}
-
-.@{ui-class-prefix}-checkbox-validity-label-warn {
-    color: red;
-}
-
-.@{ui-class-prefix}-checkbox-validity-label-invalid {
-    color: #CC0000;
-}
-
-.@{ui-class-prefix}-boxgroup-validity-label-invalid {
-    color: #CC0000;
-}
+.esui-boxgroup-button-style-theme() {}
+.esui-boxgroup-button-style-primary-theme () {}
+.esui-boxgroup-button-style-success-theme() {}
+.esui-boxgroup-button-style-info-theme() {}
+.esui-boxgroup-button-style-warning-theme() {}
+.esui-boxgroup-button-style-danger-theme() {}
