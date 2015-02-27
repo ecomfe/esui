@@ -791,9 +791,11 @@ define(
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
+
+            // 移除mask
+            lib.removeNode('ctrl-mask-' + this.helper.getId());
             // 移除dom
-            var domId = this.main.id;
-            lib.removeNode(domId);
+            lib.removeNode(this.main);
             Panel.prototype.dispose.apply(this, arguments);
         };
 

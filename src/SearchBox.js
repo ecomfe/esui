@@ -53,12 +53,7 @@ define(
                     properties.text = this.main.value;
                 }
 
-                if (!properties.maxLength
-                    && (
-                        lib.hasAttribute(this.main, 'maxlength')
-                        || this.main.maxLength > 0
-                    )
-                ) {
+                if (!properties.maxLength && ( lib.hasAttribute(this.main, 'maxlength') || this.main.maxLength > 0)) {
                     properties.maxLength = this.main.maxLength;
                 }
             }
@@ -132,13 +127,25 @@ define(
                     }
                 }
             );
-            textbox.on('focus', lib.bind(this.addState, this, 'focus'));
+            textbox.on('focus', focus, this);
             textbox.on('blur', lib.bind(this.removeState, this, 'focus'));
 
             var button = this.getChild('button');
-
-            delegate(button, 'click', this, 'search');
+            button.on('click', click, this);
         };
+
+        function focus() {
+            this.removeState('clear');
+            this.addState('focus');
+        }
+
+        function click() {
+            if (this.hasState('clear')) {
+                this.getChild('text').setValue('');
+                this.removeState('clear');
+            }
+            this.fire('search');
+        }
 
         /**
          * 获取输入值
@@ -167,9 +174,7 @@ define(
                     'maxLength', 'placeholder', 'text',
                     'width', 'disabled', 'readOnly'
                 ],
-                paint: function (box, maxLength, placeholder,
-                    text, width, disabled, readOnly
-                ) {
+                paint: function (box, maxLength, placeholder, text, width, disabled, readOnly) {
                     var properties = {
                         /**
                          * @property {number} maxLength
