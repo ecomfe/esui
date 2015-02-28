@@ -6,11 +6,12 @@
   * @author dbear
   */
 
-@esui-tip-color: @primary-color;
+@esui-tip-with: 1em;
 
 .@{ui-class-prefix}-tip {
     display: inline-block;
     vertical-align: middle;
-    color: @esui-tip-color;
     cursor: help;
+    width: @esui-tip-with;
+    .esui-tip-theme();
 }

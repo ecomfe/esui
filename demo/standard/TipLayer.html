@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Button - ESUI Demo</title>
+        <title>TipLayer - ESUI Demo</title>
         <script src="../assets/loader/esl.js"></script>
         <script src="../../src/customShim.js"></script>
         <script src="../assets/jquery-1.9.1.min.js"></script>
@@ -12,43 +12,39 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
-        <link rel="stylesheet" href="../assets/demo.css" />
         <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
-        <h1>Tip</h1>
+        <h1 id="branding">ESUI - TipLayer</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
             <div id="main">
-                <h2>Tip</h2>
+                <h2>基本TipLayer</h2>
                 <section class="intro">
-                    <p>基本Button。</p>
+                    <p>可以把TipLayer绑定到一个ESUI控件上或DOM元素。</p>
                 </section>
                 <section class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
-                        <span data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里">content也可以写在这里</span>
-                        <esui-tip data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里"></esui-tip>
-
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        <Button data-ui-id="control-tip" data-ui-type="Button">
-                            可以绑在控件上
-                        </Button>
-                        <br>
-                        <br>
-                        <Button data-ui-id="control-tip-2" data-ui-type="Button">
-                            我跟楼上的共享一个tip
-                        </Button>
-                        <div>
-                        <label id="tip-layer-label">
-                            一行字也可以绑定提示
-                        </label>
+                    <div class="example ui-demo-light-stage">
+                        <h3>绑定到控件</h3>
+                        <div class="row">
+                            <button data-ui-id="control-tip" data-ui-type="Button">
+                                Hover to see Help
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button data-ui-id="control-tip-2" data-ui-type="Button">
+                                共享一个TipLayer
+                            </button>
+                        </div>
+                        <h3>绑定到DOM</h3>
+                        <div class="row">
+                            <a href="#" id="tip-layer-label">
+                                See Help <span class="ui-icon-question"></span>
+                            </a>
                         </div>
                     </div>
                 </section>
@@ -58,17 +54,10 @@
         require(
             [
                 'esui',
-                'esui/TipLayer',
-                'esui/Tip'
+                'esui/TipLayer'
             ],
             function (ui, TipLayer) {
-                var controls = ui.init();
-                var tip = controls[0];
-
-                var onceNotice = TipLayer.onceNotice({
-                    content: '你知道了吗知道了吗知道了吗？',
-                    targetDOM: 'tip-layer-label'
-                });
+                ui.init();
 
                 var tipLayer = ui.create('TipLayer', {
                     title: '最普通的提示',
@@ -79,13 +68,20 @@
                 tipLayer.attachTo({
                     targetControl: 'control-tip',
                     showMode: 'over',
-                    delayTime: 800,
+                    delayTime: 300,
                     positionOpt: { top: 'top', right: 'left' }
                 });
 
                 tipLayer.attachTo({
                     targetControl: 'control-tip-2',
-                    showMode: 'click',
+                    showMode: 'over',
+                    delayTime: 300,
+                    positionOpt: { top: 'top', right: 'left' }
+                });
+                
+                tipLayer.attachTo({
+                    targetDOM: 'tip-layer-label',
+                    showMode: 'over',
                     delayTime: 300,
                     positionOpt: { top: 'top', right: 'left' }
                 });

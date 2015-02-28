@@ -1,0 +1,22 @@
+@import "../../src/css/TipLayer.less";
+@import "Common.less";
+
+@esui-tiplayer-padding: 5px;
+@esui-tiplayer-zIndex: @layer-z-index;
+
+// core variables
+@esui-tiplayer-title-padding: .5em 0;
+@esui-tiplayer-title-font-size: 1.2em;
+@esui-tiplayer-body-margin: .5em 0;
+@esui-tiplayer-border-radius: 5px;
+
+// theme variables
+@esui-tiplayer-background: lighten(@esf-palette-primary-color, 35%);
+@esui-tiplayer-color: @esf-palette-color;
+@esui-tiplayer-border: 1px solid lighten(@esf-palette-primary-color, 20%);
+
+.esui-tiplayer-theme() {
+    border: @esui-tiplayer-border;
+    color: @esui-tiplayer-color;
+    background: @esui-tiplayer-background;
+}

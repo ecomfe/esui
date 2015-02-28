@@ -20,7 +20,10 @@
     display: inline-block;
     cursor: pointer;
     position: relative;
-    border-radius: @esui-calendar-border-radius;
+    .esf-border-radius(
+        @esui-calendar-border-radius,
+        @esui-calendar-border-radius
+    );
     .user-select(none);
     vertical-align: middle;
     .esui-calendar-theme();
@@ -29,20 +32,6 @@
 .@{ui-class-prefix}-calendar-text {
     padding-right: @esui-calendar-text-right-padding;
     .ellipsis();
-}
-
-.@{ui-class-prefix}-calendar:focus,
-.@{ui-class-prefix}-calendar:hover {
-    .esui-calendar-hover-theme();
-}
-
-.@{ui-class-prefix}-calendar-active,
-.@{ui-class-prefix}-calendar:active {
-    .esui-calendar-active-theme();
-}
-
-.@{ui-class-prefix}-calendar-read-only {
-    .esui-calendar-readonly-theme();
 }
 
 .@{ui-class-prefix}-calendar-arrow {
@@ -56,8 +45,4 @@
 }
 
 .esui-calendar-theme() {}
-.esui-calendar-hover-theme() {}
-.esui-calendar-active-theme() {}
-.esui-calendar-readonly-theme() {}
-
 .esui-calendar-layer-theme() {}

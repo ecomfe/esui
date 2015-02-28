@@ -22,22 +22,22 @@
 @esui-month-view-month-title-background: #f6f6f6;
 @esui-month-view-month-title-color: #666;
 
-@esui-month-view-month-title-background-selected: #ccced4;
+@esui-month-view-month-title-selected-background: #ccced4;
 
 @esui-month-view-month-item-color: #333;
 @esui-month-view-month-item-border: none;
 @esui-month-view-month-item-background: #fff;
-@esui-month-view-month-item-background-hover: #fffaee;
-@esui-month-view-month-item-background-selected: #e2f4ef;
-@esui-month-view-month-item-color-selected: #68c1a4;
-@esui-month-view-month-item-color-virtual: #999;
-@esui-month-view-month-item-background-virtual: none;
-@esui-month-view-month-item-background-disabled: none;
-@esui-month-view-month-item-color-disabled: #999;
+@esui-month-view-month-item-hover-background: #fffaee;
+@esui-month-view-month-item-selected-background: #e2f4ef;
+@esui-month-view-month-item-selected-color: #68c1a4;
+@esui-month-view-month-item-virtual-date-color: #999;
+@esui-month-view-month-item-virtual-date-background: none;
+@esui-month-view-month-item-disabled-background: none;
+@esui-month-view-month-item-disabled-color: #999;
 @esui-month-view-month-item-today-color: #6cc9ab;
 
-@esui-month-view-month-row-select-background: #f6f6f6;
-@esui-month-view-month-row-select-background-selected: #ccced4;
+@esui-month-view-month-row-selector-background: #f6f6f6;
+@esui-month-view-month-row-selector-selected-background: #ccced4;
 
 @esui-month-view-font-family: STHeiti, SimSun;
 
@@ -104,7 +104,7 @@
 }
 
 .@{ui-class-prefix}-monthview-month-title-selected {
-    background: @esui-month-view-month-title-background-selected;
+    background: @esui-month-view-month-title-selected-background;
 }
 
 .@{ui-class-prefix}-monthview-month-item {
@@ -120,7 +120,7 @@
 }
 
 .@{ui-class-prefix}-monthview-month-item:hover {
-    background: @esui-month-view-month-item-background-hover;
+    background: @esui-month-view-month-item-hover-background;
 }
 
 .@{ui-class-prefix}-monthview-month-item-today {
@@ -128,27 +128,27 @@
 }
 
 .@{ui-class-prefix}-monthview-month-item-selected {
-    background: @esui-month-view-month-item-background-selected;
-    color: @esui-month-view-month-item-color-selected;
+    background: @esui-month-view-month-item-selected-background;
+    color: @esui-month-view-month-item-selected-color;
     font-weight: bold;
 }
 
 .@{ui-class-prefix}-monthview-month-item-virtual,
 .@{ui-class-prefix}-monthview-month-item-out {
-    color: @esui-month-view-month-item-color-virtual;
-    background: @esui-month-view-month-item-background-virtual;
+    color: @esui-month-view-month-item-virtual-date-color;
+    background: @esui-month-view-month-item-virtual-date-background;
     cursor: default;
     &:hover {
-        background: @esui-month-view-month-item-background-virtual;
+        background: @esui-month-view-month-item-virtual-date-background;
     }
 }
 
 .@{ui-class-prefix}-monthview-month-item-disabled {
-    background: @esui-month-view-month-item-background-disabled;
-    color: @esui-month-view-month-item-color-disabled;
+    background: @esui-month-view-month-item-disabled-background;
+    color: @esui-month-view-month-item-disabled-color;
     cursor: default;
     &:hover {
-        background: @esui-month-view-month-item-background-disabled;
+        background: @esui-month-view-month-item-disabled-background;
     }
 }
 
@@ -158,23 +158,25 @@
     .@{ui-class-prefix}-monthview-month-select-all {
         width: @esui-month-view-month-item-width;
         height: @esui-month-view-month-item-height;
-        background: @esui-month-view-month-row-select-background;
-        &:hover {
-            background: @esui-month-view-month-row-select-background;
-        }
+        background: @esui-month-view-month-row-selector-background;
+        cursor: pointer;
     }
 
     .@{ui-class-prefix}-monthview-month-select-all-selected {
-        background: @esui-month-view-month-row-select-background-selected;
+        background: @esui-month-view-month-row-selector-selected-background;
     }
 
     .@{ui-class-prefix}-monthview-month-row-select {
-        background: @esui-month-view-month-row-select-background;
+        background: @esui-month-view-month-row-selector-background;
         border-bottom: @esui-month-view-month-item-border;
         text-align: center;
+        cursor: pointer;
     }
     .@{ui-class-prefix}-monthview-month-row-select-selected {
-        background: @esui-month-view-month-row-select-background-selected;
+        background: @esui-month-view-month-row-selector-selected-background;
+    }
+    .@{ui-class-prefix}-monthview-month-title {
+        cursor: pointer;
     }
 }
 

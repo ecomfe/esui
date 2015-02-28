@@ -632,6 +632,7 @@ define(
                     return;
                 }
 
+                // TODO: BUGBUG
                 if (showMode === 'auto') {
                     this.show(targetElement, options);
                 }

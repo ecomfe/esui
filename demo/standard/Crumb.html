@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Crumb</title>
+    <title>Crumb - ESUI Demo</title>
     <script src="../assets/loader/esl.js"></script>
     <script src="../../src/customShim.js"></script>
     <script src="../assets/jquery-1.9.1.min.js"></script>
@@ -12,11 +12,10 @@
     <script src="http://xy3.baidu.com/js/html5.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="../assets/prism.css" />
-    <link rel="stylesheet" href="../assets/demo.css" />
     <link rel="stylesheet" href="../assets/themes/standard.css" />
 </head>
 <body>
-    <h1>Crumb</h1>
+    <h1 id="branding">ESUI - Crumb</h1>
     <div id="page">
         <ul id="navigator">
         </ul>
@@ -30,7 +29,8 @@
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
-                    <div id="container">
+                    <h3>缺省样式</h3>
+                    <div id="container" class="row">
                         <div data-ui-type="Crumb">
                             <a href="#1">Node1</a>
                             <a href="#2">Node2</a>
@@ -39,7 +39,14 @@
                             <span>Node5</span>
                         </div>
                     </div>
-                    <div id="nav-container" class="ui-crumb-nav-container">
+                    <h3>配置Separator</h3>
+                    <div id="container2" class="row">
+                    </div>
+                    <h3>自定义样式</h3>
+                    <div class="ui-crumb-nav-container">
+                        <div id="nav-container">
+                        </div>
+                        <div class="ui-tip" data-ui="type:Tip;id:auto-tip-auto;content:Hello;"></div>
                     </div>
                 </div>
             </section>
@@ -49,20 +56,22 @@
         require(
             [
                 'esui',
-                'esui/Crumb'
+                'esui/Crumb',
+                'esui/Tip',
             ],
             function (ui, Crumb) {
-                ui.init(document.getElementById('container'));
+                ui.init();
                 var path = [
                     { text: '首页', href: 'http://test.com' },
                     { text: '投放管理', href: 'http://test2.com' },
                     { text: '订单管理'}
                 ];
 
-                var crumb = new Crumb({ path: path, variants: ['nav'] });
-                crumb.appendTo(document.getElementById('nav-container'));
+                var crumb = new Crumb({ path: path, variants: ['nav'], main: document.getElementById('nav-container') });
+                crumb.render();
+
                 var crumb2 = new Crumb({ path: path, separator: '|' });
-                crumb2.appendTo(document.getElementById('container'));
+                crumb2.appendTo(document.getElementById('container2'));
             }
         );
     </script>

@@ -6,18 +6,14 @@
  * @author dbear
  */
 
+@import "variable.less";
+
 // Select
-@esui-select-color: #fff;
-@esui-select-background: @primary-color;
-@esui-select-background-hover: lighten(@primary-color, 5%);
-@esui-select-background-active: darken(@primary-color, 15%);
-@esui-select-background-disabled: @button-background-disabled;
-@esui-select-radius: @default-border-radius;
-@esui-select-height: @esf-button-height;
-@esui-select-line-height: @esf-button-height;
-@esui-select-padding: 1em;
-@esui-select-error-border-color: red;
-@esui-select-error-text-color: red;
+@esui-select-radius: 5px;
+@esui-select-height: 2.4em;
+@esui-select-line-height: 2.4em;
+@esui-select-horizontal-padding: 1em;
+@esui-select-text-right-padding: 2em;
 
 // Select-toolbar-style
 @esui-select-color-toolbar-style: #666;
@@ -25,44 +21,33 @@
 @esui-select-background-toolbar-style-hover: #e0e0e0;
 @esui-select-background-toolbar-style-active: @esui-select-background-toolbar-style-hover;
 
-// layer
+// Layer
 @esui-select-layer-background: #f1f1f1;
 @esui-select-layer-border: none;
 @esui-select-item-color: #666;
 @esui-select-item-hover-color: #666;
 @esui-select-item-background-hover: #e1e1e1;
 @esui-select-item-disabled-color: #d1d1d1;
-@esui-select-item-selected-color: @primary-color;
+@esui-select-item-selected-color: #6CCDC0;
 @esui-select-item-background-selected: #e1e1e1;
 
 .@{ui-class-prefix}-select {
     cursor: pointer;
-    padding: 0 @esui-select-padding;
-    outline: none;
+    padding: 0 @esui-select-horizontal-padding;
+    outline: none !important;
     display: inline-block;
     position: relative;
     border-radius: @esui-select-radius;
-
     height: @esui-select-height;
     line-height: @esui-select-line-height;
-    background: @esui-select-background;
-    color: @esui-select-color;
     vertical-align: middle;
+    text-decoration: none !important;
     .box-sizing(border-box);
-    .transition(background-color 0.3s ease);
+    .esf-transition(background-color 0.3s ease);
+    .esui-select-theme();
 }
 
-.@{ui-class-prefix}-select:hover,
-.@{ui-class-prefix}-select:focus {
-    background: @esui-select-background-hover;
-}
-
-.@{ui-class-prefix}-select.@{ui-class-prefix}-select-active,
-.@{ui-class-prefix}-select:active {
-    background: @esui-select-background-active;
-}
-
-.@{ui-class-prefix}-select-active {
+.@{ui-class-prefix}-select.@{ui-state-prefix}-active {
     .@{ui-class-prefix}-select-arrow {
         .transform(rotate(180deg));
         .transition(transform 0.3s ease);
@@ -70,45 +55,24 @@
 }
 
 .@{ui-class-prefix}-select-text {
-    padding-right: 2em;
+    padding-right: @esui-select-text-right-padding;
     display: block;
     .ellipsis();
 }
 
 .@{ui-class-prefix}-select-arrow {
     position: absolute;
-    right: @esui-select-padding;
+    right: @esui-select-horizontal-padding;
     top: 0;
     line-height: @esui-select-line-height !important;
-}
-
-.@{ui-class-prefix}-select-toolbar-style {
-    color: @esui-select-color-toolbar-style;
-    background: @esui-select-background-toolbar-style;
-    &:hover,
-    &:focus {
-        background: @esui-select-background-toolbar-style-hover;
-    }
-
-    &.@{ui-class-prefix}-select-active,
-    &:active {
-        background: @esui-select-background-toolbar-style-active;
-    }
+    width: 1em;
+    text-align: center;
 }
 
 .@{ui-class-prefix}-select-layer {
-    overflow-x: hidden;
-    *height: 13em;
     max-height: 13em;
+    overflow-x: hidden;
     overflow-y: auto;
-
-    .esf-dropdown-variant(
-        @esui-select-layer-background,
-        @esui-select-layer-border,
-        @esui-select-item-color,
-        @esui-select-item-hover-color,
-        @esui-select-item-background-hover
-    );
 }
 
 .@{ui-class-prefix}-select-item-disabled {
@@ -125,15 +89,6 @@
     &:hover {
         background: @esui-select-item-background-selected;
     }
-}
-
-.@{ui-class-prefix}-select.@{ui-class-prefix}-select-disabled {
-    .esf-disabled();
-}
-
-.@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only,
-.@{ui-class-prefix}-select.@{ui-class-prefix}-select-read-only:hover {
-    background: @esui-select-background-disabled;
 }
 
 .@{ui-class-prefix}-textbox-wrapper {
@@ -166,53 +121,22 @@
     }
 }
 
-// compact variant select
-@esui-select-compact-color: #333;
-@esui-select-compact-background: @primary-bg-color;
-@esui-select-compact-height: 1.5em;
-@esui-select-compact-padding: .5em;
+// variants
+.@{ui-class-prefix}-select-primary {
+    .esui-select-primary-theme();
+}
 
-@esui-select-compact-layer-item-padding: .3em;
-@esui-select-compact-layer-item-select-background: #FFFAED;
-@esui-select-compact-layer-item-select-color: #333;
-@esui-select-compact-layer-background: #F1F1F1;
-
+// compact
 .@{ui-class-prefix}-select-compact {
-    padding: 0 @esui-select-compact-padding;
-    background: @esui-select-compact-background !important;
-    height: @esui-select-compact-height;
-    line-height: @esui-select-compact-height;
-    color: @esui-select-compact-color;
-
-    .@{ui-class-prefix}-select-arrow {
-        line-height: @esui-select-compact-height !important;
-        right: @esui-select-compact-padding;
-        .opacity(70);
-        &:hover {
-            .opacity(100);
-        }
-    }
+    .esui-select-compact-theme();
 }
 
 .@{ui-class-prefix}-select-layer-compact {
-    background: @esui-select-compact-layer-background;
-    li :first-child {
-        padding: @esui-select-compact-layer-item-padding;
-    }
-    .@{ui-class-prefix}-select-item-selected > :first-child {
-        background: @esui-select-compact-layer-item-select-background;
-        color: @esui-select-compact-layer-item-select-color !important;
-    }
-    .@{ui-class-prefix}-select {
-        padding: 0 @esui-select-compact-padding;
-        background: @esui-select-compact-background;
-        height: @esui-select-compact-height;
-        line-height: @esui-select-compact-height;
-        color: @esui-select-compact-color;
-
-        .@{ui-class-prefix}-select-arrow {
-            line-height: @esui-select-compact-height !important;
-            right: @esui-select-compact-padding;
-        }
-    }
+    .esui-select-layer-compact-theme();
 }
+
+// hooks
+.esui-select-theme() {}
+.esui-select-primary-theme() {}
+.esui-select-compact-theme() {}
+.esui-select-layer-compact-theme() {};

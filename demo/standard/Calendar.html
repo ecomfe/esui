@@ -12,33 +12,37 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
-        <link rel="stylesheet" href="../assets/demo.css" />
         <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
-        <h1>Calendar</h1>
+        <h1 id="branding">Calendar</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
             <div id="main">
-                <h2>Calendar</h2>
+                <h2>状态</h2>
                 <section class="intro">
-                    <p>Calendar</p>
+                    <p>日期选择组件缺省样式。</p>
                 </section>
                 <section class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
-                        <div>
-                            <button data-ui="type:Button;id:unlock;" >解锁</button>
-                            <button data-ui="type:Button;id:update;" >更新日期</button>
-                            <span id="tip" ></span>
+                        <div class="row">
+                            <input data-ui="type:Calendar;" />
                         </div>
-                        <div style="margin-top: 2em;">
-                            <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;disabled:1;width:300"></div>
-                            <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;" />
-                            <esui-calendar value="2014-03-25" name="test2" data-ui="id:test3;range:2011-02-02,2014-02-01;"></esui-calendar>
+                        <h3>不可用</h3>
+                        <div class="row">
+                            <input data-ui="type:Calendar;disabled:1" />
+                        </div>
+                        <h3>只读</h3>
+                        <div class="row">
+                            <input data-ui="type:Calendar;readOnly:1" />
+                        </div>
+                        <h3>错误</h3>
+                        <div class="row">
+                            <input data-ui="type:Calendar;id:error" />
                         </div>
                     </div>
                 </section>
@@ -48,36 +52,12 @@
         require(
             [
                 'esui',
-                'esui/Button',
                 'esui/Calendar'
             ],
             function (ui) {
                 var controls = ui.init();
-                var calendar = controls[2];
-                var unlock = controls[0];
-                var update = controls[1];
 
-                //calendar.setRawValue(new Date(2013, 3, 19));
-
-                // setTimeout(function(){
-                //     calendar.disable();
-                //     document.getElementById('tip').innerHTML = '日历已锁';
-
-                // }, 2000);
-
-                unlock.on('click', function(){
-                    calendar.enable();
-                    document.getElementById('tip').innerHTML = '日历开锁';
-                });
-                var i = 1;
-                update.on('click', function(){
-                    //calendar.setRawValue(new Date(2013, i++, 19));
-                    calendar.setRange({
-                        begin: new Date(2013, 3, 21),
-                        end: new Date(2018, 3, 19)
-                    });
-                });
-                calendar.showValidationMessage('invalid', '时间错误！');
+                ui.get('error').showValidationMessage('invalid', '时间错误！');
             }
         )
         </script>

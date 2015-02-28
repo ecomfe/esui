@@ -142,14 +142,13 @@ define(
                     variants: 'from-tip'
                 }
             );
-            lib.addClasses(main, this.helper.getInheriantClasses());
             this.addChild(tipLayer);
             tipLayer.render();
 
             var attachOptions = {
                 showMode: this.mode,
                 delayTime: this.delayTime,
-                targetControl: this,
+                targetControl: this.id,
                 positionOpt: {top: 'top', right: 'left'}
             };
             tipLayer.attachTo(attachOptions);
