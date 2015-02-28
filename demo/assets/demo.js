@@ -9,7 +9,7 @@ require.config({
         },
         {
             'name': 'underscore',
-            'location': '../dep/underscore/1.5.2/src',
+            'location': '../dep/underscore/1.6.0/src',
             'main': 'underscore'
         },
         {
@@ -19,7 +19,7 @@ require.config({
         },
         {
             'name': 'etpl',
-            'location': '../dep/etpl/3.0.0/src',
+            'location': '../dep/etpl/2.1.0/src',
             'main': 'main'
         },
         {
@@ -29,7 +29,7 @@ require.config({
         },
         {
             'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.1/src',
+            'location': '../dep/eicons/1.0.0-alpha.4/src',
             'main': 'main.less'
         },
         {
@@ -63,7 +63,7 @@ $(function () {
     $('.view').on('click', '.viewer li', viewSource);
     $('.source, .viewer li').on('mousedown', false);
     //$('html').on('mousedown', hideSource);
-    
+
     var navItems =
         '<li><a href="BoxControl.html">Box Control</a></li>' +
         '<li><a href="Button.html">Button</a></li>' +
@@ -82,6 +82,7 @@ $(function () {
         '<li><a href="Region.html">Region</a></li>' +
         '<li><a href="Schedule.html">Schedule</a></li>' +
         '<li><a href="Select.html">Select</a></li>' +
+        '<li><a href="SearchBox.html">SearchBox</a></li>' +
         '<li><a href="Sidebar.html">Sidebar</a></li>' +
         '<li><a href="Tab.html">Tab</a></li>' +
         '<li><a href="Table.html">Table</a></li>' +

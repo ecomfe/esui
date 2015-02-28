@@ -1,10 +1,12 @@
-@import "mixin.less";
-@import "variable.less";
+@import "./mixin/util.less";
 
-@esui-search-box-textbox-padding-horizon: 4px;
-@esui-search-box-height: 25px;
-@esui-search-box-search-button-width: 25px;
-@esui-search-box-clear-width: 25px;
+@esui-search-box-active-color: @primary-color;
+@esui-search-box-input-padding: @esf-input-padding;
+@esui-search-box-input-height: @esf-input-height;
+@esui-search-box-input-border-color: #ddd;
+@esui-search-box-input-border-color-focus: @esui-search-box-active-color;
+@esui-search-box-clear-icon-color: #ddd;
+@esui-search-box-clear-icon-color-active: @esui-search-box-active-color;
 
 .@{ui-class-prefix}-searchbox {
     .inline-block();
@@ -13,13 +15,29 @@
 
     .@{ui-class-prefix}-textbox {
         input {
-            padding-right: @esui-search-box-textbox-padding-horizon;
-            .box-sizing(border-box);
+            padding: @esui-search-box-input-padding;
+            border: 1px solid @esui-search-box-input-border-color;
+
+            &:focus {
+                border: 1px solid @esui-search-box-input-border-color-focus;
+            }
         }
     }
 
     .@{ui-class-prefix}-textbox-icon {
         right: 5000px;
+        color: @esui-search-box-clear-icon-color;
+
+        &:hover,
+        &:active {
+            color: @esui-search-box-clear-icon-color-active;
+        }
+    }
+}
+
+.@{ui-class-prefix}-searchbox-focus {
+    .@{ui-class-prefix}-textbox-icon {
+        color: @esui-search-box-clear-icon-color-active;
     }
 }
 
@@ -27,7 +45,7 @@
 .@{ui-class-prefix}-searchbox-searched {
     .@{ui-class-prefix}-textbox {
         input {
-            padding-right: @esui-search-box-clear-width;
+            padding-right: @esui-search-box-input-height + 0.2em;
         }
     }
 
@@ -73,15 +91,15 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: @esui-search-box-search-button-width;
-        height: @esui-search-box-height;
-        line-height: @esui-search-box-height;
+        width: @esui-search-box-input-height + 0.2em;
+        height: @esui-search-box-input-height;
+        line-height: @esui-search-box-input-height;
         text-align: center;
     }
 
     .@{ui-class-prefix}-textbox {
         input {
-            padding-left: @esui-search-box-search-button-width;
+            padding-left: @esui-search-box-input-height + 0.2em;
         }
     }
 }
