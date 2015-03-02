@@ -50,12 +50,17 @@ define(
          *     // 可以选择关联到不同的DOM属性
          *     var painter = painters.attribute('link', 'href');
          *
-         *     // 可以指定DOM属性的值
-         *     var painter = painters.attribute('active', 'checked', true);
+         *     // 可以指定DOM属性的默认值
+         *     var painter = painters.attribute('active', 'title', '');
+         *
+         *     // 可以指定DOM属性的默认值配置
+         *     var painter = painters.attribute('active', 'checked', options)
          *
          * @param {string} name 指定负责的属性名
          * @param {string} [attribute] 对应DOM属性的名称，默认与`name`相同
-         * @param {Mixed} [value] 固定DOM属性的值，默认与更新的值相同
+         * @param {Mixed | Object} [value] 默认的DOM属性值，或者默认值配置
+         * @param {Mixed} value.defaultValue 默认值
+         * @param {boolean} value.forceRemove 当属性值为false时，是否移除属性
          * @return {Object} 一个渲染器配置
          */
         painters.attribute = function (name, attribute, value) {
@@ -64,8 +69,25 @@ define(
                 attribute: attribute || name,
                 value: value,
                 paint: function (control, value) {
-                    value = this.value == null ? value : this.value;
-                    control.main.setAttribute(this.attribute, value || '');
+                    // this.value == null时，value的取值为value本身
+                    // this.value为非对象类型时，取this.value与value中非空的那个
+                    if (this.value == null || typeof this.value !== 'object') {
+                        value = value == null ? this.value : value;
+                        // 将null和undefined用空字符串替代
+                        value = value == null ? '' : value;
+                        control.main.setAttribute(this.attribute, value);
+                    }
+                    // this.value为对象类型
+                    else {
+                        value = value == null ? this.value.defaultValue : value;
+                        // this.value.forceRemove为true，并且value为false时，移除属性
+                        if (this.value.forceRemove && value === false) {
+                            control.main.removeAttribute(this.attribute);
+                        }
+                        else {
+                            control.main.setAttribute(this.attribute, value);
+                        }
+                    }
                 }
             };
         };
