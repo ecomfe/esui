@@ -69,24 +69,20 @@ define(
                 attribute: attribute || name,
                 value: value,
                 paint: function (control, value) {
-                    // this.value == null时，value的取值为value本身
-                    // this.value为非对象类型时，取this.value与value中非空的那个
-                    if (this.value == null || typeof this.value !== 'object') {
-                        value = value == null ? this.value : value;
-                        // 将null和undefined用空字符串替代
-                        value = value == null ? '' : value;
-                        control.main.setAttribute(this.attribute, value);
+                    // 将“默认值”组装为“默认值配置”
+                    var options = (this.value != null && typeof this.value === 'object')
+                        ? this.value
+                        : {defaultValue: this.value};
+                    // 传入的参数为空时，取默认值
+                    value = value == null ? options.defaultValue : value;
+                    // 将null和undefined用空字符串替代
+                    value = value == null ? '' : value;
+                    // this.value.forceRemove为true，并且value为false时，移除属性
+                    if (options.forceRemove && value === false) {
+                        control.main.removeAttribute(this.attribute);
                     }
-                    // this.value为对象类型
                     else {
-                        value = value == null ? this.value.defaultValue : value;
-                        // this.value.forceRemove为true，并且value为false时，移除属性
-                        if (this.value.forceRemove && value === false) {
-                            control.main.removeAttribute(this.attribute);
-                        }
-                        else {
-                            control.main.setAttribute(this.attribute, value);
-                        }
+                        control.main.setAttribute(this.attribute, value);
                     }
                 }
             };
