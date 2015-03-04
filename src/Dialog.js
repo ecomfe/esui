@@ -431,6 +431,8 @@ define(
                     mask: true,           // 是否具有遮挡层
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
+                    // TODO: 这两个属性有些不是特别方便。
+                    // 也许可以改进一下用data-role=foot。
                     defaultFoot: ''
                         + '<div '
                         + 'class="'

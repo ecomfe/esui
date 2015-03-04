@@ -12,11 +12,10 @@
     <script src="http://xy3.baidu.com/js/html5.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="../assets/prism.css" />
-    <link rel="stylesheet" href="../assets/demo.css" />
     <link rel="stylesheet" href="../assets/themes/standard.css" />
 </head>
 <body>
-    <h1>Region</h1>
+    <h1 id="branding">ESUI - TextLine</h1>
     <div id="page">
         <ul id="navigator">
         </ul>
@@ -29,14 +28,18 @@
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
-                    <h3>Normal</h3>
-                    <div data-ui="type:TextLine;id:test;name:textLine;">
+                <div class="example ui-demo-light-stage">
+                    <h3>Error</h3>
+                    <div data-ui="type:TextLine;name:textLine;">
                     </div>
                     <h3>Disabled</h3>
-                    <esui-text-line data-ui="type:TextLine;id:test2;name:textLine;disabled:disabled"></esui-text-line>
+                    <esui-text-line data-ui="type:TextLine;name:textLine;disabled:disabled;rawValue:disabled"></esui-text-line>
                     <h3>Read Only</h3>
-                    <esui-text-line data-ui="type:TextLine;id:test3;name:textLine;readOnly:readOnly"></esui-text-line>
+                    <esui-text-line data-ui="type:TextLine;name:textLine;readOnly:readOnly;rawValue:readOnly"></esui-text-line>
+                    <h3>Success</h3>
+                    <esui-text-line data-ui="type:TextLine;name:textLine;rawValue:success;states:success"></esui-text-line>
+                    <h3>Warning</h3>
+                    <esui-text-line data-ui="type:TextLine;name:textLine;rawValue:warning;states:warning"></esui-text-line>
                 </div>
             </section>
         </div>

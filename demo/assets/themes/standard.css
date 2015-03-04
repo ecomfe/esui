@@ -1141,6 +1141,8 @@ input[type="search"]::-webkit-search-decoration {
   right: 0;
   top: 50%;
   position: absolute;
+  line-height: 1;
+  margin-top: -0.1em;
 }
 .ui-form-key,
 .ui-form-valign {
@@ -1638,6 +1640,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-panel-custom .ui-panel-header {
   padding: 10px 15px;
+  overflow: auto;
   -webkit-border-top-left-radius: 5px;
   -moz-border-radius-topleft: 5px;
   border-top-left-radius: 5px;
@@ -1648,8 +1651,15 @@ input[type="search"]::-webkit-search-decoration {
   background: #eff0f2;
   border-bottom: 1px solid #dddddd;
 }
+.ui-panel-custom .ui-panel-left {
+  float: left;
+}
+.ui-panel-custom .ui-panel-right {
+  float: right;
+}
 .ui-panel-custom .ui-panel-footer {
   padding: 10px 15px;
+  overflow: auto;
   -webkit-border-bottom-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   border-bottom-right-radius: 5px;
@@ -1663,9 +1673,6 @@ input[type="search"]::-webkit-search-decoration {
 .ui-panel-custom .ui-panel-body {
   padding: 10px 15px;
   color: #444444;
-}
-.ui-panel-custom .ui-panel-actions {
-  float: right;
 }
 .ui-progress {
   margin-bottom: 1em;
@@ -1938,7 +1945,9 @@ a.ui-text-info:hover {
   position: relative;
   display: inline-block;
   vertical-align: middle;
-  color: #444444;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 .ui-textbox > input {
   height: 2.4em;
@@ -1963,7 +1972,7 @@ a.ui-text-info:hover {
   font-size: 100%;
   resize: none;
   border: 1px solid #dddddd;
-  background-color: #ffffff;
+  background: #ffffff;
   color: #444444;
 }
 .ui-textbox > input:-moz-placeholder,
@@ -1982,11 +1991,11 @@ a.ui-text-info:hover {
 .ui-textbox > textarea:-ms-input-placeholder {
   color: #999999;
 }
-.state-focus > input,
 .ui-textbox > input:focus,
-.ui-textbox > textarea:focus {
+.ui-textbox > textarea:focus,
+.ui-textbox.state-focus > input {
   border: 1px solid #6ccdc0;
-  background-color: #f9fdfc;
+  background: #f9fdfc;
   color: #444444;
 }
 .ui-textbox > input[disabled],
@@ -1995,90 +2004,80 @@ a.ui-text-info:hover {
   filter: alpha(opacity=40);
   cursor: not-allowed !important;
 }
-.esf-textbox-error,
-.ui-textbox.state-error > input {
+.ui-textbox.state-error > input,
+.ui-textbox.state-validity-invalid > input {
   border: 1px solid #d9534f;
-  background-color: #fbebea;
+  background: #fbebea;
   color: #c9302c;
 }
-.esf-textbox-error:-moz-placeholder,
-.ui-textbox.state-error > input:-moz-placeholder {
+.ui-textbox.state-error > input:-moz-placeholder,
+.ui-textbox.state-validity-invalid > input:-moz-placeholder {
   color: #c9302c;
 }
-.esf-textbox-error::-moz-placeholder,
-.ui-textbox.state-error > input::-moz-placeholder {
+.ui-textbox.state-error > input::-moz-placeholder,
+.ui-textbox.state-validity-invalid > input::-moz-placeholder {
   color: #c9302c;
 }
-.esf-textbox-error::-webkit-input-placeholder,
-.ui-textbox.state-error > input::-webkit-input-placeholder {
+.ui-textbox.state-error > input::-webkit-input-placeholder,
+.ui-textbox.state-validity-invalid > input::-webkit-input-placeholder {
   color: #c9302c;
 }
-.esf-textbox-error:-ms-input-placeholder,
-.ui-textbox.state-error > input:-ms-input-placeholder {
+.ui-textbox.state-error > input:-ms-input-placeholder,
+.ui-textbox.state-validity-invalid > input:-ms-input-placeholder {
   color: #c9302c;
 }
 .ui-textbox > input[readonly],
 .ui-textbox > textarea[readonly] {
   border: 1px solid #dddddd;
-  background-color: #ffffff;
+  background: #ffffff;
   color: #999999;
 }
-.esf-textbox-success,
 .ui-textbox.state-success > input,
 .ui-textbox.state-success > textarea {
   border: 1px solid #5cb85c;
-  background-color: #dff1df;
+  background: #dff1df;
   color: #5cb85c;
 }
-.esf-textbox-success:-moz-placeholder,
 .ui-textbox.state-success > input:-moz-placeholder,
 .ui-textbox.state-success > textarea:-moz-placeholder {
   color: #5cb85c;
 }
-.esf-textbox-success::-moz-placeholder,
 .ui-textbox.state-success > input::-moz-placeholder,
 .ui-textbox.state-success > textarea::-moz-placeholder {
   color: #5cb85c;
 }
-.esf-textbox-success::-webkit-input-placeholder,
 .ui-textbox.state-success > input::-webkit-input-placeholder,
 .ui-textbox.state-success > textarea::-webkit-input-placeholder {
   color: #5cb85c;
 }
-.esf-textbox-success:-ms-input-placeholder,
 .ui-textbox.state-success > input:-ms-input-placeholder,
 .ui-textbox.state-success > textarea:-ms-input-placeholder {
   color: #5cb85c;
 }
-.esf-textbox-warning,
 .ui-textbox.state-warning > input,
 .ui-textbox.state-warning > textarea {
   border: 1px solid #f0ad4e;
-  background-color: #fffefc;
+  background: #fffefc;
   color: #f0ad4e;
 }
-.esf-textbox-warning:-moz-placeholder,
 .ui-textbox.state-warning > input:-moz-placeholder,
 .ui-textbox.state-warning > textarea:-moz-placeholder {
   color: #f0ad4e;
 }
-.esf-textbox-warning::-moz-placeholder,
 .ui-textbox.state-warning > input::-moz-placeholder,
 .ui-textbox.state-warning > textarea::-moz-placeholder {
   color: #f0ad4e;
 }
-.esf-textbox-warning::-webkit-input-placeholder,
 .ui-textbox.state-warning > input::-webkit-input-placeholder,
 .ui-textbox.state-warning > textarea::-webkit-input-placeholder {
   color: #f0ad4e;
 }
-.esf-textbox-warning:-ms-input-placeholder,
 .ui-textbox.state-warning > input:-ms-input-placeholder,
 .ui-textbox.state-warning > textarea:-ms-input-placeholder {
   color: #f0ad4e;
 }
 .ui-textbox-icon {
-  width: 2.6em;
+  width: 2.4em;
   height: 2.4em;
   line-height: 2.4em !important;
   position: absolute;
@@ -2089,13 +2088,13 @@ a.ui-text-info:hover {
   left: 0;
 }
 .ui-textbox-icon-left input {
-  padding-left: 2.6em;
+  padding-left: 2.4em;
 }
 .ui-textbox-icon-right .ui-textbox-icon {
   right: 0;
 }
 .ui-textbox-icon-right input {
-  padding-right: 2.6em;
+  padding-right: 2.4em;
 }
 .ui-textbox-fluid {
   display: block;
@@ -2639,6 +2638,145 @@ esui-box-group {
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 对话框样式
+ * @author dbear
+ */
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Breadcrumbs样式
+  * @author yankun01
+  */
+.ui-crumb {
+  padding: 0;
+  line-height: 1.3;
+  vertical-align: middle;
+}
+.ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #999999;
+}
+span.ui-crumb-node {
+  color: #444444;
+}
+.ui-crumb-nav-container {
+  background: #eff0f2;
+}
+.ui-crumb-nav {
+  display: inline-block;
+  height: 4em;
+  line-height: 4em;
+  overflow: hidden;
+}
+.ui-crumb-nav .ui-crumb-node {
+  padding: 0 20px;
+}
+.ui-crumb-nav span.ui-crumb-node {
+  color: #6ccdc0;
+}
+.ui-crumb-nav a.ui-crumb-node {
+  color: #444444;
+  text-decoration: none;
+}
+.ui-crumb-nav a.ui-crumb-node:hover {
+  color: #444444;
+  text-decoration: underline;
+}
+.ui-crumb-nav .ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #999999;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 对话框样式
+ * @author dbear
+ */
+.ui-dialog {
+  position: absolute;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  z-index: 1203;
+  width: 600px;
+  display: block;
+  background: #ffffff;
+  border: none;
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+.ui-dialog-head {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #444444;
+  font-weight: bold;
+}
+.ui-dialog-close-icon {
+  position: absolute;
+  right: 0.5em;
+  top: 0.75em;
+  cursor: pointer;
+  opacity: 0.85;
+  filter: alpha(opacity=85);
+}
+.ui-dialog-close-icon:hover {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.ui-dialog-title {
+  line-height: 2.5em;
+  padding: 0 0.5em;
+}
+.ui-dialog-body {
+  padding: 0.5em;
+}
+.ui-dialog-foot-panel {
+  padding: 0.5em;
+  margin: 0;
+  border-top: 1px solid #dddddd;
+}
+.ui-dialog-draggable .ui-dialog-head {
+  cursor: move;
+}
+.ui-dialog-dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ui-dialog-mask {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.ui-dialog-text {
+  min-height: 4em;
+}
+.ui-dialog-alert .ui-dialog-body,
+.ui-dialog-confirm .ui-dialog-body {
+  overflow: auto;
+}
+.ui-dialog-icon {
+  float: left;
+  margin-right: 1em;
+}
+.ui-dialog-icon span {
+  font-size: 4em;
+}
+.ui-dialog-icon-warning {
+  color: #d9534f;
+}
+.ui-dialog-icon-confirm {
+  color: #5bc0de;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
  *
  * @file 单日历样式
  * @author dbear
@@ -2739,6 +2877,9 @@ esui-box-group {
 }
 .ui-monthview-month-item-disabled:hover {
   background: none;
+}
+.ui-monthview-month-item-highlight {
+  background: #e6f6f4;
 }
 .ui-monthview-multi-select {
   width: 20em;
@@ -2930,57 +3071,448 @@ esui-box-group {
   color: #444444 !important;
 }
 /**
+* ESUI (Enterprise Simple UI)
+* Copyright 2013 Baidu Inc. All rights reserved.
+*
+* @file 翻页样式
+* @author shenbin langxingjian
+*/
+.ui-pager-select-wrapper {
+  display: inline-block;
+}
+.ui-pager-label {
+  display: inline-block;
+  font-family: "Heiti SC Light", "Heiti SC";
+  color: #444444;
+  text-align: center;
+}
+.ui-pager-main {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
+.ui-pager-main li {
+  margin: 0 0 0 0.5em;
+  padding: 0 0.2em;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  color: #444444;
+}
+.ui-pager-main a {
+  display: inline-block;
+  color: #444444 !important;
+  text-decoration: none !important;
+}
+.ui-pager-item-current {
+  cursor: default;
+  font-weight: bold;
+  color: #ffffff !important;
+  background: #c5c8d0;
+}
+.ui-pager-item-extend {
+  color: #000000;
+  font-weight: bold;
+  background-color: none;
+}
+.ui-pager-alignLeft,
+.ui-pager-alignLeftReverse {
+  float: left;
+}
+.ui-pager-alignLeftReverse .ui-pager-select-wrapper {
+  float: right;
+}
+.ui-pager-alignRight,
+.ui-pager-alignRightReverse {
+  float: right;
+}
+.ui-pager-alignRightReverse .ui-pager-select-wrapper {
+  float: right;
+}
+.ui-pager-distributed .ui-pager-main {
+  float: right;
+}
+.ui-pager-distributedReverse .ui-pager-select-wrapper {
+  float: right;
+}
+/**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 对话框样式
+ *
+ * @file 区间日历样式
  * @author dbear
  */
+.ui-rangecalendar {
+  height: 2.4em;
+  line-height: 2.4em;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: middle;
+  padding: 0 1em;
+  position: relative;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background: #eff0f2;
+  color: #444444;
+}
+.ui-rangecalendar:hover {
+  background: #fafafa;
+}
+.ui-rangecalendar.state-active,
+.ui-rangecalendar:active {
+  background: #eeeeee;
+}
+.ui-rangecalendar.state-read-only {
+  color: #999999;
+}
+.ui-rangecalendar-text {
+  display: inline-block;
+  padding-right: 2em;
+}
+.ui-rangecalendar-arrow {
+  position: absolute;
+  top: 0;
+  right: 1em;
+  display: inline-block;
+}
+.ui-rangecalendar-layer {
+  background: #fafafa;
+  border-top: 3px solid #eeeeee;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  padding: 1em;
+}
+.ui-rangecalendar-body:before,
+.ui-rangecalendar-body:after {
+  display: table;
+  content: "";
+}
+.ui-rangecalendar-body:after {
+  clear: both;
+}
+.ui-rangecalendar-foot {
+  padding: 1em 0 0 0;
+}
+.ui-rangecalendar-close-icon-container {
+  position: absolute;
+  right: 11px;
+  top: 0;
+  padding: 0;
+}
+.ui-rangecalendar-label {
+  padding: 1em 0;
+  overflow: hidden;
+}
+.ui-rangecalendar-label h3 {
+  float: left;
+  margin: 0;
+  font-weight: normal;
+  font-size: 1em;
+}
+.ui-rangecalendar-label .ui-checkbox {
+  float: right;
+}
+.ui-rangecalendar-begin,
+.ui-rangecalendar-end {
+  float: left;
+}
+.ui-rangecalendar-begin {
+  margin-right: 1em;
+}
+.ui-rangecalendar-shortcut-item {
+  margin-left: 0.5em;
+  padding-left: 0.5em;
+  text-decoration: none;
+  cursor: pointer;
+  border-left: 1px solid #999999;
+  color: #6ccdc0;
+}
+.ui-rangecalendar-shortcut-item-first {
+  border-left: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+.ui-rangecalendar-shortcut-item-selected {
+  cursor: default;
+  color: #444444;
+  font-weight: bold;
+  text-decoration: none;
+}
+.ui-rangecalendar-shortcut-disabled .ui-rangecalendar-shortcut-item,
+.ui-rangecalendar-shortcut-item-disabled {
+  cursor: default;
+  color: #999999;
+  text-decoration: none;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 多月份多选日历
+ * @author dbear
+ */
+.ui-richcalendar {
+  display: inline-block;
+  position: relative;
+  padding: 1em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background: #eff0f2;
+}
+.ui-richcalendar .ui-button-link {
+  padding: 0;
+  line-height: 1.3em;
+  height: 1.3em;
+  min-height: 1.3em;
+}
+.ui-richcalendar-general-info {
+  line-height: 1;
+}
+.ui-richcalendar-total-num {
+  color: #6ccdc0;
+}
+.ui-richcalendar-text {
+  margin-top: 1em;
+}
+.ui-richcalendar-text .ui-button {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+.ui-richcalendar-layer {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.ui-richcalendar-month-container {
+  float: left;
+  margin-right: 0.5em;
+}
+.ui-textbox-hint {
+  display: inline-block;
+  height: 2.4em;
+  line-height: 2.4em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0 1em;
+  vertical-align: top;
+  color: #333333;
+  background-color: #f2f2f2;
+  border: 1px solid #dddddd;
+}
+.ui-textbox.state-hint-prefix .ui-textbox-hint {
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-left-radius: 5px;
+}
+.ui-textbox.state-hint-prefix input {
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  border-bottom-left-radius: 0;
+}
+.ui-textbox.state-hint-suffix .ui-textbox-hint {
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  border-bottom-right-radius: 5px;
+}
+.ui-textbox.state-hint-suffix input {
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-right-radius: 0;
+}
+.ui-textbox-placeholder {
+  height: 2.4em;
+  line-height: 2.4em;
+  padding-left: 0.65em;
+  padding-right: 0.65em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ui-textbox-hint-suffix .ui-textbox-hint {
+  border-left: 0;
+}
+.ui-textbox-hint-prefix .ui-textbox-hint {
+  border-right: 0;
+}
+.ui-textbox-validity-invalid {
+  border: 0 !important;
+}
+.ui-textbox-validity-invalid input,
+.ui-textbox-validity-invalid textarea {
+  border-color: #d9534f !important;
+  color: #c9302c !important;
+}
+.ui-textbox-placeholder-hidden {
+  display: none;
+}
+.ui-textbox-hint-suffix .ui-textbox-hint {
+  border-left: 0;
+}
+.ui-textbox-hint-prefix .ui-textbox-hint {
+  border-right: 0;
+}
+.ui-textbox-validity-label-notice,
+.ui-textarea-validity-label-notice {
+  color: #d9534f;
+}
+.ui-textbox-validity-label-warn,
+.ui-textarea-validity-label-warn {
+  color: #f0ad4e;
+}
+.ui-textbox-validity-label-invalid,
+.ui-textarea-validity-label-invalid {
+  color: #d9534f;
+}
 /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
-  * @file Breadcrumbs样式
-  * @author yankun01
+  *
+  * @file 带行号输入框
+  * @author dbear
   */
-.ui-crumb {
-  padding: 0;
-  line-height: 1.3;
-  vertical-align: middle;
-}
-.ui-crumb-separator {
-  margin: 0 0.5em;
-  color: #999999;
-}
-span.ui-crumb-node {
-  color: #444444;
-}
-.ui-crumb-nav-container {
-  background: #eff0f2;
-}
-.ui-crumb-nav {
+.ui-textline {
+  position: relative;
   display: inline-block;
-  height: 4em;
-  line-height: 4em;
   overflow: hidden;
-}
-.ui-crumb-nav .ui-crumb-node {
-  padding: 0 20px;
-}
-.ui-crumb-nav span.ui-crumb-node {
-  color: #6ccdc0;
-}
-.ui-crumb-nav a.ui-crumb-node {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #dddddd;
+  background: #ffffff;
   color: #444444;
-  text-decoration: none;
 }
-.ui-crumb-nav a.ui-crumb-node:hover {
+.ui-textline.state-focus {
+  border: 1px solid #6ccdc0;
+  background: #f9fdfc;
   color: #444444;
-  text-decoration: underline;
 }
-.ui-crumb-nav .ui-crumb-separator {
-  margin: 0 0.5em;
+.ui-textline.state-validity-invalid {
+  border: 1px solid #d9534f;
+  background: #fbebea;
+  color: #c9302c;
+}
+.ui-textline.state-validity-invalid:-moz-placeholder {
+  color: #c9302c;
+}
+.ui-textline.state-validity-invalid::-moz-placeholder {
+  color: #c9302c;
+}
+.ui-textline.state-validity-invalid::-webkit-input-placeholder {
+  color: #c9302c;
+}
+.ui-textline.state-validity-invalid:-ms-input-placeholder {
+  color: #c9302c;
+}
+.ui-textline .state-read-only {
+  border: 1px solid #dddddd;
+  background: #ffffff;
   color: #999999;
+}
+.ui-textline.state-success,
+.ui-textline.state-success {
+  border: 1px solid #5cb85c;
+  background: #dff1df;
+  color: #5cb85c;
+}
+.ui-textline.state-success:-moz-placeholder,
+.ui-textline.state-success:-moz-placeholder {
+  color: #5cb85c;
+}
+.ui-textline.state-success::-moz-placeholder,
+.ui-textline.state-success::-moz-placeholder {
+  color: #5cb85c;
+}
+.ui-textline.state-success::-webkit-input-placeholder,
+.ui-textline.state-success::-webkit-input-placeholder {
+  color: #5cb85c;
+}
+.ui-textline.state-success:-ms-input-placeholder,
+.ui-textline.state-success:-ms-input-placeholder {
+  color: #5cb85c;
+}
+.ui-textline.state-warning,
+.ui-textline.state-warning {
+  border: 1px solid #f0ad4e;
+  background: #fffefc;
+  color: #f0ad4e;
+}
+.ui-textline.state-warning:-moz-placeholder,
+.ui-textline.state-warning:-moz-placeholder {
+  color: #f0ad4e;
+}
+.ui-textline.state-warning::-moz-placeholder,
+.ui-textline.state-warning::-moz-placeholder {
+  color: #f0ad4e;
+}
+.ui-textline.state-warning::-webkit-input-placeholder,
+.ui-textline.state-warning::-webkit-input-placeholder {
+  color: #f0ad4e;
+}
+.ui-textline.state-warning:-ms-input-placeholder,
+.ui-textline.state-warning:-ms-input-placeholder {
+  color: #f0ad4e;
+}
+.ui-textline-num-line {
+  line-height: 1.5;
+  text-align: center;
+  width: 2em;
+  font-size: 1em;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #eff0f2;
+  color: #444444;
+}
+.ui-textline-text-container {
+  position: absolute;
+  left: 2.2em;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.ui-textline-text-container textarea {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+  border: 0 none;
+  outline: none;
+  resize: none;
+  background: none;
+  color: inherit;
+}
+.ui-textline.state-disabled textarea {
+  cursor: not-allowed;
 }
 /**
   * ESUI (Enterprise Simple UI)
@@ -3021,6 +3553,214 @@ span.ui-crumb-node {
   cursor: help;
   width: 1em;
   color: #6ccdc0;
+}
+/**
+* ESUI (Enterprise Simple UI)
+* Copyright 2014 Baidu Inc. All rights reserved.
+*
+* @file Toast样式
+* @author curarchy
+*/
+.ui-toast-collection-area {
+  position: fixed;
+  z-index: ;
+  top: 0;
+  width: 100%;
+  height: 0;
+}
+.ui-toast-content {
+  padding: 1em;
+  display: inline-block;
+  pointer-events: auto;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background: #eff0f2;
+  margin: 0;
+}
+.ui-toast-content strong {
+  display: inline-block;
+  max-width: 40em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+  font-weight: bold;
+}
+.ui-toast {
+  position: fixed;
+  top: 60px;
+  text-align: center;
+  width: 100%;
+  height: 0;
+  z-index: 9999;
+  -webkit-animation: esui-toast-show 0.3s;
+  -moz-animation: esui-toast-show 0.3s;
+  -ms-animation: esui-toast-show 0.3s;
+  -o-animation: esui-toast-show 0.3s;
+  animation: esui-toast-show 0.3s;
+}
+.ui-toast-info .ui-toast-content {
+  background: #5bc0de;
+  color: #ffffff;
+}
+.ui-toast-error .ui-toast-content {
+  background: #d9534f;
+  color: #ffffff;
+}
+.ui-toast-alert .ui-toast-content {
+  background: #f0ad4e;
+  color: #ffffff;
+}
+.ui-toast-success .ui-toast-content {
+  background: #5cb85c;
+  color: #ffffff;
+}
+@keyframes esui-toast-show {
+  from {
+    opacity: 0;
+    margin-top: -30px;
+  }
+  to {
+    opacity: 1;
+    margin-top: -1px;
+  }
+}
+@-webkit-keyframes esui-toast-show {
+  from {
+    opacity: 0;
+    margin-top: -30px;
+  }
+  to {
+    opacity: 1;
+    margin-top: -1px;
+  }
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 树样式
+  * @author dbear
+  */
+.esui-tree {
+  display: block;
+}
+.ui-tree {
+  line-height: 2;
+}
+.ui-tree ul,
+.ui-tree li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ui-tree-node {
+  cursor: pointer;
+  overflow: hidden;
+}
+.ui-tree-node-indicator {
+  text-indent: -500%;
+  vertical-align: middle;
+  width: 1.5em;
+  float: left;
+}
+.ui-tree-node-empty {
+  cursor: default;
+}
+.ui-tree-item-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #444444;
+}
+.ui-tree-content-wrapper-selected .ui-tree-item-content {
+  font-weight: bold;
+}
+.ui-tree-content-wrapper-selected .ui-tree-item-content label:before {
+  background: #6ccdc0;
+  border-color: #6ccdc0;
+}
+.ui-tree-content-wrapper-selected .ui-tree-item-content label:after {
+  position: absolute;
+  top: 0.2695em;
+  left: 0.165em;
+  width: 0.77em;
+  height: 0.44em;
+  border: 0.2em solid #ffffff;
+  border-top: none;
+  border-right: none;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+.ui-tree-sub-root-expanded {
+  display: block;
+}
+.ui-tree-sub-root-collapsed {
+  display: none;
+}
+.ui-tree-hide-root .ui-tree-root .ui-tree-content-wrapper {
+  display: none;
+}
+.ui-tree-hide-root .ui-tree-root .ui-tree-content-wrapper .ui-tree-node-indicator-level-0 {
+  width: 0;
+}
+.ui-tree-hide-root .ui-tree-root .ui-tree-sub-root .ui-tree-content-wrapper {
+  display: block;
+}
+.ui-tree-angle .ui-tree-node-indicator-expanded:before {
+  content: "\f107";
+}
+.ui-tree-angle .ui-tree-node-indicator-collapsed:before {
+  content: "\f105";
+}
+.ui-tree-folder .ui-tree-node-indicator-expanded:before {
+  content: "\f07c";
+}
+.ui-tree-folder .ui-tree-node-indicator-collapsed:before {
+  content: "\f07b";
+}
+.ui-tree-folder .ui-tree-node-indicator-empty:before {
+  content: "\f15b";
+}
+.ui-tree-caret .ui-tree-node-indicator-expanded:before {
+  content: "\f0d7";
+}
+.ui-tree-caret .ui-tree-node-indicator-collapsed:before {
+  content: "\f0da";
+}
+.ui-tree-icon .ui-tree-node-indicator {
+  position: relative;
+}
+.ui-tree-icon .ui-tree-node-indicator:before,
+.ui-tree-icon .ui-tree-node-indicator span {
+  text-indent: 0;
+  font-family: FontAwesome;
+  display: inline-block;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: absolute;
+  width: 100%;
+  line-height: 2;
+  left: 0;
+  top: 0;
+  text-align: center;
+  color: #444444;
+}
+.ui-tree-icon .ui-tree-node-indicator-previous:before,
+.ui-tree-icon .ui-tree-node-indicator-far-previous:before {
+  content: '';
+}
+.ui-tree-hoverable .ui-tree-content-wrapper:hover {
+  background: #fffaee;
 }
 [class*='ui-icon-'] {
   font-family: FontAwesome;

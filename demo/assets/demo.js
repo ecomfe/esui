@@ -87,6 +87,7 @@ $(function () {
         '<li><a href="Tab.html">Tab</a></li>' +
         '<li><a href="Table.html">Table</a></li>' +
         '<li><a href="TextBox.html">TextBox</a></li>' +
+        '<li><a href="TextLine.html">TextLine</a></li>' +
         '<li><a href="Tip.html">Tip</a></li>' +
         '<li><a href="TipLayer.html">TipLayer</a></li>' +
         '<li><a href="Tree.html">Tree</a></li>' +

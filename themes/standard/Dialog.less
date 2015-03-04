@@ -1,111 +1,52 @@
-@esui-dialog-background: @primary-bg-color;
+@import "../../src/css/Dialog.less";
+@import "Common.less";
+
+@esui-dialog-background: @esf-palette-white;
 @esui-dialog-border: none;
-@esui-dialog-border-radius: @default-border-radius;
-@esui-dialog-zIndex: @dialog-z-index;
+
+
 @esui-dialog-drop-shadow: 0 5px 15px rgba(0,0,0,.5);
 
-@esui-dialog-header-background: @primary-color;
-@esui-dialog-header-text-color: @white;
-@esui-dialog-header-font-weight: normal;
+@esui-dialog-header-text-color: @esf-palette-color;
+@esui-dialog-header-font-weight: bold;
 
-@esui-dialog-title-line-height: 2.5em;
-@esui-dialog-title-padding: 0 .5em;
+@esui-dialog-footer-panel-top-border: 1px solid @esf-palette-border;
 
-@esui-dialog-body-padding: 1em;
+@esui-dialog-alert-icon-color: @esf-palette-danger-color;
+@esui-dialog-confirm-icon-color: @esf-palette-info-color;
 
-@esui-dialog-footer-padding: 0;
-@esui-dialog-footer-margin: 1em;
+@esui-dialog-mask-opacity: 20;
 
-@esui-dialog-footer-panel-padding: 0;
-@esui-dialog-footer-panel-margin: 0;
-@esui-dialog-footer-panel-top-border: 1px solid @black-20;
-
-@esui-dialog-close-position-right: .5em;
-@esui-dialog-close-position-top: .75em;
-@esui-dialog-close-default-width: 600px;
-
-@esui-dialog-alert-icon-color: @danger-color;
-@esui-dialog-confirm-icon-color: @info-color;
-
-.esui-dialog-mixin() {
+.esui-dialog-theme() {
     background: @esui-dialog-background;
     border: @esui-dialog-border;
-    .border-radius(@esui-dialog-border-radius);
-    position: absolute;
-    width: @esui-dialog-close-default-width;
-    z-index: @esui-dialog-zIndex;
     .box-shadow(@esui-dialog-drop-shadow);
 }
 
-.esui-dialog-head-mixin() {
-    background: @esui-dialog-header-background;
+.esui-dialog-head-theme() {
     color: @esui-dialog-header-text-color;
     font-weight: @esui-dialog-header-font-weight;
-    .user-select();
 }
 
-.esui-dialog-close-icon-mixin() {
-    position: absolute;
-    right: @esui-dialog-close-position-right;
-    top: @esui-dialog-close-position-top;
-    cursor: pointer;
+.esui-dialog-close-icon-theme() {
     .opacity(85);
     &:hover {
         .opacity(100);
     }
 }
 
-.esui-dialog-title-mixin() {
-    line-height: @esui-dialog-title-line-height;
-    padding: @esui-dialog-title-padding;
-}
-
-.esui-dialog-body-mixin() {
-    padding: @esui-dialog-body-padding;
-    overflow: hidden;
-}
-
-.esui-dialog-foot-panel-mixin() {
-    padding: @esui-dialog-footer-panel-padding;
-    margin: @esui-dialog-footer-panel-margin;
+.esui-dialog-foot-panel-theme() {
     border-top: @esui-dialog-footer-panel-top-border;
 }
 
-.esui-dialog-foot-mixin() {
-    text-align: right;
-    padding: @esui-dialog-footer-padding;
-    margin: @esui-dialog-footer-margin;
+.esui-dialog-mask-theme() {
+    .opacity(@esui-dialog-mask-opacity);
 }
 
-.esui-dialog-draggable-mixin() {
-    .@{ui-class-prefix}-dialog-head {
-        cursor: move;
-    }
+.esui-dialog-warning-icon-theme() {
+    color: @esui-dialog-alert-icon-color;
 }
 
-// 警告框，确认框
-.@{ui-class-prefix}-dialog-alert,
-.@{ui-class-prefix}-dialog-confirm {
-    .@{ui-class-prefix}-dialog-icon {
-        display:none;
-        float: left;
-        span {
-            font-size: 4em;
-        }
-        margin-right: 1em;
-    }
-
-    .@{ui-class-prefix}-dialog-icon-warning {
-        display: block;
-        color: @esui-dialog-alert-icon-color;
-    }
-
-    .@{ui-class-prefix}-dialog-icon-confirm {
-        display: block;
-        color: @esui-dialog-confirm-icon-color;
-    }
-
-    .@{ui-class-prefix}-dialog-text {
-        margin-top: 1em;
-    }
+.esui-dialog-confirm-icon-theme() {
+    color: @esui-dialog-confirm-icon-color;
 }

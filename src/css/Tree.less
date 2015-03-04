@@ -9,10 +9,6 @@
 @esui-tree-line-height: 2;
 @esui-tree-selected-node-font-weight: bold;
 @esui-tree-node-indent: 1.5em;
-@esui-tree-node-text-color: #666;
-
-@esui-tree-node-icon-color: #666;
-@esui-tree-line-hover-background: #EBF2FC;
 
 .esui-tree {
     display: block;
@@ -20,7 +16,9 @@
 
 .@{ui-class-prefix}-tree {
     ul, li {
-        .reset-list();
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
     line-height: @esui-tree-line-height;
 }
@@ -31,7 +29,7 @@
 }
 
 .@{ui-class-prefix}-tree-node-indicator {
-    .indent-text();
+    text-indent: -500%;
     vertical-align: middle;
     width: @esui-tree-node-indent;
     float: left;
@@ -43,8 +41,9 @@
 
 // 节点文字
 .@{ui-class-prefix}-tree-item-content {
-    .ellipse-overflow();
-    color: @esui-tree-node-text-color;
+    .ellipsis();
+
+    .esui-tree-item-content-theme();
 }
 
 .@{ui-class-prefix}-tree-content-wrapper-selected {
@@ -52,8 +51,6 @@
         font-weight: @esui-tree-selected-node-font-weight;
         label {
             .esf-checkbox-virtual-box-checked-theme();
-            // IE8 下就不显示了，谁让他不支持呢
-            // TODO: add indeterminate box
         }
     }
 }
@@ -129,7 +126,7 @@
             left: 0;
             top: 0;
             text-align: center;
-            color: @esui-tree-node-icon-color;
+            .esui-tree-node-indicator-theme();
         }
     }
 
@@ -144,6 +141,10 @@
 // 行hover效果
 .@{ui-class-prefix}-tree-hoverable {
     .@{ui-class-prefix}-tree-content-wrapper:hover {
-        background: @esui-tree-line-hover-background;
+        .esui-tree-content-wrapper-hover-theme();
     }
 }
+
+.esui-tree-item-content-theme() {}
+.esui-tree-node-indicator-theme() {}
+.esui-tree-content-wrapper-hover-theme() {}

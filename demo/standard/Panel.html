@@ -12,11 +12,10 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
-        <link rel="stylesheet" href="../assets/demo.css" />
         <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
-        <h1>Panel</h1>
+        <h1 id="branding">ESUI - Panel</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
@@ -29,8 +28,8 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
-                        <div data-ui-type="Panel" data-ui-id="panel">
+                    <div class="example ui-demo-light-stage">
+                        <div class="row" data-ui-type="Panel" data-ui-id="panel">
                             <div class="ui-panel-header">Panel heading title</div>
                             <div class="ui-panel-body">
                                 Panel content
@@ -42,6 +41,7 @@
                         <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
                     </div>
                 </section>
+                <h2>自定义Panel样式</h2>
                 <section class="intro">
                     <p>自定义样式</p>
                 </section>
@@ -49,12 +49,29 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
-                        <div data-ui-type="Panel" data-ui-id="panel2" data-ui-variants="custom">
-                            <div class="ui-panel-header">Panel heading title</div>
+                    <div class="example ui-demo-light-stage">
+                        <div class="row"  data-ui-type="Panel" data-ui-id="panel2" data-ui-variants="custom">
+                            <div class="ui-panel-body">
+                                Body content
+                                <a href="#" data-ui-type="Link">Child link control</a>
+                            </div>
+                        </div>
+                        <div class="row" data-ui-type="Panel" data-ui-variants="custom">
+                            <div class="ui-panel-header">
+                                <div class="ui-panel-left">
+                                    Panel heading title
+                                </div>
+                                <div class="ui-panel-right">
+                                    <span class="ui-icon-search ui-hover-fade-in"></span>
+                                    <span class="ui-icon-close ui-hover-fade-in"></span>
+                                </div>
+                            </div>
                             <div class="ui-panel-body">
                                 Panel content
-                                <a href="#" data-ui-type="Link">Child link control</a>
+                                <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
+                            </div>
+                            <div class="ui-panel-footer">
+                                Panel Footer
                             </div>
                         </div>
                     </div>

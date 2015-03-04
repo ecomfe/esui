@@ -6,115 +6,55 @@
   * @author dbear
   */
 
-
-@esui-textline-border: 1px solid #666;
-
-@esui-textline-line-height: 21px;
-@esui-textline-active-border: 1px solid @primary-color;
-
-@esui-textline-number-column-color: @black;
-@esui-textline-number-column-width: 30px;
-@esui-textline-number-column-font-size: 12px;
-
-@esui-textline-textarea-background: @primary-bg-color;
-@esui-textline-textarea-font-size: 14px;
-
-@esui-textline-disabled-border: 1px solid #797979;
-@esui-textline-disabled-background-color: @primary-bg-color;
-@esui-textline-disabled-text-color: #999;
-
-@esui-textline-readonly-border: 1px solid #CCC;
-@esui-textline-readonly-background-color: @primary-bg-color;
-@esui-textline-readonly-text-color: #CCC;
-
-@esui-textline-error-border: 1px solid @danger-color;
-@esui-textline-error-background-color: @primary-bg-color;
-@esui-textline-error-text-color: #333;
-
-@esui-textline-error-message-color: @danger-color;
+@esui-textline-border-radius: 5px;
+@esui-textline-line-height: 1.5;
+@esui-textline-number-column-width: 2em;
+@esui-textline-number-column-font-size: 1em;
 
 .@{ui-class-prefix}-textline {
     position: relative;
-    border: @esui-textline-border;
     display: inline-block;
-}
-
-.@{ui-class-prefix}-textline-focus {
-    border: @esui-textline-active-border;
+    overflow: hidden;
+    .esf-border-radius(
+        @esui-textline-border-radius,
+        @esui-textline-border-radius
+    );
+    .esui-textline-theme();
 }
 
 .@{ui-class-prefix}-textline-num-line {
-    color: @esui-textline-number-column-color;
-    font-weight: bold;
     line-height: @esui-textline-line-height;
     text-align: center;
     width: @esui-textline-number-column-width;
     font-size: @esui-textline-number-column-font-size;
-    overflow-y: hidden;
+    overflow: hidden;
     position: absolute;
     left: 0;
     top: 0;
+    .esui-textline-numbers-theme();
 }
 
 .@{ui-class-prefix}-textline-text-container {
     position: absolute;
-    left: @esui-textline-number-column-width;
+    left: @esui-textline-number-column-width + .2em;
     right: 0;
     top: 0;
     bottom: 0;
 
     textarea {
         position: absolute;
-        background: @esui-textline-textarea-background;
         .size(100%);
         line-height: @esui-textline-line-height;
-        font-size: @esui-textline-textarea-font-size;
         padding: 0;
         margin: 0;
         border: 0 none;
         outline: none;
         resize: none;
+        background: none;
+        color: inherit;
     }
 }
 
-.@{ui-class-prefix}-textline-disabled {
-    .esui-text-line-color(
-        @esui-textline-readonly-border,
-        @esui-textline-readonly-text-color,
-        @esui-textline-readonly-background-color
-    );
-    .esf-disabled();
-    textarea {
-        cursor: inherit;
-    }
-}
-
-.@{ui-class-prefix}-textline-read-only {
-    .esui-text-line-color(
-        @esui-textline-disabled-border,
-        @esui-textline-disabled-text-color,
-        @esui-textline-disabled-background-color
-    );
-}
-
-// 验证
-.@{ui-class-prefix}-textline-validity-invalid {
-    .esui-text-line-color(
-        @esui-textline-error-border,
-        @esui-textline-error-text-color,
-        @esui-textline-error-background-color
-    );
-}
-
-// mixins
-.esui-text-line-color(
-    @border,
-    @textareaTextColor,
-    @textareaBackground
-) {
-    border: @border;
-    textarea {
-        background: @textareaBackground;
-        color: @textareaTextColor;
-    }
+.@{ui-class-prefix}-textline.@{ui-state-prefix}-disabled textarea {
+    cursor: not-allowed;
 }

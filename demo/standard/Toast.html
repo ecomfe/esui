@@ -12,16 +12,10 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
-        <link rel="stylesheet" href="../assets/demo.css" />
         <link rel="stylesheet" href="../assets/themes/standard.css" />
-        <style>
-            .ui-mt1 {
-                margin-top: 1em;
-            }
-        </style>
     </head>
     <body>
-        <h1>Toast</h1>
+        <h1 id="branding">ESUI - Toast</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
@@ -34,25 +28,20 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
-                        <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
-                            data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
-                        <div class="ui-mt1">
-                            <button id="op-show" class="ui-button">show</button>
+                    <div class="example ui-demo-light-stage">
+                        <h3>设置内容</h3>
+                        <div class="row">
+                            <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
+                                data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
                         </div>
-                        <div class="ui-mt1">
-                            <button id="op-info" class="ui-button ui-button-info">info</button>
+                        <div class="row">
+                            <button id="op-show" class="ui-button">show default</button>
+                            <button id="op-info" class="ui-button ui-button-info">show info</button>
+                            <button id="op-alert" class="ui-button ui-button-warning">show alert</button>
+                            <button id="op-success" class="ui-button ui-button-success">show success</button>
+                            <button id="op-error" class="ui-button ui-button-danger">show error</button>
                         </div>
-                        <div class="ui-mt1">
-                            <button id="op-alert" class="ui-button ui-button-warning">alert</button>
-                        </div>
-                        <div class="ui-mt1">
-                            <button id="op-success" class="ui-button ui-button-success">success</button>
-                        </div>
-                        <div class="ui-mt1">
-                            <button id="op-error" class="ui-button ui-button-danger">error</button>
-                        </div>
-                        <div class="ui-mt1">
+                        <div class="row">
                             <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
                                 data-ui-hint-type="suffix"/>
                             <button id="op-time" class="ui-button">Set Display Time</button>

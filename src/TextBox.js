@@ -98,13 +98,7 @@ define(
                  *
                  * 指定文本框的图标选择器名称, 目前组件创建后不支持动态修改。
                  */
-                icon: null,
-                /**
-                 * @property {string} [iconPosition='left']
-                 *
-                 * 指定文本框的图标位置选择器名称, 目前组件创建后不支持动态修改。
-                 */
-                iconPosition: 'left'
+                icon: null
             };
             u.extend(properties, TextBox.defaultProperties);
 
@@ -356,14 +350,9 @@ define(
                 var iconElement = document.createElement('span');
                 iconElement.className = icon + ' ' + this.helper.getPartClasses('icon');
                 lib.insertBefore(iconElement, input);
-                var iconPos = this.iconPosition;
-                if (iconPos) {
-                    this.helper.addPartClasses(iconPos, iconElement);
-                }
             }
 
             if (!supportPlaceholder) {
-                
                 var placeholder = document.createElement('label');
                 placeholder.id = this.helper.getId('placeholder');
                 lib.setAttribute(placeholder, 'for', input.id);

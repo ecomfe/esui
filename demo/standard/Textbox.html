@@ -12,11 +12,10 @@
     <script src="http://xy3.baidu.com/js/html5.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="../assets/prism.css" />
-    <link rel="stylesheet" href="../assets/demo.css" />
     <link rel="stylesheet" href="../assets/themes/standard.css" />
 </head>
 <body>
-    <h1>TextBox</h1>
+    <h1 id="branding">ESUI - TextBox</h1>
     <div id="page">
         <ul id="navigator"></ul>
         <div id="main">
@@ -28,31 +27,27 @@
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
+                    <h3>文本框</h3>
                     <div class="row">
-                        <label for="text-box-normal">文本框</label>
-                        <input id="text-box-normal"
+                        <input
                             data-ui-id="text-box-normal"
                             data-ui-type="TextBox"
                             data-ui-mode="text" />
-                        <esui-text-box></esui-text-box>
                     </div>
+                    <h3>密码框</h3>
                     <div class="row">
-                        <label for="text-box-password">密码框</label>
-                        <input id="text-box-password"
+                        <input 
                             data-ui-id="text-box-password"
                             data-ui-type="TextBox"
-                            type="password"
                             data-ui-mode="password" />
-                        <esui-text-box data-ui-mode="password"></esui-text-box>
                     </div>
+                    <h3>多行文本框</h3>
                     <div class="row">
-                        <label for="text-box-textarea">多行文本框</label>
                         <textarea id="text-box-textarea"
                             data-ui-id="text-box-textarea"
                             data-ui-type="TextBox"
                             data-ui-mode="textarea"></textarea>
-                        <esui-text-box data-ui-mode="textarea"></esui-text-box>
                     </div>
                 </div>
             </section>
@@ -64,16 +59,16 @@
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
+                    <h3>前置</h3>
                     <div class="row">
-                        <label for="text-box-prefix">您的博客：</label>
                         <input id="text-box-prefix"
                             data-ui-type="TextBox"
                             data-ui-hint="http://"
                             data-ui-hint-type="prefix" />
                     </div>
+                    <h3>后置</h3>
                     <div class="row">
-                        <label for="text-box-suffix">宽度</label>
                         <input id="text-box-suffix"
                             data-ui-type="TextBox"
                             data-ui-hint="px"
@@ -89,7 +84,7 @@
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
                     <input id="text-box-with-placeholder"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-placeholder"
@@ -106,7 +101,7 @@
                     <li class="view-markup">结构</li>
                     <li class="view-script">脚本</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
                     <input id="text-box-with-input-listener"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-listener"
@@ -165,9 +160,10 @@ textbox.on(
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
+                    <h3>出错</h3>
                     <div class="row">
-                        <label>出错</label>
+                        
                         <div 
                             placeholder="使用placeholder属性"
                             data-ui-id="text-box-with-invalid"
@@ -176,47 +172,51 @@ textbox.on(
                             <input />
                         </div>
                     </div>
+                    <h3>不可用</h3>
                     <div class="row">
-                       <label>禁用</label>
                        <input disabled="disabled"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-disabled"
                         data-ui-type="TextBox"
                         data-ui-mode="text" />
                     </div>
+                    <h3>只读</h3>
                     <div class="row">
-                       <label>只读</label>
                        <input readonly="readonly"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-readonly"
                         data-ui-type="TextBox"
                         data-ui-mode="text" />
                     </div>
+                    <h3>成功</h3>
                     <div class="row">
-                       <label>成功</label>
-                       <div class="ui-textbox-success"
+                       <label></label>
+                       <div
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-success"
                         data-ui-type="TextBox"
-                        data-ui-mode="text">
+                        data-ui-mode="text"
+                        data-ui-states="success">
                        </div>
                     </div>
+                    <h3>警告</h3>
                     <div class="row">
-                       <label>警告</label>
                        <div class="ui-textbox-warning"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-warning"
                         data-ui-type="TextBox"
-                        data-ui-mode="text">
+                        data-ui-mode="text"
+                        data-ui-states="warning">
                        </div>
                     </div>
+                    <label>焦点</label>
                     <div class="row">
-                       <label>焦点</label>
                        <div class="ui-textbox-focus"
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-input-focus"
                         data-ui-type="TextBox"
-                        data-ui-mode="text">
+                        data-ui-mode="text"
+                        data-ui-states="focus">>
                        </div>
                     </div>
                 </div>
@@ -229,26 +229,26 @@ textbox.on(
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
+                    <h3>前置<small class="ui-text-danger">为啥没有Placeholder</small></h3>
                     <div class="row">
-                        <label>前置</label>
-                        <div class="textbox-icon-left"
+                        <div
                             placeholder="使用placeholder属性"
-                            data-ui-id="text-box-with-before"
                             data-ui-type="TextBox"
                             data-ui-mode="text"
                             data-ui-icon="ui-icon-weibo"
+                            data-ui-variants="icon-left"
                             >
                         </div>
                     </div>
+                    <h3>后置</h3>
                     <div class="row">
-                       <label>后置</label>
-                       <input 
+                        <input 
                         placeholder="使用placeholder属性"
-                        data-ui-id="text-box-with-input-after"
                         data-ui-type="TextBox"
                         data-ui-mode="text"
                         data-ui-icon="ui-icon-weibo"
+                        data-ui-variants="icon-right"
                         />
                     </div>
                 </div>

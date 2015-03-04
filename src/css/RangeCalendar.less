@@ -6,72 +6,36 @@
  * @author dbear
  */
 
-// 主按钮
-@range-calendar-main-background: #EBEBEB;
-@range-calendar-main-background-hover: lighten(#EBEBEB, 2%);
-@range-calendar-main-background-active: darken(#EBEBEB, 5%);
-@range-calendar-main-background-disabled: #999;
+@esui-range-calendar-height: 2.4em;
+@esui-range-calendar-padding: 1em;
+@esui-range-calendar-border-radius: 5px;
 
-@range-calendar-main-border: 1px solid transparent;
-@range-calendar-main-border-hover: 1px solid transparent;
-@range-calendar-main-border-disabled: 1px solid #999;
+@esui-range-calendar-start-date-label-padding: 1em 0;
+@esui-range-calendar-start-date-label-font-size: 1em;
+@esui-range-calendar-spacing: 1em;
+@esui-range-calendar-shortcut-item-spacing: .5em;
+@esui-range-calendar-footer-padding: 1em 0 0 0;
 
-@range-calendar-main-font-color: #666;
-
-@range-calendar-main-height: 2.4em;
-@range-calendar-padding: 1em;
-
-// 浮层
-@range-calendar-layer-background: #f6f6f6;
-@range-calendar-layer-border-top: 3px solid #dfdfdf;
-@range-calendar-layer-border-bottom: none;
-@range-calendar-layer-border-left: none;
-@range-calendar-layer-border-right: none;
-@range-calendar-layer-padding: 1em;
-
-// 快捷按钮
-@range-calendar-shortcut-item-color: #6cc9ab;
-@range-calendar-shortcut-item-color-selected: #666;
-@range-calendar-shortcut-item-color-disabled: #999;
-@range-calendar-shortcut-item-separator-color: #c8caca;
-
-// 开始日期标签
-@range-calendar-start-date-label-padding: 1em 0;
-@range-calendar-start-date-label-font-size: 1em;
-
-@range-calendar-spacing: 1em;
-
-// 图标
-@range-calendar-footer-padding: 1em 0 0 0;
-
-@range-calendar-month-item-color-highlight: #e2f4ef;
-@range-calendar-month-item-color-highlight-hover: #fffaee;
 
 .@{ui-class-prefix}-rangecalendar {
-    height: @range-calendar-main-height;
-    line-height: @range-calendar-main-height;
-    border: @range-calendar-main-border;
+    height: @esui-range-calendar-height;
+    line-height: @esui-range-calendar-height;
     cursor: pointer;
-    background: @range-calendar-main-background;
-    .user-select();
+    .user-select(none);
     display: inline-block;
     .box-sizing(border-box);
     vertical-align: middle;
-    padding: 0 @range-calendar-padding;
+    padding: 0 @esui-range-calendar-padding;
     position: relative;
-}
+    .esf-border-radius(
+        @esui-range-calendar-border-radius,
+        @esui-range-calendar-border-radius
+    );
 
-.@{ui-class-prefix}-rangecalendar:hover {
-    background: @range-calendar-main-background-hover;
-}
-
-.@{ui-class-prefix}-rangecalendar-active,
-.@{ui-class-prefix}-rangecalendar:active {
-    background: @range-calendar-main-background-active !important;
+    .esui-rangecalendar-theme();
 }
 
 .@{ui-class-prefix}-rangecalendar-text {
-    color: @range-calendar-main-font-color;
     display: inline-block;
     padding-right: 2em;
 }
@@ -79,17 +43,12 @@
 .@{ui-class-prefix}-rangecalendar-arrow {
     position: absolute;
     top: 0;
-    right: @range-calendar-padding;
+    right: @esui-range-calendar-padding;
     display: inline-block;
 }
 
 .@{ui-class-prefix}-rangecalendar-layer {
-    background: @range-calendar-layer-background;
-    border-top: @range-calendar-layer-border-top;
-    border-bottom: @range-calendar-layer-border-bottom;
-    border-left: @range-calendar-layer-border-left;
-    border-right: @range-calendar-layer-border-right;
-    padding: @range-calendar-layer-padding;
+    .esui-rangecalendar-layer-theme();
 }
 
 .@{ui-class-prefix}-rangecalendar-body {
@@ -97,7 +56,7 @@
 }
 
 .@{ui-class-prefix}-rangecalendar-foot {
-    padding: @range-calendar-footer-padding;
+    padding: @esui-range-calendar-footer-padding;
 }
 
 .@{ui-class-prefix}-rangecalendar-close-icon-container {
@@ -108,14 +67,14 @@
 }
 
 .@{ui-class-prefix}-rangecalendar-label {
-    padding: @range-calendar-start-date-label-padding;
+    padding: @esui-range-calendar-start-date-label-padding;
     overflow: hidden;
 
     h3 {
         float: left;
         margin: 0;
         font-weight: normal;
-        font-size: @range-calendar-start-date-label-font-size;
+        font-size: @esui-range-calendar-start-date-label-font-size;
     }
 
     .@{ui-class-prefix}-checkbox {
@@ -128,24 +87,17 @@
     float: left;
 }
 
-.@{ui-class-prefix}-monthview-month-item-highlight {
-    background: @range-calendar-month-item-color-highlight;
-}
-.@{ui-class-prefix}-monthview-month-item:hover {
-    background: @range-calendar-month-item-color-highlight-hover;
-}
-
 .@{ui-class-prefix}-rangecalendar-begin {
-    margin-right: @range-calendar-spacing;
+    margin-right: @esui-range-calendar-spacing;
 }
 
 .@{ui-class-prefix}-rangecalendar-shortcut-item {
-    border-left: 1px solid @range-calendar-shortcut-item-separator-color;
-    margin-left: 5px;
-    padding-left: 5px;
-    color: @range-calendar-shortcut-item-color;
+    margin-left: @esui-range-calendar-shortcut-item-spacing;
+    padding-left: @esui-range-calendar-shortcut-item-spacing;
     text-decoration: none;
-    .interactive-cursor();
+    cursor: pointer;
+
+    .esui-rangecalendar-shortcut-item-theme();
 }
 
 .@{ui-class-prefix}-rangecalendar-shortcut-item-first {
@@ -155,26 +107,21 @@
 }
 
 .@{ui-class-prefix}-rangecalendar-shortcut-item-selected {
-    color: @range-calendar-shortcut-item-color-selected;
     cursor: default;
-    text-decoration: none;
-    font-weight: bold;
+
+    .esui-rangecalendar-shortcut-item-selected-theme();
 }
 
+.@{ui-class-prefix}-rangecalendar-shortcut-disabled .@{ui-class-prefix}-rangecalendar-shortcut-item ,
 .@{ui-class-prefix}-rangecalendar-shortcut-item-disabled {
-    color: @range-calendar-shortcut-item-color-disabled;
     cursor: default;
-    text-decoration: none;
+
+    .esui-rangecalendar-shortcut-item-disabled-theme();
 }
 
-.@{ui-class-prefix}-rangecalendar-shortcut-disabled {
-    .@{ui-class-prefix}-rangecalendar-shortcut-item {
-        color: @range-calendar-shortcut-item-color-disabled;
-        cursor: default;
-        text-decoration: none;
-    }
-}
-
-.@{ui-class-prefix}-rangecalendar-read-only {
-    border-color: @range-calendar-main-border-disabled;
-}
+// mixins
+.esui-rangecalendar-theme() {}
+.esui-rangecalendar-layer-theme() {}
+.esui-rangecalendar-shortcut-item-theme() {}
+.esui-rangecalendar-shortcut-item-selected-theme() {}
+.esui-rangecalendar-shortcut-item-disabled-theme() {}

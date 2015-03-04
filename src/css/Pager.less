@@ -6,30 +6,23 @@
 * @author shenbin langxingjian
 */
 
-@esui-pager-text-color: #666;
-@esui-pager-select-label-color: @black;
 @esui-pager-select-label-font-family: "Heiti SC Light", "Heiti SC";
 
 @esui-pager-item-margin: 0 0 0 .5em;
 @esui-pager-item-padding: 0 .2em;
-@esui-pager-item-current-background: #CACACA;
-@esui-pager-item-current-color: @white;
-
-@esui-pager-next-pre-button-color: @black;
-@esui-pager-next-pre-button-background: none;
 
 .@{ui-class-prefix}-pager-select-wrapper {
     display: inline-block;
 }
 
 .@{ui-class-prefix}-pager-label {
-    color: @esui-pager-select-label-color;
     display: inline-block;
     font-family: @esui-pager-select-label-font-family;
-    text-align: center;
+
+    .esui-pager-label-theme();
 }
 
-/** selector 样式--end **/
+.esui-pager-label-theme() {}
 
 .@{ui-class-prefix}-pager-main {
     margin: 0;
@@ -40,34 +33,29 @@
         margin: @esui-pager-item-margin;
         padding: @esui-pager-item-padding;
         text-align: center;
-        color: @esui-pager-text-color;
         display: inline-block;
-        cursor: pointer
+        cursor: pointer;
+
+        .esui-pager-item-theme();
     }
-    a,
-    a:hover {
-        color: @esui-pager-text-color;
-        text-decoration: none;
-        .inline-block();
-    }
-    .@{ui-class-prefix}-pager-item-current {
-        font-weight: bold;
-        color: @esui-pager-item-current-color;
-        background: @esui-pager-item-current-background;
-        cursor: default;
+    a {
+        display: inline-block;
+
+        .esui-pager-item-link-theme();
     }
 }
 
+.@{ui-class-prefix}-pager-item-current {
+    cursor: default;
 
+    .esui-pager-item-current-theme();
+}
 
 .@{ui-class-prefix}-pager-item-extend {
-    color: @esui-pager-next-pre-button-color;
-    font-weight: bold;
-    background-color: @esui-pager-next-pre-button-background;
+    .esui-pager-item-extend-theme();
 }
 
 // * 布局皮肤样式
-
 // 左侧正序、左侧逆序
 .@{ui-class-prefix}-pager-alignLeft,
 .@{ui-class-prefix}-pager-alignLeftReverse {
@@ -99,3 +87,11 @@
 .@{ui-class-prefix}-pager-distributedReverse .@{ui-class-prefix}-pager-select-wrapper {
     float: right;
 }
+
+.esui-pager-item-theme() {}
+
+.esui-pager-item-link-theme() {}
+
+.esui-pager-item-current-theme() {}
+
+.esui-pager-item-extend-theme() {}

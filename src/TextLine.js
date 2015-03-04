@@ -85,16 +85,19 @@ define(
         }
 
         function inputFocus() {
-            var mainElement = this.main;
-            var helper = this.helper;
+            var me = this;
+            var mainElement = me.main;
+            var helper = me.helper;
             var focusClass = helper.getPrimaryClassName('focus');
             var textArea = helper.getPart('text');
             var blurEvent = function () {
                 lib.removeClass(mainElement, focusClass);
+                me.removeState('focus');
                 helper.removeDOMEvent(textArea, 'blur', blurEvent);
             };
 
             lib.addClass(mainElement, focusClass);
+            me.addState('focus');
             helper.addDOMEvent(textArea, 'blur', blurEvent);
         }
 

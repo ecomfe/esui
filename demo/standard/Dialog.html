@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>TextBox - ESUI Demo</title>
+    <title>Dialog - ESUI Demo</title>
     <script src="../assets/loader/esl.js"></script>
     <script src="../../src/customShim.js"></script>
     <script src="../assets/jquery-1.9.1.min.js"></script>
@@ -12,11 +12,10 @@
     <script src="http://xy3.baidu.com/js/html5.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="../assets/prism.css" />
-    <link rel="stylesheet" href="../assets/demo.css" />
     <link rel="stylesheet" href="../assets/themes/standard.css" />
 </head>
 <body>
-<h1>Dialog</h1>
+    <h1 id="branding">ESUI - Dialog</h1>
     <div id="page">
         <ul id="navigator">
         </ul>
@@ -30,24 +29,12 @@
                     <li class="view-script">脚本</li>
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="row">
-                    <label>js动态创建：</label>
-                    <button id="trigger-common" class="ui-button ui-button-primary">试试</button>
-                </div>
-                <div class="row">
-                    <label>html静态创建：</label>
-                    <button id="trigger-static" class="ui-button ui-button-primary">点我点我！</button>
-                </div>
-                <div class="row">
-                    <label>html自定义元素静态创建：</label>
-                    <button id="trigger-static1" class="ui-button ui-button-primary">点我点我！</button>
-                </div>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
                     <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg;closeOnHide:false;">
                         <div data-role="title">我来自静态html</div>
                         <div data-role="content">
                           <p>第一行</p>
-                          <span data-ui="type:Button;id:springBtn;variants:spring">显示文字</span>
+                          <span data-ui="type:Button;id:springBtn;variants:info">显示文字</span>
                         </div>
                     </div>
                     <esui-dialog data-ui="width:400;draggable:true;mask:true;id:staticDg1;closeOnHide:false;">
@@ -57,29 +44,62 @@
                           <span data-ui="type:Button;id:springBtn;variants:spring" class="ui-button ui-button-primary">显示文字</span>
                         </div>
                     </esui-dialog>
+                    <h3>Dialog的创建方式</h3>
+                    <table class="ui-raw-table ui-raw-table-horizontal">
+                        <thead>
+                            <th>创建方式</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    js动态创建
+                                </td>
+                                <td>
+                                    <button id="trigger-common" class="ui-button ui-button-primary">显示 Dialog</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    tml静态创建
+                                </td>
+                                <td>
+                                    <button id="trigger-static" class="ui-button ui-button-primary">显示 Dialog</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    html自定义元素静态创建
+                                </td>
+                                <td>
+                                    <button id="trigger-static1" class="ui-button ui-button-primary">显示 Dialog</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <pre class="source source-script"><code class="language-javascript">
-    //创建main
-    var main = document.createElement('div');
-    document.body.appendChild(main);
+//创建main
+var main = document.createElement('div');
+document.body.appendChild(main);
 
-    var dialog = ui.create('Dialog', {
-        title: '电你',
-        content: '随便创建随便创建随便创建',
-        width: 400,
-        main: main
-    });
-    dialog.show();
-    var btnOk = dialog.getFoot().getChild('btnOk');
-    var btnCancel = dialog.getFoot().getChild('btnCancel');
-    btnOk.on('click', function(){
-        alert('随便创建！');
-        dialog.dispose();
-    });
-    btnCancel.on('click', function(){
-        alert('不！！！！');
-        dialog.dispose();
-    });
+var dialog = ui.create('Dialog', {
+    title: '电你',
+    content: '随便创建随便创建随便创建',
+    width: 400,
+    main: main
+});
+dialog.show();
+var btnOk = dialog.getFoot().getChild('btnOk');
+var btnCancel = dialog.getFoot().getChild('btnCancel');
+btnOk.on('click', function(){
+    alert('随便创建！');
+    dialog.dispose();
+});
+btnCancel.on('click', function(){
+    alert('不！！！！');
+    dialog.dispose();
+});
                 </code></pre>
             </section>
             <h2>两种默认框</h2>
@@ -90,13 +110,15 @@
                 <ul class="viewer">
                     <li class="view-markup">脚本</li>
                 </ul>
-                <div class="row">
-                    <label>警告框：</label>
-                    <button id="trigger-alert" class="ui-button ui-button-primary">点我电你哦！</button>
-                </div>
-                <div class="row">
-                    <label>确认框：</label>
-                    <button id="trigger-confirm" class="ui-button ui-button-primary">点我没事！</button>
+                <div class="example ui-demo-light-stage">
+                    <div class="row">
+                        <label>警告框：</label>
+                        <button id="trigger-alert" class="ui-button ui-button-danger">Alert</button>
+                    </div>
+                    <div class="row">
+                        <label>确认框：</label>
+                        <button id="trigger-confirm" class="ui-button ui-button-info">Comfirm</button>
+                    </div>
                 </div>
                 <pre class="source source-markup"><code class="language-javascript">
     var alertDialog = Dialog.alert({
@@ -130,13 +152,13 @@
             </section>
             <h2>mask优先级</h2>
             <section class="intro">
-                <p>Alert和Confirm弹出框的层级优先级最高，会一直保持在最上</p>
+                <p>Alert和Confirm弹出框的层级优先级最高，会一直保持在最上。</p>
             </section>
             <section class="view">
                 <ul class="viewer">
                     <li class="view-script">脚本</li>
                 </ul>
-                <div>
+                <div class="example ui-demo-light-stage">
                     <button id="trigger-z-index-test" class="ui-button ui-button-primary">看看谁在前！</button>
                 </div>
                 <pre class="source source-script"><code class="language-javascript"></code></pre>
@@ -173,7 +195,7 @@
             document.getElementById('trigger-confirm').onclick = function () {
                 var dialog = Dialog.confirm({
                     title: '给你机会选择',
-                    content: '确定要点我吗？te',
+                    content: '确定要点我吗？',
                     onok: function() {
                         alert('你死定了2！');
                     },

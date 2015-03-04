@@ -9,19 +9,26 @@
 @esui-toast-top: 60px;
 @esui-toast-padding: 1em;
 
-@esui-toast-radius: @default-border-radius;
-@esui-toast-zIndex: 99999999;
+@esui-toast-radius: 5px;
+@esui-toast-zIndex: 9999;
 
+.@{ui-class-prefix}-toast-collection-area {
+    position: fixed;
+    z-index: ;
+    top: 0;
+    width: 100%;
+    height: 0;
+}
 
-//默认消息
+// 默认消息
 .@{ui-class-prefix}-toast-content {
     padding: @esui-toast-padding;
     display: inline-block;
     pointer-events: auto;
-    .border-radius(@esui-toast-radius);
-
-    .esui-toast-content-theme();
-
+    .esf-border-radius(
+        @esui-toast-radius,
+        @esui-toast-radius
+    );
     strong {
         display: inline-block;
         max-width: 40em;
@@ -30,6 +37,7 @@
         vertical-align: top;
         font-weight: bold;
     }
+    .esui-toast-content-theme();
 }
 
 .@{ui-class-prefix}-toast {
@@ -51,14 +59,32 @@
     .animation(esui-toast-show .3s);
 }
 
-.esui-toast-content-theme() {}
+//通知类消息
+.@{ui-class-prefix}-toast-info {
+    .@{ui-class-prefix}-toast-content {
+        .esui-toast-content-info-theme();
+    }
+}
 
-.@{ui-class-prefix}-toast-collection-area {
-    position: fixed;
-    z-index: ;
-    top: 0;
-    width: 100%;
-    height: 0;
+//错误类消息
+.@{ui-class-prefix}-toast-error {
+    .@{ui-class-prefix}-toast-content {
+        .esui-toast-content-error-theme();
+    }
+}
+
+//警告类消息
+.@{ui-class-prefix}-toast-alert {
+    .@{ui-class-prefix}-toast-content {
+        .esui-toast-content-alert-theme();
+    }
+}
+
+//成功类消息
+.@{ui-class-prefix}-toast-success {
+    .@{ui-class-prefix}-toast-content {
+        .esui-toast-content-success-theme();
+    }
 }
 
 @keyframes esui-toast-show {
@@ -82,3 +108,10 @@
         margin-top: -1px;
     }
 }
+
+// mixins
+.esui-toast-content-theme() {}
+.esui-toast-content-info-theme() {}
+.esui-toast-content-error-theme() {}
+.esui-toast-content-alert-theme() {}
+.esui-toast-content-success-theme() {}

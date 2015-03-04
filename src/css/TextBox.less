@@ -1,31 +1,52 @@
 // ESUI Custom
 // esf input pre/postfix color
-@esui-input-hint-text-color: #333;
-@esui-input-hint-background-color: #f2f2f2;
 
-.@{ui-class-prefix}-textbox {
-    .@{ui-class-prefix}-textbox-hint {
-        display: inline-block;
-        height: @esf-input-height;
-        line-height: @esf-input-height;
-        box-sizing: border-box;
-        color: @esui-input-hint-text-color;
-        background-color: @esui-input-hint-background-color;
-        border: 1px solid @esf-input-border-color;
-        padding-left: 1em;
-        padding-right: 1em;
-        vertical-align: middle;
+@esui-textbox-hint-horizontal-padding: 1em;
+
+.@{ui-class-prefix}-textbox-hint {
+    display: inline-block;
+    height: @esf-textbox-height;
+    line-height: @esf-textbox-height;
+    .box-sizing(border-box);
+    padding: 0 @esui-textbox-hint-horizontal-padding;
+    vertical-align: top;
+    .esui-textbox-hint-theme();
+}
+
+.esui-textbox-hint-border-radius() {}
+.esui-textbox-hint-border-radius() when (@esf-textbox-radius > 0) {
+    .@{ui-class-prefix}-textbox.@{ui-state-prefix}-hint-prefix {
+        .@{ui-class-prefix}-textbox-hint {
+            .border-left-radius(@esf-textbox-radius);
+        }
+        input {
+            .border-left-radius(0);
+        }
     }
-    .@{ui-class-prefix}-textbox-placeholder {
-        height: @esf-input-height;
-        line-height: @esf-input-height;
-        padding-left: @esf-input-padding;
-        padding-right: @esf-input-padding;
-        position: absolute;
-        left: 0;
-        top: 0;
-        box-sizing: border-box;
+    .@{ui-class-prefix}-textbox.@{ui-state-prefix}-hint-suffix {
+        .@{ui-class-prefix}-textbox-hint {
+            .border-right-radius(@esf-textbox-radius);
+        }
+        input {
+            .border-right-radius(0);
+        }
     }
+}
+
+// 输出border mixin内容
+.esui-textbox-hint-border-radius();
+
+.esui-textbox-hint-theme() {}
+
+.@{ui-class-prefix}-textbox-placeholder {
+    height: @esf-textbox-height;
+    line-height: @esf-textbox-height;
+    padding-left: @esf-textbox-padding;
+    padding-right: @esf-textbox-padding;
+    position: absolute;
+    left: 0;
+    top: 0;
+    .box-sizing(border-box);
 }
 
 .@{ui-class-prefix}-textbox-hint-suffix {
@@ -43,8 +64,8 @@
 .@{ui-class-prefix}-textbox-validity-invalid {
     border: 0 !important;
     input, textarea {
-        border-color: @esf-input-error-border-color !important;
-        color: @esf-input-error-text-color !important;
+        border-color: @esf-textbox-error-border-color !important;
+        color: @esf-textbox-error-text-color !important;
     }
 }
 
@@ -67,15 +88,15 @@
 // 验证
 .@{ui-class-prefix}-textbox-validity-label-notice,
 .@{ui-class-prefix}-textarea-validity-label-notice {
-    color: @esf-input-error-border-color;
+    color: @esf-textbox-error-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-warn,
 .@{ui-class-prefix}-textarea-validity-label-warn {
-    color: @esf-input-warning-border-color;
+    color: @esf-textbox-warning-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-invalid,
 .@{ui-class-prefix}-textarea-validity-label-invalid {
-    color: @esf-input-error-border-color;
+    color: @esf-textbox-error-border-color;
 }
