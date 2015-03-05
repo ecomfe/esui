@@ -255,10 +255,12 @@ define(
 
         // 地区、省、城市、区选项
         var tplInputItem = [
-            '<div class="${itemClasses}" id="${itemWrapperId}" >',
-                '<input type="checkbox" value="${itemValue}" id="${itemId}"',
-                ' data-optionId="${itemValue}" data-level="${level}">',
-                '<label for="${itemId}">${text}</label>',
+            '<div class="${itemClasses}" id="${itemWrapperId}">',
+            '<div class="${checkboxCustomClass}">',
+            '<input type="checkbox" value="${itemValue}" id="${itemId}"',
+            ' data-optionId="${itemValue}" data-level="${level}" />',
+            '<label for="${itemId}">${text}</label>',
+            '</div>',
             '</div>'].join('');
 
         // 国家、地区外包
@@ -321,6 +323,7 @@ define(
                 }
             }
 
+            var customCheckbox = region.helper.getPrefixClass('checkbox-custom');
             switch (level) {
                 // 国家
                 case 1:
@@ -341,7 +344,8 @@ define(
                             level: item.level,
                             text: item.text,
                             contentClass: '',
-                            content: subItemHtml.join('')
+                            content: subItemHtml.join(''),
+                            checkboxCustomClass: customCheckbox
                         }
                     );
 
@@ -367,7 +371,8 @@ define(
                                 helper.getPartClasses(
                                     region, 'province-box'
                                 ).join(' '),
-                            content: subItemHtml.join('')
+                            content: subItemHtml.join(''),
+                            checkboxCustomClass: customCheckbox
                         }
                     );
                 // 省（直辖市）
@@ -403,7 +408,8 @@ define(
                             itemValue: item.id,
                             itemId: helper.getId(region, 'item-' + item.id),
                             level: item.level,
-                            text: item.text
+                            text: item.text,
+                            checkboxCustomClass: customCheckbox
                         }
                     );
                     return lib.format(
@@ -413,7 +419,7 @@ define(
                                 helper.getPartClasses(
                                     region, 'province-item'
                                 ).join(' '),
-                            content: layer + text
+                            content:  text + layer
                         }
                     );
                 // 市（区）
@@ -429,7 +435,8 @@ define(
                             itemValue: item.id,
                             itemId: helper.getId(region, 'item-' + item.id),
                             level: item.level,
-                            text: item.text
+                            text: item.text,
+                            checkboxCustomClass: customCheckbox
                         }
                     );
             }
@@ -446,23 +453,12 @@ define(
         function formatItemChildren(region, item) {
             if (item.level === 3 && item.children != null) {
                 var itemHtml = [];
-                var leftLength = 0, rightLength = 0;
                 for (var i = 0; i < item.children.length; i++) {
                     item.children[i].parent = item;
                     item.children[i].level = item.level + 1;
                     itemHtml.push(
                         getLevelHtml(region, item.children[i], item.level + 1)
                     );
-
-                    if (i % 2 === 0
-                        && item.children[i].text.length > leftLength) {
-                        leftLength = item.children[i].text.length;
-                    }
-
-                    if (i % 2 === 1
-                        && item.children[i].text.length > rightLength) {
-                        rightLength = item.children[i].text.length;
-                    }
                 }
 
                 if (itemHtml.length % 2 === 1) {
@@ -470,19 +466,12 @@ define(
                 }
 
                 var html = [
-                    '<table border="0" cellspacing="0" cellpadding="0"',
-                    ' width="',
-                    ((leftLength + rightLength) * 14 + 66),
-                    '">'].join('');
+                    '<table border="0" cellspacing="0" cellpadding="0">'].join('');
                 var tpl = [
                     '<tr>',
-                        '<td width="',
-                        (leftLength * 14 + 33),
-                        '">${firstItem}',
+                        '<td>${firstItem}',
                         '</td>',
-                        '<td width="',
-                        (rightLength * 14 + 33),
-                        '">${secondItem}',
+                        '<td>${secondItem}',
                         '</td>',
                     '</tr>'].join('');
                 for (var j = 0; j < itemHtml.length; j += 2) {
@@ -644,8 +633,8 @@ define(
             while (tar && tar !== document.body) {
                 var optionChildLayer;
                 if (lib.hasClass(tar, textClass[0])) {
-                    itemId = lib.getAttribute(tar.firstChild, 'value');
-                    optionChildLayer = tar.previousSibling.firstChild;
+                    itemId = lib.getAttribute(tar.firstChild.firstChild, 'value');
+                    optionChildLayer = tar.nextSibling.firstChild;
                 }
                 else if (lib.hasClass(tar, layerClass[0])) {
                     optionChildLayer = tar;
@@ -680,7 +669,7 @@ define(
             }
 
             lib.removeClass(dom, getHiddenClassName());
-            var wrapper = dom.parentNode.nextSibling;
+            var wrapper = dom.parentNode.previousSibling;
             helper.addPartClasses(region, 'text-over', wrapper);
         }
 
@@ -694,7 +683,7 @@ define(
          */
         function hideSubCity(region, dom, itemId) {
             lib.addClass(dom, getHiddenClassName());
-            var wrapper = dom.parentNode.nextSibling;
+            var wrapper = dom.parentNode.previousSibling;
             helper.removePartClasses(region, 'text-over', wrapper);
         }
 
