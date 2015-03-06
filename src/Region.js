@@ -259,7 +259,7 @@ define(
             '<div class="${checkboxCustomClass}">',
             '<input type="checkbox" value="${itemValue}" id="${itemId}"',
             ' data-optionId="${itemValue}" data-level="${level}" />',
-            '<label for="${itemId}">${text}</label>',
+            '<label for="${itemId}" title="${text}">${text}</label>',
             '</div>',
             '</div>'].join('');
 
@@ -728,7 +728,7 @@ define(
         function createSingleRegion(region) {
             var tpl = ''
                 + '<div data-ui="type:Select;childName:regionSel;'
-                + 'id:regionSel;width:100;"></div>'
+                + 'id:regionSel;"></div>'
                 + '<input type="hidden" id="${inputId}" name="${name}" />';
 
             region.main.innerHTML = lib.format(

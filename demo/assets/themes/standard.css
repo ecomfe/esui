@@ -3286,10 +3286,11 @@ span.ui-crumb-node {
   color: #444444;
 }
 .ui-region-region-box0 {
-  padding: 0 .5em;
+  padding: 0 0.5em;
 }
 .ui-region-region-box1 {
-  padding: 0 .5em;
+  padding: 0 0.5em;
+  background: #fafafa;
 }
 .ui-region-region-check,
 .ui-region-province-box {
@@ -3306,49 +3307,51 @@ span.ui-crumb-node {
 }
 .ui-region-text-over {
   background: #fffaee;
+  -webkit-box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.14);
+  box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.14);
 }
 .ui-region-province-box {
-  width: 35em;
+  width: 40em;
 }
 .ui-region-province-item {
-  width: 7em;
+  width: 8em;
   float: left;
 }
 .ui-region-locator {
   float: left;
 }
 .ui-region-locator b {
-  color: #FFF;
   display: block;
-  text-align: center;
-  font-weight: normal;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #3F8FE1;
-  margin-top: 8px;
-  -moz-border-radius: 3px;
+  padding: 0;
+  margin: 0.6em 0 0 0;
+  line-height: 1.2;
   -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
   border-radius: 3px;
+  background: #6ccdc0;
+  color: #ffffff;
 }
 .ui-region-city-box {
   position: absolute;
   padding: 0.5em;
   z-index: 998;
   background: #fffaee;
+  -webkit-box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.14);
+  box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.14);
+}
+.ui-region-city-box td {
+  white-space: nowrap;
 }
 .ui-region-city {
-  padding: 3px 8px;
+  padding: 0.1em 0.5em;
 }
 .ui-region-single {
   margin: 0;
   padding: 0;
   width: auto;
-  font-size: 12px;
   border: none;
-}
-.ui-region-disabled,
-.ui-region-read-only {
-  color: #999;
-  border-color: #D8D8D8;
 }
 /**
  * ESUI (Enterprise Simple UI)
