@@ -192,11 +192,13 @@ define(
             var html = [];
 
             var timelineClass = getClass(me, 'time-line');
+            var timelineClassInner = timelineClass + '-inner';
             var bodyHeadId    = getId('body-head');
             html.push(
                 '<div class="', timelineClass, '" id="',
                 bodyHeadId + '">'
             );
+            html.push('<div class="' + timelineClassInner + '">');
 
             var timeHClass = getClass(me, 'time-head');
             for (var i = 0; i <= 24; i = i + 2) {
@@ -208,7 +210,9 @@ define(
                      '</div>'
                 );
             }
-
+            // end of inner
+            html.push('</div>');
+            // end of time line
             html.push('</div>');
 
             return html.join('');
@@ -228,11 +232,12 @@ define(
             html.push('<div id="', dayHId, '" class="', dayHClass, '">');
 
             var dayClass = getClass(me, 'day');
+            var customCheckClass = me.helper.getPrefixClass('checkbox-custom');
             var dayTpl = ''
-                + '<div class="' + dayClass + '">'
+                + '<div class="${dayClass}"><div class="${customCheckClass}">'
                     + '<input type="checkbox" id="${dayId}" value="${value}">'
-                    + '&nbsp;<label for="${dayId}">${dayWord}</label>'
-                + '</div>';
+                    + '<label for="${dayId}">${dayWord}</label>'
+                + '</div></div>';
 
             var dayTexts = me.dayTexts;
             for (var i = 0; i < 7; i++) {
@@ -242,7 +247,9 @@ define(
                         {
                             dayWord: dayTexts[i],
                             dayId: getId(me, 'line-state' + i),
-                            value: i
+                            value: i,
+                            dayClass: dayClass,
+                            customCheckClass: customCheckClass
                         }
                     )
                 );
@@ -360,6 +367,7 @@ define(
          */
         function createSelectedLineCoverTip(schedule, arr, parent, index) {
             var me = schedule;
+            var slotSize = me.slotSize;
             var i = index;
 
             //将当前星期的checkbox先初始化为不选中
@@ -382,8 +390,8 @@ define(
                 var end = start + length;
 
                 var coverDiv = document.createElement('aside');
-                var cssStyle = ';width:' + length * 25
-                     + 'px;top:0;left:' + start * 25 + 'px;';
+                var cssStyle = ';width:' + length * slotSize
+                     + 'px;top:0;left:' + start * slotSize + 'px;';
 
                 //设置星期checkbox的选中值
                 checkInput.checked = length === 24 ? true : false;
@@ -1179,6 +1187,13 @@ define(
                 var me = this;
 
                 this.main.tabIndex = 0;
+
+                this.main.innerHTML = '<div class="ui-schedule-time"></div>';
+                var stub = this.main.firstChild;
+                var fontSize = parseFloat(lib.getComputedStyle(stub, 'width'));
+                me.slotSize = fontSize;
+                console.log(fontSize);
+                console.log(stub.offsetWidth);
 
                 var tpl = ''
                     + '<input type="hidden" name="${name}" id="${inputId}"/>'

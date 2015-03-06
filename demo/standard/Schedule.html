@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>schedule - ESUI Demo</title>
+        <title>Schedule - ESUI Demo</title>
         <script src="../assets/loader/esl.js"></script>
         <script src="../../src/customShim.js"></script>
         <script src="../assets/jquery-1.9.1.min.js"></script>
@@ -12,11 +12,10 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
-        <link rel="stylesheet" href="../assets/demo.css" />
-        <link rel="stylesheet" href="../assets/themes/classic.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
-        <h1>schedule</h1>
+        <h1 id="branding">ESUI - Schedule</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
@@ -29,9 +28,9 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
-                        <div style="width:750px;">
-                            <div style="margin:10px;"><strong>日程投放控件</strong></div>
+                    <div class="example ui-demo-light-stage">
+                        <h3>日程投放控件</h3>
+                        <div class="row">
                             <esui-schedule name="launchMode" data-ui="id:mySchedule"></esui-schedule>
                         </div>
                         <button id='getRaw'> 获取raw值 </button>

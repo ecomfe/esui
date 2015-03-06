@@ -1,0 +1,313 @@
+/*
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * path:    ui-table.css
+ * desc:    表格控件样式
+ * author:  wurongyao
+ * date:    $Date$
+ */
+@import "mixin.less";
+@import "variable.less";
+.@{ui-class-prefix}-table {
+    font-size:12px;
+    overflow-x: auto;
+}
+.@{ui-class-prefix}-table table {
+    table-layout:fixed;
+    border-collapse:collapse;
+}
+.@{ui-class-prefix}-table-head {
+    background:#fbfbfb;
+}
+.@{ui-class-prefix}-table-foot {
+    background:#fbfbfb;
+}
+
+.@{ui-class-prefix}-table-head table {
+    border-width:1px 1px 1px 0;
+    border-color:#e8e8e8;
+    border-style:solid;
+}
+.@{ui-class-prefix}-table-body table,
+.@{ui-class-prefix}-table-foot table {
+    border-width:0 1px 0 0;
+    border-color:#e8e8e8;
+    border-style:solid;
+}
+.@{ui-class-prefix}-table-foot table {
+    border-width:0 1px 1px 0;
+}
+
+/* 表头单元格 */
+.@{ui-class-prefix}-table-hcell {
+    font-weight:700;
+    color:#777777;
+    border-left:1px solid #e8e8e8;
+}
+
+/* 表头单元格DIV容器 */
+.@{ui-class-prefix}-table-hcell-text {
+    height:36px;
+    line-height:36px;
+    overflow:hidden;
+    padding:0 8px;
+    text-align:left;
+}
+
+/* 表尾单元格 */
+.@{ui-class-prefix}-table-fcell {
+    font-weight:700;
+    color:#000;
+    border-left:1px solid #e8e8e8;
+}
+
+/* 表尾单元格DIV容器 */
+.@{ui-class-prefix}-table-fcell-text {
+    height:32px;
+    line-height:32px;
+    overflow:hidden;
+    padding:0 8px;
+    text-align:left;
+}
+
+/* 表格内容单元格 */
+.@{ui-class-prefix}-table-cell {
+    border-left:1px solid #e8e8e8;
+}
+
+/* 表格内容单元格容器 */
+.@{ui-class-prefix}-table-cell-text,
+.@{ui-class-prefix}-table-body-nodata {
+  line-height: 24px;
+  height: 24px;
+  overflow: hidden;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.@{ui-class-prefix}-table-cell-text-first,.@{ui-class-prefix}-table-hcell-text-first {
+    padding-left: 12px;
+}
+.@{ui-class-prefix}-table-cell-text-last,.@{ui-class-prefix}-table-hcell-text-last {
+    padding-right: 12px;
+}
+
+.@{ui-class-prefix}-table-cell-sel,
+.@{ui-class-prefix}-table-hcell-sel {
+  padding:3px 8px 0;
+  *padding:0 4px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.@{ui-class-prefix}-table-scroll-x {
+    height: 20px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+/* 表头单元格提示 */
+.@{ui-class-prefix}-table-htip{
+    margin:0 4px 0 0;
+}
+
+/* 表头单元格排序标识 */
+.@{ui-class-prefix}-table-hsort {
+    background:url(../img/esui.png) -40px -250px;
+    margin:2px 0 0 2px;
+    height:10px;
+    width:7px;
+    font-size:1px;
+    overflow:hidden;
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+}
+
+.@{ui-class-prefix}-table-hcell-asc .@{ui-class-prefix}-table-hsort {
+    background-position: -40px -240px;
+}
+
+.@{ui-class-prefix}-table-hcell-desc .@{ui-class-prefix}-table-hsort {
+    background-position: -40px -230px;
+}
+
+.@{ui-class-prefix}-table-cell-align-left .@{ui-class-prefix}-table-cell-text,
+.@{ui-class-prefix}-table-cell-align-left .@{ui-class-prefix}-table-hcell-text {
+    text-align:left;
+}
+.@{ui-class-prefix}-table-cell-align-right .@{ui-class-prefix}-table-cell-text,
+.@{ui-class-prefix}-table-cell-align-right .@{ui-class-prefix}-table-hcell-text,
+.@{ui-class-prefix}-table-cell-align-right .@{ui-class-prefix}-table-fcell-text {
+    text-align:right;
+}
+.@{ui-class-prefix}-table-cell-align-center .@{ui-class-prefix}-table-cell-text,
+.@{ui-class-prefix}-table-cell-align-center .@{ui-class-prefix}-table-hcell-text {
+    text-align:center;
+}
+
+.@{ui-class-prefix}-table-cell-break .@{ui-class-prefix}-table-cell-text,
+.@{ui-class-prefix}-table-cell-break .@{ui-class-prefix}-table-hcell-text{
+    word-wrap:break-word;
+    word-break:break-all;
+    height:auto;
+}
+
+/* 可排序列的表头样式Hover */
+.@{ui-class-prefix}-table-hcell-sort-hover{
+    cursor:pointer;
+    background:#FDE8C4;
+}
+
+.@{ui-class-prefix}-table-body {
+    background:#FFF;
+    border-bottom:1px solid #ddd;
+    *position: relative;
+}
+
+.@{ui-class-prefix}-table-body-nodata{
+    border:1px solid #ddd;
+    border-width: 0 1px;
+    text-align: center;
+}
+
+.@{ui-class-prefix}-table-row {
+    background:#FFF;
+    border-bottom:1px solid #ddd;
+    zoom:1;
+}
+
+.@{ui-class-prefix}-table-row-last {
+    border-bottom: 0;
+}
+
+/* 行表格移上 */
+.@{ui-class-prefix}-table-row-hover {
+    background:#FFF9EE;
+}
+
+.@{ui-class-prefix}-table-row-hover .@{ui-class-prefix}-table-cell-editable {
+    border:1px solid #a8adb6;
+    margin:2px;
+    padding:1px 5px;
+    background:#fcfcfc;
+    position:relative;
+}
+
+.@{ui-class-prefix}-table-editor {
+    background: #FFF6BD;
+    border: 1px solid #D5CA81;
+    padding: 5px 0 0 5px;
+    width: 268px;
+}
+.@{ui-class-prefix}-table-editor-opt {
+    margin-bottom: 5px;
+    overflow: hidden;
+    zoom: 1;
+}
+.@{ui-class-prefix}-table-editor-error {
+    clear:left;
+    margin-bottom: 5px;
+}
+.@{ui-class-prefix}-table-editor .@{ui-class-prefix}-button{
+    float:left;
+    margin-left:5px;
+}
+.@{ui-class-prefix}-table-editor .@{ui-class-prefix}-textbox{
+    float:left;
+}
+
+
+/* 行表格选中 */
+.@{ui-class-prefix}-table-row-selected table {
+    background:#FFF4DD;
+}
+
+/* 行表格展开 */
+.@{ui-class-prefix}-table-row-unfolded {
+    background:#FDE8C4;
+}
+
+/* 定义拖拽鼠标指针 */
+.@{ui-class-prefix}-table .@{ui-class-prefix}-table-startdrag,
+.@{ui-class-prefix}-table .@{ui-class-prefix}-table-startdrag .@{ui-class-prefix}-table-thcntr {
+    cursor:col-resize;
+}
+
+/* 拖拽显示的竖线 */
+.@{ui-class-prefix}-table-mark {
+    height:400px;
+    width:1px;
+    overflow:hidden;
+    background:#000;
+    position:absolute;
+}
+
+.@{ui-class-prefix}-table-cell-editentry {
+    width:12px;
+    height:11px;
+    display:none;
+    top:4px;
+    right:2px;
+    cursor:pointer;
+    position:absolute;
+    background:url(../img/esui.png) -116px -90px;
+}
+
+.@{ui-class-prefix}-table-cell-align-right .@{ui-class-prefix}-table-cell-editentry {
+    left:2px;
+    right:auto;
+}
+
+.@{ui-class-prefix}-table-row-hover .@{ui-class-prefix}-table-cell-editentry{
+    display:block;
+}
+
+
+/* 子表格收起展开按钮 */
+.@{ui-class-prefix}-table-subentry,
+.@{ui-class-prefix}-table-subentry-opened,
+.@{ui-class-prefix}-table-subentry-opened-hover {
+    overflow:hidden;
+    width:11px;
+    height:11px;
+    margin: 0 auto;
+    background-image: url(../img/esui.png);
+    background-repeat: no-repeat;
+    border:1px solid #a8adb6;
+    cursor:pointer;
+    -webkit-border-radius:2px;
+    -o-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    border-radius:2px;
+}
+
+.@{ui-class-prefix}-table-subentryfield table { border:0; }
+
+.@{ui-class-prefix}-table-subentry {
+    background-position: -102px -114px;
+}
+
+.@{ui-class-prefix}-table-subentry-opened {
+    background-position: -102px -103px;
+}
+
+.@{ui-class-prefix}-table-subentry-hover,
+.@{ui-class-prefix}-table-subentry-opened-hover {
+    border-color:#7a859a;
+}
+
+.@{ui-class-prefix}-table-subrow {
+    background:#FFF9EE;
+    border-color:#ddd;
+    border-style:solid;
+    border-width:0 1px 1px;
+    padding:1px 0 0 36px;
+    zoom:1;
+}
+.@{ui-class-prefix}-table-subrow-last {
+    border-width:1px 1px 0;
+}
+
