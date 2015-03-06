@@ -1,27 +1,19 @@
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 切换面板样式
- * @author dbear
- */
+@esui-tab-radius: 5px;
+@esui-tab-item-border-color: #DDD;
+@esui-tab-item-border: 1px solid @esui-tab-item-border-color;
 
 @esui-tab-horizontal-padding: 0 1em;
-@esui-tab-horizontal-border: 1px solid #DDD;
-@esui-tab-horizontal-item-margin-right: .5em;
+@esui-tab-horizontal-item-margin: .5em;
 
 @esui-tab-vertical-padding: 1em 0;
-@esui-tab-vertical-item-margin-bottom: .5em;
-
-@esui-tab-radius: 5px;
-@esui-tab-item-border: 1px solid #DDD;
+@esui-tab-vertical-item-margin: .5em;
 
 @esui-tab-item-height: 2.4em;
 @esui-tab-item-padding: 1em;
 @esui-tab-item-background: #F2F2F2;
 @esui-tab-item-color: #666666;
 
-@esui-tab-item-active-background: @primary-bg-color;
+@esui-tab-item-active-background: #FEFDFA;
 @esui-tab-item-active-color: #333333;
 
 // 总体样式
@@ -49,7 +41,7 @@
 
 // 横向tab
 .@{ui-class-prefix}-tab-horizontal {
-    border-bottom: @esui-tab-horizontal-border;
+    border-bottom: @esui-tab-item-border;
     .@{ui-class-prefix}-tab-navigator {
         padding: @esui-tab-horizontal-padding;
     }
@@ -58,20 +50,20 @@
         display: inline-block;
         margin-bottom: -1px;
         .border-top-radius(@esui-tab-radius);
-        margin-right: @esui-tab-horizontal-item-margin-right;
+        margin-right: @esui-tab-horizontal-item-margin;
     }
 
     .@{ui-class-prefix}-tab-item-active {
         cursor: default;
         background: @esui-tab-item-active-background;
         color: @esui-tab-item-active-color;
-        border-bottom-color: @esui-tab-item-active-background;
+        border-bottom-color: transparent;
     }
 }
 
 .@{ui-class-prefix}-tab-horizontal-flip {
     border-bottom: 0;
-    border-top: @esui-tab-horizontal-border;
+    border-top: @esui-tab-item-border;
 
     .@{ui-class-prefix}-tab-item {
         .border-top-radius(0);
@@ -110,22 +102,28 @@
     .box-sizing(border-box);
 }
 
-.esui-vertical-tab-def(@tabWidth, @areaHeight) {
+// 暴露给外部调用的mixin
+.esui-vertical-tab-def(@tabWidth, @areaHeight, @align) {
     .@{ui-class-prefix}-tab-vertical {
         width: @tabWidth;
         height: @areaHeight;
     }
+
     .@{ui-class-prefix}-tab-content {
         height: @areaHeight;
+        .tab-content(@align);
+    }
+
+    .tab-content(@align) when (@align = left) {
         margin-left: @tabWidth;
         border-left: 0;
     }
-    .@{ui-class-prefix}-tab-vertical-flip ~ .@{ui-class-prefix}-tab-content {
+
+    .tab-content(@align) when (@align = right) {
         margin-left: 0;
         margin-right: @tabWidth;
-
-        border-right: 0;
         border-left: @esui-tab-item-border;
+        border-right: 0;
     }
 }
 
@@ -140,7 +138,7 @@
         display: block;
         .border-right-radius(0);
         .border-left-radius(@esui-tab-radius);
-        margin-bottom: @esui-tab-vertical-item-margin-bottom;
+        margin-bottom: @esui-tab-vertical-item-margin;
         margin-right: -1px;
     }
 

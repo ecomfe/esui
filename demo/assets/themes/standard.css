@@ -2909,168 +2909,6 @@ span.ui-crumb-node {
   cursor: not-allowed;
 }
 /**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- *
- * @file 下拉选择样式
- * @author dbear
- */
-.ui-select {
-  cursor: pointer;
-  padding: 0 1em;
-  outline: none !important;
-  display: inline-block;
-  position: relative;
-  border-radius: 5px;
-  height: 2.4em;
-  line-height: 2.4em;
-  vertical-align: middle;
-  text-decoration: none !important;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-transition: background-color 0.3s ease;
-  -moz-transition: background-color 0.3s ease;
-  -ms-transition: background-color 0.3s ease;
-  -o-transition: background-color 0.3s ease;
-  transition: background-color 0.3s ease;
-  background: #eff0f2;
-  color: #444444;
-}
-.ui-select:hover,
-.ui-select:focus {
-  color: #444444;
-  background: #fafafa;
-}
-.ui-select.state-read-only,
-.ui-select.state-read-only:hover {
-  background: #eff0f2;
-}
-.ui-select.state-active {
-  background: #eeeeee;
-}
-.ui-select.state-active .ui-select-arrow {
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
-  -webkit-transition: -webkit-transform 0.3s ease;
-  -moz-transition: -moz-transform 0.3s ease;
-  -ms-transition: -ms-transform 0.3s ease;
-  -o-transition: -o-transform 0.3s ease;
-  transition: transform 0.3s ease;
-}
-.ui-select-text {
-  padding-right: 2em;
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ui-select-arrow {
-  position: absolute;
-  right: 1em;
-  top: 0;
-  line-height: 2.4em !important;
-  width: 1em;
-  text-align: center;
-}
-.ui-select-layer {
-  max-height: 13em;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-.ui-select-item-disabled {
-  opacity: 0.4;
-  filter: alpha(opacity=40);
-  cursor: not-allowed !important;
-}
-.ui-select-item-disabled:hover {
-  background: none;
-}
-.ui-select-item-selected > :first-child {
-  background: #e1e1e1;
-  color: #6ccdc0 !important;
-}
-.ui-select-item-selected > :first-child:hover {
-  background: #e1e1e1;
-}
-.ui-textbox-wrapper :first-child.ui-select {
-  -webkit-border-top-right-radius: 0;
-  -moz-border-radius-topright: 0;
-  border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  border-bottom-right-radius: 0;
-  border-right: 0;
-}
-.ui-textbox-wrapper :last-child.ui-select {
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-left-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  border-bottom-left-radius: 0;
-  border-left: 0;
-}
-.ui-textbox-wrapper > .ui-select {
-  float: left;
-}
-.ui-textbox-wrapper :first-child.ui-select {
-  border-right: 0;
-}
-.ui-textbox-wrapper :last-child.ui-select {
-  border-left: 0;
-}
-.ui-textbox-wrapper > .ui-select {
-  float: left;
-}
-.ui-select-primary {
-  background: #6ccdc0;
-  color: #ffffff;
-}
-.ui-select-primary:hover,
-.ui-select-primary:focus {
-  color: #ffffff;
-  background: #7fd3c8;
-}
-.ui-select-primary.state-read-only,
-.ui-select-primary.state-read-only:hover {
-  background: #6ccdc0;
-}
-.ui-select-primary.state-active {
-  background: #46c0b0;
-}
-.ui-select-compact {
-  padding: 0 0.5em;
-  height: 1.5em;
-  line-height: 1.5em;
-  color: #444444;
-  background: #ffffff !important;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-}
-.ui-select-compact .ui-select-arrow {
-  line-height: 1.5em !important;
-  right: 0.5em;
-  opacity: 0.7;
-  filter: alpha(opacity=70);
-}
-.ui-select-compact .ui-select-arrow:hover {
-  opacity: 1;
-  filter: alpha(opacity=100);
-}
-.ui-select-layer-compact li :first-child {
-  padding: 0.3em;
-}
-.ui-select-layer-compact .ui-select-item-selected > :first-child {
-  background: #fffaee;
-  color: #444444 !important;
-}
-/**
 * ESUI (Enterprise Simple UI)
 * Copyright 2013 Baidu Inc. All rights reserved.
 *
@@ -3297,6 +3135,168 @@ span.ui-crumb-node {
 .ui-richcalendar-month-container {
   float: left;
   margin-right: 0.5em;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 下拉选择样式
+ * @author dbear
+ */
+.ui-select {
+  cursor: pointer;
+  padding: 0 1em;
+  outline: none !important;
+  display: inline-block;
+  position: relative;
+  border-radius: 5px;
+  height: 2.4em;
+  line-height: 2.4em;
+  vertical-align: middle;
+  text-decoration: none !important;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: background-color 0.3s ease;
+  -moz-transition: background-color 0.3s ease;
+  -ms-transition: background-color 0.3s ease;
+  -o-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
+  background: #eff0f2;
+  color: #444444;
+}
+.ui-select:hover,
+.ui-select:focus {
+  color: #444444;
+  background: #fafafa;
+}
+.ui-select.state-read-only,
+.ui-select.state-read-only:hover {
+  background: #eff0f2;
+}
+.ui-select.state-active {
+  background: #eeeeee;
+}
+.ui-select.state-active .ui-select-arrow {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+  -webkit-transition: -webkit-transform 0.3s ease;
+  -moz-transition: -moz-transform 0.3s ease;
+  -ms-transition: -ms-transform 0.3s ease;
+  -o-transition: -o-transform 0.3s ease;
+  transition: transform 0.3s ease;
+}
+.ui-select-text {
+  padding-right: 2em;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ui-select-arrow {
+  position: absolute;
+  right: 1em;
+  top: 0;
+  line-height: 2.4em !important;
+  width: 1em;
+  text-align: center;
+}
+.ui-select-layer {
+  max-height: 13em;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.ui-select-item-disabled {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  cursor: not-allowed !important;
+}
+.ui-select-item-disabled:hover {
+  background: none;
+}
+.ui-select-item-selected > :first-child {
+  background: #e1e1e1;
+  color: #6ccdc0 !important;
+}
+.ui-select-item-selected > :first-child:hover {
+  background: #e1e1e1;
+}
+.ui-textbox-wrapper :first-child.ui-select {
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+}
+.ui-textbox-wrapper :last-child.ui-select {
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
+.ui-textbox-wrapper > .ui-select {
+  float: left;
+}
+.ui-textbox-wrapper :first-child.ui-select {
+  border-right: 0;
+}
+.ui-textbox-wrapper :last-child.ui-select {
+  border-left: 0;
+}
+.ui-textbox-wrapper > .ui-select {
+  float: left;
+}
+.ui-select-primary {
+  background: #6ccdc0;
+  color: #ffffff;
+}
+.ui-select-primary:hover,
+.ui-select-primary:focus {
+  color: #ffffff;
+  background: #7fd3c8;
+}
+.ui-select-primary.state-read-only,
+.ui-select-primary.state-read-only:hover {
+  background: #6ccdc0;
+}
+.ui-select-primary.state-active {
+  background: #46c0b0;
+}
+.ui-select-compact {
+  padding: 0 0.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  color: #444444;
+  background: #ffffff !important;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.ui-select-compact .ui-select-arrow {
+  line-height: 1.5em !important;
+  right: 0.5em;
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+}
+.ui-select-compact .ui-select-arrow:hover {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.ui-select-layer-compact li :first-child {
+  padding: 0.3em;
+}
+.ui-select-layer-compact .ui-select-item-selected > :first-child {
+  background: #fffaee;
+  color: #444444 !important;
 }
 .ui-textbox-hint {
   display: inline-block;
@@ -3761,6 +3761,140 @@ span.ui-crumb-node {
 }
 .ui-tree-hoverable .ui-tree-content-wrapper:hover {
   background: #fffaee;
+}
+.ui-tab-navigator {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ui-tab-item {
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #dddddd;
+  background: #f2f2f2;
+  color: #666666;
+  line-height: 2.4em;
+  padding: 0 1em;
+}
+.ui-tab-item-active {
+  cursor: default;
+  background: #fefdfa;
+  color: #333333;
+}
+.ui-tab-horizontal {
+  border-bottom: 1px solid #dddddd;
+}
+.ui-tab-horizontal .ui-tab-navigator {
+  padding: 0 1em;
+}
+.ui-tab-horizontal .ui-tab-item {
+  display: inline-block;
+  margin-bottom: -1px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-right-radius: 5px;
+  margin-right: 0.5em;
+}
+.ui-tab-horizontal .ui-tab-item-active {
+  cursor: default;
+  background: #fefdfa;
+  color: #333333;
+  border-bottom-color: transparent;
+}
+.ui-tab-horizontal-flip {
+  border-bottom: 0;
+  border-top: 1px solid #dddddd;
+}
+.ui-tab-horizontal-flip .ui-tab-item {
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-left-radius: 0;
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-left-radius: 5px;
+  margin-bottom: 0;
+  margin-top: -1px;
+}
+.ui-tab-horizontal-flip .ui-tab-item-active {
+  cursor: default;
+  background: #fefdfa;
+  border-bottom: 1px solid #dddddd;
+  border-top-color: #fefdfa;
+}
+.ui-tab-align-left .ui-tab-navigator {
+  text-align: left;
+}
+.ui-tab-align-center .ui-tab-navigator {
+  text-align: center;
+}
+.ui-tab-align-right .ui-tab-navigator {
+  text-align: right;
+}
+.ui-tab-content {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ui-tab-vertical {
+  float: left;
+  border-right: 1px solid #dddddd;
+}
+.ui-tab-vertical .ui-tab-navigator {
+  padding: 1em 0;
+}
+.ui-tab-vertical .ui-tab-item {
+  display: block;
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-right-radius: 0;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-left-radius: 5px;
+  margin-bottom: 0.5em;
+  margin-right: -1px;
+}
+.ui-tab-vertical .ui-tab-item-active {
+  border-right-color: #fefdfa;
+}
+.ui-tab-vertical-flip {
+  float: right;
+  border-right: 0;
+  border-left: 1px solid #dddddd;
+}
+.ui-tab-vertical-flip .ui-tab-item {
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  border-bottom-left-radius: 0;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  border-bottom-right-radius: 5px;
+  margin-right: 0;
+  margin-left: -1px;
+}
+.ui-tab-vertical-flip .ui-tab-item-active {
+  border-left-color: #fefdfa;
+  border-right: 1px solid #dddddd;
 }
 [class*='ui-icon-'] {
   font-family: FontAwesome;
@@ -5353,6 +5487,26 @@ span.ui-crumb-node {
   100% {
     transform: rotate(359deg);
   }
+}
+.ui-tab-vertical-container-left .ui-tab-vertical {
+  width: 80px;
+  height: 300px;
+}
+.ui-tab-vertical-container-left .ui-tab-content {
+  height: 300px;
+  margin-left: 80px;
+  border-left: 0;
+}
+.ui-tab-vertical-container-right .ui-tab-vertical {
+  width: 80px;
+  height: 300px;
+}
+.ui-tab-vertical-container-right .ui-tab-content {
+  height: 300px;
+  margin-left: 0;
+  margin-right: 80px;
+  border-left: 1px solid #dddddd;
+  border-right: 0;
 }
 .ui-demo-light-stage {
   background: #fefdfa;

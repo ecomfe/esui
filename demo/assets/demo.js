@@ -29,12 +29,12 @@ require.config({
         },
         {
             'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.3/src',
+            'location': '../dep/eicons/1.0.0-alpha.4/src',
             'main': 'main.less'
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-alpha.8/src'
+            'location': '../dep/esf/1.0.0-alpha.9/src'
         },
         {
             'name': 'est',
