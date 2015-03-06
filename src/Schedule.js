@@ -204,7 +204,7 @@ define(
                     '<div class="', timeHClass,
                     '" data-time="', i, '" ',
                     'id="', getId(me, 'time-head' + i), '">',
-                     i + ':00',
+                     i,
                      '</div>'
                 );
             }
