@@ -30,6 +30,7 @@ define(
             //图例说明文本
             helpSelectedText: '投放时间段',
             helpText: '暂停时间段',
+            slotSize: 25,
 
             //星期checkbox显示文本
             dayTexts: [
@@ -391,7 +392,7 @@ define(
 
                 var coverDiv = document.createElement('aside');
                 var cssStyle = ';width:' + length * slotSize
-                     + 'px;top:0;left:' + start * slotSize + 'px;';
+                    + 'px;top:0;left:' + start * slotSize + 'px;';
 
                 //设置星期checkbox的选中值
                 checkInput.checked = length === 24 ? true : false;
@@ -1187,14 +1188,6 @@ define(
                 var me = this;
 
                 this.main.tabIndex = 0;
-
-                this.main.innerHTML = '<div class="ui-schedule-time"></div>';
-                var stub = this.main.firstChild;
-                var fontSize = parseFloat(lib.getComputedStyle(stub, 'width'));
-                me.slotSize = fontSize;
-                console.log(fontSize);
-                console.log(stub.offsetWidth);
-
                 var tpl = ''
                     + '<input type="hidden" name="${name}" id="${inputId}"/>'
                     + '<div class="${bodyClass}" id="${bodyId}"></div>'

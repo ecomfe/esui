@@ -3461,7 +3461,7 @@ span.ui-crumb-node {
   width: 5.5em;
 }
 .ui-schedule-day {
-  line-height: 2em;
+  line-height: 25px;
 }
 .ui-schedule-time {
   cursor: pointer;
@@ -3470,11 +3470,11 @@ span.ui-crumb-node {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 2em;
-  height: 2em;
+  width: 25px;
+  height: 25px;
 }
 .ui-schedule-time-head {
-  width: 4em;
+  width: 50px;
   text-align: center;
   position: relative;
   float: left;
@@ -3488,7 +3488,7 @@ span.ui-crumb-node {
   overflow: hidden;
 }
 .ui-schedule-time-line-inner {
-  margin-left: -2em;
+  margin-left: -25px;
 }
 .ui-schedule-time-body {
   float: left;
@@ -3553,8 +3553,8 @@ span.ui-crumb-node {
   z-index: 49;
 }
 .ui-schedule-continue-covertimes {
-  height: 2em;
-  line-height: 2em;
+  height: 25px;
+  line-height: 25px;
   position: absolute;
   opacity: 0.5;
   filter: alpha(opacity=50);
