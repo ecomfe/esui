@@ -1,0 +1,209 @@
+ /**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  *
+  * @file 日程样式
+  * @author miaojian
+  */
+
+@import "Variable.less";
+
+@esui-schedule-padding: 1em;
+@esui-schedule-head-margin: 1em 0 0;
+@esui-schedule-legend-size: 1em;
+@esiu-schedule-slot-size: 25px;
+
+@esui-schedule-day-header-width: 5.5em;
+
+@esui-schedule-shortcut-item-padding: 0 1em;
+@esui-schedule-shortcut-item-right-margin: .5em;
+@esui-schedule-shortcut-item-border-radius: 2px;
+@esui-schedule-shortcut-time-line-left-padding: 3.5em;
+
+.@{ui-class-prefix}-schedule {
+    padding: @esui-schedule-padding;
+    position: relative;
+    display: inline-block;
+    outline: 0;
+    .esui-schedule-theme();
+}
+
+.esui-schedule-theme() {}
+
+.@{ui-class-prefix}-schedule-body,
+.@{ui-class-prefix}-schedule-head {
+    &:extend(.esf-clearfix all);
+}
+
+.@{ui-class-prefix}-schedule-head {
+    margin: @esui-schedule-head-margin;
+}
+
+.@{ui-class-prefix}-schedule-help {
+    float: right;
+}
+
+.@{ui-class-prefix}-schedule-help-selected,
+.@{ui-class-prefix}-schedule-help-unselected {
+    .size(@esui-schedule-legend-size);
+}
+
+.@{ui-class-prefix}-schedule-help div {
+    display: inline-block;
+    margin-left: .5em;
+    vertical-align: middle;
+}
+.@{ui-class-prefix}-schedule-shortcut {
+    float: left;
+    span {
+        display: inline-block;
+    }
+}
+
+.@{ui-class-prefix}-schedule-shortcut-item {
+    cursor: pointer;
+    padding: @esui-schedule-shortcut-item-padding;
+    margin-right: @esui-schedule-shortcut-item-right-margin;
+    .esf-border-radius(
+        @esui-schedule-shortcut-item-border-radius,
+        @esui-schedule-shortcut-item-border-radius
+    );
+    .esui-schedule-shortcut-item-theme();
+}
+
+.@{ui-class-prefix}-schedule-day-head {
+    float: left;
+    width: @esui-schedule-day-header-width;
+}
+
+.@{ui-class-prefix}-schedule-day {
+    line-height: @esiu-schedule-slot-size;
+}
+
+.@{ui-class-prefix}-schedule-time {
+    cursor: pointer;
+    float: left;
+    position: relative;
+    .box-sizing(border-box);
+    .size(@esiu-schedule-slot-size);
+}
+
+.@{ui-class-prefix}-schedule-time-head {
+    width: @esiu-schedule-slot-size * 2;
+    text-align: center;
+    position: relative;
+    float: left;
+}
+.@{ui-class-prefix}-schedule-line {
+    position: relative;
+    overflow: hidden;
+}
+.@{ui-class-prefix}-schedule-time-line {
+    padding-left: @esui-schedule-day-header-width;
+    overflow: hidden;
+}
+
+.@{ui-class-prefix}-schedule-time-line-inner {
+    margin-left: -@esiu-schedule-slot-size;
+}
+
+.@{ui-class-prefix}-schedule-time-body {
+    float: left;
+    border-top: 1px solid #dcdcdc;
+    position: relative;
+}
+
+.@{ui-class-prefix}-schedule-time,
+.@{ui-class-prefix}-schedule-help-unselected {
+    .esui-schedule-unselected-slot-theme();
+}
+
+.@{ui-class-prefix}-schedule-time-selected,
+.@{ui-class-prefix}-schedule-help-selected {
+    .esui-schedule-selected-slot-theme();
+}
+
+
+
+.esui-schedule-selected-slot-theme() {}
+
+.esui-schedule-unselected-slot-theme() {}
+
+.@{ui-class-prefix}-schedule-time-hover {
+  border: 1px solid #f7de41;
+  cursor: pointer;
+  background: #fff6bd;
+}
+.@{ui-class-prefix}-schedule-shortcut-item-tip,
+.@{ui-class-prefix}-schedule-timeitem-tip {
+  border: 1px solid #a6a6a6;
+  line-height: 20px;
+  padding: 0px 5px;
+}
+
+.@{ui-class-prefix}-schedule-timeitem-tip .@{ui-class-prefix}-schedule-timeitem-tip-body {
+  color: #a6a6a6;
+}
+.@{ui-class-prefix}-schedule-overitem {
+  width: 23px;
+  height: 23px;
+  border: 1px solid #f7de41;
+  cursor: pointer;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: #fff6bd;
+  display: none;
+}
+.@{ui-class-prefix}-schedule-dragitem {
+  width: 23px;
+  height: 23px;
+  border: 0px;
+  background: #FEFEFE;
+  .opacity(10);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+.@{ui-class-prefix}-schedule-follow-item {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border: 1px dotted #cc0000;
+  background: transparent;
+  top: 0px;
+  left: 0px;
+  display: none;
+  z-index: 49;
+}
+.@{ui-class-prefix}-schedule-continue-covertimes {
+    height: @esiu-schedule-slot-size;
+    line-height: @esiu-schedule-slot-size;
+    position: absolute;
+    .opacity(50);
+    background: #dcfacf;
+    color: #2b7a08;
+}
+
+.@{ui-class-prefix}-schedule-coverclose {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 10px;
+    width: 10px;
+    z-index: 999;
+    cursor: pointer;
+    display: none;
+}
+
+.@{ui-class-prefix}-schedule-covertimes-tip {
+    width: 100%;
+    text-align: center;
+}
+
+.@{ui-class-prefix}-schedule-disabled .@{ui-class-prefix}-schedule-time-hover,
+.@{ui-class-prefix}-schedule-readonly .@{ui-class-prefix}-schedule-time-hover {
+  cursor: default;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+}

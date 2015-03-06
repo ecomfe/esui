@@ -1,0 +1,137 @@
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 地域选择样式
+ * @author dbear
+ */
+
+@import "Variable.less";
+
+@esui-region-margin: 0;
+@esui-region-padding: 0;
+@esui-region-country-line-padding: .5em;
+@esui-region-check-width: 7em;
+@esui-region-province-item-width: 8em;
+@esui-region-item-padding: .5em 0;
+@esui-region-text-padding: .5em;
+@esui-region-region-box-padding: 0 .5em;
+
+@esui-region-city-number-margin: .6em 0 0 0;
+@esui-region-city-number-padding: 0;
+@esui-region-city-number-border-radius: 3px;
+
+@esui-region-city-number-line-height: 1.2;
+@esui-region-city-box-padding: .5em;
+@esui-region-city-padding: .1em .5em;
+
+.@{ui-class-prefix}-region {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    .user-select(none);
+
+    .esui-region-theme();
+}
+
+.@{ui-class-prefix}-region-shadow {
+    .esui-region-shadow-theme();
+}
+
+.@{ui-class-prefix}-region-country-box {
+    .esui-region-country-box-theme();
+}
+
+.@{ui-class-prefix}-region-country-check {
+    padding: @esui-region-country-line-padding;
+    .esui-region-country-check-theme();
+}
+
+.@{ui-class-prefix}-region-region-box0,
+.@{ui-class-prefix}-region-region-box1 {
+    &:extend(.esf-clearfix all);
+}
+
+.@{ui-class-prefix}-region-region-box0 {
+    padding: @esui-region-region-box-padding;
+    .esui-region-region-box0-theme();
+}
+.@{ui-class-prefix}-region-region-box1 {
+    padding: @esui-region-region-box-padding;
+    .esui-region-region-box1-theme();
+}
+
+.@{ui-class-prefix}-region-region-check,
+.@{ui-class-prefix}-region-province-box {
+    float: left;
+}
+
+.@{ui-class-prefix}-region-region-check {
+    width: @esui-region-check-width;
+    padding: @esui-region-item-padding;
+}
+
+.@{ui-class-prefix}-region-text {
+    position: relative;
+    padding: @esui-region-text-padding;
+    float: left;
+}
+
+.@{ui-class-prefix}-region-text-over {
+    .esui-region-text-over-theme();
+}
+
+.@{ui-class-prefix}-region-province-box {
+    width: @esui-region-province-item-width * 5;
+}
+
+.@{ui-class-prefix}-region-province-item {
+    width: @esui-region-province-item-width;
+    float: left;
+}
+
+.@{ui-class-prefix}-region-locator {
+    float: left;
+    b {
+        display: block;
+        padding: @esui-region-city-number-padding;
+        margin: @esui-region-city-number-margin;
+        line-height: @esui-region-city-number-line-height;
+        .esf-border-radius(
+            @esui-region-city-number-border-radius,
+            @esui-region-city-number-border-radius,
+        );
+        .esui-region-city-number-theme();
+    }
+}
+
+.@{ui-class-prefix}-region-city-box {
+    position: absolute;
+    padding: @esui-region-city-box-padding;
+    z-index: 998;
+    td {
+        white-space: nowrap;
+    }
+    .esui-region-city-box-theme();
+}
+
+.@{ui-class-prefix}-region-city {
+    padding: @esui-region-city-padding;
+}
+
+.@{ui-class-prefix}-region-single {
+    margin:0;
+    padding:0;
+    width: auto;
+    border: none;
+}
+
+.esui-region-theme() {}
+.esui-region-shadow-theme() {};
+.esui-region-country-box-theme() {}
+.esui-region-country-check-theme() {}
+.esui-region-region-box0-theme() {}
+.esui-region-region-box1-theme() {}
+.esui-region-text-over-theme() {}
+.esui-region-city-number-theme() {}
+.esui-region-city-box-theme() {}

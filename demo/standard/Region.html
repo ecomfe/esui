@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Region - ESUI Demo</title>
+    <script src="../assets/loader/esl.js"></script>
+    <script src="../../src/customShim.js"></script>
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+</head>
+<body>
+    <h1 id="branding">ESUI - Region</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>多种模式</h2>
+            <section class="intro">
+                <p>地域选框有2种模式：多选、单选。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>多选</h3>
+                    <div class="row">
+                        <esui-region data-ui="id:test;name:region1"></esui-region>
+                    </div>
+                    <h3>Drop Shadow</h3>
+                    <div class="row">
+                        <esui-region data-ui="variants:shadow;"></esui-region>
+                    </div>
+                    <h3>单选</h3>
+                    <div class="row">
+                        <div data-ui="type:Region;mode:single;"></div>
+                    </div>
+                </div>
+            </section>
+            <h2>状态</h2>
+            <section class="intro">
+                <p>readOnly模式与disable模式的展示相同，不同是readOnly可以获取到选择的值</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>只读</h3>
+                    <div class="row">
+                        <div data-ui="type:Region;id:readonly;name:region3;"></div>
+                    </div>
+                    <h3>不可用</h3>
+                    <div class="row">
+                        <div data-ui="disabled:1;type:Region;id:disabledRegion;"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Region',
+                'esui/Button'
+            ],
+            function (ui) {
+                var controls = ui.init();
+                var region1 = ui.get('test');
+                var region2 = controls[1];
+                var region3 = ui.get('readonly');
+
+                region1.setProperties({
+                    rawValue: ['268', '269', '270']
+                });
+
+                region3.setProperties({
+                    rawValue: ['268', '269', '270'],
+                    readOnly: true
+                });
+            }
+        )
+        </script>
+    </div>
+</body>
+</html>

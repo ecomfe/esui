@@ -1,0 +1,45 @@
+
+@import "../../src/css/Schedule.less";
+
+@import "Common.less";
+
+@esui-schedule-background: @esf-palette-neutral-color;
+
+@esui-schedul-uhselected-slot-background: @esf-palette-white;
+@esui-schedul-uhselected-slot-border: 1px solid @esf-palette-border;
+@esui-schedul-selected-slot-background: lighten(@esf-palette-primary-color, 35%);
+
+
+
+@esui-schedule-shortcut-item-background: @esf-palette-primary-color;
+@esui-schedule-shortcut-item-color: @esf-palette-contrast-color;
+
+
+@esui-schedule-shortcut-item-hover-background: @esf-palette-primary-highlight-color;
+@esui-schedule-shortcut-item-active-background: @esf-palette-primary-shadow-color;
+
+
+.esui-schedule-theme() {
+    background: @esui-schedule-background;
+}
+
+.esui-schedule-shortcut-item-theme() {
+    background: @esui-schedule-shortcut-item-background;
+    color: @esui-schedule-shortcut-item-color;
+    &:hover {
+        background: @esui-schedule-shortcut-item-hover-background;
+    }
+    &:active {
+        background: @esui-schedule-shortcut-item-active-background;
+    }
+}
+
+.esui-schedule-selected-slot-theme() {
+    background: @esui-schedul-selected-slot-background;
+    color: #fff;
+}
+
+.esui-schedule-unselected-slot-theme() {
+    background: @esui-schedul-uhselected-slot-background;
+    border: @esui-schedul-uhselected-slot-border;
+}
