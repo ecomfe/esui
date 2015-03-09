@@ -4,22 +4,31 @@
 .global-normalize();
 
 // import esf
-@import "../../../dep/esf/1.0.0-alpha.8/themes/standard/main.less";
+@import "../../../dep/esf/1.0.0-alpha.9/themes/standard/main.less";
 
 // import esui
 @import "../../../themes/standard/main.less";
 
 // import eicons
-@import "../../../dep/eicons/1.0.0-alpha.3/src/main.less";
+@import "../../../dep/eicons/1.0.0-alpha.4/src/main.less";
 
 @fa-font-path: "../../../dep/eicons/1.0.0-alpha.3/fonts/font-awesome";
 
-// .ui-tab-vertical-container {
-//    .esui-vertical-tab-def(
-//        80px,
-//        300px
-//    );
-// }
+.ui-tab-vertical-container-left {
+   .esui-vertical-tab-def(
+       80px,
+       300px,
+       left
+   );
+}
+
+.ui-tab-vertical-container-right {
+   .esui-vertical-tab-def(
+       80px,
+       300px,
+       right
+   );
+}
 
 .ui-demo-light-stage {
     background: @esf-palette-primary-bg-color;
