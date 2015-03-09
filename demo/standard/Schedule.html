@@ -22,7 +22,7 @@
             <div id="main">
                 <h2>schedule</h2>
                 <section class="intro">
-                    <p>schedule。</p>
+                    <p>时间选择组件。</p>
                 </section>
                 <section class="view">
                     <ul class="viewer">
@@ -33,14 +33,34 @@
                         <div class="row">
                             <esui-schedule name="launchMode" data-ui="id:mySchedule"></esui-schedule>
                         </div>
-                        <button id='getRaw'> 获取raw值 </button>
-                        <button id='get'> 获取值 </button>
-                        <button id='set'> 赋值(setValue) </button>
-                        <button id='setRaw'> 赋值(setRawValue) </button>
-                        <button id='setD1'> disabled(1) </button>
-                        <button id='setD2'> disabled(0) </button>
-                        <button id='sel'> select([0,0], [6,23]) </button>
-                        <button id='unsel'> unselect([0,0],[6,23]) </button>
+                        <div class="row">
+                            <button class="ui-button" id='getRaw'> 获取raw值 </button>
+                            <button class="ui-button" id='get'> 获取值 </button>
+                            <button class="ui-button" id='set'> 赋值(setValue) </button>
+                            <button class="ui-button" id='setRaw'> 赋值(setRawValue) </button>
+                        </div>
+                        <div class="row">
+                            <button class="ui-button" id='setD1'> disabled(1) </button>
+                            <button class="ui-button" id='setD2'> disabled(0) </button>
+                            <button class="ui-button" id='sel'> select([0,0], [6,23]) </button>
+                            <button class="ui-button" id='unsel'> unselect([0,0],[6,23]) </button>
+                        </div>
+                    </div>
+                </section>
+                <h2>状态</h2>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <h3>不可用</h3>
+                        <div class="row">
+                            <esui-schedule  data-ui="disabled:1;id:mySchedule2"></esui-schedule>
+                        </div>
+                        <h3>readOnly</h3>
+                        <div class="row">
+                            <esui-schedule  data-ui="readOnly:1;id:mySchedule3"></esui-schedule>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -52,20 +72,26 @@
                 'esui/Schedule'
             ],
             function (ui) {
+                var raw = [
+                    [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1],
+                    [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                    [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                    [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0],
+                    [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1]
+                ];
                 ui.init(document.body,{
                     properties : {
                         mySchedule: {
-                            rawValue: [
-                            [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1],
-                            [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
-                            [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
-                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0],
-                            [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1]
-                            ],
-                            name: 'shedule'
-                        }
+                            rawValue: raw
+                        },
+                        mySchedule2: {
+                            rawValue: raw
+                        },
+                        mySchedule3: {
+                            rawValue: raw
+                        },
                     }
                 });
 
