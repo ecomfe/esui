@@ -25,9 +25,11 @@ define(
         var layContentTpl = [
             '<div class="${optClass}">',
                 '<div id="${inputFieldId}"></div>',
-                '<div data-ui="id:${okId};type:Button;">${okText}</div>',
-                '<div data-ui="id:${cancelId};type:Button;">',
-                    '${cancelText}',
+                '<div class="${editorBtnClass}">',
+                    '<button data-ui="id:${okId};type:Button;variants:primary">${okText}</button> ',
+                    '<button data-ui="id:${cancelId};type:Button;variants:link">',
+                        '${cancelText}',
+                    '</button>',
                 '</div>',
             '</div>',
             '<div class="${errorClass}" id="${errorId}"></div>'
@@ -135,8 +137,6 @@ define(
                 inputCtrlOptions.properties[newInputId] = lib.extend(
                     {
                         id: newInputId,
-                        width: 145,
-                        height: 20,
                         validityLabel: validId + guid
                     },
                     options.field.editRules
@@ -193,7 +193,8 @@ define(
                     cancelText: cancelText,
                     optClass: currentTable.helper.getPartClassName('editor-opt'),
                     errorClass: currentTable.helper.getPartClassName('editor-error'),
-                    errorId: errorId
+                    errorId: errorId,
+                    editorBtnClass: currentTable.helper.getPartClassName('editor-buttons')
                 }
             );
         }
@@ -541,13 +542,17 @@ define(
             if ('function' == typeof fieldEditable) {
                 fieldEditable = fieldEditable.call(table, data, rowIndex, fieldIndex, extraArgs);
             }
+            var iconClass = table.helper.getIconClass();
             if (table.editable && fieldEditable) {
                 return {
                     textClass: table.getClass('cell-editable'),
                     html: lib.format(
                         editentryTpl,
                         {
-                            className: table.getClass('cell-editentry'),
+                            className: 
+                                table.getClass('cell-editentry') 
+                                + ' '
+                                + iconClass,
                             row: rowIndex,
                             col: fieldIndex
                         }
