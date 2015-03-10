@@ -76,7 +76,7 @@ define(
 
             return source.replace(
                 /-([a-z])/g,
-                function (alpha) {
+                function (match, alpha) {
                     return alpha.toUpperCase();
                 }
             );

@@ -206,7 +206,7 @@ define(
                     '<div class="', timeHClass,
                     '" data-time="', i, '" ',
                     'id="', getId(me, 'time-head' + i), '">',
-                     i + ':00',
+                     i,
                      '</div>'
                 );
             }
@@ -408,7 +408,7 @@ define(
                         start: start,
                         end: end,
                         text: length === 24
-                            ? '全天投放' : start + '.00-' + end + '.00',
+                            ? '全天投放' : start + ':00-' + end + ':00',
                         coverClass: getClass(me, 'covertimes-tip')
                     }
                 );
