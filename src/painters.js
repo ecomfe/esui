@@ -307,7 +307,7 @@ define(
                             + 'of type ' + this.type + ' '
                             + 'because: ' + ex.message
                         );
-                        error.actualError = error;
+                        error.actualError = ex;
                         throw error;
                     }
 
