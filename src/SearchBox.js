@@ -36,7 +36,16 @@ define(
          * @override
          */
         SearchBox.prototype.initOptions = function (options) {
-            var properties = {};
+            var properties = {
+                buttonVariants: '',
+                buttonContent: '搜索',
+                buttonPosition: 'right',
+                clearButton: 'true',
+                text: '',
+                placeholder: '',
+                maxLength: '',
+                title: ''
+            };
             lib.extend(properties, options);
 
             if (properties.disabled === 'false') {
@@ -79,31 +88,51 @@ define(
          */
         SearchBox.prototype.initStructure = function () {
             // 一个搜索框由一个文本框和一个按钮组成
+            var me = this;
+            var helper = me.helper;
             var textboxOptions = {
                 mode: 'text',
                 childName: 'text',
-                height: this.height,
-                viewContext: this.viewContext,
-                placeholder: this.placeholder
+                viewContext: me.viewContext,
+                placeholder: me.placeholder,
+                width: 'auto'
             };
-
-            if (lib.isInput(this.main)) {
-                this.helper.replaceMain();
+            if (me.clearButton === 'true') {
+                textboxOptions.icon = helper.getIconClass('close');
+                textboxOptions.variants = 'icon-right';
             }
 
-            var textbox = ui.create('TextBox', textboxOptions);
-            textbox.appendTo(this.main);
-            this.addChild(textbox);
+            if (lib.isInput(me.main)) {
+                helper.replaceMain();
+            }
 
+            var mainElement = me.main;
+            lib.addClass(mainElement, helper.getPrefixClass('textbox-wrapper'));
+            var textbox = ui.create('TextBox', textboxOptions);
             var buttonOptions = {
-                main: document.createElement('span'),
+                main: document.createElement('button'),
                 childName: 'button',
-                content: '搜索',
-                viewContext: this.viewContext
+                content: me.buttonContent,
+                viewContext: me.viewContext,
+                variants: me.buttonVariants
             };
             var button = ui.create('Button', buttonOptions);
-            button.appendTo(this.main);
-            this.addChild(button);
+            var addOn = document.createElement('div');
+            lib.addClass(addOn, helper.getPrefixClass('textbox-addon'));
+            if(me.buttonPosition === 'right') {
+                textbox.appendTo(mainElement);
+                me.addChild(textbox);
+                button.appendTo(addOn);
+                me.addChild(button);
+                mainElement.appendChild(addOn);
+            }
+            else {
+                me.main.appendChild(addOn);
+                button.appendTo(addOn);
+                me.addChild(button);
+                textbox.appendTo(mainElement);
+                me.addChild(textbox);
+            }
         };
 
         /**
@@ -194,17 +223,11 @@ define(
                          * 文字内容
                          */
                         value: text,
-
-                        /**
-                         * @property {number} width
-                         *
-                         * 设定文本框宽度，参考{@link TextBox#width}
-                         */
-                        width: width,
                         disabled: disabled,
                         readOnly: readOnly
                     };
                     box.getChild('text').setProperties(properties);
+                    box.main.style.width = width + 'px';
                 }
             },
             {
