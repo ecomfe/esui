@@ -4,12 +4,13 @@
   * 
   * @file Breadcrumbs样式
   * @author yankun01
-  */
+*/
+
+@import "Variable.less";
 
 @esui-crumb-padding: 0;
 @esui-crumb-line-height: 1.3;
 @esui-crumb-separator-margin: 0 .5em;
-@esui-crumb-node-text-color: #444;
 
 .@{ui-class-prefix}-crumb {
     padding: @esui-crumb-padding;
@@ -27,11 +28,11 @@ a.@{ui-class-prefix}-crumb-node {
 }
 
 span.@{ui-class-prefix}-crumb-node {
-    color: @esui-crumb-node-text-color;
+    .esui-crumb-node-theme();
 }
 
+.esui-crumb-node-theme() {}
 .esui-crumb-link-node-theme() {}
-
 .esui-crumb-separator-theme() {}
 
 // nav variant
@@ -44,5 +45,4 @@ span.@{ui-class-prefix}-crumb-node {
 }
 
 .esui-crumb-nav-container-theme() {}
-
 .esui-crumb-nav-theme() {}

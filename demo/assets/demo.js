@@ -29,16 +29,21 @@ require.config({
         },
         {
             'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.4/src',
+            'location': '../dep/eicons/1.0.0-alpha.5/src',
             'main': 'main.less'
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-alpha.9/src'
+            'location': '../dep/esf/1.0.0-alpha.10/src'
         },
         {
             'name': 'est',
             'location': '../dep/est/1.3.0/src'
+        },
+        {
+            'name': 'eoo',
+            'location': '../dep/eoo/0.1.1/src',
+            'main': 'main'
         }
     ]
 });
@@ -84,6 +89,7 @@ $(function () {
         '<li><a href="Schedule.html">Schedule</a></li>' +
         '<li><a href="Select.html">Select</a></li>' +
         '<li><a href="Sidebar.html">Sidebar</a></li>' +
+        '<li><a href="SearchBox.html">SearchBox</a></li>' +
         '<li><a href="Tab.html">Tab</a></li>' +
         '<li><a href="Table.html">Table</a></li>' +
         '<li><a href="TextBox.html">TextBox</a></li>' +
@@ -92,7 +98,8 @@ $(function () {
         '<li><a href="TipLayer.html">TipLayer</a></li>' +
         '<li><a href="Tree.html">Tree</a></li>' +
         '<li><a href="Toast.html">Toast</a></li>' +
-        '<li><a href="Wizard.html">Wizard</a></li>';
+        '<li><a href="ValidityLabel.html">Validity</a></li>';
+        //'<li><a href="Wizard.html">Wizard</a></li>';
 
     $('#navigator').html(navItems);
 

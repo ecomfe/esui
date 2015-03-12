@@ -30,7 +30,6 @@ define(
             //图例说明文本
             helpSelectedText: '投放时间段',
             helpText: '暂停时间段',
-            slotSize: 25,
 
             //星期checkbox显示文本
             dayTexts: [
@@ -207,7 +206,7 @@ define(
                     '<div class="', timeHClass,
                     '" data-time="', i, '" ',
                     'id="', getId(me, 'time-head' + i), '">',
-                     i + ':00',
+                     i,
                      '</div>'
                 );
             }
@@ -409,7 +408,7 @@ define(
                         start: start,
                         end: end,
                         text: length === 24
-                            ? '全天投放' : start + '.00-' + end + '.00',
+                            ? '全天投放' : start + ':00-' + end + ':00',
                         coverClass: getClass(me, 'covertimes-tip')
                     }
                 );
@@ -477,8 +476,9 @@ define(
                 tipElement.innerHTML = tipText;
             }
             else {
-                var cssStyle = ''
-                    + ';position:absolute;z-index:50;background:#fff6bd;top:'
+                var cssStyle = 'font-size:'
+                    + lib.getComputedStyle(me.main, 'fontSize')
+                    + ';position:absolute;top:'
                     + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');
@@ -921,6 +921,7 @@ define(
             var timeBodyPos  = me.dragRange;
             var dragStartPos = me.dragStartPos;
             var rangePos = {};
+            var slotSize = me.slotSize;
 
             //计算拖动遮罩层的结束鼠标点
             if (mousepos.x <= timeBodyPos[1]
@@ -944,13 +945,13 @@ define(
             var cellrange = { startcell: {}, endcell: {} };
             //计算拖动遮罩层覆盖区域位置
             cellrange.startcell.x =
-                Math.floor((dragStartPos.x - me.dragRange[3]) / 25);
+                Math.floor((dragStartPos.x - me.dragRange[3]) / slotSize);
             cellrange.startcell.y =
-                Math.floor((dragStartPos.y - me.dragRange[0]) / 25);
+                Math.floor((dragStartPos.y - me.dragRange[0]) / slotSize);
             cellrange.endcell.x =
-                Math.floor((rangePos.x - me.dragRange[3]) / 25);
+                Math.floor((rangePos.x - me.dragRange[3]) / slotSize);
             cellrange.endcell.y =
-                Math.floor((rangePos.y - me.dragRange[0]) / 25);
+                Math.floor((rangePos.y - me.dragRange[0]) / slotSize);
 
             if (cellrange.endcell.x >= 23) {
                 cellrange.endcell.x = 23;
@@ -969,6 +970,7 @@ define(
          */
         function repaintFollowEle(schedule, cellPos) {
             var me = schedule;
+            var slotSize = schedule.slotSize;
 
             var followEleId = getId(schedule, 'follow-item');
             var followEle = lib.g(followEleId);
@@ -993,21 +995,21 @@ define(
 
 
             if (endcellY >= startcellY) {
-                divTop = startcellY * 25;
-                divHeight = (endcellY - startcellY + 1) * 25 - 2;
+                divTop = startcellY * slotSize;
+                divHeight = (endcellY - startcellY + 1) * slotSize - 2;
             }
             else {
-                divTop = endcellY * 25;
-                divHeight = (startcellY - endcellY + 1) * 25 - 2;
+                divTop = endcellY * slotSize;
+                divHeight = (startcellY - endcellY + 1) * slotSize - 2;
             }
 
             if (endcellX >= startcellX) {
-                divLeft = startcellX * 25;
-                divWidth = (endcellX - startcellX + 1) * 25 - 2;
+                divLeft = startcellX * slotSize;
+                divWidth = (endcellX - startcellX + 1) * slotSize - 2;
             }
             else {
-                divLeft = endcellX * 25;
-                divWidth = (startcellX - endcellX + 1) * 25 - 2;
+                divLeft = endcellX * slotSize;
+                divWidth = (startcellX - endcellX + 1) * slotSize - 2;
             }
 
             var cssStyles = ''
@@ -1015,8 +1017,7 @@ define(
                 + ';width:' + divWidth + 'px'
                 + ';height:' + divHeight + 'px'
                 + ';top:' + divTop + 'px'
-                + ';left:' + divLeft + 'px'
-                + ';background:#faffbe';
+                + ';left:' + divLeft + 'px';
 
             followEle.style.cssText += cssStyles;
         }
@@ -1132,6 +1133,20 @@ define(
             schedule.setRawValue(rawValueCopy);
         }
 
+        function checkSlotSize(schedule) {
+            var html = '<div class="${testSlotClass}"></div>';
+            var ele = schedule.main;
+
+            ele.innerHTML = lib.format(
+                html,
+                {
+                    testSlotClass: 
+                        schedule.helper.getPartClasses('slot-tester').join(' ')
+                }
+            );
+            schedule.slotSize = parseFloat(lib.getComputedStyle(ele.firstChild, 'width'));
+        }
+
         Schedule.prototype = {
 
             constructor: Schedule,
@@ -1187,6 +1202,7 @@ define(
             initStructure: function () {
                 var me = this;
 
+                checkSlotSize(me);
                 this.main.tabIndex = 0;
                 var tpl = ''
                     + '<input type="hidden" name="${name}" id="${inputId}"/>'
@@ -1307,15 +1323,14 @@ define(
                 {
                     name: 'disabled',
                     paint: function (schedule, value) {
-
                         setDayCheckboxState(schedule, 'disabled', value);
                     }
                 },
                 {
-                    name: 'readonly',
+                    name: 'readOnly',
                     paint: function (schedule, value) {
-
-                        setDayCheckboxState(schedule, 'readonly', value);
+                        // checkbox没有readonly 状态，因此只能屏蔽它们了
+                        setDayCheckboxState(schedule, 'disabled', value);
                     }
                 }
             ),

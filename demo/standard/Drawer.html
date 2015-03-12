@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Drawer - ESUI Demo</title>
+    <script src="../assets/loader/esl.js"></script>
+    <script src="../../src/customShim.js"></script>
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+</head>
+<body>
+    <h1 id="branding">ESUI - Drawer</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>Drawer</h2>
+            <section class="intro">
+                <p>弹出一个浮层。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>展开抽屉 - from Right</h3>
+                    <button id="btn" class="ui-button">展开</button>
+                    <h3>展开抽屉 - from Left</h3>
+                    <button id="btn2" class="ui-button">展开</button>
+                    <h3>展开抽屉 - from Bottom</h3>
+                    <button id="btn3" class="ui-button">展开</button>
+
+                    <div class="ui-drawer" data-ui-type="Drawer" data-ui-id="panel">
+                        <div data-role="header">
+                            <div data-role="title">From Right</div>
+                            <a href="#" data-role="close"><span class="ui-icon-close"></span></a>
+                        </div>
+                        <div data-role="content">
+                        </div>
+                        <div data-role="footer">
+                            <button class="ui-button ui-button-primary">
+                                确定
+                            </button>
+                            <button class="ui-button ui-button-link">
+                                取消
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ui-drawer" data-ui-type="Drawer" data-ui-id="panel2"
+                        data-ui-variants="from-left">
+                        <div data-role="header">
+                            <div data-role="title">From Left</div>
+                            <a href="#" data-role="close"><span class="ui-icon-close"></span></a>
+                        </div>
+                        <div data-role="content">
+                        </div>
+                        <div data-role="footer">
+                            <button class="ui-button ui-button-primary">
+                                确定
+                            </button>
+                            <button class="ui-button ui-button-link">
+                                取消
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ui-drawer" data-ui-type="Drawer" data-ui-id="panel3"
+                        data-ui-variants="from-bottom">
+                        <div data-role="header">
+                            <div data-role="title">From Bottom</div>
+                            <a href="#" data-role="close"><span class="ui-icon-close"></span></a>
+                        </div>
+                        <div data-role="content">
+                        </div>
+                        <div data-role="footer">
+                            <button class="ui-button ui-button-primary">
+                                确定
+                            </button>
+                            <button class="ui-button ui-button-link">
+                                取消
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+    require(['esui', 'esui/Drawer'], function (ui) {
+        ui.init();
+        document.getElementById('btn').onclick = function () {
+            ui.get('panel').show();
+        }
+        document.getElementById('btn2').onclick = function () {
+            ui.get('panel2').show();
+        }
+        var panel = ui.get('panel3');
+        panel.on('beforeclose', function (e) {
+            if (!window.confirm('确认关闭吗？')) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('btn3').onclick = function () {
+            panel.show();
+
+        }
+    });
+    </script>
+</body>
+</html>
