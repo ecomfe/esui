@@ -1,20 +1,30 @@
+@esui-tab-border-color: #ddd;
+@esui-tab-border-width: 1px;
+@esui-tab-border: @esui-tab-border-width solid @esui-tab-border-color;
+
+@esui-tab-padding-horizontal: 0 1em;
+@esui-tab-padding-vertical: 1em 0;
+
+@esui-tab-padding-item-horizontal: 1em;
+@esui-tab-padding-item-vertical: 0.75em;
+@esui-tab-padding-item-top: @esui-tab-padding-item-vertical;
+@esui-tab-padding-item-bottom: @esui-tab-padding-item-vertical;
+
+@esui-tab-margin-horizontal: .5em;
+@esui-tab-margin-vertical: .5em;
+
+@esui-tab-color: #666666;
+@esui-tab-background: #F2F2F2;
+@esui-tab-hover-border: darken(@esui-tab-border-color, 5%);
+@esui-tab-hover-background: darken(@esui-tab-background, 5%);
+@esui-tab-hover-color: #000000;
+@esui-tab-active-border-color: #ddd;
+@esui-tab-active-border: 1px solid @esui-tab-active-border-color;
+@esui-tab-active-background: #FEFDFA;
+@esui-tab-active-color: #333333;
+
 @esui-tab-radius: 5px;
-@esui-tab-item-border-color: #DDD;
-@esui-tab-item-border: 1px solid @esui-tab-item-border-color;
-
-@esui-tab-horizontal-padding: 0 1em;
-@esui-tab-horizontal-item-margin: .5em;
-
-@esui-tab-vertical-padding: 1em 0;
-@esui-tab-vertical-item-margin: .5em;
-
-@esui-tab-item-height: 2.4em;
-@esui-tab-item-padding: 1em;
-@esui-tab-item-background: #F2F2F2;
-@esui-tab-item-color: #666666;
-
-@esui-tab-item-active-background: #FEFDFA;
-@esui-tab-item-active-color: #333333;
+@esui-tab-height: 1.2em;
 
 // 总体样式
 .@{ui-class-prefix}-tab-navigator {
@@ -26,57 +36,66 @@
 .@{ui-class-prefix}-tab-item {
     cursor: pointer;
     text-align: center;
-    border: @esui-tab-item-border;
-    background: @esui-tab-item-background;
-    color: @esui-tab-item-color;
-    line-height: @esui-tab-item-height;
-    padding: 0 @esui-tab-item-padding;
+    border: @esui-tab-border;
+    background: @esui-tab-background;
+    color: @esui-tab-color;
+    line-height: @esui-tab-height;
+    padding: @esui-tab-padding-item-top @esui-tab-padding-item-horizontal @esui-tab-padding-item-bottom @esui-tab-padding-item-horizontal;
+        
+    &:hover,
+    &:focus {
+        border-color: @esui-tab-hover-border;
+        background: @esui-tab-hover-background;
+        color: @esui-tab-hover-color;
+    }
 }
 
 .@{ui-class-prefix}-tab-item-active {
     cursor: default;
-    background: @esui-tab-item-active-background;
-    color: @esui-tab-item-active-color;
+    background: @esui-tab-active-background;
+    color: @esui-tab-active-color;
 }
 
 // 横向tab
 .@{ui-class-prefix}-tab-horizontal {
-    border-bottom: @esui-tab-item-border;
+    border-bottom: @esui-tab-border;
     .@{ui-class-prefix}-tab-navigator {
-        padding: @esui-tab-horizontal-padding;
+        padding: @esui-tab-padding-horizontal;
     }
 
     .@{ui-class-prefix}-tab-item {
         display: inline-block;
         margin-bottom: -1px;
         .border-top-radius(@esui-tab-radius);
-        margin-right: @esui-tab-horizontal-item-margin;
+        margin-right: @esui-tab-margin-horizontal;
     }
 
     .@{ui-class-prefix}-tab-item-active {
         cursor: default;
-        background: @esui-tab-item-active-background;
-        color: @esui-tab-item-active-color;
+        background: @esui-tab-active-background;
+        color: @esui-tab-active-color;
         border-bottom-color: transparent;
+        border-top: @esui-tab-active-border;
     }
 }
 
 .@{ui-class-prefix}-tab-horizontal-flip {
     border-bottom: 0;
-    border-top: @esui-tab-item-border;
+    border-top: @esui-tab-border;
 
     .@{ui-class-prefix}-tab-item {
         .border-top-radius(0);
         .border-bottom-radius(@esui-tab-radius);
         margin-bottom: 0;
         margin-top: -1px;
+        border-bottom: @esui-tab-border;
     }
 
     .@{ui-class-prefix}-tab-item-active {
         cursor: default;
-        background: @esui-tab-item-active-background;
-        border-bottom: @esui-tab-item-border;
-        border-top-color: @esui-tab-item-active-background;
+        background: @esui-tab-active-background;
+        border-bottom: @esui-tab-active-border;
+        border-top-color: transparent;
     }
 }
 
@@ -122,7 +141,7 @@
     .tab-content(@align) when (@align = right) {
         margin-left: 0;
         margin-right: @tabWidth;
-        border-left: @esui-tab-item-border;
+        border-left: @esui-tab-border;
         border-right: 0;
     }
 }
@@ -130,27 +149,28 @@
 // 纵向tab
 .@{ui-class-prefix}-tab-vertical {
     float: left;
-    border-right: @esui-tab-item-border;
+    border-right: @esui-tab-border;
     .@{ui-class-prefix}-tab-navigator {
-        padding: @esui-tab-vertical-padding;
+        padding: @esui-tab-padding-vertical;
     }
     .@{ui-class-prefix}-tab-item {
         display: block;
         .border-right-radius(0);
         .border-left-radius(@esui-tab-radius);
-        margin-bottom: @esui-tab-vertical-item-margin;
+        margin-bottom: @esui-tab-margin-vertical;
         margin-right: -1px;
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        border-right-color: @esui-tab-item-active-background;
+        border-left: @esui-tab-active-border;
+        border-right-color: transparent;
     } 
 }
 
 .@{ui-class-prefix}-tab-vertical-flip {
     float: right;
     border-right: 0;
-    border-left: @esui-tab-item-border;
+    border-left: @esui-tab-border;
 
     .@{ui-class-prefix}-tab-item {
         .border-left-radius(0);
@@ -160,7 +180,7 @@
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        border-left-color: @esui-tab-item-active-background;
-        border-right: @esui-tab-item-border;
+        border-left-color: transparent;
+        border-right: @esui-tab-active-border;
     }
 }

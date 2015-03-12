@@ -2,9 +2,11 @@
 
 @import "../../src/css/Tab.less";
 
-@esui-tab-item-border-color: @esf-palette-border;
-@esui-tab-item-background: #F2F2F2;
-@esui-tab-item-color: #666666;
 
-@esui-tab-item-active-background: @esf-palette-primary-bg-color;
-@esui-tab-item-active-color: #333333;
+@esui-tab-color: #666;
+@esui-tab-background: darken(@esf-palette-primary-bg-color, 5%);
+@esui-tab-border-color: lighten(@esf-palette-border, 10%);
+@esui-tab-hover-color: lighten(@esui-tab-color, 5%);
+@esui-tab-active-border-color: @esui-tab-border-color;
+@esui-tab-active-background: @esf-palette-primary-bg-color;
+@esui-tab-active-color: @esui-tab-color;
