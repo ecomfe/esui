@@ -1,0 +1,33 @@
+@import "Variable.less";
+
+@esui-common-invalid-message-margin: 0 0 0 1em;
+
+// 错误状态样式
+.@{ui-state-prefix}-validity-invalid {
+    .esui-common-invalid-control-theme();
+}
+
+// 出错信息
+.@{ui-class-prefix}-validity {
+    display: inline-block;
+     .esui-common-invalid-message-theme();
+}
+
+.@{ui-class-prefix}-form-value .@{ui-class-prefix}-validity {
+    margin: @esui-common-invalid-message-margin;
+}
+
+// 换行错误样式
+.@{ui-class-prefix}-form-wrap-hint .@{ui-class-prefix}-validity {
+    display: block;
+    margin-top: .5em;
+    margin-left: 0;
+}
+
+// 控制字段描述和错误信息的显示和隐藏
+.@{ui-class-prefix}-validity:not(.@{ui-state-prefix}-hidden) ~ .@{ui-class-prefix}-form-hint {
+    display: none;
+}
+
+.esui-common-invalid-control-theme() {}
+.esui-common-invalid-message-theme() {}
