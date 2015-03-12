@@ -39,6 +39,11 @@ require.config({
         {
             'name': 'est',
             'location': '../dep/est/1.3.0/src'
+        },
+        {
+            'name': 'eoo',
+            'location': '../dep/eoo/0.1.1/src',
+            'main': 'main'
         }
     ]
 });
