@@ -55,7 +55,7 @@ define(
             }
 
             u.each(
-                queue,
+                u.clone(queue),
                 function (control) {
                     if (control) {
                         triggerDOMEvent(control, element, e);
