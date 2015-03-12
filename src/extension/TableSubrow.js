@@ -297,6 +297,7 @@ define(
                 align: 'right'
             };
 
+            var iconClass = table.helper.getIconClass();
             if (subentry) {
                 var isSubEntryShown = typeof field.isSubEntryShow === 'function'
                     ? field.isSubEntryShow.call(
@@ -306,7 +307,10 @@ define(
                     result.html = lib.format(
                         tplSubEntry,
                         {
-                            className : getClass(table, 'subentry'),
+                            className : 
+                                getClass(table, 'subentry')
+                                + ' '
+                                + iconClass,
                             id :  getSubentryId(table, rowIndex),
                             title :  table.subEntryOpenTip,
                             index : rowIndex

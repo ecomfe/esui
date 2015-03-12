@@ -29,16 +29,21 @@ require.config({
         },
         {
             'name': 'eicons',
-            'location': '../dep/eicons/1.0.0-alpha.4/src',
+            'location': '../dep/eicons/1.0.0-alpha.5/src',
             'main': 'main.less'
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-alpha.9/src'
+            'location': '../dep/esf/1.0.0-alpha.10/src'
         },
         {
             'name': 'est',
             'location': '../dep/est/1.3.0/src'
+        },
+        {
+            'name': 'eoo',
+            'location': '../dep/eoo/0.1.1/src',
+            'main': 'main'
         }
     ]
 });

@@ -1,5 +1,5 @@
 @import "../../src/css/TextLine.less";
-@import "Common.less";
+
 
 @esui-textline-number-column-color: @esf-palette-color;
 @esui-textline-number-column-background: @esf-palette-neutral-color;
@@ -29,7 +29,7 @@
         .placeholder(@esf-textbox-error-text-color);
     }
 
-    .@{ui-state-prefix}-read-only {
+    &.@{ui-state-prefix}-read-only {
         .esf-input-color-def(
             @esf-textbox-readonly-border-color,
             @esf-textbox-readonly-background,

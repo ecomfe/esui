@@ -8,6 +8,7 @@
 
 @import "Variable.less";
 
+
 // Select
 @esui-select-radius: 5px;
 @esui-select-height: 2.4em;
@@ -88,36 +89,6 @@
 
     &:hover {
         background: @esui-select-item-background-selected;
-    }
-}
-
-.@{ui-class-prefix}-textbox-wrapper {
-    .esf-select-textbox-wrapper();
-}
-
-.esf-select-textbox-wrapper() when (@esui-select-radius > 0) {
-    :first-child.@{ui-class-prefix}-select {
-        .border-right-radius(0);
-        border-right: 0;
-    }
-    :last-child.@{ui-class-prefix}-select {
-        .border-left-radius(0);
-        border-left: 0;
-    }
-    >.@{ui-class-prefix}-select {
-        float: left;
-    }
-}
-
-.esf-select-textbox-wrapper() {
-    :first-child.@{ui-class-prefix}-select {
-        border-right: 0;
-    }
-    :last-child.@{ui-class-prefix}-select {
-        border-left: 0;
-    }
-    >.@{ui-class-prefix}-select {
-        float: left;
     }
 }
 

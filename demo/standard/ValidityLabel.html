@@ -12,16 +12,15 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
-        <link rel="stylesheet" href="../assets/demo.css" />
-        <link rel="stylesheet" href="../assets/themes/classic.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
-        <h1>Validity Label</h1>
+        <h1 id="branding">ESUI - Validity Label</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
             <div id="main">
-                <h2>Validity Label</h2>
+                <h2>验证信息标签可以放置到其他位置</h2>
                 <section class="intro">
                     <p>Validity Label</p>
                 </section>
@@ -29,8 +28,12 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example">
+                    <div class="example ui-demo-light-stage">
+                        <h3>文字不能为空</h3>
                         <div id="container" class="container">
+                        </div>
+                        <div id="validator">
+                        
                         </div>
                     </div>
                 </section>
@@ -48,7 +51,7 @@
                 var validityLabel = new ValidityLabel({
                     id: 'test-validity'
                 });
-                validityLabel.appendTo(document.getElementById('container'));
+
                 var textbox = new TextBox({
                     id: 'test',
                     validityLabel: 'test-validity',
@@ -58,7 +61,8 @@
                 });
                 textbox.appendTo(document.getElementById('container'));
                 textbox.on('input', function () { this.validate(); });
-                // textbox.validate();
+                validityLabel.appendTo(document.getElementById('validator'));
+                textbox.validate();
             }
         )
         </script>

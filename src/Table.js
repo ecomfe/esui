@@ -693,7 +693,10 @@ define(
             var thCellClass = getClass(table, 'hcell');
             var thTextClass = getClass(table, 'hcell-text');
             var breakClass = getClass(table, 'cell-break');
-            var sortClass = getClass(table, 'hsort');
+            var iconClass = table.helper.getIconClass();
+            var sortClass = getClass(table, 'hsort')
+                + ' '
+                + iconClass;
             var selClass = getClass(table, 'hcell-sel');
             var canDragBegin = -1;
             var canDragEnd = -1;
@@ -1986,31 +1989,39 @@ define(
          *
          * @private
          */
-        var mutilSelectAllTpl = '<input '
-                                +  'type="checkbox" '
-                                +  'id="${id}" '
-                                +  'class="${className}" '
-                                +  'data-index="${index}" '
-                                +  '${disabled}/>';
+        var mutilSelectAllTpl = '<div class="${checkboxClassName}">'
+                                + '<input '
+                                + 'type="checkbox" '
+                                + 'id="${id}" '
+                                + 'class="${className}" '
+                                + 'data-index="${index}" '
+                                + '${disabled}/><label for="${id}"></label></div>';
 
         /**
          * 多选框模版
          *
          * @private
          */
-        var mutilSelectTpl = '<input '
-                            +  'type="checkbox" '
-                            +  'id="${id}" '
-                            +  'class="${className}" '
-                            +  'data-index="${index}" '
-                            +  '${disabled} '
-                            +  '${checked} />';
+        var mutilSelectTpl = '<div class="${checkboxClassName}">'
+                            + '<input '
+                            + 'type="checkbox" '
+                            + 'id="${id}" '
+                            + 'class="${className}" '
+                            + 'data-index="${index}" '
+                            + '${disabled} '
+                            + '${checked} /><label for="${id}"></label></div>';
         /**
          * 获取第一列的多选框
          *
          * @private
          */
         function getMultiSelectField(table) {
+            var helper = table.helper;
+            var cls = [
+                helper.getPrefixClass('checkbox-custom'),
+                helper.getPrefixClass('checkbox-single')
+            ].join(' ');
+
             return {
                 width: 30,
                 stable: true,
@@ -2020,7 +2031,8 @@ define(
                         id: getId(table, 'select-all'),
                         className: getClass(table, 'select-all'),
                         disabled: table.disabled ? 'disabled="disabled"' : '',
-                        index: index
+                        index: index,
+                        checkboxClassName: cls
                     };
                     return lib.format(mutilSelectAllTpl, data);
                 },
@@ -2033,7 +2045,8 @@ define(
                         index: index,
                         checked: isRowSelected(table, index)
                             ? 'checked="checked"'
-                            : ''
+                            : '',
+                        checkboxClassName: cls
                     };
                     return lib.format(mutilSelectTpl, data);
                 }

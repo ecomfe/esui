@@ -1,0 +1,40 @@
+@import "../../src/css/Drawer.less";
+
+@esui-drawer-mask-background: rgba(0, 0, 0, 0.4);
+@esui-drawer-header-background: @esf-palette-neutral-color;
+@esui-drawer-title-color: @esf-palette-primary-color;
+@esui-drawer-close-color: @esf-palette-muted-color;
+@esui-drawer-close-hover-color: @esf-palette-color;
+@esui-drawer-content-background: @esf-palette-primary-bg-color;
+@esui-drawer-footer-backround: @esf-palette-primary-bg-color;
+
+.esui-drawer-mask-theme() {
+    background: @esui-drawer-mask-background;
+}
+
+.esui-drawer-header-theme() {
+    background: @esui-drawer-header-background;
+    .opacity(90);
+}
+
+.esui-drawer-footer-theme() {
+    background: @esui-drawer-footer-backround;
+    .opacity(90);
+}
+
+.esui-drawer-title-theme() {
+    color: @esui-drawer-title-color;
+}
+
+.esui-drawer-close-theme() {
+    font-size: 1.5em;
+    width: 2em;
+    color: @esui-drawer-close-color;
+    &:hover {
+        color: @esui-drawer-close-hover-color;
+    }
+}
+
+.esui-drawer-content-theme() {
+    background: @esui-drawer-content-background;
+}

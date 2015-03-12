@@ -34,6 +34,7 @@ define(
         var u = require('underscore');
         var lib = require('../lib');
         var ui = require('../main');
+        var uiClassPrefix = 'uiClassPrefix';
 
         /**
          * @override Helper
@@ -69,7 +70,7 @@ define(
 
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
-            var prefix = ui.getConfig('uiClassPrefix');
+            var prefix = ui.getConfig(uiClassPrefix);
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
 
@@ -132,10 +133,10 @@ define(
             var type = getControlClassType(this.control);
 
             if (part) {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type, part);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type, part);
             }
             else {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type);
             }
         };
 
@@ -147,7 +148,7 @@ define(
          * @param {string} name Class名称
          */
         helper.getPrefixClass = function (name) {
-            var pre = ui.getConfig('uiClassPrefix')
+            var pre = ui.getConfig(uiClassPrefix)
 
             return joinByStrike(pre, name);
         };
@@ -160,7 +161,11 @@ define(
          * @param {string} name 图标名称
          */
         helper.getIconClass = function (name) {
-            return joinByStrike(ui.getConfig('uiClassPrefix'), 'icon', name);
+            var icon = 'icon';
+            if (name) {
+                return joinByStrike(ui.getConfig(uiClassPrefix), icon, name);
+            }
+            return joinByStrike(ui.getConfig(uiClassPrefix), icon);
         };
 
         /**
@@ -227,7 +232,7 @@ define(
             var type = getControlClassType(this.control);
             var getConf = ui.getConfig;
             var classes = [
-                joinByStrike(getConf('uiClassPrefix'), type, state),
+                joinByStrike(getConf(uiClassPrefix), type, state),
                 joinByStrike(getConf('stateClassPrefix'), state)
             ];
 
@@ -317,7 +322,7 @@ define(
          */
         helper.getInheriantClasses = function () {
             var me = this;
-            var prefix = ui.getConfig('uiClassPrefix');
+            var prefix = ui.getConfig(uiClassPrefix);
             var element = me.control.main;
             var selectors = element.className.split(' ');
             var text = prefix + '-small|large|medium$';

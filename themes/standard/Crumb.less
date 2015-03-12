@@ -1,15 +1,7 @@
 @import "../../src/css/Crumb.less";
-@import "Common.less";
-
-// core variables
-@esui-crumb-padding: 0;
-@esui-crumb-margin: 0 0 .5em 0;
-@esui-crumb-line-height: 1.3;
-
-@esui-crumb-separator-margin: 0 .5em;
-@esui-crumb-node-text-color: @esf-palette-color;
 
 // theme variables
+@esui-crumb-node-text-color: @esf-palette-color;
 @esui-crumb-separator-color: @esf-palette-muted-color;
 
 // nav breadcrumbs variant variables
@@ -23,6 +15,10 @@
 
 @esui-crumb-nav-separator-color: @esf-palette-muted-color;
 @esui-crumb-nav-separator-margin: 0 .5em;
+
+.esui-crumb-node-theme() {
+    color: @esui-crumb-node-text-color;
+}
 
 .esui-crumb-separator-theme() {
     color: @esui-crumb-separator-color;
