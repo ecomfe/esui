@@ -1092,9 +1092,14 @@ define(
 
             var dayHead = lib.g(getId(schedule, 'day-head'));
             var inputs = dayHead.getElementsByTagName('input');
-
+            // when state is 'readonly' or 'disabled, we should operate attribute
             for (var i = 0, len = inputs.length; i < len; i++) {
-
+                if (/^(?:readonly|disabled)$/.test(state)) {
+                    value
+                        ? (inputs[i].setAttribute(state, value))
+                        : (inputs[i].removeAttribute(state));
+                    continue;
+                }
                 inputs[i][state] = value;
             }
         }
