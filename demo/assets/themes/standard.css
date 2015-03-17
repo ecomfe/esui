@@ -3127,7 +3127,7 @@ span.ui-crumb-node {
   cursor: pointer;
 }
 .ui-monthview-multi-select .ui-monthview-month-select-all-selected {
-  background: #eeeeee;
+  background: #e6f6f4;
 }
 .ui-monthview-multi-select .ui-monthview-month-row-select {
   background: #eff0f2;
@@ -3136,7 +3136,7 @@ span.ui-crumb-node {
   cursor: pointer;
 }
 .ui-monthview-multi-select .ui-monthview-month-row-select-selected {
-  background: #eeeeee;
+  background: #e6f6f4;
 }
 .ui-monthview-multi-select .ui-monthview-month-title {
   cursor: pointer;

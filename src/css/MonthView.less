@@ -6,44 +6,44 @@
  * @author dbear
  */
 
-@esui-month-view-month-item-width: 2.5em;
-@esui-month-view-month-item-height: 2.5em;
+@esui-monthview-month-item-width: 2.5em;
+@esui-monthview-month-item-height: 2.5em;
 
-@esui-month-view-background: #fff;
-@esui-month-view-border: 1px solid #e1e1e1;
+@esui-monthview-background: #fff;
+@esui-monthview-border: 1px solid #e1e1e1;
 
-@esui-month-view-head-background: #e1f5f1;
-@esui-month-view-head-arrow-color: #666;
-@esui-month-view-head-arrow-hover-color: #333;
-@esui-month-view-head-arrow-active-color: #222;
+@esui-monthview-head-background: #e1f5f1;
+@esui-monthview-head-arrow-color: #666;
+@esui-monthview-head-arrow-hover-color: #333;
+@esui-monthview-head-arrow-active-color: #222;
 
-@esui-month-view-month-border: none;
+@esui-monthview-month-border: none;
 
-@esui-month-view-month-title-background: #f6f6f6;
-@esui-month-view-month-title-color: #666;
+@esui-monthview-month-title-background: #f6f6f6;
+@esui-monthview-month-title-color: #666;
 
-@esui-month-view-month-title-selected-background: #ccced4;
+@esui-monthview-month-title-selected-background: #ccced4;
 
-@esui-month-view-month-item-color: #333;
-@esui-month-view-month-item-border: none;
-@esui-month-view-month-item-background: #fff;
-@esui-month-view-month-item-hover-background: #fffaee;
-@esui-month-view-month-item-selected-background: #e2f4ef;
-@esui-month-view-month-item-selected-color: #68c1a4;
-@esui-month-view-month-item-virtual-date-color: #999;
-@esui-month-view-month-item-virtual-date-background: none;
-@esui-month-view-month-item-disabled-background: none;
-@esui-month-view-month-item-disabled-color: #999;
-@esui-month-view-month-item-today-color: #6cc9ab;
+@esui-monthview-month-item-color: #333;
+@esui-monthview-month-item-border: none;
+@esui-monthview-month-item-background: #fff;
+@esui-monthview-month-item-hover-background: #fffaee;
+@esui-monthview-month-item-selected-background: #e2f4ef;
+@esui-monthview-month-item-selected-color: #68c1a4;
+@esui-monthview-month-item-virtual-date-color: #999;
+@esui-monthview-month-item-virtual-date-background: none;
+@esui-monthview-month-item-disabled-background: none;
+@esui-monthview-month-item-disabled-color: #999;
+@esui-monthview-month-item-today-color: #6cc9ab;
 
-@esui-month-view-month-row-selector-background: #f6f6f6;
-@esui-month-view-month-row-selector-selected-background: #ccced4;
+@esui-monthview-month-row-selector-background: #f6f6f6;
+@esui-monthview-month-row-selector-selected-background: #ccced4;
 
-@esui-month-view-font-family: STHeiti, SimSun;
+@esui-monthview-font-family: STHeiti, SimSun;
 
 .@{ui-class-prefix}-monthview {
-    background: @esui-month-view-background;
-    border: @esui-month-view-border;
+    background: @esui-monthview-background;
+    border: @esui-monthview-border;
     .box-sizing(border-box);
     position: relative;
     display: inline-block;
@@ -53,23 +53,23 @@
     }
 }
 
-// 单月日历头部
+// 日历选择头部
 .@{ui-class-prefix}-monthview-head {
-    background: @esui-month-view-head-background;
+    background: @esui-monthview-head-background;
 }
 
 // 向前向后按钮
 .@{ui-class-prefix}-monthview-month-back,
 .@{ui-class-prefix}-monthview-month-forward {
     background: none;
-    color: @esui-month-view-head-arrow-color;
+    color: @esui-monthview-head-arrow-color;
     
     &:hover {
-        color: @esui-month-view-head-arrow-hover-color;
+        color: @esui-monthview-head-arrow-hover-color;
         background: none;
     }
     &:active {
-        color: @esui-month-view-head-arrow-active-color;
+        color: @esui-monthview-head-arrow-active-color;
         background: none;
     }
 }
@@ -91,94 +91,94 @@
 }
 
 .@{ui-class-prefix}-monthview-month {
-    border: @esui-month-view-month-border;
+    border: @esui-monthview-month-border;
 }
 
 .@{ui-class-prefix}-monthview-month-title {
-    background: @esui-month-view-month-title-background;
-    color: @esui-month-view-month-title-color;
-    width: @esui-month-view-month-item-width;
-    height: @esui-month-view-month-item-height;
-    line-height: @esui-month-view-month-item-height;
+    background: @esui-monthview-month-title-background;
+    color: @esui-monthview-month-title-color;
+    width: @esui-monthview-month-item-width;
+    height: @esui-monthview-month-item-height;
+    line-height: @esui-monthview-month-item-height;
     text-align: center;
 }
 
 .@{ui-class-prefix}-monthview-month-title-selected {
-    background: @esui-month-view-month-title-selected-background;
+    background: @esui-monthview-month-title-selected-background;
 }
 
 .@{ui-class-prefix}-monthview-month-item {
-    width: @esui-month-view-month-item-width;
-    height: @esui-month-view-month-item-height;
-    line-height: @esui-month-view-month-item-height;
-    color: @esui-month-view-month-item-color;
-    border-bottom: @esui-month-view-month-item-border;
-    background: @esui-month-view-month-item-background;
+    width: @esui-monthview-month-item-width;
+    height: @esui-monthview-month-item-height;
+    line-height: @esui-monthview-month-item-height;
+    color: @esui-monthview-month-item-color;
+    border-bottom: @esui-monthview-month-item-border;
+    background: @esui-monthview-month-item-background;
     text-align: center;
     cursor: pointer;
-    font-family: @esui-month-view-font-family;
+    font-family: @esui-monthview-font-family;
 }
 
 .@{ui-class-prefix}-monthview-month-item:hover {
-    background: @esui-month-view-month-item-hover-background;
+    background: @esui-monthview-month-item-hover-background;
 }
 
 .@{ui-class-prefix}-monthview-month-item-today {
-    color: @esui-month-view-month-item-today-color;
+    color: @esui-monthview-month-item-today-color;
 }
 
 .@{ui-class-prefix}-monthview-month-item-selected {
-    background: @esui-month-view-month-item-selected-background;
-    color: @esui-month-view-month-item-selected-color;
+    background: @esui-monthview-month-item-selected-background;
+    color: @esui-monthview-month-item-selected-color;
     font-weight: bold;
 }
 
 .@{ui-class-prefix}-monthview-month-item-virtual,
 .@{ui-class-prefix}-monthview-month-item-out {
-    color: @esui-month-view-month-item-virtual-date-color;
-    background: @esui-month-view-month-item-virtual-date-background;
+    color: @esui-monthview-month-item-virtual-date-color;
+    background: @esui-monthview-month-item-virtual-date-background;
     cursor: default;
     &:hover {
-        background: @esui-month-view-month-item-virtual-date-background;
+        background: @esui-monthview-month-item-virtual-date-background;
     }
 }
 
 .@{ui-class-prefix}-monthview-month-item-disabled {
-    background: @esui-month-view-month-item-disabled-background;
-    color: @esui-month-view-month-item-disabled-color;
+    background: @esui-monthview-month-item-disabled-background;
+    color: @esui-monthview-month-item-disabled-color;
     cursor: default;
     &:hover {
-        background: @esui-month-view-month-item-disabled-background;
+        background: @esui-monthview-month-item-disabled-background;
     }
 }
 
 // 这个状态在range calendar中用到了。在这里统一管理。
 .@{ui-class-prefix}-monthview-month-item-highlight {
-    background: @esui-month-view-month-item-selected-background;
+    background: @esui-monthview-month-item-selected-background;
 }
 
 // 多选模式
 .@{ui-class-prefix}-monthview-multi-select {
-    width: 8 * @esui-month-view-month-item-width;
+    width: 8 * @esui-monthview-month-item-width;
     .@{ui-class-prefix}-monthview-month-select-all {
-        width: @esui-month-view-month-item-width;
-        height: @esui-month-view-month-item-height;
-        background: @esui-month-view-month-row-selector-background;
+        width: @esui-monthview-month-item-width;
+        height: @esui-monthview-month-item-height;
+        background: @esui-monthview-month-row-selector-background;
         cursor: pointer;
     }
 
     .@{ui-class-prefix}-monthview-month-select-all-selected {
-        background: @esui-month-view-month-row-selector-selected-background;
+        background: @esui-monthview-month-row-selector-selected-background;
     }
 
     .@{ui-class-prefix}-monthview-month-row-select {
-        background: @esui-month-view-month-row-selector-background;
-        border-bottom: @esui-month-view-month-item-border;
+        background: @esui-monthview-month-row-selector-background;
+        border-bottom: @esui-monthview-month-item-border;
         text-align: center;
         cursor: pointer;
     }
     .@{ui-class-prefix}-monthview-month-row-select-selected {
-        background: @esui-month-view-month-row-selector-selected-background;
+        background: @esui-monthview-month-row-selector-selected-background;
     }
     .@{ui-class-prefix}-monthview-month-title {
         cursor: pointer;
