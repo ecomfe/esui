@@ -3740,6 +3740,84 @@ span.ui-crumb-node {
 .ui-schedule.state-read-only {
   color: #999999;
 }
+.ui-searchbox {
+  position: relative;
+  width: 240px;
+  overflow: hidden;
+}
+.ui-searchbox .ui-textbox {
+  height: 2.4em;
+}
+.ui-searchbox .ui-textbox input {
+  padding: 0.5em;
+  width: 100% !important;
+}
+.ui-searchbox .ui-textbox-icon {
+  -webkit-transition: right 0.3s linear;
+  -moz-transition: right 0.3s linear;
+  -ms-transition: right 0.3s linear;
+  -o-transition: right 0.3s linear;
+  transition: right 0.3s linear;
+  right: -2.6em;
+  color: #dddddd;
+  cursor: pointer;
+}
+.ui-searchbox .ui-textbox-icon:hover,
+.ui-searchbox .ui-textbox-icon:active {
+  color: #6ccdc0;
+}
+.ui-searchbox .ui-textbox-addon {
+  display: table-cell;
+}
+.ui-searchbox-focus .ui-textbox-icon {
+  color: #6ccdc0;
+}
+.ui-searchbox-searched .ui-textbox input {
+  padding-right: 2.6em;
+}
+.ui-searchbox-searched .ui-textbox-icon {
+  -webkit-transition: right 0.3s linear;
+  -moz-transition: right 0.3s linear;
+  -ms-transition: right 0.3s linear;
+  -o-transition: right 0.3s linear;
+  transition: right 0.3s linear;
+  right: 0;
+}
+.ui-searchbox-fit-width {
+  display: block;
+  width: 100%;
+}
+.ui-searchbox.state-instant .ui-textbox input {
+  border-left: none;
+}
+.ui-searchbox.state-instant .ui-icon-search {
+  display: inline-block;
+  padding-left: 0.5em;
+  background-color: #fff;
+  height: 2.4em;
+  line-height: 2.4em;
+  border: 1px solid #dddddd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-right-radius: 0;
+  border-right: none !important;
+}
+.ui-searchbox.state-instant.state-focus .ui-icon-search {
+  border-color: #6ccdc0;
+  background-color: #f9fdfc;
+}
+.ui-searchbox.state-disabled .ui-icon-search {
+  opacity: 0.4;
+}
 .ui-tab-navigator {
   margin: 0;
   padding: 0;

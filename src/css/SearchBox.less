@@ -1,8 +1,117 @@
-@import "Variable.less";
-
+@esui-search-box-width: 240px;
+@esui-search-box-bg-color-focus: #f9fdfc;
+@esui-search-box-border-color: #ddd;
+@esui-search-box-border-radius: 5px;
 @esui-search-box-active-color: @esf-palette-primary-color;
-@esui-search-box-input-height: 2.4em;
-@esui-search-box-input-border-color: #ddd;
-@esui-search-box-input-border-color-focus: @esui-search-box-active-color;
+@esui-search-box-input-padding: @esf-textbox-padding;
+@esui-search-box-text-box-height: @esf-textbox-height;
+@esui-search-box-icon-wrapper-width: @esf-textbox-height + 0.2em;
 @esui-search-box-clear-icon-color: #ddd;
 @esui-search-box-clear-icon-color-active: @esui-search-box-active-color;
+
+.@{ui-class-prefix}-searchbox {
+    position: relative;
+    width: @esui-search-box-width;
+    overflow: hidden;
+
+    .@{ui-class-prefix}-textbox {
+        height: @esui-search-box-text-box-height;
+
+        input {
+            padding: @esui-search-box-input-padding;
+            width: 100% !important;
+        }
+    }
+
+    .@{ui-class-prefix}-textbox-icon {
+        .esf-transition(right 0.3s linear);
+        right: -@esui-search-box-icon-wrapper-width;
+        color: @esui-search-box-clear-icon-color;
+        cursor: pointer;
+
+        &:hover,
+        &:active {
+            color: @esui-search-box-clear-icon-color-active;
+        }
+    }
+
+    .@{ui-class-prefix}-textbox-addon {
+        display: table-cell;
+    }
+
+    .esui-search-box-theme();
+}
+
+.@{ui-class-prefix}-searchbox-focus {
+    .@{ui-class-prefix}-textbox-icon {
+        color: @esui-search-box-clear-icon-color-active;
+    }
+
+    .esui-search-box-focus-theme();
+}
+
+// 搜索状态
+.@{ui-class-prefix}-searchbox-searched {
+    .@{ui-class-prefix}-textbox {
+        input {
+            padding-right: @esui-search-box-icon-wrapper-width;
+        }
+    }
+
+    .@{ui-class-prefix}-textbox-icon {
+        .esf-transition(right 0.3s linear);
+        right: 0;
+    }
+}
+
+// 独占一行
+.@{ui-class-prefix}-searchbox-fit-width {
+    display: block;
+    width: 100%;
+}
+
+// 即时搜索模式下的样式
+.@{ui-class-prefix}-searchbox {
+    &.state-instant {
+        .@{ui-class-prefix}-textbox {
+            input {
+                border-left: none;
+            }
+        }
+
+        .@{ui-class-prefix}-icon-search {
+            display: inline-block;
+            padding-left: 0.5em;
+            background-color: #fff;
+            height: @esui-search-box-text-box-height;
+            line-height: @esui-search-box-text-box-height;
+            border: 1px solid @esui-search-box-border-color;
+            .box-sizing(border-box);
+            .border-radius(@esui-search-box-border-radius);
+            .esf-border-right-radius(0, @esf-textbox-radius);
+            border-right: none !important;
+        }
+
+        &.state-focus {
+            .@{ui-class-prefix}-icon-search {
+                border-color: @esui-search-box-active-color;
+                background-color: @esui-search-box-bg-color-focus;
+            }
+        }
+
+        .esui-search-box-instant-theme();
+    }
+}
+
+// disabled状态
+.@{ui-class-prefix}-searchbox {
+    &.state-disabled {
+        .@{ui-class-prefix}-icon-search {
+            opacity: 0.4;
+        }
+    }
+}
+
+.esui-search-box-theme() {}
+.esui-search-box-focus-theme() {}
+.esui-search-box-instant-theme() {}
