@@ -12,10 +12,11 @@
         <script src="http://xy3.baidu.com/js/html5.js"></script>
         <![endif]-->
         <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/demo.css" />
         <link rel="stylesheet" href="../assets/themes/standard.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI Label</h1>
+        <h1>Label</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
@@ -28,21 +29,8 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>左侧</h3>
-                        <div class="row">
-                            <div data-ui-type="SearchBox" data-ui-id="normal-search"></div>
-                        </div>
-                        <h3>右侧</h3>
-                        <div class="row">
-                            <div data-ui-type="SearchBox" data-ui-button-position="left" data-ui-button-variants="primary"></div>
-                        </div>
-                        <h3>右侧</h3>
-                        <div class="row">
-                            <div data-ui-type="SearchBox"
-                                data-ui-button-content="&lt;span class='ui-icon-search'&gt;&lt;/span&gt;"
-                                data-ui-button-variants="text-border"></div>
-                        </div>
+                    <div class="example">
+                        <div data-ui-type="SearchBox" data-ui-id="normal-search"></div>
                     </div>
                 </section>
                 <section class="intro">
@@ -52,7 +40,7 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-id="instant-search" data-ui-search-mode="instant"></div>
                     </div>
                 </section>
@@ -63,10 +51,10 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-disabled="true"></div>
                     </div>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-search-mode="instant" data-ui-disabled="true"></div>
                     </div>
                 </section>
@@ -77,10 +65,10 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-placeholder="keyword"></div>
                     </div>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-search-mode="instant" data-ui-placeholder="搜我啊搜我啊，哈哈哈哈哈哈哈哈哈哈"></div>
                     </div>
                 </section>
@@ -91,11 +79,25 @@
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-text="要死了"></div>
                     </div>
-                    <div class="example ui-demo-light-stage">
+                    <div class="example">
                         <div data-ui-type="SearchBox" data-ui-search-mode="instant" data-ui-text="我是关键词"></div>
+                    </div>
+                </section>
+                <section class="intro">
+                    <p>fitWidth</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example">
+                        <div data-ui-type="SearchBox" data-ui-text="要死了"     data-ui-fit-width="true"></div>
+                    </div>
+                    <div class="example">
+                        <div data-ui-type="SearchBox" data-ui-search-mode="instant" data-ui-text="我是关键词" data-ui-fit-width="true"></div>
                     </div>
                 </section>
             </div>
