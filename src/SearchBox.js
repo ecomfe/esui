@@ -45,11 +45,14 @@ define(
                 // 搜索框内容为空，默认为search图标，使用时不转义
                 buttonContent: '',
                 // 搜索button默认的样式为primary
-                buttonVariants: 'primary',
+                buttonVariants: 'primary icon',
+                // 搜索button默认的位置为left
+                buttonPosition: 'left',
                 // 默认值为''
                 text: '',
                 // 控件内部使用的状态，外部MUST NOT设置该属性
-                searched: false
+                searched: false,
+                width: ''
             };
             lib.extend(properties, options);
 
@@ -99,16 +102,16 @@ define(
             var tpl = ''
                 + '<esui-text-box data-ui-mode="text" data-ui-child-name="text"'
                 +     'data-ui-placeholder="${placeholder}" data-ui-icon="${clearClasses}"'
-                +     'data-ui-variants="icon-right">'
+                +     'data-ui-variants="icon-right" data-ui-width="auto">'
                 + '</esui-text-box>';
             var addonTPL = getAddonHTML.apply(this);
 
             // instant模式下搜索图标在textbox前
-            if (this.searchMode === 'instant') {
+            if (this.buttonPosition === 'left') {
                 tpl = addonTPL + tpl;
             }
             // normal模式下搜索图标在textbox之后
-            else {
+            else if (this.buttonPosition === 'right') {
                 tpl += addonTPL;
             }
 
@@ -123,7 +126,9 @@ define(
             if (lib.isInput(this.main)) {
                 this.helper.replaceMain();
             }
-            lib.addClass(this.main, this.helper.getPrefixClass('textbox-wrapper'));
+            if (this.buttonPosition) {
+                lib.addClass(this.main, this.helper.getPrefixClass('textbox-wrapper'));
+            }
 
             this.main.innerHTML = html;
             this.helper.initChildren(this.main);
@@ -137,26 +142,26 @@ define(
         function getAddonHTML() {
             // 即时搜索不需要搜索按钮
             var addonContent = '<span class="${searchIconClasses}"></span>';
-            if (this.searchMode !== 'instant') {
-                // normal模式下有搜索按钮
-                // button内容默认为图标
-                addonContent = ''
-                + '<button data-ui="type:Button;childName:search;variants:${buttonVariants}"'
-                +     'class="${searchClasses}">'
-                +     (this.buttonContent ? this.buttonContent : addonContent)
-                + '</button>';
-            }
+            var notInstant = this.searchMode !== 'instant';
+            // normal模式下有搜索按钮
+            addonContent = ''
+            + '<button data-ui="type:Button;childName:search;variants:${buttonVariants}"'
+            +     'class="${searchClasses}">'
+            +     (this.buttonContent ? this.buttonContent : addonContent)
+            + '</button>';
             var tpl = ''
                 + '<div class="${addonClasses}">'
                 +     addonContent
                 + '</div>';
+            var helper = this.helper;
+
             return lib.format(
                 tpl,
                 {
-                    searchIconClasses: this.helper.getIconClass('search'),
+                    searchIconClasses: helper.getIconClass('search'),
                     buttonVariants: this.buttonVariants,
-                    searchClasses: this.helper.getPartClassName('search'),
-                    addonClasses: this.helper.getPrefixClass('textbox-addon')
+                    searchClasses: helper.getPartClassName('search'),
+                    addonClasses: helper.getPrefixClass('textbox-addon')
                 }
             );
         }
@@ -286,24 +291,14 @@ define(
                 }
             },
             {
-                name: 'height',
-                paint: function (box, height) {
-                    var searchBtn = box.getChild('search');
-                    if (searchBtn) {
-                        searchBtn.setProperties({height: height});
-                    }
-                }
-            },
-            {
                 /**
-                 * @property {boolean} fitWidth
+                 * @property {number} width
                  *
-                 * 设定当前控件是否独占一行宽度
+                 * 搜索框的宽度
                  */
-                name: 'fitWidth',
-                paint: function (box, fitWidth) {
-                    var method = fitWidth ? 'addState' : 'removeState';
-                    box[method]('fit-width');
+                name: 'width',
+                paint: function (box, width) {
+                    box.main.style.width = width + 'px';
                 }
             },
             {
