@@ -262,6 +262,10 @@ define(
                 // 设置样式
                 this.main.style.left = '-10000px';
 
+                // position:absolute;left:-1000px;
+                // ie8下底部会有很多空白,so 初始化隐藏下
+                this.helper.addStateClasses('hidden');
+
                 // 不是所有的提示层都需要title
                 if (this.title || this.roles.title) {
                     createHead(this, this.roles.title);
