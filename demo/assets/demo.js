@@ -98,8 +98,8 @@ $(function () {
         '<li><a href="TipLayer.html">TipLayer</a></li>' +
         '<li><a href="Tree.html">Tree</a></li>' +
         '<li><a href="Toast.html">Toast</a></li>' +
-        '<li><a href="ValidityLabel.html">Validity</a></li>';
-        //'<li><a href="Wizard.html">Wizard</a></li>';
+        '<li><a href="ValidityLabel.html">Validity</a></li>' +
+        '<li><a href="Wizard.html">Wizard</a></li>';
 
     $('#navigator').html(navItems);
 

@@ -33,11 +33,11 @@
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
-                <div class="example">
+                <div class="example ui-demo-light-stage">
                     <div id="container">
-                        <div id="wizard-zone">
+                        <div id="wizard-zone" class="ui-large">
                         </div>
-                        <div style="padding: 1em; border: 1px solid #d4d4d4;border-top:0">
+                        <div style="padding: 2em;">
                             <div id="a" class="panel">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
                             <div id="b" class="panel">Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</div>
                             <div id="c" class="panel">Panel 3</div>
@@ -64,13 +64,17 @@
                 var prev = buttons[0];
                 var next = buttons[1];
                 var steps = [
-                    { text: '1. 基本信息', panel: 'a' },
-                    { text: '2. 地址', panel: 'b' },
-                    { text: '3. 其他', panel: 'c' },
-                    { text: '4. 结束', panel: 'd' }
+                    { number: '壹', text: '基本信息', panel: 'a' },
+                    { number: '贰',text: '地址', panel: 'b' },
+                    { number: '叁',text: '其他', panel: 'c' },
+                    { number: '肆',text: '结束', panel: 'd' }
                 ];
 
-                var wizard = new Wizard({ steps: steps, activeIndex: 1 });
+                var wizard = new Wizard({
+                    steps: steps, 
+                    activeIndex: 1,
+                    nodeTemplate: '<span class="ui-wizard-node-number">${number}</span><span class="ui-wizard-node-text">${text}</span>'
+                });
                 wizard.appendTo(document.getElementById('wizard-zone'));
                 prev.on('click', function(){
                     wizard.stepPrevious();
