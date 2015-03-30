@@ -317,6 +317,29 @@ define(
         };
 
         /**
+         * 获取目标元素的上一个兄弟元素节点
+         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @return {HTMLElement | null} 目标元素的上一个元素节点，查找不到时返回null
+        */
+        lib.dom.previous = function (element) {
+            element = lib.g(element);
+
+            if (element.previousElementSibling) {
+                return element.previousElementSibling;
+            }
+
+            var node = element.previousSibling;
+            for (; node; node = node.previousSibling) {
+                if (node.nodeType == 1) {
+                    return node;
+                }
+            }
+
+            return null;
+        };
+
+        /**
          * 判断一个元素是否包含另一个元素
          *
          * @param {HTMLElement | string} container 包含元素或元素的 id

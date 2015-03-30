@@ -1,0 +1,30 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 通用浮层样式
+ * @author lixiang
+ */
+
+ @esui-overlay-mask-bg-color: #333;
+ @esui-overlay-mask-opacity: 20;
+
+.@{ui-class-prefix}-overlay {
+    position: absolute;
+    // overlay的隐藏不能使用hidden，会导致容器内的元素尺寸计算错误
+    // 所以只是移出
+    &.@{ui-state-prefix}-hidden {
+        display: block !important;
+        left: -10000px !important;
+    }
+}
+
+.@{ui-class-prefix}-overlay-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: @esui-overlay-mask-bg-color;
+    .opacity(@esui-overlay-mask-opacity);
+}
