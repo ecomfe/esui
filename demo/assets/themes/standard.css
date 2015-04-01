@@ -4660,6 +4660,47 @@ span.ui-crumb-node {
 .ui-tree-hoverable .ui-tree-content-wrapper:hover {
   background: #fffaee;
 }
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 通用浮层样式
+ * @author lixiang
+ */
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 通用浮层样式
+ * @author lixiang
+ */
+.ui-overlay {
+  position: absolute;
+}
+.ui-overlay.state-hidden {
+  display: block !important;
+  left: -10000px !important;
+}
+.ui-overlay-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #333333;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Wizard样式
+  * @author dbear
+  */
+.ui-wizard-panel-hidden {
+  display: none;
+}
 .state-validity-invalid {
   -webkit-box-shadow: 0 0 3px #d9534f;
   -moz-box-shadow: 0 0 3px #d9534f;
@@ -4678,16 +4719,6 @@ span.ui-crumb-node {
   margin-left: 0;
 }
 .ui-validity:not(.state-hidden) ~ .ui-form-hint {
-  display: none;
-}
-/**
-  * ESUI (Enterprise Simple UI)
-  * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
-  * @file Wizard样式
-  * @author dbear
-  */
-.ui-wizard-panel-hidden {
   display: none;
 }
 [class*='ui-icon'] {

@@ -67,7 +67,7 @@ define(
             var close = 'close-icon';
 
             var closeTpl =
-                '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
+                '<div class="${clsClass}" id="${clsId}"></div>';
             var closeIcon = '';
             var cls = [];
 
