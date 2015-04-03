@@ -225,6 +225,9 @@ define(
             if (this.searchMode === 'instant') {
                 this.fire('search');
             }
+            else {
+                this.fire('clear');
+            }
         }
 
         /**
