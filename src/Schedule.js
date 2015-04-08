@@ -469,7 +469,7 @@ define(
             }
             else {
                 var cssStyle = ''
-                    + ';position:absolute;z-index:50;background:#fff6bd;top:'
+                    + ';position:absolute;z-index:5000;background:#fff6bd;top:'
                     + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');
