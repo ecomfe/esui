@@ -873,6 +873,10 @@ define(
                 }
 
                 InputControl.prototype.dispose.apply(this, arguments);
+            },
+
+            toggleCanlendarLayer: function () {
+                this.layer.toggle();
             }
         };
 
