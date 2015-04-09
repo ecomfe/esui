@@ -207,7 +207,8 @@ define(
          */
         Select.prototype.initOptions = function (options) {
             var defaults = {
-                datasource: []
+                datasource: [],
+                tabIndex: 0
             };
 
             var properties = {};
@@ -317,16 +318,21 @@ define(
             var helper = this.helper;
             var arrow = 'arrow';
             var span = 'span';
+            var mainElement = this.main;
 
             // 如果主元素是`<select>`，删之替换成`<div>`
-            if (this.main.nodeName.toLowerCase() === 'select') {
+            if (mainElement.nodeName.toLowerCase() === 'select') {
                 helper.replaceMain();
+                mainElement = this.main;
             }
 
-            this.main.tabIndex = 0;
+            mainElement.tabIndex = this.tabIndex;
 
-            this.main.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
-            lib.addClass(helper.getPart(arrow), helper.getIconClass('caret-down'));
+            var innerSelectElement = helper.createPart('inner', 'div');
+            innerSelectElement.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
+            mainElement.appendChild(innerSelectElement);
+
+            lib.addClass(helper.getPart(arrow), helper.getIconClass());
         };
 
         /**
@@ -404,6 +410,7 @@ define(
              * @property {number} height
              *
              * 高度，指浮层未展开时的可点击元素的高度， **与浮层高度无关**
+             * 不推荐使用这个属性来定义高度了。 直接通过CSS定义全局高度。
              */
             paint.style('height'),
             {
@@ -564,16 +571,6 @@ define(
         Select.prototype.getSelectedItem = function () {
             return this.get('datasource')[this.get('selectedIndex')];
         };
-
-        /**
-         * 创建wrapper元素
-         *
-         * @override
-         */
-        Select.prototype.createMain = function () {
-            // 用 a 元素来获取tab 焦点
-            return document.createElement('a');
-        }
 
         lib.inherits(Select, InputControl);
         require('./main').register(Select);

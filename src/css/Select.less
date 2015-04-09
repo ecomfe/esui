@@ -34,15 +34,18 @@
 
 .@{ui-class-prefix}-select {
     cursor: pointer;
-    padding: 0 @esui-select-horizontal-padding;
-    outline: none !important;
     display: inline-block;
     position: relative;
+    vertical-align: middle;
+    outline: 0;
+    .user-select(none);
+}
+
+.@{ui-class-prefix}-select-inner {
+    padding: 0 @esui-select-horizontal-padding;
     border-radius: @esui-select-radius;
     height: @esui-select-height;
     line-height: @esui-select-line-height;
-    vertical-align: middle;
-    text-decoration: none !important;
     .box-sizing(border-box);
     .esf-transition(background-color 0.3s ease);
     .esui-select-theme();
@@ -68,6 +71,7 @@
     line-height: @esui-select-line-height !important;
     width: 1em;
     text-align: center;
+    .eicons-icon(caret-down);
 }
 
 .@{ui-class-prefix}-select-layer {
@@ -94,12 +98,16 @@
 
 // variants
 .@{ui-class-prefix}-select-primary {
-    .esui-select-primary-theme();
+    .@{ui-class-prefix}-select-inner {
+        .esui-select-primary-theme();
+    }
 }
 
 // compact
 .@{ui-class-prefix}-select-compact {
-    .esui-select-compact-theme();
+    .@{ui-class-prefix}-select-inner {
+        .esui-select-compact-theme();
+    }
 }
 
 .@{ui-class-prefix}-select-layer-compact {
@@ -110,4 +118,4 @@
 .esui-select-theme() {}
 .esui-select-primary-theme() {}
 .esui-select-compact-theme() {}
-.esui-select-layer-compact-theme() {};
+.esui-select-layer-compact-theme() {}
