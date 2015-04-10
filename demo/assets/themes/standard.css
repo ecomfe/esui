@@ -3241,7 +3241,7 @@ span.ui-crumb-node {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  background: #fefdfa;
+  background: #ffffff;
   opacity: 0.9;
   filter: alpha(opacity=90);
 }
@@ -3310,7 +3310,7 @@ span.ui-crumb-node {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: auto;
-  background: #fefdfa;
+  background: #ffffff;
 }
 .ui-drawer-from-left .ui-drawer-header,
 .ui-drawer-from-left .ui-drawer-content,
@@ -3852,7 +3852,7 @@ span.ui-crumb-node {
   cursor: pointer;
   text-align: center;
   border: 1px solid #f7f7f7;
-  background: #faf5e5;
+  background: #ffffff;
   color: #666666;
   line-height: 1.2em;
   padding: 0.75em 1em 0.75em 1em;
@@ -3860,12 +3860,12 @@ span.ui-crumb-node {
 .ui-tab-item:hover,
 .ui-tab-item:focus {
   border-color: #eaeaea;
-  background: #f5ecd0;
+  background: #f2f2f2;
   color: #737373;
 }
 .ui-tab-item-active {
   cursor: default;
-  background: #fefdfa;
+  background: #ffffff;
   color: #666666;
 }
 .ui-tab-horizontal {
@@ -3887,7 +3887,7 @@ span.ui-crumb-node {
 }
 .ui-tab-horizontal .ui-tab-item-active {
   cursor: default;
-  background: #fefdfa;
+  background: #ffffff;
   color: #666666;
   border-bottom-color: transparent;
   border-top: 1px solid #f7f7f7;
@@ -3915,7 +3915,7 @@ span.ui-crumb-node {
 }
 .ui-tab-horizontal-flip .ui-tab-item-active {
   cursor: default;
-  background: #fefdfa;
+  background: #ffffff;
   border-bottom: 1px solid #f7f7f7;
   border-top-color: transparent;
 }
@@ -6347,7 +6347,7 @@ span.ui-crumb-node {
   border-right: 0;
 }
 .ui-demo-light-stage {
-  background: #fefdfa;
+  background: white;
   padding: 1em;
 }
 #branding {
