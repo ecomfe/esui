@@ -719,6 +719,10 @@ define(
              *
              */
             show: function () {
+                if (this.isShow) {
+                    this.resize();
+                    return;
+                }
                 var mask = this.mask;
                 if (helper.isInStage(this, 'INITED')) {
                     this.render();
