@@ -101,15 +101,19 @@ define(
          * @return {HTMLElement}
          */
         Layer.prototype.create = function () {
-            var helper = this.control.helper;
+            var control = this.control;
+            var helper = control.helper;
             var element =
                 helper.createPart('layer', this.nodeName);
             lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
+            if (ui.getConfig('inheritFont') || control.inheritFont) {
+                element.style.fontSize = lib.getComputedStyle(control.main, 'fontSize');
+            }
 
             // 现阶段许多layer都漂浮在body下面。
             // 因此父组件的variant常常对。
             // 这里添加variant信息到layer上以方便定义variant样式。
-            var variants = this.control.variants;
+            var variants = control.variants;
             var variantsCls = [];
             if (variants) {
                 variants = typeof variants === 'string'
@@ -117,7 +121,7 @@ define(
                     : variants;
 
                 // 处理过一次在control render时候就不处理了。
-                this.control.variants = variants;
+                control.variants = variants;
                 u.each(variants, function (v) {
                     variantsCls.push(helper.getPrimaryClassName('layer-' + v));
                 });

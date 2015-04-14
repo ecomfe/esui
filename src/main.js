@@ -53,7 +53,8 @@ define(
             viewContextAttr: 'data-ctrl-view-context',
             uiClassPrefix: 'ui',
             skinClassPrefix: 'skin',
-            stateClassPrefix: 'state'
+            stateClassPrefix: 'state',
+            inheritFont: true
         };
 
         /**
