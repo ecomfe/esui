@@ -8,11 +8,11 @@
 
 define(
     function (require) {
-        var u = require('underscore');
         require('./Button');
         require('./Label');
         require('./Panel');
 
+        var u = require('underscore');
         var lib = require('./lib');
         var helper = require('./controlHelper');
         var Control = require('./Control');
@@ -31,7 +31,7 @@ define(
 
         /**
          * 渲染控件前重绘控件
-         * @param {Object} options 解析用的参数
+         *
          */
         function parseMain(options) {
             var main = options.main;
@@ -60,9 +60,8 @@ define(
         /**
          * 构建提示层标题栏
          *
-         * @param {ui.TipLayer} control 控件对象
+         * @param {ui.TipLayer} 控件对象
          * @param {HTMLElement} mainDOM head主元素
-         * @return {ui.Control}
          * @inner
          */
         function createHead(control, mainDOM) {
@@ -79,7 +78,7 @@ define(
                 }
             }
             var headClasses = [].concat(
-                control.helper.getPartClasses('title')
+                helper.getPartClasses(control, 'title')
             );
             lib.addClasses(mainDOM, headClasses);
             var properties = {
@@ -99,7 +98,6 @@ define(
          * @param {ui.TipLayer} control 控件
          * @param {string} type foot | body
          * @param {HTMLElement} mainDOM body或foot主元素
-         * @return {ui.Panel}
          * @inner
          */
         function createBF(control, type, mainDOM) {
@@ -117,7 +115,7 @@ define(
                     // 放到第一个
                     else if (control.main.firstChild) {
                         lib.insertBefore(
-                            mainDOM, control.main.firstChild
+                            mainDOM, head, control.main.firstChild
                         );
                     }
                     else {
@@ -131,7 +129,7 @@ define(
 
             lib.addClasses(
                 mainDOM,
-                control.helper.getPartClasses(type + '-panel')
+                helper.getPartClasses(control, type + '-panel')
             );
             var properties = {
                 main: mainDOM,
@@ -149,7 +147,7 @@ define(
          *
          * @param {ui.TipLayer} tipLayer 控件
          * @param {HTMLElement} targetElement 提示层绑定元素
-         * @param {Object} options 定位参数
+         * @param {object} 定位参数
          * @inner
          */
         function resizeHandler(tipLayer, targetElement, options) {
@@ -163,58 +161,55 @@ define(
             );
         }
 
+        /**
+         * 默认延迟展现时间
+         * @type {number}
+         */
+        var DEFAULT_DELAY_SHOW = 0;
+
+        /**
+         * 默认延迟隐藏时间
+         * @type {number}
+         */
+        var DEFAULT_DELAY_HIDE = 150;
 
         /**
          * 延迟展现
          *
+         * @param {ui.TipLayer} tipLayer 控件
          * @param {number} delayTime 延迟时间
          * @param {HTMLElement} targetElement 绑定元素
          * @param {Object=} options 构造函数传入的参数
          * @inner
          */
-        function delayShow(delayTime, targetElement, options) {
-            // 移除老的绑在layer身上的事件
-            this.helper.removeDOMEvent(this.main, 'mouseover');
-            this.helper.removeDOMEvent(this.main, 'mouseout');
-            // 加上新的
-            this.helper.addDOMEvent(
-                this.main,
-                'mouseover',
-                u.partial(
-                    this.show, targetElement, options
-                )
-            );
-
-            this.helper.addDOMEvent(
-                this.main,
-                'mouseout',
-                u.partial(delayHide, 150)
-            );
-
+        function delayShow(tipLayer, delayTime, targetElement, options) {
+            delayTime = delayTime || DEFAULT_DELAY_SHOW;
             if (delayTime) {
-                clearTimeout(this.showTimeout);
-                clearTimeout(this.hideTimeout);
-                this.showTimeout = setTimeout(
-                    lib.bind(this.show, this, targetElement, options),
+                clearTimeout(tipLayer.showTimeout);
+                clearTimeout(tipLayer.hideTimeout);
+                tipLayer.showTimeout = setTimeout(
+                    lib.bind(tipLayer.show, tipLayer, targetElement, options),
                     delayTime
                 );
             }
             else {
-                this.show(targetElement, options);
+                tipLayer.show(targetElement, options);
             }
         }
 
         /**
          * 延迟隐藏
          *
-         * @param {number} delayTime 延迟时间
+         * @param {ui.TipLayer} tipLayer 控件
+         * @param {number=} delayTime 延迟时间
          * @inner
          */
-        function delayHide(delayTime) {
-            clearTimeout(this.showTimeout);
-            clearTimeout(this.hideTimeout);
-            this.hideTimeout =
-                setTimeout(lib.bind(this.hide, this), delayTime);
+        function delayHide(tipLayer, delayTime) {
+            delayTime = delayTime || DEFAULT_DELAY_HIDE;
+            clearTimeout(tipLayer.showTimeout);
+            clearTimeout(tipLayer.hideTimeout);
+            tipLayer.hideTimeout =
+                setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
         }
 
         function getElementByControl(tipLayer, control) {
@@ -240,7 +235,7 @@ define(
              * @protected
              */
             initOptions: function (options) {
-                // 由main解析
+                //由main解析
                 parseMain(options);
                 /**
                  * 默认TipLayer选项配置
@@ -282,11 +277,14 @@ define(
                 if (this.arrow) {
                     var arrow = document.createElement('div');
                     // 初始化箭头
-                    arrow.id = this.helper.getId('arrow');
-                    arrow.className = this.helper.getPartClassName('arrow');
+                    arrow.id = helper.getId(this, 'arrow');
+                    arrow.className =
+                        helper.getPartClasses(this, 'arrow').join(' ');
                     this.main.appendChild(arrow);
                 }
             },
+
+
 
             /**
              * 重新渲染视图
@@ -325,9 +323,11 @@ define(
                             + '</div>';
                         // 获取body panel
                         var body = tipLayer.getBody();
+                        var bodyId = helper.getId(tipLayer, 'body');
+                        var bodyClass = helper.getPartClasses(tipLayer, 'body');
                         var data = {
-                            'class': tipLayer.helper.getPartClassName('body'),
-                            'id': tipLayer.helper.getId('body'),
+                            'class': bodyClass.join(' '),
+                            'id': bodyId,
                             'content': value
                         };
                         body.setContent(
@@ -342,8 +342,8 @@ define(
                             + '<div class="${class}" id="${id}">'
                             + '${content}'
                             + '</div>';
-                        var footId = tipLayer.helper.getId('foot');
-                        var footClass = tipLayer.helper.getPartClasses('foot');
+                        var footId = helper.getId(tipLayer, 'foot');
+                        var footClass = helper.getPartClasses(tipLayer, 'foot');
                         // 取消了foot
                         var foot = tipLayer.getFoot();
                         if (value == null) {
@@ -369,14 +369,17 @@ define(
                 {
                     name: [
                         'targetDOM', 'targetControl',
-                        'showMode', 'positionOpt', 'delayTime'
+                        'showMode', 'positionOpt', 'delayTime', 'showDuration'
                     ],
-                    paint: function (tipLayer, targetDOM, targetControl, showMode, positionOpt, delayTime) {
+                    paint:
+                        function (tipLayer, targetDOM, targetControl,
+                            showMode, positionOpt, delayTime, showDuration) {
                         var options = {
                             targetDOM: targetDOM,
                             targetControl: targetControl,
                             showMode: showMode,
-                            delayTime: delayTime
+                            delayTime: delayTime || DEFAULT_DELAY_SHOW,
+                            showDuration: showDuration || DEFAULT_DELAY_HIDE
                         };
                         if (positionOpt) {
                             positionOpt = positionOpt.split('|');
@@ -410,7 +413,7 @@ define(
             autoPosition: function (target, options) {
                 var tipLayer = this;
                 var element = this.main;
-                options = options || {left: 'right', top: 'top'};
+                options = options || { left: 'right', top: 'top' };
 
                 var rect = target.getBoundingClientRect();
                 var offset = lib.getOffset(target);
@@ -431,7 +434,7 @@ define(
                 var elementWidth = element.offsetWidth;
                 element.style.display = 'none';
 
-                var config = lib.clone(options);
+                var config = u.omit(options, 'targetControl');
 
                 var viewWidth = lib.page.getViewWidth();
                 var viewHeight = lib.page.getViewHeight();
@@ -448,8 +451,9 @@ define(
                 // bottom —— bottom
                 var gapBB = targetPosition.bottom - elementHeight;
 
+
                 if (gapLR >= 0) {
-                    if (gapRL >= 0) {
+                    if (gapRL >= 0){
                         // 如果没有设置，哪边大放哪边
                         if (!config.right && !config.left) {
                             if (gapRL < gapLR) {
@@ -473,7 +477,7 @@ define(
                 }
 
                 if (gapTT >= 0) {
-                    if (gapBB >= 0) {
+                    if (gapBB >= 0){
                         // 如果没有设置，哪边大放哪边
                         if (!config.bottom && !config.top) {
                             if (gapBB < gapTT) {
@@ -527,16 +531,18 @@ define(
                 element.style.display = previousDisplayValue;
 
                 element.className = ''
-                    + tipLayer.helper.getPartClassName()
+                    + helper.getPartClasses(tipLayer).join(' ')
                     + ' '
-                    + tipLayer.helper.getPartClassName(arrowClass);
+                    + helper.getPartClasses(tipLayer, arrowClass).join(' ');
 
-                var arrow = tipLayer.helper.getPart('arrow');
+                var arrow = lib.g(helper.getId(tipLayer, 'arrow'));
                 if (arrow) {
                     arrow.className = ''
-                        + tipLayer.helper.getPartClassName('arrow')
+                        + helper.getPartClasses(tipLayer, 'arrow').join(' ')
                         + ' '
-                        + tipLayer.helper.getPartClassName('arrow' + '-' + arrowClass);
+                        + helper.getPartClasses(
+                            tipLayer, 'arrow' + '-' + arrowClass
+                        ).join(' ');
                 }
                 tipLayer.renderLayer(element, properties);
             },
@@ -545,7 +551,7 @@ define(
              * 渲染层样式
              *
              * @param {HTMLElement} element 提示层元素
-             * @param {Object} options 定位参数
+             * @param {object} 定位参数
              * @inner
              */
             renderLayer: function (element, options) {
@@ -588,7 +594,6 @@ define(
                     }
                 }
             },
-
             /**
              * 将提示层捆绑到一个DOM元素或控件上
              *
@@ -597,20 +602,11 @@ define(
              *    {string} targetDOM 绑定元素的id
              *    {ui.Control | string} targetControl 绑定控件的实例或id
              *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
              *    {Object=} positionOpt 层布局参数
              */
             attachTo: function (options) {
                 var showMode = options.showMode || 'over';
-                var showEvent;
-                var hideEvent;
-                if (showMode === 'over') {
-                    showEvent = 'mouseover';
-                    hideEvent = 'mouseout';
-                }
-                else if (showMode === 'click') {
-                    showEvent = 'click';
-                    hideEvent = 'click';
-                }
 
                 var targetElement;
                 if (options.targetDOM) {
@@ -625,27 +621,231 @@ define(
                     return;
                 }
 
-                if (showMode === 'auto') {
-                    this.show(targetElement, options);
+                switch (showMode) {
+                    case 'auto':
+                        this.initAutoMode(options);
+                        break;
+                    case 'over':
+                        this.initOverMode(options);
+                        break;
+                    case 'click':
+                        this.initClickMode(options);
+                        break;
                 }
-                else {
-                    this.helper.addDOMEvent(
-                        targetElement,
-                        showEvent,
-                        u.partial(
-                            delayShow, options.delayTime,
-                            targetElement, options.positionOpt
-                        )
-                    );
+            },
+
+            /**
+             * 获取初始化时的事件方法集
+             *
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             * @returns {Object}
+             */
+            getInitHandlers: function (options) {
+                var me = this;
+
+                var targetElement;
+                if (options.targetDOM) {
+                    targetElement = lib.g(options.targetDOM);
+                }
+                else if (options.targetControl) {
+                    targetElement =
+                        getElementByControl(this, options.targetControl);
                 }
 
-                if (hideEvent === 'mouseout') {
-                    this.helper.addDOMEvent(
-                        targetElement,
-                        hideEvent,
-                        lib.curry(delayHide, this, 150)
-                    );
+                if (!targetElement) {
+                    return;
                 }
+
+                // 处理方法集
+                var handler = {
+                    targetElement: targetElement,
+                    // 浮层相关方法
+                    layer: {
+                        /**
+                         * 展现浮层
+                         */
+                        show: lib.curry(
+                            delayShow, me, options.delayTime,
+                            targetElement, options.positionOpt
+                        ),
+
+                        /**
+                         * 隐藏浮层
+                         */
+                        hide: lib.curry(delayHide, me),
+
+                        /**
+                         * 绑定浮层展现的默认事件，针对于targetDOM
+                         * @param {string=} showEvent 事件名称，例如click、mouseup
+                         * @param {Function=} callback 回调方法
+                         */
+                        bind: function (showEvent, callback) {
+                            showEvent = showEvent || 'mouseup';
+                            // 配置展现的触发事件
+                            helper.addDOMEvent(
+                                me, targetElement, showEvent, function (e) {
+                                    handler.layer.show();
+                                    // 点击其他区域隐藏事件绑定
+                                    handler.clickOutsideHide.bind();
+                                    if (typeof callback == 'function') {
+                                        callback();
+                                    }
+                                    e.stopPropagation();
+                                }
+                            );
+                        }
+                    },
+
+                    /**
+                     * 点击外部隐藏浮层的相应处理
+                     */
+                    clickOutsideHide: {
+                        /**
+                         * 绑定于浮层元素上的阻止冒泡的方法
+                         */
+                        preventPopMethod: function (e) {
+                            e.stopPropagation();
+                        },
+
+                        /**
+                         * 绑定于body主体上面的隐藏layer的方法
+                         */
+                        method: function () {
+                            handler.layer.hide();
+                            handler.clickOutsideHide.unbind();
+                        },
+
+                        /**
+                         * 绑定
+                         */
+                        bind: function () {
+                            helper.addDOMEvent(
+                                me, document.documentElement,
+                                'mouseup',
+                                handler.clickOutsideHide.method
+                            );
+
+                            // 为主体layer元素配置阻止冒泡，防止点击关闭
+                            helper.addDOMEvent(
+                                me, me.main, 'mouseup',
+                                handler.clickOutsideHide.preventPopMethod
+                            );
+                        },
+
+                        /**
+                         * 解除绑定
+                         */
+                        unbind: function () {
+                            helper.removeDOMEvent(
+                                me, document.documentElement,
+                                'mouseup',
+                                handler.clickOutsideHide.method
+                            );
+                            helper.removeDOMEvent(
+                                me, me.main, 'mouseup',
+                                handler.clickOutsideHide.preventPopMethod
+                            );
+                        }
+                    }
+                };
+
+                return handler;
+            },
+
+            /**
+             * 在绑定提示层至目标DOM时，初始化自动展现（showMode为auto）的相应行为
+             *
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             */
+            initAutoMode: function (options) {
+                var handler = this.getInitHandlers(options);
+
+                // 直接展现浮层
+                handler.layer.show();
+
+                // 如果不是自动隐藏，则配置点击其他位置关闭
+                if (!options.showDuration) {
+                    // 点击其他区域隐藏事件绑定
+                    handler.clickOutsideHide.bind();
+                    // 之后行为变为click隐藏行为
+                    handler.layer.bind('mouseup');
+                }
+                else {
+                    // 自动隐藏
+                    setTimeout(function () {
+                        // 执行隐藏
+                        handler.layer.hide(options.showDuration);
+                        // 之后行为变为click隐藏行为
+                        handler.layer.bind('mouseup');
+
+                    }, options.delayTime);
+                }
+            },
+
+            /**
+             * 在绑定提示层至目标DOM时，初始化点击展现（showMode为click）的相应行为
+             *
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             */
+            initClickMode: function (options) {
+                var handler = this.getInitHandlers(options);
+
+                // 鼠标点击在目标DOM上展现提示层
+                handler.layer.bind('mouseup');
+            },
+
+            /**
+             * 在绑定提示层至目标DOM时，初始化悬浮触发展现（showMode为over）的相应行为
+             *
+             * @param {HtmlElement} 目标DOM
+             * @param {Object=} options 绑定参数
+             *    {string} showMode 展示触发模式
+             *    {string} targetDOM 绑定元素的id
+             *    {ui.Control | string} targetControl 绑定控件的实例或id
+             *    {number} delayTime 延迟展示时间
+             *    {number} showDuration 展示后自动隐藏的延迟时间
+             *    {Object=} positionOpt 层布局参数
+             */
+            initOverMode: function (options) {
+                var handler = this.getInitHandlers(options);
+
+                // 鼠标悬浮在目标DOM上展现提示层
+                handler.layer.bind('mouseover');
+
+                // 防止点击targetElement导致浮层关闭
+                helper.addDOMEvent(
+                    this, handler.targetElement, 'mouseup', function (e) {
+                        e.stopPropagation();
+                    }
+                );
+
+                // 如果是mouseover，还要配置main的mouseover事件
+                // 否则浮层会自动隐藏
+                helper.addDOMEvent(
+                    this, this.main, 'mouseover',
+                    lib.bind(
+                        this.show, this, handler.targetElement,
+                        options.positionOpt
+                    )
+                );
             },
 
             /**
@@ -682,18 +882,20 @@ define(
             /**
              * 显示提示层
              * @param {HTMLElement} targetElement 提示层的捆绑元素
-             * @param {Object} options 展示相关参数
+             *
              */
             show: function (targetElement, options) {
-                if (this.helper.isInStage('DISPOSED')) {
+                if (helper.isInStage(this, 'INITED')) {
+                    this.render();
+                }
+                else if (helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
 
                 clearTimeout(this.hideTimeout);
 
-                this.helper.addDOMEvent(
-                    window,
-                    'resize',
+                helper.addDOMEvent(
+                    this, window, 'resize',
                     lib.curry(resizeHandler, this, targetElement, options)
                 );
 
@@ -763,12 +965,11 @@ define(
              * 销毁控件
              */
             dispose: function () {
-                if (this.helper.isInStage('DISPOSED')) {
+                if (helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
                 this.hide();
-
-                // 移除dom
+                //移除dom
                 var domId = this.main.id;
                 lib.removeNode(domId);
                 Control.prototype.dispose.apply(this, arguments);
@@ -780,11 +981,10 @@ define(
         /**
          * 一次提醒提示
          * @param {Object=} args 参数 支持如下字段
-         * @param {string} args.content 提示内容
-         * @param {HTMLElement} args.attachedNode 绑定提示的节点
-         * @param {Function} args.onok 点击底部按钮触发事件
-         * @param {string} args.okText 按钮显示文字
-         * @return {ui.TipLayer}
+         * {string} content 提示内容
+         * {HTMLElement} attachedNode 绑定提示的节点
+         * {Function} onok 点击底部按钮触发事件
+         * {string} okText 按钮显示文字
          */
         TipLayer.onceNotice = function (args) {
             var tipLayerPrefix = 'tipLayer-once-notice';
@@ -795,6 +995,7 @@ define(
              *
              * @private
              * @param {ui.TipLayer} tipLayer 控件对象
+             * @param {string} 事件类型
              */
             function btnClickHandler(tipLayer) {
                 // 有可能在参数里设置了处理函数
@@ -807,19 +1008,17 @@ define(
                 tipLayer.dispose();
             }
 
-            args.content = lib.encodeHTML(args.content) || '';
+            var content = lib.encodeHTML(args.content) || '';
 
             var properties = {
                 type: 'onceNotice',
                 skin: 'onceNotice',
-                arrow: true,
-                showMode: 'auto',
-                positionOpt: 'top|left'
+                arrow: true
             };
 
             lib.extend(properties, args);
 
-            // 创建main
+            //创建main
             var main = document.createElement('div');
             document.body.appendChild(main);
 
@@ -831,12 +1030,14 @@ define(
 
             var tipLayer = ui.create('TipLayer', properties);
 
+            tipLayer.setContent(content);
+
             var okText = args.okText || '知道了';
             tipLayer.setFoot(''
                 + '<div data-ui="type:Button;childName:okBtn;id:'
                 + tipLayerId + '-' + okPrefix + ';width:50;"'
                 + 'class="'
-                + tipLayer.helper.getPartClassName('once-notice')
+                + helper.getPartClasses(tipLayer, 'once-notice')
                 + '">'
                 + okText
                 + '</div>'
@@ -849,8 +1050,14 @@ define(
                 'click',
                 lib.curry(btnClickHandler, tipLayer, 'ok')
             );
-
+            tipLayer.attachTo({
+                targetDOM: args.targetDOM,
+                targetControl: args.targetControl,
+                showMode: 'auto',
+                positionOpt: { top: 'top', right: 'left' }
+            });
             return tipLayer;
+
         };
 
 
