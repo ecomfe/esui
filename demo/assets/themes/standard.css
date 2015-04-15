@@ -3104,12 +3104,10 @@ span.ui-crumb-node {
   right: 0.5em;
   top: 0.75em;
   cursor: pointer;
-  opacity: 0.85;
-  filter: alpha(opacity=85);
+  color: #999999;
 }
 .ui-dialog-close-icon:hover {
-  opacity: 1;
-  filter: alpha(opacity=100);
+  color: #666666;
 }
 .ui-dialog-title {
   line-height: 2.5em;
@@ -3121,7 +3119,7 @@ span.ui-crumb-node {
 .ui-dialog-foot-panel {
   padding: 0.5em;
   margin: 0;
-  border-top: 1px solid #dddddd;
+  border-top: none;
 }
 .ui-dialog-draggable .ui-dialog-head {
   cursor: move;
@@ -3199,7 +3197,7 @@ span.ui-crumb-node {
   -ms-transition: background 0.3s 0s;
   -o-transition: background 0.3s 0s;
   transition: background 0.3s 0s;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(56, 56, 56, 0.5);
 }
 .ui-drawer-header {
   position: fixed;
@@ -3637,6 +3635,9 @@ span.ui-crumb-node {
 }
 .ui-richcalendar-general-info {
   line-height: 1;
+}
+.ui-richcalendar-general-info label {
+  vertical-align: middle;
 }
 .ui-richcalendar-total-num {
   color: #70ccc0;
@@ -4498,20 +4499,20 @@ span.ui-crumb-node {
   animation: esui-toast-show 0.3s;
 }
 .ui-toast-info .ui-toast-content {
-  background: #6bd5ec;
-  color: #ffffff;
+  background: #dcf5fb;
+  color: #3ec8e6;
 }
 .ui-toast-error .ui-toast-content {
-  background: #f16c6c;
-  color: #ffffff;
+  background: #fce0e0;
+  color: #ed3d3d;
 }
 .ui-toast-alert .ui-toast-content {
-  background: #f9ad42;
-  color: #ffffff;
+  background: #fde3be;
+  color: #f79811;
 }
 .ui-toast-success .ui-toast-content {
-  background: #80dda1;
-  color: #ffffff;
+  background: #e5f8eb;
+  color: #58d283;
 }
 @keyframes esui-toast-show {
   from {
