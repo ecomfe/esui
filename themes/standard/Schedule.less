@@ -4,21 +4,21 @@
 @esui-schedule-background: @esf-palette-neutral-color;
 @esui-schedule-unselected-slot-background: @esf-palette-white;
 @esui-schedule-unselected-slot-border: 1px solid @esf-palette-border;
-@esui-schedule-selected-slot-background: lighten(@esf-palette-primary-color, 35%);
+@esui-schedule-selected-slot-background: @esf-palette-primary-highlight-l10-color;
 @esui-schedule-slot-hover-background: @esf-palette-light-bg-hightlight-color;
-@esui-schedule-slot-hover-border: 1px solid darken(@esui-schedule-slot-hover-background, 15%);
+@esui-schedule-slot-hover-border: 1px solid @esf-palette-border;
 
 @esui-schedule-shortcut-item-background: @esf-palette-primary-color;
 @esui-schedule-shortcut-item-color: @esf-palette-contrast-color;
 @esui-schedule-shortcut-item-hover-background: @esf-palette-primary-highlight-color;
 @esui-schedule-shortcut-item-active-background: @esf-palette-primary-shadow-color;
 
-@esui-schedule-continue-covertimes-background: @esf-palette-success-color;
-@esui-schedule-continue-covertimes-color: darken(@esf-palette-success-color, 25%);
+@esui-schedule-continue-covertimes-background: @esui-schedule-selected-slot-background;
+@esui-schedule-continue-covertimes-color: @esf-palette-primary-color;
 
-@esui-schedule-tip-background: lighten(@esf-palette-primary-color, 35%);
-@esui-schedule-tip-color: @esf-palette-color;
-@esui-schedule-tip-border: 1px solid lighten(@esf-palette-primary-color, 20%);
+@esui-schedule-tip-background: @esf-palette-primary-highlight-l10-color;
+@esui-schedule-tip-color: @esf-palette-muted-color;
+@esui-schedule-tip-border: 1px solid @esf-palette-primary-highlight-l5-color;
 
 @esui-schedule-schedule-follow-item-border: 1px dotted darken(@esf-palette-light-bg-hightlight-color, 20%);
 @esui-schedule-schedule-follow-item-background: @esf-palette-light-bg-hightlight-color;
@@ -62,6 +62,7 @@
     background: @esui-schedule-tip-background;
     color: @esui-schedule-tip-color;
     border: @esui-schedule-tip-border;
+    .box-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 }
 
 .esui-schedule-schedule-follow-item-theme() {
@@ -70,9 +71,9 @@
 }
 
 .esui-schedule-continue-covertimes-theme() {
-    .opacity(50);
-    background: #dcfacf;
-    color: #2b7a08;
+    .opacity(80);
+    background: @esui-schedule-continue-covertimes-background;
+    color: @esui-schedule-continue-covertimes-color;
 }
 
 .esui-schedule-read-only-theme() {

@@ -11,13 +11,16 @@
 @esui-select-primary-hover-background: @esf-palette-primary-highlight-color;
 @esui-select-primary-active-background: @esf-palette-primary-shadow-color;
 
+@esui-select-item-selected-color: @esf-palette-color;
+@esui-select-item-selected-background: @esf-palette-neutral-highlight-color;
+
 @esui-select-compact-color: @esf-palette-color;
 @esui-select-compact-background: @esf-palette-white;
 @esui-select-compact-height: 1.5em;
 @esui-select-compact-padding: .5em;
 
 @esui-select-compact-layer-item-padding: .3em;
-@esui-select-compact-layer-item-select-background: @esf-palette-light-bg-hightlight-color;
+@esui-select-compact-layer-item-select-background: @esf-palette-neutral-highlight-color;
 @esui-select-compact-layer-item-select-color: @esf-palette-color;
 @esui-select-compact-layer-background: @esf-palette-white;
 
@@ -100,4 +103,9 @@
     &.@{ui-state-prefix}-active {
         background: @select-active-color;
     }
+}
+
+.esui-select-item-selected-theme() {
+    background: @esui-select-item-selected-background;
+    color: @esui-select-item-selected-color !important;
 }

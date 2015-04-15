@@ -10,7 +10,7 @@
 
 @import "Variable.less";
 
-@esui-table-line-height: 1.3;
+@esui-table-line-height: 1.4;
 
 @esui-table-head-zIndex: 1000;
 @esui-table-head-cell-font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
@@ -21,9 +21,6 @@
 
 @esui-table-cell-text-padding: .5em;
 @esui-table-cell-icon-width: 1.4em;
-
-@esui-table-editable-cell-text-margin: .2em;
-@esui-table-editable-cell-text-padding: (@esui-table-cell-text-padding - @esui-table-editable-cell-text-margin);
 
 @esui-table-subrow-padding: 0 0 0 2em;
 
@@ -122,8 +119,6 @@
 }
 
 .@{ui-class-prefix}-table-row-hover .@{ui-class-prefix}-table-cell-editable {
-    margin: @esui-table-editable-cell-text-margin;
-    padding: @esui-table-editable-cell-text-padding;
     position: relative;
     .esui-table-editable-cell-text-hover-theme();
 }
@@ -232,7 +227,7 @@
     .esui-table-cell-editentry-theme();
 }
 
-.@{ui-class-prefix}-table-row-hover .@{ui-class-prefix}-table-cell-editentry {
+.@{ui-class-prefix}-table-cell:hover .@{ui-class-prefix}-table-cell-editentry {
     display: block !important;
 }
 

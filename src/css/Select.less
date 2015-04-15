@@ -11,26 +11,13 @@
 
 // Select
 @esui-select-radius: 5px;
-@esui-select-height: 2.4em;
-@esui-select-line-height: 2.4em;
+@esui-select-line-height: 2.5em;
 @esui-select-horizontal-padding: 1em;
 @esui-select-text-right-padding: 2em;
 
-// Select-toolbar-style
-@esui-select-color-toolbar-style: #666;
-@esui-select-background-toolbar-style: #f1f1f1;
-@esui-select-background-toolbar-style-hover: #e0e0e0;
-@esui-select-background-toolbar-style-active: @esui-select-background-toolbar-style-hover;
-
 // Layer
-@esui-select-layer-background: #f1f1f1;
-@esui-select-layer-border: none;
-@esui-select-item-color: #666;
-@esui-select-item-hover-color: #666;
-@esui-select-item-background-hover: #e1e1e1;
-@esui-select-item-disabled-color: #d1d1d1;
 @esui-select-item-selected-color: #6CCDC0;
-@esui-select-item-background-selected: #e1e1e1;
+@esui-select-item-background-selected: #E1E1E1;
 
 .@{ui-class-prefix}-select {
     cursor: pointer;
@@ -44,7 +31,6 @@
 .@{ui-class-prefix}-select-inner {
     padding: 0 @esui-select-horizontal-padding;
     border-radius: @esui-select-radius;
-    height: @esui-select-height;
     line-height: @esui-select-line-height;
     .box-sizing(border-box);
     .esf-transition(background-color 0.3s ease);
@@ -88,12 +74,7 @@
 }
 
 .@{ui-class-prefix}-select-item-selected > :first-child {
-    background: @esui-select-item-background-selected;
-    color: @esui-select-item-selected-color !important;
-
-    &:hover {
-        background: @esui-select-item-background-selected;
-    }
+    .esui-select-item-selected-theme();
 }
 
 // variants
@@ -119,3 +100,4 @@
 .esui-select-primary-theme() {}
 .esui-select-compact-theme() {}
 .esui-select-layer-compact-theme() {}
+.esui-select-item-selected-theme() {}

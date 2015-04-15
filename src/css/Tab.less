@@ -12,8 +12,10 @@
 @esui-tab-padding-item-top: @esui-tab-padding-item-vertical;
 @esui-tab-padding-item-bottom: @esui-tab-padding-item-vertical;
 
-@esui-tab-margin-horizontal: .5em;
-@esui-tab-margin-vertical: .5em;
+@esui-tab-item-min-width: 8em;
+
+@esui-tab-margin-horizontal: .4em;
+@esui-tab-margin-vertical: .4em;
 
 @esui-tab-color: #666666;
 @esui-tab-background: #F2F2F2;
@@ -38,10 +40,13 @@
     cursor: pointer;
     text-align: center;
     border: @esui-tab-border;
+    border-bottom: none;
     background: @esui-tab-background;
     color: @esui-tab-color;
     line-height: @esui-tab-height;
     padding: @esui-tab-padding-item-top @esui-tab-padding-item-horizontal @esui-tab-padding-item-bottom @esui-tab-padding-item-horizontal;
+    min-width: @esui-tab-item-min-width;
+    .box-sizing(border-box);
         
     &:hover,
     &:focus {
@@ -66,7 +71,6 @@
 
     .@{ui-class-prefix}-tab-item {
         display: inline-block;
-        margin-bottom: -1px;
         .border-top-radius(@esui-tab-radius);
         margin-right: @esui-tab-margin-horizontal;
     }
