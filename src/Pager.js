@@ -30,7 +30,7 @@ define(
                         '<span id="${labelId}" class="${labelClass}">',
                         '${labelText}</span>',
                         '<div data-ui="type:Select;childName:select;',
-                        'id:${selectId};width:40;"></div>',
+                        'id:${selectId};></div>',
                     '</div>',
                     '<ul id="${mainId}" class="${mainClass}"></ul>',
                 '</div>'
@@ -421,6 +421,18 @@ define(
             // 如果使用者直接改这个，自然是要覆盖的就没关系
         };
 
+        /**
+         * 给select的layer人肉增加class命名空间
+         *
+         * @inner
+         * @param {Event} e layer渲染事件
+         */
+        function addCustomClassesForSelectLayer(pager, e) {
+            var layerClasses = pager.helper.getPartClasses('select-layer');
+            var layer = e.layer;
+            layer.addCustomClasses(layerClasses);
+            pager.fire('selectlayerrendered', { layer: layer });
+        }
 
         Pager.prototype = {
             /**
@@ -511,7 +523,11 @@ define(
                 // 每页显示的select控件
                 var select = this.getChild('select');
                 select.on('change', changePageSize, this);
-
+                // 给select的layer加上class
+                select.on(
+                    'layerrendered',
+                    lib.curry(addCustomClassesForSelectLayer, this)
+                );
                 // pager主元素绑定事件
                 this.helper.addDOMEvent('main', 'click', pagerClick);
             },
