@@ -10,12 +10,16 @@
 @esui-dialog-header-text-color: @esf-palette-color;
 @esui-dialog-header-font-weight: bold;
 
-@esui-dialog-footer-panel-top-border: 1px solid @esf-palette-border;
+@esui-dialog-footer-panel-top-border: none;
 
 @esui-dialog-alert-icon-color: @esf-palette-danger-color;
 @esui-dialog-confirm-icon-color: @esf-palette-info-color;
 
 @esui-dialog-mask-opacity: 20;
+
+@esui-dialog-close-icon-color: @esf-palette-muted-color;
+@esui-dialog-close-icon-hover-color: @esf-palette-color;
+
 
 .esui-dialog-theme() {
     background: @esui-dialog-background;
@@ -29,9 +33,10 @@
 }
 
 .esui-dialog-close-icon-theme() {
-    .opacity(85);
+    color: @esui-dialog-close-icon-color;
+
     &:hover {
-        .opacity(100);
+        color: @esui-dialog-close-icon-hover-color;
     }
 }
 

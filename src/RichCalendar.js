@@ -570,8 +570,8 @@ define(
                 var tpl = [
                     '<div data-ui-type="Panel" class="${generalPanelClass}"',
                     ' data-ui-child-name="generalPanel">',
-                    '共<span id="${totalNumId}" ',
-                    'class="${totalNumClass}"></span>天,',
+                    '<label>共<span id="${totalNumId}" ',
+                    'class="${totalNumClass}"></span>天,</label>',
                     '<button data-ui-type="Button" data-ui-variants="link"',
                     ' data-ui-child-name="deleteBtn">全部删除</button>',
                     '</div>',
