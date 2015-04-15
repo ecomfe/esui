@@ -3038,7 +3038,7 @@ esui-box-group {
 }
 .ui-crumb-separator {
   margin: 0 0.5em;
-  color: #999999;
+  color: #666666;
 }
 span.ui-crumb-node {
   color: #666666;
@@ -3565,9 +3565,9 @@ span.ui-crumb-node {
 }
 .ui-region-text-over {
   background: #fffaee;
-  -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 .ui-region-province-box {
   width: 40em;
@@ -3595,9 +3595,9 @@ span.ui-crumb-node {
   padding: 0.5em;
   z-index: 998;
   background: #fffaee;
-  -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 .ui-region-city-box td {
   white-space: nowrap;
@@ -3822,10 +3822,10 @@ span.ui-crumb-node {
 }
 .ui-searchbox .ui-textbox-icon:hover,
 .ui-searchbox .ui-textbox-icon:active {
-  color: #70ccc0;
+  color: #666666;
 }
 .ui-searchbox.state-focus .ui-textbox-icon {
-  color: #70ccc0;
+  color: #666666;
 }
 .ui-searchbox.state-searched .ui-textbox-icon {
   text-indent: 0;
@@ -4701,9 +4701,7 @@ span.ui-crumb-node {
   display: none;
 }
 .state-validity-invalid {
-  -webkit-box-shadow: 0 0 3px #f16c6c;
-  -moz-box-shadow: 0 0 3px #f16c6c;
-  box-shadow: 0 0 3px #f16c6c;
+  border: 1px solid #f16c6c;
 }
 .ui-validity {
   display: inline-block;
