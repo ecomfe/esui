@@ -438,7 +438,7 @@ define(
                         + 'class="'
                         + this.helper.getPartClassName('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
-                        + 'childName:btnOk;variants:success;">确定</div> '
+                        + 'childName:btnOk;variants:primary;">确定</div> '
                         + '<div '
                         + 'class="'
                         + this.helper.getPartClassName('cancel-btn')
@@ -1025,7 +1025,7 @@ define(
                 + '<div '
                 + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
-                + dialogId + '-' + okPrefix + ';variants:success;">'
+                + dialogId + '-' + okPrefix + ';variants:primary;">'
                 + okText
                 + '</div>'
             );
