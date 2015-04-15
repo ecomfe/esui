@@ -4,6 +4,14 @@
 @esui-tab-border-width: 1px;
 @esui-tab-border: @esui-tab-border-width solid @esui-tab-border-color;
 
+@esui-tab-hover-border: @esui-tab-border-color;
+@esui-tab-hover-background: @esui-tab-background;
+@esui-tab-hover-color: #000000;
+@esui-tab-active-border-color: @esui-tab-border-color;
+@esui-tab-active-border: 1px solid @esui-tab-active-border-color;
+@esui-tab-active-background: #FEFDFA;
+@esui-tab-active-color: #333333;
+
 @esui-tab-padding-horizontal: 0 1em;
 @esui-tab-padding-vertical: 1em 0;
 
@@ -13,21 +21,14 @@
 @esui-tab-padding-item-bottom: @esui-tab-padding-item-vertical;
 
 @esui-tab-item-min-width: 8em;
-
 @esui-tab-margin-horizontal: .4em;
 @esui-tab-margin-vertical: .4em;
 
 @esui-tab-color: #666666;
 @esui-tab-background: #F2F2F2;
-@esui-tab-hover-border: darken(@esui-tab-border-color, 5%);
-@esui-tab-hover-background: darken(@esui-tab-background, 5%);
-@esui-tab-hover-color: #000000;
-@esui-tab-active-border-color: #ddd;
-@esui-tab-active-border: 1px solid @esui-tab-active-border-color;
-@esui-tab-active-background: #FEFDFA;
-@esui-tab-active-color: #333333;
 @esui-tab-radius: 5px;
 @esui-tab-height: 1.2em;
+@esui-tab-content-border: 3px solid @esui-tab-border-color;
 
 // 总体样式
 .@{ui-class-prefix}-tab-navigator {
@@ -40,14 +41,13 @@
     cursor: pointer;
     text-align: center;
     border: @esui-tab-border;
-    border-bottom: none;
     background: @esui-tab-background;
     color: @esui-tab-color;
     line-height: @esui-tab-height;
     padding: @esui-tab-padding-item-top @esui-tab-padding-item-horizontal @esui-tab-padding-item-bottom @esui-tab-padding-item-horizontal;
     min-width: @esui-tab-item-min-width;
     .box-sizing(border-box);
-        
+
     &:hover,
     &:focus {
         border-color: @esui-tab-hover-border;
@@ -64,7 +64,6 @@
 
 // 横向tab
 .@{ui-class-prefix}-tab-horizontal {
-    border-bottom: @esui-tab-border;
     .@{ui-class-prefix}-tab-navigator {
         padding: @esui-tab-padding-horizontal;
     }
@@ -73,34 +72,27 @@
         display: inline-block;
         .border-top-radius(@esui-tab-radius);
         margin-right: @esui-tab-margin-horizontal;
+        border-bottom: none;
     }
 
     .@{ui-class-prefix}-tab-item-active {
         cursor: default;
         background: @esui-tab-active-background;
         color: @esui-tab-active-color;
-        border-bottom-color: transparent;
-        border-top: @esui-tab-active-border;
     }
 }
 
 .@{ui-class-prefix}-tab-horizontal-flip {
-    border-bottom: 0;
-    border-top: @esui-tab-border;
-
     .@{ui-class-prefix}-tab-item {
         .border-top-radius(0);
         .border-bottom-radius(@esui-tab-radius);
-        margin-bottom: 0;
-        margin-top: -1px;
+        border-top: none;
         border-bottom: @esui-tab-border;
     }
 
     .@{ui-class-prefix}-tab-item-active {
         cursor: default;
         background: @esui-tab-active-background;
-        border-bottom: @esui-tab-active-border;
-        border-top-color: transparent;
     }
 }
 
@@ -126,6 +118,22 @@
     .box-sizing(border-box);
 }
 
+.@{ui-class-prefix}-tab-content-top-border {
+    border-top: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-bottom-border {
+    border-bottom: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-left-border {
+    border-left: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-right-border {
+    border-right: @esui-tab-content-border;
+}
+
 // 暴露给外部调用的mixin
 .esui-vertical-tab-def(@tabWidth, @areaHeight, @align) {
     .@{ui-class-prefix}-tab-vertical {
@@ -140,14 +148,10 @@
 
     .tab-content(@align) when (@align = left) {
         margin-left: @tabWidth;
-        border-left: 0;
     }
 
     .tab-content(@align) when (@align = right) {
-        margin-left: 0;
         margin-right: @tabWidth;
-        border-left: @esui-tab-border;
-        border-right: 0;
     }
 }
 
@@ -163,13 +167,8 @@
         .border-right-radius(0);
         .border-left-radius(@esui-tab-radius);
         margin-bottom: @esui-tab-margin-vertical;
-        margin-right: -1px;
+        border-right: none;
     }
-
-    .@{ui-class-prefix}-tab-item-active {
-        border-left: @esui-tab-active-border;
-        border-right-color: transparent;
-    } 
 }
 
 .@{ui-class-prefix}-tab-vertical-flip {
@@ -181,11 +180,11 @@
         .border-left-radius(0);
         .border-right-radius(@esui-tab-radius);
         margin-right: 0;
-        margin-left: -1px;
+        border-right: @esui-tab-border;
+        border-left: none;
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        border-left-color: transparent;
         border-right: @esui-tab-active-border;
     }
 }

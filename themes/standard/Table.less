@@ -1,7 +1,6 @@
 @import "../../src/css/Table.less";
 @import "Layer.less";
 
-
 // theme variables
 @esui-table-head-background: @esf-palette-neutral-color;
 @esui-table-head-hover-background: @esf-palette-light-bg-hightlight-color;
@@ -29,6 +28,8 @@
 .esui-table-head-theme() {
     background: @esui-table-head-background;
 }
+
+.esui-table-body-theme() {}
 
 .esui-table-head-sortable-cell-hover-theme() {
     background: @esui-table-head-hover-background;
@@ -74,7 +75,7 @@
     border-color: @esui-table-head-table-border-color;
     border-style: @esui-table-head-table-border-style;
     font-weight: @esui-table-head-table-cell-font-weight;
-    border-width: 0 0 0 1px;
+    border-width: 0;
 }
 
 .esui-table-row-theme() {
@@ -99,7 +100,7 @@
 .esui-table-body-nodata-theme() {
     border-color: @esui-table-head-table-border-color;
     border-style: @esui-table-head-table-border-style;
-    border-width: 0 1px 1px;
+    border-width: 0;
 }
 
 .esui-table-editable-cell-text-hover-theme() {
