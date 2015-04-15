@@ -123,7 +123,7 @@ define(
         Tip.prototype.initStructure = function () {
             var main = document.createElement('div');
             document.body.appendChild(main);
-            if (ui.getConfig('inheritFont') || this.inheritFont) {
+            if (this.inheritFont || ui.getConfig('inheritFont')) {
                 main.style.fontSize = lib.getComputedStyle(this.main, 'fontSize');
             }
             var tipLayer = ui.create(

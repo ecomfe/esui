@@ -106,7 +106,7 @@ define(
             var element =
                 helper.createPart('layer', this.nodeName);
             lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
-            if (ui.getConfig('inheritFont') || control.inheritFont) {
+            if (control.inheritFont || ui.getConfig('inheritFont')) {
                 element.style.fontSize = lib.getComputedStyle(control.main, 'fontSize');
             }
 
