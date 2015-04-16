@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Button - ESUI Demo</title>
+    <script src="../assets/loader/esl.js"></script>
+    
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+</head>
+<body>
+    <h1 id="branding">ESUI - Button</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>样式</h2>
+            <section class="intro">
+                <p>Button的样式。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <button data-ui="type:Button">Button</button>
+                    <button data-ui="type:Button;variants:primary">Primary</button>
+                    <button data-ui="type:Button;variants:success">Success</button>
+                    <button data-ui="type:Button;variants:info">info</button>
+                    <button data-ui="type:Button;variants:warning">warning</button>
+                    <button data-ui="type:Button;variants:danger">danger</button>
+                    <button data-ui="type:Button;variants:link">link</button>
+                </div>
+            </section>
+            <h2>尺寸</h2>
+            <section class="intro">
+                <p>Button的尺寸。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <button data-ui="type:Button" class="ui-x-small">ui-x-small</button>
+                    <button data-ui="type:Button" class="ui-small">ui-x-small</button>
+                    <button data-ui="type:Button">medium</button>
+                    <button data-ui="type:Button" class="ui-large">ui-large</button>
+                    <button data-ui="type:Button" class="ui-x-large">ui-x-large</button>
+                    <button data-ui="type:Button" class="ui-xx-large">ui-xx-large</button>
+                    <button data-ui="type:Button" class="ui-xxx-large">ui-xxx-large</button>
+                </div>
+            </section>
+            <h2>全宽</h2>
+            <section class="intro">
+                <p>Fluid Button.</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div class="row">
+                        <div data-ui="type:Button;variants:success" class="ui-button-fluid">Fluid</div>
+                    </div>
+                    <div class="row">
+                        <div data-ui="type:Button;variants:danger fluid">Fluid</div>
+                    </div>
+                </div>
+            </section>
+            <h2>状态</h2>
+            <section class="intro">
+                <p>状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div data-ui="type:Button;variants:primary">Normal</div>
+                    <div data-ui="type:Button;variants:primary" class="state-hover">Hover</div>
+                    <div data-ui="type:Button;variants:primary" class="state-active">Active</div>
+                    <div data-ui="type:Button;variants:primary;disabled:1">Disabled</div>
+                </div>
+            </section>
+            <h2>组合</h2>
+            <section class="intro">
+                <p>按钮组合。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div class="ui-button-group ui-button-group-separated">
+                        <div data-ui="type:Button;" class="ui-button-primary">Hello</div>
+                        <div data-ui="type:Button;" class="ui-button-primary state-active">World</div>
+                        <div data-ui="type:Button;" class="ui-button-primary">separated</div>
+                    </div>
+                    <div class="ui-button-group">
+                        <div data-ui="type:Button;" class="ui-button-primary">Hello</div>
+                        <div data-ui="type:Button;" class="ui-button-primary state-active">World</div>
+                        <div data-ui="type:Button;" class="ui-button-primary">Wow</div>
+                    </div>
+                </div>
+            </section>
+            <h2>图标</h2>
+            <section class="intro">
+                <p>状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div data-ui="type:Button;" class="ui-button-primary"><span class="ui-icon-user"></span> Icon</div>
+                    <div data-ui="type:Button;" class="ui-button-primary">Icon <span class="ui-icon-user"></span></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+        require(
+                [
+                    'esui',
+                    'esui/Button'
+                ],
+                function (ui) {
+                    ui.init();
+                }
+        )
+    </script>
+</body>
+</html>

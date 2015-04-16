@@ -134,7 +134,34 @@ define(
                 }
             }
             else if (element && element.currentStyle) {
-                return element.currentStyle[key];
+                // 解决IE8下非px单位取值不对的问题
+                var core_pnum = /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source;
+                var rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" );
+                var rposition = /^(top|right|bottom|left)$/;
+                var ret = element.currentStyle[key];
+                var getCurrentPixelStyle = function (elem, prop) {
+                    var value = elem.currentStyle[prop] || 0;
+
+                    // we use 'left' property as a place holder so backup values
+                    var leftCopy = elem.style.left;
+                    var runtimeLeftCopy = elem.runtimeStyle.left;
+
+                    // assign to runtimeStyle and get pixel value
+                    elem.runtimeStyle.left = elem.currentStyle.left;
+                    elem.style.left = (prop === "fontSize") ? "1em" : value;
+                    value = elem.style.pixelLeft + "px";
+
+                    // restore values for left
+                    elem.style.left = leftCopy;
+                    elem.runtimeStyle.left = runtimeLeftCopy;
+
+                    return value
+                }
+
+                if (rnumnonpx.test(ret) && !rposition.test(key)) {
+                    return getCurrentPixelStyle(element, key);
+                }
+                return ret;
             }
             return '';
         };
@@ -290,6 +317,29 @@ define(
         };
 
         /**
+         * 获取目标元素的上一个兄弟元素节点
+         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @return {HTMLElement | null} 目标元素的上一个元素节点，查找不到时返回null
+        */
+        lib.dom.previous = function (element) {
+            element = lib.g(element);
+
+            if (element.previousElementSibling) {
+                return element.previousElementSibling;
+            }
+
+            var node = element.previousSibling;
+            for (; node; node = node.previousSibling) {
+                if (node.nodeType == 1) {
+                    return node;
+                }
+            }
+
+            return null;
+        };
+
+        /**
          * 判断一个元素是否包含另一个元素
          *
          * @param {HTMLElement | string} container 包含元素或元素的 id
@@ -306,6 +356,23 @@ define(
                 : !!(container.compareDocumentPosition(contained) & 16);
         };
 
+        /**
+         * 从HTML创建 HTML elements
+         *
+         * @param {string} html string
+         * @return {HTMLElement | NodeList} HTML Element 或数组
+        */
+        lib.dom.createElement = function (html) {
+            var div = document.createElement('div');
+            div.innerHTML = html;
+            var nodes = div.children;
+            if (nodes.length === 1) {
+                return nodes[0]
+            }
+            else {
+                return nodes;
+            }
+        };
         return lib;
     }
 );

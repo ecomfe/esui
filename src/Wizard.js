@@ -127,7 +127,8 @@ define(
             return lib.format(
                 this.nodeTemplate,
                 {
-                    text: lib.encodeHTML(node.text)
+                    text: lib.encodeHTML(node.text),
+                    number: lib.encodeHTML(node.number)
                 }
             );
         };

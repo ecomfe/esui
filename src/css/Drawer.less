@@ -1,0 +1,164 @@
+@import "Variable.less";
+
+@esui-drawer-header-height: 4em;
+@esui-drawer-title-font-weight: bold;
+@esui-drawer-title-padding: 0 0 0 2em;
+@esui-drawer-content-padding: 5em 1em 1em 1em;
+@esui-drawer-footer-padding: 2em 2em 2.5em;
+@esui-drawer-bottom-width: 95%;
+@esui-drawer-width: 50%;
+
+// 在元素上添加 ui-drawer避免初始内容可见
+.@{ui-class-prefix}-drawer {
+    display: block;
+    visibility: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    .transition(visibility 0s 0.6s);
+}
+
+.@{ui-class-prefix}-drawer-visible {
+    visibility: visible;
+    .transition(visibility 0s 0s);
+}
+
+// 一体化的mask
+.@{ui-class-prefix}-drawer:after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    cursor: pointer;
+    .esf-transition(background 0.3s 0.3s);
+}
+
+.@{ui-class-prefix}-drawer-visible:after {
+    .esf-transition(background 0.3s 0s);
+    .esui-drawer-mask-theme();
+}
+
+.esui-drawer-mask-theme() {}
+
+.@{ui-class-prefix}-drawer-header {
+    position: fixed;
+    height: @esui-drawer-header-height;
+    line-height: @esui-drawer-header-height;
+    z-index: 2;
+    .esf-transition(top 0.3s 0s);
+    right: 0;
+    top: -@esui-drawer-header-height;
+    width: 90%;
+    .esui-drawer-header-theme();
+}
+
+.esui-drawer-header-theme() {}
+
+.@{ui-class-prefix}-drawer-footer {
+    position: fixed;
+    z-index: 2;
+    right: 0;
+    visibility: hidden;
+    width: 90%;
+    bottom: 0;
+    padding: @esui-drawer-footer-padding;
+    .box-sizing(border-box);
+    .esui-drawer-footer-theme();
+}
+
+.esui-drawer-footer-theme() {}
+
+.@{ui-class-prefix}-drawer-title {
+    font-weight: @esui-drawer-title-font-weight;
+    padding: @esui-drawer-title-padding;
+    .esui-drawer-title-theme();
+}
+
+.esui-drawer-title-theme() {}
+
+.@{ui-class-prefix}-drawer-visible .@{ui-class-prefix}-drawer-header {
+    top: 0;
+    .esf-transition(top 0.3s 0.3s);
+}
+
+.@{ui-class-prefix}-drawer-visible .@{ui-class-prefix}-drawer-footer {
+    visibility: visible;
+    .esf-transition(visibility 0.3s 0.3s);
+}
+
+.@{ui-class-prefix}-drawer-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    outline: none !important;
+    display: inline-block;
+    white-space: nowrap;
+    text-align: center;
+    .esui-drawer-close-theme();
+}
+
+.esui-drawer-close-theme() {}
+
+.@{ui-class-prefix}-drawer-content {
+    position: fixed;
+    height: 100%;
+    width: 90%;
+    top: 0;
+    z-index: 1;
+    .transition-property(transform);
+    .transition-duration(0.3s);
+    .transition-delay(0.2s);
+    right: 0;
+    transform: translate3d(100%, 0, 0);
+    padding: @esui-drawer-content-padding;
+    .box-sizing(border-box);
+    overflow: auto;
+    .esui-drawer-content-theme();
+}
+
+.esui-drawer-content-theme() {}
+
+// 其他方向的配置
+.@{ui-class-prefix}-drawer-from-left .@{ui-class-prefix}-drawer-header,
+.@{ui-class-prefix}-drawer-from-left .@{ui-class-prefix}-drawer-content,
+.@{ui-class-prefix}-drawer-from-left .@{ui-class-prefix}-drawer-footer {
+    left: 0;
+    right: auto;
+}
+
+.@{ui-class-prefix}-drawer-from-left .@{ui-class-prefix}-drawer-content {
+    transform: translate3d(-100%, 0, 0);
+}
+
+.@{ui-class-prefix}-drawer-from-bottom .@{ui-class-prefix}-drawer-header,
+.@{ui-class-prefix}-drawer-from-bottom .@{ui-class-prefix}-drawer-content,
+.@{ui-class-prefix}-drawer-from-bottom .@{ui-class-prefix}-drawer-footer {
+    left: (100% - @esui-drawer-bottom-width) / 2;
+    width: @esui-drawer-bottom-width !important;
+    right: auto;
+}
+
+.@{ui-class-prefix}-drawer-from-bottom .@{ui-class-prefix}-drawer-content {
+    transform: translate3d(0, 100%, 0);
+}
+
+.@{ui-class-prefix}-drawer-visible .@{ui-class-prefix}-drawer-content {
+    .transform(translate3d(0, 0, 0));
+    .transition-delay(0s);
+}
+
+.esui-drawer-width(@esui-drawer-width);
+
+.esui-drawer-width(@width) {
+    .@{ui-class-prefix}-drawer-header,
+    .@{ui-class-prefix}-drawer-content,
+    .@{ui-class-prefix}-drawer-footer {
+        width: @width;
+    }
+}

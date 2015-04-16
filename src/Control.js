@@ -233,6 +233,14 @@ define(
 
                         u.each(this.states, this.addState, this);
                     }
+                    // 为组件添加variant selector
+                    if (this.variants) {
+                        this.variants = typeof this.variants === 'string'
+                            ? this.variants.split(' ')
+                            : this.variants;
+
+                        this.helper.addVariantClasses();
+                    }
                 }
 
                 // 由子控件实现

@@ -34,6 +34,7 @@ define(
         var u = require('underscore');
         var lib = require('../lib');
         var ui = require('../main');
+        var uiClassPrefix = 'uiClassPrefix';
 
         /**
          * @override Helper
@@ -69,7 +70,7 @@ define(
 
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
-            var prefix = ui.getConfig('uiClassPrefix');
+            var prefix = ui.getConfig(uiClassPrefix);
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
 
@@ -77,6 +78,8 @@ define(
                 classes.push(joinByStrike(prefix, type, part));
                 if (skin) {
                     classes.push(joinByStrike(skinPrefix, skin, type, part));
+                    // 利用skin生成一个类似于variant的东西
+                    //classes.push(joinByStrike(prefix, type, skin, part));
                 }
 
                 // 缓存起来
@@ -94,6 +97,8 @@ define(
                         joinByStrike(skinPrefix, skin),
                         joinByStrike(skinPrefix, skin, type)
                     );
+                    // 利用skin生成一个类似于variant的东西
+                    //classes.push(joinByStrike(prefix, type, skin));
                 }
             }
 
@@ -128,11 +133,39 @@ define(
             var type = getControlClassType(this.control);
 
             if (part) {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type, part);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type, part);
             }
             else {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type);
             }
+        };
+
+        /**
+         * 获取class
+         *
+         * 格式为:ui-xxx
+          
+         * @param {string} name Class名称
+         */
+        helper.getPrefixClass = function (name) {
+            var pre = ui.getConfig(uiClassPrefix)
+
+            return joinByStrike(pre, name);
+        };
+
+        /**
+         * 获取图标class
+         *
+         * 格式为:ui-icon-xxx
+          
+         * @param {string} name 图标名称
+         */
+        helper.getIconClass = function (name) {
+            var icon = 'icon';
+            if (name) {
+                return joinByStrike(ui.getConfig(uiClassPrefix), icon, name);
+            }
+            return joinByStrike(ui.getConfig(uiClassPrefix), icon);
         };
 
         /**
@@ -199,7 +232,7 @@ define(
             var type = getControlClassType(this.control);
             var getConf = ui.getConfig;
             var classes = [
-                joinByStrike(getConf('uiClassPrefix'), type, state),
+                joinByStrike(getConf(uiClassPrefix), type, state),
                 joinByStrike(getConf('stateClassPrefix'), state)
             ];
 
@@ -248,6 +281,36 @@ define(
                 lib.removeClasses(
                     element,
                     this.getStateClasses(state)
+                );
+            }
+        };
+
+        /**
+         * 添加控件跟Variant相关的selector到主元素
+         * 添加这个方法是为了和原有skin和states实现隔离。
+         * 但是又无法完全确保名称不重复。
+         * 所以在使用state的selector的时候尽量用state-xxx这个selector。
+         * 使用skin时尽量用skin-xxx来区别三种类型的selector。
+         * 生成结果为
+         * -`ui-{styleType}-{variant1} ui-{styleType}-{variant2}...`
+         *
+         */
+        helper.addVariantClasses = function () {
+            var me = this;
+            var element = me.control.main;
+            var variants = me.control.variants;
+            var cls = [];
+
+            u.each(
+                variants,
+                function (variant) {
+                    cls.push(me.getPrimaryClassName(variant));
+                }
+            );
+            if (element) {
+                lib.addClasses(
+                    element,
+                    cls
                 );
             }
         };

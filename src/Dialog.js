@@ -53,7 +53,6 @@ define(
             }
 
             options.roles = roles;
-
         }
 
         /**
@@ -68,16 +67,19 @@ define(
             var close = 'close-icon';
 
             var closeTpl =
-                '<div class="${clsClass}" id="${clsId}">&nbsp;</div>';
+                '<div class="${clsClass}" id="${clsId}"></div>';
             var closeIcon = '';
+            var cls = [];
 
             if (control.closeButton) {
+                cls = helper.getPartClasses(control, close);
+                cls.push(control.helper.getIconClass('close'));
                 closeIcon = lib.format(
                     closeTpl,
                     {
                         'clsId': helper.getId(control, close),
                         'clsClass':
-                             helper.getPartClasses(control, close).join(' ')
+                             cls.join(' ')
                     }
                 );
             }
@@ -123,9 +125,7 @@ define(
             panel.render();
             control.addChild(panel, 'head');
             return panel;
-
         }
-
 
         /**
          * 点击头部关闭按钮时事件处理函数
@@ -147,9 +147,7 @@ define(
             if (this.closeOnHide) {
                 this.dispose();
             }
-
         }
-
 
         var getResizeHandler; //resize的句柄
         /**
@@ -346,7 +344,10 @@ define(
          */
         function showMask(dialog, zIndex) {
             var mask = getMask(dialog);
-            var clazz = [];
+            var clazz = [
+                dialog.helper.getPrefixClass('mask'),
+                dialog.helper.getPrefixClass('mask-page')
+            ];
             var maskClass = helper.getPartClasses(dialog, 'mask').join(' ');
 
             clazz.push(maskClass);
@@ -380,7 +381,6 @@ define(
             document.body.appendChild(el);
         }
 
-
         /**
          * 获取遮盖层dom元素
          *
@@ -399,7 +399,6 @@ define(
 
             return lib.g(id);
         }
-
 
         Dialog.OK_TEXT = '确定';
         Dialog.CANCEL_TEXT = '取消';
@@ -432,17 +431,19 @@ define(
                     mask: true,           // 是否具有遮挡层
                     title: '我是标题',    // 标题的显示文字
                     content: '<p>我是内容</p>',   // 内容区域的显示内容
+                    // TODO: 这两个属性有些不是特别方便。
+                    // 也许可以改进一下用data-role=foot。
                     defaultFoot: ''
                         + '<div '
                         + 'class="'
                         + this.helper.getPartClassName('ok-btn')
                         + '" data-ui="type:Button;id:btnFootOk;'
-                        + 'childName:btnOk;skin:spring;">确定</div>'
+                        + 'childName:btnOk;variants:primary;">确定</div> '
                         + '<div '
                         + 'class="'
-                        + this.helper.getPartClassName('cancel-btn') + '" '
-                        + 'data-ui="type:Button;'
-                        + 'id:btnFootCancel;childName:btnCancel;">取消</div>',
+                        + this.helper.getPartClassName('cancel-btn')
+                        + '" data-ui="type:Button;'
+                        + 'id:btnFootCancel;childName:btnCancel;variants:link">取消</div>',
                     needFoot: true,
                     roles: {}
                 };
@@ -718,6 +719,10 @@ define(
              *
              */
             show: function () {
+                if (this.isShow) {
+                    this.resize();
+                    return;
+                }
                 var mask = this.mask;
                 if (helper.isInStage(this, 'INITED')) {
                     this.render();
@@ -763,12 +768,9 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                if (this.isShow) {
-                    return;
-                }
-
-                this.isShow = true;
                 this.fire('show');
+                this.isShow = true;
+
             },
 
             /**
@@ -776,21 +778,21 @@ define(
              *
              */
             hide: function () {
-                if (!this.isShow) {
-                    return;
-                }
+                if (this.isShow) {
+                    helper.removeDOMEvent(
+                        this, window, 'resize', resizeHandler
+                    );
+                    var mask = this.mask;
 
-                this.isShow = false;
+                    this.addState('hidden');
 
-                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
-
-                this.addState('hidden');
-
-                if (this.mask) {
-                    hideMask(this);
+                    if (mask) {
+                        hideMask(this);
+                    }
                 }
 
                 this.fire('hide');
+                this.isShow = false;
             },
 
 
@@ -891,14 +893,14 @@ define(
 
             var properties = {
                 type: 'confirm',
-                skin: 'confirm',
+                variants: 'confirm',
                 title: ''
             };
 
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
                 '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
@@ -928,7 +930,8 @@ define(
                     {
                         type: type,
                         content: content,
-                        prefix: dialog.helper.getPrimaryClassName()
+                        prefix: dialog.helper.getPrimaryClassName(),
+                        icon: dialog.helper.getIconClass('question-circle')
                     }
                 )
             );
@@ -982,14 +985,14 @@ define(
 
             var properties = {
                 type: 'warning',
-                skin: 'alert',
+                variants: 'alert',
                 title: ''
             };
 
             lib.extend(properties, args);
 
             var tpl = [
-                '<div class="${prefix}-icon ${prefix}-icon-${type}"></div>',
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
                 '<div class="${prefix}-text">${content}</div>'
             ].join('');
 
@@ -1012,7 +1015,8 @@ define(
                     {
                         type: type,
                         content: content,
-                        prefix: dialog.helper.getPrimaryClassName()
+                        prefix: dialog.helper.getPrimaryClassName(),
+                        icon: dialog.helper.getIconClass('exclamation-circle')
                     }
                 )
             );
@@ -1021,7 +1025,7 @@ define(
                 + '<div '
                 + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
                 + ' data-ui="type:Button;childName:okBtn;id:'
-                + dialogId + '-' + okPrefix + '; skin:spring;width:50;">'
+                + dialogId + '-' + okPrefix + ';variants:primary;">'
                 + okText
                 + '</div>'
             );

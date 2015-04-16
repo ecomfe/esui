@@ -5,167 +5,133 @@
  * @file 地域选择样式
  * @author dbear
  */
-@import "mixin.less";
-@import "variable.less";
+
+@import "Variable.less";
+
+@esui-region-margin: 0;
+@esui-region-padding: 0;
+@esui-region-country-line-padding: .5em;
+@esui-region-check-width: 7em;
+@esui-region-province-item-width: 8em;
+@esui-region-item-padding: .5em 0;
+@esui-region-text-padding: .5em 0 .5em .5em;
+@esui-region-region-box-padding: 0 .5em;
+
+@esui-region-city-number-margin: .6em 0 0 0;
+@esui-region-city-number-padding: 0;
+@esui-region-city-number-border-radius: 3px;
+
+@esui-region-city-number-line-height: 1.2;
+@esui-region-city-box-padding: .5em;
+@esui-region-city-padding: .1em .5em;
+
 .@{ui-class-prefix}-region {
-    text-align: left;
+    display: inline-block;
     margin: 0;
     padding: 0;
-    width: 610px;
-    font-size: 12px;
-    color: #000;
-    line-height: 13px;
-    border: 1px solid #DDDDDD;
-    border-bottom: none;
-    .user-select();
+    .user-select(none);
 
-    input {
-        float: left;
-        margin: 0px;
-        padding: 0px;
-        width: 13px;
-        height: 13px;
+    .esui-region-theme();
+}
+
+.@{ui-class-prefix}-region-shadow {
+    .esui-region-shadow-theme();
+}
+
+.@{ui-class-prefix}-region-country-box {
+    .esui-region-country-box-theme();
+}
+
+.@{ui-class-prefix}-region-country-check {
+    padding: @esui-region-country-line-padding;
+    .esui-region-country-check-theme();
+}
+
+.@{ui-class-prefix}-region-region-box0,
+.@{ui-class-prefix}-region-region-box1 {
+    &:extend(.esf-clearfix all);
+}
+
+.@{ui-class-prefix}-region-region-box0 {
+    padding: @esui-region-region-box-padding;
+    .esui-region-region-box0-theme();
+}
+.@{ui-class-prefix}-region-region-box1 {
+    padding: @esui-region-region-box-padding;
+    .esui-region-region-box1-theme();
+}
+
+.@{ui-class-prefix}-region-region-check,
+.@{ui-class-prefix}-region-province-box {
+    float: left;
+}
+
+.@{ui-class-prefix}-region-region-check {
+    width: @esui-region-check-width;
+    padding: @esui-region-item-padding;
+}
+
+.@{ui-class-prefix}-region-text {
+    position: relative;
+    padding: @esui-region-text-padding;
+    float: left;
+}
+
+.@{ui-class-prefix}-region-text-over {
+    .esui-region-text-over-theme();
+}
+
+.@{ui-class-prefix}-region-province-box {
+    width: @esui-region-province-item-width * 5;
+}
+
+.@{ui-class-prefix}-region-province-item {
+    width: @esui-region-province-item-width;
+    float: left;
+}
+
+.@{ui-class-prefix}-region-locator {
+    float: left;
+    b {
+        display: block;
+        padding: @esui-region-city-number-padding;
+        margin: @esui-region-city-number-margin;
+        line-height: @esui-region-city-number-line-height;
+        .esf-border-radius(
+            @esui-region-city-number-border-radius,
+            @esui-region-city-number-border-radius,
+        );
+        .esui-region-city-number-theme();
     }
+}
 
-    label {
-        cursor: default;
-        padding-left: 4px;
-        display: inline;
+.@{ui-class-prefix}-region-city-box {
+    position: absolute;
+    padding: @esui-region-city-box-padding;
+    z-index: 998;
+    td {
+        white-space: nowrap;
     }
+    .esui-region-city-box-theme();
+}
 
-    .@{ui-class-prefix}-region-country-box {
-        overflow: hidden;
-        zoom: 1;
-        border-bottom: 1px solid #DDD;
-    }
-
-    .@{ui-class-prefix}-region-country-check {
-        width: 600px;
-        height: 14px;
-        padding: 8px 0 8px 10px;
-        background-color: #F6F6F6;
-        border-top: none;
-    }
-
-    .@{ui-class-prefix}-region-region-box0 {
-        width: 610px;
-        border-top:solid 1px #E6EEF6;
-        background: #F9FCFE;
-        clear: both;
-        .clear-float();
-    }
-
-    .@{ui-class-prefix}-region-region-box1 {
-        width: 610px;
-        clear: both;
-        background: none repeat scroll 0 0 #FFFFFF;
-        border-top: 1px solid #F1F1F1;
-        .clear-float();
-    }
-
-    .@{ui-class-prefix}-region-region-check {
-        width: 90px;
-        padding: 6px 0 6px 10px;
-        float: left;
-
-    }
-
-    .@{ui-class-prefix}-region-province-box {
-        width: 510px;
-        float: left;
-    }
-    .@{ui-class-prefix}-region-province-item {
-        width: 100px;
-        float: left;
-
-        .@{ui-class-prefix}-region-locator {
-            float: right;
-            width: 35px;
-            height: 14px;
-        }
-
-        .@{ui-class-prefix}-region-city-box {
-            border: solid 1px #97A5B2;
-            position: absolute;
-            padding: 3px 0;
-            margin: -1px;
-            background-color: #FFF;
-            z-index: 998;
-            _height: 26px;
-
-            .@{ui-class-prefix}-region-city {
-                height:18px;
-                float: left;
-                padding: 3px 8px;
-            }
-        }
-
-        .@{ui-class-prefix}-region-city-box-over {
-            border: solid 1px #97A5B2;
-            border-right: none;
-            background-color: #FFF;
-            margin: -1px 0;
-            z-index: 999;
-        }
-
-        b {
-            width: 33px;
-            color: #FFF;
-            display: block;
-            text-align: center;
-            font-weight: normal;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #3F8FE1;
-            margin-top: 8px;
-            -moz-border-radius: 3px;
-            -webkit-border-radius: 3px;
-            border-radius: 3px;
-        }
-
-        .@{ui-class-prefix}-region-text {
-            position: relative;
-            zoom: 1;
-            width: 58px;
-            height: 14px;
-            padding: 8px 0 8px 4px;
-            float: right;
-        }
-
-        .@{ui-class-prefix}-region-text-over {
-            border: solid 1px #97A5B2;
-            border-right:none;
-            background-color:#FFF;
-            margin:-1px 0;
-            z-index: 998;
-        }
-    }
+.@{ui-class-prefix}-region-city {
+    padding: @esui-region-city-padding;
 }
 
 .@{ui-class-prefix}-region-single {
     margin:0;
     padding:0;
     width: auto;
-    font-size:12px;
     border: none;
 }
 
-.@{ui-class-prefix}-region-disabled,
-.@{ui-class-prefix}-region-read-only {
-    color: #999;
-    border-color: #D8D8D8;
-}
-
-/** 验证 */
-.@{ui-class-prefix}-region-validity-invalid {
-    border: 1px solid red;
-}
-.@{ui-class-prefix}-region-validity-label {
-    display:block;
-    margin-top: 5px;
-}
-.@{ui-class-prefix}-region-validity-label-invalid {
-    .background(url(../img/esui-icon-alert.png), no-repeat, 15px, center, #FEDBDC);
-    border: 1px solid #F0CCCC;
-    color: #dd6767;
-    padding-left: 50px;
-}
+.esui-region-theme() {}
+.esui-region-shadow-theme() {};
+.esui-region-country-box-theme() {}
+.esui-region-country-check-theme() {}
+.esui-region-region-box0-theme() {}
+.esui-region-region-box1-theme() {}
+.esui-region-text-over-theme() {}
+.esui-region-city-number-theme() {}
+.esui-region-city-box-theme() {}

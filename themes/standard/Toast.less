@@ -1,0 +1,42 @@
+
+@import "../../src/css/Toast.less";
+
+@esui-toast-default-background: @esf-palette-neutral-color;
+@esui-toast-default-color: @esf-palette-color;
+
+@esui-toast-info-background: lighten(@esf-palette-info-color, 25%);
+@esui-toast-info-color: darken(@esf-palette-info-color, 10%);
+
+@esui-toast-error-background: lighten(@esf-palette-danger-color, 25%);
+@esui-toast-error-color: darken(@esf-palette-danger-color, 10%);
+
+@esui-toast-alert-background: lighten(@esf-palette-warning-color, 25%);
+@esui-toast-alert-color: darken(@esf-palette-warning-color, 10%);
+
+@esui-toast-success-background: lighten(@esf-palette-success-color, 25%);
+@esui-toast-success-color: darken(@esf-palette-success-color, 10%);
+
+.esui-toast-content-theme() {
+    background: @esui-toast-default-background;
+    margin: 0;
+}
+
+.esui-toast-content-info-theme() {
+    background: @esui-toast-info-background;
+    color: @esui-toast-info-color;
+}
+
+.esui-toast-content-error-theme() {
+    background: @esui-toast-error-background;
+    color: @esui-toast-error-color;
+}
+
+.esui-toast-content-alert-theme() {
+    background: @esui-toast-alert-background;
+    color: @esui-toast-alert-color;
+}
+
+.esui-toast-content-success-theme() {
+    background: @esui-toast-success-background;
+    color: @esui-toast-success-color;
+}

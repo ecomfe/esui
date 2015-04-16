@@ -1,0 +1,77 @@
+@import "MonthView.less";
+@import "../../src/css/RangeCalendar.less";
+
+// core variables
+@esui-range-calendar-height: 2.4em;
+@esui-range-calendar-padding: 1em;
+@esui-range-calendar-border-radius: 5px;
+
+@esui-range-calendar-start-date-label-padding: 1em 0;
+@esui-range-calendar-start-date-label-font-size: 1em;
+@esui-range-calendar-spacing: 1em;
+@esui-range-calendar-shortcut-item-spacing: .5em;
+@esui-range-calendar-footer-padding: 1em 0 0 0;
+
+// theme variables
+@esui-range-calendar-main-background: @esf-palette-neutral-color;
+@esui-range-calendar-main-hover-background: @esf-palette-neutral-highlight-color;
+@esui-range-calendar-main-active-background: @esf-palette-neutral-shadow-color;
+@esui-range-calendar-main-color: @esf-palette-color;
+@esui-range-calendar-main-read-only-color: @esf-palette-muted-color;
+
+// 浮层
+@esui-range-calendar-layer-background: @esf-palette-neutral-highlight-color;
+@esui-range-calendar-layer-border-top: 3px solid @esf-palette-neutral-shadow-color;
+@esui-range-calendar-layer-border-bottom: none;
+@esui-range-calendar-layer-border-left: none;
+@esui-range-calendar-layer-border-right: none;
+@esui-range-calendar-layer-padding: 1em;
+
+// 快捷按钮
+@esui-range-calendar-shortcut-item-color: @esf-palette-primary-color;
+@esui-range-calendar-shortcut-item-selected-color: @esf-palette-color;
+@esui-range-calendar-shortcut-item-disabled-color: @esf-palette-muted-color;
+@esui-range-calendar-shortcut-item-separator-color: @esf-palette-muted-color;
+
+.esui-rangecalendar-theme() {
+    background: @esui-range-calendar-main-background;
+    color: @esui-range-calendar-main-color;
+
+    &:hover {
+        background: @esui-range-calendar-main-hover-background;
+    }
+
+    &.@{ui-state-prefix}-active,
+    &:active {
+        background: @esui-range-calendar-main-active-background;
+    }
+
+    &.@{ui-state-prefix}-read-only {
+        color: @esui-range-calendar-main-read-only-color;
+    }
+}
+
+.esui-rangecalendar-layer-theme() {
+    background: @esui-range-calendar-layer-background;
+    border-top: @esui-range-calendar-layer-border-top;
+    border-bottom: @esui-range-calendar-layer-border-bottom;
+    border-left: @esui-range-calendar-layer-border-left;
+    border-right: @esui-range-calendar-layer-border-right;
+    padding: @esui-range-calendar-layer-padding;
+}
+
+.esui-rangecalendar-shortcut-item-theme() {
+    border-left: 1px solid @esui-range-calendar-shortcut-item-separator-color;
+    color: @esui-range-calendar-shortcut-item-color;
+}
+
+.esui-rangecalendar-shortcut-item-selected-theme() {
+    color: @esui-range-calendar-shortcut-item-selected-color;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.esui-rangecalendar-shortcut-item-disabled-theme() {
+    color: @esui-range-calendar-shortcut-item-disabled-color;
+    text-decoration: none;
+}

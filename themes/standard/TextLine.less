@@ -1,0 +1,78 @@
+@import "../../src/css/TextLine.less";
+
+
+@esui-textline-number-column-color: @esf-palette-color;
+@esui-textline-number-column-background: @esf-palette-neutral-color;
+
+.esui-textline-theme() {
+    .esf-input-color-def(
+        @esf-textbox-border-color,
+        @esf-textbox-background,
+        @esf-textbox-text-color
+    );
+
+    &.@{ui-state-prefix}-focus {
+        .esf-input-color-def(
+            @esf-textbox-focus-border-color,
+            @esf-textbox-focus-background,
+            @esf-textbox-focus-text-color
+        );
+    }
+
+    // error
+    &.@{ui-state-prefix}-validity-invalid {
+        .esf-input-color-def(
+            @esf-textbox-error-border-color,
+            @esf-textbox-error-background,
+            @esf-textbox-error-text-color
+        );
+        .placeholder(@esf-textbox-error-text-color);
+    }
+
+    &.@{ui-state-prefix}-read-only {
+        .esf-input-color-def(
+            @esf-textbox-readonly-border-color,
+            @esf-textbox-readonly-background,
+            @esf-textbox-readonly-text-color
+        );
+    }
+
+    &.@{ui-state-prefix}-success,
+    &.@{ui-state-prefix}-success {
+        .esf-input-color-def(
+            @esf-textbox-success-border-color,
+            @esf-textbox-success-background,
+            @esf-textbox-success-text-color
+        );
+        .placeholder(@esf-textbox-success-text-color);
+    }
+
+    // warning
+    &.@{ui-state-prefix}-warning,
+    &.@{ui-state-prefix}-warning {
+        .esf-input-color-def(
+            @esf-textbox-warning-border-color,
+            @esf-textbox-warning-background,
+            @esf-textbox-warning-text-color
+        );
+        .placeholder(@esf-textbox-warning-text-color);
+    }
+}
+
+.esui-textline-numbers-theme() {
+    background: @esui-textline-number-column-background;
+    color: @esui-textline-number-column-color;
+}
+
+// mixins
+.esui-text-line-color(
+    @border,
+    @textareaTextColor,
+    @textareaBackground
+) {
+    border: @border;
+    textarea {
+        background: @textareaBackground;
+        color: @textareaTextColor;
+    }
+}

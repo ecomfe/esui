@@ -1,23 +1,48 @@
 /**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 面包屑样式
- * @author dbear, otakustay
- */
-@import "mixin.less";
-@import "variable.less";
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Breadcrumbs样式
+  * @author yankun01
+*/
+
+@import "Variable.less";
+
+@esui-crumb-padding: 0;
+@esui-crumb-line-height: 1.3;
+@esui-crumb-separator-margin: 0 .5em;
 
 .@{ui-class-prefix}-crumb {
-    overflow: hidden;
-}
-.@{ui-class-prefix}-crumb-node,
-.@{ui-class-prefix}-crumb-separator {
-    padding: 0;
-    float: left;
+    padding: @esui-crumb-padding;
+    line-height: @esui-crumb-line-height;
+    vertical-align: middle;
 }
 
 .@{ui-class-prefix}-crumb-separator {
-    margin: 0 5px;
+    margin: @esui-crumb-separator-margin;
+    .esui-crumb-separator-theme();
 }
 
+a.@{ui-class-prefix}-crumb-node {
+    .esui-crumb-link-node-theme();
+}
+
+span.@{ui-class-prefix}-crumb-node {
+    .esui-crumb-node-theme();
+}
+
+.esui-crumb-node-theme() {}
+.esui-crumb-link-node-theme() {}
+.esui-crumb-separator-theme() {}
+
+// nav variant
+.@{ui-class-prefix}-crumb-nav-container {
+    .esui-crumb-nav-container-theme();
+}
+
+.@{ui-class-prefix}-crumb-nav {
+    .esui-crumb-nav-theme();
+}
+
+.esui-crumb-nav-container-theme() {}
+.esui-crumb-nav-theme() {}

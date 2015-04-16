@@ -26,6 +26,24 @@ require.config({
             'name': 'esui',
             'location': '../src',
             'main': 'main'
+        },
+        {
+            'name': 'eicons',
+            'location': '../dep/eicons/1.0.0-alpha.5/src',
+            'main': 'main.less'
+        },
+        {
+            'name': 'esf',
+            'location': '../dep/esf/1.0.0-alpha.12/src'
+        },
+        {
+            'name': 'est',
+            'location': '../dep/est/1.3.0/src'
+        },
+        {
+            'name': 'eoo',
+            'location': '../dep/eoo/0.1.1/src',
+            'main': 'main'
         }
     ]
 });
@@ -50,30 +68,38 @@ $(function () {
     $('.view').on('click', '.viewer li', viewSource);
     $('.source, .viewer li').on('mousedown', false);
     //$('html').on('mousedown', hideSource);
-    
-    var navItems = 
-        '<li><a href="Panel.html">Panel</a></li>' +
+
+    var navItems =
+        '<li><a href="Button.html">Button</a></li>' +
+        '<li><a href="Calendar.html">Calendar</a></li>' +
+        '<li><a href="Checkbox.html">Checkbox</a></li>' +
+        '<li><a href="BoxGroup.html">Box Group</a></li>' +
+        '<li><a href="CommandMenu.html">Command Menu</a></li>' +
+        '<li><a href="Crumb.html">Crumb</a></li>' +
+        '<li><a href="Dialog.html">Dialog</a></li>' +
+        '<li><a href="Form.html">Form</a></li>' +
         '<li><a href="Label.html">Label</a></li>' +
         '<li><a href="Link.html">Link</a></li>' +
-        '<li><a href="Button.html">Button</a></li>' +
-        '<li><a href="Tip.html">Tip</a></li>' +
-        '<li><a href="TextBox.html">TextBox</a></li>' +
-        '<li><a href="BoxControl.html">BoxControl</a></li>' +
-        '<li><a href="Select.html">Select</a></li>' +
-        '<li><a href="MonthView.html">MonthView</a></li>' +
-        '<li><a href="Calendar.html">Calendar</a></li>' +
-        '<li><a href="RangeCalendar.html">RangeCalendar</a></li>' +
+        '<li><a href="MonthView.html">Month View</a></li>' +
+        '<li><a href="Pager.html">Pager</a></li>' +
+        '<li><a href="Panel.html">Panel</a></li>' +
+        '<li><a href="RangeCalendar.html">Range Calendar</a></li>' +
+        '<li><a href="RichCalendar.html">Rich Calendar</a></li>' +
         '<li><a href="Region.html">Region</a></li>' +
         '<li><a href="Schedule.html">Schedule</a></li>' +
-        '<li><a href="Crumb.html">Crumb</a></li>' +
-        '<li><a href="CommandMenu.html">CommandMenu</a></li>' +
-        '<li><a href="Wizard.html">Wizard</a></li>' +
+        '<li><a href="Select.html">Select</a></li>' +
+        //'<li><a href="Sidebar.html">Sidebar</a></li>' +
+        '<li><a href="SearchBox.html">SearchBox</a></li>' +
         '<li><a href="Tab.html">Tab</a></li>' +
-        '<li><a href="Pager.html">Pager</a></li>' +
-        '<li><a href="Sidebar.html">Sidebar</a></li>' +
-        '<li><a href="Dialog.html">Dialog</a></li>' +
+        '<li><a href="Table.html">Table</a></li>' +
+        '<li><a href="Textbox.html">TextBox</a></li>' +
+        '<li><a href="TextLine.html">TextLine</a></li>' +
+        '<li><a href="Tip.html">Tip</a></li>' +
+        '<li><a href="TipLayer.html">TipLayer</a></li>' +
         '<li><a href="Tree.html">Tree</a></li>' +
-        '<li><a href="Table.html">Table</a></li>';
+        '<li><a href="Toast.html">Toast</a></li>' +
+        '<li><a href="ValidityLabel.html">Validity</a></li>' +
+        '<li><a href="Wizard.html">Wizard</a></li>';
 
     $('#navigator').html(navItems);
 

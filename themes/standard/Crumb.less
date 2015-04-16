@@ -1,0 +1,59 @@
+@import "../../src/css/Crumb.less";
+
+// theme variables
+@esui-crumb-node-text-color: @esf-palette-color;
+@esui-crumb-separator-color: @esf-palette-color;
+
+// nav breadcrumbs variant variables
+@esui-crumb-nav-height: 4em;
+@esui-crumb-nav-background: @esf-palette-neutral-color;
+
+@esui-crumb-nav-node-padding: 0 20px;
+@esui-crumb-nav-node-link-color: @esf-palette-color;
+@esui-crumb-nav-node-link-hover-color: @esf-palette-color;
+@esui-crumb-nav-node-text-color: @esf-palette-primary-color;
+
+@esui-crumb-nav-separator-color: @esf-palette-muted-color;
+@esui-crumb-nav-separator-margin: 0 .5em;
+
+.esui-crumb-node-theme() {
+    color: @esui-crumb-node-text-color;
+}
+
+.esui-crumb-separator-theme() {
+    color: @esui-crumb-separator-color;
+}
+
+// nav variant
+.esui-crumb-nav-container-theme() {
+    background: @esui-crumb-nav-background;
+}
+
+.esui-crumb-nav-theme() {
+    display: inline-block;
+    height: @esui-crumb-nav-height;
+    line-height: @esui-crumb-nav-height;
+    overflow: hidden;
+
+    .@{ui-class-prefix}-crumb-node {
+        padding: @esui-crumb-nav-node-padding;
+    }
+
+    span.@{ui-class-prefix}-crumb-node {
+        color: @esui-crumb-nav-node-text-color;
+    }
+
+    a.@{ui-class-prefix}-crumb-node {
+        color: @esui-crumb-nav-node-link-color;
+        text-decoration: none;
+        &:hover {
+            color: @esui-crumb-nav-node-link-hover-color;
+            text-decoration: underline;
+        }
+    }
+
+    .@{ui-class-prefix}-crumb-separator {
+        margin: @esui-crumb-nav-separator-margin;
+        color: @esui-crumb-nav-separator-color;
+    }
+}

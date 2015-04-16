@@ -85,29 +85,35 @@ define(
         function getMainHTML(monthView) {
             var tpl = [
                 '<div class="${headClass}"><table><tr>',
-                    '<td width="40" align="left">',
+                    '<td class="${monthBackTdClass}">',
                         '<div class="${monthBackClass}"',
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthBack"',
                         ' data-ui-id="${monthBackId}"',
-                        '></div>',
+                        '><span class="${monthBackIcon}"></span></div>',
                     '</td>',
-                    '<td>',
+                    '<td class="${yearSelectTdClass}">',
                         '<div class="${yearSelectClass}"',
-                        ' data-ui="type:Select;childName:yearSel;',
+                        ' data-ui="type:Select;childName:yearSel;variants:compact;',
                         ' id:${yearSelId};"></div>',
                     '</td>',
-                    '<td>',
+                    '<td class="${selectLabelClass}">',
+                        '<div>年</div>',
+                    '</td>',
+                    '<td class="${monthSelectTdClass}">',
                         '<div class="${monthSelectClass}"',
-                        ' data-ui="type:Select;childName:monthSel;',
+                        ' data-ui="type:Select;childName:monthSel;variants:compact;',
                         ' id:${monthSelId};"></div>',
                     '</td>',
-                    '<td width="40" align="right">',
+                    '<td class="${selectLabelClass}">',
+                        '<div>月</div>',
+                    '</td>',
+                    '<td class="${monthForTdClass}">',
                         '<div class="${monthForClass}"',
                         ' data-ui-type="Button"',
                         ' data-ui-child-name="monthForward"',
                         ' data-ui-id="${monthForwardId}"',
-                        '></div>',
+                        '><span class="${monthForwardIcon}"></span></div>',
                     '</td>',
                 '</tr></table></div>',
                 '<div id="${monthMainId}" class="${monthMainClass}"></div>'
@@ -119,7 +125,9 @@ define(
                 {
                     headClass: monthView.helper.getPartClassName('head'),
                     monthBackId: monthView.helper.getId('monthBack'),
+                    monthBackIcon: monthView.helper.getIconClass('caret-left'),
                     monthForwardId: monthView.helper.getId('monthForward'),
+                    monthForwardIcon: monthView.helper.getIconClass('caret-right'),
                     yearSelId: monthView.helper.getId('yearSel'),
                     monthSelId: monthView.helper.getId('monthSel'),
                     monthMainId: monthView.helper.getId('monthMain'),
@@ -131,7 +139,17 @@ define(
                     yearSelectClass:
                         monthView.helper.getPartClassName('year-select'),
                     monthSelectClass:
-                        monthView.helper.getPartClassName('month-select')
+                        monthView.helper.getPartClassName('month-select'),
+                    monthBackTdClass:
+                        monthView.helper.getPartClassName('month-back-td'),
+                    monthForTdClass:
+                        monthView.helper.getPartClassName('month-forward-td'),
+                    yearSelectTdClass:
+                        monthView.helper.getPartClassName('year-select-td'),
+                    monthSelectTdClass:
+                        monthView.helper.getPartClassName('month-select-td'),
+                    selectLabelClass:
+                        monthView.helper.getPartClassName('select-label')
                 }
             );
         }
@@ -232,7 +250,7 @@ define(
             if (monthView.mode === 'multi') {
                 html.push(lib.format(
                     tplRowSelectTpl,
-                    {'id': tplRowSelectId + '-' + rowTagIndex++}
+                    { 'id': tplRowSelectId + '-' + rowTagIndex++ }
                 ));
             }
             while (nextMonth - repeater > 0 || index % 7 !== 0) {
@@ -333,12 +351,13 @@ define(
             while (tar && tar !== document.body) {
                 if (lib.hasClass(tar, itemClasses[0])
                     && !lib.hasClass(tar, virClasses[0])
-                    && !lib.hasClass(tar, disabledClasses[0])) {
+                    && !lib.hasClass(tar, disabledClasses[0])
+                ) {
                     selectByItem(this, tar);
                     return;
                 }
                 // 点击行批量选中
-                else if (this.mode === 'multi'){
+                else if (this.mode === 'multi') {
                     if (lib.hasClass(tar, rowSelectClasses[0])) {
                         selectByTagClick(this, tar);
                         return;
@@ -394,7 +413,7 @@ define(
             var disabledClasses =
                 helper.getPartClasses(monthView, 'month-item-disabled');
                 // 既不是范围外的，又不是虚拟的
-                if(!lib.hasClass(dateItem, virtualClasses[0])
+                if (!lib.hasClass(dateItem, virtualClasses[0])
                     && !lib.hasClass(dateItem, disabledClasses[0])) {
                     return 1;
                 }
@@ -930,7 +949,7 @@ define(
             // 如果year选择的数据没改变，
             // 但可能还是需要重回日历，
             // 因此要手动触发year的change
-            if (+lastYear === me.year) {
+            if (lastYear === (me.year + '')) {
                 yearSelect.fire('change');
             }
 
@@ -1251,6 +1270,13 @@ define(
                 this.setProperties(properties);
             },
 
+            /**
+             * 设置属性
+             * 
+             * @param {Object} properties 属性集合
+             * @override
+             * @protected
+             */
             setProperties: function (properties) {
                 if (properties.range) {
                     properties.range = rangeAdapter(properties.range);

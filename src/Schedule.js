@@ -192,11 +192,13 @@ define(
             var html = [];
 
             var timelineClass = getClass(me, 'time-line');
+            var timelineClassInner = timelineClass + '-inner';
             var bodyHeadId    = getId('body-head');
             html.push(
                 '<div class="', timelineClass, '" id="',
                 bodyHeadId + '">'
             );
+            html.push('<div class="' + timelineClassInner + '">');
 
             var timeHClass = getClass(me, 'time-head');
             for (var i = 0; i <= 24; i = i + 2) {
@@ -208,7 +210,9 @@ define(
                      '</div>'
                 );
             }
-
+            // end of inner
+            html.push('</div>');
+            // end of time line
             html.push('</div>');
 
             return html.join('');
@@ -228,11 +232,12 @@ define(
             html.push('<div id="', dayHId, '" class="', dayHClass, '">');
 
             var dayClass = getClass(me, 'day');
+            var customCheckClass = me.helper.getPrefixClass('checkbox-custom');
             var dayTpl = ''
-                + '<div class="' + dayClass + '">'
+                + '<div class="${dayClass}"><div class="${customCheckClass}">'
                     + '<input type="checkbox" id="${dayId}" value="${value}">'
-                    + '&nbsp;<label for="${dayId}">${dayWord}</label>'
-                + '</div>';
+                    + '<label for="${dayId}">${dayWord}</label>'
+                + '</div></div>';
 
             var dayTexts = me.dayTexts;
             for (var i = 0; i < 7; i++) {
@@ -242,7 +247,9 @@ define(
                         {
                             dayWord: dayTexts[i],
                             dayId: getId(me, 'line-state' + i),
-                            value: i
+                            value: i,
+                            dayClass: dayClass,
+                            customCheckClass: customCheckClass
                         }
                     )
                 );
@@ -360,6 +367,7 @@ define(
          */
         function createSelectedLineCoverTip(schedule, arr, parent, index) {
             var me = schedule;
+            var slotSize = me.slotSize;
             var i = index;
 
             //将当前星期的checkbox先初始化为不选中
@@ -367,7 +375,7 @@ define(
             checkInput.checked = false;
 
             //对于连续选中大于3天的进行遮罩处理
-            var patt = /1{3,}/g;
+            var patt = /1{1,}/g;
             var statusStr = arr.join('');
             var result;
             var coverClass = getClass(me, 'continue-covertimes');
@@ -382,8 +390,8 @@ define(
                 var end = start + length;
 
                 var coverDiv = document.createElement('aside');
-                var cssStyle = ';width:' + length * 25
-                     + 'px;top:0;left:' + start * 25 + 'px;';
+                var cssStyle = ';width:' + length * slotSize
+                    + 'px;top:0;left:' + start * slotSize + 'px;';
 
                 //设置星期checkbox的选中值
                 checkInput.checked = length === 24 ? true : false;
@@ -394,16 +402,18 @@ define(
                 coverDiv.className = coverClass;
                 coverDiv.style.cssText += cssStyle;
 
-                coverDiv.innerHTML = lib.format(
-                    coverTpl,
-                    {
-                        start: start,
-                        end: end,
-                        text: length === 24
-                            ? '全天投放' : start + ':00-' + end + ':00',
-                        coverClass: getClass(me, 'covertimes-tip')
-                    }
-                );
+                if (length > 2) {
+                    coverDiv.innerHTML = lib.format(
+                        coverTpl,
+                        {
+                            start: start,
+                            end: end,
+                            text: length === 24
+                                ? '全天投放' : start + ':00-' + end + ':00',
+                            coverClass: getClass(me, 'covertimes-tip')
+                        }
+                    );
+                }
 
                 parent.appendChild(coverDiv);
 
@@ -468,8 +478,9 @@ define(
                 tipElement.innerHTML = tipText;
             }
             else {
-                var cssStyle = ''
-                    + ';position:absolute;z-index:5000;background:#fff6bd;top:'
+                var cssStyle = 'font-size:'
+                    + lib.getComputedStyle(me.main, 'fontSize')
+                    + ';position:absolute;top:'
                     + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');
@@ -488,7 +499,6 @@ define(
 
             //添加setTimeout,防止拖动的时候闪耀
             me.tipElementTime = setTimeout(function () {
-
                 tipElement.style.display = 'block';
             }, 100);
 
@@ -696,7 +706,6 @@ define(
             var time = parseInt(element.getAttribute('data-time'), 10);
             var day  = parseInt(element.getAttribute('data-day'), 10);
 
-
             //创立并显示提示tip
             var tipText = lib.format(timeTipTpl,
                 {
@@ -713,10 +722,12 @@ define(
             var tipId = getId(me, 'timeitem-tip');
 
             showPromptTip(me, tipId, mousepos, tipText);
+            repaintCovers.call(this, day, time);
+        }
 
-
+        function repaintCovers(day, time) {
             //重新计算所有遮罩层的显示
-            var timebody = lib.g(getId(me, 'time-body'));
+            var timebody = lib.g(getId(this, 'time-body'));
             var timeCovers = timebody.getElementsByTagName('aside');
 
             for (var i = 0, len = timeCovers.length; i < len; i++) {
@@ -749,9 +760,10 @@ define(
             var target = lib.event.getTarget(e);
 
             if (!target || !target.getAttribute('data-time-item')) {
-
                 return;
             }
+
+            repaintCovers.call(this, 0, 0);
 
             //移除hover效果
             lib.removeClasses(
@@ -912,6 +924,7 @@ define(
             var timeBodyPos  = me.dragRange;
             var dragStartPos = me.dragStartPos;
             var rangePos = {};
+            var slotSize = me.slotSize;
 
             //计算拖动遮罩层的结束鼠标点
             if (mousepos.x <= timeBodyPos[1]
@@ -935,13 +948,13 @@ define(
             var cellrange = { startcell: {}, endcell: {} };
             //计算拖动遮罩层覆盖区域位置
             cellrange.startcell.x =
-                Math.floor((dragStartPos.x - me.dragRange[3]) / 25);
+                Math.floor((dragStartPos.x - me.dragRange[3]) / slotSize);
             cellrange.startcell.y =
-                Math.floor((dragStartPos.y - me.dragRange[0]) / 25);
+                Math.floor((dragStartPos.y - me.dragRange[0]) / slotSize);
             cellrange.endcell.x =
-                Math.floor((rangePos.x - me.dragRange[3]) / 25);
+                Math.floor((rangePos.x - me.dragRange[3]) / slotSize);
             cellrange.endcell.y =
-                Math.floor((rangePos.y - me.dragRange[0]) / 25);
+                Math.floor((rangePos.y - me.dragRange[0]) / slotSize);
 
             if (cellrange.endcell.x >= 23) {
                 cellrange.endcell.x = 23;
@@ -960,6 +973,7 @@ define(
          */
         function repaintFollowEle(schedule, cellPos) {
             var me = schedule;
+            var slotSize = schedule.slotSize;
 
             var followEleId = getId(schedule, 'follow-item');
             var followEle = lib.g(followEleId);
@@ -984,21 +998,21 @@ define(
 
 
             if (endcellY >= startcellY) {
-                divTop = startcellY * 25;
-                divHeight = (endcellY - startcellY + 1) * 25 - 2;
+                divTop = startcellY * slotSize;
+                divHeight = (endcellY - startcellY + 1) * slotSize - 2;
             }
             else {
-                divTop = endcellY * 25;
-                divHeight = (startcellY - endcellY + 1) * 25 - 2;
+                divTop = endcellY * slotSize;
+                divHeight = (startcellY - endcellY + 1) * slotSize - 2;
             }
 
             if (endcellX >= startcellX) {
-                divLeft = startcellX * 25;
-                divWidth = (endcellX - startcellX + 1) * 25 - 2;
+                divLeft = startcellX * slotSize;
+                divWidth = (endcellX - startcellX + 1) * slotSize - 2;
             }
             else {
-                divLeft = endcellX * 25;
-                divWidth = (startcellX - endcellX + 1) * 25 - 2;
+                divLeft = endcellX * slotSize;
+                divWidth = (startcellX - endcellX + 1) * slotSize - 2;
             }
 
             var cssStyles = ''
@@ -1006,8 +1020,7 @@ define(
                 + ';width:' + divWidth + 'px'
                 + ';height:' + divHeight + 'px'
                 + ';top:' + divTop + 'px'
-                + ';left:' + divLeft + 'px'
-                + ';background:#faffbe';
+                + ';left:' + divLeft + 'px';
 
             followEle.style.cssText += cssStyles;
         }
@@ -1123,6 +1136,20 @@ define(
             schedule.setRawValue(rawValueCopy);
         }
 
+        function checkSlotSize(schedule) {
+            var html = '<div class="${testSlotClass}"></div>';
+            var ele = schedule.main;
+
+            ele.innerHTML = lib.format(
+                html,
+                {
+                    testSlotClass: 
+                        schedule.helper.getPartClasses('slot-tester').join(' ')
+                }
+            );
+            schedule.slotSize = parseFloat(lib.getComputedStyle(ele.firstChild, 'width'));
+        }
+
         Schedule.prototype = {
 
             constructor: Schedule,
@@ -1178,8 +1205,8 @@ define(
             initStructure: function () {
                 var me = this;
 
+                checkSlotSize(me);
                 this.main.tabIndex = 0;
-
                 var tpl = ''
                     + '<input type="hidden" name="${name}" id="${inputId}"/>'
                     + '<div class="${bodyClass}" id="${bodyId}"></div>'
@@ -1299,15 +1326,14 @@ define(
                 {
                     name: 'disabled',
                     paint: function (schedule, value) {
-
                         setDayCheckboxState(schedule, 'disabled', value);
                     }
                 },
                 {
-                    name: 'readonly',
+                    name: 'readOnly',
                     paint: function (schedule, value) {
-
-                        setDayCheckboxState(schedule, 'readonly', value);
+                        // checkbox没有readonly 状态，因此只能屏蔽它们了
+                        setDayCheckboxState(schedule, 'disabled', value);
                     }
                 }
             ),

@@ -1,0 +1,33 @@
+@import "../../src/css/Calendar.less";
+@import "Layer.less";
+@import "MonthView.less";
+
+// core variable overrides
+@esui-calendar-height: @esf-single-line-control-height;
+
+// theme variables
+@esui-calendar-border: none;
+@esui-calendar-background: @esf-palette-neutral-color;
+@esui-calendar-color: @esf-palette-color;
+@esui-calendar-hover-background: @esf-palette-neutral-highlight-color;
+@esui-calendar-active-background: @esf-palette-neutral-shadow-color;
+
+@esui-calendar-readonly-color: @esf-palette-muted-color;
+@esui-calendar-readonly-background: @esf-palette-neutral-color;
+
+.esui-calendar-theme() {
+    background: @esui-calendar-background;
+    border: @esui-calendar-border;
+    color: @esui-calendar-color;
+    &:focus,
+    &:hover {
+        background: @esui-calendar-hover-background;
+    }
+    &.@{ui-state-prefix}-active {
+        background: @esui-calendar-active-background;
+    }
+    &.@{ui-state-prefix}-read-only {
+        color: @esui-calendar-readonly-color;
+        background: @esui-calendar-readonly-background;
+    }
+}

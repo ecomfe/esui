@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Select - ESUI Demo</title>
+    <script src="../assets/loader/esl.js"></script>
+    
+    <script src="../assets/jquery-1.9.1.min.js"></script>
+    <script src="../assets/demo.js"></script>
+    <script src="../assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../assets/prism.css" />
+    <link rel="stylesheet" href="../assets/themes/standard.css" />
+</head>
+<body>
+    <h1 id="branding">ESUI - Select</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>缺省样式</h2>
+            <section class="intro">
+                <p>把标准的Select变成一个自定义的下拉列表。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div class="row">
+                        <select data-ui-type="Select" data-ui-id="test" data-ui-width="200" name="test" data-ui-selected-index="1">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <select data-ui-variants="primary"
+                                 data-ui-type="Select"
+                                 data-ui-id="toolbar" data-ui-width="200" name="test" data-ui-selected-index="1">
+                            <option value="All">I can use all those programming languages. Do you believe it?</option>
+                            <option value="ActionScript">ActionScript</option>
+                            <option value="AppleScript">AppleScript</option>
+                            <option value="Asp">Asp</option>
+                            <option value="BASIC">BASIC</option>
+                            <option value="C">C</option>
+                            <option value="C++">C++</option>
+                            <option value="Clojure">Clojure</option>
+                            <option value="COBOL">COBOL</option>
+                            <option value="ColdFusion">ColdFusion</option>
+                            <option value="Erlang">Erlang</option>
+                            <option value="Fortran">Fortran</option>
+                            <option value="Groovy">Groovy</option>
+                            <option value="Haskell">Haskell</option>
+                            <option value="Java">Java</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Lisp">Lisp</option>
+                            <option value="Perl">Perl</option>
+                            <option value="PHP">PHP</option>
+                            <option value="Python">Python</option>
+                            <option value="Ruby">Ruby</option>
+                            <option value="Scala">Scala</option>
+                            <option value="Scheme">Scheme"</option>
+                        </select>
+                    </div>
+                    <div class="row" style="padding: 1em; background: #E1F5F1">
+                        <select data-ui-variants="compact" data-ui-type="Select">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            <h2>状态</h2>
+            <section class="intro">
+                <p>支持的状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <h3>不可用</h3>
+                    <div class="row">
+                        <select
+                                 data-ui-type="Select"
+                                 data-ui-width="200" disabled="disabled">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <select data-ui-variants="primary"
+                                 data-ui-type="Select"
+                                 data-ui-width="200" disabled="disabled">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <h3>只读</h3>
+                    <div class="row">
+                        <select data-ui-type="Select" readonly="readonly">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <select data-ui-variants="primary" data-ui-type="Select" readonly="readonly">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <h3>错误</h3>
+                    <div class="row">
+                        <select data-ui-id="error" data-ui-type="Select" data-ui-width="200">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <select data-ui-variants="primary" data-ui-id="error-primary" data-ui-type="Select" data-ui-width="200">
+                            <option value="1">选项 1</option>
+                            <option value="2">选项 2</option>
+                            <option value="3">选项 3</option>
+                            <option value="1" disabled>禁用的选项 4</option>
+                            <option value="2">Group</option>
+                            <option value="3">选项</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            <h2>文本框组合</h2>
+            <section class="intro">
+                <p>支持的状态。</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div class="row">
+                        <div class="ui-textbox-wrapper">
+                            <input id="text-box-normal"
+                                data-ui-type="TextBox"
+                                data-ui-mode="text"
+                                data-ui-width="auto" />
+                            <div class="ui-textbox-addon">
+                                <select data-ui-type="Select">
+                                    <option value="1">选项 1</option>
+                                    <option value="2">选项 2</option>
+                                    <option value="3">选项 3</option>
+                                    <option value="1" disabled>禁用的选项 4</option>
+                                    <option value="2">Group</option>
+                                    <option value="3">选项</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-textbox-wrapper">
+                            <div class="ui-textbox-addon">
+                                <select data-ui-type="Select" data-ui-variants="primary">
+                                    <option value="1">选项 1</option>
+                                    <option value="2">选项 2</option>
+                                    <option value="3">选项 3</option>
+                                    <option value="1" disabled>禁用的选项 4</option>
+                                    <option value="2">Group</option>
+                                    <option value="3">选项</option>
+                                </select>
+                            </div>
+                            <input id="text-box-normal"
+                                data-ui-type="TextBox"
+                                data-ui-mode="text" data-ui-width="auto" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Select',
+                'esui/Textbox'
+            ],
+            function (ui) {
+                ui.init();
+                var select = ui.get('error');
+                select.showValidationMessage('invalid', 'There is an error.');
+                select = ui.get('error-primary');
+                select.showValidationMessage('invalid', 'There is an error.');
+            }
+        )
+    </script>
+</body>
+</html>

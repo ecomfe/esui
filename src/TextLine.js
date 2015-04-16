@@ -37,7 +37,7 @@ define(
             var textareaHTML = ''
                 + '<textarea wrap="off" '
                 + 'id="'+ textLine.helper.getId('text') + '"'
-                + '</textarea>';
+                + '></textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                     '1', // 默认至少有一行
@@ -60,7 +60,6 @@ define(
                 refreshLineNum.call(this);
             }
         }
-
 
         /**
          * 重置行号，增加内容和`keyup`时可调用
@@ -85,6 +84,22 @@ define(
             this.fire('change');
         }
 
+        function inputFocus() {
+            var me = this;
+            var mainElement = me.main;
+            var helper = me.helper;
+            var focusClass = helper.getPrimaryClassName('focus');
+            var textArea = helper.getPart('text');
+            var blurEvent = function () {
+                lib.removeClass(mainElement, focusClass);
+                me.removeState('focus');
+                helper.removeDOMEvent(textArea, 'blur', blurEvent);
+            };
+
+            lib.addClass(mainElement, focusClass);
+            me.addState('focus');
+            helper.addDOMEvent(textArea, 'blur', blurEvent);
+        }
 
         TextLine.prototype = {
             /**
@@ -154,6 +169,7 @@ define(
                     : 'propertychange';
                 this.helper.addDOMEvent(textArea, inputEvent, refreshOnInput);
                 this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
+                this.helper.addDOMEvent(textArea, 'focus', inputFocus);
             },
 
             /**

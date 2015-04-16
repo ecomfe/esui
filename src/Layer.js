@@ -101,9 +101,32 @@ define(
          * @return {HTMLElement}
          */
         Layer.prototype.create = function () {
+            var control = this.control;
+            var helper = control.helper;
             var element =
-                this.control.helper.createPart('layer', this.nodeName);
+                helper.createPart('layer', this.nodeName);
             lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
+            if (control.inheritFont || ui.getConfig('inheritFont')) {
+                element.style.fontSize = lib.getComputedStyle(control.main, 'fontSize');
+            }
+
+            // 现阶段许多layer都漂浮在body下面。
+            // 因此父组件的variant常常对。
+            // 这里添加variant信息到layer上以方便定义variant样式。
+            var variants = control.variants;
+            var variantsCls = [];
+            if (variants) {
+                variants = typeof variants === 'string'
+                    ? variants.split(' ')
+                    : variants;
+
+                // 处理过一次在control render时候就不处理了。
+                control.variants = variants;
+                u.each(variants, function (v) {
+                    variantsCls.push(helper.getPrimaryClassName('layer-' + v));
+                });
+                lib.addClasses(element, variantsCls);
+            }
 
             if (this.autoHide) {
                 this.enableAutoHide(element);
@@ -119,7 +142,7 @@ define(
          */
         Layer.prototype.addCustomClasses = function (layerClassNames) {
            var element = this.getElement();
-            lib.addClasses(element, layerClassNames);
+           lib.addClasses(element, layerClassNames);
         };
 
         /**
@@ -145,6 +168,7 @@ define(
          */
         Layer.prototype.repaint = function () {
             var element = this.getElement(false);
+
             if (element) {
                 this.render(element);
             }

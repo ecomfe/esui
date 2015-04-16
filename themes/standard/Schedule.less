@@ -1,0 +1,82 @@
+@import "../../src/css/Schedule.less";
+
+// theme variables
+@esui-schedule-background: @esf-palette-neutral-color;
+@esui-schedule-unselected-slot-background: @esf-palette-white;
+@esui-schedule-unselected-slot-border: 1px solid @esf-palette-border;
+@esui-schedule-selected-slot-background: @esf-palette-primary-highlight-l10-color;
+@esui-schedule-slot-hover-background: @esf-palette-light-bg-hightlight-color;
+@esui-schedule-slot-hover-border: 1px solid @esf-palette-border;
+
+@esui-schedule-shortcut-item-background: @esf-palette-primary-color;
+@esui-schedule-shortcut-item-color: @esf-palette-contrast-color;
+@esui-schedule-shortcut-item-hover-background: @esf-palette-primary-highlight-color;
+@esui-schedule-shortcut-item-active-background: @esf-palette-primary-shadow-color;
+
+@esui-schedule-continue-covertimes-background: @esui-schedule-selected-slot-background;
+@esui-schedule-continue-covertimes-color: @esf-palette-primary-color;
+
+@esui-schedule-tip-background: @esf-palette-primary-highlight-l10-color;
+@esui-schedule-tip-color: @esf-palette-muted-color;
+@esui-schedule-tip-border: 1px solid @esf-palette-primary-highlight-l5-color;
+
+@esui-schedule-schedule-follow-item-border: 1px dotted darken(@esf-palette-light-bg-hightlight-color, 20%);
+@esui-schedule-schedule-follow-item-background: @esf-palette-light-bg-hightlight-color;
+
+@esui-schedule-schedule-read-only-color: @esf-palette-muted-color;
+
+.esui-schedule-theme() {
+    background: @esui-schedule-background;
+}
+
+.esui-schedule-shortcut-item-theme() {
+    background: @esui-schedule-shortcut-item-background;
+    color: @esui-schedule-shortcut-item-color;
+    &:hover {
+        background: @esui-schedule-shortcut-item-hover-background;
+    }
+    &:active {
+        background: @esui-schedule-shortcut-item-active-background;
+    }
+}
+
+.esui-schedule-time-body-theme() {
+    border: @esui-schedule-unselected-slot-border;
+}
+
+.esui-schedule-selected-slot-theme() {
+    background: @esui-schedule-selected-slot-background;
+    border: @esui-schedule-unselected-slot-border;
+}
+
+.esui-schedule-unselected-slot-theme() {
+    background: @esui-schedule-unselected-slot-background;
+    border: @esui-schedule-unselected-slot-border;
+}
+
+.esui-schedule-time-hover-theme() {
+    border: @esui-schedule-slot-hover-border;
+    background: @esui-schedule-slot-hover-background;
+}
+
+.esui-schedule-tip-theme() {
+    background: @esui-schedule-tip-background;
+    color: @esui-schedule-tip-color;
+    border: @esui-schedule-tip-border;
+    .box-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+}
+
+.esui-schedule-schedule-follow-item-theme() {
+    border: @esui-schedule-schedule-follow-item-border;
+    background: @esui-schedule-schedule-follow-item-background
+}
+
+.esui-schedule-continue-covertimes-theme() {
+    .opacity(80);
+    background: @esui-schedule-continue-covertimes-background;
+    color: @esui-schedule-continue-covertimes-color;
+}
+
+.esui-schedule-read-only-theme() {
+    color: @esui-schedule-schedule-read-only-color;
+}

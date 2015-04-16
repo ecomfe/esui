@@ -71,7 +71,10 @@ define(
         };
 
         SelectLayer.prototype.initBehavior = function (element) {
-            this.control.helper.addDOMEvent(element, 'click', selectValue);
+            var helper = this.control.helper;
+
+            helper.addDOMEvent(element, 'click', selectValue);
+            lib.addClass(element, helper.getPrefixClass('dropdown'));
         };
 
         SelectLayer.prototype.syncState = function (element) {
@@ -204,7 +207,8 @@ define(
          */
         Select.prototype.initOptions = function (options) {
             var defaults = {
-                datasource: []
+                datasource: [],
+                tabIndex: 0
             };
 
             var properties = {};
@@ -311,14 +315,24 @@ define(
          * @override
          */
         Select.prototype.initStructure = function () {
+            var helper = this.helper;
+            var arrow = 'arrow';
+            var span = 'span';
+            var mainElement = this.main;
+
             // 如果主元素是`<select>`，删之替换成`<div>`
-            if (this.main.nodeName.toLowerCase() === 'select') {
-                this.helper.replaceMain();
+            if (mainElement.nodeName.toLowerCase() === 'select') {
+                helper.replaceMain();
+                mainElement = this.main;
             }
 
-            this.main.tabIndex = 0;
+            mainElement.tabIndex = this.tabIndex;
 
-            this.main.innerHTML = this.helper.getPartHTML('text', 'span');
+            var innerSelectElement = helper.createPart('inner', 'div');
+            innerSelectElement.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
+            mainElement.appendChild(innerSelectElement);
+
+            lib.addClass(helper.getPart(arrow), helper.getIconClass());
         };
 
         /**
@@ -348,7 +362,11 @@ define(
             var selectedItem = select.selectedIndex === -1
                 ? null
                 : select.datasource[select.selectedIndex];
-            textHolder.innerHTML = select.getDisplayHTML(selectedItem);
+            var text = select.getDisplayHTML(selectedItem);
+
+            textHolder.innerHTML = text;
+            // to show hidden text as tool tip.
+            textHolder.title = text;
 
             var layerElement = select.layer.getElement(false);
             if (layerElement) {
@@ -392,6 +410,7 @@ define(
              * @property {number} height
              *
              * 高度，指浮层未展开时的可点击元素的高度， **与浮层高度无关**
+             * 不推荐使用这个属性来定义高度了。 直接通过CSS定义全局高度。
              */
             paint.style('height'),
             {

@@ -1,0 +1,69 @@
+@import "../../src/css/Box.less";
+
+// button中样式变量多继承自esf Button的变量
+.esui-boxgroup-button-style-theme() {
+    label {
+        .esf-button();
+        .esf-button-theme();
+    }
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label {
+        background: @esf-button-active-background-color;
+    }
+}
+
+.esui-boxgroup-button-style-primary-theme() {
+    label {
+        .esf-button-primary-theme();
+    }
+
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background: @esf-button-primary-active-background-color;
+    }
+}
+
+.esui-boxgroup-button-style-success-theme() {
+    label {
+        .esf-button-success-theme();
+    }
+
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background: @esf-button-success-active-background-color;
+    }
+}
+
+.esui-boxgroup-button-style-info-theme() {
+    label {
+        .esf-button-info-theme();
+    }
+
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background: @esf-button-info-active-background-color;
+    }
+}
+
+.esui-boxgroup-button-style-warning-theme() {
+    label {
+        .esf-button-warning-theme();
+    }
+
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background: @esf-button-warning-active-background-color;
+    }
+}
+
+.esui-boxgroup-button-style-danger-theme() {
+    label {
+        .esf-button-danger-theme();
+    }
+
+    .@{ui-class-prefix}-boxgroup-wrapper-checked label{
+        background: @esf-button-danger-active-background-color;
+    }
+}
+
+.@{ui-class-prefix}-boxgroup-button-style-separated {
+    // IE8 doesn't support :not selector.
+    .@{ui-class-prefix}-boxgroup-wrapper:not(:last-child) label {
+        border-right: 1px solid @esf-button-group-separator-color;
+    }
+}

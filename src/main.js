@@ -25,7 +25,7 @@ define(
          * @type {string}
          * @readonly
          */
-        main.version = '3.1.0';
+        main.version = '3.1.0-beta.3';
 
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
@@ -53,7 +53,8 @@ define(
             viewContextAttr: 'data-ctrl-view-context',
             uiClassPrefix: 'ui',
             skinClassPrefix: 'skin',
-            stateClassPrefix: 'state'
+            stateClassPrefix: 'state',
+            inheritFont: true
         };
 
         /**

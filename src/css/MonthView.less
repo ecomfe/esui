@@ -5,176 +5,188 @@
  * @file 单日历样式
  * @author dbear
  */
-@import "mixin.less";
-@import "variable.less";
+
+@esui-monthview-month-item-width: 2.5em;
+@esui-monthview-month-item-height: 2.5em;
+
+@esui-monthview-background: #fff;
+@esui-monthview-border: 1px solid #e1e1e1;
+
+@esui-monthview-head-background: #e1f5f1;
+@esui-monthview-head-arrow-color: #666;
+@esui-monthview-head-arrow-hover-color: #333;
+@esui-monthview-head-arrow-active-color: #222;
+
+@esui-monthview-month-border: none;
+
+@esui-monthview-month-title-background: #f6f6f6;
+@esui-monthview-month-title-color: #666;
+
+@esui-monthview-month-title-selected-background: #ccced4;
+
+@esui-monthview-month-item-color: #333;
+@esui-monthview-month-item-border: none;
+@esui-monthview-month-item-background: #fff;
+@esui-monthview-month-item-hover-background: #fffaee;
+@esui-monthview-month-item-selected-background: #e2f4ef;
+@esui-monthview-month-item-selected-color: #68c1a4;
+@esui-monthview-month-item-virtual-date-color: #999;
+@esui-monthview-month-item-virtual-date-background: none;
+@esui-monthview-month-item-disabled-background: none;
+@esui-monthview-month-item-disabled-color: #999;
+@esui-monthview-month-item-today-color: #6cc9ab;
+
+@esui-monthview-month-row-selector-background: #f6f6f6;
+@esui-monthview-month-row-selector-selected-background: #ccced4;
+
+@esui-monthview-font-family: STHeiti, SimSun;
 
 .@{ui-class-prefix}-monthview {
-    background:#fff;
-    width:210px;
-    .user-select();
+    background: @esui-monthview-background;
+    border: @esui-monthview-border;
+    .box-sizing(border-box);
+    position: relative;
+    display: inline-block;
+    table {
+        width: 100%;
+        table-layout: auto;
+    }
 }
 
+// 日历选择头部
 .@{ui-class-prefix}-monthview-head {
-    background: none repeat scroll 0 0 #CCCED4;
-    height: 27px;
-    padding: 2px 5px;
+    background: @esui-monthview-head-background;
+}
 
-    table {width:200px;}
-
-    /** 先前向后按钮 */
-    .@{ui-class-prefix}-monthview-month-select,
-    .@{ui-class-prefix}-monthview-year-select {
-        width: 30px;
+// 向前向后按钮
+.@{ui-class-prefix}-monthview-month-back,
+.@{ui-class-prefix}-monthview-month-forward {
+    background: none;
+    color: @esui-monthview-head-arrow-color;
+    
+    &:hover {
+        color: @esui-monthview-head-arrow-hover-color;
+        background: none;
     }
-
-    .@{ui-class-prefix}-monthview-month-forward,
-    .@{ui-class-prefix}-monthview-month-back {
-        .background(url(../img/esui.png), repeat, 0px, -200px);
-        font-size: 1px;
-        height: 20px;
-        width: 20px;
-        padding: 0;
-        float: left;
-        &:active {
-            .background(url(../img/esui.png), repeat, 0px, -200px);
-            height: 20px;
-        }
+    &:active {
+        color: @esui-monthview-head-arrow-active-color;
+        background: none;
     }
+}
 
-    .@{ui-class-prefix}-monthview-month-forward {
-        background-position: -20px -200px;
-        margin-left: 15px;
-        &:active {
-            background-position: -20px -200px;
-        }
-    }
+.@{ui-class-prefix}-monthview-year-select-td {
+    width: 5em;
+}
+
+.@{ui-class-prefix}-monthview-month-select-td {
+    width: 4em;
+}
+
+.@{ui-class-prefix}-monthview-select-label {
+    width: 1em;
+}
+
+.@{ui-class-prefix}-monthview-month-forward-td {
+    text-align: right;
 }
 
 .@{ui-class-prefix}-monthview-month {
-    border:1px solid #ccced4;
-    font-size:13px;
-
-    table {
-        width: 100%;
-    }
+    border: @esui-monthview-month-border;
 }
 
 .@{ui-class-prefix}-monthview-month-title {
-    width:29px;
-    height:21px;
-    line-height:21px;
-    background:#f1f1f1;
-    color:#666;
-    text-align:center;
+    background: @esui-monthview-month-title-background;
+    color: @esui-monthview-month-title-color;
+    width: @esui-monthview-month-item-width;
+    height: @esui-monthview-month-item-height;
+    line-height: @esui-monthview-month-item-height;
+    text-align: center;
 }
 
 .@{ui-class-prefix}-monthview-month-title-selected {
-    background: #CCCED4;
+    background: @esui-monthview-month-title-selected-background;
 }
 
 .@{ui-class-prefix}-monthview-month-item {
-    width: 19px;
-    height: 21px;
-    line-height: 21px;
-    cursor: pointer;
-    color: #03c;
+    width: @esui-monthview-month-item-width;
+    height: @esui-monthview-month-item-height;
+    line-height: @esui-monthview-month-item-height;
+    color: @esui-monthview-month-item-color;
+    border-bottom: @esui-monthview-month-item-border;
+    background: @esui-monthview-month-item-background;
     text-align: center;
-    border-bottom: 1px solid #f1f1f1;
-}
-
-.@{ui-class-prefix}-monthview-last-row .@{ui-class-prefix}-monthview-month-item {
-    border-bottom: none;
+    cursor: pointer;
+    font-family: @esui-monthview-font-family;
 }
 
 .@{ui-class-prefix}-monthview-month-item:hover {
-    background:#e4eaf9;
+    background: @esui-monthview-month-item-hover-background;
+}
+
+.@{ui-class-prefix}-monthview-month-item-today {
+    color: @esui-monthview-month-item-today-color;
 }
 
 .@{ui-class-prefix}-monthview-month-item-selected {
-    background:#fff6bd;
-    color:#333;
-    font-weight:bold;
+    background: @esui-monthview-month-item-selected-background;
+    color: @esui-monthview-month-item-selected-color;
 }
 
 .@{ui-class-prefix}-monthview-month-item-virtual,
 .@{ui-class-prefix}-monthview-month-item-out {
-    color:#888;
-    cursor:default;
-    background:#fff;
+    color: @esui-monthview-month-item-virtual-date-color;
+    background: @esui-monthview-month-item-virtual-date-background;
+    cursor: default;
     &:hover {
-        background:#fff;
+        background: @esui-monthview-month-item-virtual-date-background;
     }
 }
 
 .@{ui-class-prefix}-monthview-month-item-disabled {
-    background: #ddd;
-    cursor:default;
+    background: @esui-monthview-month-item-disabled-background;
+    color: @esui-monthview-month-item-disabled-color;
+    cursor: default;
     &:hover {
-        background:#ddd;
+        background: @esui-monthview-month-item-disabled-background;
     }
+}
+
+// 这个状态在range calendar中用到了。在这里统一管理。
+.@{ui-class-prefix}-monthview-month-item-highlight {
+    background: @esui-monthview-month-item-selected-background;
 }
 
 // 多选模式
 .@{ui-class-prefix}-monthview-multi-select {
-    width: 220px;
-    .@{ui-class-prefix}-monthview-head {
-        table {width:215px;}
-    }
-
+    width: 8 * @esui-monthview-month-item-width;
     .@{ui-class-prefix}-monthview-month-select-all {
-        width: 15px;
-        height:21px;
-        line-height: 21px;
-        background: #f1f1f1;
-        text-align: center;
+        width: @esui-monthview-month-item-width;
+        height: @esui-monthview-month-item-height;
+        background: @esui-monthview-month-row-selector-background;
         cursor: pointer;
-        &:hover {
-            background: #f1f1f1;
-        }
     }
 
     .@{ui-class-prefix}-monthview-month-select-all-selected {
-        background: #CCCED4;
+        background: @esui-monthview-month-row-selector-selected-background;
     }
 
     .@{ui-class-prefix}-monthview-month-row-select {
-        background: #f1f1f1;
-        height: 21px;
-        line-height: 21px;
+        background: @esui-monthview-month-row-selector-background;
+        border-bottom: @esui-monthview-month-item-border;
         text-align: center;
-        border-bottom: 1px solid #f1f1f1;
         cursor: pointer;
     }
     .@{ui-class-prefix}-monthview-month-row-select-selected {
-        background: #CCCED4;
+        background: @esui-monthview-month-row-selector-selected-background;
+    }
+    .@{ui-class-prefix}-monthview-month-title {
+        cursor: pointer;
     }
 }
 
+// disable状态
 .@{ui-class-prefix}-monthview-disabled {
-    /** 先前向后按钮 */
-    .@{ui-class-prefix}-monthview-month-forward,
-    .@{ui-class-prefix}-monthview-month-back {
-        background-position: 0 -240px;
-        &:active {
-            .background(url(../img/esui.png), repeat, 0px, -240px);
-            height: 20px;
-            border-color: #CFCFCF;
-        }
-    }
-
-    .@{ui-class-prefix}-monthview-month-forward {
-        background-position: -20px -240px;
-        &:active {
-            background-position: -20px -240px;
-            border-color: #CFCFCF;
-        }
-    }
-
     .@{ui-class-prefix}-monthview-month-item {
-        background: #ddd;
-        cursor:default;
-        &:hover {
-            background:#ddd;
-        }
+        cursor: not-allowed;
     }
 }

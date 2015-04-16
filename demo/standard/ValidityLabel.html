@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Validity Label - ESUI Demo</title>
+        <script src="../assets/loader/esl.js"></script>
+        
+        <script src="../assets/jquery-1.9.1.min.js"></script>
+        <script src="../assets/demo.js"></script>
+        <script src="../assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
+    </head>
+    <body>
+        <h1 id="branding">ESUI - Validity Label</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>验证信息标签可以放置到其他位置</h2>
+                <section class="intro">
+                    <p>Validity Label</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <h3>文字不能为空</h3>
+                        <div id="container" class="container">
+                        </div>
+                        <div id="validator">
+                        
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/TextBox',
+                'esui/Validity',
+                'esui/validator/RequiredRule'
+            ],
+            function (ui, TextBox, ValidityLabel) {
+                var validityLabel = new ValidityLabel({
+                    id: 'test-validity'
+                });
+
+                var textbox = new TextBox({
+                    id: 'test',
+                    validityLabel: 'test-validity',
+                    mode: 'textarea',
+                    required: true,
+                    requiredErrorMessage: '不能为空 <a href="http://www.baidu.com">百度一下</a>'
+                });
+                textbox.appendTo(document.getElementById('container'));
+                textbox.on('input', function () { this.validate(); });
+                validityLabel.appendTo(document.getElementById('validator'));
+                textbox.validate();
+            }
+        )
+        </script>
+    </body>
+</html>

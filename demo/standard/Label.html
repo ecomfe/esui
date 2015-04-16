@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Label - ESUI Demo</title>
+        <script src="../assets/loader/esl.js"></script>
+        
+        <script src="../assets/jquery-1.9.1.min.js"></script>
+        <script src="../assets/demo.js"></script>
+        <script src="../assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
+    </head>
+    <body>
+        <h1 id="branding">ESUI - Label</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>无样式Label</h2>
+                <section class="intro">
+                    <p>基本Label。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <strong data-ui-type="Label">Hello Label!</strong>
+                        <esui-label data-ui-type="Label">Custom Label!</esui-label>
+                        <button class="ui-button" id="op-show">show</button>
+                        <button class="ui-button" id="op-hide">hide</button>
+                        <button class="ui-button" id="op-toggle">toggle</button>
+                        <button class="ui-button" id="op-set-text">set text</button>
+                        <button class="ui-button" id="op-set-content">set content</button>
+                    </div>
+                </section>
+                <h2>预设样式Label</h2>
+                <section class="intro">
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <h2>箭头Label</h2>
+                        <div class="row">
+                            <label data-ui-type="Label" data-ui-variants="custom primary pointer-right">Primary Pointer Right</label>
+                        </div>
+                        <div class="row">
+                            <label data-ui-type="Label" data-ui-variants="custom info pointer-left">Info Pointer Left</label>
+                        </div>
+                        <div class="row">
+                            <label data-ui-type="Label" data-ui-variants="custom warning pointer-bottom">Warning Pointer Bottom</label>
+                        </div>
+                        <div class="row">
+                            <label data-ui-type="Label" data-ui-variants="custom danger pointer">Danger Pointer Top</label>
+                        </div>
+                        <h2>普通Label</h2>
+                        <div class="row">
+                            <label data-ui-type="Label" data-ui-variants="custom">Hello Label!</label>
+                        </div>
+                        <h2>瘦Label</h2>
+                        <div class="row">
+                            <esui-label data-ui-type="Label" data-ui-variants="custom success slim">Success Slim Label!</esui-label>
+                        </div>
+                        <h2>圈Label</h2>
+                        <div class="row">
+                            <esui-label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">3</esui-label>
+                            <esui-label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">2</esui-label>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Label'
+            ],
+            function (ui) {
+                var label = ui.init()[0];
+                document.getElementById('op-show').onclick = function () {
+                    label.show();
+                };
+                document.getElementById('op-hide').onclick = function () {
+                    label.hide();
+                };
+                document.getElementById('op-toggle').onclick = function () {
+                    label.toggle();
+                };
+                document.getElementById('op-set-text').onclick = function () {
+                    label.setText('<a href="###">prevent hijack</a>');
+                };
+                document.getElementById('op-set-content').onclick = function () {
+                    label.setContent('<a href="###">prevent hijack</a>');
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

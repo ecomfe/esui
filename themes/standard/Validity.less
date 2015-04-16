@@ -1,0 +1,16 @@
+@import "../../src/css/Validity.less";
+
+// core variables
+@esui-common-invalid-message-margin: 0 0 0 1em;
+
+// theme variables
+@esui-common-invalid-control-border: 1px solid @esf-palette-danger-color;
+@esui-common-invalid-message-color: @esf-palette-danger-color;
+
+.esui-common-invalid-control-theme() {
+     border: @esui-common-invalid-control-border;
+}
+
+.esui-common-invalid-message-theme() {
+    color: @esui-common-invalid-message-color;
+}

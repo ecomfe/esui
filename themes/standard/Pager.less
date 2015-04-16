@@ -1,0 +1,39 @@
+@import "Select.less";
+@import "../../src/css/Pager.less";
+
+
+
+@esui-pager-text-color: @esf-palette-color;
+@esui-pager-select-label-color: @esf-palette-color;
+
+@esui-pager-item-current-background: @esf-palette-neutral-shadow-d20-color;
+@esui-pager-item-current-color: @esf-palette-contrast-color;
+
+@esui-pager-next-pre-button-color: @esf-palette-black;
+@esui-pager-next-pre-button-background: none;
+
+.esui-pager-label-theme() {
+    color: @esui-pager-select-label-color;
+    text-align: center;
+}
+
+.esui-pager-item-theme() {
+    color: @esui-pager-text-color;
+}
+
+.esui-pager-item-link-theme() {
+    color: @esui-pager-text-color !important;
+    text-decoration: none !important;
+}
+
+.esui-pager-item-current-theme() {
+    font-weight: bold;
+    color: @esui-pager-item-current-color !important;
+    background: @esui-pager-item-current-background;
+}
+
+.esui-pager-item-extend-theme() {
+    color: @esui-pager-next-pre-button-color;
+    font-weight: bold;
+    background-color: @esui-pager-next-pre-button-background;
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>RichCalendar - ESUI Demo</title>
+
+        <script src="../assets/loader/esl.js"></script>
+        
+        <script src="../assets/jquery-1.9.1.min.js"></script>
+        <script src="../assets/demo.js"></script>
+        <script src="../assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="../assets/prism.css" />
+        <link rel="stylesheet" href="../assets/themes/standard.css" />
+    </head>
+    <body>
+        <h1 id="branding">ESUI - RichCalendar</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>多个日期选择工具</h2>
+                <section class="intro">
+                    <p>选择多个日期时间段。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <h3>正常</h3>
+                        <div class="row">
+                            <div data-ui-type="RichCalendar" data-ui-name="test4"
+                            data-ui-id="test4"
+                            data-ui-text-box-width="400"
+                            data-ui-text-box-height="200"
+                            data-ui-range="2013-07-03,2013-09-29"
+                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                        </div>
+                        
+                        <h3>不可用</h3>
+                        <div class="row">
+                            <div data-ui-type="RichCalendar" data-ui-name="test5"
+                            data-ui-id="test5"
+                            data-ui-text-box-width="400"
+                            data-ui-disabled="1"
+                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                        </div>
+                        <h3>只读</h3>
+                        <div class="row">
+                            <div data-ui-type="RichCalendar" data-ui-name="test6"
+                            data-ui-id="test6"
+                            data-ui-read-only="1"
+                            data-ui-range="2013-07-03,2013-09-29"
+                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                        </div>
+                        <h3>错误</h3>
+                        <div class="row">
+                            <div data-ui-type="RichCalendar" data-ui-name="test6"
+                            data-ui-states="validity-invalid"
+                            data-ui-range="2013-07-03,2013-09-29"
+                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                        </div>
+                    </div>
+                    
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/RichCalendar'
+            ],
+            function (ui) {
+                var calendar = ui.init()[0];
+            }
+        )
+        </script>
+    </body>
+</html>

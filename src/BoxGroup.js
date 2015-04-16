@@ -87,7 +87,11 @@ define(
                     // 可能导致box.checked属性不符合预期,
                     // 所以这里采用getAttribute
                     // 参考：http://t.cn/zRTdrVR
-                    if (box.getAttribute('checked') !== null) {
+
+                    // 之前这里用了 getAttribute，在 ie8下，未设置 checked，返回的是空字符串，会导致逻辑问题
+                    // if (box.getAttribute('checked') !== null) {
+
+                    if (lib.hasAttribute(box, 'checked')) {
                         values.push(box.value);
                     }
                 }
@@ -110,7 +114,14 @@ define(
             var properties = {
                 datasource: [],
                 orientation: 'horizontal',
-                boxType: 'radio'
+                boxType: 'radio',
+                /**
+                 * @property {string} boxClass
+                 *
+                 * 附加在boxgroup-wrapper上的css selector 名称。
+                 * 做自定义boxgroup的时候用到。加在这里主要是想复用checkbox现成的样式。
+                 */
+                boxClass: ''
             };
             u.extend(properties, options);
 
@@ -167,10 +178,10 @@ define(
         }
 
         var itemTemplate = [
-            '<label title="${title}" class="${wrapperClass}">',
+            '<div title="${title}" class="${wrapperClass}">',
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
-            '    <span>${title}</span>',
-            '</label>'
+            '    <label for="${id}">${title}</label>',
+            '</div>'
         ];
         itemTemplate = itemTemplate.join('');
 
@@ -192,6 +203,15 @@ define(
                 group.helper.getPartClasses(boxType),
                 group.helper.getPartClasses('wrapper')
             );
+
+            var classList = [];
+            var boxClass = group.boxClass;
+            if (boxClass) {
+                classList.push(boxClass);
+            }
+
+            classes = classes.concat(classList);
+
 
             var valueIndex = lib.toDictionary(group.rawValue);
 

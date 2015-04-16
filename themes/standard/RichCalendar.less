@@ -1,0 +1,21 @@
+@import "MonthView.less";
+@import "../../src/css/RichCalendar.less";
+
+@esui-rich-calendar-background: @esf-palette-neutral-color;
+@esui-rich-calendar-general-info-total-num-color: @esf-palette-primary-color;
+
+@esui-rich-calendar-layer-background: transparent;
+@esui-rich-calendar-layer-border: none;
+
+.esui-richcalendar-theme() {
+    background: @esui-rich-calendar-background;
+}
+
+.esui-richcalendar-total-num-theme() {
+    color: @esui-rich-calendar-general-info-total-num-color;
+}
+
+.esui-richcalendar-layer-theme() {
+    border: @esui-rich-calendar-layer-border;
+    background: @esui-rich-calendar-layer-background;
+}

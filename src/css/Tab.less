@@ -1,82 +1,190 @@
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 切换面板样式
- * @author dbear
- */
-@import "mixin.less";
-@import "variable.less";
+@import "Variable.less";
+
+@esui-tab-border-color: #ddd;
+@esui-tab-border-width: 1px;
+@esui-tab-border: @esui-tab-border-width solid @esui-tab-border-color;
+
+@esui-tab-hover-border: @esui-tab-border-color;
+@esui-tab-hover-background: @esui-tab-background;
+@esui-tab-hover-color: #000000;
+@esui-tab-active-border-color: @esui-tab-border-color;
+@esui-tab-active-border: 1px solid @esui-tab-active-border-color;
+@esui-tab-active-background: #FEFDFA;
+@esui-tab-active-color: #333333;
+
+@esui-tab-padding-horizontal: 0 1em;
+@esui-tab-padding-vertical: 1em 0;
+
+@esui-tab-padding-item-horizontal: 1em;
+@esui-tab-padding-item-vertical: 0.75em;
+@esui-tab-padding-item-top: @esui-tab-padding-item-vertical;
+@esui-tab-padding-item-bottom: @esui-tab-padding-item-vertical;
+
+@esui-tab-item-min-width: 8em;
+@esui-tab-margin-horizontal: .4em;
+@esui-tab-margin-vertical: .4em;
+
+@esui-tab-color: #666666;
+@esui-tab-background: #F2F2F2;
+@esui-tab-radius: 5px;
+@esui-tab-height: 1.2em;
+@esui-tab-content-border: 3px solid @esui-tab-border-color;
+
+// 总体样式
 .@{ui-class-prefix}-tab-navigator {
     margin: 0;
     padding:0;
     list-style: none;
-    .box-sizing();
 }
 
 .@{ui-class-prefix}-tab-item {
-    margin: 0;
-    padding:0;
-    list-style: none;
-    .box-sizing();
-    .interactive-cursor ();
+    cursor: pointer;
+    text-align: center;
+    border: @esui-tab-border;
+    background: @esui-tab-background;
+    color: @esui-tab-color;
+    line-height: @esui-tab-height;
+    padding: @esui-tab-padding-item-top @esui-tab-padding-item-horizontal @esui-tab-padding-item-bottom @esui-tab-padding-item-horizontal;
+    min-width: @esui-tab-item-min-width;
+    .box-sizing(border-box);
+
+    &:hover,
+    &:focus {
+        border-color: @esui-tab-hover-border;
+        background: @esui-tab-hover-background;
+        color: @esui-tab-hover-color;
+    }
 }
 
 .@{ui-class-prefix}-tab-item-active {
     cursor: default;
+    background: @esui-tab-active-background;
+    color: @esui-tab-active-color;
 }
 
-/** 纵向tab */
-.@{ui-class-prefix}-tab-vertical {
+// 横向tab
+.@{ui-class-prefix}-tab-horizontal {
     .@{ui-class-prefix}-tab-navigator {
-        padding-top: 10px;
-        border-right: 1px solid #DDD;
-        float: left;
+        padding: @esui-tab-padding-horizontal;
+    }
+
+    .@{ui-class-prefix}-tab-item {
+        display: inline-block;
+        .border-top-radius(@esui-tab-radius);
+        margin-right: @esui-tab-margin-horizontal;
+        border-bottom: none;
+    }
+
+    .@{ui-class-prefix}-tab-item-active {
+        cursor: default;
+        background: @esui-tab-active-background;
+        color: @esui-tab-active-color;
+    }
+}
+
+.@{ui-class-prefix}-tab-horizontal-flip {
+    .@{ui-class-prefix}-tab-item {
+        .border-top-radius(0);
+        .border-bottom-radius(@esui-tab-radius);
+        border-top: none;
+        border-bottom: @esui-tab-border;
+    }
+
+    .@{ui-class-prefix}-tab-item-active {
+        cursor: default;
+        background: @esui-tab-active-background;
+    }
+}
+
+.@{ui-class-prefix}-tab-align-left {
+    .@{ui-class-prefix}-tab-navigator {
+        text-align: left;
+    }
+}
+
+.@{ui-class-prefix}-tab-align-center {
+    .@{ui-class-prefix}-tab-navigator {
+        text-align: center;
+    }
+}
+
+.@{ui-class-prefix}-tab-align-right {
+    .@{ui-class-prefix}-tab-navigator {
+        text-align: right;
+    }
+}
+
+.@{ui-class-prefix}-tab-content {
+    .box-sizing(border-box);
+}
+
+.@{ui-class-prefix}-tab-content-top-border {
+    border-top: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-bottom-border {
+    border-bottom: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-left-border {
+    border-left: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-right-border {
+    border-right: @esui-tab-content-border;
+}
+
+// 暴露给外部调用的mixin
+.esui-vertical-tab-def(@tabWidth, @areaHeight, @align) {
+    .@{ui-class-prefix}-tab-vertical {
+        width: @tabWidth;
+        height: @areaHeight;
+    }
+
+    .@{ui-class-prefix}-tab-content {
+        height: @areaHeight;
+        .tab-content(@align);
+    }
+
+    .tab-content(@align) when (@align = left) {
+        margin-left: @tabWidth;
+    }
+
+    .tab-content(@align) when (@align = right) {
+        margin-right: @tabWidth;
+    }
+}
+
+// 纵向tab
+.@{ui-class-prefix}-tab-vertical {
+    float: left;
+    border-right: @esui-tab-border;
+    .@{ui-class-prefix}-tab-navigator {
+        padding: @esui-tab-padding-vertical;
     }
     .@{ui-class-prefix}-tab-item {
         display: block;
-        .border-radius(2px, 0, 0, 2px);
-        border: 1px solid #DFDFDF;
+        .border-right-radius(0);
+        .border-left-radius(@esui-tab-radius);
+        margin-bottom: @esui-tab-margin-vertical;
         border-right: none;
-        background: #F2F2F2;
-        color: #666666;
-        margin-bottom:2px;
-        padding: 3px 10px;
     }
-
-    .@{ui-class-prefix}-tab-item-active {
-        background: #FFF;
-        color: #333333;
-    } 
 }
 
-/** 横向tab */
-.@{ui-class-prefix}-tab-horizontal {
-    @tab-padding: 10px;
-
-    .@{ui-class-prefix}-tab-navigator {
-        overflow: hidden;
-        zoom: 1;
-        position: relative;
-        padding-left:10px;
-        border-bottom: 1px solid #DDD;
-    }
+.@{ui-class-prefix}-tab-vertical-flip {
+    float: right;
+    border-right: 0;
+    border-left: @esui-tab-border;
 
     .@{ui-class-prefix}-tab-item {
-        float: left;
-        padding: 3px @tab-padding;
-        text-align: center;
-
-        .border-radius(2px, 2px, 0, 0);
-        border: 1px solid #DFDFDF;
-        border-bottom: none;
-        background: #F2F2F2;
-        color: #666666;
-        margin-right:2px;
+        .border-left-radius(0);
+        .border-right-radius(@esui-tab-radius);
+        margin-right: 0;
+        border-right: @esui-tab-border;
+        border-left: none;
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        background: #FFF;
-        color: #333333;
+        border-right: @esui-tab-active-border;
     }
 }
