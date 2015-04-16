@@ -3565,14 +3565,14 @@ span.ui-crumb-node {
 }
 .ui-region-text {
   position: relative;
-  padding: 0.5em;
+  padding: 0.5em 0 0.5em 0.5em;
   float: left;
 }
 .ui-region-text-over {
   background: #fffaee;
-  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
 .ui-region-province-box {
   width: 40em;
@@ -3600,9 +3600,9 @@ span.ui-crumb-node {
   padding: 0.5em;
   z-index: 998;
   background: #fffaee;
-  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
 .ui-region-city-box td {
   white-space: nowrap;
