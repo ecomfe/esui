@@ -37,6 +37,10 @@
     .esui-select-theme();
 }
 
+.@{ui-class-prefix}-select.@{ui-state-prefix}-validity-invalid {
+    .esui-select-invalid-theme();
+}
+
 .@{ui-class-prefix}-select.@{ui-state-prefix}-active {
     .@{ui-class-prefix}-select-arrow {
         .transform(rotate(180deg));
@@ -97,6 +101,7 @@
 
 // hooks
 .esui-select-theme() {}
+.esui-select-invalid-theme() {}
 .esui-select-primary-theme() {}
 .esui-select-compact-theme() {}
 .esui-select-layer-compact-theme() {}

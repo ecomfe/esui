@@ -2830,8 +2830,7 @@ esui-box-group {
 }
 .ui-monthview-month-item-selected {
   background: #e3f6f3;
-  color: #70ccc0;
-  font-weight: bold;
+  color: #666666;
 }
 .ui-monthview-month-item-virtual,
 .ui-monthview-month-item-out {
@@ -2925,6 +2924,12 @@ esui-box-group {
 }
 .ui-select-inner.state-active {
   background: #fbfbfb;
+}
+.ui-select.state-validity-invalid {
+  border: 0 !important;
+}
+.ui-select.state-validity-invalid .ui-select-inner {
+  border: 1px solid #f16c6c;
 }
 .ui-select.state-active .ui-select-arrow {
   -webkit-transform: rotate(180deg);

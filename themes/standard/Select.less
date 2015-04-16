@@ -6,6 +6,8 @@
 @esui-select-hover-background: @esf-palette-neutral-highlight-color;
 @esui-select-active-background: @esf-palette-neutral-shadow-color;
 
+@esui-select-invalid-border: 1px solid @esf-palette-danger-color;
+
 @esui-select-primary-color: @esf-palette-contrast-color;
 @esui-select-primary-background: @esf-palette-primary-color;
 @esui-select-primary-hover-background: @esf-palette-primary-highlight-color;
@@ -34,6 +36,13 @@
         @esui-select-color,
         @esui-select-active-background
     );
+}
+
+.esui-select-invalid-theme() {
+    border: 0 !important;
+    .@{ui-class-prefix}-select-inner {
+        border: @esui-select-invalid-border;
+    }
 }
 
 .esui-select-primary-theme() {
