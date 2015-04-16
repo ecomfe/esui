@@ -7,6 +7,7 @@
 @esui-drawer-close-hover-color: @esf-palette-color;
 @esui-drawer-content-background: @esf-palette-white;
 @esui-drawer-footer-backround: @esf-palette-white;
+@esui-drawer-footer-top-border: 1px solid @esf-palette-border;
 
 .esui-drawer-mask-theme() {
     background: @esui-drawer-mask-background;
@@ -19,7 +20,8 @@
 
 .esui-drawer-footer-theme() {
     background: @esui-drawer-footer-backround;
-    .opacity(90);
+    border-top: @esui-drawer-footer-top-border;
+    .opacity(80);
 }
 
 .esui-drawer-title-theme() {
