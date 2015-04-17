@@ -74,23 +74,16 @@ define(
                  * 指定信息浮层的显示的延迟时间，以毫秒为单位，
                  * 具体参考{@link TipLayer#attachTo}方法的`delayTime`参数的说明
                  */
-                delayTime: 500,
-
-                /**
-                 * @property {number} showDuration
-                 *
-                 * 指定信息浮层在展现后的自动隐藏的延迟时间，以毫秒为单位，为0是不自动隐藏
-                 * 具体参考{@link TipLayer#attachTo}方法的`showDuration`参数的说明
-                 */
-                showDuration: 0
+                delayTime: 500
             };
+
+            u.extend(properties, options);
+
             if (options.arrow === 'false') {
-                options.arrow = false;
+                properties.arrow = false;
             }
 
             extractDOMProperties(this.main, properties);
-
-            u.extend(properties, options);
 
             this.setProperties(properties);
         };
@@ -140,8 +133,7 @@ define(
 
             var attachOptions = {
                 showMode: this.showMode,
-                delayTime: +this.delayTime,
-                showDuration: +this.showDuration,
+                delayTime: this.delayTime,
                 targetControl: this,
                 positionOpt: {top: 'top', right: 'left'}
             };

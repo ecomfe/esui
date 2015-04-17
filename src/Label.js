@@ -64,7 +64,9 @@ define(
          * @protected
          */
         Label.prototype.initOptions = function (options) {
-            var properties = {};
+            var properties = {
+                title: ''
+            };
             u.extend(properties, options);
             /**
              * @property {string} tagName
@@ -76,7 +78,7 @@ define(
              * @readonly
              */
             properties.tagName = this.main.nodeName.toLowerCase();
-            if (options.text == null) {
+            if (properties.text == null) {
                 properties.text = lib.trim(lib.getText(this.main));
             }
             u.extend(this, properties);
