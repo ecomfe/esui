@@ -200,7 +200,7 @@ define(
                         var html = typeof this.generate === 'function'
                             ? this.generate(control, value)
                             : value;
-                        element.innerHTML = u.escape(html || '');
+                            element.innerText = html || '';
                     }
                 }
             };
