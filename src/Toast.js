@@ -35,12 +35,14 @@ define(
          *      `error`：错误信息：红色背景
          *      `success`：成功信息：绿色背景
          * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
+         * @cfg {boolean} [defaultProperties.autoShow=false] 初始化后是否自动展示，默认为否
          * @static
          */
         Toast.defaultProperties = {
             duration: 3000,
             messageType: 'normal',
-            disposeOnHide: true
+            disposeOnHide: true,
+            autoShow: false
         };
 
         /**
@@ -76,6 +78,8 @@ define(
          */
         Toast.prototype.initStructure = function () {
             this.main.innerHTML = this.helper.getPartHTML('content', 'p');
+            // 增加一个默认的状态hidden
+            this.addState('hidden');
         };
 
         /**
@@ -96,6 +100,10 @@ define(
                 paint: function (toast, content) {
                     var container = toast.main.firstChild;
                     container.innerHTML = content;
+                    // 检查autoShow，如果希望初始化的那次repaint后自动展示，就show出来
+                    if (toast.autoShow && toast.helper.isInStage('INITED')) {
+                        toast.show();
+                    }
                 }
             },
             {
@@ -126,6 +134,10 @@ define(
                 this.appendTo(getContainer.call(this));
             }
 
+            if (!this.isHidden()) {
+                return;
+            }
+
             Control.prototype.show.apply(this, arguments);
             this.fire('show');
             clearTimeout(this.timer);
@@ -140,6 +152,9 @@ define(
          * @override
          */
         Toast.prototype.hide = function () {
+            if (this.isHidden()) {
+                return;
+            }
             Control.prototype.hide.apply(this, arguments);
             clearTimeout(this.timer);
             this.fire('hide');
@@ -166,6 +181,7 @@ define(
         /**
          * 获取的容器,可自行添加样式，使其呈现堆叠效果。
          *
+         * @return {HTMLElement}
          * @ignore
          */
         function getContainer() {
@@ -187,7 +203,7 @@ define(
                 if (messageType === 'show') {
                     messageType = 'normal';
                 }
-                options = lib.extend({ content: content }, options);
+                options = lib.extend({content: content}, options);
                 options.messageType = options.messageType || messageType;
                 var toast = new Toast(options);
                 Control.prototype.hide.apply(toast);

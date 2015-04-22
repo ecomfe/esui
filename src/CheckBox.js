@@ -51,7 +51,7 @@ define(
              * @override
              */
             createMain: function () {
-                return document.createElement('div');
+                return document.createElement('label');
             },
 
             /**
@@ -95,17 +95,7 @@ define(
              */
             initOptions: function (options) {
                 var properties = {
-                    /**
-                     * @property {string} [value='on']
-                     *
-                     * Checkbox的Value值
-                     */
                     value: this.main.value || 'on',
-                    /**
-                     * @property {boolean} [checked=false]
-                     *
-                     * 是否check对钩
-                     */
                     checked: this.main.checked || false
                 };
 
@@ -149,11 +139,8 @@ define(
              * @override
              */
             initStructure: function () {
-                var classList = [];
                 // 如果用的是一个`<input>`，替换成`<div>`
                 if (this.main.nodeName.toLowerCase() === 'input') {
-                    this.main.className && (classList = [].slice.call(this.main.classList));
-                    lib.removeClasses(this.main, classList);
                     this.boxId = this.main.id || this.helper.getId('box');
                     this.helper.replaceMain();
                     this.main.id = this.helper.getId();
@@ -162,17 +149,8 @@ define(
                     this.boxId = this.helper.getId('box');
                 }
 
-                
-                // TODO: 测试是否支持checked选择器。
-                if (classList.length) {
-                    lib.addClasses(this.main, classList);
-                }
-
                 var html = '<input type="checkbox" name="${name}" id="${id}" />'
-                    + '<label id="${textId}" for="${id}" class="'
-                    + this.helper.getPartClasses('box')
-                    + '"></label>';
-
+                    + '<span id="${textId}"></span>';
                 this.main.innerHTML = lib.format(
                     html,
                     {
@@ -258,16 +236,6 @@ define(
                 lib.setAttribute(this.boxId, 'title', title);
             },
 
-            /**
-             * 更新checkbox状态
-             *
-             * @param {boolean} title 新的标签文本内容，未经HTML转义
-             * @protected
-             */
-            updateIndeterminate: function (indeterminate) {
-                this.helper.getPart('box').indeterminate = indeterminate;
-            },
-
 
             /**
              * 重渲染
@@ -284,17 +252,10 @@ define(
                      *
                      * 标识是否为选中状态
                      */
-                    name: ['rawValue', 'checked', 'indeterminate'],
-                    paint: function (box, rawValue, checked, indeterminate) {
-                        if (indeterminate !== undefined) {
-                            box.updateIndeterminate(indeterminate);
-                            delete box.indeterminate;
-                        }
+                    name: ['rawValue', 'checked'],
+                    paint: function (box, rawValue, checked) {
                         var value = box.stringifyValue(rawValue);
-                        box = lib.g(box.boxId);
-                        if(indeterminate){
-                            checked = false;
-                        }
+                        var box = lib.g(box.boxId);
                         box.value = value;
                         box.checked = checked;
                     }

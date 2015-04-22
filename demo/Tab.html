@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Wizard</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+</head>
+<body>
+    <header>Tab</header>
+    <div class="container">
+        <esui-tab
+         data-ui-id="test" data-ui-orientation="vertical">
+            <ul data-role="navigator">
+                <li data-for="a">TAB1</li>
+                <li data-for="b">TAB2</li>
+                <li data-for="c">TAB3</li>
+            </ul>
+            <div title="tab1" id="a">我是Tab1</div>
+            <div title="tab2" id="b">我是Tab2</div>
+            <div title="tab3" id="c">我是Tab3</div>
+        </esui-tab>
+    </div>
+    <script>
+        require(
+            [
+                'esui',
+                'esui/Tab'
+            ],
+            function (ui, Tab) {
+                var tab = ui.init()[0];
+                var a = {title: 'test'};
+                tab.add(a);
+                tab.add(a);
+                tab.add(a);
+                tab.add(a);
+                setTimeout(function() {
+                    tab.remove(a);
+                }, 1000);
+            }
+        );
+    </script>
+</body>
+</html>

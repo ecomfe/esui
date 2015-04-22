@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Panel - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.2/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.7.0/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/3.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Panel</header>
+        <div class="container">
+            <div data-ui-type="Panel" data-ui-id="panel" style="height: 300px;border: 1px solid gray;">
+                Panel content
+                <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
+            </div>
+            <button data-ui-id="btnSetContent" data-ui-type="Button" type="button">set Content</button>
+            <button data-ui-id="btnHide" data-ui-type="Button" type="button">Hide</button>
+            <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Panel',
+                'esui/Link',
+                'esui/Button'
+            ],
+            function (ui) {
+                var link = ui.init();
+                var p = ui.get('panel');
+                ui.get('btnSetContent').onclick = function () {
+                    p.setContent('Date:' + new Date());
+                };
+                ui.get('btnHide').onclick = function () {
+                    p.hide();
+                };
+                ui.get('btnShow').onclick = function () {
+                    p.show();
+                };
+            }
+        )
+        </script>
+    </body>
+</html>

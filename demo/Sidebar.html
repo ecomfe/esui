@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Sidebar - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Sidebar</header>
+        <div class="container">
+            <h3>普通</h3>
+            <button id="btn">changeMode</button>
+            <button id="btn1">setContent</button>
+            <div class="main" style="border-top: 1px solid #666;margin-top:10px">
+                <esui-sidebar data-ui="id:mySide;mode:autohide">
+                    <div>我的标题</div>
+                    <div>
+                        <div data-ui-type="Tree" data-ui-id="testTree"></div>
+                    </div>
+                </esui-sidebar>
+                <div id="neighbor" style="height:900px;background:#f7f7f7;border:1px solid #999;padding:10px;margin-top:10px" class="ui-sidebar-neighbor-hide">main</div>
+            </div>
+        </div>
+    <script>
+
+        require(
+            [
+                'esui',
+                'esui/Tree',
+                'esui/TreeStrategy',
+                'esui/Link',
+                'esui/Sidebar'
+            ],
+            function (ui ,Tree , TreeStrategy, Link) {
+                var lib = require('esui/lib');
+                var datasource = {
+                    id: '1',
+                    text: '百度',
+                    children:[
+                        {
+                            id: '2',
+                            text: '联盟研发部',
+                            children: [
+                                { id: '21', text: 'RD' },
+                                { id: '21', text: 'FE' },
+                                { id: '21', text: 'QA' },
+                                { id: '21', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '3',
+                            text: '贴吧事业部',
+                            children: [
+                                { id: '31', text: 'RD' },
+                                { id: '31', text: 'FE' },
+                                { id: '31', text: 'QA' },
+                                { id: '31', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '4',
+                            text: '一半吃肉一般吃素部'
+                        }
+                    ]
+                };
+                ui.init(document.body, {
+                    properties: {
+                        testTree: {
+                            datasource: datasource,
+                            strategy: new TreeStrategy()
+                        }
+                    }
+                });
+
+                ui.get( 'mySide' ).onmodechange = function (e) {
+                    if (e.mode == 'fixed') {
+
+                        document.getElementById('neighbor').className = 'ui-sidebar-neighbor';
+                    } else {
+
+                        document.getElementById('neighbor').className = 'ui-sidebar-neighbor-hide';
+                    }
+                    console.info('onmodechange');
+                };
+
+                ui.get( 'mySide' ).onresize = function () {
+                    console.info('onresize');
+                };
+
+                document.getElementById('btn').onclick = function () {
+                    var mode = ui.get('mySide').getMode();
+                    var curMode = mode == 'fixed' ? 'autohide' : 'fixed';
+                    ui.get('mySide').setMode(curMode);
+                }
+                document.getElementById('btn1').onclick = function () {
+                    var side = ui.get('mySide');
+
+                    side.setContent('<a data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">www.baidu.com</a>');
+                }
+            }
+        );
+        </script>
+    </body>
+</html>

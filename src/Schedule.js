@@ -204,7 +204,7 @@ define(
                     '<div class="', timeHClass,
                     '" data-time="', i, '" ',
                     'id="', getId(me, 'time-head' + i), '">',
-                     i + ':00',
+                     i,
                      '</div>'
                 );
             }
@@ -400,7 +400,7 @@ define(
                         start: start,
                         end: end,
                         text: length === 24
-                            ? '全天投放' : start + '.00-' + end + '.00',
+                            ? '全天投放' : start + ':00-' + end + ':00',
                         coverClass: getClass(me, 'covertimes-tip')
                     }
                 );
@@ -469,7 +469,7 @@ define(
             }
             else {
                 var cssStyle = ''
-                    + ';position:absolute;z-index:50;background:#fff6bd;top:'
+                    + ';position:absolute;z-index:5000;background:#fff6bd;top:'
                     + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');

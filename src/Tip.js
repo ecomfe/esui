@@ -76,13 +76,14 @@ define(
                  */
                 delayTime: 500
             };
+
+            u.extend(properties, options);
+
             if (options.arrow === 'false') {
-                options.arrow = false;
+                properties.arrow = false;
             }
 
             extractDOMProperties(this.main, properties);
-
-            u.extend(properties, options);
 
             this.setProperties(properties);
         };
@@ -131,7 +132,7 @@ define(
             tipLayer.render();
 
             var attachOptions = {
-                showMode: this.mode,
+                showMode: this.showMode,
                 delayTime: this.delayTime,
                 targetControl: this,
                 positionOpt: {top: 'top', right: 'left'}

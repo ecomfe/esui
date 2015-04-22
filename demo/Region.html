@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Region - ESUI Demo</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Region</h1>
+    <div class="container">
+        <h2>多种模式</h2>
+        <section class="intro">
+            <p>地域选框有2种模式：多选、单选。</p>
+        </section>
+        <section class="view">
+            <ul class="viewer">
+                <li class="view-markup">结构</li>
+            </ul>
+            <div>
+                <label for="text-box-normal">多选</label>
+                <esui-region data-ui="id:test;name:region1"></esui-region>
+            </div>
+            <div>
+                <label for="text-box-normal">单选</label>
+                <div data-ui="type:Region;id:test2;mode:single;name:region2"></div>
+            </div>
+        </section>
+        <h2>只读模式</h2>
+        <section class="intro">
+            <p>readOnly模式与disable模式的展示相同，不同处事readOnly可以获取到选择的值</p>
+        </section>
+        <section class="view">
+            <div data-ui="type:Region;id:test3;name:region3;"></div>
+        </section>
+        <h2>读取数据</h2>
+        <section class="intro">
+        </section>
+        <section class="view">
+            <div>
+                <button data-ui="type:Button;id:getMuliBtn;" >获取多选值</button>
+                <p id="multiValue" style="width:800px;word-wrap: break-word;"></p>
+            </div>
+            <br>
+            <div>
+                <button data-ui="type:Button;id:getSingleBtn;">获取单选值</button>
+                <p id="singleValue" style="width:800px;word-wrap: break-word;"></p>
+            </div>
+        </section>
+    </div>
+    <script>
+    require(
+        [
+            'esui',
+            'esui/Region',
+            'esui/Button'
+        ],
+        function (ui) {
+            var controls = ui.init();
+            var region1 = controls[0];
+            var region2 = controls[1];
+            var region3 = controls[2];
+            var getMultiBtn = controls[3];
+            var getSingleBtn = controls[4];
+
+            region1.setProperties({
+                rawValue: ['268', '269', '270']
+            });
+
+            region3.setProperties({
+                rawValue: ['268', '269', '270']
+            });
+            region3.setProperties({
+                readOnly: true
+            });
+
+            getMultiBtn.on('click', function(){
+                document.getElementById('multiValue').innerHTML =
+                    region1.getValue();
+            });
+            getSingleBtn.on('click', function(){
+                document.getElementById('singleValue').innerHTML =
+                    region2.getValue();
+            });
+        }
+    )
+    </script>
+</body>
+</html>

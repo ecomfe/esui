@@ -836,44 +836,40 @@ define(
                 value: this.convertToParam(defaultRaw),
                 shownShortCut: '昨天,最近7天,上周,本月,上个月,上个季度'
             };
-            lib.extend(properties, RangeCalendar.defaultProperties);
+            lib.extend(properties, RangeCalendar.defaultProperties, options);
 
             helper.extractValueFromInput(this, options);
 
             // 设置了value，以value为准
             if (options.value) {
-                options.rawValue = this.convertToRaw(options.value);
-                options.view = {
-                    begin: options.rawValue.begin,
-                    end: options.rawValue.end
+                properties.rawValue = this.convertToRaw(properties.value);
+                properties.view = {
+                    begin: properties.rawValue.begin,
+                    end: properties.rawValue.end
                 };
-                options.miniMode = null;
+                properties.miniMode = null;
             }
             // 设置了rawValue，以rawValue为准，外部设置的miniMode先清空
             else if (options.rawValue) {
-                options.miniMode = null;
+                properties.miniMode = null;
             }
             // 没有设置rawValue，设置了‘miniMode’，rawValue按照miniMode计算
             else if (!options.rawValue && options.miniMode != null) {
-                var shortcutItem =
-                    properties.shortCutItems[options.miniMode];
+                var shortcutItem = properties.shortCutItems[properties.miniMode];
                 if (shortcutItem) {
-                    options.rawValue =
-                        shortcutItem.getValue.call(this, this.now);
-                    options.miniMode = parseInt(options.miniMode, 10);
+                    properties.rawValue = shortcutItem.getValue.call(this, this.now);
+                    properties.miniMode = parseInt(properties.miniMode, 10);
                 }
                 else {
-                    options.miniMode = null;
+                    properties.miniMode = null;
                 }
             }
 
-            lib.extend(properties, options);
-
-            if (properties.range && typeof properties.range === 'string') {
+            if (options.range && typeof options.range === 'string') {
                 properties.range = this.convertToRaw(properties.range);
             }
 
-            if (properties.endlessCheck === 'false') {
+            if (options.endlessCheck === 'false') {
                 properties.endlessCheck = false;
             }
 
@@ -894,10 +890,7 @@ define(
                 properties.endlessCheck = true;
                 properties.rawValue.end = null;
                 properties.view.end = null;
-                properties.view.value = this.convertToParam({
-                    begin: now,
-                    end: null
-                });
+                properties.view.value = this.convertToParam({begin: now, end: null});
             }
             this.setProperties(properties);
         };

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Pager - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+        <header>Pager</header>
+        <div class="container">
+            <div data-ui="type:Pager;id:test;"></div>
+            <esui-pager data-ui-id="test1"></esui-pager>
+        </div>
+        <div id="message"></div>
+        <script>
+            var url = location.href;
+            var params = url.split('?');
+            if (params.length > 1) {
+                params = params[1].split('&');
+                var page = undefined;
+                var pageSize = undefined;
+                for (var i = 0, len = params.length; i < len; i++) {
+                    var param = params[i].split('=');
+                    var key = param[0];
+                    var value = param[1];
+                    if (key === 'page') {
+                        page = parseInt(value);
+                    }
+                    else if (key === 'pageSize') {
+                        pageSize = parseInt(value);
+                    }
+                }
+            }
+        </script>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Pager'
+            ],
+            function (ui) {
+                var pager = ui.init()[0];
+
+                pager.set('pageType', 'plain');
+
+                pager.set('count', 260);
+                if (page) {
+                    pager.set('page', page);
+                }
+                else {
+                    pager.set('page', 10);
+                }
+                pager.set('backCount', 4);
+                pager.set('forwardCount', 4);
+                pager.set('backName', '←');
+                pager.set('forwardName', '→');
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: [13, 21, 101]
+                    });
+                }, 3000);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: []
+                    });
+                }, 4000);
+
+                setTimeout(function () {
+                    pager.setProperties({
+                        pageSizes: [1, 13, 20, 101]
+                    });
+                }, 5000);
+
+                setTimeout(function () {
+                    if (pageSize) {
+                        pager.setProperties({
+                            pageSize: pageSize
+                        });
+                    }
+                    else {
+                        pager.setProperties({
+                            pageSize: 20
+                        });
+                    }
+                }, 2000);
+
+                pager.set('urlTemplate', 'Pager.html?page=${page}&pageSize=${pageSize}');
+
+                // pager.set('layout', 'alignLeft');
+                // pager.set('layout', 'alignLeftReverse');
+                // pager.set('layout', 'alignRight');
+                // pager.set('layout', 'alignRightReverse');
+                // pager.set('layout', 'distributed');
+                // pager.set('layout', 'distributedReverse');
+                pager.set('layout', 'something');
+
+
+                pager.onchangepage = function () {
+                    document.getElementById('message').innerHTML += '<p>Change page to ' + this.get('page') + '</p>';
+                }
+
+                pager.onchangepagesize = function () {
+                    document.getElementById('message').innerHTML += '<p>Change page size to ' + this.get('pageSize') + '</p>';
+                }
+            }
+        );
+        </script>
+    </body>
+</html>

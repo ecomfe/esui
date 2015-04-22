@@ -99,7 +99,7 @@
     .background(@is-url-exp) when not (@is-url-exp) {
         background: url(@url) @repeat-type scroll @s-x @s-y @b-color;
         // Safari 4-5, Chrome 1-9
-        background:
+        background: 
             url(@url),
             -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
         // Safari 5.1, Chrome 10+
@@ -123,10 +123,10 @@
     }
 
     .background(@is-url-exp) when (@is-url-exp) {
-        background:
+        background: 
             @url @repeat-type scroll @s-x @s-y @b-color;
         // Safari 4-5, Chrome 1-9
-        background:
+        background: 
             @url,
             -webkit-gradient(linear, @@direction, from(@from-color), to(@to-color));
         // Safari 5.1, Chrome 10+
@@ -145,7 +145,7 @@
         background:
             @url,
             -o-linear-gradient(@direction, @from-color, @to-color);
-
+            
         background-repeat: @repeat-type, no-repeat;
         background-position: @s-x @s-y, 0 0;
     }

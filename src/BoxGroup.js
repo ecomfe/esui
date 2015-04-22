@@ -87,11 +87,7 @@ define(
                     // 可能导致box.checked属性不符合预期,
                     // 所以这里采用getAttribute
                     // 参考：http://t.cn/zRTdrVR
-
-                    // 之前这里用了 getAttribute，在 ie8下，未设置 checked，返回的是空字符串，会导致逻辑问题
-                    // if (box.getAttribute('checked') !== null) {
-
-                    if (lib.hasAttribute(box, 'checked')) {
+                    if (box.getAttribute('checked') !== null) {
                         values.push(box.value);
                     }
                 }
@@ -171,10 +167,10 @@ define(
         }
 
         var itemTemplate = [
-            '<div title="${title}" class="${wrapperClass}">',
+            '<label title="${title}" class="${wrapperClass}">',
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
-            '    <label for="${id}">${title}</label>',
-            '</div>'
+            '    <span>${title}</span>',
+            '</label>'
         ];
         itemTemplate = itemTemplate.join('');
 
@@ -196,16 +192,6 @@ define(
                 group.helper.getPartClasses(boxType),
                 group.helper.getPartClasses('wrapper')
             );
-
-            /*var customLookClass = group.customLook;
-            if (customLookClass) {
-                classes.push(group.helper.getPartClassName(boxType + '-' + customLookClass));
-            }*/
-            var classList = group.main && group.main.classList || [];
-            if(classList.length){
-                classes = classes.concat(classList);
-            }
-
 
             var valueIndex = lib.toDictionary(group.rawValue);
 

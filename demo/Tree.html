@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tree</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        require(
+            [
+                'esui/Tree',
+                'esui/TreeStrategy'
+            ],
+            function (Tree, TreeStrategy) {
+                var datasource = {
+                    id: '1',
+                    text: '百度',
+                    children:[
+                        {
+                            id: '2',
+                            text: '联盟研发部',
+                            children: [
+                                { id: '21', text: 'RD' },
+                                { id: '22', text: 'FE' },
+                                { id: '23', text: 'QA' },
+                                { id: '24', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '3',
+                            text: '贴吧事业部',
+                            children: [
+                                { id: '31', text: 'RD' },
+                                { id: '32', text: 'FE' },
+                                { id: '33', text: 'QA' },
+                                { id: '34', text: 'PM' }
+                            ]
+                        },
+                        {
+                            id: '4',
+                            text: '一半吃肉一般吃素部'
+                        }
+                    ]
+                };
+
+                var tree = new Tree({ id: 'normal', datasource: datasource, strategy: new TreeStrategy(), wideToggleArea: true });
+                var tree2 = new Tree({ datasource: datasource, strategy: new TreeStrategy({ defaultExpand: true }), skin: 'folder', selectMode: 'multiple'});
+                tree.appendTo(document.getElementById('container'));
+                tree2.appendTo(document.getElementById('container'));
+            }
+        );
+    </script>
+</body>
+</html>

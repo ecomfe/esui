@@ -930,7 +930,7 @@ define(
             // 如果year选择的数据没改变，
             // 但可能还是需要重回日历，
             // 因此要手动触发year的change
-            if (lastYear === me.year) {
+            if (+lastYear === me.year) {
                 yearSelect.fire('change');
             }
 

@@ -54,24 +54,28 @@
     position: absolute;
     text-align: left;
     z-index: 1002;
+}
 
-	span {
-	    display: block;
-	}
+.@{ui-class-prefix}-commandmenu-node {
+    color: #333333;
+    .interactive-cursor ();
+    height: 22px;
+    line-height: 22px;
+    margin: 0 0 1px;
+    padding: 0 4px;
+    overflow: hidden;
 
-    li {
-	    color: #333333;
-	    .interactive-cursor ();
-	    height: 22px;
-	    line-height: 22px;
-	    margin: 0 0 1px;
-	    padding: 0 4px;
-	    overflow: hidden;
+    span {
+        display: block;        
+    }
 
-	    &:hover {
-		    background-color: #F1F1F1;
-		}
-	}
+    &:hover {
+        background-color: #F1F1F1;
+    }    
+}
+
+.@{ui-class-prefix}-commandmenu-node-disabled {
+    color: #999;
 }
 
 .@{ui-class-prefix}-commandmenu-layer-selected {

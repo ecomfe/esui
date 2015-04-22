@@ -79,16 +79,16 @@ define(
 
                 u.extend(properties, options);
 
-                if (options.href == null) {
+                if (properties.href == null) {
                     properties.href = this.main.href;
                 }
 
-                if (options.target == null) {
+                if (properties.target == null) {
                     properties.target = this.main.target;
                 }
 
                 //此处暂时放弃使用text，只是用content, 关于text, 控件使用者自己处理
-                if (options.content == null) {
+                if (properties.content == null) {
                     properties.content = this.main.innerHTML;
                 }
 

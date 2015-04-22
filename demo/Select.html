@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Select - ESUI Demo</title>
+    <script src="loader/esl.js"></script>
+        <script>
+            require.config({
+                'baseUrl': '../src',
+                'paths': {},
+                'packages': [
+                    {
+                        'name': 'mini-event',
+                        'location': '../dep/mini-event/1.0.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'underscore',
+                        'location': '../dep/underscore/1.5.2/src',
+                        'main': 'underscore'
+                    },
+                    {
+                        'name': 'moment',
+                        'location': '../dep/moment/2.0.1/src',
+                        'main': 'moment'
+                    },
+                    {
+                        'name': 'etpl',
+                        'location': '../dep/etpl/2.1.0/src',
+                        'main': 'main'
+                    },
+                    {
+                        'name': 'esui',
+                        'location': '../src',
+                        'main': 'main'
+                    }
+                ]
+            });
+        </script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+</head>
+<body>
+<header>Select</header>
+<div class="container" style="position: absolute; right: 10px;">
+    <select data-ui-type="Select" data-ui-id="test" data-ui-width="200" name="test" data-ui-selected-index="1">
+        <option value="1">jkljlkjljkljlkjlkjlka</option>
+        <option value="2">b</option>
+        <option value="3">c</option>
+        <option value="1" disabled>d</option>
+        <option value="2">ejkjlkjlkjljlkjkljlkjljkljlkejkjlkjlkjljlkjkljlkjljkljlkejkjlkjlkjljlkjkljlkjljkljlk</option>
+        <option value="3">f</option>
+    </select>
+</div>
+<script>
+    require(
+        [
+            'esui',
+            'esui/Select'
+        ],
+        function (ui) {
+            // var datasource = [
+            //     { name: 'custom1', value: '12121212' },
+            //     { name: 'custom2', value: '12123' },
+            //     { name: 'custom3', value: '12123' }
+            // ]
+            var select = ui.init()[0];
+            // var select2 = ui.create('Select', {
+            //     width: 200,
+            //     datasource: datasource
+            // })
+
+            // select2.appendTo(document.body)
+        }
+    )
+</script>
+</body>
+</html>
