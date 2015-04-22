@@ -123,6 +123,8 @@ define(
                 return '';
             }
 
+            key = getCssPropertyName(element, key);
+
             var doc = element.nodeType === 9
                 ? element
                 : element.ownerDocument || element.document;
@@ -165,6 +167,24 @@ define(
             }
             return '';
         };
+
+        /**
+         * 重设css样式名，为了兼容ie
+         *
+         * @param {HTMLElement} element 目标元素
+         * @param {string} css 样式名
+         * @return {string} 重设后的样式名
+         */
+        function getCssPropertyName(element, css) {
+            var ret = css;
+            switch (css) {
+                case 'float': 
+                    ret = 'cssFloat' in element.style ? 'cssFloat' : 'styleFloat';
+                    break;
+            }
+
+            return ret;
+        }
 
         /**
          * 获取元素样式值
