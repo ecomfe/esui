@@ -287,6 +287,10 @@ define(
 
                 // 设置样式
                 this.main.style.left = '-10000px';
+                
+                // position:absolute;left:-1000px;
+                // ie8下底部会有很多空白,so 初始化隐藏下
+                this.helper.addStateClasses('init');
 
                 // 不是所有的提示层都需要title
                 if (this.title || this.roles.title) {
@@ -456,6 +460,8 @@ define(
                 // 但在消失前，又必须先计算到浮层的正确高度
                 var previousDisplayValue = element.style.display;
                 element.style.display = 'block';
+                // 奇怪，首次展现含.ui-tiplayer-init时 浮层高度和宽度仍为0，需要去掉
+                this.helper.removeStateClasses('init');
                 var elementHeight = element.offsetHeight;
                 var elementWidth = element.offsetWidth;
                 element.style.display = 'none';
