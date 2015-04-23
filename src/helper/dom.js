@@ -78,8 +78,6 @@ define(
                 classes.push(joinByStrike(prefix, type, part));
                 if (skin) {
                     classes.push(joinByStrike(skinPrefix, skin, type, part));
-                    // 利用skin生成一个类似于variant的东西
-                    //classes.push(joinByStrike(prefix, type, skin, part));
                 }
 
                 // 缓存起来
@@ -97,8 +95,6 @@ define(
                         joinByStrike(skinPrefix, skin),
                         joinByStrike(skinPrefix, skin, type)
                     );
-                    // 利用skin生成一个类似于variant的东西
-                    //classes.push(joinByStrike(prefix, type, skin));
                 }
             }
 

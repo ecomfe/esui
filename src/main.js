@@ -566,7 +566,7 @@ define(
         main.createGlobalExtensions = function () {
             var options = globalExtensionOptions;
             var extensions = [];
-            for (type in globalExtensionOptions) {
+            for (var type in globalExtensionOptions) {
                 if (globalExtensionOptions.hasOwnProperty(type)) {
                     var extension = main.createExtension(type, globalExtensionOptions[type]);
                     extension && extensions.push(extension);

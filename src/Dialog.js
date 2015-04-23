@@ -770,7 +770,6 @@ define(
 
                 this.fire('show');
                 this.isShow = true;
-
             },
 
             /**
@@ -778,21 +777,21 @@ define(
              *
              */
             hide: function () {
-                if (this.isShow) {
-                    helper.removeDOMEvent(
-                        this, window, 'resize', resizeHandler
-                    );
-                    var mask = this.mask;
+                if (!this.isShow) {
+                    return;
+                }
 
-                    this.addState('hidden');
+                this.isShow = false;
 
-                    if (mask) {
-                        hideMask(this);
-                    }
+                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
+
+                this.addState('hidden');
+
+                if (this.mask) {
+                    hideMask(this);
                 }
 
                 this.fire('hide');
-                this.isShow = false;
             },
 
 

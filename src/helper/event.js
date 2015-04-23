@@ -265,7 +265,7 @@ define(
         };
 
         /**
-         * 为控件管理的DOM元素添加DOM事件
+         * 为控件管理的DOM元素移除DOM事件
          *
          * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
          * @param {string} type 事件的类型

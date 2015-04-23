@@ -548,18 +548,6 @@ define(
                 var select = this.getChild('select');
                 select.on('change', changePageSize, this);
 
-                function addCustomClassesForSelectLayer(pager, selectClass, e) {
-                    var layerClasses = pager.helper.getPartClasses(selectClass + '-layer');
-                    var layer = e.layer;
-                    layer.addCustomClasses(layerClasses);
-                    pager.fire('selectlayerrendered', { layer: layer });
-                }
-
-                // 为了重写本控件引用的select控件的样式，增加新类
-                select.on(
-                    'layerrendered',
-                    lib.curry(addCustomClassesForSelectLayer, this, 'select')
-                );
                 // pager主元素绑定事件
                 this.helper.addDOMEvent('main', 'click', pagerClick);
             },
