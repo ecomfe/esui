@@ -464,15 +464,15 @@ button.skin-link-button:hover {
   background-repeat: no-repeat, no-repeat;
   background-position: right -6px, 0 0;
   border: 1px solid #D8D8D8;
-  border-radius: 3px 3px 3px 3px;
+  border-radius: 2px;
   cursor: pointer;
   display: inline-block;
   *display: inline;
   zoom: 1;
   font-size: 12px;
-  height: 17px;
-  line-height: 17px;
-  padding: 3px 3px 3px 5px;
+  height: 23px;
+  line-height: 23px;
+  padding: 0 5px;
   width: 100px;
 }
 .ui-commandmenu:hover,

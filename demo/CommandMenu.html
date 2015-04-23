@@ -25,6 +25,7 @@
                         <li class="view-markup">结构</li>
                     </ul>
                     <div id="container" class="container">
+                        <button data-ui="type:Button">我是个Button</button>
                     </div>
                 </section>
             </div>
@@ -33,9 +34,11 @@
         require(
             [
                 'esui',
-                'esui/CommandMenu'
+                'esui/CommandMenu',
+                'esui/Button'
             ],
             function (ui, CommandMenu) {
+                ui.init();
                 var options = {
                     displayText: '我是个命令菜单',
                     datasource: [
