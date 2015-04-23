@@ -26,6 +26,9 @@ define(
             Control.apply(this, arguments);
         }
 
+        /**
+         * @override
+         */
         SearchBox.prototype.type = 'SearchBox';
 
         /**

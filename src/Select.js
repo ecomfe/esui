@@ -204,7 +204,8 @@ define(
          */
         Select.prototype.initOptions = function (options) {
             var defaults = {
-                datasource: []
+                datasource: [],
+                tabIndex: 0
             };
 
             var properties = {};
@@ -316,7 +317,7 @@ define(
                 this.helper.replaceMain();
             }
 
-            this.main.tabIndex = 0;
+            this.main.tabIndex = this.tabIndex;
 
             this.main.innerHTML = this.helper.getPartHTML('text', 'span');
         };

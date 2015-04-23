@@ -380,6 +380,7 @@ table {
 }
 #main {
     margin-left: 200px;
+    overflow: auto;
 }
 h1 {
     background: #252525;

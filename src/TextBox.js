@@ -365,7 +365,8 @@ define(
                     var eventName =
                         ('oninput' in input) ? 'input' : 'propertychange';
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
-                    textbox.helper.removeDOMEvent(input, eventName);
+                    // **仅仅去除自己绑定的
+                    textbox.helper.removeDOMEvent(input, eventName, dispatchInputEvent);
                     input.value = textbox.stringifyValue(rawValue);
                     textbox.helper.addDOMEvent(
                         input, eventName, dispatchInputEvent);

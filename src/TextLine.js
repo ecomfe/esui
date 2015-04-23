@@ -37,7 +37,7 @@ define(
             var textareaHTML = ''
                 + '<textarea wrap="off" '
                 + 'id="'+ textLine.helper.getId('text') + '"'
-                + '</textarea>';
+                + '></textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                     '1', // 默认至少有一行
@@ -60,7 +60,6 @@ define(
                 refreshLineNum.call(this);
             }
         }
-
 
         /**
          * 重置行号，增加内容和`keyup`时可调用

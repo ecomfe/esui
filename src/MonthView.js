@@ -1251,6 +1251,13 @@ define(
                 this.setProperties(properties);
             },
 
+            /**
+             * 设置属性
+             * 
+             * @param {Object} properties 属性集合
+             * @override
+             * @protected
+             */
             setProperties: function (properties) {
                 if (properties.range) {
                     properties.range = rangeAdapter(properties.range);

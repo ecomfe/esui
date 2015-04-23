@@ -233,15 +233,15 @@ define(
                 + '</div>';
 
             html += '</div>';
-
             if (expanded && !tree.strategy.isLeafNode(node)) {
                 var classes = [].concat(
                     helper.getPartClasses(tree, 'sub-root'),
                     helper.getPartClasses(tree, 'sub-root-' + indicatorType)
                 );
                 html += '<ul class="' + classes.join(' ') + '">';
-                for (var i = 0; i < node.children.length; i++) {
-                    var child = node.children[i];
+                var child;
+                for (var j = 0; j < node.children.length; j++) {
+                    child = node.children[j];
                     html += getNodeHTML(
                         tree,
                         child,
@@ -262,8 +262,9 @@ define(
          * @param {meta.TreeItem} node 对应的节点数据
          * @param {number} level 节点的层极，根是0层
          * @param {boolean} expanded 是否处于展开状态
-         * @param {string[]} 对应的节点元素应有的class
+         *        {string[]} 对应的节点元素应有的class
          * @ignore
+         * @return {Array} selector array
          */
         function getNodeClasses(tree, node, level, expanded) {
             var state = tree.strategy.isLeafNode(node)
@@ -501,7 +502,7 @@ define(
                  *
                  * @param {meta.TreeItem} node 指定取消选择的节点
                  */
-                this.fire('unselect', { node: node });
+                this.fire('unselect', {node: node});
             }
             else {
                 /**
@@ -511,7 +512,7 @@ define(
                  *
                  * @param {meta.TreeItem} node 指定选中的节点
                  */
-                this.fire('select', { node: node });
+                this.fire('select', {node: node});
             }
         };
 
@@ -617,7 +618,7 @@ define(
                      * @param {meta.TreeItem} node 取消选中的节点
                      * @member Tree
                      */
-                    tree.fire('unselectnode', { node: node });
+                    tree.fire('unselectnode', {node: node});
                     tree.fire('selectionchange');
                 }
             }
@@ -648,7 +649,7 @@ define(
                 unselectNode(
                     this,
                     this.selectedNodes[0].id,
-                    { force: true, silent: true, modifyDOM: true }
+                    {force: true, silent: true, modifyDOM: true}
                 );
             }
             var nodeElement =
@@ -664,7 +665,7 @@ define(
                  *
                  * @param {meta.TreeItem} node 选中的节点
                  */
-                this.fire('selectnode', { node: node });
+                this.fire('selectnode', {node: node});
                 /**
                  * @event selectionchange
                  *
@@ -688,7 +689,7 @@ define(
             unselectNode(
                 this,
                 id,
-                { force: true, silent: silent, modifyDOM: true }
+                {force: true, silent: silent, modifyDOM: true}
             );
         };
 
@@ -725,7 +726,7 @@ define(
                             unselectNode(
                                 this,
                                 node.children[i].id,
-                                { force: true, silent: true, modifyDOM: false }
+                                {force: true, silent: true, modifyDOM: false}
                             );
                             this.removeNodeFromIndex(node.children[i].id);
                         }
@@ -763,8 +764,8 @@ define(
             }
 
             // CSS3动画可以通过这个class来操作
-            var node = this.nodeIndex[id];
-            var nodeClasses = getNodeClasses(this, node, level, true);
+            var node2 = this.nodeIndex[id];
+            var nodeClasses = getNodeClasses(this, node2, level, true);
             nodeElement.className = nodeClasses.join(' ');
         };
 
@@ -792,7 +793,7 @@ define(
                             unselectNode(
                                 this,
                                 node.children[i].id,
-                                { force: true, silent: false, modifyDOM: false }
+                                {force: true, silent: false, modifyDOM: false}
                             );
                         }
                     }
@@ -922,7 +923,7 @@ define(
                  *
                  * @param {meta.TreeItem} node 指定收起的节点
                  */
-                this.fire('collapse', { node: node });
+                this.fire('collapse', {node: node});
             }
             else {
                 /**
@@ -932,7 +933,7 @@ define(
                  *
                  * @param {meta.TreeItem} node 展开的节点
                  */
-                this.fire('expand', { node: node });
+                this.fire('expand', {node: node});
             }
         };
 

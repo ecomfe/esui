@@ -212,7 +212,6 @@ define(
                             lib[method](validityLabel, classes);
                         }
                     }
-
                 }
             ),
 

@@ -43,7 +43,8 @@ define(
 
         /**
          * 渲染控件前重绘控件
-         * @param {Object} options 参数
+         *
+         * @param {Object} options 初始化参数
          */
         function parseMain(options) {
             var main = options.main;
@@ -66,7 +67,6 @@ define(
             }
 
             options.roles = roles;
-
         }
 
         /**
@@ -74,7 +74,8 @@ define(
          *
          * @param {ui.TipLayer} tipLayer 控件对象
          * @param {HTMLElement} mainDOM head主元素
-         * @return {esui.Label}
+         * @return {ui.Label} Label控件
+         * @inner
          */
         function createHead(tipLayer, mainDOM) {
             if (mainDOM) {
@@ -95,7 +96,8 @@ define(
             lib.addClasses(mainDOM, headClasses);
             var properties = {
                 main: mainDOM,
-                childName: 'title'
+                childName: 'title',
+                title: ''
             };
             var label = ui.create('Label', properties);
             label.render();
@@ -109,7 +111,8 @@ define(
          * @param {ui.TipLayer} tipLayer 控件
          * @param {string} type foot | body
          * @param {HTMLElement} mainDOM body或foot主元素
-         * @return {esui.Panel}
+         * @inner
+         * @return {ui.Panel} Panel
          */
         function createBF(tipLayer, type, mainDOM) {
             if (mainDOM) {
@@ -199,7 +202,7 @@ define(
          * 延迟隐藏
          *
          * @param {ui.TipLayer} tipLayer 控件
-         * @param {number=} delayTime 延迟时间
+         * @param {number} delayTime 延迟时间
          * @inner
          */
         function delayHide(tipLayer, delayTime) {
@@ -911,7 +914,8 @@ define(
             /**
              * 显示提示层
              * @param {HTMLElement} targetElement 提示层的捆绑元素
-             * @param {Object} options 定位参数
+             * @param {Object} options 参数
+             *
              */
             show: function (targetElement, options) {
                 if (helper.isInStage(this, 'INITED')) {
@@ -989,7 +993,6 @@ define(
                 this.setProperties({'foot': foot});
             },
 
-
             /**
              * 销毁控件
              */
@@ -1003,9 +1006,7 @@ define(
                 lib.removeNode(domId);
                 Control.prototype.dispose.apply(this, arguments);
             }
-
         };
-
 
         /**
          * 一次提醒提示
@@ -1087,7 +1088,6 @@ define(
             tipLayer.show(targetDOM, {top: 'top', right: 'left'});
 
             return tipLayer;
-
         };
 
 

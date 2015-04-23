@@ -95,7 +95,17 @@ define(
              */
             initOptions: function (options) {
                 var properties = {
+                    /**
+                     * @property {string} [value='on']
+                     *
+                     * Checkbox的Value值
+                     */
                     value: this.main.value || 'on',
+                    /**
+                     * @property {boolean} [checked=false]
+                     *
+                     * 是否check对钩
+                     */
                     checked: this.main.checked || false
                 };
 

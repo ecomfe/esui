@@ -4,39 +4,6 @@
     <meta charset="utf-8" />
     <title>TextBox - ESUI Demo</title>
     <script src="loader/esl.js"></script>
-    <script>
-        require.config({
-            'baseUrl': '../src',
-            'paths': {},
-            'packages': [
-                {
-                    'name': 'mini-event',
-                    'location': '../dep/mini-event/1.0.0/src',
-                    'main': 'main'
-                },
-                {
-                    'name': 'underscore',
-                    'location': '../dep/underscore/1.5.2/src',
-                    'main': 'underscore'
-                },
-                {
-                    'name': 'moment',
-                    'location': '../dep/moment/2.0.1/src',
-                    'main': 'moment'
-                },
-                {
-                    'name': 'etpl',
-                    'location': '../dep/etpl/2.1.0/src',
-                    'main': 'main'
-                },
-                {
-                    'name': 'esui',
-                    'location': '../src',
-                    'main': 'main'
-                }
-            ]
-        });
-    </script>
     <script src="../src/customShim.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <link rel="stylesheet" href="demo.css" />
@@ -46,10 +13,15 @@
             display: block;
         }
     </style>
+    <script src="demo.js"></script>
 </head>
 <body>
     <h1>TextBox</h1>
-    <div class="container">
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+<div class="container">
         <h2>多种创建方式</h2>
         <section class="intro">
             <p>两种创建方式：js动态；html静态。</p>
@@ -184,6 +156,8 @@
             </div>
             <pre class="source source-script"></pre>
         </section>
+    </div>
+        </div>
     </div>
     <script>
     require(

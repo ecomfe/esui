@@ -4,46 +4,19 @@
         <meta charset="UTF-8" />
         <title>RangeCalendar - ESUI Demo</title>
         <script src="loader/esl.js"></script>
-        <script>
-            require.config({
-                'baseUrl': '../src',
-                'paths': {},
-                'packages': [
-                    {
-                        'name': 'mini-event',
-                        'location': '../dep/mini-event/1.0.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'underscore',
-                        'location': '../dep/underscore/1.5.2/src',
-                        'main': 'underscore'
-                    },
-                    {
-                        'name': 'moment',
-                        'location': '../dep/moment/2.0.1/src',
-                        'main': 'moment'
-                    },
-                    {
-                        'name': 'etpl',
-                        'location': '../dep/etpl/2.1.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'esui',
-                        'location': '../src',
-                        'main': 'main'
-                    }
-                ]
-            });
-        </script>
         <script src="../src/customShim.js"></script>
         <script src="jquery-1.9.1.min.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="demo.css" />
         <link rel="stylesheet" href="../src/css/main.css" />
     </head>
     <body>
-        <header>RangeCalendar</header>
+        <h1>Panel</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Panel</h2>
         <div class="container">
             <h2>连续时间段选择控件</h2>
             <p class="desc-title">
@@ -127,6 +100,8 @@
                 data-ui-id="test4"
                 data-ui-range="2013-07-03,2013-09-29"
                 data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27">
+            </div>
+        </div>
         </div>
         <script>
         require(

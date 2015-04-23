@@ -78,7 +78,6 @@ define(
             };
 
             u.extend(properties, options);
-
             if (options.arrow === 'false') {
                 properties.arrow = false;
             }
@@ -132,9 +131,9 @@ define(
             tipLayer.render();
 
             var attachOptions = {
-                showMode: this.showMode,
+                showMode: this.mode,
                 delayTime: this.delayTime,
-                targetControl: this,
+                targetControl: this.id,
                 positionOpt: {top: 'top', right: 'left'}
             };
             tipLayer.attachTo(attachOptions);

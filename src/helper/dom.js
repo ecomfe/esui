@@ -34,6 +34,7 @@ define(
         var u = require('underscore');
         var lib = require('../lib');
         var ui = require('../main');
+        var uiClassPrefix = 'uiClassPrefix';
 
         /**
          * @override Helper
@@ -69,7 +70,7 @@ define(
 
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
-            var prefix = ui.getConfig('uiClassPrefix');
+            var prefix = ui.getConfig(uiClassPrefix);
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
 
@@ -128,10 +129,10 @@ define(
             var type = getControlClassType(this.control);
 
             if (part) {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type, part);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type, part);
             }
             else {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type);
             }
         };
 
@@ -199,7 +200,7 @@ define(
             var type = getControlClassType(this.control);
             var getConf = ui.getConfig;
             var classes = [
-                joinByStrike(getConf('uiClassPrefix'), type, state),
+                joinByStrike(getConf(uiClassPrefix), type, state),
                 joinByStrike(getConf('stateClassPrefix'), state)
             ];
 

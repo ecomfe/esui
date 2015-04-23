@@ -4,56 +4,39 @@
         <meta charset="UTF-8" />
         <title>Calendar - ESUI Demo</title>
         <script src="loader/esl.js"></script>
-        <script>
-            require.config({
-                'baseUrl': '../src',
-                'paths': {},
-                'packages': [
-                    {
-                        'name': 'mini-event',
-                        'location': '../dep/mini-event/1.0.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'underscore',
-                        'location': '../dep/underscore/1.5.2/src',
-                        'main': 'underscore'
-                    },
-                    {
-                        'name': 'moment',
-                        'location': '../dep/moment/2.0.1/src',
-                        'main': 'moment'
-                    },
-                    {
-                        'name': 'etpl',
-                        'location': '../dep/etpl/2.1.0/src',
-                        'main': 'main'
-                    },
-                    {
-                        'name': 'esui',
-                        'location': '../src',
-                        'main': 'main'
-                    }
-                ]
-            });
-        </script>
         <script src="../src/customShim.js"></script>
         <script src="jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" href="demo.css" />
         <link rel="stylesheet" href="../src/css/main.css" />
+        <script src="demo.js"></script>
     </head>
     <body>
-        <header>Calendar</header>
-        <div class="container">
-            <div style="overflow:hidden;zoom:1;margin-bottom:10px;">
-                <button data-ui="type:Button;id:unlock;" style="float:left;">解锁</button>
-                <button data-ui="type:Button;id:update;" style="float:left;">更新日期</button>
-                <span id="tip" style="float:left;"></span>
-            </div>
-            <div style="overflow:hidden;zoom:1">
-                <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;"></div>
-                <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;" />
-                <esui-calendar value="2014-03-25" name="test2" data-ui="id:test3;range:2011-02-02,2014-02-01;"></esui-calendar>
+        <h1>Calendar</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Button</h2>
+                <section class="intro">
+                    <p>Button</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="container">
+                        <div style="overflow:hidden;zoom:1;margin-bottom:10px;">
+                            <button data-ui="type:Button;id:unlock;" style="float:left;">解锁</button>
+                            <button data-ui="type:Button;id:update;" style="float:left;">更新日期</button>
+                            <span id="tip" style="float:left;"></span>
+                        </div>
+                        <div style="overflow:hidden;zoom:1">
+                            <div data-ui="type:Calendar;id:test;value:2010-02-01;name:test;range:2011-02-02,2014-02-01;"></div>
+                            <input value="2011-03-01" name="test2" data-ui="type:Calendar;id:test2;range:2011-02-02,2014-02-01;" />
+                            <esui-calendar value="2014-03-25" name="test2" data-ui="id:test3;range:2011-02-02,2014-02-01;"></esui-calendar>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
         <script>

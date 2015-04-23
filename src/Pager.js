@@ -640,6 +640,7 @@ define(
                          * 仅触发{@link Pager#pagechange}事件
                          * - `anchor`：页码为`<a>`元素，点击后直接跳转
                          */
+
                         'pageType',
 
                         /**
