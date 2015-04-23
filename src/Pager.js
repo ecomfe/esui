@@ -531,10 +531,10 @@ define(
                         value: this.pageSize + ''
                     };
                     select.setProperties(properties);
-                }
 
-                // 同步一次状态
-                changePageSize.call(this);
+                    // 同步一次状态
+                    changePageSize.call(this);
+                }
             },
 
             /**
