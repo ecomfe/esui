@@ -329,6 +329,17 @@ define(
             }
         );
 
+        /**
+         * 获取用于比对的text属性值
+         *
+         * @return {string}
+         * @protected
+         */
+        SearchBox.prototype.getTextProperty = function () {
+            var textbox = this.getChild('text');
+            return textbox ? textbox.getValue() : this.text;
+        };
+
         lib.inherits(SearchBox, Control);
         ui.register(SearchBox);
         return SearchBox;

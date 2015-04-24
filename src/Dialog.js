@@ -719,10 +719,6 @@ define(
              *
              */
             show: function () {
-                if (this.isShow) {
-                    this.resize();
-                    return;
-                }
                 var mask = this.mask;
                 if (helper.isInStage(this, 'INITED')) {
                     this.render();
@@ -768,8 +764,12 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                this.fire('show');
+                if (this.isShow) {
+                    return;
+                }
+
                 this.isShow = true;
+                this.fire('show');
             },
 
             /**
