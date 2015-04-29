@@ -1092,12 +1092,12 @@ define(
 
             var dayHead = lib.g(getId(schedule, 'day-head'));
             var inputs = dayHead.getElementsByTagName('input');
-            // when state is 'readonly' or 'disabled, we should operate attribute
+            // checkbox没有readOnly属性，value为true时应该阻止单击事件
             for (var i = 0, len = inputs.length; i < len; i++) {
-                if (/^(?:readonly|disabled)$/.test(state)) {
-                    value
-                        ? (inputs[i].setAttribute(state, value))
-                        : (inputs[i].removeAttribute(state));
+                if ('readonly' === state) {
+                    inputs[i].onClick = function () {
+                        return !value;
+                    }
                     continue;
                 }
                 inputs[i][state] = value;
