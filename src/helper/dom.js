@@ -83,9 +83,9 @@ define(
                 // 缓存起来
                 if (!this.partClassCache) {
                     this.partClassCache = {};
-                    // 还是得复制一份，不然这个返回回去就可能被修改了
-                    this.partClassCache[part] = classes.slice();
                 }
+                // 还是得复制一份，不然这个返回回去就可能被修改了
+                this.partClassCache[part] = classes.slice();
             }
             else {
                 classes.push(joinByStrike(prefix, 'ctrl'));
