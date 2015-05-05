@@ -88,7 +88,7 @@ define(
             };
         };
 
-        // 这些属性不用加`px`
+        // 这些属性需要加`px`
         var unitProperties = {
             width: true,
             height: true,
@@ -148,6 +148,7 @@ define(
          * @param {string | Function} [element] 指定DOM元素在当前控件下的部分名，
          * 可以提供函数作为参数，则函数返回需要更新的DOM元素
          * @param {Function} [generate] 指定生成HTML的函数，默认直接使用控件属性的值
+         * 该函数返回原始的HTML，不需要做额外的转义工作
          * @return {Object} 一个渲染器配置
          */
         painters.html = function (name, element, generate) {
@@ -172,7 +173,7 @@ define(
         };
 
         /**
-         * 生成一个将控件属性与某个DOM元素的HTML内容关联的渲染器
+         * 生成一个将控件属性与某个DOM元素的文本内容关联的渲染器
          *
          * 当控件属性变化时，对应修改DOM元素的文本内容
          *
@@ -182,7 +183,7 @@ define(
          * @param {string | Function} [element] 指定DOM元素在当前控件下的部分名，
          * 可以提供函数作为参数，则函数返回需要更新的DOM元素
          * @param {Function} [generate] 指定生成HTML的函数，默认直接使用控件属性的值，
-         * 该函数返回原始的HTML，不需要做额外的转义工作
+         * 需要做转义工作
          * @return {Object} 一个渲染器配置
          */
         painters.text = function (name, element, generate) {
