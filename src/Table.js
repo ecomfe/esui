@@ -2058,14 +2058,14 @@ define(
          *
          * @private
          */
-        var singleSelectTpl = '<input '
+        var singleSelectTpl = '<div class="${checkboxClassName}"><input '
                             +  'type="radio" '
                             +  'id="${id}" '
                             +  'name="${name}" '
                             +  'class="${className}" '
                             +  'data-index="${index}" '
                             +  '${disabled} '
-                            +  '${checked} />';
+                            +  '${checked} /><label for="${id}"></label></div>';
 
         /**
          * 第一列的单选框
@@ -2088,7 +2088,8 @@ define(
                         disabled: table.disabled ? 'disabled="disabled"' : '',
                         checked: isRowSelected(table, index)
                             ? 'checked="checked"'
-                            : ''
+                            : '',
+                        checkboxClassName: table.helper.getPrefixClass('radio-custom')
                     };
                     return lib.format(singleSelectTpl, data);
                 }
@@ -2213,7 +2214,7 @@ define(
         }
 
         function selectSingleHandler(element, e) {
-            selectSingle(this, getAttr(element, 'index'));
+            selectSingle(this, getAttr(element, 'index'), true);
         }
 
         /**
@@ -2224,19 +2225,24 @@ define(
          */
         function selectSingle(table, index, isSelected) {
             var selectedIndex = table.selectedIndex;
-            var input = lib.g(getId(table, 'single-select') + index);
-            if (input) {
-                hasValue(isSelected) && (input.checked = isSelected);
-
-                table.fire('select', {selectedIndex: index});
-
-                if (selectedIndex && selectedIndex.length) {
-                    helper.removePartClasses(
-                        table, 'row-selected', getRow(table, selectedIndex[0]));
+            // index 为-1时表示全选，对于single类型不需要处理
+            if (index >= 0) {
+                var input = lib.g(getId(table, 'single-select') + index);
+                if (input) {
+                    hasValue(isSelected) && (input.checked = isSelected);
+    
+                    table.fire('select', {selectedIndex: index});
+    
+                    if (selectedIndex && selectedIndex.length) {
+                        helper.removePartClasses(
+                            table, 'row-selected', getRow(table, selectedIndex[0]));
+                    }
+                    // isSelected为true时，设置选中，为false时，不需要设置
+                    if (isSelected) {
+                        setSelectedIndex(table, [index]);
+                        helper.addPartClasses(table, 'row-selected', getRow(table, index));
+                    }
                 }
-
-                setSelectedIndex(table, [index]);
-                helper.addPartClasses(table, 'row-selected', getRow(table, index));
             }
         }
 

@@ -54,6 +54,10 @@
                         <div class="row">
                             <div data-ui="type:Table;id:myTable4;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
                         </div>
+                        <h3>单选</h3>
+                        <div class="row">
+                            <div data-ui="type:Table;id:myTable5;select:single"></div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -142,6 +146,11 @@
                     properties : {
                         myTable4: {
                             datasource: [],
+                            fields: fields
+                        },
+                        myTable5: {
+                            datasource: data,
+
                             fields: fields
                         },
                         myTable: {

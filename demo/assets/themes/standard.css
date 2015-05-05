@@ -902,29 +902,6 @@ input[type="search"]::-webkit-search-decoration {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-.esf-checkbox-style-base input:indeterminate ~ label:after,
-.esf-checkbox-style-base input:indeterminate ~ .ui-checkbox-box:after,
-.ui-checkbox-custom input:indeterminate ~ label:after,
-.ui-checkbox-custom input:indeterminate ~ .ui-checkbox-box:after,
-.ui-radio-custom input:indeterminate ~ label:after,
-.ui-radio-custom input:indeterminate ~ .ui-checkbox-box:after,
-.ui-checkbox-switch input:indeterminate ~ label:after,
-.ui-checkbox-switch input:indeterminate ~ .ui-checkbox-box:after,
-.ui-checkbox-switch-round input:indeterminate ~ label:after,
-.ui-checkbox-switch-round input:indeterminate ~ .ui-checkbox-box:after {
-  border: 1px solid #70ccc0;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  width: 1.1em;
-  height: 1.1em;
-  background: #70ccc0;
-  -webkit-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  -moz-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  top: 0;
-  left: 0;
-}
 .esf-checkbox-style-base input[disabled] ~ label,
 .esf-checkbox-style-base input[disabled] ~ .ui-checkbox-box,
 .ui-checkbox-custom input[disabled] ~ label,
@@ -969,6 +946,23 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round label:hover,
 .ui-checkbox-switch-round ~ label:hover {
   color: #666666;
+}
+.ui-checkbox-custom input:indeterminate ~ label:after,
+.ui-checkbox-custom input:indeterminate ~ .ui-checkbox-box:after {
+  border: 1px solid #70ccc0;
+  width: 1.1em;
+  height: 1.1em;
+  background: #70ccc0;
+  -webkit-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  -moz-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  top: 0;
+  left: 0;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  transform: none;
 }
 .ui-checkbox-custom.ui-checkbox-single label,
 .ui-radio-custom.ui-checkbox-single label {
@@ -2736,6 +2730,13 @@ esui-box-group {
   right: 1em;
   top: 0;
 }
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 对话框样式
+ * @author dbear
+ */
 .ui-layer {
   position: absolute;
   -webkit-user-select: none;
@@ -2746,6 +2747,136 @@ esui-box-group {
 }
 .ui-layer-hidden {
   display: none !important;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Breadcrumbs样式
+  * @author yankun01
+*/
+.ui-crumb {
+  padding: 0;
+  line-height: 1.3;
+  vertical-align: middle;
+}
+.ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #666666;
+}
+span.ui-crumb-node {
+  color: #666666;
+}
+.ui-crumb-nav-container {
+  background: #f6f6f6;
+}
+.ui-crumb-nav {
+  display: inline-block;
+  height: 4em;
+  line-height: 4em;
+  overflow: hidden;
+}
+.ui-crumb-nav .ui-crumb-node {
+  padding: 0 20px;
+}
+.ui-crumb-nav span.ui-crumb-node {
+  color: #70ccc0;
+}
+.ui-crumb-nav a.ui-crumb-node {
+  color: #666666;
+  text-decoration: none;
+}
+.ui-crumb-nav a.ui-crumb-node:hover {
+  color: #666666;
+  text-decoration: underline;
+}
+.ui-crumb-nav .ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #999999;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 对话框样式
+ * @author dbear
+ */
+.ui-dialog {
+  position: absolute;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  z-index: 1203;
+  width: 600px;
+  display: block;
+  background: #ffffff;
+  border: none;
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+.ui-dialog-head {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #666666;
+  font-weight: bold;
+}
+.ui-dialog-close-icon {
+  position: absolute;
+  right: 0.5em;
+  top: 0.75em;
+  cursor: pointer;
+  color: #999999;
+}
+.ui-dialog-close-icon:hover {
+  color: #666666;
+}
+.ui-dialog-title {
+  line-height: 2.5em;
+  padding: 0 0.5em;
+}
+.ui-dialog-body {
+  padding: 0.5em;
+}
+.ui-dialog-foot-panel {
+  padding: 0.5em;
+  margin: 0;
+  border-top: none;
+}
+.ui-dialog-draggable .ui-dialog-head {
+  cursor: move;
+}
+.ui-dialog-dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ui-dialog-mask {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.ui-dialog-text {
+  min-height: 4em;
+}
+.ui-dialog-alert .ui-dialog-body,
+.ui-dialog-confirm .ui-dialog-body {
+  overflow: auto;
+}
+.ui-dialog-icon {
+  float: left;
+  margin-right: 1em;
+}
+.ui-dialog-icon span {
+  font-size: 4em;
+}
+.ui-dialog-icon-warning {
+  color: #f16c6c;
+}
+.ui-dialog-icon-confirm {
+  color: #6bd5ec;
 }
 /**
  * ESUI (Enterprise Simple UI)
@@ -3021,143 +3152,6 @@ esui-box-group {
 .ui-select-layer-compact .ui-select-item-selected > :first-child {
   background: #fbfbfb;
   color: #666666 !important;
-}
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 对话框样式
- * @author dbear
- */
-/**
-  * ESUI (Enterprise Simple UI)
-  * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
-  * @file Breadcrumbs样式
-  * @author yankun01
-*/
-.ui-crumb {
-  padding: 0;
-  line-height: 1.3;
-  vertical-align: middle;
-}
-.ui-crumb-separator {
-  margin: 0 0.5em;
-  color: #666666;
-}
-span.ui-crumb-node {
-  color: #666666;
-}
-.ui-crumb-nav-container {
-  background: #f6f6f6;
-}
-.ui-crumb-nav {
-  display: inline-block;
-  height: 4em;
-  line-height: 4em;
-  overflow: hidden;
-}
-.ui-crumb-nav .ui-crumb-node {
-  padding: 0 20px;
-}
-.ui-crumb-nav span.ui-crumb-node {
-  color: #70ccc0;
-}
-.ui-crumb-nav a.ui-crumb-node {
-  color: #666666;
-  text-decoration: none;
-}
-.ui-crumb-nav a.ui-crumb-node:hover {
-  color: #666666;
-  text-decoration: underline;
-}
-.ui-crumb-nav .ui-crumb-separator {
-  margin: 0 0.5em;
-  color: #999999;
-}
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- *
- * @file 对话框样式
- * @author dbear
- */
-.ui-dialog {
-  position: absolute;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  z-index: 1203;
-  width: 600px;
-  display: block;
-  background: #ffffff;
-  border: none;
-  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
-.ui-dialog-head {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  color: #666666;
-  font-weight: bold;
-}
-.ui-dialog-close-icon {
-  position: absolute;
-  right: 0.5em;
-  top: 0.75em;
-  cursor: pointer;
-  color: #999999;
-}
-.ui-dialog-close-icon:hover {
-  color: #666666;
-}
-.ui-dialog-title {
-  line-height: 2.5em;
-  padding: 0 0.5em;
-}
-.ui-dialog-body {
-  padding: 0.5em;
-}
-.ui-dialog-foot-panel {
-  padding: 0.5em;
-  margin: 0;
-  border-top: none;
-}
-.ui-dialog-draggable .ui-dialog-head {
-  cursor: move;
-}
-.ui-dialog-dragging {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.ui-dialog-mask {
-  opacity: 0.2;
-  filter: alpha(opacity=20);
-}
-.ui-dialog-text {
-  min-height: 4em;
-}
-.ui-dialog-alert .ui-dialog-body,
-.ui-dialog-confirm .ui-dialog-body {
-  overflow: auto;
-}
-.ui-dialog-icon {
-  float: left;
-  margin-right: 1em;
-}
-.ui-dialog-icon span {
-  font-size: 4em;
-}
-.ui-dialog-icon-warning {
-  color: #f16c6c;
-}
-.ui-dialog-icon-confirm {
-  color: #6bd5ec;
 }
 /**
 * ESUI (Enterprise Simple UI)
