@@ -35,6 +35,10 @@
                 <div data-ui="type:Table;id:myTable;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
 
                 <br/>
+                <h3>单选</h3>
+                <div class="row">
+                    <div data-ui="type:Table;id:myTable5;select:single"></div>
+                </div>
             <!--
                 <div style="width:1024px;margin: 0 auto;overflow:hidden;">
                     <div data-follow-thead="myTable2">I am not</div>
@@ -72,8 +76,64 @@
             ],
             function (ui) {
                 var lib = require('esui/lib');
+                var fields = [
+                    {
+                        title: '编号',
+                        field: 'id' ,
+                        sortable: true,
+                        tip :'编号',
+                        resizable: true,
+                        subEntry: 1,
+                        editable: 1,
+                        editRules: {
+                            pattern: /\d/g,
+                            min: 1
+                        },
+                        editContent: function(item){
+                            return item.id;
+                        },
+                        width: 100,
+                        content: function (item) {
+                            return item.id;
+                        }
+                    },
+                    {
+                        title: '姓名',
+                        field: 'name' ,
+                        tip :'姓名',
+                        align: 'right',
+                        editable: 1,
+                        comparer : function( a,b ){
+                            return a.name.localeCompare( b.name );
+                        },
+                        sortable: true,
+                        resizable : true,
+                        width: 100,
+                        content: function (item) {
+                            return item.name;
+                        }
+                    },
+                    {
+                        title: '性别',
+                        field: 'sex' ,
+                        tip :'性别',
+                        comparer : function( a,b ){
+                            return a.sex - b.sex;
+                        },
+                        sortable: true,
+                        resizable : true,
+                        width: 200,
+                        content: function (item) {
+                            return item.sex ? '男' : '女';
+                        }
+                    }
+                ];
                 ui.init(document.body,{
                     properties : {
+                        myTable5: {
+                            datasource: data,
+                            fields: fields
+                        },
                         myTable: {
                             datasource: data,
                             sortable: true,
@@ -89,58 +149,7 @@
                             noFollowHeadCache: true,//默认为false,如无必要也最好设置为false,效率更高。
                             //selectMode :'line',
                             noDataHtml: '<p style="margin:0;">nothing</p>',
-                            fields: [
-                                {
-                                    title: '编号',
-                                    field: 'id' ,
-                                    sortable: true,
-                                    tip :'编号',
-                                    resizable: true,
-                                    subEntry: 1,
-                                    editable: 1,
-                                    editRules: {
-                                        pattern: /\d/g,
-                                        min: 1
-                                    },
-                                    editContent: function(item){
-                                        return item.id;
-                                    },
-                                    width: 100,
-                                    content: function (item) {
-                                        return item.id;
-                                    }
-                                },
-                                {
-                                    title: '姓名',
-                                    field: 'name' ,
-                                    tip :'姓名',
-                                    align: 'right',
-                                    editable: 1,
-                                    comparer : function( a,b ){
-                                        return a.name.localeCompare( b.name );
-                                    },
-                                    sortable: true,
-                                    resizable : true,
-                                    width: 100,
-                                    content: function (item) {
-                                        return item.name;
-                                    }
-                                },
-                                {
-                                    title: '性别',
-                                    field: 'sex' ,
-                                    tip :'性别',
-                                    comparer : function( a,b ){
-                                        return a.sex - b.sex;
-                                    },
-                                    sortable: true,
-                                    resizable : true,
-                                    width: 200,
-                                    content: function (item) {
-                                        return item.sex ? '男' : '女';
-                                    }
-                                }
-                            ]
+                            fields: fields
                         },
                         myTable2: {
                             noScroll: true,
@@ -155,50 +164,7 @@
                             //bodyMaxHeight: 300,
                             //selectMode :'line',
                             noDataHtml: '<p style="margin:0;">nothing</p>',
-                            fields: [
-                                {
-                                    title: '编号',
-                                    field: 'id' ,
-                                    sortable: true,
-                                    tip :'编号',
-                                    resizable: true,
-                                    subEntry: 1,
-                                    editable: 1,
-                                    width: 50,
-                                    content: function (item) {
-                                        return item.id;
-                                    }
-                                },
-                                {
-                                    title: '姓名',
-                                    field: 'name' ,
-                                    tip :'姓名',
-                                    editable: 1,
-                                    comparer : function( a,b ){
-                                        return a.name.localeCompare( b.name );
-                                    },
-                                    sortable: true,
-                                    resizable : true,
-                                    width: 300,
-                                    content: function (item) {
-                                        return item.name;
-                                    }
-                                },
-                                {
-                                    title: '性别',
-                                    field: 'sex' ,
-                                    tip :'性别',
-                                    comparer : function( a,b ){
-                                        return a.sex - b.sex;
-                                    },
-                                    sortable: true,
-                                    resizable : true,
-                                    width: 300,
-                                    content: function (item) {
-                                        return item.sex ? '男' : '女';
-                                    }
-                                }
-                            ]
+                            fields: fields
                         }
                     }
                 });
