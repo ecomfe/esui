@@ -484,6 +484,32 @@ define(
             target.getSubrowContainer = function(index){
                 return getSubrowContainer(this, index);
             };
+            /**
+             * 打开子行
+             * @public
+             * @param {number} index 子行的序号
+             */
+            target.openSubrow = function (index) {
+                var currentIndex = this.subrowIndex;
+                var closeSuccess = 1;
+                if (hasValue(currentIndex)) {
+                    closeSuccess = closeSubrow(
+                        this,
+                        currentIndex,
+                        lib.g(getSubentryId(this, currentIndex))
+                    );
+                }
+                if (!closeSuccess) {
+                    return;
+                }
+                var entry = lib.g(getSubentryId(this, index));
+                helper.addPartClasses(this, 'subentry-opened', entry);
+                helper.addPartClasses(this, 'row-unfolded', this.getRow(index));
+                setAttr(entry, 'title', this.subEntryCloseTip);
+                setAttr(entry, 'subrowopened', '1');
+                lib.g(getSubrowId(this, index)).style.display = '';
+                (this.subrowMutex) && (this.subrowIndex = index);
+            };
 
             Extension.prototype.activate.apply(this, arguments);
         };
