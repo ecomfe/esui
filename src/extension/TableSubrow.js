@@ -359,7 +359,7 @@ define(
         function getSubrowContainer(table, index) {
             var subrowWrapper = getSubrow(table, index);
             var subrowPanelId = getId(table, 'subrow-panel-' + index);
-            var subrowPanel = table.viewContext.get(subrowPanelId);
+            var subrowPanel = table.bodyPanel.getChild(subrowPanelId);
 
             if (!subrowPanel) {
                 subrowWrapper.innerHTML = lib.format(
@@ -372,7 +372,7 @@ define(
 
                 table.initChildren(subrowWrapper);
                 subrowPanel = table.viewContext.get(subrowPanelId);
-                table.addChild(subrowPanel);
+                table.bodyPanel.addChild(subrowPanel, subrowPanelId);
             }
 
             return subrowPanel;
