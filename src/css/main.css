@@ -2476,6 +2476,7 @@ button.skin-link-button:hover {
   position: absolute;
   left: 0;
   top: 0;
+  height: 100%;
 }
 .ui-textline-text-container {
   position: absolute;
