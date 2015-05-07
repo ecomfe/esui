@@ -1299,16 +1299,9 @@ define(
                     }
                 },
                 {
-                    name: 'disabled',
-                    paint: function (schedule, value) {
-                        setDayCheckboxState(schedule, 'disabled', value);
-                    }
-                },
-                {
-                    name: 'readOnly',
-                    paint: function (schedule, value) {
-                        // checkbox没有readonly 状态，因此只能屏蔽它们了
-                        setDayCheckboxState(schedule, 'disabled', value);
+                    name: ['disabled','readOnly'],
+                    paint: function (schedule, disabled, readOnly) {
+                        setDayCheckboxState(schedule, 'disabled', disabled || readOnly);
                     }
                 }
             ),
