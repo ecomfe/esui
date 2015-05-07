@@ -1232,7 +1232,7 @@ button.skin-link-button:hover {
  */
 .ui-richcalendar-layer {
   background: #fff;
-  display: block;
+  *zoom: 1;
   border: 1px solid #A8ADB6;
   -moz-box-shadow: 3px 4px 4px -4px;
   -webkit-box-shadow: 3px 4px 4px -4px;
@@ -1240,12 +1240,13 @@ button.skin-link-button:hover {
   margin-top: 1px;
   padding: 5px 5px 5px 0;
 }
+.ui-richcalendar-layer:before,
 .ui-richcalendar-layer:after {
-  content: ".";
-  display: block;
-  height: 0;
+  display: table;
+  content: "";
+}
+.ui-richcalendar-layer:after {
   clear: both;
-  visibility: hidden;
 }
 .ui-richcalendar-layer .ui-richcalendar-month-container {
   float: left;
@@ -1306,28 +1307,30 @@ button.skin-link-button:hover {
   border-top: solid 1px #E6EEF6;
   background: #F9FCFE;
   clear: both;
-  display: block;
+  *zoom: 1;
+}
+.ui-region .ui-region-region-box0:before,
+.ui-region .ui-region-region-box0:after {
+  display: table;
+  content: "";
 }
 .ui-region .ui-region-region-box0:after {
-  content: ".";
-  display: block;
-  height: 0;
   clear: both;
-  visibility: hidden;
 }
 .ui-region .ui-region-region-box1 {
   width: 610px;
   clear: both;
   background: none repeat scroll 0 0 #FFFFFF;
   border-top: 1px solid #F1F1F1;
-  display: block;
+  *zoom: 1;
+}
+.ui-region .ui-region-region-box1:before,
+.ui-region .ui-region-region-box1:after {
+  display: table;
+  content: "";
 }
 .ui-region .ui-region-region-box1:after {
-  content: ".";
-  display: block;
-  height: 0;
   clear: both;
-  visibility: hidden;
 }
 .ui-region .ui-region-region-check {
   width: 90px;
@@ -2998,14 +3001,15 @@ ol {
   zoom: 1;
 }
 .ui-wizard {
-  display: block;
+  *zoom: 1;
+}
+.ui-wizard:before,
+.ui-wizard:after {
+  display: table;
+  content: "";
 }
 .ui-wizard:after {
-  content: ".";
-  display: block;
-  height: 0;
   clear: both;
-  visibility: hidden;
 }
 .ui-wizard li {
   list-style: none;

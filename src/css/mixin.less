@@ -5,14 +5,15 @@
 
 // 清除浮动
 .clear-float () {
-    display: block;
+    &:before,
     &:after {
-        content: ".";
-        display: block;
-        height: 0;
-        clear: both;
-        visibility: hidden;
+        display: table;
+        content: "";
     }
+    &:after {
+        clear: both;
+    }
+    *zoom: 1;
 }
 
 
