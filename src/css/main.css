@@ -1006,7 +1006,7 @@ button.skin-link-button:hover {
   background: -moz-linear-gradient(top, #ffffff, #f6f6f6);
   background: -ms-linear-gradient(top, #ffffff, #f6f6f6);
   background: -o-linear-gradient(top, #ffffff, #f6f6f6);
-  width: 23px;
+  min-width: 23px;
   height: 23px;
   border: 1px #ccc solid;
   cursor: pointer;
@@ -1017,17 +1017,14 @@ button.skin-link-button:hover {
   -moz-box-sizing: content-box;
   -ms-box-sizing: content-box;
   box-sizing: content-box;
+  text-align: center;
 }
-.ui-pager-item a {
-  width: 23px;
-}
-.ui-pager-item-extend,
-.ui-pager-item-extend a {
-  width: 50px;
+.ui-pager-item-extend {
+  min-width: 50px;
 }
 .ui-pager-item-current,
 .ui-pager-item-omit {
-  width: 25px;
+  min-width: 25px;
   height: 25px;
 }
 .ui-pager-item-current {
