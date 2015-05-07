@@ -1095,9 +1095,14 @@ define(
 
             var dayHead = lib.g(getId(schedule, 'day-head'));
             var inputs = dayHead.getElementsByTagName('input');
-
+            // checkbox没有readOnly属性，value为true时应该阻止单击事件
             for (var i = 0, len = inputs.length; i < len; i++) {
-
+                if ('readonly' === state) {
+                    inputs[i].onClick = function () {
+                        return !value;
+                    }
+                    continue;
+                }
                 inputs[i][state] = value;
             }
         }
