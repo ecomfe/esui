@@ -4197,6 +4197,7 @@ span.ui-crumb-node {
   position: absolute;
   left: 0;
   top: 0;
+  height: 100%;
   -webkit-border-top-left-radius: 5px;
   -moz-border-radius-topleft: 5px;
   border-top-left-radius: 5px;
