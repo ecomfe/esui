@@ -149,7 +149,10 @@ define(
             tipLayer.render();
 
             var attachOptions = {
-                showMode: this.mode,
+                // 原来老的代码写的是this.mode
+                // 其实暴露的是showMode: 'over',
+                // 这样向后兼容一下
+                showMode: this.mode || this.showMode,
                 delayTime: this.delayTime,
                 targetControl: this.id,
                 positionOpt: {top: 'top', right: 'left'}
