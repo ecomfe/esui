@@ -27,7 +27,7 @@
                 <div id="b">
                     Fill your address.
                 </div>
-                <div id="c">
+                <div data-ui="type:Panel;id:c;">
                     Payment
                 </div>
             </div>
@@ -45,12 +45,13 @@
             [
                 'esui',
                 'esui/Button',
-                'esui/Wizard'
+                'esui/Wizard',
+                'esui/Panel'
             ],
             function (ui, Button, Wizard) {
                 var buttons = ui.init();
-                var prev = buttons[0];
-                var next = buttons[1];
+                var prev = ui.get('prev');
+                var next = ui.get('next');
                 var steps = [
                     { text: '1', panel: 'a' },
                     { text: '2', panel: 'b' },
