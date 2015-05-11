@@ -30,24 +30,26 @@
                 <div class="example ui-demo-light-stage">
                     <h3>文本框</h3>
                     <div class="row">
-                        <input
+                        <div
+                            class="ui-textbox"
                             data-ui-id="text-box-normal"
-                            data-ui-type="TextBox"
-                            data-ui-mode="text" />
+                            data-ui-type="TextBox">
+                            <input />
+                        </div>
                     </div>
                     <h3>密码框</h3>
                     <div class="row">
-                        <input 
-                            data-ui-id="text-box-password"
-                            data-ui-type="TextBox"
-                            data-ui-mode="password" />
+                        <div class="ui-textbox" data-ui-id="text-box-password"
+                            data-ui-type="TextBox"> 
+                            <input type="password" />
+                        </div>
                     </div>
                     <h3>多行文本框</h3>
                     <div class="row">
-                        <textarea id="text-box-textarea"
-                            data-ui-id="text-box-textarea"
-                            data-ui-type="TextBox"
-                            data-ui-mode="textarea"></textarea>
+                        <div class="ui-textbox" data-ui-id="text-box-textarea"
+                            data-ui-type="TextBox">
+                            <textarea></textarea>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -264,9 +266,6 @@ textbox.on(
             function (ui) {
                 ui.init();
                 ui.get('text-box-with-invalid').showValidationMessage('invalid', '不能为空！');
-                ui.get('text-box-with-input-after').on('iconclick', function (e) {
-                    alert('hello');
-                });
                 ready();
             }
         );
