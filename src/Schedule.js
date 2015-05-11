@@ -11,6 +11,7 @@ define(
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
         var helper  = require('./controlHelper');
+        var Layer = require('./Layer');
         /**
          * Schedule控件
          *
@@ -471,8 +472,9 @@ define(
             }
             else {
                 var cssStyle = ''
-                    + ';position:absolute;z-index:5000;background:#fff6bd;top:'
-                    + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
+                    + ';position:absolute;background:#fff6bd;top:'
+                    + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;'
+                    + 'z-index:' + Layer.getZIndex(me.main) + ';';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');
 
