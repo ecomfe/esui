@@ -11,6 +11,7 @@ define(
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
         var helper  = require('./controlHelper');
+        var Layer = require('./Layer');
         /**
          * Schedule控件
          *
@@ -20,7 +21,6 @@ define(
         function Schedule(options) {
             InputControl.apply(this, arguments);
         }
-
 
         /**
          * 挂接到Schedule上以便进行全局替换
@@ -55,11 +55,8 @@ define(
 
                 var value = [];
                 for (var i = 0; i < 7 && i < dayStates.length; i++) {
-
                     value[i] = [];
-
                     for (var j = 0; j < 24; j++) {
-
                         value[i][j] = dayStates[i];
                     }
                 }
@@ -103,7 +100,6 @@ define(
                 value.push(lineValue);
 
                 for (var j = 0; j < 24; j++) {
-
                     lineValue.push(0);
                 }
             }
@@ -117,7 +113,6 @@ define(
          * @inner
          */
         function getClass(schedule, part) {
-
             return helper.getPartClasses(schedule, part).join(' ');
         }
 
@@ -127,7 +122,6 @@ define(
          * @inner
          */
         function getId(schedule, part) {
-
             return helper.getId(schedule, part);
         }
 
@@ -481,7 +475,8 @@ define(
                 var cssStyle = 'font-size:'
                     + lib.getComputedStyle(me.main, 'fontSize')
                     + ';position:absolute;top:'
-                    + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
+                    + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;'
+                    + 'z-index:' + Layer.getZIndex(me.main) + ';';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');
 
