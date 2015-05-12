@@ -121,7 +121,7 @@ define(
             this.mouseMoved = false;
 
             // we may have missed mouseup (out of window)
-            (this.mouseStarted && mouseUp.call(this, event));
+            (this.mouseStarted && this.mouseUp(event));
 
             this.mouseDownEvent = event;
 
@@ -130,7 +130,7 @@ define(
                 // event.target.nodeName works around a bug in IE 8 with disabled inputs (#7620)
             var elIsCancel = typeof this.options.cancel === 'string' && event.target.nodeName
                 ? $(event.target).closest(this.options.cancel).length : false;
-            if (!btnIsLeft || elIsCancel || !mouseCapture.call(this, event)) {
+            if (!btnIsLeft || elIsCancel || !this.mouseCapture(event)) {
                 return true;
             }
 
@@ -142,7 +142,7 @@ define(
             }
 
             if (mouseDistanceMet.call(this, event) && mouseDelayMet.call(this, event)) {
-                this.mouseStarted = mouseStart.call(this, event);
+                this.mouseStarted = this.mouseStart(event);
                 if (!this.mouseStarted) {
                     event.preventDefault();
                     return true;
@@ -158,7 +158,7 @@ define(
                 return mouseMove.call(me, event);
             };
             this.mouseUpDelegate = function (event) {
-                return mouseUp.call(me, event);
+                return me.mouseUp(event);
             };
 
             this.document
@@ -182,10 +182,10 @@ define(
                 var ie = !-[1,];
                 // IE < 9的情况下，如果鼠标在文档外松开，则不会触发mouseup事件,因此需要手动调用
                 if (ie && (!document.documentMode || document.documentMode < 9) && !event.button) {
-                    return mouseUp.call(this, event);
+                    return this.mouseUp(event);
                 }
                 else if (!event.which) {
-                    return mouseUp.call(this, event);
+                    return this.mouseUp(event);
                 }
             }
 
@@ -194,14 +194,14 @@ define(
             }
 
             if (this.mouseStarted) {
-                mouseDrag.call(this, event);
+                this.mouseDrag(event);
                 return event.preventDefault();
             }
 
             if (mouseDistanceMet.call(this, event) && mouseDelayMet.call(this, event)) {
                 // TODO: 是否要传mouseDownEvent
-                this.mouseStarted = mouseStart.call(this, event);
-                (this.mouseStarted ? mouseDrag.call(this, event) : mouseUp.call(this, event));
+                this.mouseStarted = this.mouseStart(event);
+                (this.mouseStarted ? this.mouseDrag(event) : this.mouseUp(event));
             }
 
             return !this.mouseStarted;
@@ -213,7 +213,7 @@ define(
          *
          * @return {boolean}
          */
-        function mouseUp(event) {
+        exports.mouseUp = function (event) {
             this.document
                 .unbind('mousemove.' + this.type, this.mouseMoveDelegate)
                 .unbind('mouseup.' + this.type, this.mouseUpDelegate);
@@ -224,12 +224,12 @@ define(
                 if (event.target === this.mouseDownEvent.target) {
                     $.data(event.target, this.type + '.preventClickEvent', true);
                 }
-                mouseStop.call(this, event);
+                this.mouseStop(event);
             }
 
             mouseHandled = false;
             return false;
-        }
+        };
 
         /**
          * 鼠标移动距离是否达到指定阈值
@@ -261,10 +261,7 @@ define(
          *
          * @return {boolean}
          */
-        function mouseCapture(event) {
-            if (u.isFunction(this.options.onMouseCapture)) {
-                return this.options.onMouseCapture(event) !== false;
-            }
+        exports.mouseCapture = function (event) {
             /**
              * @event mousecapture
              */
@@ -273,7 +270,7 @@ define(
                 return false;
             }
             return true;
-        }
+        };
 
         /**
          * 鼠标开始
@@ -282,48 +279,37 @@ define(
          *
          * @return {boolean}
          */
-        function mouseStart(event) {
-            if (u.isFunction(this.options.onMousestart)) {
-                return this.options.onMousestart(event) !== false;
-            }
+        exports.mouseStart = function (event) {
             /**
              * @event mousestart
              */
             var miniEvent = this.fire('mousestart', event);
             return !miniEvent.isDefaultPrevented();
-        }
+        };
 
         /**
          * 鼠标移动
          * @fires mousedrag
          * @param {Event} event 事件对象
          */
-        function mouseDrag(event) {
-            if (u.isFunction(this.options.onMousedrag)) {
-                this.options.onMousedrag(event);
-                return;
-            }
+        exports.mouseDrag = function (event) {
             /**
              * @event mousedrag
              */
             this.fire('mousedrag', event);
-        }
+        };
 
         /**
          * 鼠标移动停止
          * @fires mousestop
          * @param {Event} event 事件对象
          */
-        function mouseStop(event) {
-            if (u.isFunction(this.options.onMousestop)) {
-                this.options.onMousestop(event);
-                return;
-            }
+        exports.mouseStop = function (event) {
             /**
              * @event mousestop
              */
             this.fire('mousestop', event);
-        }
+        };
 
         var Mouse = require('eoo').create(Base, exports);
 

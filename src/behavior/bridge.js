@@ -67,9 +67,8 @@ define(
                         function () {
                             var instance = $.data(this, fullName);
                             if (instance) {
-                                instance.option(options || {});
-                                if (instance._init) {
-                                    instance._init();
+                                if (instance.init) {
+                                    instance.init();
                                 }
                             }
                             else {

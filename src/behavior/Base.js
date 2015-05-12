@@ -47,6 +47,23 @@ define(
          */
         exports.init = function () {};
 
+        exports.fire = function (type, data) {
+            var me = this;
+            var callback = function (event) {
+                var func = me.options[type];
+                if (u.isFunction(func)) {
+                    var result = func.call(me, event);
+                    if (result === false) {
+                        event.preventDefault();
+                    }
+                }
+            }
+            var event = this.$super(arguments);
+            callback(event);
+
+            return event;
+        }
+
         var EventTarget = require('mini-event/EventTarget');
         var Base = require('eoo').create(EventTarget, exports);
 
