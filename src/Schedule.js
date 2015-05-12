@@ -416,7 +416,7 @@ define(
                     me,
                     coverDiv,
                     'mouseover',
-                    lib.curry(coverTipOverHandler, coverDiv)
+                    lib.curry(coverTipOverHandler, coverDiv, me)
                 );
             }
         }
@@ -426,9 +426,14 @@ define(
          * 遮罩的hover 事件句柄
          *
          */
-        function coverTipOverHandler(element) {
-
-            element.style.display = 'none';
+        function coverTipOverHandler(element, schedule) {
+            clearTimeout(schedule.coverOvierTimer);
+            schedule.coverOvierTimer = setTimeout(
+                function () {
+                    element.style.display = 'none';
+                },
+                100
+            );
         }
 
         /**
@@ -694,7 +699,6 @@ define(
             mousepos.y = e.pageY + 20;
             mousepos.x = e.pageX + 10;
 
-
             var me = this;
 
             //获取当前元素所代表的时间
@@ -720,29 +724,37 @@ define(
             repaintCovers.call(this, day, time);
         }
 
-        function repaintCovers(day, time) {
+        function repaintCovers(day, time, all) {
             //重新计算所有遮罩层的显示
-            var timebody = lib.g(getId(this, 'time-body'));
-            var timeCovers = timebody.getElementsByTagName('aside');
+            var me = this;
+            clearTimeout(me.repaintCoverTimer);
+            me.repaintCoverTimer = setTimeout(
+                function () {
+                    var timebody = lib.g(getId(me, 'time-body'));
+                    var timeCovers = timebody.getElementsByTagName('aside');
 
-            for (var i = 0, len = timeCovers.length; i < len; i++) {
-                var item = timeCovers[i];
-                var startCT =
-                    parseInt(item.getAttribute('data-start-time'), 10);
-                var endCT =
-                    parseInt(item.getAttribute('data-end-time'), 10);
-                var coverDay =
-                    parseInt(item.getAttribute('data-day'), 10);
+                    for (var i = 0, len = timeCovers.length; i < len; i++) {
+                        var item = timeCovers[i];
+                        var startCT =
+                            parseInt(item.getAttribute('data-start-time'), 10);
+                        var endCT =
+                            parseInt(item.getAttribute('data-end-time'), 10);
+                        var coverDay =
+                            parseInt(item.getAttribute('data-day'), 10);
 
-                if (time >= startCT
-                    && time < endCT
-                    && day === coverDay) {
-                    item.style.display = 'none';
-                }
-                else {
-                    item.style.display = 'block';
-                }
-            }
+                        if (!all && time >= startCT
+                            && time < endCT
+                            && day === coverDay) {
+                            item.style.display = 'none';
+                        }
+                        else {
+                            item.style.display = 'block';
+                        }
+                    }
+                },
+                100
+            );
+            
         }
 
         /**
@@ -751,23 +763,29 @@ define(
          *
          */
         function timeOutHandler(e) {
-
             var target = lib.event.getTarget(e);
-
+            var me = this;
+            var related = e.relatedTarget;
+            var current = e.currentTarget;
+            if (!(related === false ||
+                current == related ||
+                (related && (related.prefix == 'xul' ||
+                lib.dom.contains(current, related)))
+                )) {
+                repaintCovers.call(me, 0, 0, true);
+            }
             if (!target || !target.getAttribute('data-time-item')) {
                 return;
             }
 
-            repaintCovers.call(this, 0, 0);
-
             //移除hover效果
             lib.removeClasses(
                 target,
-                helper.getPartClasses(this, 'time-hover')
+                helper.getPartClasses(me, 'time-hover')
             );
 
             //隐藏tip
-            hidePromptTip(this, getId(this, 'timeitem-tip'));
+            hidePromptTip(me, getId(me, 'timeitem-tip'));
         }
 
         var getTimeBodyMoveHandler; //drag mousemove的句柄
