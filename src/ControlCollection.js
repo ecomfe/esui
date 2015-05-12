@@ -112,7 +112,7 @@ define(
             // methodName可能会修改ControlCollection，如从中删掉一个元素，
             // 这样直接循环ControlCollection会造成遍历错误，
             // 复制一份以供循环
-            var args = [].slice.call(this);
+            var args = u.clone([this]);
             args.push.apply(args, arguments);
             return u.invoke.apply(u, args);
         };
