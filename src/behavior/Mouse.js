@@ -142,6 +142,7 @@ define(
             }
 
             if (mouseDistanceMet.call(this, event) && mouseDelayMet.call(this, event)) {
+                console.log('start')
                 this.mouseStarted = this.mouseStart(event);
                 if (!this.mouseStarted) {
                     event.preventDefault();
