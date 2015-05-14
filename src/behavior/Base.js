@@ -34,6 +34,7 @@ define(
             }
             this.options = lib.extend({}, this.$self.defaultProperties, options);
             this.element = $(element);
+            element = this.element[0];
             this.document = $(
                 element.style ? element.ownerDocument : (element.document || element)
             );
@@ -50,7 +51,7 @@ define(
         exports.fire = function (type, data) {
             // 由于mini-event会覆盖data的target属性，
             // 所以这里要额外存一个副本
-            if (data && data.target) {
+            if (data && !data.$target && data.target) {
                 data.$target = data.target;
             }
             var me = this;
