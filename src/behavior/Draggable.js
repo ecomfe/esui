@@ -120,12 +120,13 @@ define(
             }
         }
 
+        /**
+         * 拖拽时要blur当前页面焦点元素
+         */
         function blurActiveElement(event) {
-
             if (!this.handleElement.is(event.target)) {
                 return;
             }
-            // Blur any element that currently has focus, see #4261
             behaviorUtil.safeBlur(behaviorUtil.safeActiveElement(this.document[0]));
         }
 
