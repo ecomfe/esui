@@ -24,11 +24,11 @@ define(
                 var fullName = 'esui-' + name;
 
                 if (isMethodCall) {
+                    var method = options;
                     this.each(
                         function () {
-                            var methodValue;
                             var instance = $.data(this, fullName);
-                            if (options === 'instance') {
+                            if (method === 'instance') {
                                 returnValue = instance;
                                 return false;
                             }
@@ -37,16 +37,16 @@ define(
                                     'cannot call methods on ' + name
                                     + ' prior to initialization; '
                                     + 'attempted to call method "'
-                                    + options + '"'
+                                    + method + '"'
                                 );
                             }
-                            if (!$.isFunction(instance[options]) || options.charAt(0) === '_') {
+                            if (!$.isFunction(instance[method]) || method.charAt(0) === '_') {
                                 return $.error(
-                                    'no such method "' + options + '" for '
+                                    'no such method "' + method + '" for '
                                     + name + ' widget instance'
                                 );
                             }
-                            methodValue = instance[options].apply(instance, args);
+                            var methodValue = instance[method].apply(instance, args);
                             if (methodValue !== instance && methodValue !== undefined) {
                                 returnValue = methodValue && methodValue.jquery ?
                                     returnValue.pushStack(methodValue.get()) :
@@ -67,6 +67,7 @@ define(
                         function () {
                             var instance = $.data(this, fullName);
                             if (instance) {
+                                instance.setOptions(options || {});
                                 if (instance.init) {
                                     instance.init();
                                 }

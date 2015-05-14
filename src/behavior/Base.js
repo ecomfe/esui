@@ -37,7 +37,7 @@ define(
             element = this.element[0];
             this.document = $(
                 element.style ? element.ownerDocument : (element.document || element)
-            );
+           );
             this.window = $(this.document[0].defaultView || this.document[0].parentWindow);
 
             this.init();
@@ -68,7 +68,25 @@ define(
             callback(event);
 
             return event;
-        }
+        };
+
+        exports.setOptions = function(options) {
+            for (var key in options) {
+                this.setOption(key, options[key]);
+            }
+        };
+
+        exports.setOption = function(key, value) {
+            this.options[key] = value;
+        };
+
+        exports.enable = function() {
+            return this.setOptions({disabled: false});
+        };
+
+        exports.disable = function() {
+            return this.setOptions({disabled: true});
+        };
 
         var EventTarget = require('mini-event/EventTarget');
         var Base = require('eoo').create(EventTarget, exports);

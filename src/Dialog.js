@@ -10,6 +10,7 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
+        require('./behavior/Draggable')
 
         var lib = require('./lib');
         var helper = require('./controlHelper');
@@ -208,19 +209,17 @@ define(
          * @param {boolean} unbind 是否移除事件
          */
         function initDragHandler(dialog, unbind) {
-            var me = dialog;
             var head = dialog.getChild('head').main;
 
-            if (unbind === true) {
-                helper.removeDOMEvent(
-                    me, head, 'mousedown', dialogHeadDownHandler
-                );
-            }
-            else {
-                helper.addDOMEvent(
-                    me, head, 'mousedown', dialogHeadDownHandler
-                );
-            }
+            $(dialog.main).draggable(
+                {
+                    handle: head,
+                    addClasses: false,
+                    // 在可视窗口内拖动
+                    containment: 'window',
+                    disabled: unbind
+                }
+            );
         }
 
         /**
@@ -239,104 +238,6 @@ define(
                 helper.removeDOMEvent(dialog, node, 'selectstart');
             }
         }
-
-        /**
-         * drag时 mousedown的事件处理函数
-         */
-        function dialogHeadDownHandler(e) {
-            var button = e.button;
-            // 只有左键点击时才触发
-            var isLeft = false;
-            if ((!e.which && button === 1) || e.which === 1) {
-                isLeft = true;
-            }
-            if (!isLeft) {
-                return;
-            }
-            var doc = document;
-
-            // 禁掉选择功能
-            this.addState('dragging');
-            makeUnselectable(this, this.main, true);
-
-            helper.addDOMEvent(this, doc, 'mousemove', dialogHeadMoveHandler);
-            helper.addDOMEvent(this, doc, 'mouseup', dialogHeadUpHandler);
-            //记录鼠标位置
-            lib.event.getMousePosition(e);
-            this.dragStartPos = {x: e.pageX, y: e.pageY};
-        }
-
-        /**
-         * drag时 mousemove的事件处理函数
-         */
-        function dialogHeadMoveHandler(e) {
-            var me = this;
-
-            //记录鼠标位置
-            lib.event.getMousePosition(e);
-
-            //计算移动距离
-            var movedDistance = {
-                x: e.pageX - me.dragStartPos.x,
-                y: e.pageY - me.dragStartPos.y
-            };
-
-            me.dragStartPos = {x: e.pageX, y: e.pageY};
-
-            var main = me.main;
-            var mainPos = lib.getOffset(main);
-
-            var curMainLeft = mainPos.left + movedDistance.x;
-            var curMainTop = mainPos.top + movedDistance.y;
-
-            var pageWidth = lib.page.getWidth();
-            var pageHeight = lib.page.getHeight();
-
-            var offset = lib.getOffset(main);
-
-            // 判断边缘是否已经超出屏幕
-            // 1. 上边缘超出
-            if (curMainTop < 0) {
-                curMainTop = 0;
-            }
-            // 2. 下边缘超出
-            else if (curMainTop > pageHeight - offset.height) {
-                curMainTop = pageHeight - offset.height;
-            }
-
-
-            // 3. 左边缘超出
-            if (curMainLeft < 0) {
-                curMainLeft = 0;
-            }
-            // 4. 右边缘超出
-            else if (curMainLeft > pageWidth - offset.width) {
-                curMainLeft = pageWidth - offset.width;
-            }
-
-
-            main.style.left = curMainLeft + 'px';
-            main.style.top = curMainTop + 'px';
-
-        }
-
-        /**
-         * drag时 mouseup的事件处理函数
-         */
-        function dialogHeadUpHandler(e) {
-            //卸载事件
-            helper.removeDOMEvent(
-                this, document, 'mousemove', dialogHeadMoveHandler
-            );
-            helper.removeDOMEvent(
-                this, document, 'mouseup', dialogHeadUpHandler
-            );
-
-            // 禁掉选择功能
-            this.removeState('dragging');
-            makeUnselectable(this, this.main, false);
-        }
-
 
         /**
          * 显示遮盖层
