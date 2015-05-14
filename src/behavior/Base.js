@@ -13,6 +13,7 @@ define(
         var $ = require('jquery');
         var lib = require('esui/lib');
         var u = require('underscore');
+        var Helper = require('esui/Helper');
 
         /**
          * ESUI行为库基类
@@ -40,6 +41,7 @@ define(
            );
             this.window = $(this.document[0].defaultView || this.document[0].parentWindow);
 
+            this.helper = new Helper(this);
             this.init();
         };
 
