@@ -98,7 +98,7 @@ define(
         /**
          * 销毁
          */
-        exports.dispose = function () {
+        exports.destroy = function () {
             this.element.unbind('.' + this.type);
             if (this.mouseMoveDelegate) {
                 this.document
