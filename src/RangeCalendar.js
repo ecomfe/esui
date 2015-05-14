@@ -854,7 +854,7 @@ define(
 
             // 设置了value，以value为准
             if (options.value) {
-                properties.rawValue = this.convertToRaw(properties.value);
+                properties.rawValue = this.convertToRaw(options.value);
                 properties.view = {
                     begin: properties.rawValue.begin,
                     end: properties.rawValue.end
