@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Region - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Region - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
 <body>
     <h1 id="branding">ESUI - Region</h1>
     <div id="page">
@@ -21,33 +20,33 @@
         </ul>
         <div id="main">
             <h2>多种模式</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>地域选框有2种模式：多选、单选。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>多选</h3>
                     <div class="row">
-                        <esui-region data-ui="id:test;name:region1"></esui-region>
+                        <div data-ui="type:Region;id:test;name:region1"></div>
                     </div>
                     <h3>Drop Shadow</h3>
                     <div class="row">
-                        <esui-region data-ui="variants:shadow;"></esui-region>
+                        <div data-ui="type:Region;variants:shadow;"></div>
                     </div>
                     <h3>单选</h3>
                     <div class="row">
                         <div data-ui="type:Region;mode:single;"></div>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>状态</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>readOnly模式与disable模式的展示相同，不同是readOnly可以获取到选择的值</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -61,7 +60,7 @@
                         <div data-ui="disabled:1;type:Region;id:disabledRegion;"></div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
         <script>
         require(
@@ -85,7 +84,8 @@
                     readOnly: true
                 });
             }
-        )
+        );
+        copyExample();
         </script>
     </div>
 </body>

@@ -4,15 +4,14 @@
         <meta charset="UTF-8" />
         <title>Tip - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
         <h1 id="branding">ESUI - Tip</h1>
@@ -29,7 +28,7 @@
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
-                        <h3>自动展现<small class="ui-text-danger">有Bug</small></h3>
+                        <h3>自动展现</h3>
                         <dl>
                             <dt>说明：</dt> 
                             <dd>自动展现在隐藏之后，就自动转为点击触发展现</dd>
@@ -42,7 +41,7 @@
                             3s后隐藏
                             <div class="ui-tip" data-ui="type:Tip;id:auto-tip-auto;title:自动展现自动隐藏;content:3s后隐藏;"></div>
                         </div>
-                        <h3>点击展现<small class="ui-text-danger">有Bug</small></h3>
+                        <h3>点击展现</h3>
                         <div class="row">
                             点击展现
                             <div class="ui-tip" data-ui="type:Tip;id:click-tip-normal;title:点击展现;content:普通点击展现内容;arrow:1;showMode:click;"></div>
@@ -66,7 +65,8 @@
             function (ui, Tip) {
                 var controls = ui.init();
             }
-        )
+        );
+        copyExample();
         </script>
     </body>
 </html>

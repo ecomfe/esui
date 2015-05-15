@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8"/>
-    <title>Button - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-</head>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Button - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
 <body>
     <h1 id="branding">ESUI - Button</h1>
     <div id="page">
@@ -21,10 +20,10 @@
         </ul>
         <div id="main">
             <h2>样式</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>Button的样式。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -36,14 +35,13 @@
                     <button data-ui="type:Button;variants:warning">warning</button>
                     <button data-ui="type:Button;variants:danger">danger</button>
                     <button data-ui="type:Button;variants:link">link</button>
-                    <esui-button>Custom Tag</esui-button>
                 </div>
-            </section>
+            </div>
             <h2>尺寸</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>Button的尺寸。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -56,12 +54,12 @@
                     <button data-ui="type:Button" class="ui-xx-large">ui-xx-large</button>
                     <button data-ui="type:Button" class="ui-xxx-large">ui-xxx-large</button>
                 </div>
-            </section>
+            </div>
             <h2>全宽</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>Fluid Button.</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -73,12 +71,12 @@
                         <div data-ui="type:Button;variants:danger fluid">Fluid</div>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>状态</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>状态。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -88,12 +86,12 @@
                     <div data-ui="type:Button;variants:primary" class="state-active">Active</div>
                     <div data-ui="type:Button;variants:primary;disabled:1">Disabled</div>
                 </div>
-            </section>
+            </div>
             <h2>组合</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>按钮组合。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -109,12 +107,12 @@
                         <div data-ui="type:Button;" class="ui-button-primary">Wow</div>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>图标</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>状态。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -122,7 +120,7 @@
                     <div data-ui="type:Button;" class="ui-button-primary"><span class="ui-icon-user"></span> Icon</div>
                     <div data-ui="type:Button;" class="ui-button-primary">Icon <span class="ui-icon-user"></span></div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -134,7 +132,8 @@
                 function (ui) {
                     ui.init();
                 }
-        )
+        );
+        copyExample();
     </script>
 </body>
 </html>

@@ -4,27 +4,26 @@
         <meta charset="UTF-8"/>
         <title>CommandMenu - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - Command Menu</h1>
+        <h1 id="branding">ESUI - CommandMenu</h1>
         <div id="page">
             <ul id="navigator">
             </ul>
             <div id="main">
                 <h2>绑定到DOM Button</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>可以为一个Button添加一个下拉列表。</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -42,12 +41,12 @@
                             class="ui-button ui-button-icon ui-icon-caret-down"></button>
                         </div>
                     </div>
-                </section>
+                </div>
                 <h2>动态创建</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>从JS创建一个Command Menu。</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -59,7 +58,7 @@
                         <div id="createElement2" class="row">
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
         <script>
@@ -102,7 +101,8 @@
                 });
                 menuCreated2.appendTo(document.getElementById('createElement2'));
             }
-        )
+        );
+        copyExample();
         </script>
     </body>
 </html>

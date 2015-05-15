@@ -761,7 +761,7 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch label,
 .ui-checkbox-switch-round .ui-checkbox-box,
 .ui-checkbox-switch-round label {
-  display: block;
+  display: inline-block;
   padding-left: 1.5em;
 }
 .esf-checkbox-style-base .ui-checkbox-box:before,
@@ -809,11 +809,11 @@ input[type="search"]::-webkit-search-decoration {
   box-sizing: border-box;
   position: absolute;
   content: '';
-  -webkit-transition: background 0.3s ease 0s, left 0.3s ease 0s;
-  -moz-transition: background 0.3s ease 0s, left 0.3s ease 0s;
-  -ms-transition: background 0.3s ease 0s, left 0.3s ease 0s;
-  -o-transition: background 0.3s ease 0s, left 0.3s ease 0s;
-  transition: background 0.3s ease 0s, left 0.3s ease 0s;
+  -webkit-transition: background 0.3s ease 0s;
+  -moz-transition: background 0.3s ease 0s;
+  -ms-transition: background 0.3s ease 0s;
+  -o-transition: background 0.3s ease 0s;
+  transition: background 0.3s ease 0s;
 }
 .esf-checkbox-style-base .ui-checkbox-box:active:before,
 .esf-checkbox-style-base label:active:before,
@@ -926,13 +926,13 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch ~ label,
 .ui-checkbox-switch-round label,
 .ui-checkbox-switch-round ~ label {
+  cursor: pointer;
+  vertical-align: middle;
   -webkit-transition: color 0.2s ease;
   -moz-transition: color 0.2s ease;
   -ms-transition: color 0.2s ease;
   -o-transition: color 0.2s ease;
   transition: color 0.2s ease;
-  cursor: pointer;
-  vertical-align: middle;
   color: rgba(102, 102, 102, 0.9);
 }
 .esf-checkbox-style-base label:hover,
@@ -993,16 +993,16 @@ input[type="search"]::-webkit-search-decoration {
   border-radius: 500em;
   border: 0;
 }
-.ui-checkbox-switch input ~ .ui-checkbox-box,
-.ui-checkbox-switch-round input ~ .ui-checkbox-box,
-.ui-checkbox-switch input ~ label,
-.ui-checkbox-switch-round input ~ label {
+.ui-checkbox-switch .ui-checkbox-box,
+.ui-checkbox-switch-round .ui-checkbox-box,
+.ui-checkbox-switch label,
+.ui-checkbox-switch-round label {
   padding-left: 4em;
 }
-.ui-checkbox-switch input ~ .ui-checkbox-box:before,
-.ui-checkbox-switch-round input ~ .ui-checkbox-box:before,
-.ui-checkbox-switch input ~ label:before,
-.ui-checkbox-switch-round input ~ label:before {
+.ui-checkbox-switch .ui-checkbox-box:before,
+.ui-checkbox-switch-round .ui-checkbox-box:before,
+.ui-checkbox-switch label:before,
+.ui-checkbox-switch-round label:before {
   background-color: #bbbbbb;
   width: 3em;
   height: 1.2em;
@@ -1013,10 +1013,10 @@ input[type="search"]::-webkit-search-decoration {
   -moz-border-radius: 0;
   border-radius: 0;
 }
-.ui-checkbox-switch input ~ .ui-checkbox-box:after,
-.ui-checkbox-switch-round input ~ .ui-checkbox-box:after,
-.ui-checkbox-switch input ~ label:after,
-.ui-checkbox-switch-round input ~ label:after {
+.ui-checkbox-switch .ui-checkbox-box:after,
+.ui-checkbox-switch-round .ui-checkbox-box:after,
+.ui-checkbox-switch label:after,
+.ui-checkbox-switch-round label:after {
   border: #bbbbbb 1px solid;
   width: 1.5em;
   height: 1.2em;
@@ -1028,6 +1028,11 @@ input[type="search"]::-webkit-search-decoration {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
+  -webkit-transition: left 0.3s ease 0s;
+  -moz-transition: left 0.3s ease 0s;
+  -ms-transition: left 0.3s ease 0s;
+  -o-transition: left 0.3s ease 0s;
+  transition: left 0.3s ease 0s;
 }
 .ui-checkbox-switch input:checked ~ .ui-checkbox-box:before,
 .ui-checkbox-switch-round input:checked ~ .ui-checkbox-box:before,
@@ -1056,14 +1061,14 @@ input[type="search"]::-webkit-search-decoration {
   -o-transform: none;
   transform: none;
 }
-.ui-checkbox-switch-round input ~ .ui-checkbox-box:before,
-.ui-checkbox-switch-round input ~ label:before {
+.ui-checkbox-switch-round .ui-checkbox-box:before,
+.ui-checkbox-switch-round label:before {
   -webkit-border-radius: 500em;
   -moz-border-radius: 500em;
   border-radius: 500em;
 }
-.ui-checkbox-switch-round input ~ .ui-checkbox-box:after,
-.ui-checkbox-switch-round input ~ label:after {
+.ui-checkbox-switch-round .ui-checkbox-box:after,
+.ui-checkbox-switch-round label:after {
   width: 1.2em;
   -webkit-border-radius: 500em;
   -moz-border-radius: 500em;
@@ -1526,6 +1531,14 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-loader {
   display: inline-block;
+}
+.ui-loader.ui-loader-backup {
+  width: 24px;
+  height: 24px;
+  background-image: url('data:image/gif;base64,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');
+}
+.ui-loader.ui-loader-backup * {
+  display: none;
 }
 .ui-mask-section {
   position: relative;
@@ -2114,6 +2127,7 @@ a.ui-text-info:hover {
   position: absolute;
   top: 0;
   text-align: center;
+  color: #666666;
 }
 .ui-textbox-icon-left .ui-textbox-icon {
   left: 0;
@@ -2494,8 +2508,10 @@ hr {
   margin-top: -2px;
   border-top: 2px dotted #dddddd;
 }
-.ui-wizard-node:last-child:after,
-.ui-wizard-node-last:after {
+.ui-wizard-node:last-child:after {
+  display: none !important;
+}
+.ui-wizard-node.ui-wizard-node-last:after {
   display: none !important;
 }
 .ui-boxgroup-horizontal .ui-boxgroup-wrapper {
@@ -2508,6 +2524,16 @@ hr {
 }
 .ui-boxgroup-button-style .ui-boxgroup-wrapper {
   margin: 0;
+  position: relative;
+}
+.ui-boxgroup-button-style .ui-boxgroup-wrapper input[type="radio"],
+.ui-boxgroup-button-style .ui-boxgroup-wrapper input[type="checkbox"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  outline: none;
 }
 .ui-boxgroup-button-style .ui-boxgroup-wrapper:not(:first-child):not(:last-child) label {
   -webkit-border-radius: 0;
@@ -2529,10 +2555,6 @@ hr {
   -webkit-border-bottom-left-radius: 0;
   -moz-border-radius-bottomleft: 0;
   border-bottom-left-radius: 0;
-}
-.ui-boxgroup-button-style input[type="radio"],
-.ui-boxgroup-button-style input[type="checkbox"] {
-  display: none;
 }
 .ui-boxgroup-button-style label {
   -webkit-appearance: none;
@@ -3644,6 +3666,10 @@ span.ui-crumb-node {
 .ui-schedule.state-read-only {
   color: #999999;
 }
+.ui-schedule.state-read-only .ui-schedule-time,
+.ui-schedule.state-read-only .ui-schedule-shortcut-item {
+  cursor: default;
+}
 .ui-searchbox {
   position: relative;
   display: block;
@@ -4087,6 +4113,13 @@ span.ui-crumb-node {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ui-textbox-icon-left .ui-textbox-placeholder {
+  left: 2.5em;
 }
 .ui-textbox-hint-suffix .ui-textbox-hint {
   border-left: 0;
@@ -6264,12 +6297,13 @@ h2 {
 }
 .source {
   max-height: 480px;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd !important;
   border-radius: 0 6px 6px 6px;
   background-color: #f5f5f5;
   display: none;
   color: #333;
   margin-top: 20px !important;
+  overflow: auto;
 }
 .source-markup:before,
 .source-script:before {

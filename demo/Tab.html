@@ -1,38 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Wizard</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-    <style>
-        .ui-tab-content {
-            //border: 1px solid #DFDFDF;
-            padding: 1em;
-            background: #FFF;
-        }
-        .ui-border-top-0 {
-            border-top: 0;
-        }
-        .ui-border-bottom-0 {
-            border-bottom: 0;
-        }
-        .ui-border-left-0 {
-            border-left: 0;
-        }
-        .ui-border-right-0 {
-            border-right: 0;
-        }
-    </style>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Wizard</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+        <style>
+            .ui-tab-content {
+                //border: 1px solid #DFDFDF;
+                padding: 1em;
+                background: #FFF;
+            }
+            .ui-border-top-0 {
+                border-top: 0;
+            }
+            .ui-border-bottom-0 {
+                border-bottom: 0;
+            }
+            .ui-border-left-0 {
+                border-left: 0;
+            }
+            .ui-border-right-0 {
+                border-right: 0;
+            }
+        </style>
+    </head>
 <body>
     <h1>Tab</h1>
     <div id="page">
@@ -40,35 +39,36 @@
         </ul>
         <div id="main">
             <h2>Tab</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>横向</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
-                    <esui-tab
-                     data-ui-id="test"
-                     data-ui-height="500"
-                     data-ui-variants="align-right">
+                    <div
+                    data-ui-type="Tab"
+                    data-ui-id="test"
+                    data-ui-height="500"
+                    data-ui-variants="align-right">
                         <ul data-role="navigator">
                             <li data-for="a">TAB1</li>
                             <li data-for="b">TAB2</li>
                             <li data-for="c">TAB3</li>
                         </ul>
-                    </esui-tab>
+                    </div>
                     <div class="ui-tab-content ui-tab-content-top-border">
                         <div class="ui-tab-panel" title="tab1" id="a">我是Tab1</div>
                         <div class="ui-tab-panel" title="tab2" id="b">我是Tab2</div>
                         <div class="ui-tab-panel" title="tab3" id="c">我是Tab3</div>
                     </div>
                 </div>
-            </section>
-            <section class="intro">
+            </div>
+            <div class="intro">
                 <p>头向下</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -78,35 +78,37 @@
                         <div class="ui-tab-panel" title="tab2" id="b_bottom">我是Tab2</div>
                         <div class="ui-tab-panel" title="tab3" id="c_bottom">我是Tab3</div>
                     </div>
-                    <esui-tab
-                     data-ui-id="test_bottom"
-                     data-ui-variants="horizontal-flip">
+                    <div
+                    data-ui-type="Tab"
+                    data-ui-id="test_bottom"
+                    data-ui-variants="horizontal-flip">
                         <ul data-role="navigator">
                             <li data-for="a_bottom">TAB1</li>
                             <li data-for="b_bottom">TAB2</li>
                             <li data-for="c_bottom">TAB3</li>
                         </ul>
-                    </esui-tab>
+                    </div>
                 </div>
-            </section>
-            <section class="intro">
+            </div>
+            <div class="intro">
                 <p>纵向</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
                     <div class="ui-tab-vertical-container-left">
-                        <esui-tab
-                         data-ui-id="test2"
-                         data-ui-orientation="vertical">
+                        <div
+                        data-ui-type="Tab"
+                        data-ui-id="test2"
+                        data-ui-orientation="vertical">
                             <ul data-role="navigator">
                                 <li data-for="d">TAB1</li>
                                 <li data-for="e">TAB2</li>
                                 <li data-for="f">TAB3</li>
                             </ul>
-                        </esui-tab>
+                        </div>
                         <div class="ui-tab-content ui-tab-content-left-border">
                             <div class="ui-tab-panel" title="tab1" id="d">我是Tab1</div>
                             <div class="ui-tab-panel" title="tab2" id="e">我是Tab2</div>
@@ -114,35 +116,35 @@
                         </div>
                     </div>
                 </div>
-            </section>
-            <section class="intro">
+            </div>
+            <div class="intro">
                 <p>纵向</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
                     <div class="ui-tab-vertical-container-right">
-                        <esui-tab
-                         data-ui-id="test3"
-                         data-ui-orientation="vertical"
-                         data-ui-variants="vertical-flip">
+                        <div
+                        data-ui-type="Tab"
+                        data-ui-id="test3"
+                        data-ui-orientation="vertical"
+                        data-ui-variants="vertical-flip">
                             <ul data-role="navigator">
                                 <li data-for="d_right">TAB1</li>
                                 <li data-for="e_right">TAB2</li>
                                 <li data-for="f_right">TAB3</li>
                             </ul>
-                        </esui-tab>
+                        </div>
                         <div class="ui-tab-content ui-tab-content-right-border ">
                             <div class="ui-tab-panel" title="tab1" id="d_right">我是Tab1</div>
                             <div class="ui-tab-panel" title="tab2" id="e_right">我是Tab2</div>
                             <div class="ui-tab-panel" title="tab3" id="f_right">我是Tab3</div>
                         </div>
-
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -165,6 +167,7 @@
                 */
             }
         );
+        copyExample();
     </script>
 </body>
 </html>
