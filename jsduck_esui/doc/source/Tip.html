@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 提示信息控件
+ * @author lisijin, dbear, otakustay
+ */
+define(
+    function (require) {
+        var u = require('underscore');
+        var Control = require('./Control');
+        var ui = require('./main');
+
+        require('./TipLayer');
+
+<span id='Tip-method-constructor'><span id='Tip'>        /**
+</span></span>         * 提示信息控件
+         *
+         * `Tip`控件是一个小图标，当鼠标移到图标上时，会出现一个层显示提示信息
+         *
+         * @extends Control
+         * @requires TipLayer
+         * @constructor
+         */
+        function Tip(options) {
+            Control.apply(this, arguments);
+        }
+
+<span id='Tip-property-type'>        /**
+</span>         * 控件类型，始终为`&quot;Tip&quot;`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
+        Tip.prototype.type = 'Tip';
+
+<span id='Tip-method-initOptions'>        /**
+</span>         * 初始化参数
+         *
+         * @param {Object} [options] 构造函数传入的参数
+         * @protected
+         * @override
+         */
+        Tip.prototype.initOptions = function (options) {
+            // 默认选项配置
+            var properties = {
+                title: '',
+                content: '',
+<span id='Tip-property-arrow'>                /**
+</span>                 * @property {boolean} arrow
+                 *
+                 * 是否需要箭头
+                 *
+                 * 为了方便从DOM生成，此属性在初始化时如果为字符串`&quot;false&quot;`，
+                 * 将被认为是布尔值`false`处理
+                 *
+                 * 具体参考{@link TipLayer#arrow}属性
+                 */
+                arrow: true,
+
+<span id='Tip-property-showMode'>                /**
+</span>                 * @property {string} showMode
+                 *
+                 * 指定信息浮层的显示方案，
+                 * 具体参考{@link TipLayer#attachTo}方法的`showMode`参数的说明
+                 */
+                showMode: 'over',
+
+<span id='Tip-property-delayTime'>                /**
+</span>                 * @property {number} delayTime
+                 *
+                 * 指定信息浮层的显示的延迟时间，以毫秒为单位，
+                 * 具体参考{@link TipLayer#attachTo}方法的`delayTime`参数的说明
+                 */
+                delayTime: 500,
+
+<span id='Tip-property-showDuration'>                /**
+</span>                 * @property {number} showDuration
+                 *
+                 * 指定信息浮层在展现后的自动隐藏的延迟时间，以毫秒为单位，为0是不自动隐藏
+                 * 具体参考{@link TipLayer#attachTo}方法的`showDuration`参数的说明
+                 */
+                showDuration: 0
+            };
+            if (options.arrow === 'false') {
+                options.arrow = false;
+            }
+
+            extractDOMProperties(this.main, properties);
+
+            u.extend(properties, options);
+
+            this.setProperties(properties);
+        };
+
+<span id='global-method-extractDOMProperties'>        /**
+</span>         * 从DOM中抽取`title`和`content`属性，如果有的话优先级低于外部给定的
+         *
+         * @param {HTMLElement} 主元素
+         * @param  {Object} options 构造函数传入的参数
+         * @ignore
+         */
+        function extractDOMProperties(main, options) {
+            options.title = options.title || main.getAttribute('title');
+            main.removeAttribute('title');
+            options.content = options.content || main.innerHTML;
+            main.innerHTML = '';
+        }
+
+<span id='Tip-method-initStructure'>        /**
+</span>         * 初始化DOM结构
+         *
+         * @protected
+         * @override
+         */
+        Tip.prototype.initStructure = function () {
+            var main = document.createElement('div');
+            document.body.appendChild(main);
+            var tipLayer = ui.create(
+                'TipLayer',
+                {
+                    main: main,
+                    childName: 'layer',
+                    content: this.content,
+                    title: this.title,
+                    arrow: this.arrow,
+<span id='Tip-property-layerWidth'>                    /**
+</span>                     * @property {number} [layerWidth=200]
+                     *
+                     * 指定信息浮层的宽度，具体参考{@link TipLayer#width}属性
+                     */
+                    width: this.layerWidth || 200,
+                    viewContext: this.viewContext
+                }
+            );
+            this.addChild(tipLayer);
+            tipLayer.render();
+
+            var attachOptions = {
+                showMode: this.showMode,
+                delayTime: +this.delayTime,
+                showDuration: +this.showDuration,
+                targetControl: this,
+                positionOpt: {top: 'top', right: 'left'}
+            };
+            tipLayer.attachTo(attachOptions);
+        };
+
+<span id='Tip-method-repaint'>        /**
+</span>         * 重渲染
+         *
+         * @method
+         * @protected
+         * @override
+         */
+        Tip.prototype.repaint = require('./painters').createRepaint(
+            Control.prototype.repaint,
+            {
+                name: 'title',
+                paint: function (tip, value) {
+                    var layer = tip.getChild('layer');
+                    if (layer) {
+                        layer.setTitle(value);
+                    }
+                }
+            },
+            {
+                name: 'content',
+                paint: function (tip, value) {
+                    var layer = tip.getChild('layer');
+                    if (layer) {
+                        layer.setContent(value);
+                    }
+                }
+            }
+        );
+
+        require('./lib').inherits(Tip, Control);
+        ui.register(Tip);
+        return Tip;
+    }
+);</pre>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 简易信息提示控件
+ * @author zhanglili(otakustay@gmail.com) , chenhaoyin(curarchy@163.com)
+ */
+define(
+    function (require) {
+        var lib = require('./lib');
+        var Control = require('./Control');
+
+<span id='Toast-method-constructor'><span id='Toast'>        /**
+</span></span>         * Toast控件
+         *
+         * @param {Object=} options 初始化参数
+         * @extends Control
+         * @constructor
+         */
+        function Toast(options) {
+            Control.apply(this, arguments);
+        }
+
+<span id='Toast-static-cfg-defaultProperties'>        /**
+</span>         * @cfg defaultProperties
+         *
+         * 默认属性值
+         *
+         * @cfg {number} [defaultProperties.duration=3000] 显示时间
+         * @cfg {string} [defaultProperties.messageType='normal'] 消息类型
+         *      `normal`：默认信息：灰色背景
+         *      `info`：通知信息：蓝色背景
+         *      `alert`：警告信息：黄色背景
+         *      `error`：错误信息：红色背景
+         *      `success`：成功信息：绿色背景
+         * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
+         * @static
+         */
+        Toast.defaultProperties = {
+            duration: 3000,
+            messageType: 'normal',
+            disposeOnHide: true
+        };
+
+<span id='Toast-property-type'>        /**
+</span>         * 控件类型，始终为`&quot;Toast&quot;`
+         *
+         * @type {string}
+         * @readonly
+         * @override
+         */
+        Toast.prototype.type = 'Toast';
+
+<span id='Toast-method-initOptions'>        /**
+</span>         * 初始化参数
+         *
+         * @param {Object=} options 构造函数传入的参数
+         * @protected
+         * @override
+         */
+        Toast.prototype.initOptions = function (options) {
+            var properties = {};
+            lib.extend(properties, Toast.defaultProperties, options);
+            if (properties.content == null) {
+                properties.content = this.main.innerHTML;
+            }
+            this.setProperties(properties);
+        };
+
+<span id='Toast-method-initStructure'>        /**
+</span>         * 初始化结构
+         *
+         * @protected
+         * @override
+         */
+        Toast.prototype.initStructure = function () {
+            this.main.innerHTML = this.helper.getPartHTML('content', 'p');
+        };
+
+<span id='Toast-property-repaint'>        /**
+</span>         * 重渲染
+         *
+         * @override
+         * @protected
+         */
+        Toast.prototype.repaint = require('./painters').createRepaint(
+            Control.prototype.repaint,
+            {
+<span id='Toast-property-content'>                /**
+</span>                 * @property {string} content
+                 *
+                 * 提示的内容，支持HTML
+                 */
+                name: 'content',
+                paint: function (toast, content) {
+                    var container = toast.main.firstChild;
+                    container.innerHTML = content;
+                }
+            },
+            {
+<span id='Toast-property-messageType'>                /**
+</span>                 * @property {string} messageType
+                 *
+                 * 提示的类型
+                 */
+                name: 'messageType',
+                paint: function (toast, messageType) {
+                    toast.helper.addPartClasses(toast.messageType);
+                }
+            }
+        );
+
+<span id='Toast-method-show'>        /**
+</span>         * 显示提示信息
+         *
+         * @override
+         */
+        Toast.prototype.show = function () {
+            if (this.helper.isInStage('DISPOSED')) {
+                return;
+            }
+
+            // 如果没放到DOM中，这里放进去
+            if (!this.main.parentElement &amp;&amp; !this.main.parentNode) {
+                this.appendTo(getContainer.call(this));
+            }
+
+            if (!this.isHidden()) {
+                return;
+            }
+
+            Control.prototype.show.apply(this, arguments);
+            this.fire('show');
+            clearTimeout(this.timer);
+            if (!isNaN(this.duration) &amp;&amp; this.duration !== Infinity) {
+                this.timer = setTimeout(lib.bind(this.hide, this), this.duration);
+            }
+        };
+
+<span id='Toast-method-hide'>        /**
+</span>         * 隐藏提示信息
+         *
+         * @override
+         */
+        Toast.prototype.hide = function () {
+            if (this.isHidden()) {
+                return;
+            }
+            Control.prototype.hide.apply(this, arguments);
+            clearTimeout(this.timer);
+            this.fire('hide');
+            if (this.disposeOnHide) {
+                this.dispose();
+            }
+        };
+
+<span id='Toast-method-dispose'>        /**
+</span>         * 销毁控件，同时移出DOM树
+         *
+         * @protected
+         * @override
+         */
+        Toast.prototype.dispose = function () {
+            clearTimeout(this.timer);
+            if (this.helper.isInStage('DISPOSED')) {
+                return;
+            }
+            lib.removeNode(this.main);
+            Control.prototype.dispose.apply(this, arguments);
+        };
+
+<span id='global-method-getContainer'>        /**
+</span>         * 获取的容器,可自行添加样式，使其呈现堆叠效果。
+         *
+         * @return {HTMLElement}
+         * @ignore
+         */
+        function getContainer() {
+            // 因为container是多个toast公用的，所以不能标记为特定id
+            var prefix = require('./main').getConfig('uiClassPrefix');
+            var containerId = prefix + '-toast-collection-area';
+            var element = document.getElementById(containerId);
+            if (!element) {
+                element = document.createElement('div');
+                element.id = containerId;
+                this.helper.addPartClasses('collection-area', element);
+                document.body.appendChild(element);
+            }
+            return element;
+        }
+
+        function createHandler(messageType) {
+            return function (content, options) {
+                if (messageType === 'show') {
+                    messageType = 'normal';
+                }
+                options = lib.extend({content: content}, options);
+                options.messageType = options.messageType || messageType;
+                var toast = new Toast(options);
+                Control.prototype.hide.apply(toast);
+                toast.appendTo(getContainer.call(toast));
+                return toast;
+            };
+        }
+
+<span id='global-method-allType'>        /**
+</span>         * 快捷显示信息的方法
+         *
+         * @param {string} content 显示的内容
+         * @param {Object} options 其它配置项
+         * @ignore
+         */
+        var allType = ['show', 'info', 'alert', 'error', 'success'];
+        for (var key in allType) {
+            if (allType.hasOwnProperty(key)) {
+                var messageType = allType[key];
+                Toast[messageType] = createHandler(messageType);
+            }
+        }
+
+        lib.inherits(Toast, Control);
+        require('./main').register(Toast);
+        return Toast;
+    }
+);
+</pre>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 最小值验证规则
+ * @author otakustay
+ */
+define(
+    function (require) {
+        var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
+
+<span id='validator-MinRule-method-constructor'><span id='validator-MinRule'>        /**
+</span></span>         * 最小值验证规则
+         *
+         * @extends validator.Rule
+         * @class validator.MinRule
+         * @constructor
+         */
+        function MinRule() {
+            Rule.apply(this, arguments);
+        }
+
+<span id='validator-MinRule-property-type'>        /**
+</span>         * 规则类型，始终为`&quot;min&quot;`
+         * 
+         * @type {string}
+         * @override
+         */
+        MinRule.prototype.type = 'min';
+
+
+<span id='validator-MinRule-property-errorMessage'>        /**
+</span>         * 错误提示信息
+         *
+         * @type {string}
+         * @override
+         */
+        MinRule.prototype.errorMessage = 
+            '${title}不能小于${min}';
+
+<span id='validator-MinRule-method-check'>        /**
+</span>         * 验证控件的验证状态
+         *
+         * @param {string} value 校验值
+         * @param {Control} control 待校验控件
+         * @return {validator.ValidityState}
+         * @override
+         */
+        MinRule.prototype.check = function (value, control) {
+            var valueOfNumber = +value;
+            var isValidNumber = !isNaN(valueOfNumber)
+                &amp;&amp; valueOfNumber &gt;= this.getLimitCondition(control);
+            return new ValidityState(
+                !value || isValidNumber, 
+                this.getErrorMessage(control)
+            );
+        };
+
+        require('../lib').inherits(MinRule, Rule);
+        require('../main').registerRule(MinRule, 300);
+        return MinRule;
+    }
+);
+</pre>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 子控件相关辅助方法
+ * @author otakustay
+ */
+define(
+    function (require) {
+        var u = require('underscore');
+        var ui = require('../main');
+
+<span id='helper'>        /**
+</span>         * @override Helper
+         */
+        var helper = {};
+
+<span id='Helper-method-initChildren'>        /**
+</span>         * 批量初始化子控件
+         * 
+         * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
+         * @param {Object} [options] init参数
+         * @param {Object} [options.properties] 属性集合，通过id映射
+         */
+        helper.initChildren = function (wrap, options) {
+            wrap = wrap || this.control.main;
+            options = u.extend({}, this.control.renderOptions, options);
+            options.viewContext = this.control.viewContext;
+            options.parent = this.control;
+
+            ui.init(wrap, options);
+        };
+
+<span id='Helper-method-disposeChildren'>        /**
+</span>         * 销毁所有子控件
+         */
+        helper.disposeChildren = function () {
+            var children = this.control.children.slice();
+            u.each(
+                children,
+                function (child) {
+                    child.dispose();
+                }
+            );
+            this.children = [];
+            this.childrenIndex = {};
+        };
+
+<span id='Helper-method-disableChildren'>        /**
+</span>         * 禁用全部子控件
+         */
+        helper.disableChildren = function () {
+            u.each(
+                this.control.children,
+                function (child) {
+                    child.dispose();
+                }
+            );
+        };
+
+<span id='Helper-method-enableChildren'>        /**
+</span>         * 启用全部子控件
+         */
+        helper.enableChildren = function () {
+            u.each(
+                this.control.children,
+                function (child) {
+                    child.enable();
+                }
+            );
+        };
+
+        return helper;
+    }
+);
+</pre>
+</body>
+</html>

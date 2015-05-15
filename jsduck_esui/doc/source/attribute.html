@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI library)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file DOM属性相关基础库
+ * @author otakustay
+ */
+ define(
+    function (require) {
+        var dom = require('./dom');
+
+<span id='lib'>        /**
+</span>         * @override lib
+         */
+        var lib = {};
+
+<span id='lib-method-hasAttribute'>        /**
+</span>         * 检查元素是否有指定的属性
+         *
+         * @param {HTMLElement} element 指定元素
+         * @param {string} name 指定属性名称
+         * @return {boolean}
+         */
+        lib.hasAttribute = function (element, name) {
+            if (element.hasAttribute) {
+                return element.hasAttribute(name);
+            }
+            else {
+                return element.attributes
+                    &amp;&amp; element.attributes[name]
+                    &amp;&amp; element.attributes[name].specified;
+            }
+        };
+
+        // 提供给 setAttribute 与 getAttribute 方法作名称转换使用
+        var ATTRIBUTE_NAME_MAPPING = (function () {
+            var result = {
+                cellpadding: 'cellPadding',
+                cellspacing: 'cellSpacing',
+                colspan: 'colSpan',
+                rowspan: 'rowSpan',
+                valign: 'vAlign',
+                usemap: 'useMap',
+                frameborder: 'frameBorder'
+            };
+
+            var div = document.createElement('div');
+            div.innerHTML = '&lt;label for=&quot;test&quot; class=&quot;test&quot;&gt;&lt;/label&gt;';
+            var label = div.getElementsByTagName('label')[0];
+
+            if (label.getAttribute('className') === 'test') {
+                result['class'] = 'className';
+            }
+            else {
+                result.className = 'class';
+            }
+
+            if (label.getAttribute('for') === 'test') {
+                result.htmlFor = 'for';
+            }
+            else {
+                result['for'] = 'htmlFor';
+            }
+
+            return result;
+        }());
+
+
+<span id='lib-method-setAttribute'>        /**
+</span>         * 设置元素属性，会对某些值做转换
+         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string} key 要设置的属性名
+         * @param {string} value 要设置的属性值
+         * @return {HTMLElement} 目标元素
+         */
+        lib.setAttribute = function (element, key, value) {
+            element = dom.g(element);
+
+            if (key === 'style') {
+                element.style.cssText = value;
+            }
+            else {
+                key = ATTRIBUTE_NAME_MAPPING[key] || key;
+                element.setAttribute(key, value);
+            }
+
+            return element;
+        };
+
+<span id='lib-method-getAttribute'>        /**
+</span>         * 获取目标元素的属性值
+         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string} key 要获取的属性名称
+         * @return {string | null} 目标元素的attribute值，获取不到时返回 null
+         */
+        lib.getAttribute = function (element, key) {
+            element = dom.g(element);
+
+            if (key === 'style') {
+                return element.style.cssText;
+            }
+
+            key = ATTRIBUTE_NAME_MAPPING[key] || key;
+            return element.getAttribute(key);
+        };
+
+<span id='lib-method-removeAttribute'>        /**
+</span>         * 移除元素属性
+         *
+         * @param {HTMLElement | string} element 目标元素或其id
+         * @param {string} key 属性名称
+         */
+        lib.removeAttribute = function (element, key) {
+            element = dom.g(element);
+
+            key = ATTRIBUTE_NAME_MAPPING[key] || key;
+            element.removeAttribute(key);
+        };
+
+        return lib;
+    }
+);
+</pre>
+</body>
+</html>

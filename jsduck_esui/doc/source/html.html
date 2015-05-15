@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @ignore
+ * @file 生成HTML相关的辅助方法
+ * @author otakustay
+ */
+define(
+    function (require) {
+<span id='helper'>        /**
+</span>         * @override Helper
+         */
+        var helper = {};
+
+        // 自闭合的标签列表
+        var SELF_CLOSING_TAGS = {
+            area: true, base: true, br: true, col: true,
+            embed: true, hr: true, img: true, input: true, 
+            keygen: true, link: true, meta: true, param: true, 
+            source: true, track: true, wbr: true
+        };
+
+<span id='Helper-method-getPartBeginTag'>        /**
+</span>         * 获取部件的起始标签
+         *
+         * @param {string} part 部件名称
+         * @param {string} nodeName 部件使用的元素类型
+         * @return {string}
+         */
+        helper.getPartBeginTag = function (part, nodeName) {
+            var html = '&lt;' + nodeName + ' id=&quot;' + this.getId(part) + '&quot; '
+                + 'class=&quot;' + this.getPartClassName(part) + '&quot;&gt;';
+            return html;
+        };
+
+<span id='Helper-method-getPartEndTag'>        /**
+</span>         * 获取部件的结束标签
+         *
+         * @param {string} part 部件名称
+         * @param {string} nodeName 部件使用的元素类型
+         * @return {string}
+         */
+        helper.getPartEndTag = function (part, nodeName) {
+            var html = SELF_CLOSING_TAGS.hasOwnProperty(nodeName)
+                ? ' /&gt;'
+                : '&lt;/' + nodeName + '&gt;';
+            return html;
+        };
+
+<span id='Helper-method-getPartHTML'>        /**
+</span>         * 获取部件的HTML模板
+         *
+         * @param {string} part 部件名称
+         * @param {string} nodeName 部件使用的元素类型
+         * @return {string}
+         */
+        helper.getPartHTML = function (part, nodeName) {
+            return this.getPartBeginTag(part, nodeName)
+                + this.getPartEndTag(part, nodeName);
+        };
+
+        return helper;
+    }
+);</pre>
+</body>
+</html>
