@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @ignore
+ * @file 控件类常用的helper方法模块
+ * @author erik, otakustay
+ */
+define(
+    function (require) {
+        var lib = require('./lib');
+        var Helper = require('./Helper');
+
+<span id='controlHelper'>        /**
+</span>         * 提供控件类常用的辅助方法
+         *
+         * **此对象将在4.0版本中移除** ，请按以下规则迁移：
+         *
+         * - `getGUID`移至{@link lib#getGUID}
+         * - `createRepaint`移至{@link painters#createRepaint}
+         * - 多数方法移至{@link Helper}类下
+         * - 浮层相关方法移至{@link Layer}类下
+         *
+         * @class controlHelper
+         * @singleton
+         */
+        var helper = {};
+
+<span id='global-property-getGUID'>        /**
+</span>         * @ignore
+         */
+        helper.getGUID = lib.getGUID;
+
+        var methods = [
+            // life
+            'initViewContext', 'initExtensions',
+            'isInStage', 'changeStage',
+            'dispose', 'beforeDispose', 'afterDispose',
+            // dom
+            'getPartClasses', 'addPartClasses', 'removePartClasses',
+            'getStateClasses', 'addStateClasses', 'removeStateClasses',
+            'getId', 'replaceMain',
+            // event
+            'addDOMEvent', 'removeDOMEvent', 'clearDOMEvents'
+        ];
+
+        helper.createRepaint = require('./painters').createRepaint;
+
+        // 补上原有的方法，全部代理到`Helper`上
+        require('underscore').each(
+            methods,
+            function (name) {
+                helper[name] = function (control) {
+                    var helper = control.helper || new Helper(control);
+                    var args = [].slice.call(arguments, 1);
+                    return helper[name].apply(helper, args);
+                };
+            }
+        );
+
+        // 再往下的全部是等待废弃的
+
+<span id='global-method-extractValueFromInput'>        /**
+</span>         * @ignore
+         * @deprecated 使用{@link Helper#extractOptionsFromInput}代替
+         */
+        helper.extractValueFromInput = function (control, options) {
+            var main = control.main;
+            // 如果是输入元素
+            if (lib.isInput(main)) {
+                if (main.value &amp;&amp; !options.value) {
+                    options.value = main.value;
+                }
+                if (main.name &amp;&amp; !options.name) {
+                    options.name = main.name;
+                }
+                if (main.disabled 
+                    &amp;&amp; (options.disabled === null
+                        || options.disabled === undefined)) {
+                    options.disabled = main.disabled;
+                }
+                if (main.readOnly 
+                    &amp;&amp; (options.readOnly === null
+                        || options.readOnly === undefined)) {
+                    options.readOnly = main.readonly || main.readOnly;
+                }
+            }
+        };
+
+        var layer = helper.layer = {};
+        var Layer = require('./Layer');
+
+<span id='global-property-create'>        /**
+</span>         * @ignore
+         */
+        layer.create = Layer.create;
+
+<span id='global-property-getZIndex'>        /**
+</span>         * @ignore
+         */
+        layer.getZIndex = Layer.getZIndex;
+
+<span id='global-property-moveToTop'>        /**
+</span>         * @ignore
+         */
+        layer.moveToTop = Layer.moveToTop;
+
+<span id='global-property-moveTo'>        /**
+</span>         * @ignore
+         */
+        layer.moveTo = Layer.moveTo;
+
+<span id='global-property-resize'>        /**
+</span>         * @ignore
+         */
+        layer.resize = Layer.resize;
+
+<span id='global-property-attachTo'>        /**
+</span>         * @ignore
+         */
+        layer.attachTo = Layer.attachTo;
+
+<span id='global-property-centerToView'>        /**
+</span>         * @ignore
+         */
+        layer.centerToView = Layer.centerToView;
+
+        return helper;
+    }
+);
+</pre>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 按钮
+ * @author dbear, otakustay
+ */
+define(
+    function (require) {
+        var u = require('underscore');
+        var lib = require('./lib');
+        var paint = require('./painters');
+        var Control = require('./Control');
+
+<span id='Button-method-constructor'><span id='Button'>        /**
+</span></span>         * 按钮控件
+         *
+         * @extends Control
+         * @constructor
+         */
+        function Button(options) {
+            Control.apply(this, arguments);
+        }
+
+<span id='global-method-getBorderInfo'>        /**
+</span>         * 获取元素border信息
+         *
+         * @param {HTMLElement} dom 目标元素
+         * @return {Object}
+         * @ignore
+         */
+        function getBorderInfo(dom) {
+            var result = {};
+            result.borderTop =
+                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
+            result.borderBottom =
+                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
+            return result;
+        }
+
+        Button.prototype = {
+<span id='Button-property-type'>            /**
+</span>             * 控件类型，始终为`&quot;Button&quot;`
+             *
+             * @type {string}
+             * @readonly
+             * @override
+             */
+            type: 'Button',
+
+<span id='Button-method-initOptions'>            /**
+</span>             * 初始化参数
+             *
+             * @param {Object} [options] 构造函数传入的参数
+             * @protected
+             * @override
+             */
+            initOptions: function (options) {
+<span id='Button-property-properties'>                /**
+</span>                 * 默认选项配置
+                 */
+                var properties = {
+                    content: '', // 按钮的显示文字
+                    disabled: false // 控件是否禁用
+                };
+                u.extend(properties, options);
+                properties.tagName = this.main.nodeName.toLowerCase();
+                if (properties.text == null) {
+                    properties.text = lib.getText(this.main);
+                }
+                var innerDiv = this.main.firstChild;
+                if (!properties.content
+                    &amp;&amp; innerDiv
+                    &amp;&amp; innerDiv.nodeName.toLowerCase() !== 'div'
+                ) {
+                    properties.content = this.main.innerHTML;
+                }
+
+                this.setProperties(properties);
+            },
+
+<span id='Button-method-createMain'>            /**
+</span>             * 创建控件主元素，默认使用`&lt;button type=&quot;button&quot;&gt;`元素
+             *
+             * 如果需要使用其它类型作为主元素，
+             * 需要在始终化时提供{@link Control#main}属性
+             *
+             * @return {HTMLElement}
+             * @protected
+             * @override
+             */
+            createMain: function () {
+                // IE创建带`type`属性的元素很麻烦，干脆这么来
+                var div = document.createElement('div');
+                div.innerHTML = '&lt;button type=&quot;button&quot;&gt;&lt;/button&gt;';
+                return div.firstChild;
+            },
+
+<span id='Button-method-initEvents'>            /**
+</span>             * 初始化事件交互
+             *
+             * @protected
+             * @override
+             */
+            initEvents: function () {
+<span id='Button-event-click'>                /**
+</span>                 * @event click
+                 *
+                 * 点击时触发
+                 */
+                this.helper.delegateDOMEvent(this.main, 'click');
+            },
+
+<span id='Button-method-repaint'>            /**
+</span>             * 重新渲染
+             *
+             * @method
+             * @protected
+             * @override
+             */
+            repaint: paint.createRepaint(
+                Control.prototype.repaint,
+<span id='Button-property-width'>                /**
+</span>                 * @property {number} width
+                 *
+                 * 宽度
+                 */
+                paint.style('width'),
+                {
+<span id='Button-property-height'>                    /**
+</span>                     * @property {number} height
+                     *
+                     * 高度
+                     */
+                    name: 'height',
+                    paint: function (button, value) {
+                        if (!value) {
+                            return;
+                        }
+                        var main = button.main;
+                        main.style.height = value + 'px';
+                        var lineHeight = value;
+                        main.style.lineHeight = lineHeight + 'px';
+
+                        var offsetHeight = main.offsetHeight;
+                        // 说明是border-box模式
+                        if (offsetHeight === value) {
+                            var borderInfo = getBorderInfo(main);
+                            var height = value
+                                + borderInfo.borderTop
+                                + borderInfo.borderBottom;
+                            main.style.height = height + 'px';
+                        }
+                    }
+                },
+<span id='Button-property-content'>                /**
+</span>                 * @property {string} [content=&quot;&quot;]
+                 *
+                 * 按钮的文本内容，不作HTML转义
+                 */
+                paint.html('content'),
+                {
+                    name: 'disabled',
+                    paint: function (button, disabled) {
+                        var nodeName = button.main.nodeName.toLowerCase();
+                        if (nodeName === 'button' || nodeName === 'input') {
+                            button.main.disabled = !!disabled;
+                        }
+                    }
+                }
+            ),
+
+<span id='Button-method-setContent'>            /**
+</span>             * 设置内容
+             *
+             * @param {string} content 要设置的内容
+             */
+            setContent: function (content) {
+                this.setProperties({ 'content': content });
+            }
+        };
+
+        lib.inherits(Button, Control);
+        require('./main').register(Button);
+
+        return Button;
+    }
+);
+</pre>
+</body>
+</html>

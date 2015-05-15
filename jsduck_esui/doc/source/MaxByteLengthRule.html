@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 字段最大长度验证规则
+ * @author otakustay
+ */
+define(
+    function (require) {
+        var Rule = require('./Rule');
+        var ValidityState = require('./ValidityState');
+
+<span id='validator-MaxByteLengthRule-method-constructor'><span id='validator-MaxByteLengthRule'>        /**
+</span></span>         * 验证最大字节长度的规则
+         *
+         * 该规则将除标准ASCII码外的其它字符视为2个字节
+         *
+         * @extends validator.Rule
+         * @class validator.MaxByteLengthRule
+         * @constructor
+         */
+        function MaxByteLengthRule() {
+            Rule.apply(this, arguments);
+        }
+
+<span id='validator-MaxByteLengthRule-property-type'>        /**
+</span>         * 规则类型，强制为`&quot;maxByteLength&quot;`
+         * 
+         * @type {string}
+         * @override
+         */
+        MaxByteLengthRule.prototype.type = 'maxByteLength';
+
+
+<span id='validator-MaxByteLengthRule-property-errorMessage'>        /**
+</span>         * 错误提示信息
+         *
+         * @type {string}
+         * @override
+         */
+        MaxByteLengthRule.prototype.errorMessage = 
+            '${title}不能超过${maxByteLength}个字符';
+
+<span id='validator-MaxByteLengthRule-method-check'>        /**
+</span>         * 验证控件的验证状态
+         *
+         * @param {string} value 校验值
+         * @param {Control} control 待校验控件
+         * @return {validator.ValidityState}
+         * @override
+         */
+        MaxByteLengthRule.prototype.check = function (value, control) {
+            var byteLength = value.replace(/[^\x00-\xff]/g, 'xx').length;
+            return new ValidityState(
+                byteLength &lt;= this.getLimitCondition(control), 
+                this.getErrorMessage(control)
+            );
+        };
+
+        require('../lib').inherits(MaxByteLengthRule, Rule);
+        require('../main').registerRule(MaxByteLengthRule, 100);
+        return MaxByteLengthRule;
+    }
+);
+</pre>
+</body>
+</html>

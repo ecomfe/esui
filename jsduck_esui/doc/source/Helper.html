@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @ignore
+ * @file 控件类常用的方法辅助类
+ * @author otakustay
+ */
+define(
+    function (require) {
+        var u = require('underscore');
+
+<span id='Helper-method-constructor'><span id='Helper'>        /**
+</span></span>         * 控件辅助类
+         *
+         * @constructor
+         * @param {Control} control 关联的控件实例
+         */
+        function Helper(control) {
+            this.control = control;
+        }
+
+        u.extend(
+            Helper.prototype,
+            require('./helper/children'),
+            require('./helper/dom'),
+            require('./helper/event'),
+            require('./helper/html'),
+            require('./helper/life'),
+            require('./helper/template')
+        );
+
+        return Helper;
+    }
+);
+</pre>
+</body>
+</html>

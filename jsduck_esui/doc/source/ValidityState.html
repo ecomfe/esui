@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * ESUI (Enterprise UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @ignore
+ * @file 规则验证状态类
+ * @author DBear, otakustay
+ */
+define(
+    function () {
+<span id='validator-ValidityState-method-constructor'><span id='validator-ValidityState'>        /**
+</span></span>         * 验证状态类
+         *
+         * 一个`ValidityState`表示一条规则的验证结果，其包含`state`和`message`两个属性
+         * 
+         * @class validator.ValidityState
+         * @constructor
+         * @param {boolean} state 验证状态
+         * @param {string} [message=&quot;&quot;] 验证信息
+         */
+        function ValidityState(state, message) {
+            this.state = state;
+            this.message = message || '';
+        }
+
+<span id='validator-ValidityState-method-getMessage'>        /**
+</span>         * 获取验证信息
+         *
+         * @return {string} 
+         */
+        ValidityState.prototype.getMessage = function () {
+            return this.message;
+        };
+
+
+<span id='validator-ValidityState-method-getState'>        /**
+</span>         * 获取验证状态
+         *
+         * @return {boolean} `true`为值合法，`false`为值非法
+         */
+        ValidityState.prototype.getState = function () {
+            return this.state;
+        };
+
+
+
+<span id='validator-ValidityState-method-setMessage'>        /**
+</span>         * 设置验证信息
+         *
+         * @param {string} message 验证信息字符串
+         */
+        ValidityState.prototype.setMessage = function (message) {
+            this.message = message;
+        };
+
+
+<span id='validator-ValidityState-method-setState'>        /**
+</span>         * 设置验证状态
+         *
+         * @param {boolean} state `true`为值合法，`false`为值非法
+         */
+        ValidityState.prototype.setState = function (state) {
+            this.state = state;
+        };
+
+        return ValidityState;
+    }
+);
+</pre>
+</body>
+</html>
