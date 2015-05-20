@@ -12,24 +12,199 @@ define(
         var lib = require('./lib');
         var InputControl = require('./InputControl');
 
-        /**
-         * 单选或复选框组控件
-         *
-         * @extends InputControl
-         * @constructor
-         */
-        function BoxGroup() {
-            InputControl.apply(this, arguments);
-        }
+        var exports = {
+            /**
+             * 单选或复选框组控件
+             *
+             * @extends InputControl
+             * @constructor
+             */
+            constructor: function () {
+                this.$super(arguments);
+            },
+            /**
+             * 控件类型，始终为`"BoxGroup"`
+             *
+             * @type {string}
+             * @readonly
+             * @override
+             */
+            type: 'BoxGroup',
+            /**
+             * 初始化参数
+             *
+             * @param {Object} [options] 构造函数传入的参数
+             * @protected
+             * @override
+             */
+            initOptions: function (options) {
+                var properties = {
+                    datasource: [],
+                    orientation: 'horizontal',
+                    boxType: 'radio',
+                    /**
+                     * @property {string} boxClass
+                     *
+                     * 附加在boxgroup-wrapper上的css selector 名称。
+                     * 做自定义boxgroup的时候用到。加在这里主要是想复用checkbox现成的样式。
+                     */
+                    boxClass: ''
+                };
+                u.extend(properties, options);
 
-        /**
-         * 控件类型，始终为`"BoxGroup"`
-         *
-         * @type {string}
-         * @readonly
-         * @override
-         */
-        BoxGroup.prototype.type = 'BoxGroup';
+                var datasource = properties.datasource;
+                if (!datasource.length) {
+                    extractDatasourceFromDOM(this.main, properties);
+                }
+                if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
+                    // 单选框组在没有指定`value`时默认选中第一项
+                    if (properties.boxType === 'radio' && datasource.length) {
+                        properties.rawValue = [datasource[0].value];
+                    }
+                    else {
+                        properties.rawValue = [];
+                    }
+                }
+
+                this.setProperties(properties);
+            },
+            /**
+             * 批量更新属性并重绘
+             *
+             * @param {Object} properties 需更新的属性
+             * @override
+             * @fires change
+             */
+            setProperties: function (properties) {
+                // 修改了`datasource`或`boxType`，且没给新的`rawValue`或`value`的时候，
+                // 要把`rawValue`清空。由于上层`setProperties`是全等判断，
+                // 如果当前`rawValue`正好也是空的，就不要改值了，以免引起`change`事件
+                if ((properties.datasource || properties.boxType)
+                    && (!properties.rawValue && !properties.value)
+                    && (!this.rawValue || !this.rawValue.length)
+                ) {
+                    properties.rawValue = [];
+                }
+
+                var changes =
+                    InputControl.prototype.setProperties.apply(this, arguments);
+                if (changes.hasOwnProperty('rawValue')) {
+                    /**
+                     * @event change
+                     *
+                     * 值变化时触发
+                     */
+                    this.fire('change');
+                }
+            },
+            /**
+             * 重渲染
+             *
+             * @method
+             * @protected
+             * @override
+             */
+            repaint: require('./painters').createRepaint(
+                InputControl.prototype.repaint,
+                {
+                    /**
+                     * @property {meta.BoxGroupItem[]} datasource
+                     *
+                     * 数据源
+                     */
+
+                    /**
+                     * @property {string} boxType
+                     *
+                     * 选框类型，可以为`radio`表示单选，或`checkbox`表示复选
+                     */
+                    name: ['datasource', 'boxType'],
+                    paint: render
+                },
+                {
+                    name: ['disabled', 'readOnly'],
+                    paint: function (group, disabled, readOnly) {
+                        u.each(
+                            group.getBoxElements(),
+                            function (box) {
+                                box.disabled = disabled;
+                                box.readOnly = readOnly;
+                            }
+                        );
+                    }
+                },
+                {
+                    /**
+                     * @property {string[]} rawValue
+                     *
+                     * 原始值，无论是`radio`还是`checkbox`，均返回数组
+                     *
+                     * 当{@link BoxGroup#boxType}值为`radio`时，数组必然只有一项
+                     *
+                     * @override
+                     */
+                    name: 'rawValue',
+                    paint: function (group, rawValue) {
+                        rawValue = rawValue || [];
+                        // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
+                        group.rawValue = rawValue;
+                        var map = {};
+                        for (var i = 0; i < rawValue.length; i++) {
+                            map[rawValue[i]] = true;
+                        }
+
+                        u.each(
+                            group.getBoxElements(),
+                            function (box) {
+                                box.checked = map.hasOwnProperty(box.value);
+                                syncCheckedState.call(group, box);
+                            }
+                        );
+                    }
+                },
+                {
+                    /**
+                     * @property {string} [orientation="horizontal"]
+                     *
+                     * 选框的放置方向，可以为`vertical`表示纵向，或者`horizontal`表示横向
+                     */
+                    name: 'orientation',
+                    paint: function (group, orientation) {
+                        group.removeState('vertical');
+                        group.removeState('horizontal');
+                        group.addState(orientation);
+                    }
+                }
+            ),
+            /**
+             * 将字符串类型的值转换成原始格式
+             *
+             * @param {string} value 字符串值
+             * @return {string[]}
+             * @protected
+             * @override
+             */
+            parseValue: function (value) {
+                /**
+                 * @property {string} [value=""]
+                 *
+                 * `BoxGroup`的字符串形式的值为逗号分隔的多个值
+                 */
+                return value.split(',');
+            },
+            /**
+             * 获取内部的输入元素
+             *
+             * @return {HTMLElement[]}
+             * @protected
+             */
+            getBoxElements: function () {
+                return u.where(
+                    this.main.getElementsByTagName('input'),
+                    {type: this.boxType}
+                );
+            }
+        };
 
         /*
          * 从已有的DOM中分析出数据源
@@ -68,15 +243,15 @@ define(
 
             var datasource = [];
             var values = [];
-            for (var i = 0, length = boxes.length; i < length; i++) {
-                var box = boxes[i];
+            for (var j = 0, max = boxes.length; j < max; j++) {
+                var box = boxes[j];
                 if (box.type === options.boxType
                     && (options.name || '') === box.name // DOM的`name`是字符串
                 ) {
                     // 提取`value`和`title`
-                    var item = { value: box.value };
-                    var label = box.id && labelIndex[box.id];
-                    item.title = label ? lib.getText(label) : '';
+                    var item = {value: box.value};
+                    var label2 = box.id && labelIndex[box.id];
+                    item.title = label2 ? lib.getText(label2) : '';
                     if (!item.title) {
                         item.title =
                             box.title || (box.value === 'on' ? box.value : '');
@@ -103,50 +278,6 @@ define(
             }
         }
 
-        /**
-         * 初始化参数
-         *
-         * @param {Object} [options] 构造函数传入的参数
-         * @protected
-         * @override
-         */
-        BoxGroup.prototype.initOptions = function (options) {
-            var properties = {
-                datasource: [],
-                orientation: 'horizontal',
-                boxType: 'radio',
-                /**
-                 * @property {string} boxClass
-                 *
-                 * 附加在boxgroup-wrapper上的css selector 名称。
-                 * 做自定义boxgroup的时候用到。加在这里主要是想复用checkbox现成的样式。
-                 */
-                boxClass: ''
-            };
-            u.extend(properties, options);
-
-            var datasource = properties.datasource;
-            if (!datasource.length) {
-                extractDatasourceFromDOM(this.main, properties);
-            }
-            if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
-                // 单选框组在没有指定`value`时默认选中第一项
-                if (properties.boxType === 'radio' && datasource.length) {
-                    properties.rawValue = [datasource[0].value];
-                }
-                else {
-                    properties.rawValue = [];
-                }
-            }
-
-            this.setProperties(properties);
-        };
-
-        /**
-         * 同步选择状态
-         *
-         * @ignore
-         */
         function syncCheckedState(element) {
             var label = element.parentNode;
             var checkedClass = this.helper.getPartClasses('wrapper-checked');
@@ -169,7 +300,7 @@ define(
 
             // 同步值
             var result = u.chain(this.getBoxElements())
-                .where({ checked: true })
+                .where({checked: true})
                 .pluck('value')
                 .value();
 
@@ -182,8 +313,7 @@ define(
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
             '    <label for="${id}">${title}</label>',
             '</div>'
-        ];
-        itemTemplate = itemTemplate.join('');
+        ].join('');
 
         /**
          * 渲染控件
@@ -248,149 +378,7 @@ define(
             );
         }
 
-        /**
-         * 批量更新属性并重绘
-         *
-         * @param {Object} properties 需更新的属性
-         * @override
-         * @fires change
-         */
-        BoxGroup.prototype.setProperties = function (properties) {
-            // 修改了`datasource`或`boxType`，且没给新的`rawValue`或`value`的时候，
-            // 要把`rawValue`清空。由于上层`setProperties`是全等判断，
-            // 如果当前`rawValue`正好也是空的，就不要改值了，以免引起`change`事件
-            if ((properties.datasource || properties.boxType)
-                && (!properties.rawValue && !properties.value)
-                && (!this.rawValue || !this.rawValue.length)
-            ) {
-                properties.rawValue = [];
-            }
-
-            var changes =
-                InputControl.prototype.setProperties.apply(this, arguments);
-            if (changes.hasOwnProperty('rawValue')) {
-                /**
-                 * @event change
-                 *
-                 * 值变化时触发
-                 */
-                this.fire('change');
-            }
-        };
-
-        /**
-         * 重渲染
-         *
-         * @method
-         * @protected
-         * @override
-         */
-        BoxGroup.prototype.repaint = require('./painters').createRepaint(
-            InputControl.prototype.repaint,
-            {
-                /**
-                 * @property {meta.BoxGroupItem[]} datasource
-                 *
-                 * 数据源
-                 */
-
-                /**
-                 * @property {string} boxType
-                 *
-                 * 选框类型，可以为`radio`表示单选，或`checkbox`表示复选
-                 */
-                name: ['datasource', 'boxType'],
-                paint: render
-            },
-            {
-                name: ['disabled', 'readOnly'],
-                paint: function (group, disabled, readOnly) {
-                    u.each(
-                        group.getBoxElements(),
-                        function (box) {
-                            box.disabled = disabled;
-                            box.readOnly = readOnly;
-                        }
-                    );
-                }
-            },
-            {
-                /**
-                 * @property {string[]} rawValue
-                 *
-                 * 原始值，无论是`radio`还是`checkbox`，均返回数组
-                 *
-                 * 当{@link BoxGroup#boxType}值为`radio`时，数组必然只有一项
-                 *
-                 * @override
-                 */
-                name: 'rawValue',
-                paint: function (group, rawValue) {
-                    rawValue = rawValue || [];
-                    // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
-                    group.rawValue = rawValue;
-                    var map = {};
-                    for (var i = 0; i < rawValue.length; i++) {
-                        map[rawValue[i]] = true;
-                    }
-
-                    u.each(
-                        group.getBoxElements(),
-                        function (box) {
-                            box.checked = map.hasOwnProperty(box.value);
-                            syncCheckedState.call(group, box);
-                        }
-                    );
-                }
-            },
-            {
-                /**
-                 * @property {string} [orientation="horizontal"]
-                 *
-                 * 选框的放置方向，可以为`vertical`表示纵向，或者`horizontal`表示横向
-                 */
-                name: 'orientation',
-                paint: function (group, orientation) {
-                    group.removeState('vertical');
-                    group.removeState('horizontal');
-                    group.addState(orientation);
-                }
-            }
-        );
-
-        /**
-         * 将字符串类型的值转换成原始格式
-         *
-         * @param {string} value 字符串值
-         * @return {string[]}
-         * @protected
-         * @override
-         */
-        BoxGroup.prototype.parseValue = function (value) {
-            /**
-             * @property {string} [value=""]
-             *
-             * `BoxGroup`的字符串形式的值为逗号分隔的多个值
-             */
-            return value.split(',');
-        };
-
-        // 保护函数区域
-
-        /**
-         * 获取内部的输入元素
-         *
-         * @return {HTMLElement[]}
-         * @protected
-         */
-        BoxGroup.prototype.getBoxElements = function () {
-            return u.where(
-                this.main.getElementsByTagName('input'),
-                { type: this.boxType }
-            );
-        };
-
-        lib.inherits(BoxGroup, InputControl);
+        var BoxGroup = require('eoo').create(InputControl, exports);
         require('./main').register(BoxGroup);
         return BoxGroup;
     }
