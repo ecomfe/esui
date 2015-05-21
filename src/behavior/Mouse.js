@@ -65,6 +65,8 @@ define(
             this.mouseDownEvent = null;
             // 是否在文档内移动过鼠标
             this.mouseMoved = false;
+
+            this.customEventPrefix = 'mouse';
         };
 
         /**
@@ -266,11 +268,7 @@ define(
             /**
              * @event mousecapture
              */
-            var miniEvent = this.fire('mousecapture', event);
-            if (miniEvent.isDefaultPrevented()) {
-                return false;
-            }
-            return true;
+            return this.trigger('capture', event);
         };
 
         /**
@@ -284,8 +282,7 @@ define(
             /**
              * @event mousestart
              */
-            var miniEvent = this.fire('mousestart', event);
-            return !miniEvent.isDefaultPrevented();
+            return this.trigger('start', event);
         };
 
         /**
@@ -297,7 +294,7 @@ define(
             /**
              * @event mousedrag
              */
-            this.fire('mousedrag', event);
+            this.trigger('drag', event);
         };
 
         /**
@@ -309,7 +306,7 @@ define(
             /**
              * @event mousestop
              */
-            this.fire('mousestop', event);
+            this.trigger('stop', event);
         };
 
         var Mouse = require('eoo').create(Base, exports);

@@ -29,6 +29,7 @@ define(
         exports.constructor = function (options) {
             this.$super(arguments);
 
+            this.customEventPrefix = 'drag';
             this.plugins = {};
         };
 
@@ -195,8 +196,7 @@ define(
             // 元素移动的限定范围
             setContainment.call(this);
 
-            var miniEvent = this.fire('start', event);
-            if (miniEvent.isDefaultPrevented()) {
+            if (this.trigger('start', event) === false) {
                 clear.call(this);
                 return false;
             }
@@ -238,8 +238,7 @@ define(
 
             if (!noPropagation) {
             	var ui = uiHash.call(this);
-            	var miniEvent = this.fire('drag', u.extend({}, event, ui));
-                if (miniEvent.isDefaultPrevented()) {
+                if (this.trigger('drag', u.extend({}, event, ui)) === false) {
             		this.mouseUp({});
             		return false;
             	}
@@ -285,16 +284,14 @@ define(
                     this.originalPosition,
                     parseInt(this.options.revertDuration, 10),
                     function () {
-                        var miniEvent = me.fire('stop', event);
-                        if (!miniEvent.isDefaultPrevented()) {
+                        if (me.trigger('stop', event) !== false) {
                             clear.call(this);
                         }
                     }
                 );
             }
             else {
-                var miniEvent = this.fire('stop', event);
-                if (!miniEvent.isDefaultPrevented()) {
+                if (this.trigger('stop', event) !== false) {
                     clear.call(this);
                 }
             }
