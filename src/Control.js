@@ -44,7 +44,7 @@ define(
             this.children = [];
             this.childrenIndex = {};
             this.currentStates = {};
-            this.domEvents = {};
+            this.domEvents = [];
 
             /**
              * 控件的主元素

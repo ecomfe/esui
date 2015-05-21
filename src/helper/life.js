@@ -97,29 +97,35 @@ define(
          * 销毁控件
          */
         helper.dispose = function () {
+            var me = this;
+            var ctrl = me.control;
+
             // 清理子控件
-            this.control.disposeChildren();
-            this.control.children = null;
-            this.control.childrenIndex = null;
+            ctrl.disposeChildren();
+            ctrl.children = null;
+            ctrl.childrenIndex = null;
 
             // 移除自身行为
-            this.clearDOMEvents();
+            u.each(ctrl.domEvents, function ($ele) {
+                me.removeDOMEvent($ele, '.' + ctrl.type);
+            });
+            ctrl.domEvents = [];
 
             // 移除所有扩展
-            u.invoke(this.control.extensions, 'dispose');
-            this.control.extensions = null;
+            u.invoke(ctrl.extensions, 'dispose');
+            ctrl.extensions = null;
 
             // 从控件树中移除
-            if (this.control.parent) {
-                this.control.parent.removeChild(this.control);
+            if (ctrl.parent) {
+                ctrl.parent.removeChild(ctrl);
             }
 
             // 从视图环境移除
-            if (this.control.viewContext) {
-                this.control.viewContext.remove(this.control);
+            if (ctrl.viewContext) {
+                ctrl.viewContext.remove(ctrl);
             }
 
-            this.control.renderOptions = null;
+            ctrl.renderOptions = null;
         };
 
         /**
