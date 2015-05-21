@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Draggable - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/demo.js"></script>
+        <script src="assets/prism.js"></script>
+        <!--[if lt IE 9]>
+        <script src="http://xy3.baidu.com/js/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="assets/prism.css" />
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <style>
+            .view {
+                height: 500px;
+            }
+            .block {
+                width: 100px;
+                height: 100px;
+                background: orange;
+                border: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="branding">ESUI - Behavior - Draggable</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Draggable</h2>
+                <section class="intro">
+                    <p>Draggable。</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <div id="block" class="block"></div>
+                    </div>
+                    <iframe src="./Draggable.html" width="100" height="100"></iframe>
+                    <input type="text" style="width:100px;" value="xxxx" />
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/behavior/Draggable'
+            ],
+            function (ui, Draggable) {
+                $('#block').draggable(
+                    {
+                        containment: '.view'
+                    }
+                );
+            }
+        );
+        </script>
+    </body>
+</html>

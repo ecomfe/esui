@@ -150,28 +150,6 @@ define(
            );
         };
 
-        exports.fire = function (type, data) {
-            // 由于mini-event会覆盖data的target属性，
-            // 所以这里要额外存一个副本
-            if (data && !data.$target && data.target) {
-                data.$target = data.target;
-            }
-            var me = this;
-            var callback = function (event) {
-                var func = me.options[type];
-                if (u.isFunction(func)) {
-                    var result = func.call(me, event);
-                    if (result === false) {
-                        event.preventDefault();
-                    }
-                }
-            }
-            var event = this.$super(arguments);
-            callback(event);
-
-            return event;
-        };
-
         exports.setOptions = function(options) {
             for (var key in options) {
                 this.setOption(key, options[key]);
