@@ -13,6 +13,7 @@ define(
         var $ = require('jquery');
         var lib = require('esui/lib');
         var u = require('underscore');
+        var config = require('./config');
 
         /**
          * ESUI行为库基类
@@ -36,13 +37,14 @@ define(
 
             this.customEventPrefix = 'base';
             this.eventNamespace = '.' + this.type + $.guid++;
+            this.classPrefix = [config.classPrefix, this.type].join('-');
             this.bindings = $();
 
             this.element = $(element);
             element = this.element[0];
             this.document = $(
                 element.style ? element.ownerDocument : (element.document || element)
-          );
+            );
             this.window = $(this.document[0].defaultView || this.document[0].parentWindow);
 
             this.init();
@@ -148,6 +150,45 @@ define(
                     }
                 }
            );
+        };
+
+        exports.getClassName = function (styleType) {
+            if (!styleType) {
+                return this.classPrefix;
+            }
+            else if (styleType.indexOf(this.classPrefix) === 0) {
+                return styleType;
+            }
+            var options = this.options;
+            var className = options[styleType + 'Class'] || [this.classPrefix, styleType].join('-');
+            return className;
+        };
+
+        exports.addClass = function (element, className) {
+            var args = u.toArray(arguments);
+            this.toggleClass.apply(this, args.concat([true]));
+        };
+
+        exports.removeClass = function (element, className) {
+            var args = u.toArray(arguments);
+            this.toggleClass.apply(this, args.concat([false]));
+        };
+
+        exports.toggleClass = function (element, className, toggle) {
+            if (u.isBoolean(element)) {
+                toggle = element;
+                className = '';
+                element = this.element;
+            }
+            else if (u.isBoolean(className)) {
+                toggle = className;
+                className = element;
+                element = this.element;
+            }
+            else {
+                element = $(element);
+            }
+            element.toggleClass(this.getClassName(className), toggle);
         };
 
         exports.setOptions = function(options) {
