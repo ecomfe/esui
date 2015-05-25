@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>sortable - ESUI Demo</title>
+    <script src="assets/loader/esl.js"></script>
+    
+    <script src="assets/jquery-1.9.1.min.js"></script>
+    <script src="assets/demo.js"></script>
+    <script src="assets/prism.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="assets/prism.css" />
+    <link rel="stylesheet" href="assets/themes/standard.css" />
+    <style>
+    .ui-widget-content {
+      border: 1px solid #aaaaaa;
+      color: #222222;
+    }
+    .ui-state-default {
+      border: 1px solid #d3d3d3;
+      font-weight: normal;
+      color: #555555;
+    }
+    #sortable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
+    #sortable li { margin: 3px 3px 3px 0; padding: 1px; float: left; width: 100px; height: 90px; font-size: 4em; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1 id="branding">ESUI - Sortable</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>Sortable</h2>
+            <section class="intro">
+                <p>Sortable</p>
+            </section>
+            <section class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <ul id="sortable" class="esf-clearfix">
+                      <li class="ui-state-default">1</li>
+                      <li class="ui-state-default">2</li>
+                      <li class="ui-state-default">3</li>
+                      <li class="ui-state-default">4</li>
+                      <li class="ui-state-default">5</li>
+                      <li class="ui-state-default">6</li>
+                      <li class="ui-state-default">7</li>
+                      <li class="ui-state-default">8</li>
+                      <li class="ui-state-default">9</li>
+                      <li class="ui-state-default">10</li>
+                      <li class="ui-state-default">11</li>
+                      <li class="ui-state-default">12</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+        require(
+                [
+                    'esui/behavior/sortable'
+                ],
+                function (sortable) {
+                    new sortable('#sortable');
+                }
+        )
+    </script>
+</body>
+</html>
