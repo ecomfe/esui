@@ -410,7 +410,7 @@ define(
          */
         function showSelect(pager) {
             var selectWrapper = pager.helper.getPart('select-wrapper');
-            pager.helper.removePartClasses('select-hidden', selectWrapper);
+            pager.helper.removePartClasses('select-wrapper-hidden', selectWrapper);
         }
 
         /**
@@ -421,7 +421,7 @@ define(
          */
         function hideSelect(pager) {
             var selectWrapper = pager.helper.getPart('select-wrapper');
-            pager.helper.addPartClasses('select-hidden', selectWrapper);
+            pager.helper.addPartClasses('select-wrapper-hidden', selectWrapper);
         }
 
         /**

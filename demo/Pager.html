@@ -33,6 +33,7 @@
                 <div data-ui-id="test1" data-ui-type="Pager"></div>
                 <br /> <br />
                 <div id="message"></div>
+                <div id="pagerDynamic"></div>
             </div>
         </div>
     </div>
@@ -63,7 +64,7 @@
                 'esui',
                 'esui/Pager'
             ],
-            function (ui) {
+            function (ui, Pager) {
                 var pager = ui.init()[0];
 
                 pager.set('pageType', 'plain');
@@ -129,6 +130,14 @@
                 pager.onchangepagesize = function () {
                     document.getElementById('message').innerHTML += '<p>Change page size to ' + this.get('pageSize') + '</p>';
                 }
+                var pager3 = new Pager({
+                        main: document.getElementById('pagerDynamic'),
+                        pageSizes: [],
+                        count: 260,
+                        pageSize: 3
+                    }
+                );
+                pager3.render();
             }
     );
     copyExample();
