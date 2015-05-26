@@ -1,0 +1,102 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file esui behavior
+ * @author maoquan(3610cn@gmail.com) liwei
+ */
+
+// Selectable
+.@{ui-class-prefix}-selectable {
+    -ms-touch-action: none;
+    touch-action: none;
+
+    .@{ui-class-prefix}-selecting {
+        background: #FECA40;
+    }
+    .@{ui-class-prefix}-selected {
+        background: #F39814;
+        color: white;
+    }
+}
+
+// Resizable
+.@{ui-class-prefix}-resizable {
+	position: relative;
+}
+.@{ui-class-prefix}-resizable-handle {
+	position: absolute;
+	font-size: 0.1px;
+	display: block;
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.@{ui-class-prefix}-resizable-disabled,
+.@{ui-class-prefix}-resizable-autohide {
+    .ui-resizable-handle {
+        display: none;
+    }
+}
+.@{ui-class-prefix}-resizable-n {
+	cursor: n-resize;
+	height: 7px;
+	width: 100%;
+	top: -5px;
+	left: 0;
+}
+.@{ui-class-prefix}-resizable-s {
+	cursor: s-resize;
+	height: 7px;
+	width: 100%;
+	bottom: -5px;
+	left: 0;
+}
+.@{ui-class-prefix}-resizable-e {
+	cursor: e-resize;
+	width: 7px;
+	right: -5px;
+	top: 0;
+	height: 100%;
+}
+.@{ui-class-prefix}-resizable-w {
+	cursor: w-resize;
+	width: 7px;
+	left: -5px;
+	top: 0;
+	height: 100%;
+}
+.@{ui-class-prefix}-resizable-se {
+	cursor: se-resize;
+	width: 12px;
+	height: 12px;
+	right: 1px;
+	bottom: 1px;
+}
+.@{ui-class-prefix}-resizable-sw {
+	cursor: sw-resize;
+	width: 9px;
+	height: 9px;
+	left: -5px;
+	bottom: -5px;
+}
+.@{ui-class-prefix}-resizable-nw {
+	cursor: nw-resize;
+	width: 9px;
+	height: 9px;
+	left: -5px;
+	top: -5px;
+}
+.@{ui-class-prefix}-resizable-ne {
+	cursor: ne-resize;
+	width: 9px;
+	height: 9px;
+	right: -5px;
+	top: -5px;
+}
+
+// Draggable
+.@{ui-class-prefix}-draggable-handle {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+

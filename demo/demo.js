@@ -1,5 +1,5 @@
 require.config({
-    'baseUrl': '../../src',
+    'baseUrl': '../src',
     'paths': {},
     'packages': [
         {
