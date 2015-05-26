@@ -38,6 +38,7 @@
                             <button  id="resetFollowHeadBtn" data-ui="id:resetFollowHeadBtn;type:Button;">resetFollowHead</button>
                             <button  id="getSelectedItemsBtn" data-ui="id:getSelectedItemsBtn;type:Button;">getSelectedItems</button>
                             <button  id="updateRowBtn" data-ui="id:updateRowBtn;type:Button;">updateRow</button>
+                            <button  id="setAllRowBtn" data-ui="id:setAllRowBtn;type:Button;">setAllRowBtn</button>
                         </div>
                         <h3>Fixed Header</h3>
                         <div class="row">
@@ -262,13 +263,16 @@
                 };
 
                 myTable.onselect = function ( arg ) {
-                    //alert(arg.selectedIndex.toString());
+                    alert(arg.selectedIndex.toString());
                 };
 
                 myTable.onresize = function ( arg ) {
                    myTable.set('tableHeight', myTable.tableHeight + 100);
                 };
 
+                ui.get('setAllRowBtn').onclick = function () {
+                    ui.get('myTable').setAllRowSelected(false);
+                };
                 ui.get('disabledBtn').onclick = function () {
                     ui.get('myTable').set( 'disabled', !ui.get( 'myTable' ).get('disabled'));
                 };
