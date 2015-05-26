@@ -42,7 +42,7 @@ require.config({
         },
         {
             'name': 'eoo',
-            'location': '../dep/eoo/0.1.2/src',
+            'location': '../dep/eoo/0.1.3/src',
             'main': 'main'
         },
         {
