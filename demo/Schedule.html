@@ -4,15 +4,14 @@
         <meta charset="UTF-8" />
         <title>Schedule - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
         <h1 id="branding">ESUI - Schedule</h1>
@@ -20,18 +19,18 @@
             <ul id="navigator">
             </ul>
             <div id="main">
-                <h2>schedule</h2>
-                <section class="intro">
+                <h2>Schedule</h2>
+                <div class="intro">
                     <p>时间选择组件。</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
                         <h3>日程投放控件</h3>
                         <div class="row">
-                            <esui-schedule name="launchMode" data-ui="id:mySchedule"></esui-schedule>
+                            <div name="launchMode" data-ui="type:Schedule;id:mySchedule"></div>
                         </div>
                         <div class="row">
                             <button class="ui-button" id='getRaw'> 获取raw值 </button>
@@ -46,102 +45,92 @@
                             <button class="ui-button" id='unsel'> unselect([0,0],[6,23]) </button>
                         </div>
                     </div>
-                </section>
+                </div>
                 <h2>状态</h2>
-                <section class="view">
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
                         <h3>不可用</h3>
                         <div class="row">
-                            <esui-schedule  data-ui="disabled:1;id:mySchedule2"></esui-schedule>
+                            <div data-ui="type:Schedule;disabled:1;id:mySchedule2"></div>
                         </div>
                         <h3>readOnly</h3>
                         <div class="row">
-                            <esui-schedule  data-ui="readOnly:1;id:mySchedule3"></esui-schedule>
+                            <div data-ui="type:Schedule;readOnly:1;id:mySchedule3"></div>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
-    <script>
-        require(
-            [
-                'esui',
-                'esui/Schedule'
-            ],
-            function (ui) {
-                var raw = [
-                    [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1],
-                    [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
-                    [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
-                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0],
-                    [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1]
-                ];
-                ui.init(document.body,{
-                    properties : {
-                        mySchedule: {
-                            rawValue: raw
-                        },
-                        mySchedule2: {
-                            rawValue: raw
-                        },
-                        mySchedule3: {
-                            rawValue: raw
-                        },
+        <script>
+            require(
+                [
+                    'esui',
+                    'esui/Schedule'
+                ],
+                function (ui) {
+                    var raw = [
+                        [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1],
+                        [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                        [0,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1],
+                        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                        [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0],
+                        [0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1]
+                    ];
+                    ui.init(document.body,{
+                        properties : {
+                            mySchedule: {
+                                rawValue: raw
+                            },
+                            mySchedule2: {
+                                rawValue: raw
+                            },
+                            mySchedule3: {
+                                rawValue: raw
+                            },
+                        }
+                    });
+                    document.getElementById('get').onclick = function() {
+                        alert(ui.get('mySchedule').getValue());
                     }
-                });
-
-                document.getElementById('get').onclick = function() {
-                    alert(ui.get('mySchedule').getValue());
+                    document.getElementById('getRaw').onclick = function() {
+                        alert(ui.get('mySchedule').getRawValue());
+                    }
+                    document.getElementById('set').onclick = function() {
+                        ui.get('mySchedule').setValue('100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+                    }
+                    document.getElementById('setRaw').onclick = function() {
+                        ui.get('mySchedule').setRawValue([
+                                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+                                ]);
+                    }
+                    document.getElementById('setD1').onclick = function() {
+                        ui.get('mySchedule').set('disabled', 1);
+                    }
+                    document.getElementById('setD2').onclick = function() {
+                        ui.get('mySchedule').set('disabled', 0);
+                    }
+                    document.getElementById('sel').onclick = function() {
+                        ui.get('mySchedule').select([0,0], [6,23]);
+                    }
+                    document.getElementById('unsel').onclick = function() {
+                        ui.get('mySchedule').unselect([0,0], [6,23]);
+                    }
+                    ui.get('mySchedule').onchange  = function (e) {
+                        //console.info(this.stringifyValue(e.rawValue));
+                    };
                 }
-
-                document.getElementById('getRaw').onclick = function() {
-                    alert(ui.get('mySchedule').getRawValue());
-                }
-
-                document.getElementById('set').onclick = function() {
-                    ui.get('mySchedule').setValue('100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
-                }
-
-                document.getElementById('setRaw').onclick = function() {
-                    ui.get('mySchedule').setRawValue([
-                            [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-                            ]);
-                }
-
-                document.getElementById('setD1').onclick = function() {
-                    ui.get('mySchedule').set('disabled', 1);
-                }
-
-                document.getElementById('setD2').onclick = function() {
-                    ui.get('mySchedule').set('disabled', 0);
-                }
-
-                document.getElementById('sel').onclick = function() {
-                    ui.get('mySchedule').select([0,0], [6,23]);
-                }
-
-                document.getElementById('unsel').onclick = function() {
-                    ui.get('mySchedule').unselect([0,0], [6,23]);
-                }
-
-                ui.get('mySchedule').onchange  = function (e) {
-
-                    console.info(this.stringifyValue(e.rawValue));
-                };
-
-            }
-        );
+            );
+            copyExample();
         </script>
     </body>
 </html>

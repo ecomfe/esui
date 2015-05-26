@@ -28,6 +28,25 @@ define(
             InputControl.apply(this, arguments);
         }
 
+        function extractInputOptions(input, props) {
+            var nodeName = input.nodeName.toLowerCase();
+
+            if (nodeName === 'textarea') {
+                props.mode = 'textarea';
+            }
+            else {
+                var type = input.type;
+                props.mode = type === 'password' ? 'password' : 'text';
+            }
+
+            if (!props.placeholder) {
+                props.placeholder =
+                    input.getAttribute('placeholder');
+            }
+
+            this.helper.extractOptionsFromInput(input, props);
+        }
+
         /**
          * @cfg defaultProperties
          *
@@ -102,27 +121,19 @@ define(
             };
             u.extend(properties, TextBox.defaultProperties);
 
-            if (!properties.name) {
-                properties.name = this.main.getAttribute('name');
+            properties.name = this.main.getAttribute('name');
+
+            var inputElement;
+            if (lib.isInput(this.main)) {
+                inputElement = this.main;
+            }
+            else if (this.main.children.length > 0) {
+                this.innerInput = true;
+                inputElement = this.main.children[0];
             }
 
-            if (lib.isInput(this.main)) {
-                var nodeName = this.main.nodeName.toLowerCase();
-
-                if (nodeName === 'textarea') {
-                    properties.mode = 'textarea';
-                }
-                else {
-                    var type = this.main.type;
-                    properties.mode = type === 'password' ? 'password' : 'text';
-                }
-
-                if (!properties.placeholder) {
-                    properties.placeholder =
-                        this.main.getAttribute('placeholder');
-                }
-
-                this.helper.extractOptionsFromInput(this.main, properties);
+            if (inputElement) {
+                extractInputOptions.call(this, inputElement, properties);
             }
 
             u.extend(properties, options);
@@ -327,6 +338,10 @@ define(
                 input.id = this.inputId;
                 // 把原来的`<input>`或`<textarea>`放进去
                 this.main.appendChild(input);
+            }
+            else if (this.innerInput) {
+                this.inputId = this.helper.getId('input');
+                this.main.children[0].id = this.inputId;
             }
             else {
                 this.inputId = this.helper.getId('input');

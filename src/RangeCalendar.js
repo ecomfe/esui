@@ -103,6 +103,18 @@ define(
                     'click',
                     u.bind(calendar.layer.hide, calendar.layer)
                 );
+                // 关闭layer的时候关闭select的layer
+                // https://github.com/ecomfe/esui/issues/462
+                // 当select layer可以嵌套到主元素之后可以把这个移除
+                calendar.layer.on('hide', function (e) {
+                    function hideSelectLayer(monthView) {
+                        monthView.getChild('yearSel').layer.hide();
+                        monthView.getChild('monthSel').layer.hide();
+                    };
+                    var tar = e.target.control;
+                    hideSelectLayer(tar.getChild('beginCal'));
+                    hideSelectLayer(tar.getChild('endCal'));
+                });
             }
             else {
                 calendar.view.begin = value.begin;
@@ -845,7 +857,7 @@ define(
 
             // 设置了value，以value为准
             if (options.value) {
-                properties.rawValue = this.convertToRaw(properties.value);
+                properties.rawValue = this.convertToRaw(options.value);
                 properties.view = {
                     begin: properties.rawValue.begin,
                     end: properties.rawValue.end

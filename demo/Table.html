@@ -4,15 +4,14 @@
         <meta charset="UTF-8" />
         <title>Table - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
         <h1 id="branding">ESUI - Table</h1>
@@ -21,10 +20,10 @@
             </ul>
             <div id="main">
                 <h2>Table</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>Table</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -54,8 +53,12 @@
                         <div class="row">
                             <div data-ui="type:Table;id:myTable4;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
                         </div>
+                        <h3>单选</h3>
+                        <div class="row">
+                            <div data-ui="type:Table;id:myTable5;select:single"></div>
+                        </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
         <script>
@@ -142,6 +145,11 @@
                     properties : {
                         myTable4: {
                             datasource: [],
+                            fields: fields
+                        },
+                        myTable5: {
+                            datasource: data,
+
                             fields: fields
                         },
                         myTable: {
@@ -385,6 +393,7 @@
                 */
             }
         );
+        copyExample();
         </script>
     </body>
 </html>

@@ -53,7 +53,7 @@ require.config({
     ]
 });
 
-$(function () {
+function copyExample() {
     function hideSource(e) {
         $('.source-visible').removeClass('source-visible');
     }
@@ -75,10 +75,10 @@ $(function () {
     //$('html').on('mousedown', hideSource);
 
     var navItems =
+        '<li><a href="BoxGroup.html">BoxGroup</a></li>' +
         '<li><a href="Button.html">Button</a></li>' +
         '<li><a href="Calendar.html">Calendar</a></li>' +
         '<li><a href="Checkbox.html">Checkbox</a></li>' +
-        '<li><a href="BoxGroup.html">Box Group</a></li>' +
         '<li><a href="CommandMenu.html">Command Menu</a></li>' +
         '<li><a href="Crumb.html">Crumb</a></li>' +
         '<li><a href="Dialog.html">Dialog</a></li>' +
@@ -109,8 +109,8 @@ $(function () {
     $('#navigator').html(navItems);
 
     $('.example').each(function (index, item) {
-        var $sample = $('<pre class="source source-markup"><code class="language-markup"></code></pre>');
-        var $code = $sample.find('.language-markup');
+        var $sample = $('<pre class="source source-markup prettyprint"><code class="language-html"></code></pre>');
+        var $code = $sample.find('.language-html');
         var $item = $(item);
         $sample.insertAfter($item);
 
@@ -124,8 +124,9 @@ $(function () {
         }
         $code.text(targetArr.join('\n'));
     });
-    Prism.highlightAll();
-});
+    prettyPrint();
+}
+
 var ready = (function () {
     var list = [];
     return function (callback) {
@@ -142,3 +143,12 @@ var ready = (function () {
         }
     }
 }());
+
+function writeScript(url) {
+    var gaJsHost = (("https:" == document.location.protocol) ?
+        "https://" : "http://");
+    document.write(unescape("%3Cscript src='" + gaJsHost + url +
+        "' type='text/javascript'%3E%3C/script%3E"));
+}
+
+

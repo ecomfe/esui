@@ -13,33 +13,16 @@ define(
         var paint = require('./painters');
         var Control = require('./Control');
 
-        /**
-         * 按钮控件
-         *
-         * @extends Control
-         * @constructor
-         */
-        function Button(options) {
-            Control.apply(this, arguments);
-        }
-
-        /**
-         * 获取元素border信息
-         *
-         * @param {HTMLElement} dom 目标元素
-         * @return {Object}
-         * @ignore
-         */
-        function getBorderInfo(dom) {
-            var result = {};
-            result.borderTop =
-                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
-            result.borderBottom =
-                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
-            return result;
-        }
-
-        Button.prototype = {
+        var exports = {
+            /**
+             * 按钮控件
+             *
+             * @extends Control
+             * @constructor
+             */
+            constructor: function () {
+                this.$super(arguments);
+            },
             /**
              * 控件类型，始终为`"Button"`
              *
@@ -48,7 +31,6 @@ define(
              * @override
              */
             type: 'Button',
-
             /**
              * 初始化参数
              *
@@ -167,18 +149,33 @@ define(
                     }
                 }
             ),
-
             /**
              * 设置内容
              *
              * @param {string} content 要设置的内容
              */
             setContent: function (content) {
-                this.setProperties({ 'content': content });
+                this.setProperties({'content': content});
             }
         };
 
-        lib.inherits(Button, Control);
+        /**
+         * 获取元素border信息
+         *
+         * @param {HTMLElement} dom 目标元素
+         * @return {Object}
+         * @ignore
+         */
+        function getBorderInfo(dom) {
+            var result = {};
+            result.borderTop =
+                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
+            result.borderBottom =
+                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
+            return result;
+        }
+
+        var Button = require('eoo').create(Control, exports);
         require('./main').register(Button);
 
         return Button;

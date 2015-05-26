@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Tree - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Tree - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
 <body>
     <h1 id="branding">ESUI - Tree</h1>
     <div id="page">
@@ -21,10 +20,10 @@
         </ul>
         <div id="main">
             <h2>Tree</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>默认样式</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -41,7 +40,7 @@
                     <h3>checkbox</h3>
                     <div id="container5"></div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -94,6 +93,7 @@
                 tree5.appendTo(document.getElementById('container5'));
             }
         );
+        copyExample();
     </script>
 </body>
 </html>

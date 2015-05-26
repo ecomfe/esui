@@ -4,15 +4,14 @@
     <meta charset="utf-8" />
     <title>TextBox - ESUI Demo</title>
     <script src="assets/loader/esl.js"></script>
-    
     <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script src="demo.js"></script>
     <link rel="stylesheet" href="assets/themes/standard.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="assets/ie8.css" />
+    <![endif]-->
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
 </head>
 <body>
     <h1 id="branding">ESUI - TextBox</h1>
@@ -20,42 +19,44 @@
         <ul id="navigator"></ul>
         <div id="main">
             <h2>多种模式</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>文本框有3种模式：文本、密码、多行。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>文本框</h3>
                     <div class="row">
-                        <input
+                        <div
+                            class="ui-textbox"
                             data-ui-id="text-box-normal"
-                            data-ui-type="TextBox"
-                            data-ui-mode="text" />
+                            data-ui-type="TextBox">
+                            <input />
+                        </div>
                     </div>
                     <h3>密码框</h3>
                     <div class="row">
-                        <input 
-                            data-ui-id="text-box-password"
-                            data-ui-type="TextBox"
-                            data-ui-mode="password" />
+                        <div class="ui-textbox" data-ui-id="text-box-password"
+                            data-ui-type="TextBox"> 
+                            <input type="password" />
+                        </div>
                     </div>
                     <h3>多行文本框</h3>
                     <div class="row">
-                        <textarea id="text-box-textarea"
-                            data-ui-id="text-box-textarea"
-                            data-ui-type="TextBox"
-                            data-ui-mode="textarea"></textarea>
+                        <div class="ui-textbox" data-ui-id="text-box-textarea"
+                            data-ui-type="TextBox">
+                            <textarea></textarea>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>前后缀提示</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>使用<code>hint</code>和<code>hintType</code>属性灵活定义前后缀式的提示信息。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -75,12 +76,12 @@
                             data-ui-hint-type="suffix" />
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>输入提示</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>使用<code>placeholder</code>属性为文本框加上输入提示信息。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -91,12 +92,12 @@
                         data-ui-type="TextBox"
                         data-ui-mode="text" />
                 </div>
-            </section>
+            </div>
             <h2>输入监听</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>使用<code>input</code>事件监听输入的内容。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                     <li class="view-script">脚本</li>
@@ -151,12 +152,12 @@ textbox.on(
         }
     }
 );</code></pre>
-            </section>
+            </div>
             <h2>状态</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>显示验证信息。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -220,20 +221,20 @@ textbox.on(
                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>图标</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>Textbox图标。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
                 <div class="example ui-demo-light-stage">
-                    <h3>前置<small class="ui-text-danger">为啥没有Placeholder</small></h3>
+                    <h3>前置</h3>
                     <div class="row">
                         <div
-                            placeholder="使用placeholder属性"
+                            data-ui-placeholder="使用placeholder属性"
                             data-ui-type="TextBox"
                             data-ui-mode="text"
                             data-ui-icon="ui-icon-weibo"
@@ -244,7 +245,7 @@ textbox.on(
                     <h3>后置</h3>
                     <div class="row">
                         <input 
-                        placeholder="使用placeholder属性"
+                        data-ui-placeholder="使用placeholder属性"
                         data-ui-type="TextBox"
                         data-ui-mode="text"
                         data-ui-icon="ui-icon-weibo"
@@ -252,7 +253,7 @@ textbox.on(
                         />
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -264,12 +265,10 @@ textbox.on(
             function (ui) {
                 ui.init();
                 ui.get('text-box-with-invalid').showValidationMessage('invalid', '不能为空！');
-                ui.get('text-box-with-input-after').on('iconclick', function (e) {
-                    alert('hello');
-                });
                 ready();
             }
         );
+        copyExample();
     </script>
 </body>
 </html>

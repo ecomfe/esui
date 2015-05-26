@@ -4,15 +4,14 @@
         <meta charset="UTF-8" />
         <title>SearchBox - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
         <h1 id="branding">ESUI - SearchBox</h1>
@@ -21,10 +20,10 @@
             </ul>
             <div id="main">
                 <h2>SearchBox</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>normal模式的SearchBox：回车或点击搜索按钮时触发搜索</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -46,24 +45,24 @@
                             <div data-ui-type="SearchBox" data-ui-button-position="right" data-ui-button-variants="text-border icon" data-ui-width="200"></div>
                         </div>
                     </div>
-                </section>
+                </div>
                 <h2>即时搜索模式</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>instant模式的SearchBox：搜索框内容变化时触发搜索</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
                         <div data-ui-type="SearchBox" data-ui-id="instant-search" data-ui-search-mode="instant"></div>
                     </div>
-                </section>
+                </div>
                 <h2>状态</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>disabled状态的SearchBox</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -75,12 +74,12 @@
                         <h3>Read Only</h3>
                         <div data-ui-type="SearchBox" data-ui-text="text" data-ui-search-mode="instant" data-ui-read-only="true"></div>
                     </div>
-                </section>
+                </div>
                 <h2>Placeholder</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>placeholder</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -90,31 +89,31 @@
                     <div class="example ui-demo-light-stage">
                         <div data-ui-type="SearchBox" data-ui-search-mode="instant" data-ui-placeholder="小浣熊干脆面"></div>
                     </div>
-                </section>
+                </div>
                 <h2>缺省值</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>带默认搜索关键词</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
                         <div data-ui-type="SearchBox" data-ui-text="世界上最长的河流"></div>
                     </div>
-                </section>
+                </div>
                 <h2>Block</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>不设置宽度即为Block模式</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
                     <div class="example ui-demo-light-stage">
                         <div data-ui-type="SearchBox" data-ui-text="Full Width"></div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
         <script>
@@ -130,7 +129,8 @@
                 var instantSearch = ui.get('instant-search');
                 instantSearch.on('search', function (e){console.log(e.target.getValue());})
             }
-        )
+        );
+        copyExample();
         </script>
     </body>
 </html>
