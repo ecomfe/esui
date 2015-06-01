@@ -172,14 +172,20 @@
 }
 
 // 不可用状态
-.@{ui-class-prefix}-schedule.@{ui-state-prefix}-disabled .@{ui-class-prefix}-schedule-time,
-.@{ui-class-prefix}-schedule.@{ui-state-prefix}-disabled .@{ui-class-prefix}-schedule-shortcut-item {
-    cursor: not-allowed;
+.@{ui-class-prefix}-schedule.@{ui-state-prefix}-disabled {
+    .@{ui-class-prefix}-schedule-time,
+    .@{ui-class-prefix}-schedule-shortcut-item {
+        cursor: not-allowed;
+    }
 }
 
 // 只读
 .@{ui-class-prefix}-schedule.@{ui-state-prefix}-read-only {
     .esui-schedule-read-only-theme();
+    .@{ui-class-prefix}-schedule-time,
+    .@{ui-class-prefix}-schedule-shortcut-item {
+        cursor: default;
+    }
 }
 
 .esui-schedule-theme() {}

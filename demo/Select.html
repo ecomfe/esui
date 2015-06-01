@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8"/>
-    <title>Select - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-</head>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Select - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
 <body>
     <h1 id="branding">ESUI - Select</h1>
     <div id="page">
@@ -21,10 +20,10 @@
         </ul>
         <div id="main">
             <h2>缺省样式</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>把标准的Select变成一个自定义的下拉列表。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -79,12 +78,12 @@
                         </select>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>状态</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>支持的状态。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -157,12 +156,12 @@
                         </select>
                     </div>
                 </div>
-            </section>
+            </div>
             <h2>文本框组合</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>支持的状态。</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -203,7 +202,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -220,7 +219,8 @@
                 select = ui.get('error-primary');
                 select.showValidationMessage('invalid', 'There is an error.');
             }
-        )
+        );
+        copyExample();
     </script>
 </body>
 </html>
