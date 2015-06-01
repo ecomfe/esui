@@ -27,6 +27,71 @@ define(
          * options属性参考defaultProperties
          */
         exports.constructor = function (options) {
+            options = u.extend(
+                {
+                    // 是否添加`prefix-draggable`
+                    // 如果可拖拽元素过多，处于性能考虑，可以设为false
+                    addClasses: true,
+                    // 如果helper不在文档中，为其指定父元素
+                    appendTo: 'parent',
+                    // 元素只能在一个方向移动，x / y
+                    axis: false,
+                    connectToSortable: false,
+                    // 拖拽范围
+                    containment: false,
+                    // 鼠标的css值
+                    cursor: 'auto',
+                    // helper和鼠标的偏移
+                    cursorAt: false,
+                    // 限定按指定步长移动
+                    grid: false,
+                    // 拖拽手柄
+                    handle: false,
+                    // 指定helper为element还是重新clone一个
+                    helper: 'original',
+                    iframeFix: false,
+                    // 拖拽过程中helper透明度
+                    opacity: false,
+                    refreshPositions: false,
+                    /**
+                     * 拖拽结束后是否回到起点
+                     * 如果是string，可取`invalid` / `valid`,即如果没有放到droppable上，则回到起点
+                     * @type {boolean|Function|string}
+                     */
+                    revert: false,
+                    /**
+                     * revert动画时间, false则不使用动画
+                     * @type {number|boolean}
+                     */
+                    revertDuration: 500,
+
+                    scope: 'default',
+                    // 拖拽时元素溢出时父元素滚动条自动滚动
+                    scroll: true,
+                    // 距离多少时触发滚动
+                    scrollSensitivity: 20,
+                    // 滚动速度
+                    scrollSpeed: 20,
+                    // 接近边缘时吸附, `false` / `selector`
+                    snap: false,
+                    // 吸附到哪一边, 可取`inner` / `outer` / `both`
+                    snapMode: 'both',
+                    // 吸附的阈值
+                    snapTolerance: 20,
+                    // 对一类元素进行分组，总是当前拖拽的元素在最上方
+                    // 类似操作系统的窗口
+                    stack: false,
+                    // 拖拽过程中helper的z-index
+                    zIndex: false,
+
+                    // callbacks
+                    drag: null,
+                    start: null,
+                    stop: null
+                },
+                options
+            );
+
             this.$super(arguments);
 
             this.customEventPrefix = 'drag';
@@ -799,73 +864,6 @@ define(
         }
 
         var Draggable = require('eoo').create(Mouse, exports);
-
-        Draggable.defaultProperties = {
-            // 是否添加`prefix-draggable`
-            // 如果可拖拽元素过多，处于性能考虑，可以设为false
-            addClasses: true,
-            // 如果helper不在文档中，为其指定父元素
-            appendTo: 'parent',
-            // 元素只能在一个方向移动，x / y
-            axis: false,
-            connectToSortable: false,
-            // 拖拽范围
-            containment: false,
-            // 鼠标的css值
-            cursor: 'auto',
-            // helper和鼠标的偏移
-            cursorAt: false,
-            // 限定按指定步长移动
-            grid: false,
-            // 拖拽手柄
-            handle: false,
-            // 指定helper为element还是重新clone一个
-            helper: 'original',
-            iframeFix: false,
-            // 拖拽过程中helper透明度
-            opacity: false,
-            refreshPositions: false,
-            /**
-             * 拖拽结束后是否回到起点
-             * 如果是string，可取`invalid` / `valid`,即如果没有放到droppable上，则回到起点
-             * @type {boolean|Function|string}
-             */
-            revert: false,
-            /**
-             * revert动画时间, false则不使用动画
-             * @type {number|boolean}
-             */
-            revertDuration: 500,
-
-            scope: 'default',
-            // 拖拽时元素溢出时父元素滚动条自动滚动
-            scroll: true,
-            // 距离多少时触发滚动
-            scrollSensitivity: 20,
-            // 滚动速度
-            scrollSpeed: 20,
-            // 接近边缘时吸附, `false` / `selector`
-            snap: false,
-            // 吸附到哪一边, 可取`inner` / `outer` / `both`
-            snapMode: 'both',
-            // 吸附的阈值
-            snapTolerance: 20,
-            // 对一类元素进行分组，总是当前拖拽的元素在最上方
-            // 类似操作系统的窗口
-            stack: false,
-            // 拖拽过程中helper的z-index
-            zIndex: false,
-
-            // callbacks
-            drag: null,
-            start: null,
-            stop: null
-        };
-
-        u.extend(
-            Draggable.defaultProperties,
-            Mouse.defaultProperties
-        );
 
         require('./bridge')('draggable', Draggable);
 

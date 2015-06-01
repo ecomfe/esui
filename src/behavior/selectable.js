@@ -18,6 +18,24 @@ define(
         exports.type = 'selectable';
 
         exports.constructor = function (options, element) {
+            options = u.extend(
+                {
+                    appendTo: 'body',
+                    autoRefresh: true,
+                    distance: 0,
+                    filter: '*',
+                    tolerance: 'touch',
+
+                    // callbacks
+                    selected: null,
+                    selecting: null,
+                    start: null,
+                    stop: null,
+                    unselected: null,
+                    unselecting: null
+                },
+                options
+            );
             this.$super(arguments);
         };
 
@@ -284,24 +302,6 @@ define(
 
 
         var Selectable = require('eoo').create(Mouse, exports);
-
-        var defaultProperties = {
-            appendTo: 'body',
-            autoRefresh: true,
-            distance: 0,
-            filter: '*',
-            tolerance: 'touch',
-
-            // callbacks
-            selected: null,
-            selecting: null,
-            start: null,
-            stop: null,
-            unselected: null,
-            unselecting: null
-        };
-
-        Selectable.defaultProperties = u.extend({}, Mouse.defaultProperties, defaultProperties);
 
         require('./bridge')('selectable', Selectable);
 

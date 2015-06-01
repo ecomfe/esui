@@ -63,11 +63,12 @@ define(
                         options = $.extend.apply(null, [options].concat(args));
                     }
 
+                    options = options || {};
                     this.each(
                         function () {
                             var instance = $.data(this, fullName);
                             if (instance) {
-                                instance.setOptions(options || {});
+                                instance.setOptions(options);
                                 if (instance.init) {
                                     instance.init();
                                 }

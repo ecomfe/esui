@@ -11,7 +11,6 @@ define(
     function (require) {
 
         var $ = require('jquery');
-        var lib = require('esui/lib');
         var u = require('underscore');
         var config = require('./config');
 
@@ -29,11 +28,7 @@ define(
          */
         exports.constructor = function (options, element) {
             this.$super(arguments);
-            if (!u.isObject(options)) {
-                element = options;
-                options = {};
-            }
-            this.options = lib.extend({}, this.$self.defaultProperties, options);
+            this.options = u.extend({}, options);
 
             this.customEventPrefix = 'base';
             this.eventNamespace = '.' + this.type + $.guid++;
@@ -100,7 +95,7 @@ define(
         exports.on = function(suppressDisabledCheck, element, handlers) {
 
             // 未指定suppressDisabledCheck
-            if (typeof suppressDisabledCheck !== "boolean") {
+            if (typeof suppressDisabledCheck !== 'boolean') {
                 handlers = element;
                 element = suppressDisabledCheck;
                 suppressDisabledCheck = false;
@@ -123,17 +118,15 @@ define(
 
                     function handlerProxy() {
                         // 允许子元素自行决定在disabled状态时是否响应事件
-                        if (!suppressDisabledCheck
-                            && (me.options.disabled === true || $(this).hasClass("ui-state-disabled"))
-                       ) {
+                        if (!suppressDisabledCheck && (me.options.disabled === true)) {
                             return;
                         }
-                        handler = typeof handler === "string" ? me[handler] : handler;
+                        handler = typeof handler === 'string' ? me[handler] : handler;
                         return handler.apply(me, arguments);
                     }
 
                     // 复制guid,方便unbind
-                    if (typeof handler !== "string") {
+                    if (typeof handler !== 'string') {
                         handlerProxy.guid = handler.guid =
                             handler.guid || handlerProxy.guid || $.guid++;
                     }
@@ -142,16 +135,16 @@ define(
                     var match = event.match(/^([\w:-]*)\s*(.*)$/);
                     var eventName = match[1] + me.eventNamespace;
                     var selector = match[2];
-                    if (selector) {
-                        element.delegate(selector, eventName, handlerProxy);
-                    }
-                    else {
-                        element.bind(eventName, handlerProxy);
-                    }
+                    element.on(eventName, selector, handlerProxy);
                 }
            );
         };
 
+        /**
+         * 获取带前缀的class
+         * @param {string} styleType class名称
+         * @return {string}
+         */
         exports.getClassName = function (styleType) {
             if (!styleType) {
                 return this.classPrefix;
@@ -164,6 +157,11 @@ define(
             return className;
         };
 
+        /**
+         * 为元素添加className
+         * @param {Element|string} element $元素
+         * @param {string} className class名称
+         */
         exports.addClass = function (element, className) {
             var args = u.toArray(arguments);
             this.toggleClass.apply(this, args.concat([true]));
@@ -209,12 +207,30 @@ define(
             return this.setOptions({disabled: true});
         };
 
-        var Base = require('eoo').create(exports);
+        exports.destroy = function() {
+            var me = this;
 
-        /**
-         * 默认属性
-         */
-        Base.defaultProperties = {};
+            u.each(
+                this.classesElementLookup,
+                function(key, value) {
+                    me.removeClass(value, key);
+                }
+            );
+
+            // we can probably remove the unbind calls in 2.0
+            // all event bindings should go through this._on()
+            this.element
+                .unbind( this.eventNamespace )
+                .removeData( this.widgetFullName );
+            this.widget()
+                .unbind( this.eventNamespace )
+                .removeAttr( "aria-disabled" );
+
+            // clean up events and states
+            this.bindings.unbind( this.eventNamespace );
+        };
+
+        var Base = require('eoo').create(exports);
 
         return Base;
     }

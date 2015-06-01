@@ -4,16 +4,19 @@
     <meta charset="UTF-8"/>
     <title>Selectable - ESUI Demo</title>
     <script src="assets/loader/esl.js"></script>
-    
     <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script src="demo.js"></script>
+    <link rel="stylesheet" href="assets/themes/standard.css" />
     <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
+    <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.less" />
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <style>
+    .ui-selectable-helper {
+        position: relative;
+        border: 1px dotted gray;
+    }
     .ui-widget-content {
       border: 1px solid #aaaaaa;
       color: #222222;
@@ -84,19 +87,17 @@
                     'esui/behavior/selectable'
                 ],
                 function (selectable) {
-                    new selectable(/*{
-                        start: function (d) {alert(d)}
-                    }, */'#selectable');
+                    $('#selectable').selectable();
 
-                    new selectable({
-                        stop: function (d) {
-                            var result = $( "#items" ).empty();
-                            $( ".ui-selected", this.element ).each(function() {
-                              var index = $( "#selectable-list li" ).index( this );
-                              result.append( " #" + ( index + 1 ) );
-                            });
-                        }
-                    }, '#selectable-list');
+                    // new selectable({
+                    //     stop: function (d) {
+                    //         var result = $( "#items" ).empty();
+                    //         $( ".ui-selected", this.element ).each(function() {
+                    //           var index = $( "#selectable-list li" ).index( this );
+                    //           result.append( " #" + ( index + 1 ) );
+                    //         });
+                    //     }
+                    // }, '#selectable-list');
                 }
         )
     </script>

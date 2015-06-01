@@ -58,8 +58,20 @@ define(
          * @param {Object} options
          * options属性参考defaultProperties
          */
-        exports.constructor = function (options) {
-            this.$super(arguments);
+        exports.constructor = function (options, element) {
+            options = u.extend(
+                {
+                    // 不触发元素
+                    cancel: 'input, textarea, button, select, option',
+                    // 鼠标移动距离阈值，大于该值才触发
+                    distance: 1,
+                    // 移动延时
+                    delay: 0
+                },
+                options
+            );
+
+            this.$super([options, element]);
 
             // 记录上一次mousedown事件对象
             this.mouseDownEvent = null;
@@ -144,7 +156,6 @@ define(
             }
 
             if (mouseDistanceMet.call(this, event) && mouseDelayMet.call(this, event)) {
-                console.log('start')
                 this.mouseStarted = this.mouseStart(event);
                 if (!this.mouseStarted) {
                     event.preventDefault();
@@ -200,7 +211,6 @@ define(
                 this.mouseDrag(event);
                 return event.preventDefault();
             }
-
             if (mouseDistanceMet.call(this, event) && mouseDelayMet.call(this, event)) {
                 // TODO: 是否要传mouseDownEvent
                 this.mouseStarted = this.mouseStart(event);
@@ -312,12 +322,6 @@ define(
         var Mouse = require('eoo').create(Base, exports);
 
         Mouse.defaultProperties = {
-            // 不触发元素
-            cancel: 'input, textarea, button, select, option',
-            // 鼠标移动距离阈值，大于该值才触发
-            distance: 1,
-            // 移动延时
-            delay: 0
         };
 
         require('./bridge')('mouse', Mouse);

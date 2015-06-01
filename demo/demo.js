@@ -48,7 +48,7 @@ require.config({
         {
             'name': 'jquery',
             'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery.min'
+            'main': 'jquery'
         }
     ]
 });
@@ -150,5 +150,3 @@ function writeScript(url) {
     document.write(unescape("%3Cscript src='" + gaJsHost + url +
         "' type='text/javascript'%3E%3C/script%3E"));
 }
-
-

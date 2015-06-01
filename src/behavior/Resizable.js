@@ -26,6 +26,36 @@ define(
          * options属性参考defaultProperties
          */
         exports.constructor = function (options) {
+            options = u.extend(
+                {
+                    alsoResize: false,
+                    animate: false,
+                    animateDuration: 'slow',
+                    animateEasing: 'swing',
+                    aspectRatio: false,
+                    autoHide: false,
+                    classes: {
+                        'ui-resizable-se': 'ui-icon ui-icon-gripsmall-diagonal-se'
+                    },
+                    containment: false,
+                    ghost: false,
+                    grid: false,
+                    handles: 'e,s,se',
+                    helper: false,
+                    maxHeight: null,
+                    maxWidth: null,
+                    minHeight: 10,
+                    minWidth: 10,
+                    // See #7960
+                    zIndex: 90,
+
+                    // callbacks
+                    resize: null,
+                    start: null,
+                    stop: null
+                },
+                options
+            );
             this.$super(arguments);
 
             this.customEventPrefix = 'resizable';
@@ -763,34 +793,6 @@ define(
         };
 
         var Resizable = require('eoo').create(Mouse, exports);
-
-        Resizable.defaultProperties = {
-            alsoResize: false,
-            animate: false,
-            animateDuration: 'slow',
-            animateEasing: 'swing',
-            aspectRatio: false,
-            autoHide: false,
-            classes: {
-                'ui-resizable-se': 'ui-icon ui-icon-gripsmall-diagonal-se'
-            },
-            containment: false,
-            ghost: false,
-            grid: false,
-            handles: 'e,s,se',
-            helper: false,
-            maxHeight: null,
-            maxWidth: null,
-            minHeight: 10,
-            minWidth: 10,
-            // See #7960
-            zIndex: 90,
-
-            // callbacks
-            resize: null,
-            start: null,
-            stop: null
-        };
 
         require('./bridge')('resizable', Resizable);
 
