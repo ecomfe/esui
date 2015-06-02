@@ -82,8 +82,7 @@ define(
             return !(
                 $.isFunction(callback)
                 && callback.apply(this.element[0], [event].concat(data)) === false
-                || event.isDefaultPrevented()
-           );
+            );
         };
 
         /**
