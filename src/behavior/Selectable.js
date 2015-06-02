@@ -42,7 +42,7 @@ define(
         exports.init = function () {
             this.$super(arguments);
 
-            this.element.addClass('ui-selectable');
+            this.addClass();
 
             this.dragged = false;
 
