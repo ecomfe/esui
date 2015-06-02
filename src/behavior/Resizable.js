@@ -297,7 +297,7 @@ define(
             this.$super(arguments);
         };
 
-        exports.destroy = function() {
+        exports.dispose = function() {
 
             this._mouseDestroy();
 
@@ -789,7 +789,8 @@ define(
         /**
          * 销毁
          */
-        exports.destroy = function () {
+        exports.dispose = function () {
+            this.$super(arguments);
         };
 
         var Resizable = require('eoo').create(Mouse, exports);

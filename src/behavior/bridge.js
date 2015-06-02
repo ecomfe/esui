@@ -21,13 +21,12 @@ define(
                 var isMethodCall = typeof options === 'string';
                 var args = Array.prototype.slice.call(arguments, 1);
                 var returnValue = this;
-                var fullName = 'esui-' + name;
 
                 if (isMethodCall) {
                     var method = options;
                     this.each(
                         function () {
-                            var instance = $.data(this, fullName);
+                            var instance = $.data(this, name);
                             if (method === 'instance') {
                                 returnValue = instance;
                                 return false;
@@ -66,7 +65,7 @@ define(
                     options = options || {};
                     this.each(
                         function () {
-                            var instance = $.data(this, fullName);
+                            var instance = $.data(this, name);
                             if (instance) {
                                 instance.setOptions(options);
                                 if (instance.init) {
@@ -74,7 +73,7 @@ define(
                                 }
                             }
                             else {
-                                $.data(this, fullName, new Base(options, this));
+                                $.data(this, name, new Base(options, this));
                             }
                         }
                     );

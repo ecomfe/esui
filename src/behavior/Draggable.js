@@ -119,13 +119,13 @@ define(
         /**
          * 销毁
          */
-        exports.destroy = function () {
-            this.$super(arguments);
+        exports.dispose = function () {
             if ((this.helper || this.element).is('.ui-draggable-dragging')) {
                 this.destroyOnClear = true;
                 return;
             }
             removeHandleClassName.call(this);
+            this.$super(arguments);
         };
 
         /**
@@ -837,7 +837,7 @@ define(
             this.helper = null;
             this.cancelHelperRemoval = false;
             if (this.destroyOnClear) {
-                this.destroy();
+                this.dispose();
             }
         }
 
@@ -865,7 +865,7 @@ define(
 
         var Draggable = require('eoo').create(Mouse, exports);
 
-        require('./bridge')('draggable', Draggable);
+        require('./bridge')(exports.type, Draggable);
 
         return Draggable;
 

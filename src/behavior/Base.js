@@ -207,27 +207,19 @@ define(
             return this.setOptions({disabled: true});
         };
 
-        exports.destroy = function() {
+        exports.dispose = function() {
             var me = this;
 
-            u.each(
-                this.classesElementLookup,
-                function(key, value) {
-                    me.removeClass(value, key);
-                }
-            );
+            // TODO: 考虑自动移除classes
 
             // we can probably remove the unbind calls in 2.0
             // all event bindings should go through this._on()
             this.element
-                .unbind( this.eventNamespace )
-                .removeData( this.widgetFullName );
-            this.widget()
-                .unbind( this.eventNamespace )
-                .removeAttr( "aria-disabled" );
+                .unbind(this.eventNamespace)
+                .removeData(this.type);
 
             // clean up events and states
-            this.bindings.unbind( this.eventNamespace );
+            this.bindings.unbind(this.eventNamespace);
         };
 
         var Base = require('eoo').create(exports);

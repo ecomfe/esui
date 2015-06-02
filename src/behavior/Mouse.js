@@ -112,13 +112,14 @@ define(
         /**
          * 销毁
          */
-        exports.destroy = function () {
+        exports.dispose = function () {
             this.element.unbind('.' + this.type);
             if (this.mouseMoveDelegate) {
                 this.document
                     .unbind('mousemove.' + this.type, this.mouseMoveDelegate)
                     .unbind('mouseup.' + this.type, this.mouseUpDelegate);
             }
+            this.$super(arguments);
         };
 
         /**
@@ -321,10 +322,7 @@ define(
 
         var Mouse = require('eoo').create(Base, exports);
 
-        Mouse.defaultProperties = {
-        };
-
-        require('./bridge')('mouse', Mouse);
+        require('./bridge')(exports.type, Mouse);
 
         return Mouse;
 
