@@ -105,7 +105,7 @@ define(
         Overlay.prototype.repaint = require('./painters').createRepaint(
             Panel.prototype.repaint,
             {
-                name: ['width', 'height'],
+                name: ['height', 'width'],
                 paint: function (overlay, width, height) {
                     if (!isPropertyEmpty(width)) {
                         if (width === 'auto') {
@@ -311,10 +311,20 @@ define(
 
             // 设置class
             if (u.isArray(properties.align)) {
-                lib.addClass(
-                    main,
-                    this.helper.getPartClasses(properties.align.join('-'))
+                // 要先清空之前的class
+                var classList = u.filter(
+                    lib.getClassList(main),
+                    function (classItem) {
+                        return classItem.indexOf('top-') < 0
+                            && classItem.indexOf('bottom-') < 0
+                            && classItem.indexOf('right-') < 0
+                            && classItem.indexOf('left-') < 0;
+                    }
                 );
+
+                classList.push(this.helper.getPartClasses(properties.align.join('-')));
+
+                lib.setAttribute(main, 'className', classList.join(' '));
             }
 
             properties = u.omit(properties, 'align');
@@ -619,13 +629,36 @@ define(
                 properties.align.push('right');
             }
 
-            // 用户配置可用
-            // 如果用户配置的是居中，那么就居中
+            // 如果用户配置的是居中，要判断一下是否可以居中
             if (preference[1] === 'center') {
-                properties.top = positionConfig.center;
-                properties.align.push('center');
+                var topIsOk = 1;
+                var bottomIsOk = 1;
+                // 某一边不行
+                if (positionConfig.center < 0) {
+                    topIsOk = -1;
+                }
+
+                if (options.page.height - positionConfig.center - options.layer.height < 0) {
+                    bottomIsOk = -1;
+                }
+
+                // 两边都不行或者都行，继续center
+                if (topIsOk * bottomIsOk === 1) {
+                    properties.top = positionConfig.center;
+                    properties.align.push('center');
+
+                    return properties;
+                }
+                // 有一个不行，就改成相反的方向偏移
+                else if (topIsOk) {
+                    preference[1] = 'bottom';
+                }
+                else {
+                    preference[1] = 'top';
+                }
             }
-            else if (validConfig[preference[1]] === true) {
+
+            if (validConfig[preference[1]] === true) {
                 properties.top = positionConfig[preference[1]];
                 properties.align.push(preference[1]);
             }
@@ -746,13 +779,37 @@ define(
                 properties.align.push('bottom');
             }
 
-            // 用户配置可用
-            // 如果用户配置的是居中，那么就居中
+            // 如果用户配置的是居中，要判断一下是否可以居中
             if (preference[1] === 'center') {
-                properties.left = positionConfig.center;
-                properties.align.push('center');
+                var leftIsOk = 1;
+                var rightIsOk = 1;
+                // 某一边不行
+                if (positionConfig.center < 0) {
+                    leftIsOk = -1;
+                }
+
+                if (options.page.width - positionConfig.center - options.layer.width < 0) {
+                    rightIsOk = -1;
+                }
+
+                // 两边都不行或者都行，继续center
+                if (leftIsOk * rightIsOk === 1) {
+                    properties.left = positionConfig.center;
+                    properties.align.push('center');
+
+                    return properties;
+                }
+                // 有一个不行，就改成相反的方向偏移
+                else if (leftIsOk) {
+                    preference[1] = 'right';
+                }
+                else {
+                    preference[1] = 'left';
+                }
             }
-            else if (validConfig[preference[1]] === true) {
+
+            // 用户配置可用
+            if (validConfig[preference[1]] === true) {
                 properties.left = positionConfig[preference[1]];
                 properties.align.push(preference[1]);
             }
@@ -791,7 +848,6 @@ define(
             if (this.helper.isInStage('DISPOSED')) {
                 return;
             }
-
             // 移除mask
             lib.removeNode('ctrl-mask-' + this.helper.getId());
             // 移除dom
