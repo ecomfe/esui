@@ -259,7 +259,6 @@ define(
                 }
             }
 
-            // TODO: make renderAxis a prototype function
             renderAxis.call(this, this.element);
 
             this._handles = this._handles.add(
