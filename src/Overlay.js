@@ -315,10 +315,7 @@ define(
                 var classList = u.filter(
                     lib.getClassList(main),
                     function (classItem) {
-                        return classItem.indexOf('top-') < 0
-                            && classItem.indexOf('bottom-') < 0
-                            && classItem.indexOf('right-') < 0
-                            && classItem.indexOf('left-') < 0;
+                        return !classItem.match(/top-|bottom-|right-|left-/);
                     }
                 );
 
