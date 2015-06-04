@@ -145,15 +145,23 @@ define(
          * @return {string}
          */
         exports.getClassName = function (styleType) {
+            var me = this;
             if (!styleType) {
                 return this.classPrefix;
             }
-            else if (styleType.indexOf(this.classPrefix) === 0) {
-                return styleType;
-            }
             var options = this.options;
-            var className = options[styleType + 'Class'] || [this.classPrefix, styleType].join('-');
-            return className;
+            styleType = styleType.split(/\s+/g);
+            var classes = [];
+            u.each(
+                styleType,
+                function (type) {
+                    if (type.indexOf(me.classPrefix) === 0) {
+                        return type;
+                    }
+                    classes.push(options[type + 'Class'] || [me.classPrefix, type].join('-'));
+                }
+            );
+            return classes.join(' ');
         };
 
         /**

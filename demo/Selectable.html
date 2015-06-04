@@ -7,16 +7,12 @@
     <script src="assets/jquery-1.9.1.min.js"></script>
     <script src="assets/google-code-prettify/prettify.js"></script>
     <script src="demo.js"></script>
-    <link rel="stylesheet" href="assets/themes/standard.css" />
+    <link rel="stylesheet" href="assets/themes/standard.less" />
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
     <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <style>
-    .ui-selectable-helper {
-        position: relative;
-        border: 1px dotted gray;
-    }
     .ui-widget-content {
       border: 1px solid #aaaaaa;
       color: #222222;
@@ -63,11 +59,6 @@
                         <li class="ui-state-default">12</li>
                     </ol>
 
-                    <div>
-                        <span>selected items: </span>
-                        <span id="items"></span>
-                    </div>
-
                     <ol id="selectable-list">
                         <li class="ui-widget-content">Item 1</li>
                         <li class="ui-widget-content">Item 2</li>
@@ -77,6 +68,11 @@
                         <li class="ui-widget-content">Item 6</li>
                         <li class="ui-widget-content">Item 7</li>
                     </ol>
+                    <div>
+                        <span>selected items: </span>
+                        <span id="items"></span>
+                    </div>
+
                 </div>
             </section>
         </div>
@@ -89,15 +85,17 @@
                 function (selectable) {
                     $('#selectable').selectable();
 
-                    // new selectable({
-                    //     stop: function (d) {
-                    //         var result = $( "#items" ).empty();
-                    //         $( ".ui-selected", this.element ).each(function() {
-                    //           var index = $( "#selectable-list li" ).index( this );
-                    //           result.append( " #" + ( index + 1 ) );
-                    //         });
-                    //     }
-                    // }, '#selectable-list');
+                    $('#selectable-list').selectable(
+                        {
+                            stop: function (d) {
+                                var result = $( "#items" ).empty();
+                                $( ".ui-selected", this.element ).each(function() {
+                                  var index = $( "#selectable-list li" ).index( this );
+                                  result.append( " #" + ( index + 1 ) );
+                                });
+                            }
+                        }
+                    );
                 }
         )
     </script>

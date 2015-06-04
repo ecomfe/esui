@@ -28,25 +28,30 @@ define(
         exports.constructor = function (options) {
             options = u.extend(
                 {
+                    // 跟随当前元素进行缩放
                     alsoResize: false,
+                    // 动画效果
                     animate: false,
                     animateDuration: 'slow',
                     animateEasing: 'swing',
+                    // 按固定比例进行缩放
                     aspectRatio: false,
+                    // handler是否自动隐藏
                     autoHide: false,
-                    classes: {
-                        'ui-resizable-se': 'ui-icon ui-icon-gripsmall-diagonal-se'
-                    },
+                    // 缩放区域
                     containment: false,
-                    ghost: false,
+                    // 按固定步长缩放
                     grid: false,
+                    // handle位置
                     handles: 'e,s,se',
+                    // 跟随鼠标缩放的元素，缩放完成后，再变换原始元素
                     helper: false,
+                    // 长宽限制
                     maxHeight: null,
                     maxWidth: null,
                     minHeight: 10,
                     minWidth: 10,
-                    // See #7960
+                    // handle zIndex
                     zIndex: 90,
 
                     // callbacks
@@ -61,29 +66,36 @@ define(
             this.customEventPrefix = 'resizable';
         };
 
+        /**
+         * 取整
+         * @param {string} value 要取整的值
+         * @return {number}
+         */
         function num(value) {
             return parseInt(value, 10) || 0;
         }
 
-        function hasScroll(el, a) {
+        /**
+         * 元素是否允许滚动条
+         * @param {element} element 元素
+         * @param {string=} leftOrTop 横向还是纵向
+         * @return {boolean}
+         */
+        function hasScroll(element, leftOrTop) {
 
-            if ($(el).css('overflow') === 'hidden') {
+            if ($(element).css('overflow') === 'hidden') {
                 return false;
             }
 
-            var scroll = (a && a === 'left') ? 'scrollLeft' : 'scrollTop',
-                has = false;
-
-            if (el[scroll] > 0) {
+            var scroll = (leftOrTop && leftOrTop === 'left') ? 'scrollLeft' : 'scrollTop';
+            if (element[scroll] > 0) {
                 return true;
             }
 
-            // TODO: determine which cases actually cause this to happen
-            // if the element doesn't have the scroll set, see if it's possible to
-            // set the scroll
-            el[scroll] = 1;
-            has = (el[scroll] > 0);
-            el[scroll] = 0;
+            var has = false;
+            element[scroll] = 1;
+            has = (element[scroll] > 0);
+            element[scroll] = 0;
             return has;
         }
 
@@ -99,16 +111,16 @@ define(
             u.extend(
                 this,
                 {
-                    _aspectRatio: !!(options.aspectRatio),
+                    isAspectRatio: !!(options.aspectRatio),
                     aspectRatio: options.aspectRatio,
                     originalElement: this.element,
-                    _proportionallyResizeElements: [],
-                    _helper: options.helper || options.ghost || options.animate
+                    proportionallyResizeElements: [],
+                    oHelper: options.helper || options.animate
                         ? options.helper || 'ui-resizable-helper' : null
                 }
             );
 
-            // Wrap the element if it cannot hold child nodes
+            // 如果元素不能包裹子元素，则在外层加一个wrapper
             if (this.element[0].nodeName.match(/^(canvas|textarea|input|select|button|img)$/i)) {
 
                 this.element.wrap(
@@ -152,7 +164,7 @@ define(
                 this.originalResizeStyle = originalElement.css('resize');
                 originalElement.css('resize', 'none');
 
-                this._proportionallyResizeElements.push(
+                this.proportionallyResizeElements.push(
                     originalElement.css(
                         {
                             position: 'static',
@@ -195,7 +207,7 @@ define(
                 for (var i = 0; i < handles.length; i++) {
 
                     var handle = $.trim(handles[i]);
-                    axis = $('<div>');
+                    var axis = $('<div>');
                     this.addClass(axis, 'handle');
                     this.addClass(axis, this.getClassName(handle));
 
@@ -209,13 +221,11 @@ define(
 
             function renderAxis(target) {
 
-                var padPos, padWrapper;
-
                 target = target || this.element;
 
-                for (i in this.handles) {
+                for (var i in this.handles) {
 
-                    if (this.handles[i].constructor === String) {
+                    if (u.isString(this.handles[i])) {
                         this.handles[i] = this.element.children(this.handles[i]).first().show();
                     }
                     else if (this.handles[i].jquery || this.handles[i].nodeType) {
@@ -223,18 +233,19 @@ define(
                         this.on(
                             this.handles[i],
                             {
-                                'mousedown': me.mouseDown
+                                mousedown: me.mouseDown
                             }
                         );
                     }
 
-                    if (this.elementIsWrapper && this.originalElement[0].nodeName.match(/^(textarea|input|select|button)$/i)) {
+                    if (this.elementIsWrapper
+                        && this.originalElement[0].nodeName.match(/^(textarea|input|select|button)$/i)) {
 
                         var axis = $(this.handles[i], this.element);
 
-                        padWrapper = /sw|ne|nw|se|n|s/.test(i) ? axis.outerHeight() : axis.outerWidth();
+                        var padWrapper = /sw|ne|nw|se|n|s/.test(i) ? axis.outerHeight() : axis.outerWidth();
 
-                        padPos = ['padding',
+                        var padPos = ['padding',
                             /ne|nw|n/.test(i) ? 'Top' :
                             /se|sw|s/.test(i) ? 'Bottom' :
                             /^e$/.test(i) ? 'Right' : 'Left'].join('');
@@ -248,7 +259,6 @@ define(
                 }
             }
 
-            // TODO: make renderAxis a prototype function
             renderAxis.call(this, this.element);
 
             this._handles = this._handles.add(
@@ -257,7 +267,7 @@ define(
             this._handles.disableSelection();
 
             this._handles.mouseover(
-                function() {
+                function () {
                     if (!me.resizing) {
                         var axis;
                         if (this.className) {
@@ -269,21 +279,22 @@ define(
                 }
             );
 
+            // 自动隐藏handle
             if (options.autoHide) {
                 this._handles.hide();
                 this.addClass('autohide');
                 $(this.element)
                     .mouseenter(
-                        function() {
+                        function () {
                             if (options.disabled) {
                                 return;
                             }
-                            me._removeClass('autohide');
+                            me.removeClass('autohide');
                             me._handles.show();
                         }
                     )
                     .mouseleave(
-                        function() {
+                        function () {
                             if (options.disabled) {
                                 return;
                             }
@@ -297,24 +308,21 @@ define(
             this.$super(arguments);
         };
 
-        exports.dispose = function() {
+        exports.dispose = function () {
 
-            this._mouseDestroy();
-
-            var wrapper,
-                _destroy = function(exp) {
-                    $(exp)
-                        .removeData('resizable')
-                        .removeData('ui-resizable')
-                        .unbind('.resizable')
-                        .find('.' + this.getClassName('handle'))
-                        .remove();
-                };
+            var _destroy = function (exp) {
+                $(exp)
+                    .removeData('resizable')
+                    .removeData('ui-resizable')
+                    .unbind('.resizable')
+                    .find('.' + this.getClassName('handle'))
+                    .remove();
+            };
 
             // TODO: Unwrap at same DOM position
             if (this.elementIsWrapper) {
                 _destroy(this.element);
-                wrapper = this.element;
+                var wrapper = this.element;
                 this.originalElement.css({
                     position: wrapper.css('position'),
                     width: wrapper.outerWidth(),
@@ -327,37 +335,35 @@ define(
 
             this.originalElement.css('resize', this.originalResizeStyle);
             _destroy(this.originalElement);
-
-            return this;
+            this.$super(arguments);
         };
 
-        exports.mouseCapture = function(event) {
-            var i, handle,
-                capture = false;
+        exports.mouseCapture = function (event) {
+            var capture = false;
 
-            for (i in this.handles) {
-                handle = $(this.handles[i])[0];
-                if (handle === event.target || $.contains(handle, event.target)) {
-                    capture = true;
+            u.each(
+                this.handles,
+                function (handle) {
+                    handle = $(handle)[0];
+                    if (handle === event.target || $.contains(handle, event.target)) {
+                        capture = true;
+                    }
                 }
-            }
+            );
 
             return !this.options.disabled && capture;
         };
 
-        exports.mouseStart = function(event) {
-
-            var curleft, curtop, cursor,
-                options = this.options,
-                el = this.element;
+        exports.mouseStart = function (event) {
 
             this.resizing = true;
 
             renderProxy.call(this);
 
-            curleft = num.call(this, this.helper.css('left'));
-            curtop = num.call(this, this.helper.css('top'));
+            var curleft = num.call(this, this.helper.css('left'));
+            var curtop = num.call(this, this.helper.css('top'));
 
+            var options = this.options;
             if (options.containment) {
                 curleft += $(options.containment).scrollLeft() || 0;
                 curtop += $(options.containment).scrollTop() || 0;
@@ -366,7 +372,8 @@ define(
             this.offset = this.helper.offset();
             this.position = {left: curleft, top: curtop};
 
-            this.size = this._helper
+            var el = this.element;
+            this.size = this.oHelper
                 ? {
                     width: this.helper.width(),
                     height: this.helper.height()
@@ -376,7 +383,7 @@ define(
                     height: el.height()
                 };
 
-            this.originalSize = this._helper ? {
+            this.originalSize = this.oHelper ? {
                     width: el.outerWidth(),
                     height: el.outerHeight()
                 } : {
@@ -396,66 +403,66 @@ define(
                 options.aspectRatio :
                 ((this.originalSize.width / this.originalSize.height) || 1);
 
-            cursor = $('.ui-resizable-' + this.axis).css('cursor');
+            var cursor = $('.ui-resizable-' + this.axis).css('cursor');
             $('body').css('cursor', cursor === 'auto' ? this.axis + '-resize' : cursor);
 
             this.addClass('resizing');
-            this._propagate('start', event);
+            propagate.call(this, 'start', event);
             return true;
         };
 
         var change = {
-            e: function(event, dx) {
+            e: function (event, dx) {
                 return {width: this.originalSize.width + dx};
             },
-            w: function(event, dx) {
-                var cs = this.originalSize, sp = this.originalPosition;
+            w: function (event, dx) {
+                var cs = this.originalSize;
+                var sp = this.originalPosition;
                 return {left: sp.left + dx, width: cs.width - dx};
             },
-            n: function(event, dx, dy) {
-                var cs = this.originalSize, sp = this.originalPosition;
+            n: function (event, dx, dy) {
+                var cs = this.originalSize;
+                var sp = this.originalPosition;
                 return {top: sp.top + dy, height: cs.height - dy};
             },
-            s: function(event, dx, dy) {
+            s: function (event, dx, dy) {
                 return {height: this.originalSize.height + dy};
             },
-            se: function(event, dx, dy) {
-                return $.extend(this._change.s.apply(this, arguments),
-                    this._change.e.apply(this, [event, dx, dy]));
+            se: function (event, dx, dy) {
+                return $.extend(change.s.apply(this, arguments),
+                    change.e.apply(this, [event, dx, dy]));
             },
-            sw: function(event, dx, dy) {
-                return $.extend(this._change.s.apply(this, arguments),
-                    this._change.w.apply(this, [event, dx, dy]));
+            sw: function (event, dx, dy) {
+                return $.extend(change.s.apply(this, arguments),
+                    change.w.apply(this, [event, dx, dy]));
             },
-            ne: function(event, dx, dy) {
-                return $.extend(this._change.n.apply(this, arguments),
-                    this._change.e.apply(this, [event, dx, dy]));
+            ne: function (event, dx, dy) {
+                return $.extend(change.n.apply(this, arguments),
+                    change.e.apply(this, [event, dx, dy]));
             },
-            nw: function(event, dx, dy) {
-                return $.extend(this._change.n.apply(this, arguments),
-                    this._change.w.apply(this, [event, dx, dy]));
+            nw: function (event, dx, dy) {
+                return $.extend(change.n.apply(this, arguments),
+                    change.w.apply(this, [event, dx, dy]));
             }
         };
 
-        exports.mouseDrag = function(event) {
+        exports.mouseDrag = function (event) {
 
-            var data, props,
-                smp = this.originalMousePosition,
-                a = this.axis,
-                dx = (event.pageX - smp.left) || 0,
-                dy = (event.pageY - smp.top) || 0,
-                trigger = this._change[a];
+            var smp = this.originalMousePosition;
 
             updatePrevProperties.call(this);
 
+            var trigger = change[this.axis];
             if (!trigger) {
                 return false;
             }
 
-            data = trigger.apply(this, [event, dx, dy]);
+            var dx = (event.pageX - smp.left) || 0;
+            var dy = (event.pageY - smp.top) || 0;
+            var data = trigger.apply(this, [event, dx, dy]);
 
             updateVirtualBoundaries.call(this, event.shiftKey);
-            if (this._aspectRatio || event.shiftKey) {
+            if (this.isAspectRatio || event.shiftKey) {
                 data = updateRatio.call(this, data, event);
             }
 
@@ -463,64 +470,63 @@ define(
 
             updateCache.call(this, data);
 
-            this._propagate('resize', event);
+            propagate.call(this, 'resize', event);
 
-            props = applyChanges.call(this);
+            var props = applyChanges.call(this);
 
-            if (!this._helper && this._proportionallyResizeElements.length) {
+            if (!this.oHelper && this.proportionallyResizeElements.length) {
                 proportionallyResize.call(this);
             }
 
             if (!$.isEmptyObject(props)) {
                 updatePrevProperties.call(this);
-                this._trigger('resize', event, this.ui());
+                this.trigger('resize', event, ui.call(this));
                 applyChanges.call(this);
             }
 
             return false;
         };
 
-        exports.mouseStop = function(event) {
+        exports.mouseStop = function (event) {
 
             this.resizing = false;
-            var pr, ista, soffseth, soffsetw, s, left, top,
-                options = this.options, me = this;
+            var me = this;
 
-            if (this._helper) {
+            if (this.oHelper) {
+                var pr = this.proportionallyResizeElements;
+                var ista = pr.length && (/textarea/i).test(pr[0].nodeName);
+                var soffseth = ista && hasScroll(pr[0], 'left') ? 0 : me.sizeDiff.height;
+                var soffsetw = ista ? 0 : me.sizeDiff.width;
 
-                pr = this._proportionallyResizeElements;
-                ista = pr.length && (/textarea/i).test(pr[0].nodeName);
-                soffseth = ista && this._hasScroll(pr[0], 'left') ? 0 : me.sizeDiff.height;
-                soffsetw = ista ? 0 : me.sizeDiff.width;
-
-                s = {
+                var size = {
                     width: (me.helper.width()  - soffsetw),
                     height: (me.helper.height() - soffseth)
                 };
-                left = (parseInt(me.element.css('left'), 10) +
+                var left = (parseInt(me.element.css('left'), 10) +
                     (me.position.left - me.originalPosition.left)) || null;
-                top = (parseInt(me.element.css('top'), 10) +
+                var top = (parseInt(me.element.css('top'), 10) +
                     (me.position.top - me.originalPosition.top)) || null;
 
+                var options = this.options;
                 if (!options.animate) {
-                    this.element.css($.extend(s, {top: top, left: left}));
+                    this.element.css($.extend(size, {top: top, left: left}));
                 }
 
                 me.helper.height(me.size.height);
                 me.helper.width(me.size.width);
 
-                if (this._helper && !options.animate) {
+                if (this.oHelper && !options.animate) {
                     proportionallyResize.call(this);
                 }
             }
 
             $('body').css('cursor', 'auto');
 
-            this._removeClass('ui-resizable-resizing');
+            this.removeClass('resizing');
 
-            this._propagate('stop', event);
+            propagate.call(this, 'stop', event);
 
-            if (this._helper) {
+            if (this.oHelper) {
                 this.helper.remove();
             }
 
@@ -561,72 +567,70 @@ define(
         }
 
         function updateVirtualBoundaries(forceAspectRatio) {
-            var pMinWidth, pMaxWidth, pMinHeight, pMaxHeight, b,
-                options = this.options;
 
-            b = {
-                minWidth: this._isNumber(options.minWidth) ? options.minWidth : 0,
-                maxWidth: this._isNumber(options.maxWidth) ? options.maxWidth : Infinity,
-                minHeight: this._isNumber(options.minHeight) ? options.minHeight : 0,
-                maxHeight: this._isNumber(options.maxHeight) ? options.maxHeight : Infinity
+            var options = this.options;
+            var boundary = {
+                minWidth: u.isNumber(options.minWidth) ? options.minWidth : 0,
+                maxWidth: u.isNumber(options.maxWidth) ? options.maxWidth : Infinity,
+                minHeight: u.isNumber(options.minHeight) ? options.minHeight : 0,
+                maxHeight: u.isNumber(options.maxHeight) ? options.maxHeight : Infinity
             };
 
-            if (this._aspectRatio || forceAspectRatio) {
-                pMinWidth = b.minHeight * this.aspectRatio;
-                pMinHeight = b.minWidth / this.aspectRatio;
-                pMaxWidth = b.maxHeight * this.aspectRatio;
-                pMaxHeight = b.maxWidth / this.aspectRatio;
+            if (this.isAspectRatio || forceAspectRatio) {
+                var pMinWidth = boundary.minHeight * this.aspectRatio;
+                var pMinHeight = boundary.minWidth / this.aspectRatio;
+                var pMaxWidth = boundary.maxHeight * this.aspectRatio;
+                var pMaxHeight = boundary.maxWidth / this.aspectRatio;
 
-                if (pMinWidth > b.minWidth) {
-                    b.minWidth = pMinWidth;
+                if (pMinWidth > boundary.minWidth) {
+                    boundary.minWidth = pMinWidth;
                 }
-                if (pMinHeight > b.minHeight) {
-                    b.minHeight = pMinHeight;
+                if (pMinHeight > boundary.minHeight) {
+                    boundary.minHeight = pMinHeight;
                 }
-                if (pMaxWidth < b.maxWidth) {
-                    b.maxWidth = pMaxWidth;
+                if (pMaxWidth < boundary.maxWidth) {
+                    boundary.maxWidth = pMaxWidth;
                 }
-                if (pMaxHeight < b.maxHeight) {
-                    b.maxHeight = pMaxHeight;
+                if (pMaxHeight < boundary.maxHeight) {
+                    boundary.maxHeight = pMaxHeight;
                 }
             }
-            this._vBoundaries = b;
+            this.vBoundaries = boundary;
         }
 
         function updateCache(data) {
             this.offset = this.helper.offset();
-            if (this._isNumber(data.left)) {
+            if (u.isNumber(data.left)) {
                 this.position.left = data.left;
             }
-            if (this._isNumber(data.top)) {
+            if (u.isNumber(data.top)) {
                 this.position.top = data.top;
             }
-            if (this._isNumber(data.height)) {
+            if (u.isNumber(data.height)) {
                 this.size.height = data.height;
             }
-            if (this._isNumber(data.width)) {
+            if (u.isNumber(data.width)) {
                 this.size.width = data.width;
             }
         }
 
         function updateRatio(data) {
 
-            var cpos = this.position,
-                csize = this.size,
-                a = this.axis;
-
-            if (this._isNumber(data.height)) {
+            if (u.isNumber(data.height)) {
                 data.width = (data.height * this.aspectRatio);
             }
-            else if (this._isNumber(data.width)) {
+            else if (u.isNumber(data.width)) {
                 data.height = (data.width / this.aspectRatio);
             }
 
-            if (a === 'sw') {
+            var axis = this.axis;
+            var cpos = this.position;
+            var csize = this.size;
+            if (axis === 'sw') {
                 data.left = cpos.left + (csize.width - data.width);
                 data.top = null;
             }
-            if (a === 'nw') {
+            if (axis === 'nw') {
                 data.top = cpos.top + (csize.height - data.height);
                 data.left = cpos.left + (csize.width - data.width);
             }
@@ -636,15 +640,11 @@ define(
 
         function respectSize(data) {
 
-            var options = this._vBoundaries,
-                a = this.axis,
-                ismaxw = this._isNumber(data.width) && options.maxWidth && (options.maxWidth < data.width),
-                ismaxh = this._isNumber(data.height) && options.maxHeight && (options.maxHeight < data.height),
-                isminw = this._isNumber(data.width) && options.minWidth && (options.minWidth > data.width),
-                isminh = this._isNumber(data.height) && options.minHeight && (options.minHeight > data.height),
-                dw = this.originalPosition.left + this.originalSize.width,
-                dh = this.position.top + this.size.height,
-                cw = /sw|nw|w/.test(a), ch = /nw|ne|n/.test(a);
+            var options = this.vBoundaries;
+            var ismaxw = u.isNumber(data.width) && options.maxWidth && (options.maxWidth < data.width);
+            var ismaxh = u.isNumber(data.height) && options.maxHeight && (options.maxHeight < data.height);
+            var isminw = u.isNumber(data.width) && options.minWidth && (options.minWidth > data.width);
+            var isminh = u.isNumber(data.height) && options.minHeight && (options.minHeight > data.height);
             if (isminw) {
                 data.width = options.minWidth;
             }
@@ -658,6 +658,11 @@ define(
                 data.height = options.maxHeight;
             }
 
+            var axis = this.axis;
+            var cw = /sw|nw|w/.test(axis);
+            var ch = /nw|ne|n/.test(axis);
+            var dw = this.originalPosition.left + this.originalSize.width;
+            var dh = this.position.top + this.size.height;
             if (isminw && cw) {
                 data.left = dw - options.minWidth;
             }
@@ -683,22 +688,22 @@ define(
         }
 
         function getPaddingPlusBorderDimensions(element) {
-            var i = 0,
-                widths = [],
-                borders = [
-                    element.css('borderTopWidth'),
-                    element.css('borderRightWidth'),
-                    element.css('borderBottomWidth'),
-                    element.css('borderLeftWidth')
-                ],
-                paddings = [
-                    element.css('paddingTop'),
-                    element.css('paddingRight'),
-                    element.css('paddingBottom'),
-                    element.css('paddingLeft')
-                ];
+            var css = element.css;
+            var borders = [
+                css('borderTopWidth'),
+                css('borderRightWidth'),
+                css('borderBottomWidth'),
+                css('borderLeftWidth')
+            ];
+            var paddings = [
+                css('paddingTop'),
+                css('paddingRight'),
+                css('paddingBottom'),
+                css('paddingLeft')
+            ];
 
-            for (; i < 4; i++) {
+            var widths = [];
+            for (var i = 0; i < 4; i++) {
                 widths[i] = (parseInt(borders[i], 10) || 0);
                 widths[i] += (parseInt(paddings[i], 10) || 0);
             }
@@ -711,17 +716,13 @@ define(
 
         function proportionallyResize() {
 
-            if (!this._proportionallyResizeElements.length) {
+            if (!this.proportionallyResizeElements.length) {
                 return;
             }
 
-            var prel,
-                i = 0,
-                element = this.helper || this.element;
+            for (var i = 0; i < this.proportionallyResizeElements.length; i++) {
 
-            for (; i < this._proportionallyResizeElements.length; i++) {
-
-                prel = this._proportionallyResizeElements[i];
+                var prel = this.proportionallyResizeElements[i];
 
                 // TODO: Seems like a bug to cache this.outerDimensions
                 // considering me we are in a loop.
@@ -729,6 +730,7 @@ define(
                     this.outerDimensions = getPaddingPlusBorderDimensions.call(this, prel);
                 }
 
+                var element = this.helper || this.element;
                 prel.css({
                     height: (element.height() - this.outerDimensions.height) || 0,
                     width: (element.width() - this.outerDimensions.width) || 0
@@ -740,21 +742,20 @@ define(
 
         function renderProxy() {
 
-            var el = this.element, options = this.options;
-            this.elementOffset = el.offset();
+            this.elementOffset = this.element.offset();
 
-            if (this._helper) {
+            if (this.oHelper) {
 
                 this.helper = this.helper || $('<div style="overflow:hidden;"></div>');
 
-                this.addClass(this.helper, this._helper);
+                this.addClass(this.helper, this.oHelper);
                 this.helper.css({
                     width: this.element.outerWidth() - 1,
                     height: this.element.outerHeight() - 1,
                     position: 'absolute',
                     left: this.elementOffset.left + 'px',
                     top: this.elementOffset.top + 'px',
-                    zIndex: ++options.zIndex //TODO: Don't modify option
+                    zIndex: ++this.options.zIndex // TODO: Don't modify option
                 });
 
                 this.helper
@@ -770,8 +771,10 @@ define(
 
 
         function propagate(n, event) {
-            $.ui.plugin.call(this, n, [event, this.ui()]);
-            (n !== 'resize' && this._trigger(n, event, this.ui()));
+            // $.ui.plugin.call(this, n, [event, this.ui()]);
+            if (n !== 'resize') {
+                this.trigger(n, event, ui.call(this));
+            }
         }
 
         function ui() {
