@@ -3,7 +3,7 @@
  * Copyright 2013 Baidu Inc. All rights reserved.
  *
  * @ignore
- * @file 鼠标事件
+ * @file 键盘事件
  * @author maoquan(3610cn@gmail.com)
  */
 
