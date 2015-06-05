@@ -182,7 +182,11 @@ define(
 
                 u.extend(properties, options);
 
-                if (options.autoHideLayer === 'false') {
+                if (options.autoHideLayer === 'true'
+                    || options.autoHideLayer === '1') {
+                    properties.autoHideLayer = true;
+                }
+                else {
                     properties.autoHideLayer = false;
                 }
 
