@@ -99,8 +99,8 @@ define(
 
                 html += '<li data-index="' + i + '"'
                     + ' class="' + classes.join(' ') + '">';
-
                 html += this.control.getItemHTML(this.control.datasource[i]);
+                html += '</li>';
             }
 
             element.innerHTML = html;
