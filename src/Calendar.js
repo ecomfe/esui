@@ -16,115 +16,82 @@ define(
         var ui = require('./main');
         var InputControl = require('./InputControl');
         var Layer = require('./Layer');
+        var eoo = require('eoo');
+        var $ = require('jquery');
 
-        /**
-         * 日历用浮层
-         *
-         * @extends Layer
-         * @ignore
-         * @constructor
-         */
-        function CalendarLayer() {
-            Layer.apply(this, arguments);
-        }
+        var CalendarLayer = eoo.create(Layer, {
+            /**
+             * 日历用浮层
+             *
+             * @extends Layer
+             * @ignore
+             * @constructor
+             */
+            constructor: function () {
+                this.$super(arguments);
+            },
 
-        lib.inherits(CalendarLayer, Layer);
+            create: function () {
+                var ele = this.$super(arguments);
+                $(this.control.main).after(ele);
+                return ele;
+            },
 
-        CalendarLayer.prototype.render = function (element) {
-            document.body.appendChild(element);
-            element.innerHTML = '<div data-ui-type="MonthView" '
-                + 'data-ui-child-name="monthView"></div>';
+            render: function (element) {
+                element.innerHTML = '<div data-ui-type="MonthView" '
+                    + 'data-ui-child-name="monthView"></div>';
 
-            var calendar = this.control;
-            calendar.helper.initChildren(element);
-
-            var monthView = calendar.getChild('monthView');
-            monthView.setProperties(
-                { 'rawValue': calendar.rawValue, 'range': calendar.range });
-            monthView.on('change', syncMonthViewValue, calendar);
-
-
-            if (calendar.autoHideLayer) {
-                monthView.on(
-                    'itemclick',
-                    u.bind(calendar.layer.toggle, calendar.layer)
-                );
-            }
-        };
-
-        CalendarLayer.prototype.toggle = function () {
-            var element = this.getElement();
-            if (!element
-                || this.control.helper.isPart(element, 'layer-hidden')
-            ) {
-                // 展示之前先跟main同步
                 var calendar = this.control;
+                calendar.helper.initChildren(element);
+
                 var monthView = calendar.getChild('monthView');
                 monthView.setProperties(
-                    { 'rawValue': calendar.rawValue, 'range': calendar.range }
-                );
-                this.show();
+                    { 'rawValue': calendar.rawValue, 'range': calendar.range });
+                monthView.on('change', syncMonthViewValue, calendar);
+
+                if (calendar.autoHideLayer) {
+                    monthView.on(
+                        'itemclick',
+                        u.bind(calendar.layer.toggle, calendar.layer)
+                    );
+                }
+            },
+
+            toggle: function () {
+                var element = this.getElement();
+                if (!element
+                    || this.control.helper.isPart(element, 'layer-hidden')
+                ) {
+                    // 展示之前先跟main同步
+                    var calendar = this.control;
+                    var monthView = calendar.getChild('monthView');
+                    monthView.setProperties(
+                        { 'rawValue': calendar.rawValue, 'range': calendar.range }
+                    );
+                    this.show();
+                }
+                else {
+                    this.hide();
+                }
             }
-            else {
-                this.hide();
-            }
-        };
+        });
 
-        /**
-         * 日历控件
-         *
-         * 日历控件是由一个按钮和一个浮层组成的，如果你只需要显示一个月日期的效果，
-         * 请使用{@link MonthView}控件
-         *
-         * @extends InputControl
-         * @requires MonthView
-         * @constructor
-         */
-        function Calendar() {
-            InputControl.apply(this, arguments);
-            this.layer = new CalendarLayer(this);
-        }
-
-        /**
-         * 更新显示
-         *
-         * @param {MonthView} monthView MonthView控件实例
-         * @ignore
-         */
-        function syncMonthViewValue() {
-            var monthView = this.getChild('monthView');
-            var date = monthView.getRawValue();
-
-            if (!date) {
-                return;
-            }
-
-            this.rawValue = date;
-            updateDisplayText(this);
-
+        var Calendar = eoo.create(InputControl, {
             /**
-             * @event change
+             * 日历控件
              *
-             * 值发生变化时触发
+             * 日历控件是由一个按钮和一个浮层组成的，如果你只需要显示一个月日期的效果，
+             * 请使用{@link MonthView}控件
              *
-             * @member Calendar
+             * @extends InputControl
+             * @requires MonthView
+             * @constructor
              */
-            this.fire('change');
-        }
+            constructor: function () {
+                this.$super(arguments);
+                this.layer = new CalendarLayer(this);
+            },
 
-        /**
-         * 更新显示的文字
-         *
-         * @param {Calendar} calendar 控件实例
-         * @ignore
-         */
-        function updateDisplayText(calendar) {
-            // 更新主显示
-            var textHolder = calendar.helper.getPart('text');
-            textHolder.innerHTML = u.escape(calendar.getValue());
-        }
-
-        Calendar.prototype = {
             /**
              * 控件类型，始终为`"Calendar"`
              *
@@ -182,7 +149,10 @@ define(
 
                 u.extend(properties, options);
 
-                if (options.autoHideLayer === 'false') {
+                if (options.autoHideLayer === 'true'
+                    || options.autoHideLayer === '1') {
+                    properties.autoHideLayer = true;
+                } else {
                     properties.autoHideLayer = false;
                 }
 
@@ -209,7 +179,6 @@ define(
                 this.setProperties(properties);
             },
 
-
             /**
              * 初始化DOM结构
              *
@@ -219,10 +188,12 @@ define(
             initStructure: function () {
                 // 如果主元素是输入元素，替换成`<div>`
                 // 如果输入了非块级元素，则不负责
+                var controlHelper = this.helper;
                 if (lib.isInput(this.main)) {
-                    this.helper.replaceMain();
+                    controlHelper.replaceMain();
                 }
 
+                this.layer.autoCloseExcludeElements = [this.main];
                 var template = [
                     '<div class="${classes}" id="${id}">${value}</div>',
                     '<div class="${arrow}"><span class="${iconCalendar}"></span></div>'
@@ -231,10 +202,10 @@ define(
                 this.main.innerHTML = lib.format(
                     template.join(''),
                     {
-                        classes: this.helper.getPartClassName('text'),
-                        id: this.helper.getId('text'),
-                        arrow: this.helper.getPartClassName('arrow'),
-                        iconCalendar: this.helper.getIconClass('calendar')
+                        classes: controlHelper.getPartClassName('text'),
+                        id: controlHelper.getId('text'),
+                        arrow: controlHelper.getPartClassName('arrow'),
+                        iconCalendar: controlHelper.getIconClass()
                     }
                 );
             },
@@ -296,7 +267,6 @@ define(
                 this.setProperties({ 'range': range });
             },
 
-
             /**
              * 将值从原始格式转换成字符串，复杂类型的输入控件需要重写此接口
              *
@@ -337,11 +307,49 @@ define(
                     this.layer = null;
                 }
 
-                InputControl.prototype.dispose.apply(this, arguments);
+                this.$super(arguments);
             }
-        };
+        });
 
-        lib.inherits(Calendar, InputControl);
+        /**
+         * 更新显示
+         *
+         * @param {MonthView} monthView MonthView控件实例
+         * @ignore
+         */
+        function syncMonthViewValue() {
+            var monthView = this.getChild('monthView');
+            var date = monthView.getRawValue();
+
+            if (!date) {
+                return;
+            }
+
+            this.rawValue = date;
+            updateDisplayText(this);
+
+            /**
+             * @event change
+             *
+             * 值发生变化时触发
+             *
+             * @member Calendar
+             */
+            this.fire('change');
+        }
+
+        /**
+         * 更新显示的文字
+         *
+         * @param {Calendar} calendar 控件实例
+         * @ignore
+         */
+        function updateDisplayText(calendar) {
+            // 更新主显示
+            var textHolder = calendar.helper.getPart('text');
+            textHolder.innerHTML = u.escape(calendar.getValue());
+        }
+
         ui.register(Calendar);
 
         return Calendar;

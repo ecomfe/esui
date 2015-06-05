@@ -9,9 +9,9 @@
 define(
     function (require) {
         var u = require('underscore');
-        var lib = require('./lib');
         var paint = require('./painters');
         var Control = require('./Control');
+        var $ = require('jquery');
 
         var exports = {
             /**
@@ -23,6 +23,7 @@ define(
             constructor: function () {
                 this.$super(arguments);
             },
+
             /**
              * 控件类型，始终为`"Button"`
              *
@@ -31,6 +32,7 @@ define(
              * @override
              */
             type: 'Button',
+
             /**
              * 初始化参数
              *
@@ -47,15 +49,8 @@ define(
                     disabled: false // 控件是否禁用
                 };
                 u.extend(properties, options);
-                properties.tagName = this.main.nodeName.toLowerCase();
-                if (properties.text == null) {
-                    properties.text = lib.getText(this.main);
-                }
-                var innerDiv = this.main.firstChild;
-                if (!properties.content
-                    && innerDiv
-                    && innerDiv.nodeName.toLowerCase() !== 'div'
-                ) {
+
+                if (!properties.content) {
                     properties.content = this.main.innerHTML;
                 }
 
@@ -73,7 +68,7 @@ define(
              * @override
              */
             createMain: function () {
-                return lib.dom.createElement('<button type="button"></button>');
+                return $('<button type="button"></button>')[0];
             },
 
             /**
@@ -117,22 +112,25 @@ define(
                         if (!value) {
                             return;
                         }
-                        var main = button.main;
-                        main.style.height = value + 'px';
-                        var lineHeight = value;
-                        main.style.lineHeight = lineHeight + 'px';
+                        var $main = $(button.main);
+                        $main.css(
+                            {
+                                height: value,
+                                lineHeight: value + 'px'
+                            }
+                        );
 
-                        var offsetHeight = main.offsetHeight;
+                        var offsetHeight = $main.height();
                         // 说明是border-box模式
                         if (offsetHeight === value) {
-                            var borderInfo = getBorderInfo(main);
-                            var height = value
-                                + borderInfo.borderTop
-                                + borderInfo.borderBottom;
-                            main.style.height = height + 'px';
+                            var newHeight = value
+                                + parseInt($main.css('borderTopWidth'), 10)
+                                + parseInt($main.css('borderBottomWidth'), 10);
+                            $main.css('height', newHeight);
                         }
                     }
                 },
+
                 /**
                  * @property {string} [content=""]
                  *
@@ -142,13 +140,14 @@ define(
                 {
                     name: 'disabled',
                     paint: function (button, disabled) {
-                        var nodeName = button.main.nodeName.toLowerCase();
-                        if (nodeName === 'button' || nodeName === 'input') {
-                            button.main.disabled = !!disabled;
+                        var $ele = $(button.main);
+                        if ($ele.is('button,input')) {
+                            $ele.attr('disabled', !!disabled);
                         }
                     }
                 }
             ),
+
             /**
              * 设置内容
              *
@@ -158,22 +157,6 @@ define(
                 this.setProperties({'content': content});
             }
         };
-
-        /**
-         * 获取元素border信息
-         *
-         * @param {HTMLElement} dom 目标元素
-         * @return {Object}
-         * @ignore
-         */
-        function getBorderInfo(dom) {
-            var result = {};
-            result.borderTop =
-                parseInt(lib.getComputedStyle(dom, 'borderTopWidth'), 10);
-            result.borderBottom =
-                parseInt(lib.getComputedStyle(dom, 'borderBottomWidth'), 10);
-            return result;
-        }
 
         var Button = require('eoo').create(Control, exports);
         require('./main').register(Button);

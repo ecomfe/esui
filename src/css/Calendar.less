@@ -27,6 +27,7 @@
     );
     .user-select(none);
     vertical-align: middle;
+    .esf-transition(background-color 0.3s ease);
     .esui-calendar-theme();
 }
 
@@ -39,9 +40,15 @@
     position: absolute;
     right: @esui-calendar-horizontal-padding;
     top: 0;
+    span {
+        .eicons-icon(calendar);
+    }
 }
 
 .@{ui-class-prefix}-calendar-layer {
+    .@{ui-class-prefix}-monthview {
+        vertical-align: top;
+    }
     .esui-calendar-layer-theme();
 }
 

@@ -30,9 +30,11 @@
 
 .@{ui-class-prefix}-select-inner {
     padding: 0 @esui-select-horizontal-padding;
-    border-radius: @esui-select-radius;
+    .esf-border-radius(
+        @esui-select-radius,
+        @esui-select-radius
+    );
     line-height: @esui-select-line-height;
-    .box-sizing(border-box);
     .esf-transition(background-color 0.3s ease);
     .esui-select-theme();
 }

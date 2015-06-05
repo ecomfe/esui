@@ -12,112 +12,86 @@ define(
         var u = require('underscore');
         var ui = require('./main');
         var Helper = require('./Helper');
+        var eoo = require('eoo');
 
-        /**
-         * 控件基类
-         *
-         * @constructor
-         * @extends {mini-event.EventTarget}
-         * @param {Object} [options] 初始化参数
-         * @fires init
-         */
-        function Control(options) {
-            options = options || {};
-
+        var exports = {
             /**
-             * 控件关联的{@link Helper}对象
+             * 控件基类
              *
-             * @type {Helper}
-             * @protected
+             * @constructor
+             * @extends {mini-event.EventTarget}
+             * @param {Object} [options] 初始化参数
+             * @fires init
              */
-            this.helper = new Helper(this);
+            constructor: function (options) {
+                options = options || {};
 
-            this.helper.changeStage('NEW');
+                var helper = new Helper(this);
+                this.helper = helper;
+                /**
+                 * 控件关联的{@link Helper}对象
+                 *
+                 * @type {Helper}
+                 * @protected
+                 */
 
-            /**
-             * 子控件数组
-             *
-             * @type {Control[]}
-             * @protected
-             * @readonly
-             */
-            this.children = [];
-            this.childrenIndex = {};
-            this.currentStates = {};
-            this.domEvents = [];
+                helper.changeStage('NEW');
 
-            /**
-             * 控件的主元素
-             *
-             * @type {HTMLElement}
-             * @protected
-             * @readonly
-             */
-            this.main = options.main ? options.main : this.createMain(options);
+                /**
+                 * 子控件数组
+                 *
+                 * @type {Control[]}
+                 * @protected
+                 * @readonly
+                 */
+                this.children = [];
+                this.childrenIndex = {};
+                this.currentStates = {};
+                this.domEvents = [];
 
-            // 如果没给id，自己创建一个，
-            // 这个有可能在后续的`initOptions`中被重写，则会在`setProperties`中处理，
-            // 这个不能放到`initOptions`的后面，
-            // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
-            // 会把其它控件的`ViewContext`给冲掉导致各种错误
+                /**
+                 * 控件的主元素
+                 *
+                 * @type {HTMLElement}
+                 * @protected
+                 * @readonly
+                 */
+                this.main = options.main ? options.main : this.createMain(options);
 
-            /**
-             * 控件的id，在一个{@link ViewContext}中不能重复
-             *
-             * @property {string} id
-             * @readonly
-             */
-            if (!this.id && !options.id) {
-                this.id = lib.getGUID();
-            }
+                // 如果没给id，自己创建一个，
+                // 这个有可能在后续的`initOptions`中被重写，则会在`setProperties`中处理，
+                // 这个不能放到`initOptions`的后面，
+                // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
+                // 会把其它控件的`ViewContext`给冲掉导致各种错误
 
-            this.initOptions(options);
+                /**
+                 * 控件的id，在一个{@link ViewContext}中不能重复
+                 *
+                 * @property {string} id
+                 * @readonly
+                 */
+                if (!this.id && !options.id) {
+                    this.id = lib.getGUID();
+                }
 
-            // 初始化视图环境
-            this.helper.initViewContext();
+                this.initOptions(options);
 
-            // 初始化扩展
-            this.helper.initExtensions();
+                // 初始化视图环境
+                helper.initViewContext();
 
-            // 切换控件所属生命周期阶段
-            this.helper.changeStage('INITED');
+                // 初始化扩展
+                helper.initExtensions();
 
-            /**
-             * @event init
-             *
-             * 完成初始化
-             */
-            this.fire('init', {options: options});
-        }
+                // 切换控件所属生命周期阶段
+                helper.changeStage('INITED');
 
-        /**
-         * @property {string} type
-         *
-         * 控件的类型
-         * @readonly
-         */
-
-        /**
-         * @property {string} skin
-         *
-         * 控件皮肤，仅在初始化时设置有效，运行时不得变更
-         *
-         * @protected
-         * @readonly
-         */
-
-        /**
-         * @property {string} styleType
-         *
-         * 控件的样式类型，用于生成各class使用
-         *
-         * 如无此属性，则使用{@link Control#type}属性代替
-         *
-         * @readonly
-         */
-
-        Control.prototype = {
-            constructor: Control,
+                /**
+                 * @event init
+                 *
+                 * 完成初始化
+                 */
+                this.fire('init', {options: options});
+            },
 
             /**
              * 指定在哪些状态下该元素不处理相关的DOM事件
@@ -757,9 +731,32 @@ define(
             }
         };
 
-        var EventTarget = require('mini-event/EventTarget');
-        lib.inherits(Control, EventTarget);
+        /**
+         * @property {string} type
+         *
+         * 控件的类型
+         * @readonly
+         */
 
+        /**
+         * @property {string} skin
+         *
+         * 控件皮肤，仅在初始化时设置有效，运行时不得变更
+         *
+         * @protected
+         * @readonly
+         */
+
+        /**
+         * @property {string} styleType
+         *
+         * 控件的样式类型，用于生成各class使用
+         *
+         * 如无此属性，则使用{@link Control#type}属性代替
+         *
+         * @readonly
+         */
+        var Control = eoo.create(require('mini-event/EventTarget'), exports);
         return Control;
     }
 );

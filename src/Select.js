@@ -20,7 +20,7 @@ define(
          * @ignore
          */
         function selectValue(e) {
-            var target = lib.event.getTarget(e);
+            var target = e.target;
             var layer = this.layer.getElement();
             while (target && target !== layer
                 && !lib.hasAttribute(target, 'data-index')

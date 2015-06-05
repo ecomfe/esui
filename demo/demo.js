@@ -44,11 +44,6 @@ require.config({
             'name': 'eoo',
             'location': '../dep/eoo/0.1.3/src',
             'main': 'main'
-        },
-        {
-            'name': 'jquery',
-            'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery'
         }
     ]
 });

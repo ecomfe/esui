@@ -761,7 +761,7 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch label,
 .ui-checkbox-switch-round .ui-checkbox-box,
 .ui-checkbox-switch-round label {
-  display: inline-block;
+  display: block;
   padding-left: 1.5em;
 }
 .esf-checkbox-style-base .ui-checkbox-box:before,
@@ -809,11 +809,11 @@ input[type="search"]::-webkit-search-decoration {
   box-sizing: border-box;
   position: absolute;
   content: '';
-  -webkit-transition: background 0.3s ease 0s;
-  -moz-transition: background 0.3s ease 0s;
-  -ms-transition: background 0.3s ease 0s;
-  -o-transition: background 0.3s ease 0s;
-  transition: background 0.3s ease 0s;
+  -webkit-transition: background 0.3s ease 0s, left 0.3s ease 0s;
+  -moz-transition: background 0.3s ease 0s, left 0.3s ease 0s;
+  -ms-transition: background 0.3s ease 0s, left 0.3s ease 0s;
+  -o-transition: background 0.3s ease 0s, left 0.3s ease 0s;
+  transition: background 0.3s ease 0s, left 0.3s ease 0s;
 }
 .esf-checkbox-style-base .ui-checkbox-box:active:before,
 .esf-checkbox-style-base label:active:before,
@@ -902,6 +902,29 @@ input[type="search"]::-webkit-search-decoration {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
+.esf-checkbox-style-base input:indeterminate ~ label:after,
+.esf-checkbox-style-base input:indeterminate ~ .ui-checkbox-box:after,
+.ui-checkbox-custom input:indeterminate ~ label:after,
+.ui-checkbox-custom input:indeterminate ~ .ui-checkbox-box:after,
+.ui-radio-custom input:indeterminate ~ label:after,
+.ui-radio-custom input:indeterminate ~ .ui-checkbox-box:after,
+.ui-checkbox-switch input:indeterminate ~ label:after,
+.ui-checkbox-switch input:indeterminate ~ .ui-checkbox-box:after,
+.ui-checkbox-switch-round input:indeterminate ~ label:after,
+.ui-checkbox-switch-round input:indeterminate ~ .ui-checkbox-box:after {
+  border: 1px solid #70ccc0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  width: 1.1em;
+  height: 1.1em;
+  background: #70ccc0;
+  -webkit-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  -moz-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  top: 0;
+  left: 0;
+}
 .esf-checkbox-style-base input[disabled] ~ label,
 .esf-checkbox-style-base input[disabled] ~ .ui-checkbox-box,
 .ui-checkbox-custom input[disabled] ~ label,
@@ -926,13 +949,13 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch ~ label,
 .ui-checkbox-switch-round label,
 .ui-checkbox-switch-round ~ label {
-  cursor: pointer;
-  vertical-align: middle;
   -webkit-transition: color 0.2s ease;
   -moz-transition: color 0.2s ease;
   -ms-transition: color 0.2s ease;
   -o-transition: color 0.2s ease;
   transition: color 0.2s ease;
+  cursor: pointer;
+  vertical-align: middle;
   color: rgba(102, 102, 102, 0.9);
 }
 .esf-checkbox-style-base label:hover,
@@ -946,38 +969,6 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round label:hover,
 .ui-checkbox-switch-round ~ label:hover {
   color: #666666;
-}
-.esf-checkbox-style-base.state-readonly input ~ label,
-.esf-checkbox-style-base.state-readonly input ~ .ui-checkbox-box,
-.ui-checkbox-custom.state-readonly input ~ label,
-.ui-checkbox-custom.state-readonly input ~ .ui-checkbox-box,
-.ui-radio-custom.state-readonly input ~ label,
-.ui-radio-custom.state-readonly input ~ .ui-checkbox-box,
-.ui-checkbox-switch.state-readonly input ~ label,
-.ui-checkbox-switch.state-readonly input ~ .ui-checkbox-box,
-.ui-checkbox-switch-round.state-readonly input ~ label,
-.ui-checkbox-switch-round.state-readonly input ~ .ui-checkbox-box {
-  opacity: 1;
-  filter: alpha(opacity=100);
-  cursor: default !important;
-  color: #999999;
-}
-.ui-checkbox-custom input:indeterminate ~ label:after,
-.ui-checkbox-custom input:indeterminate ~ .ui-checkbox-box:after {
-  border: 1px solid #70ccc0;
-  width: 1.1em;
-  height: 1.1em;
-  background: #70ccc0;
-  -webkit-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  -moz-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  top: 0;
-  left: 0;
-  -webkit-transform: none;
-  -moz-transform: none;
-  -ms-transform: none;
-  -o-transform: none;
-  transform: none;
 }
 .ui-checkbox-custom.ui-checkbox-single label,
 .ui-radio-custom.ui-checkbox-single label {
@@ -1008,16 +999,16 @@ input[type="search"]::-webkit-search-decoration {
   border-radius: 500em;
   border: 0;
 }
-.ui-checkbox-switch .ui-checkbox-box,
-.ui-checkbox-switch-round .ui-checkbox-box,
-.ui-checkbox-switch label,
-.ui-checkbox-switch-round label {
+.ui-checkbox-switch input ~ .ui-checkbox-box,
+.ui-checkbox-switch-round input ~ .ui-checkbox-box,
+.ui-checkbox-switch input ~ label,
+.ui-checkbox-switch-round input ~ label {
   padding-left: 4em;
 }
-.ui-checkbox-switch .ui-checkbox-box:before,
-.ui-checkbox-switch-round .ui-checkbox-box:before,
-.ui-checkbox-switch label:before,
-.ui-checkbox-switch-round label:before {
+.ui-checkbox-switch input ~ .ui-checkbox-box:before,
+.ui-checkbox-switch-round input ~ .ui-checkbox-box:before,
+.ui-checkbox-switch input ~ label:before,
+.ui-checkbox-switch-round input ~ label:before {
   background-color: #bbbbbb;
   width: 3em;
   height: 1.2em;
@@ -1028,10 +1019,10 @@ input[type="search"]::-webkit-search-decoration {
   -moz-border-radius: 0;
   border-radius: 0;
 }
-.ui-checkbox-switch .ui-checkbox-box:after,
-.ui-checkbox-switch-round .ui-checkbox-box:after,
-.ui-checkbox-switch label:after,
-.ui-checkbox-switch-round label:after {
+.ui-checkbox-switch input ~ .ui-checkbox-box:after,
+.ui-checkbox-switch-round input ~ .ui-checkbox-box:after,
+.ui-checkbox-switch input ~ label:after,
+.ui-checkbox-switch-round input ~ label:after {
   border: #bbbbbb 1px solid;
   width: 1.5em;
   height: 1.2em;
@@ -1043,11 +1034,6 @@ input[type="search"]::-webkit-search-decoration {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
-  -webkit-transition: left 0.3s ease 0s;
-  -moz-transition: left 0.3s ease 0s;
-  -ms-transition: left 0.3s ease 0s;
-  -o-transition: left 0.3s ease 0s;
-  transition: left 0.3s ease 0s;
 }
 .ui-checkbox-switch input:checked ~ .ui-checkbox-box:before,
 .ui-checkbox-switch-round input:checked ~ .ui-checkbox-box:before,
@@ -1076,14 +1062,14 @@ input[type="search"]::-webkit-search-decoration {
   -o-transform: none;
   transform: none;
 }
-.ui-checkbox-switch-round .ui-checkbox-box:before,
-.ui-checkbox-switch-round label:before {
+.ui-checkbox-switch-round input ~ .ui-checkbox-box:before,
+.ui-checkbox-switch-round input ~ label:before {
   -webkit-border-radius: 500em;
   -moz-border-radius: 500em;
   border-radius: 500em;
 }
-.ui-checkbox-switch-round .ui-checkbox-box:after,
-.ui-checkbox-switch-round label:after {
+.ui-checkbox-switch-round input ~ .ui-checkbox-box:after,
+.ui-checkbox-switch-round input ~ label:after {
   width: 1.2em;
   -webkit-border-radius: 500em;
   -moz-border-radius: 500em;
@@ -1143,7 +1129,6 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-form {
   margin-bottom: 1em;
-  display: block;
 }
 .ui-form fieldset {
   border: 0;
@@ -1361,9 +1346,6 @@ input[type="search"]::-webkit-search-decoration {
   -o-transform: rotate(4deg);
   transform: rotate(4deg);
 }
-.ui-label {
-  display: inline-block;
-}
 .ui-label-custom {
   display: inline-block;
   vertical-align: middle;
@@ -1547,14 +1529,6 @@ input[type="search"]::-webkit-search-decoration {
 .ui-loader {
   display: inline-block;
 }
-.ui-loader.ui-loader-backup {
-  width: 24px;
-  height: 24px;
-  background-image: url('data:image/gif;base64,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');
-}
-.ui-loader.ui-loader-backup * {
-  display: none;
-}
 .ui-mask-section {
   position: relative;
 }
@@ -1680,9 +1654,6 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-navbar-nav > li > .ui-submenu {
   display: none;
-}
-.ui-panel {
-  display: block;
 }
 .ui-panel-custom {
   margin: 1.5em 0;
@@ -2142,7 +2113,6 @@ a.ui-text-info:hover {
   position: absolute;
   top: 0;
   text-align: center;
-  color: #666666;
 }
 .ui-textbox-icon-left .ui-textbox-icon {
   left: 0;
@@ -2234,36 +2204,28 @@ a.ui-text-info:hover {
   background: #ffffff;
   color: #f9ad42;
 }
-.ui-textbox-size1 input,
-.ui-textbox-size1 textarea {
+.ui-textbox-size1 input {
   width: 2em;
 }
-.ui-textbox-size2 input,
-.ui-textbox-size2 textarea {
+.ui-textbox-size2 input {
   width: 4em;
 }
-.ui-textbox-size3 input,
-.ui-textbox-size3 textarea {
+.ui-textbox-size3 input {
   width: 6em;
 }
-.ui-textbox-size4 input,
-.ui-textbox-size4 textarea {
+.ui-textbox-size4 input {
   width: 8em;
 }
-.ui-textbox-size5 input,
-.ui-textbox-size5 textarea {
+.ui-textbox-size5 input {
   width: 10em;
 }
-.ui-textbox-size6 input,
-.ui-textbox-size6 textarea {
+.ui-textbox-size6 input {
   width: 12em;
 }
-.ui-textbox-size7 input,
-.ui-textbox-size7 textarea {
+.ui-textbox-size7 input {
   width: 14em;
 }
-.ui-textbox-size8 input,
-.ui-textbox-size8 textarea {
+.ui-textbox-size8 input {
   width: 16em;
 }
 html {
@@ -2523,10 +2485,8 @@ hr {
   margin-top: -2px;
   border-top: 2px dotted #dddddd;
 }
-.ui-wizard-node:last-child:after {
-  display: none !important;
-}
-.ui-wizard-node.ui-wizard-node-last:after {
+.ui-wizard-node:last-child:after,
+.ui-wizard-node-last:after {
   display: none !important;
 }
 .ui-boxgroup-horizontal .ui-boxgroup-wrapper {
@@ -2755,6 +2715,11 @@ hr {
   -ms-user-select: none;
   user-select: none;
   vertical-align: middle;
+  -webkit-transition: background-color 0.3s ease;
+  -moz-transition: background-color 0.3s ease;
+  -ms-transition: background-color 0.3s ease;
+  -o-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
   background: #f6f6f6;
   border: none;
   color: #666666;
@@ -2781,6 +2746,12 @@ hr {
   position: absolute;
   right: 1em;
   top: 0;
+}
+.ui-calendar-arrow span:before {
+  content: "\f073";
+}
+.ui-calendar-layer .ui-monthview {
+  vertical-align: top;
 }
 .ui-layer {
   position: absolute;
@@ -2946,11 +2917,10 @@ hr {
 }
 .ui-select-inner {
   padding: 0 1em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   border-radius: 5px;
   line-height: 2.5em;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   -webkit-transition: background-color 0.3s ease;
   -moz-transition: background-color 0.3s ease;
   -ms-transition: background-color 0.3s ease;
@@ -4617,6 +4587,103 @@ span.ui-crumb-node {
 .ui-validity:not(.state-hidden) ~ .ui-form-hint {
   display: none;
 }
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file esui behavior
+ * @author maoquan(3610cn@gmail.com) liwei
+ */
+.ui-selectable {
+  -ms-touch-action: none;
+  touch-action: none;
+}
+.ui-selectable .ui-selecting {
+  background: #FECA40;
+}
+.ui-selectable .ui-selected {
+  background: #F39814;
+  color: white;
+}
+.ui-selectable-helper {
+  position: absolute;
+  z-index: 100;
+  border: 1px dotted black;
+}
+.ui-resizable {
+  position: relative;
+}
+.ui-resizable-handle {
+  position: absolute;
+  font-size: 0.1px;
+  display: block;
+  -ms-touch-action: none;
+  touch-action: none;
+}
+.ui-resizable-disabled .ui-resizable-handle,
+.ui-resizable-autohide .ui-resizable-handle {
+  display: none;
+}
+.ui-resizable-n {
+  cursor: n-resize;
+  height: 7px;
+  width: 100%;
+  top: -5px;
+  left: 0;
+}
+.ui-resizable-s {
+  cursor: s-resize;
+  height: 7px;
+  width: 100%;
+  bottom: -5px;
+  left: 0;
+}
+.ui-resizable-e {
+  cursor: e-resize;
+  width: 7px;
+  right: -5px;
+  top: 0;
+  height: 100%;
+}
+.ui-resizable-w {
+  cursor: w-resize;
+  width: 7px;
+  left: -5px;
+  top: 0;
+  height: 100%;
+}
+.ui-resizable-se {
+  cursor: se-resize;
+  width: 12px;
+  height: 12px;
+  right: 1px;
+  bottom: 1px;
+}
+.ui-resizable-sw {
+  cursor: sw-resize;
+  width: 9px;
+  height: 9px;
+  left: -5px;
+  bottom: -5px;
+}
+.ui-resizable-nw {
+  cursor: nw-resize;
+  width: 9px;
+  height: 9px;
+  left: -5px;
+  top: -5px;
+}
+.ui-resizable-ne {
+  cursor: ne-resize;
+  width: 9px;
+  height: 9px;
+  right: -5px;
+  top: -5px;
+}
+.ui-draggable-handle {
+  -ms-touch-action: none;
+  touch-action: none;
+}
 [class*='ui-icon'] {
   font-family: FontAwesome;
   display: inline-block;
@@ -6272,7 +6339,7 @@ span.ui-crumb-node {
 }
 #main {
   margin-left: 200px;
-  overflow: auto;
+  overflow: visible;
 }
 h1 {
   background: #252525;

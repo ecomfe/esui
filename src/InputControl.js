@@ -9,48 +9,46 @@
 define(
     function (require) {
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
         var ValidityLabel = require('./Validity');
         var Validity = require('./validator/Validity');
         var main = require('./main');
+        var u = require('underscore');
 
-        /**
-         * 输入控件基类
-         *
-         * 输入控件用于表示需要在表单中包含的控件，
-         * 其主要提供`getRawValue`和`getValue`方法供获取值
-         *
-         * 需要注意的是，控件其实并不通过严格的继承关系来判断一个控件是否为输入控件，
-         * 只要`getCategory()`返回为`"input"`、`"check"或`"extend"`就认为是输入控件
-         *
-         * 相比普通控件的 **禁用 / 启用** ，输入控件共有3种状态：
-         *
-         * - 普通状态：可编辑，值随表单提交
-         * - `disabled`：禁用状态，此状态下控件不能编辑，同时值不随表单提交
-         * - `readOnly`：只读状态，此状态下控件不能编辑，但其值会随表单提交
-         *
-         * @extends Control
-         * @constructor
-         * @param {Object} [options] 初始化参数
-         */
-        function InputControl(options) {
-            options = options ? lib.extend({}, options) : {};
-            if (options.main && !options.name) {
-                /**
-                 * @property {string} name
-                 *
-                 * 输入控件的名称，用于表单提交时作为键值
-                 *
-                 * @readonly
-                 */
-                options.name = options.main.getAttribute('name');
-            }
-            Control.call(this, options);
-        }
-
-        InputControl.prototype = {
-            constructor: InputControl,
+        var exports = {
+            /**
+             * 输入控件基类
+             *
+             * 输入控件用于表示需要在表单中包含的控件，
+             * 其主要提供`getRawValue`和`getValue`方法供获取值
+             *
+             * 需要注意的是，控件其实并不通过严格的继承关系来判断一个控件是否为输入控件，
+             * 只要`getCategory()`返回为`"input"`、`"check"或`"extend"`就认为是输入控件
+             *
+             * 相比普通控件的 **禁用 / 启用** ，输入控件共有3种状态：
+             *
+             * - 普通状态：可编辑，值随表单提交
+             * - `disabled`：禁用状态，此状态下控件不能编辑，同时值不随表单提交
+             * - `readOnly`：只读状态，此状态下控件不能编辑，但其值会随表单提交
+             *
+             * @extends Control
+             * @constructor
+             * @param {Object} [options] 初始化参数
+             */
+            constructor: function (options) {
+                options = options ? u.extend({}, options) : {};
+                if (options.main && !options.name) {
+                    /**
+                     * @property {string} name
+                     *
+                     * 输入控件的名称，用于表单提交时作为键值
+                     *
+                     * @readonly
+                     */
+                    options.name = options.main.getAttribute('name');
+                }
+                this.$super(arguments);
+            },
 
             /**
              * 指定在哪些状态下该元素不处理相关的DOM事件，
@@ -148,7 +146,7 @@ define(
                     this.readOnly = !!this.readOnly;
                 }
 
-                return Control.prototype.setProperties.call(this, properties);
+                return this.$super(arguments);
             },
 
             /**
@@ -158,7 +156,7 @@ define(
              * @protected
              * @override
              */
-            repaint: helper.createRepaint(
+            repaint: require('./painters').createRepaint(
                 Control.prototype.repaint,
                 {
                     name: 'disabled',
@@ -203,13 +201,12 @@ define(
                             var classes = [].concat(
                                 classPrefix + '-hidden',
                                 classPrefix + '-validity-hidden',
-                                helper.getPartClasses(
-                                    control, 'validity-hidden')
+                                control.helper.getPartClasses('validity-hidden')
                             );
                             var method = control.isHidden()
-                                ? 'addClasses'
-                                : 'removeClasses';
-                            lib[method](validityLabel, classes);
+                                ? 'addClass'
+                                : 'removeClass';
+                            $(validityLabel)[method](classes.join(' '));
                         }
                     }
                 }
@@ -354,7 +351,7 @@ define(
              * 返回一个已经放在DOM正确位置的{@link validator.Validity}控件
              */
             getValidityLabel: function (dontCreate) {
-                if (!helper.isInStage(this, 'RENDERED')) {
+                if (!this.helper.isInStage('RENDERED')) {
                     return null;
                 }
 
@@ -381,7 +378,7 @@ define(
                 // Put the class on a parent to force repainting
                 if ((lib.ie === 8 || lib.ie === 7) && label) {
                     // otakustay赐名
-                    lib.toggleClass(label.main.parentNode, 'fuck-the-ie');
+                    $(label.main.parentNode).toggleClass('fuck-the-ie');
                 }
 
                 return label;
@@ -442,7 +439,7 @@ define(
              * @override
              */
             dispose: function () {
-                if (helper.isInStage(this, 'DISPOSED')) {
+                if (this.helper.isInStage(this, 'DISPOSED')) {
                     return;
                 }
 
@@ -450,11 +447,11 @@ define(
                 if (validityLabel) {
                     validityLabel.dispose();
                 }
-                Control.prototype.dispose.apply(this, arguments);
+                this.$super(arguments);
             }
         };
 
-        lib.inherits(InputControl, Control);
+        var InputControl = require('eoo').create(Control, exports);
         return InputControl;
     }
 );
