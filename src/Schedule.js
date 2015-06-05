@@ -12,6 +12,9 @@ define(
         var InputControl = require('./InputControl');
         var helper  = require('./controlHelper');
         var Layer = require('./Layer');
+
+        require('esui/behavior/Selectable');
+
         /**
          * Schedule控件
          *
@@ -450,7 +453,7 @@ define(
                 var item = removeDiv[0];
 
                 if (item.getAttribute('data-day') != null) {
-                    helper.clearDOMEvents(schedule, item);
+                    schedule.helper.removeDOMEvent(item);
                     parent.removeChild(item);
                 }
                 len--;
@@ -524,7 +527,7 @@ define(
          *
          */
         function dayClickHandler(e) {
-            var target = lib.event.getTarget(e);
+            var target = e.target;
 
             if (target.nodeName.toLowerCase() !== 'input') {
                 return;
@@ -556,7 +559,7 @@ define(
          * @param  {Object} arg 选项
          */
         function shortcutClickHandler(e) {
-            var target = lib.event.getTarget(e);
+            var target = e.target;
 
             if (!target || !lib.hasAttribute(target, 'data-item')) {
                 return;
@@ -586,7 +589,7 @@ define(
          * @inner
          */
         function shortcutMoveHandler(e) {
-            var target = lib.event.getTarget(e);
+            var target = e.target;
 
             if (!target || !target.getAttribute('data-item')) {
 
@@ -596,9 +599,6 @@ define(
             var element = target;
 
             var me = this;
-
-            //获取鼠标位置
-            lib.event.getMousePosition(e);
 
             var mousepos = {};
             mousepos.y = e.pageY + 20;
@@ -627,7 +627,7 @@ define(
          * @inner
          */
         function shortcutOverOutHandler(isOver, e) {
-            var target = lib.event.getTarget(e);
+            var target = e.target;
 
             if (!target || !target.getAttribute('data-item')) {
 
@@ -636,9 +636,6 @@ define(
 
             var element = target;
 
-
-            //获取鼠标位置
-            lib.event.getMousePosition(e);
 
             var mousepos = {};
             mousepos.y = e.pageY + 20;
@@ -677,8 +674,7 @@ define(
          *
          */
         function timeOverHandler(e) {
-
-            var target = lib.event.getTarget(e);
+            var target = e.target;
 
             if (!target || !target.getAttribute('data-time-item')) {
 
@@ -694,7 +690,6 @@ define(
             );
 
             //获取鼠标位置
-            lib.event.getMousePosition(e);
             var mousepos = {};
             mousepos.y = e.pageY + 20;
             mousepos.x = e.pageX + 10;
@@ -754,7 +749,7 @@ define(
                 },
                 100
             );
-            
+
         }
 
         /**
@@ -763,7 +758,7 @@ define(
          *
          */
         function timeOutHandler(e) {
-            var target = lib.event.getTarget(e);
+            var target = e.target;
             var me = this;
             var related = e.relatedTarget;
             var current = e.currentTarget;
@@ -786,110 +781,6 @@ define(
 
             //隐藏tip
             hidePromptTip(me, getId(me, 'timeitem-tip'));
-        }
-
-        var getTimeBodyMoveHandler; //drag mousemove的句柄
-        var getTimeBodyUpHandler; //drag mouseup的句柄
-
-
-        /**
-         * drag时 mousedown的事件处理函数
-         */
-        function timeBodyDownHandler(e) {
-            var me = this;
-            var doc = document;
-
-
-            getTimeBodyMoveHandler = lib.bind(timeBodyMoveHandler, me);
-            getTimeBodyUpHandler = lib.bind(timeBodyUpHandler, me);
-
-            lib.on(doc, 'mousemove', getTimeBodyMoveHandler);
-            lib.on(doc, 'mouseup', getTimeBodyUpHandler);
-
-
-            //记录鼠标位置
-            lib.event.getMousePosition(e);
-            this.dragStartPos = {x: e.pageX, y: e.pageY};
-
-
-            // 鼠标拖拽效果
-            // 为了防止在控件渲染后，位置变动导致计算错误，所以每次mousedown
-            // 位置都计算一遍
-            var timebody = lib.g(getId(me, 'time-body'));
-            me.dragRange = [];
-
-            var timebodyTop = lib.getOffset(timebody).top;
-            var timebodyLeft = lib.getOffset(timebody).left;
-            me.dragRange.push(timebodyTop);
-            me.dragRange.push(timebodyLeft + timebody.offsetWidth);
-            me.dragRange.push(timebodyTop + timebody.offsetHeight);
-            me.dragRange.push(timebodyLeft);
-
-
-            //添加兼容设置
-            ondragHuck(timebody);
-
-            // 显示follow区域
-            var cellPos = getTragTimeCellPos(this,
-                { x: e.pageX, y: e.pageY }
-            );
-
-            //hock ie下drag快速移动有时不执行mouseout, 此处隐藏tip
-            var tipId = getId(me, 'timeitem-tip');
-            lib.g(tipId) && (lib.g(tipId).style.display = 'none');
-
-            //渲染鼠标跟随div
-            repaintFollowEle(this, cellPos);
-        }
-
-        /**
-         * drag时 mousemove的事件处理函数
-         */
-        function timeBodyMoveHandler(e) {
-            //记录鼠标位置
-            lib.event.getMousePosition(e);
-
-            //计算当前显示区域
-            var cellPos = getTragTimeCellPos(this,
-                { x: e.pageX, y: e.pageY }
-            );
-
-            //渲染鼠标跟随div
-            repaintFollowEle(this, cellPos);
-
-        }
-
-        /**
-         * drag时 mouseup的事件处理函数
-         */
-        function timeBodyUpHandler(e) {
-            var me = this;
-
-            //清除兼容设置
-            offDragHuck(lib.g(getId(me, 'time-body')));
-
-            //隐藏鼠标跟随div
-            var followEle = lib.g(getId(me, 'follow-item'));
-            followEle.style.display = 'none';
-
-            //记录鼠标位置
-            lib.event.getMousePosition(e);
-
-            //为了修正，up的时候再重新计算下位置
-            var cellPos = getTragTimeCellPos(me,
-                { x: e.pageX, y: e.pageY }
-            );
-
-            //hack ie8下重新渲染遮罩层的时候会跳动，发现是setCapture的原因
-            //此处使用setTimeout，使其跳出setCapture的范围
-            setTimeout(function () {
-                setSelectedAreaValue(me, cellPos);
-            }, 10);
-
-            //卸载事件
-            var doc = document;
-            lib.un(doc, 'mousemove', getTimeBodyMoveHandler);
-            lib.un(doc, 'mouseup', getTimeBodyUpHandler);
         }
 
         /**
@@ -981,14 +872,18 @@ define(
 
         /**
          * drag时的鼠标跟随层的渲染方法
-         * @param {Schedule} schedule
-         * @param {Object} cellPos  选择区域的开始和结束配置
+         * @param {Event} e  鼠标事件
          */
-        function repaintFollowEle(schedule, cellPos) {
-            var me = schedule;
-            var slotSize = schedule.slotSize;
+        function repaintFollowEle(e) {
+            var me = this;
+            var slotSize = me.slotSize;
 
-            var followEleId = getId(schedule, 'follow-item');
+            //计算当前显示区域
+            var cellPos = getTragTimeCellPos(this,
+                { x: e.pageX, y: e.pageY }
+            );
+
+            var followEleId = getId(me, 'follow-item');
             var followEle = lib.g(followEleId);
             if (!followEle) {
                 followEle = document.createElement('div');
@@ -1036,60 +931,6 @@ define(
                 + ';left:' + divLeft + 'px';
 
             followEle.style.cssText += cssStyles;
-        }
-
-        /**
-         * drag开启时的默认清理函数
-         * @param  {HTMLElement} target 当前触发事件的元素
-         */
-        function ondragHuck(target) {
-
-            var doc = document;
-
-            //修正拖曳过程中页面里的文字会被选中
-            lib.on(doc, 'selectstart', dragUnSelect);
-
-            //设置鼠标粘滞
-            if (target.setCapture) {
-                target.setCapture();
-            }
-            else if (window.captureEvents) {
-                window.captureEvents(window.Event.MOUSEMOVE | window.Event.MOUSEUP);
-            }
-
-            //清除鼠标已选择元素
-            if (document.selection) {
-                document.selection.empty && document.selection.empty();
-            }
-            else if (window.getSelection) {
-                window.getSelection().removeAllRanges();
-            }
-        }
-
-        /**
-         * drag关闭时的清除函数
-         * @param  {HTMLElement} target 当前触发事件的元素
-         */
-        function offDragHuck(target) {
-
-            var doc = document;
-
-            //解除鼠标粘滞
-            if (target.releaseCapture) {
-                target.releaseCapture();
-            }
-            else if (window.releaseEvents) {
-                window.releaseEvents(window.Event.MOUSEMOVE | window.Event.MOUSEUP);
-            }
-
-            lib.un(doc, 'selectstart', dragUnSelect);
-        }
-
-        /**
-         * drag时清除选择区域的hander
-         */
-        function dragUnSelect(e) {
-            lib.event.preventDefault(e);
         }
 
         /**
@@ -1156,7 +997,7 @@ define(
             ele.innerHTML = lib.format(
                 html,
                 {
-                    testSlotClass: 
+                    testSlotClass:
                         schedule.helper.getPartClasses('slot-tester').join(' ')
                 }
             );
@@ -1267,9 +1108,55 @@ define(
              * @override
              */
             initEvents: function () {
+                var me = this;
                 var timebody = lib.g( getId(this, 'time-body') );
                 //绑定拖动drag事件
-                this.helper.addDOMEvent(timebody, 'mousedown', timeBodyDownHandler);
+                $(timebody).selectable(
+                    {
+                        filter: '.' + getClass(this, 'time'),
+                        start: function(e) {
+
+                            // ondragHuck(e.target);
+
+                            //记录鼠标位置
+                            me.dragStartPos = {x: e.pageX, y: e.pageY};
+
+                            // 鼠标拖拽效果
+                            // 为了防止在控件渲染后，位置变动导致计算错误，所以每次mousedown
+                            // 位置都计算一遍
+                            me.dragRange = [];
+
+                            var timebodyTop = lib.getOffset(timebody).top;
+                            var timebodyLeft = lib.getOffset(timebody).left;
+                            me.dragRange.push(timebodyTop);
+                            me.dragRange.push(timebodyLeft + timebody.offsetWidth);
+                            me.dragRange.push(timebodyTop + timebody.offsetHeight);
+                            me.dragRange.push(timebodyLeft);
+
+                            repaintFollowEle.call(me, e);
+                        },
+                        selecting: function (e) {
+                            repaintFollowEle.call(me, e);
+                        },
+                        stop: function (e) {
+
+                            // 隐藏鼠标跟随div
+                            var followEle = lib.g(getId(me, 'follow-item'));
+                            followEle.style.display = 'none';
+
+                            // 为了修正，up的时候再重新计算下位置
+                            var cellPos = getTragTimeCellPos(me,
+                                {x: e.pageX, y: e.pageY}
+                            );
+
+                            // hack ie8下重新渲染遮罩层的时候会跳动，发现是setCapture的原因
+                            // 此处使用setTimeout，使其跳出setCapture的范围
+                            setTimeout(function () {
+                                setSelectedAreaValue(me, cellPos);
+                            }, 10);
+                        }
+                    }
+                );
 
                 //绑定timebody mouseover事件
                 this.helper.addDOMEvent(timebody, 'mouseover', timeOverHandler);
