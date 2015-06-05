@@ -46,7 +46,11 @@ define(
 
                 var monthView = calendar.getChild('monthView');
                 monthView.setProperties(
-                    { 'rawValue': calendar.rawValue, 'range': calendar.range });
+                    {
+                        'rawValue': calendar.rawValue,
+                        'range': calendar.range
+                    }
+                );
                 monthView.on('change', syncMonthViewValue, calendar);
 
                 if (calendar.autoHideLayer) {
@@ -66,7 +70,10 @@ define(
                     var calendar = this.control;
                     var monthView = calendar.getChild('monthView');
                     monthView.setProperties(
-                        { 'rawValue': calendar.rawValue, 'range': calendar.range }
+                        {
+                            'rawValue': calendar.rawValue,
+                            'range': calendar.range
+                        }
                     );
                     this.show();
                 }
@@ -152,11 +159,12 @@ define(
                 if (options.autoHideLayer === 'true'
                     || options.autoHideLayer === '1') {
                     properties.autoHideLayer = true;
-                } else {
+                }
+                else {
                     properties.autoHideLayer = false;
                 }
 
-                if (lib.isInput(this.main)) {
+                if ($(this.main).is('input')) {
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
 
@@ -173,7 +181,7 @@ define(
                     var beginAndEnd = range.split(',');
                     var begin = this.parseValue(beginAndEnd[0]);
                     var end = this.parseValue(beginAndEnd[1]);
-                    properties.range = { begin: begin, end: end };
+                    properties.range = {begin: begin, end: end};
 
                 }
                 this.setProperties(properties);
@@ -189,7 +197,7 @@ define(
                 // 如果主元素是输入元素，替换成`<div>`
                 // 如果输入了非块级元素，则不负责
                 var controlHelper = this.helper;
-                if (lib.isInput(this.main)) {
+                if ($(this.main).is('input')) {
                     controlHelper.replaceMain();
                 }
 
@@ -264,7 +272,7 @@ define(
              * @param {meta.DateRange} range 日期可选区间
              */
             setRange: function (range) {
-                this.setProperties({ 'range': range });
+                this.setProperties({'range': range});
             },
 
             /**
@@ -301,13 +309,14 @@ define(
                 if (this.helper.isInStage('DISPOSED')) {
                     return;
                 }
-
+                // 先调用parent的的dispose方法以方便layer上的组件销毁
+                // 因为monthview是注册在当前组件下的
+                this.$super(arguments);
+                // 最后清空layer
                 if (this.layer) {
                     this.layer.dispose();
                     this.layer = null;
                 }
-
-                this.$super(arguments);
             }
         });
 
@@ -347,7 +356,7 @@ define(
         function updateDisplayText(calendar) {
             // 更新主显示
             var textHolder = calendar.helper.getPart('text');
-            textHolder.innerHTML = u.escape(calendar.getValue());
+            $(textHolder).html(u.escape(calendar.getValue()));
         }
 
         ui.register(Calendar);

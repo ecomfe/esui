@@ -18,6 +18,7 @@
 // Layer
 @esui-select-item-selected-color: #6CCDC0;
 @esui-select-item-background-selected: #E1E1E1;
+@esui-select-layer-max-height: 13em;
 
 .@{ui-class-prefix}-select {
     cursor: pointer;
@@ -67,9 +68,10 @@
 }
 
 .@{ui-class-prefix}-select-layer {
-    max-height: 13em;
+    max-height: @esui-select-layer-max-height;
     overflow-x: hidden;
     overflow-y: auto;
+    position: absolute;
 }
 
 .@{ui-class-prefix}-select-item-disabled {
