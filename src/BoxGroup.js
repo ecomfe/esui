@@ -11,6 +11,7 @@ define(
         var u = require('underscore');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
+        var $ = require('jquery');
 
         var exports = {
             /**
@@ -199,10 +200,7 @@ define(
              * @protected
              */
             getBoxElements: function () {
-                return u.where(
-                    this.main.getElementsByTagName('input'),
-                    {type: this.boxType}
-                );
+                return this.main.getElementsByTagName('input');
             }
         };
 
@@ -251,7 +249,7 @@ define(
                     // 提取`value`和`title`
                     var item = {value: box.value};
                     var label2 = box.id && labelIndex[box.id];
-                    item.title = label2 ? lib.getText(label2) : '';
+                    item.title = label2 ? $(label2).text() : '';
                     if (!item.title) {
                         item.title =
                             box.title || (box.value === 'on' ? box.value : '');
@@ -324,9 +322,18 @@ define(
          * @ignore
          */
         function render(group, datasource, boxType) {
-            // `BoxGroup`只会加`change`事件，所以全清就行
-            group.helper.clearDOMEvents();
-
+            // 有些属性会触发render，要把event先去掉，然后再绑定一次。
+            function bindUnbindBoxEvents(addEvent) {
+                // `change`事件不会冒泡的，所以在这里要给一个一个加上
+                var eventName = group.main.addEventListener ? 'change' : 'click';
+                u.each(
+                    group.getBoxElements(),
+                    function (box) {
+                        group.helper[addEvent ? 'addDOMEvent' : 'removeDOMEvent'](box, eventName, syncValue);
+                    }
+                );
+            }
+            bindUnbindBoxEvents(false);
             var html = '';
 
             var classes = [].concat(
@@ -341,7 +348,6 @@ define(
             }
 
             classes = classes.concat(classList);
-
 
             var valueIndex = lib.toDictionary(group.rawValue);
 
@@ -366,16 +372,7 @@ define(
             }
 
             group.main.innerHTML = html;
-
-            // `change`事件不会冒泡的，所以在这里要给一个一个加上
-            var eventName = group.main.addEventListener ? 'change' : 'click';
-            u.each(
-                group.getBoxElements(),
-                function (box) {
-                    this.helper.addDOMEvent(box, eventName, syncValue);
-                },
-                group
-            );
+            bindUnbindBoxEvents(true);
         }
 
         var BoxGroup = require('eoo').create(InputControl, exports);
