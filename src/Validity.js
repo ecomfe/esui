@@ -197,7 +197,7 @@ define(
                         }
                         label.display(validState, message || '', validity);
                         label.helper.initChildren();
-                        if (message) {
+                        if (message && !label.target.isHidden()) {
                             label.show();
                         }
                         else {
