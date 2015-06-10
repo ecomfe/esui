@@ -74,12 +74,6 @@ define(
                     properties.maxLength = this.main.maxLength;
                 }
             }
-            // TODO: custom elments 的兼容
-            else {
-                if (!properties.text) {
-                    properties.text = lib.getText(this.main);
-                }
-            }
 
             if (!properties.title) {
                 properties.title = this.main.title;
