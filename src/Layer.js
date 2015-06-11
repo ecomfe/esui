@@ -8,7 +8,7 @@
  */
 
 define(
-    function(require) {
+    function (require) {
         var u = require('underscore');
         var lib = require('./lib');
         var ui = require('./main');
@@ -77,8 +77,6 @@ define(
                 var element =
                     helper.createPart('layer', this.nodeName);
 
-                // 现阶段许多layer都漂浮在body下面。
-                // 因此父组件的variant常常对。
                 // 这里添加variant信息到layer上以方便定义variant样式。
                 var variants = control.variants;
                 var variantsCls = [];
@@ -92,7 +90,7 @@ define(
                     u.each(variants, function (v) {
                         variantsCls.push(helper.getPrimaryClassName('layer-' + v));
                     });
-                    lib.addClasses(element, variantsCls);
+                    $(element).addClass(variantsCls.join(' '));
                 }
 
                 return element;
@@ -101,11 +99,11 @@ define(
             /**
              * 给Layer增加自定义class
              *
-             * @return {array} layerClassNames样式集合
+             * @param {Array} layerClassNames 样式集合
              */
             addCustomClasses: function (layerClassNames) {
-               var element = this.getElement();
-               lib.addClasses(element, layerClassNames);
+                var element = this.getElement();
+                $(element).addClass(layerClassNames.join(' '));
             },
 
             /**
@@ -242,9 +240,9 @@ define(
              */
             dispose: function () {
                 var element = this.getElement(false);
+                this.autoCloseExcludeElements = [];
                 if (element) {
-                    element.innerHTML = '';
-                    lib.removeNode(element);
+                    $(element).remove();
                 }
                 this.control = null;
             }
@@ -266,7 +264,7 @@ define(
             }
 
             // 在内部点击
-            var inLayer = $.contains(layer, target);
+            var inLayer = layer === target || $.contains(layer, target);
             var inElements = false;
             u.each(me.autoCloseExcludeElements, function (ele) {
                 inElements = $.contains(ele, target);
@@ -277,7 +275,7 @@ define(
             if (!inLayer && !inElements) {
                 me.hide();
             }
-            else if (me.autoClose){
+            else if (me.autoClose) {
                 setDocClickHandler(me);
             }
         }
@@ -345,7 +343,7 @@ define(
          * @static
          */
         Layer.moveTo = function (element, top, left) {
-            positionLayerElement(element, { top: top, left: left });
+            positionLayerElement(element, {top: top, left: left});
         };
 
         /**
@@ -357,7 +355,7 @@ define(
          * @static
          */
         Layer.resize = function (element, width, height) {
-            positionLayerElement(element, { width: width, height: height });
+            positionLayerElement(element, {width: width, height: height});
         };
 
         /**
@@ -370,17 +368,20 @@ define(
          * @static
          */
         Layer.attachTo = function (layer, target, options) {
-            options = options || { strictWidth: false };
+            options = options || {strictWidth: false};
             // 如果对层宽度有要求，则先设置好最小宽度
             if (options.strictWidth) {
                 layer.style.minWidth = target.offsetWidth + 'px';
             }
             $(layer).position(
-                {
-                    my: 'left top',
-                    of: target,
-                    at: 'left bottom'
-                }
+                u.extend(
+                    {
+                        my: 'left top',
+                        of: target,
+                        at: 'left bottom'
+                    },
+                    options
+                )
             );
         };
 

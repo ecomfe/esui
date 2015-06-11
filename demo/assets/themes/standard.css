@@ -2750,19 +2750,11 @@ hr {
 .ui-calendar-arrow span:before {
   content: "\f073";
 }
+.ui-calendar-layer {
+  position: absolute;
+}
 .ui-calendar-layer .ui-monthview {
   vertical-align: top;
-}
-.ui-layer {
-  position: absolute;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  margin: 0;
-}
-.ui-layer-hidden {
-  display: none;
 }
 /**
  * ESUI (Enterprise Simple UI)
@@ -2982,6 +2974,7 @@ hr {
   max-height: 13em;
   overflow-x: hidden;
   overflow-y: auto;
+  position: absolute;
 }
 .ui-select-item-disabled {
   opacity: 0.4;
@@ -3045,6 +3038,20 @@ hr {
  * @file 对话框样式
  * @author dbear
  */
+.ui-commandmenu-layer {
+  position: absolute;
+}
+.ui-layer {
+  position: absolute;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0;
+}
+.ui-layer-hidden {
+  display: none;
+}
 /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
@@ -3522,6 +3529,11 @@ span.ui-crumb-node {
   display: inline-block;
   outline: 0;
   background: #f6f6f6;
+}
+.ui-schedule .ui-selectable .ui-selectee,
+.ui-schedule .ui-selectable .ui-selectable,
+.ui-schedule .ui-selectable .ui-selecting {
+  background: white;
 }
 .ui-schedule-slot-tester {
   width: 2em;

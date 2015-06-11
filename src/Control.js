@@ -13,8 +13,9 @@ define(
         var ui = require('./main');
         var Helper = require('./Helper');
         var eoo = require('eoo');
+        var EventTarget = require('mini-event/EventTarget');
 
-        var exports = {
+        var Control = eoo.create(EventTarget, {
             /**
              * 控件基类
              *
@@ -321,7 +322,8 @@ define(
                 // 为了避免`dispose()`的时候把`main`置空了，这里先留存一个
                 var main = this.main;
                 this.dispose();
-                lib.removeNode(main);
+                $(main).remove();
+                this.main = null;
             },
 
             /**
@@ -729,7 +731,7 @@ define(
             initChildren: function (wrap, options) {
                 this.helper.initChildren(wrap, options);
             }
-        };
+        });
 
         /**
          * @property {string} type
@@ -756,7 +758,7 @@ define(
          *
          * @readonly
          */
-        var Control = eoo.create(require('mini-event/EventTarget'), exports);
+
         return Control;
     }
 );

@@ -11,17 +11,8 @@ define(
         var u = require('underscore');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
-
-        /**
-         * 同步选中状态
-         *
-         * @param {Event} e DOM事件对象
-         * @ignore
-         */
-        function syncChecked(e) {
-            var checked = lib.g(this.boxId).checked;
-            this.setProperties({ checked: checked });
-        }
+        var eoo = require('eoo');
+        var painters = require('./painters');
 
         /**
          * 复选框
@@ -29,11 +20,7 @@ define(
          * @extends InputControl
          * @constructor
          */
-        function CheckBox() {
-            InputControl.apply(this, arguments);
-        }
-
-        CheckBox.prototype = {
+        var CheckBox = eoo.create(InputControl, {
             /**
              * 控件类型，始终为`"CheckBox"`
              *
@@ -42,17 +29,6 @@ define(
              * @override
              */
             type: 'CheckBox',
-
-            /**
-             * 创建控件主元素，默认使用`<label>`属性
-             *
-             * @return {HTMLElement}
-             * @protected
-             * @override
-             */
-            createMain: function () {
-                return document.createElement('div');
-            },
 
             /**
              * 获取控件的分类，始终返回`"check"`
@@ -149,36 +125,31 @@ define(
              * @override
              */
             initStructure: function () {
-                var classList = [];
                 // 如果用的是一个`<input>`，替换成`<div>`
-                if (this.main.nodeName.toLowerCase() === 'input') {
-                    classList = this.main.classList ? [].slice.call(this.main.classList) : lib.getClasses(this.main);
-                    lib.removeClasses(this.main, classList);
+                if ($(this.main).is('input')) {
+                    var classList = this.main.className;
+                    this.main.className = '';
                     this.boxId = this.main.id || this.helper.getId('box');
                     this.helper.replaceMain();
                     this.main.id = this.helper.getId();
+                    if (classList) {
+                        $(this.main).addClass(classList);
+                    }
                 }
                 else {
                     this.boxId = this.helper.getId('box');
                 }
 
-                
-                // TODO: 测试是否支持checked选择器。
-                if (classList.length) {
-                    lib.addClasses(this.main, classList);
-                }
-
                 var html = '<input type="checkbox" name="${name}" id="${id}" />'
-                    + '<label id="${textId}" for="${id}" class="'
-                    + this.helper.getPartClasses('box')
-                    + '"></label>';
+                    + '<label id="${textId}" for="${id}" class="${box}"></label>';
 
                 this.main.innerHTML = lib.format(
                     html,
                     {
                         name: this.name,
                         id: this.boxId,
-                        textId: this.helper.getId('text')
+                        textId: this.helper.getId('text'),
+                        box: this.helper.getPartClasses('box')
                     }
                 );
             },
@@ -255,19 +226,18 @@ define(
                 this.title = title;
                 title = u.escape(title);
                 this.helper.getPart('text').innerHTML = title;
-                lib.setAttribute(this.boxId, 'title', title);
+                $(this.boxId).attr('title', title);
             },
 
             /**
              * 更新checkbox状态
              *
-             * @param {boolean} title 新的标签文本内容，未经HTML转义
+             * @param {boolean} indeterminate 更新状态
              * @protected
              */
             updateIndeterminate: function (indeterminate) {
                 this.helper.getPart('box').indeterminate = indeterminate;
             },
-
 
             /**
              * 重渲染
@@ -276,7 +246,7 @@ define(
              * @protected
              * @override
              */
-            repaint: require('./painters').createRepaint(
+            repaint: painters.createRepaint(
                 InputControl.prototype.repaint,
                 {
                     /**
@@ -300,9 +270,9 @@ define(
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (box, disabled, readOnly) {
-                        var box = lib.g(box.boxId);
-                        box.disabled = disabled;
-                        box.readOnly = readOnly;
+                        var box1 = lib.g(box.boxId);
+                        box1.disabled = disabled;
+                        box1.readOnly = readOnly;
                     }
                 },
                 {
@@ -323,8 +293,8 @@ define(
              *
              * @param {boolean} checked 状态
              */
-            setChecked: function ( checked ) {
-                this.setProperties({ checked: checked });
+            setChecked: function (checked) {
+                this.setProperties({checked: checked});
             },
 
             /**
@@ -337,13 +307,22 @@ define(
                     var box = lib.g(this.boxId);
                     return box.checked;
                 }
-                else {
-                    return this.checked;
-                }
-            }
-        };
 
-        lib.inherits( CheckBox, InputControl );
+                return this.checked;
+            }
+        });
+
+        /**
+         * 同步选中状态
+         *
+         * @param {Event} e DOM事件对象
+         * @ignore
+         */
+        function syncChecked(e) {
+            var checked = lib.g(this.boxId).checked;
+            this.setProperties({checked: checked});
+        }
+
         require('./main').register(CheckBox);
         return CheckBox;
     }
