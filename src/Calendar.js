@@ -122,8 +122,7 @@ define(
             // 更新主显示
             var textHolder = calendar.helper.getPart('text');
             textHolder.innerHTML = u.escape(
-                moment(calendar.getValue(), calendar.dateFormat)
-                    .format(calendar.displayFormat)
+                moment(calendar.getRawValue()).format(calendar.displayFormat)
             );
         }
 
