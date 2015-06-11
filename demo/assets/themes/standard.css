@@ -3038,6 +3038,20 @@ hr {
  * @file 对话框样式
  * @author dbear
  */
+.ui-commandmenu-layer {
+  position: absolute;
+}
+.ui-layer {
+  position: absolute;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0;
+}
+.ui-layer-hidden {
+  display: none;
+}
 /**
   * ESUI (Enterprise Simple UI)
   * Copyright 2013 Baidu Inc. All rights reserved.
@@ -3168,17 +3182,6 @@ span.ui-crumb-node {
 }
 .ui-dialog-icon-confirm {
   color: #6bd5ec;
-}
-.ui-layer {
-  position: absolute;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  margin: 0;
-}
-.ui-layer-hidden {
-  display: none;
 }
 /**
 * ESUI (Enterprise Simple UI)

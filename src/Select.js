@@ -257,7 +257,7 @@ define(
                 innerSelectElement.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
                 mainElement.appendChild(innerSelectElement);
 
-                lib.addClass(helper.getPart(arrow), helper.getIconClass());
+                $(helper.getPart(arrow)).addClass(helper.getIconClass());
             },
 
             /**
@@ -517,7 +517,7 @@ define(
                 context.selectedIndex = -1;
                 var value = context.rawValue || context.value;
                 for (var i = 0; i < context.datasource.length; i++) {
-                    if ('' + context.datasource[i].value === '' + value) {
+                    if (context.datasource[i].value == value) {
                         context.selectedIndex = i;
                         break;
                     }

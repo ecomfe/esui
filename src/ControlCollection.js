@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 控件集合，类似`jQuery`对象的功能
  * @author otakustay
@@ -105,7 +105,7 @@ define(
          * 否则将会出现`TypeError("has no method 'methodName'")`异常
          *
          * @param {string} methodName 需要调用的函数的名称
-         * @param {Mixed...} args 调用方法时指定的参数
+         * @param {Mixed} args 调用方法时指定的参数
          * @return {Mixed[]} 返回一个数组，依次包含每个控件调用方法的结果
          */
         ControlCollection.prototype.invoke = function (methodName) {
