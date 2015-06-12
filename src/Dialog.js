@@ -472,7 +472,7 @@ define(
              * @param {Array=} 变更过的属性的集合
              * @override
              */
-            repaint: helper.createRepaint(
+            repaint: .createRepaint(
                 Control.prototype.repaint,
                 {
                     name: 'height',
