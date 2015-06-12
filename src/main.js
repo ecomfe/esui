@@ -312,6 +312,27 @@ define(
             options = options || {};
 
             var valueReplacer = options.valueReplacer || function (value) {
+                // 这里要处理几种特殊情况
+                // 1. false --> bool
+                // 2. 全部为数字的字符串 --> number
+                // 3. 使用'false' / 'number'这一类不进行类型转换，但是去掉'(trim)
+
+                if (value === 'false') {
+                    value = false;
+                }
+                // 处理数字
+                else if (!/[^0-9.]/.test(value)) {
+                    if (/\./.test(value)) {
+                        value = parseFloat(value) || value;
+                    }
+                    else {
+                        value = parseInt(value, 10) || value;
+                    }
+                }
+                // trim ''
+                else if (/^'.+?'$/.test(value)) {
+                    value = value.slice(1, -1);
+                }
                 return value;
             };
 
