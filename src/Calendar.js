@@ -143,6 +143,16 @@ define(
                     paramFormat: 'YYYY-MM-DD',
 
                     /**
+                     * @property {string} [displayFormat="YYYY-MM-DD"]
+                     *
+                     * 展示使用的日期格式，用于updateDisplayText时格式化
+                     *
+                     * 具体的日期格式参考
+                     * [moment文档](http://momentjs.com/docs/#/displaying/format/)
+                     */
+                    displayFormat: 'YYYY-MM-DD',
+
+                    /**
                      * @property {Date} [rawValue]
                      *
                      * 控件的原始值，为`Date`类型，默认为当天
@@ -356,7 +366,9 @@ define(
         function updateDisplayText(calendar) {
             // 更新主显示
             var textHolder = calendar.helper.getPart('text');
-            $(textHolder).html(u.escape(calendar.getValue()));
+            textHolder.innerHTML = u.escape(
+                moment(calendar.getRawValue()).format(calendar.displayFormat)
+            );
         }
 
         ui.register(Calendar);
