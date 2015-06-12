@@ -304,14 +304,14 @@ define(
          * @param {Object} [options] init参数
          * @param {Object} [options.viewContext] 视图环境
          * @param {Object} [options.properties] 属性集合，通过id映射
-         * @param {Object} [options.valueReplacer] 属性值替换函数
+         * @param {Function} [options.valueReplacer] 属性值替换函数
          * @return {Control[]} 初始化的控件对象集合
          */
         main.init = function (wrap, options) {
             wrap = wrap || document.body;
             options = options || {};
 
-            var valueReplacer = options.valueReplacer || function (value) {
+            var valueReplacer = function (value) {
                 // 这里要处理几种特殊情况
                 // 1. false --> bool
                 // 2. 全部为数字的字符串 --> number
@@ -319,6 +319,9 @@ define(
 
                 if (value === 'false') {
                     value = false;
+                }
+                else if (value === 'true') {
+                    value = true;
                 }
                 // 处理数字
                 else if (!/[^0-9.]/.test(value)) {
@@ -332,6 +335,9 @@ define(
                 // trim ''
                 else if (/^'.+?'$/.test(value)) {
                     value = value.slice(1, -1);
+                }
+                if (options.valueReplacer) {
+                    value = options.valueReplacer(value);
                 }
                 return value;
             };
