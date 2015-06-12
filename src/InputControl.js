@@ -15,6 +15,7 @@ define(
         var esui = require('./main');
         var u = require('underscore');
         var eoo = require('eoo');
+        var painters = require('./painters');
 
         var InputControl = eoo.create(
             Control,
@@ -50,7 +51,7 @@ define(
                          */
                         options.name = options.main.getAttribute('name');
                     }
-                    this.$super(arguments);
+                    this.$super([options]);
                 },
 
                 /**
@@ -159,7 +160,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
                     {
                         name: 'disabled',
