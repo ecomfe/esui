@@ -110,40 +110,6 @@ define(
                 initOptions: function (options) {
                     var now = new Date();
                     var properties = {
-                        range: {
-                            begin: new Date(1983, 8, 3),
-                            end: new Date(2046, 10, 4)
-                        },
-                        /**
-                         * @property {string} [dateFormat="YYYY-MM-DD"]
-                         *
-                         * 输出的日期格式，用于{@link Calendar#getValue}返回时格式化
-                         *
-                         * 具体的日期格式参考
-                         * [moment文档](http://momentjs.com/docs/#/displaying/format/)
-                         */
-                        dateFormat: 'YYYY-MM-DD',
-
-                        /**
-                         * @property {string} [paramFormat="YYYY-MM-DD"]
-                         *
-                         * 输入的日期格式，用于{@link Calendar#setValue}时格式化
-                         *
-                         * 具体的日期格式参考
-                         * [moment文档](http://momentjs.com/docs/#/displaying/format/)
-                         */
-                        paramFormat: 'YYYY-MM-DD',
-
-                        /**
-                         * @property {string} [displayFormat="YYYY-MM-DD"]
-                         *
-                         * 展示使用的日期格式，用于updateDisplayText时格式化
-                         *
-                         * 具体的日期格式参考
-                         * [moment文档](http://momentjs.com/docs/#/displaying/format/)
-                         */
-                        displayFormat: 'YYYY-MM-DD',
-
                         /**
                          * @property {Date} [rawValue]
                          *
@@ -156,7 +122,7 @@ define(
                         autoHideLayer: false
                     };
 
-                    u.extend(properties, options);
+                    u.extend(properties, Calendar.defaultProperties, options);
 
                     if ($(this.main).is('input')) {
                         this.helper.extractOptionsFromInput(this.main, properties);
@@ -314,6 +280,43 @@ define(
                 }
             }
         );
+
+        Calendar.defaultProperties = {
+            range: {
+                begin: new Date(1983, 8, 3),
+                end: new Date(2046, 10, 4)
+            },
+
+            /**
+             * @property {string} [dateFormat="YYYY-MM-DD"]
+             *
+             * 输出的日期格式，用于{@link Calendar#getValue}返回时格式化
+             *
+             * 具体的日期格式参考
+             * [moment文档](http://momentjs.com/docs/#/displaying/format/)
+             */
+            dateFormat: 'YYYY-MM-DD',
+
+            /**
+             * @property {string} [paramFormat="YYYY-MM-DD"]
+             *
+             * 输入的日期格式，用于{@link Calendar#setValue}时格式化
+             *
+             * 具体的日期格式参考
+             * [moment文档](http://momentjs.com/docs/#/displaying/format/)
+             */
+            paramFormat: 'YYYY-MM-DD',
+
+            /**
+             * @property {string} [displayFormat="YYYY-MM-DD"]
+             *
+             * 展示使用的日期格式，用于updateDisplayText时格式化
+             *
+             * 具体的日期格式参考
+             * [moment文档](http://momentjs.com/docs/#/displaying/format/)
+             */
+            displayFormat: 'YYYY-MM-DD'
+        };
 
         /**
          * 更新显示

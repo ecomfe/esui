@@ -146,7 +146,9 @@ define(
                                 }
                                 label.display(validState, message || '', validity);
                                 label.helper.initChildren();
-                                if (message) {
+                                // message必须要有，不然没有展现的意义
+                                // 有target而target隐藏也没有意思，取互斥事件
+                                if (message && !(label.target && label.target.isHidden())) {
                                     label.show();
                                 }
                                 else {

@@ -420,7 +420,7 @@ define(
             // 控件渲染的过程会导致Collection的改变
             var uiPrefix = main.getConfig('uiPrefix');
             var extPrefix = main.getConfig('extensionPrefix');
-            var $elements = $(wrap).find('[' + uiPrefix + ']').add('[' + uiPrefix + '-type]');
+            var $elements = $(wrap).find('[' + uiPrefix + '],[' + uiPrefix + '-type]');
 
             var uiPrefixLen = uiPrefix.length;
             var extPrefixLen = extPrefix.length;

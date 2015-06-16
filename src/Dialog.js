@@ -609,7 +609,9 @@ define(
             }
         }
 
-        var getResizeHandler; //resize的句柄
+        //resize的句柄
+        var getResizeHandler;
+
         /**
          * 页面resize时事件的处理函数
          *
@@ -804,7 +806,6 @@ define(
 
         };
 
-
         Dialog.alert = function (args) {
             var dialogPrefix = 'dialog-alert';
             var okPrefix = 'dialog-alert-ok';
@@ -895,7 +896,6 @@ define(
         };
 
         esui.register(Dialog);
-
         return Dialog;
     }
 );
