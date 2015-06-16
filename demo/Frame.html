@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Frame - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
+    <body>
+        <h1 id="branding">ESUI - Frame</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Form</h2>
+                <div class="intro">
+                    <p>基本Form。</p>
+                </div>
+                <div class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div class="example ui-demo-light-stage">
+                        <iframe class="edit-form"
+                        data-ui-type="Frame"
+                        data-ui-src="http://www.baidu.com"
+                        data-ui-width="500"
+                        data-ui-height="500"
+                        data-ui-id="form">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Frame'
+            ],
+            function (ui) {
+                ui.init();
+            }
+        );
+        copyExample();
+        </script>
+    </body>
+</html>

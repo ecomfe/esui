@@ -71,6 +71,13 @@
                             <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">3</label>
                             <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">2</label>
                         </div>
+                        <h2>ForTarget</h2>
+                        <div class="row">
+                            <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-for-target="Label2" data-ui-variants="custom circular">3</label>
+                            <div data-ui-type="TextBox" data-ui-id="Label2">
+                            
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -79,7 +86,8 @@
         require(
             [
                 'esui',
-                'esui/Label'
+                'esui/Label',
+                'esui/TextBox'
             ],
             function (ui) {
                 var label = ui.init()[0];

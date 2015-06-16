@@ -6,6 +6,7 @@
  * @file 面包屑导航控件
  * @author otakustay
  */
+
 define(
     function (require) {
         var u = require('underscore');
@@ -23,63 +24,155 @@ define(
          * @extends Control
          * @constructor
          */
-        var Crumb = eoo.create(Control, {
-            /**
-             * 控件类型，始终为`"Crumb"`
-             *
-             * @type {string}
-             * @readonly
-             * @override
-             */
-            type: 'Crumb',
+        var Crumb = eoo.create(
+            Control,
+            {
+                /**
+                 * 控件类型，始终为`"Crumb"`
+                 *
+                 * @type {string}
+                 * @readonly
+                 * @override
+                 */
+                type: 'Crumb',
 
-            /**
-             * 初始化参数
-             *
-             * 如果初始化时未提供{@link Crumb#path}属性，则按以下规则构建该属性：
-             *
-             * 1. 获取主元素的所有子元素
-             * 2. 对每个子元素，获取其文本内容为{@link meta.CrumbItem#text}属性
-             * 3. 如果子元素是`<a>`元素，
-             * 获取其`href`属性为配置项的{@link meta.CrumbItem#href}属性
-             *
-             * 因此 *不要* 在主元素下写分隔符
-             *
-             * @param {Object} [options] 构造函数传入的参数
-             * @protected
-             * @override
-             */
-            initOptions: function (options) {
-                var properties = {
-                    path: []
-                };
-                u.extend(properties, Crumb.defaultProperties, options);
+                /**
+                 * 初始化参数
+                 *
+                 * 如果初始化时未提供{@link Crumb#path}属性，则按以下规则构建该属性：
+                 *
+                 * 1. 获取主元素的所有子元素
+                 * 2. 对每个子元素，获取其文本内容为{@link meta.CrumbItem#text}属性
+                 * 3. 如果子元素是`<a>`元素，
+                 * 获取其`href`属性为配置项的{@link meta.CrumbItem#href}属性
+                 *
+                 * 因此 *不要* 在主元素下写分隔符
+                 *
+                 * @param {Object} [options] 构造函数传入的参数
+                 * @protected
+                 * @override
+                 */
+                initOptions: function (options) {
+                    var properties = {
+                        path: []
+                    };
+                    u.extend(properties, Crumb.defaultProperties, options);
 
-                var children = lib.getChildren(this.main);
-                if (!options.path && children.length) {
-                    // 从HTML中拿到数据，HTML中不要写separator
-                    properties.path = u.map(
-                        children,
-                        function (element) {
+                    var $children = $(this.main).children();
+                    if (!options.path && $children.size() > 0) {
+                        // 从HTML中拿到数据，HTML中不要写separator
+                        $children.each(function (idx, element) {
+                            var $ele = $(element);
                             var node = {
-                                text: lib.getText(element)
+                                text: $ele.text()
                             };
-                            if (element.nodeName.toLowerCase() === 'a') {
-                                node.href = lib.getAttribute(element, 'href');
+                            if ($ele.is('a')) {
+                                node.href = $ele.attr('href');
                             }
+                            properties.path.push(node);
+                        });
+                    }
 
-                            return node;
+                    this.setProperties(properties);
+                },
+
+                initEvents: function () {
+                    var nodeSelector = '.'
+                        + this.helper.getPrimaryClassName('node');
+                    this.helper.addDOMEvent(this.main, 'click', nodeSelector, click);
+                },
+
+                /**
+                 * 获取节点的HTML内容
+                 *
+                 * @param {meta.CrumbItem} node 节点数据项
+                 * @param {number} index 节点索引序号
+                 * @return {string}
+                 */
+                getNodeHTML: function (node, index) {
+                    var controlHelper = this.helper;
+                    var classes = [controlHelper.getPrimaryClassName('node')];
+                    if (index === 0) {
+                        classes.push(
+                            controlHelper.getPrimaryClassName('node-first')
+                        );
+                    }
+                    if (index === this.path.length - 1) {
+                        classes.push(
+                            controlHelper.getPrimaryClassName('node-last')
+                        );
+                    }
+
+                    var template = node.href
+                        ? this.linkNodeTemplate
+                        : this.textNodeTemplate;
+                    var data = {
+                        href: u.escape(node.href),
+                        text: u.escape(node.text),
+                        index: index,
+                        classes: classes.join(' ')
+                    };
+                    return lib.format(template, data);
+                },
+
+                /**
+                 * 获取分隔元素HTML内容
+                 *
+                 * @return {string}
+                 */
+                getSeparatorHTML: function () {
+                    return lib.format(
+                        this.separatorTemplate,
+                        {
+                            classes: this.helper.getPartClassName('separator'),
+                            text: u.escape(this.separator)
                         }
                     );
-                }
+                },
 
-                this.setProperties(properties);
-            },
+                /**
+                 * 重渲染
+                 *
+                 * @method
+                 * @protected
+                 * @override
+                 */
+                repaint: painters.createRepaint(
+                    Control.prototype.repaint,
+                    {
+                        /**
+                         * @property {meta.CrumbItem[]} path
+                         *
+                         * 数据源配置，数组中的每一项生成一个节点
+                         */
 
-            initEvents: function () {
-                this.helper.addDOMEvent(this.main, 'click', click);
-            },
+                        /**
+                         * @property {string} separator
+                         *
+                         * 分隔符，默认使用{@link Crumb#defaultProperties}中的配置
+                         */
+                        name: ['path', 'separator'],
+                        paint: function (crumb, path) {
+                            var html = u.map(path, crumb.getNodeHTML, crumb);
+                            var separator = crumb.getSeparatorHTML();
 
+                            crumb.main.innerHTML = html.join(separator);
+                        }
+                    }
+                )
+            }
+        );
+
+        Crumb.defaultProperties = {
+            /**
+             * @cfg defaultProperties
+             *
+             * 默认属性值
+             *
+             * @cfg {string} [defaultProperties.separator=">"] 节点分隔符
+             * @static
+             */
+            separator: '>',
             /**
              * 无链接的文字节点的内容HTML模板
              *
@@ -88,6 +181,7 @@ define(
              * - `{string} text`：文本内容，经过HTML转义
              *
              * @type {string}
+             * @static
              */
             textNodeTemplate:
                 '<span class="${classes}" data-index="${index}">${text}</span>',
@@ -101,6 +195,7 @@ define(
              * - `{string} href`：链接地址，经过HTML转义
              *
              * @type {string}
+             * @static
              */
             linkNodeTemplate:
                 '<a class="${classes}" href="${href}" data-index="${index}">${text}</a>',
@@ -114,128 +209,20 @@ define(
              * - `{string} text`：文本内容，经过HTML转义
              *
              * @type {string}
+             * @static
              */
             separatorTemplate:
-                '<span class="${classes}">${text}</span>',
-
-            /**
-             * 获取节点的HTML内容
-             *
-             * @param {meta.CrumbItem} node 节点数据项
-             * @param {number} index 节点索引序号
-             * @return {string}
-             */
-            getNodeHTML: function (node, index) {
-                var classes = this.helper.getPartClasses('node');
-                if (index === 0) {
-                    classes.push.apply(
-                        classes,
-                        this.helper.getPartClasses('node-first')
-                    );
-                }
-                if (index === this.path.length - 1) {
-                    classes.push.apply(
-                        classes,
-                        this.helper.getPartClasses('node-last')
-                    );
-                }
-
-                var template = node.href
-                    ? this.linkNodeTemplate
-                    : this.textNodeTemplate;
-                var data = {
-                    href: u.escape(node.href),
-                    text: u.escape(node.text),
-                    index: index,
-                    classes: classes.join(' ')
-                };
-                return lib.format(template, data);
-            },
-
-            /**
-             * 获取分隔元素HTML内容
-             *
-             * @return {string}
-             */
-            getSeparatorHTML: function () {
-                return lib.format(
-                    this.separatorTemplate,
-                    {
-                        classes: this.helper.getPartClassName('separator'),
-                        text: u.escape(this.separator)
-                    }
-                );
-            },
-
-            /**
-             * 重渲染
-             *
-             * @method
-             * @protected
-             * @override
-             */
-            repaint: painters.createRepaint(
-                Control.prototype.repaint,
-                {
-                    /**
-                     * @property {meta.CrumbItem[]} path
-                     *
-                     * 数据源配置，数组中的每一项生成一个节点
-                     */
-
-                    /**
-                     * @property {string} separator
-                     *
-                     * 分隔符，默认使用{@link Crumb#defaultProperties}中的配置
-                     */
-                    name: ['path', 'separator'],
-                    paint: function (crumb, path) {
-                        var html = u.map(path, crumb.getNodeHTML, crumb);
-                        var separator = crumb.getSeparatorHTML();
-
-                        crumb.main.innerHTML = html.join(separator);
-                    }
-                }
-            )
-        });
-
-        /**
-         * @cfg defaultProperties
-         *
-         * 默认属性值
-         *
-         * @cfg {string} [defaultProperties.separator=">"] 节点分隔符
-         * @static
-         */
-        Crumb.defaultProperties = {
-            separator: '>'
+                '<span class="${classes}">${text}</span>'
         };
 
         function click(e) {
-            var node = e.target;
-            var children = lib.getChildren(this.main);
-            while (node !== this.main) {
-                if (this.helper.isPart(node, 'node')) {
-                    var index = lib.hasAttribute(node, 'data-index') ? node.getAttribute('data-index')
-                        : getPathIndex(children, node);
-                    var event = this.fire('click', { item: this.path[index] });
-                    event.isDefaultPrevented() && e.preventDefault();
-                    event.isPropagationStopped() && e.stopPropagation();
+            var $node = $(e.currentTarget);
+            var dataIndex = $node.attr('data-index');
 
-                    return;
-                }
-
-                node = node.parentNode;
-            }
-        }
-
-        function getPathIndex(children, node) {
-            for (var i = children.length - 1; i > -1; i -= 2) {
-                if (children[i] === node) {
-                    // separator 的插入使得索引要除个2
-                    return i / 2;
-                }
-            }
+            dataIndex = parseInt(dataIndex, 10) || ($node.prevAll().size() / 2);
+            var returnedEvent = this.fire('click', {item: this.path[dataIndex]});
+            returnedEvent.isDefaultPrevented() && e.preventDefault();
+            returnedEvent.isPropagationStopped() && e.stopPropagation();
         }
 
         esui.register(Crumb);

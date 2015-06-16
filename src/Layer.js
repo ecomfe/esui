@@ -11,7 +11,7 @@ define(
     function (require) {
         var u = require('underscore');
         var lib = require('./lib');
-        var ui = require('./main');
+        var esui = require('./main');
         var eoo = require('eoo');
         var EventTarget = require('mini-event/EventTarget');
         var $ = require('jquery');
@@ -21,232 +21,235 @@ define(
         // 初始最高的`z-index`值，将浮层移到最上就是参考此值
         var zIndexStack = 1000;
 
-        var Layer = eoo.create(EventTarget, {
-            /**
-             * 浮层基类
-             *
-             * `Layer`类是一个与控件形成组合关系的类，但并不是一个控件
-             *
-             * 当一个控件需要一个浮层（如下拉框）时，可以使用此类，并重写相关方法来实现浮层管理
-             *
-             * 不把`Layer`作为一个控件来实现，是有以下考虑：
-             *
-             * - 即便`Layer`作为子控件使用，也必须重写所有相关方法才能起作用，并未节省代码
-             * - 控件的生命周期管理、事件管理等一大堆事对性能多少有些负面影响
-             * - 通常重写`Layer`的方法时，会依赖控件本身的一些开放接口。
-             * 那么如果`Layer`是个子控件，就形成了 **子控件反调用父控件方法** 的现象，不合理
-             *
-             * 关于如何使用`Layer`控件，可以参考{@link CommandMenu}进行学习
-             *
-             * @constructor
-             * @param {Control} control 关联的控件实例
-             */
-            constructor: function (control) {
-                this.control = control;
-            },
+        var Layer = eoo.create(
+            EventTarget,
+            {
+                /**
+                 * 浮层基类
+                 *
+                 * `Layer`类是一个与控件形成组合关系的类，但并不是一个控件
+                 *
+                 * 当一个控件需要一个浮层（如下拉框）时，可以使用此类，并重写相关方法来实现浮层管理
+                 *
+                 * 不把`Layer`作为一个控件来实现，是有以下考虑：
+                 *
+                 * - 即便`Layer`作为子控件使用，也必须重写所有相关方法才能起作用，并未节省代码
+                 * - 控件的生命周期管理、事件管理等一大堆事对性能多少有些负面影响
+                 * - 通常重写`Layer`的方法时，会依赖控件本身的一些开放接口。
+                 * 那么如果`Layer`是个子控件，就形成了 **子控件反调用父控件方法** 的现象，不合理
+                 *
+                 * 关于如何使用`Layer`控件，可以参考{@link CommandMenu}进行学习
+                 *
+                 * @constructor
+                 * @param {Control} control 关联的控件实例
+                 */
+                constructor: function (control) {
+                    this.control = control;
+                },
 
-            /**
-             * 创建的元素标签类型
-             *
-             * @type {string}
-             */
-            nodeName: 'div',
+                /**
+                 * 创建的元素标签类型
+                 *
+                 * @type {string}
+                 */
+                nodeName: 'div',
 
-            /**
-             * 点击到浮层外是关闭
-             *
-             * @type {bool}
-             */
-            autoClose: true,
+                /**
+                 * 点击到浮层外是关闭
+                 *
+                 * @type {bool}
+                 */
+                autoClose: true,
 
-            /**
-             * 当这些元素是父元素时，不自动关闭浮层。
-             *
-             * @type {Array}
-             */
-            autoCloseExcludeElements: [],
+                /**
+                 * 当这些元素是父元素时，不自动关闭浮层。
+                 *
+                 * @type {Array}
+                 */
+                autoCloseExcludeElements: [],
 
-            /**
-             * 创建浮层
-             *
-             * @return {HTMLElement}
-             */
-            create: function () {
-                var control = this.control;
-                var helper = control.helper;
-                var element =
-                    helper.createPart('layer', this.nodeName);
+                /**
+                 * 创建浮层
+                 *
+                 * @return {HTMLElement}
+                 */
+                create: function () {
+                    var control = this.control;
+                    var helper = control.helper;
+                    var element =
+                        helper.createPart('layer', this.nodeName);
 
-                // 这里添加variant信息到layer上以方便定义variant样式。
-                var variants = control.variants;
-                var variantsCls = [];
-                if (variants) {
-                    variants = typeof variants === 'string'
-                        ? variants.split(' ')
-                        : variants;
+                    // 这里添加variant信息到layer上以方便定义variant样式。
+                    var variants = control.variants;
+                    var variantsCls = [];
+                    if (variants) {
+                        variants = typeof variants === 'string'
+                            ? variants.split(' ')
+                            : variants;
 
-                    // 处理过一次在control render时候就不处理了。
-                    control.variants = variants;
-                    u.each(variants, function (v) {
-                        variantsCls.push(helper.getPrimaryClassName('layer-' + v));
-                    });
-                    $(element).addClass(variantsCls.join(' '));
-                }
-
-                return element;
-            },
-
-            /**
-             * 给Layer增加自定义class
-             *
-             * @param {Array} layerClassNames 样式集合
-             */
-            addCustomClasses: function (layerClassNames) {
-                var element = this.getElement();
-                $(element).addClass(layerClassNames.join(' '));
-            },
-
-            /**
-             * 渲染层内容
-             *
-             * @param {HTMLElement} element 层元素
-             * @abstract
-             */
-            render: function (element) {
-            },
-
-            /**
-             * 同步控件状态到层
-             *
-             * @param {HTMLElement} element 层元素
-             * @abstract
-             */
-            syncState: function (element) {
-            },
-
-            /**
-             * 重新渲染
-             */
-            repaint: function () {
-                var element = this.getElement(false);
-
-                if (element) {
-                    this.render(element);
-                }
-            },
-
-            /**
-             * 初始化层的交互行为
-             *
-             * @param {HTMLElement} element 层元素
-             * @abstract
-             */
-            initBehavior: function (element) {
-            },
-
-            /**
-             * 获取浮层DOM元素
-             *
-             * @param {boolean} [create=true] 不存在时是否创建
-             * @return {HTMLElement}
-             */
-            getElement: function (create) {
-                var element = this.control.helper.getPart('layer');
-
-                if (!element && create !== false) {
-                    element = this.create();
-                    this.render(element);
-
-                    $(element).addClass(getHiddenClasses(this));
-
-                    this.initBehavior(element);
-                    this.syncState(element);
-
-                    // IE下元素始终有`parentNode`，无法判断是否进入了DOM
-                    if (!element.parentElement) {
-                        document.body.appendChild(element);
+                        // 处理过一次在control render时候就不处理了。
+                        control.variants = variants;
+                        u.each(variants, function (v) {
+                            variantsCls.push(helper.getPrimaryClassName('layer-' + v));
+                        });
+                        $(element).addClass(variantsCls.join(' '));
                     }
 
-                    this.fire('rendered');
+                    return element;
+                },
+
+                /**
+                 * 给Layer增加自定义class
+                 *
+                 * @param {Array} layerClassNames 样式集合
+                 */
+                addCustomClasses: function (layerClassNames) {
+                    var element = this.getElement();
+                    $(element).addClass(layerClassNames.join(' '));
+                },
+
+                /**
+                 * 渲染层内容
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @abstract
+                 */
+                render: function (element) {
+                },
+
+                /**
+                 * 同步控件状态到层
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @abstract
+                 */
+                syncState: function (element) {
+                },
+
+                /**
+                 * 重新渲染
+                 */
+                repaint: function () {
+                    var element = this.getElement(false);
+
+                    if (element) {
+                        this.render(element);
+                    }
+                },
+
+                /**
+                 * 初始化层的交互行为
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @abstract
+                 */
+                initBehavior: function (element) {
+                },
+
+                /**
+                 * 获取浮层DOM元素
+                 *
+                 * @param {boolean} [create=true] 不存在时是否创建
+                 * @return {HTMLElement}
+                 */
+                getElement: function (create) {
+                    var element = this.control.helper.getPart('layer');
+
+                    if (!element && create !== false) {
+                        element = this.create();
+                        this.render(element);
+
+                        $(element).addClass(getHiddenClasses(this));
+
+                        this.initBehavior(element);
+                        this.syncState(element);
+
+                        // IE下元素始终有`parentNode`，无法判断是否进入了DOM
+                        if (!element.parentElement) {
+                            document.body.appendChild(element);
+                        }
+
+                        this.fire('rendered');
+                    }
+
+                    return element;
+                },
+
+                /**
+                 * 隐藏层
+                 */
+                hide: function () {
+                    var classes = getHiddenClasses(this);
+
+                    var element = this.getElement();
+                    $(element).addClass(classes);
+                    this.control.removeState('active');
+                    this.fire('hide');
+                },
+
+                /**
+                 * 显示层
+                 */
+                show: function () {
+                    var me = this;
+                    var element = me.getElement();
+                    element.style.zIndex = me.getZIndex();
+                    if (me.autoClose) {
+                        // 点击文档自动关闭
+                        setDocClickHandler(me);
+                    }
+                    var classes = getHiddenClasses(me);
+                    $(element).removeClass(classes);
+                    me.position();
+                    me.control.addState('active');
+                    me.fire('show');
+                },
+
+                /**
+                 * 切换显示状态
+                 */
+                toggle: function () {
+                    var element = this.getElement();
+                    if (!element
+                        || this.control.helper.isPart(element, 'layer-hidden')
+                    ) {
+                        this.show();
+                    }
+                    else {
+                        this.hide();
+                    }
+                },
+
+                /**
+                 * 放置层
+                 */
+                position: function () {
+                    var layer = this.getElement();
+                    Layer.attachTo(layer, this.control.main, this.dock);
+                },
+
+                /**
+                 * 获取层应该有的`z-index`样式值
+                 *
+                 * @return {number}
+                 */
+                getZIndex: function () {
+                    return Layer.getZIndex(this.control.main);
+                },
+
+                /**
+                 * 销毁
+                 */
+                dispose: function () {
+                    var element = this.getElement(false);
+                    this.autoCloseExcludeElements = [];
+                    if (element) {
+                        $(element).remove();
+                    }
+                    this.control = null;
                 }
-
-                return element;
-            },
-
-            /**
-             * 隐藏层
-             */
-            hide: function () {
-                var classes = getHiddenClasses(this);
-
-                var element = this.getElement();
-                $(element).addClass(classes);
-                this.control.removeState('active');
-                this.fire('hide');
-            },
-
-            /**
-             * 显示层
-             */
-            show: function () {
-                var me = this;
-                var element = me.getElement();
-                element.style.zIndex = me.getZIndex();
-                if (me.autoClose) {
-                    // 点击文档自动关闭
-                    setDocClickHandler(me);
-                }
-                var classes = getHiddenClasses(me);
-                $(element).removeClass(classes);
-                me.position();
-                me.control.addState('active');
-                me.fire('show');
-            },
-
-            /**
-             * 切换显示状态
-             */
-            toggle: function () {
-                var element = this.getElement();
-                if (!element
-                    || this.control.helper.isPart(element, 'layer-hidden')
-                ) {
-                    this.show();
-                }
-                else {
-                    this.hide();
-                }
-            },
-
-            /**
-             * 放置层
-             */
-            position: function () {
-                var layer = this.getElement();
-                Layer.attachTo(layer, this.control.main, this.dock);
-            },
-
-            /**
-             * 获取层应该有的`z-index`样式值
-             *
-             * @return {number}
-             */
-            getZIndex: function () {
-                return Layer.getZIndex(this.control.main);
-            },
-
-            /**
-             * 销毁
-             */
-            dispose: function () {
-                var element = this.getElement(false);
-                this.autoCloseExcludeElements = [];
-                if (element) {
-                    $(element).remove();
-                }
-                this.control = null;
             }
-        });
+        );
 
         /**
          * 通过点击关闭弹层的处理方法
@@ -288,7 +291,7 @@ define(
 
         function getHiddenClasses(layer) {
             var classes = layer.control.helper.getPartClasses('layer-hidden');
-            classes.unshift(ui.getConfig('uiClassPrefix') + '-layer-hidden');
+            classes.unshift(esui.getConfig('uiClassPrefix') + '-layer-hidden');
 
             return classes.join(' ');
         }

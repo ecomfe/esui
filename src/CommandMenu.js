@@ -16,70 +16,71 @@ define(
         var eoo = require('eoo');
         var painters = require('./painters');
 
-        var CommandMenuLayer = eoo.create(Layer, {
-            nodeName: 'ul',
+        var CommandMenuLayer = eoo.create(
+            Layer,
+            {
+                nodeName: 'ul',
 
-            dock: {
-                strictWidth: true
-            },
+                dock: {
+                    strictWidth: true
+                },
 
-            create: function () {
-                var ele = this.$super(arguments);
-                var $ele = $(ele);
-                var ctrl = this.control;
+                create: function () {
+                    var ele = this.$super(arguments);
+                    var $ele = $(ele);
+                    var ctrl = this.control;
 
-                $ele.addClass(ctrl.helper.getPrefixClass('dropdown'));
-                $(ctrl.main).after($ele);
-                return ele;
-            },
+                    $ele.addClass(ctrl.helper.getPrefixClass('dropdown'));
+                    $(ctrl.main).after($ele);
+                    return ele;
+                },
 
-            render: function (element) {
-                var html = '';
-                var ctrl = this.control;
-                var helper = ctrl.helper;
+                render: function (element) {
+                    var html = '';
+                    var ctrl = this.control;
+                    var helper = ctrl.helper;
 
-                for (var i = 0; i < ctrl.datasource.length; i++) {
-                    var classes = helper.getPartClasses('node');
-                    if (i === ctrl.activeIndex) {
-                        classes.push.apply(
-                            classes,
-                            helper.getPartClasses('node-active')
-                        );
+                    for (var i = 0; i < ctrl.datasource.length; i++) {
+                        var classes = [helper.getPartClassName('node')];
+                        if (i === ctrl.activeIndex) {
+                            classes.push(
+                                helper.getPartClassName('node-active')
+                            );
+                        }
+                        // 为disabled的menu条目加上样式
+                        if (ctrl.datasource[i].disabled) {
+                            classes.push(
+                                helper.getPartClassName('node-disabled')
+                            );
+                        }
+
+                        html += '<li data-index="' + i + '"'
+                            + ' class="' + classes.join(' ') + '">';
+                        html += ctrl.getItemHTML(ctrl.datasource[i]);
+                        html += '</li>';
                     }
-                    // 为disabled的menu条目加上样式
-                    if (ctrl.datasource[i].disabled) {
-                        classes.push.apply(
-                            classes,
-                            helper.getPartClasses('node-disabled')
-                        );
-                    }
 
-                    html += '<li data-index="' + i + '"'
-                        + ' class="' + classes.join(' ') + '">';
-                    html += ctrl.getItemHTML(ctrl.datasource[i]);
-                    html += '</li>';
+                    element.innerHTML = html;
+                },
+
+                /**
+                 * 初始化层的交互行为
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @override
+                 */
+                initBehavior: function (element) {
+                    var helper = this.control.helper;
+
+                    helper.addDOMEvent(
+                        element,
+                        'click',
+                        '.' + helper.getPrimaryClassName('node'),
+                        selectItem
+                    );
                 }
-
-                element.innerHTML = html;
-            },
-
-            /**
-             * 初始化层的交互行为
-             *
-             * @param {HTMLElement} element 层元素
-             * @override
-             */
-            initBehavior: function (element) {
-                var helper = this.control.helper;
-
-                helper.addDOMEvent(
-                    element,
-                    'click',
-                    '.' + helper.getPrimaryClassName('node'),
-                    selectItem
-                );
             }
-        });
+        );
 
         /**
          * 选中某一项

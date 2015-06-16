@@ -16,19 +16,11 @@ define(
          */
         var lib = {};
 
-        /**
-         * 获取元素class列表 当element.classList不存在时可使用该方法
-         *
-         * @param {HTMLElement} element 目标元素
-         * @return {String[]} class列表
-         */
-        function getClassList(element) {
+        lib.getClassList = function (element) {
             return element.className
                 ? element.className.split(/\s+/)
                 : [];
         }
-
-        lib.getClasses = getClassList;
 
         /**
          * 判断元素是否拥有指定的class
@@ -52,7 +44,7 @@ define(
                 return element.classList.contains(className);
             }
 
-            var classes = getClassList(element);
+            var classes = this.getClassList(element);
             return u.contains(classes, className);
         };
 
@@ -79,7 +71,7 @@ define(
                 return element;
             }
 
-            var classes = getClassList(element);
+            var classes = this.getClassList(element);
             if (u.contains(classes, className)) {
                 return element;
             }
@@ -114,7 +106,7 @@ define(
                 return element;
             }
 
-            var originalClasses = getClassList(element);
+            var originalClasses = this.getClassList(element);
             var newClasses = u.union(originalClasses, classes);
 
             if (newClasses.length > originalClasses.length) {
@@ -147,7 +139,7 @@ define(
                 return element;
             }
 
-            var classes = getClassList(element);
+            var classes = this.getClassList(element);
             var changed = false;
             // 这个方法比用`u.diff`要快
             for (var i = 0; i < classes.length; i++) {
@@ -189,7 +181,7 @@ define(
                 return element;
             }
 
-            var originalClasses = getClassList(element);
+            var originalClasses = this.getClassList(element);
             var newClasses = u.difference(originalClasses, classes);
 
             if (newClasses.length < originalClasses.length) {
@@ -222,7 +214,7 @@ define(
                 return element;
             }
 
-            var classes = getClassList(element);
+            var classes = this.getClassList(element);
             var containsClass = false;
             for (var i = 0; i < classes.length; i++) {
                 if (classes[i] === className) {
