@@ -63,7 +63,10 @@ define(
 
             var result = source;
             if (u.isArray(source)) {
-                result = u.clone(source);
+                result = [];
+                for (var i = 0; i < source.length; i++) {
+                    result[i] = lib.deepClone(source[i]);
+                }
             }
             else if (({}).toString.call(source) === '[object Object]'
                 // IE下，DOM和BOM对象上一个语句为true，
