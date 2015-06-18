@@ -3197,9 +3197,6 @@ span.ui-crumb-node {
 .ui-pager-select-wrapper {
   display: inline-block;
 }
-.ui-pager-select-wrapper-hidden {
-  display: none;
-}
 .ui-pager-label {
   display: inline-block;
   font-family: "Heiti SC Light", "Heiti SC";
@@ -3531,9 +3528,7 @@ span.ui-crumb-node {
   outline: 0;
   background: #f6f6f6;
 }
-.ui-schedule .ui-selectable .ui-selectee,
-.ui-schedule .ui-selectable .ui-selectable,
-.ui-schedule .ui-selectable .ui-selecting {
+.ui-schedule .ui-selectable .ui-selected {
   background: white;
 }
 .ui-schedule-slot-tester {
