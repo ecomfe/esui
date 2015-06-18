@@ -3,17 +3,15 @@
     <head>
         <meta charset="UTF-8" />
         <title>RangeCalendar - ESUI Demo</title>
-
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
         <h1 id="branding">ESUI - RangeCalendar</h1>
@@ -22,9 +20,9 @@
             </ul>
             <div id="main">
                 <h2>连续时间段选择控件</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>连续时间段选择控件</p>
-                </section>
+                </div>
                 <p class="desc-title">
                 属性设置
                 </p>
@@ -60,7 +58,7 @@
                     <li>如果设置了isEndless，value中又包含结束时间，则删除value中的结束时间信息</li>
                     <li>如果设置了isEndless，endlessCheck设置为false，则isEndless优先级高，即endlessCheck纠正为true</li>
                 </ul>
-                <section class="view">
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -82,21 +80,23 @@
                             </div>
                             <h3>Read Only</h3>
                             <div class="row">
-                                <esui-range-calendar 
+                                <div
+                                    data-ui-mini-type="RangeCalendar"
                                     data-ui-mini-mode="1"
                                     data-ui-states="readOnly"
-                                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></esui-range-calendar>
+                                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></div>
                             </div>
                             <h3>Error</h3>
                             <div class="row">
-                                <esui-range-calendar 
+                                <div
+                                    data-ui-mini-type="RangeCalendar"
                                     data-ui-mini-mode="1"
                                     data-ui-states="validity-invalid"
-                                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></esui-range-calendar>
+                                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
         <script>
@@ -111,7 +111,8 @@
                 //     calendar.dispose();
                 // };
             }
-        )
+        );
+        copyExample();
         </script>
     </body>
 </html>

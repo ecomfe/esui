@@ -2,17 +2,16 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Wizard</title>
+    <title>Wizard - ESUI Demo</title>
     <script src="assets/loader/esl.js"></script>
-    
     <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script src="demo.js"></script>
     <link rel="stylesheet" href="assets/themes/standard.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="assets/ie8.css" />
+    <![endif]-->
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <style>
         .panel {
             height: 200px;
@@ -26,10 +25,10 @@
         </ul>
         <div id="main">
             <h2>Wizard</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>Wizard</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -40,7 +39,7 @@
                         <div style="padding: 2em;">
                             <div id="a" class="panel">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
                             <div id="b" class="panel">Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</div>
-                            <div id="c" class="panel">Panel 3</div>
+                            <div data-ui="type:Panel;id:c;" class="panel">Panel 3</div>
                             <div id="d" class="panel">Panel 4</div>
                         </div>
                         <div style="text-align:center; padding: 1em">
@@ -49,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -57,12 +56,13 @@
             [
                 'esui',
                 'esui/Button',
-                'esui/Wizard'
+                'esui/Wizard',
+                'esui/Panel'
             ],
             function (ui, Button, Wizard) {
                 var buttons = ui.init();
-                var prev = buttons[0];
-                var next = buttons[1];
+                var prev = ui.get('prev');
+                var next = ui.get('next');
                 var steps = [
                     { number: '壹', text: '基本信息', panel: 'a' },
                     { number: '贰',text: '地址', panel: 'b' },
@@ -84,6 +84,7 @@
                 });
             }
         );
+        copyExample();
     </script>
 </body>
 </html>

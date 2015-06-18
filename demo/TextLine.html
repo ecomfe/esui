@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>TextLine - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>TextLine - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
 <body>
     <h1 id="branding">ESUI - TextLine</h1>
     <div id="page">
@@ -21,10 +20,10 @@
         </ul>
         <div id="main">
             <h2>展示</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>描述</p>
-            </section>
-            <section class="view">
+            </div>
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -33,15 +32,15 @@
                     <div data-ui="type:TextLine;name:textLine;">
                     </div>
                     <h3>Disabled</h3>
-                    <esui-text-line data-ui="type:TextLine;name:textLine;disabled:disabled;rawValue:disabled"></esui-text-line>
+                    <div data-ui="type:TextLine;name:textLine;disabled:disabled;rawValue:disabled"></div>
                     <h3>Read Only</h3>
-                    <esui-text-line data-ui="type:TextLine;name:textLine;readOnly:readOnly;rawValue:readOnly"></esui-text-line>
+                    <div data-ui="type:TextLine;name:textLine;readOnly:readOnly;rawValue:readOnly"></div>
                     <h3>Success</h3>
-                    <esui-text-line data-ui="type:TextLine;name:textLine;rawValue:success;states:success"></esui-text-line>
+                    <div data-ui="type:TextLine;name:textLine;rawValue:success;states:success"></div>
                     <h3>Warning</h3>
-                    <esui-text-line data-ui="type:TextLine;name:textLine;rawValue:warning;states:warning"></esui-text-line>
+                    <div data-ui="type:TextLine;name:textLine;rawValue:warning;states:warning"></div>
                 </div>
-            </section>
+            </div>
         </div>
         <script>
         require(
@@ -58,7 +57,8 @@
                 });
                 textLine.showValidationMessage('invalid', '错误信息！');
             }
-        )
+        );
+        copyExample();
         </script>
     </div>
 </body>

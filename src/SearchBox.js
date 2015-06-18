@@ -74,12 +74,6 @@ define(
                     properties.maxLength = this.main.maxLength;
                 }
             }
-            // TODO: custom elments 的兼容
-            else {
-                if (!properties.text) {
-                    properties.text = lib.getText(this.main);
-                }
-            }
 
             if (!properties.title) {
                 properties.title = this.main.title;
@@ -100,10 +94,10 @@ define(
          */
         SearchBox.prototype.initStructure = function () {
             var tpl = ''
-                + '<esui-text-box data-ui-mode="text" data-ui-child-name="text"'
+                + '<div data-ui-type="TextBox" data-ui-mode="text" data-ui-child-name="text"'
                 +     'data-ui-placeholder="${placeholder}" data-ui-icon="${clearClasses}"'
                 +     'data-ui-variants="icon-right" data-ui-width="auto">'
-                + '</esui-text-box>';
+                + '</div>';
             var addonTPL = getAddonHTML.apply(this);
 
             // instant模式下搜索图标在textbox前
@@ -301,7 +295,9 @@ define(
                  */
                 name: 'width',
                 paint: function (box, width) {
-                    box.main.style.width = width + 'px';
+                    if (width && !isNaN(width)) {
+                        box.main.style.width = width + 'px';
+                    }
                 }
             },
             {

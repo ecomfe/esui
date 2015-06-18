@@ -4,15 +4,14 @@
         <meta charset="utf-8" />
         <title>Link - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        
         <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/demo.js"></script>
-        <script src="assets/prism.js"></script>
-        <!--[if lt IE 9]>
-        <script src="http://xy3.baidu.com/js/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="assets/prism.css" />
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
         <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
         <h1>ESUI - Link</h1>
@@ -21,10 +20,10 @@
             </ul>
             <div id="main">
                 <h2>Link</h2>
-                <section class="intro">
+                <div class="intro">
                     <p>基本Link。</p>
-                </section>
-                <section class="view">
+                </div>
+                <div class="view">
                     <ul class="viewer">
                         <li class="view-markup">结构</li>
                     </ul>
@@ -53,7 +52,7 @@
                         <br />
                         <span data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">tagName not A</span>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
 
@@ -91,7 +90,8 @@
                     link.set('content', '<span data-ui-type="Label" data-ui-text="www.google.com"></span>');
                 };
             }
-        )
+        );
+        copyExample();
         </script>
     </body>
 </html>

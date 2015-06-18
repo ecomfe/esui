@@ -16,13 +16,20 @@
 // button style variant
 .@{ui-class-prefix}-boxgroup-button-style {
     .@{ui-class-prefix}-boxgroup-wrapper {
-        .esui-boxgroup-button-style-border();
         margin: 0;
+        input[type="radio"],
+        input[type="checkbox"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            .opacity(0);
+            outline: none;
+        }
+        position: relative;
+        .esui-boxgroup-button-style-border();
+        
     }
-    input[type="radio"],
-    input[type="checkbox"] {
-        display: none;
-    }
+
     .esui-boxgroup-button-style-theme();
 }
 
@@ -60,7 +67,7 @@
 
 .esui-boxgroup-button-style-border() {}
 
-esui-box-group {
+.@{ui-class-prefix}-boxgroup {
     display: block;
 }
 

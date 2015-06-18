@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>MonthView - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/demo.js"></script>
-    <script src="assets/prism.js"></script>
-    <!--[if lt IE 9]>
-    <script src="http://xy3.baidu.com/js/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" href="assets/prism.css" />
-    <link rel="stylesheet" href="assets/themes/standard.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>MonthView - ESUI Demo</title>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    </head>
 <body>
     <h1>MonthView</h1>
     <div id="page">
         <ul id="navigator"></ul>
         <div id="main">
             <h2>单选模式日历</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>单选模式日历。</p>
-            </section>
+            </div>
             <table class="ui-raw-table ui-raw-table-bordered">
                 <thead>
                     <tr>
@@ -54,7 +53,7 @@
                 <li>year或month超出range，自动纠错为最近的正确值</li>
                 <li>range的开始值大于结束值，自动调整顺序</li>
             </ul>
-            <section class="view">
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -138,12 +137,12 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <h2>多选模式日历</h2>
-            <section class="intro">
+            <div class="intro">
                 <p>多选模式日历。</p>
-            </section>
+            </div>
             <table class="ui-raw-table ui-raw-table-bordered">
                 <thead>
                     <tr>
@@ -176,7 +175,7 @@
                 <li>value中出现重叠区，自动去重，但不修正value</li>
             </ul>
 
-            <section class="view">
+            <div class="view">
                 <ul class="viewer">
                     <li class="view-markup">结构</li>
                 </ul>
@@ -262,7 +261,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
     <script>
@@ -360,6 +359,7 @@
             })
         }
     );
+    copyExample();
     </script>
 </body>
 </html>
