@@ -1323,7 +1323,7 @@ define(
          * @return {string}
          */
         function getBodyHtml(table) {
-            var data = table.datasource || [];
+            var data = table.datasource;
             var dataLen = data.length;
             var html = [];
 
@@ -1584,7 +1584,7 @@ define(
          * @private
          */
         function getRowBaseArgs(table, rowIndex) {
-            var datasource = table.datasource || [];
+            var datasource = table.datasource;
             var dataLen = datasource.length;
             return {
                 tdCellClass : getClass(table, 'cell'),
@@ -2528,7 +2528,9 @@ define(
                  * @inner
                  * @type {Object}
                  */
-                var properties = {};
+                var properties = {
+                    datasource: []
+                };
 
                 u.extend(properties, Table.defaultProperties, options);
 
@@ -2797,21 +2799,23 @@ define(
 
             /**
              * 设置Table的datasource，并强制更新
-             *
+             * @param {Array} datasource
+             * @param {boolean} isResetSelect 是否需要将table的已选择行设置为非选中
              * @public
              */
-            setDatasource: function(datasource){
+            setDatasource: function(datasource, isResetSelect){
                 this.datasource = datasource;
-                setSelectedIndex(this, []);
                 var record = { name: 'datasource' };
                 var record2 = { name: 'selectedIndex' };
+                var changes = [record];
+                var changesIndex = { datasource: record };
+                if (isResetSelect) {
+                    setSelectedIndex(this, []);
+                    changes.push(record2);
+                    changesIndex.selectedIndex = record2;
+                }
 
-                this.repaint([record, record2],
-                    {
-                        datasource: record,
-                        selectedIndex: record2
-                    }
-                );
+                this.repaint(changes, changesIndex);
             },
 
             /**
