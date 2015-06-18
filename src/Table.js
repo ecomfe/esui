@@ -2800,16 +2800,16 @@ define(
             /**
              * 设置Table的datasource，并强制更新
              * @param {Array} datasource
-             * @param {boolean} isResetSelect 是否需要将table的已选择行设置为非选中
+             * @param {boolean} notResetSelectedRows 是否需要将table的已选择行设置为非
              * @public
              */
-            setDatasource: function(datasource, isResetSelect){
+            setDatasource: function(datasource, notResetSelectedRows){
                 this.datasource = datasource;
                 var record = { name: 'datasource' };
                 var record2 = { name: 'selectedIndex' };
                 var changes = [record];
                 var changesIndex = { datasource: record };
-                if (isResetSelect) {
+                if (!notResetSelectedRows) {
                     setSelectedIndex(this, []);
                     changes.push(record2);
                     changesIndex.selectedIndex = record2;
