@@ -3305,6 +3305,7 @@ span.ui-crumb-node {
   display: inline-block;
 }
 .ui-rangecalendar-layer {
+  position: absolute;
   background: #fbfbfb;
   border-top: 3px solid #fbfbfb;
   border-bottom: none;

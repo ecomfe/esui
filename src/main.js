@@ -322,7 +322,7 @@ define(
             options = options || {};
 
             var defaultValueParser = function (value) {
-                var coreNumber = /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/;
+                var coreNumber = /^[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)$/;
                 if (value === 'true') {
                     value = true;
                 }
@@ -392,7 +392,7 @@ define(
                     );
                 }
                 else {
-                    optionObject[joinCamelCase(terms)] = valueReplacer(value);
+                    optionObject[joinCamelCase(terms)] = valueReplacer(valueParser(value));
                 }
             }
 

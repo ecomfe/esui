@@ -9,7 +9,6 @@
 define(
     function (require) {
         var u = require('underscore');
-        var lib = require('./lib');
 
         /**
          * @class painters
@@ -247,7 +246,7 @@ define(
          * - `{Control} control`：当前的控件实例
          * - `{Mixed} args...`：根据`name`配置指定的属性，依次将属性的最新值作为参数
          *
-         * @param {Object... | Function...} args `painter`对象
+         * @param {...Object | Function} args `painter`对象
          * @return {Function} `repaint`方法的实现
          */
         painters.createRepaint = function () {
@@ -255,7 +254,7 @@ define(
 
             return function (changes, changesIndex) {
                 // 临时索引，不能直接修改`changesIndex`，会导致子类的逻辑错误
-                var index = lib.extend({}, changesIndex);
+                var index = u.extend({}, changesIndex);
                 for (var i = 0; i < painters.length; i++) {
                     var painter = painters[i];
 
@@ -288,29 +287,13 @@ define(
 
                     // 收集所有属性的值
                     var properties = [this];
-                    for (var j = 0; j < propertyNames.length; j++) {
-                        var name = propertyNames[j];
-                        properties.push(this[name]);
+                    for (var k = 0; k < propertyNames.length; k++) {
+                        var name2 = propertyNames[k];
+                        properties.push(this[name2]);
                         // 从索引中删除，为了后续构建`unpainted`数组
-                        delete index[name];
+                        delete index[name2];
                     }
-                    // 绘制
-                    try {
-                        painter.paint.apply(painter, properties);
-                    }
-                    catch (ex) {
-                        var paintingPropertyNames =
-                            '"' + propertyNames.join('", "') + '"';
-                        var error = new Error(
-                            'Failed to paint [' + paintingPropertyNames + '] '
-                            + 'for control "' + (this.id || 'anonymous')+ '" '
-                            + 'of type ' + this.type + ' '
-                            + 'because: ' + ex.message
-                        );
-                        error.actualError = ex;
-                        throw error;
-                    }
-
+                    painter.paint.apply(painter, properties);
                 }
 
                 // 构建出未渲染的属性集合
