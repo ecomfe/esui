@@ -199,17 +199,12 @@ define(
                         // 需要同步验证信息的样式
                         var validityLabel = control.getValidityLabel(true);
                         if (validityLabel) {
-                            var classPrefix = main.getConfig('uiClassPrefix');
-                            var classes = [].concat(
-                                classPrefix + '-hidden',
-                                classPrefix + '-validity-hidden',
-                                helper.getPartClasses(
-                                    control, 'validity-hidden')
-                            );
-                            var method = control.isHidden()
-                                ? 'addClasses'
-                                : 'removeClasses';
-                            lib[method](validityLabel, classes);
+                            if (hidden) {
+                                validityLabel.hide();
+                            }
+                            else {
+                                validityLabel.show();
+                            }
                         }
                     }
                 }
