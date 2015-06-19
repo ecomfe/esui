@@ -474,7 +474,7 @@ define(
                 },
 
                 dispose: function () {
-                    if (helper.isInStage(this, 'DISPOSED')) {
+                    if (this.helper.isInStage('DISPOSED')) {
                         return;
                     }
 

@@ -15,15 +15,15 @@ define(
         var eoo = require('eoo');
         var EventTarget = require('mini-event/EventTarget');
 
+        /**
+         * 控件基类
+         *
+         * @constructor
+         * @extends {mini-event.EventTarget}
+         * @param {Object} [options] 初始化参数
+         * @fires init
+         */
         var Control = eoo.create(EventTarget, {
-            /**
-             * 控件基类
-             *
-             * @constructor
-             * @extends {mini-event.EventTarget}
-             * @param {Object} [options] 初始化参数
-             * @fires init
-             */
             constructor: function (options) {
                 options = options || {};
 
@@ -141,7 +141,9 @@ define(
 
                 var name = this.type.replace(
                     /([A-Z])/g,
-                    function (match, ch) { return '-' + ch.toLowerCase(); }
+                    function (match, ch) {
+                        return '-' + ch.toLowerCase();
+                    }
                 );
                 return document.createElement(ui.getConfig('customElementPrefix') + '-' + name.slice(1));
             },
@@ -250,14 +252,15 @@ define(
              * @protected
              */
             repaint: function (changes, changesIndex) {
+                var method;
                 if (!changesIndex
                     || changesIndex.hasOwnProperty('disabled')
                     ) {
-                    var method = this.disabled ? 'addState' : 'removeState';
+                    method = this.disabled ? 'addState' : 'removeState';
                     this[method]('disabled');
                 }
                 if (!changesIndex || changesIndex.hasOwnProperty('hidden')) {
-                    var method = this.hidden ? 'addState' : 'removeState';
+                    method = this.hidden ? 'addState' : 'removeState';
                     this[method]('hidden');
                 }
             },
@@ -347,6 +350,7 @@ define(
              *
              * @param {string} name 属性名
              * @param {Mixed} value 属性值
+             * @return {Object} 父类返回
              */
             set: function (name, value) {
                 var method = this['set' + lib.pascalize(name)];
@@ -419,14 +423,14 @@ define(
                 for (var key in properties) {
                     if (properties.hasOwnProperty(key)) {
                         var newValue = properties[key];
-                        var getterMethodName =
-                            'get' + lib.pascalize(key) + 'Property';
+                        var getterMethodName
+                            = 'get' + lib.pascalize(key) + 'Property';
                         var oldValue = this[getterMethodName]
                             ? this[getterMethodName]()
                             : this[key];
 
-                        var isChanged =
-                            this.isPropertyChanged(key, newValue, oldValue);
+                        var isChanged
+                            = this.isPropertyChanged(key, newValue, oldValue);
                         if (isChanged) {
                             this[key] = newValue;
                             var record = {
@@ -489,6 +493,7 @@ define(
 
             /**
              * 设置控件禁用状态
+             * @param {boolean} disabled 是否禁用
              */
             setDisabled: function (disabled) {
                 this[disabled ? 'disable' : 'enable']();
@@ -565,7 +570,9 @@ define(
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/,
-                        function (m, c) { return c.toUpperCase(); }
+                        function (m, c) {
+                            return c.toUpperCase();
+                        }
                     );
                     properties[statePropertyName] = true;
                     this.setProperties(properties);
@@ -590,7 +597,9 @@ define(
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/,
-                        function (m, c) { return c.toUpperCase(); }
+                        function (m, c) {
+                            return c.toUpperCase();
+                        }
                     );
                     properties[statePropertyName] = false;
                     this.setProperties(properties);

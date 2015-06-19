@@ -174,8 +174,8 @@ define(
             for (var i = 0; i < this.length; i++) {
                 var control = this[i];
                 if (control.getCategory() === 'check') {
-                    var shouldBeChecked =
-                        map.hasOwnProperty(control.getValue());
+                    var shouldBeChecked
+                        = map.hasOwnProperty(control.getValue());
                     control.setChecked(shouldBeChecked);
                 }
             }
@@ -493,8 +493,8 @@ define(
                         var record = changesIndex.submitButton;
                         if (record.oldValue) {
                             for (var i = 0; i < record.oldValue.length; i++) {
-                                var oldButton =
-                                    this.viewContext.get(record.oldValue[i]);
+                                var oldButton
+                                    = this.viewContext.get(record.oldValue[i]);
                                 if (oldButton) {
                                     oldButton.un('click', this.validateAndSubmit, this);
                                     oldButton.un('click', false);

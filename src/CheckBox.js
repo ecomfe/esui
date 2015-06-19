@@ -87,8 +87,8 @@ define(
 
                 u.extend(properties, options);
 
-                properties.name =
-                    properties.name || this.main.getAttribute('name');
+                properties.name
+                    = properties.name || this.main.getAttribute('name');
 
                 var datasource = properties.datasource;
                 delete properties.datasource;
@@ -102,12 +102,12 @@ define(
                         this.checked = u.any(
                             datasource,
                             function (item) {
-                                return item.value == this.value;    // jshint ignore:line
+                                return item.value === this.value;
                             },
                             this
                         );
                     }
-                    else if (this.rawValue == datasource) {         // jshint ignore:line
+                    else if (this.rawValue === datasource) {
                         this.checked = true;
                     }
                 }
@@ -191,8 +191,8 @@ define(
              * @fires change
              */
             setProperties: function (properties) {
-                var changes =
-                    InputControl.prototype.setProperties.apply(this, arguments);
+                var changes
+                    = this.$super(arguments);
                 if (changes.hasOwnProperty('checked')) {
                     /**
                      * @event change

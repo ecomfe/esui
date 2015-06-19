@@ -8,7 +8,6 @@
  */
 define(
     function (require) {
-        var lib = require('./lib');
         var Control = require('./Control');
         var eoo = require('eoo');
         var painters = require('./painters');
@@ -44,7 +43,7 @@ define(
                 createMain: function () {
                     return document.createElement('iframe');
                 },
-                
+
                 /**
                  * 初始化参数
                  *
@@ -112,7 +111,7 @@ define(
                  * 调用iframe内容窗口的方法
                  *
                  * @param {string} methodName 方法名称
-                 * @param {Mixed...} args 调用时的参数
+                 * @param {...Mixed} args 调用时的参数
                  * @return {Mixed}
                  * @throws {Error} 内容窗口还未加载完毕无法使用
                  */
