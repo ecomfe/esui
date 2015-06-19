@@ -224,8 +224,8 @@ define(
                         }
                     }
 
-                    var changes =
-                        Control.prototype.setProperties.apply(this, arguments);
+                    var changes
+                        = this.$super([properties]);
                     if (changes.hasOwnProperty('steps')
                         || changes.hasOwnProperty('activeIndex')
                     ) {

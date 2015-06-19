@@ -15,7 +15,6 @@ define(
 
         var lib = require('./lib');
         var InputControl = require('./InputControl');
-        var helper = require('./controlHelper');
         var Layer = require('./Layer');
         var esui = require('./main');
         var m = require('moment');
@@ -38,6 +37,7 @@ define(
                     $(this.control.main).after(ele);
                     return ele;
                 },
+
                 render: function (element) {
                     var calendar = this.control;
                     element.innerHTML = getLayerHtml(calendar);
@@ -282,9 +282,10 @@ define(
                         view: u.clone(defaultRaw),
                         value: this.convertToParam(defaultRaw)
                     };
+                    if ($(this.main).is('input')) {
+                        this.helper.extractOptionsFromInput(this.main, properties);
+                    }
                     u.extend(properties, RangeCalendar.defaultProperties);
-
-                    helper.extractValueFromInput(this, options);
 
                     // 设置了value，以value为准
                     if (options.value) {
@@ -343,7 +344,7 @@ define(
                     // 如果主元素是输入元素，替换成`<div>`
                     // 如果输入了非块级元素，则不负责
                     if (lib.isInput(this.main)) {
-                        helper.replaceMain(this);
+                        this.helper.replaceMain();
                     }
 
                     var tpl = [
@@ -356,7 +357,7 @@ define(
                         tpl.join('\n'),
                         {
                             className: this.helper.getPartClassName('text'),
-                            id: helper.getId(this, 'text'),
+                            id: this.helper.getId('text'),
                             arrow: this.helper.getPartClassName('arrow'),
                             iconCalendar: this.helper.getIconClass('calendar')
                         }

@@ -49,8 +49,8 @@ define(
                  * @override
                  */
                 initOptions: function (options) {
-                    var properties =
-                        u.extend({}, Validity.defaultProperties, options);
+                    var properties
+                        = u.extend({}, Validity.defaultProperties, options);
                     Control.prototype.initOptions.call(this, properties);
                 },
 

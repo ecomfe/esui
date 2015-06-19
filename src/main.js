@@ -511,20 +511,7 @@ define(
                         if (options.parent) {
                             options.parent.addChild(control);
                         }
-                        try {
-                            control.render();
-                        }
-                        catch (ex) {
-                            var error = new Error(
-                                'Render control '
-                                    + '"' + (control.id || 'anonymous') + '" '
-                                    + 'of type ' + control.type + ' '
-                                    + 'failed because: '
-                                    + ex.message
-                            );
-                            error.actualError = ex;
-                            throw error;
-                        }
+                        control.render();
                     }
                 }
             });

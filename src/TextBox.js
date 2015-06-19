@@ -13,8 +13,8 @@ define(
         var u = require('underscore');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
-        var supportPlaceholder =
-            ('placeholder' in document.createElement('input'));
+        var supportPlaceholder
+            = ('placeholder' in document.createElement('input'));
 
         /**
          * 文本框输入控件
@@ -235,8 +235,8 @@ define(
                         name: 'rawValue',
                         paint: function (textbox, rawValue) {
                             var input = lib.g(textbox.inputId);
-                            var eventName =
-                                ('oninput' in input) ? 'input' : 'propertychange';
+                            var eventName
+                                = ('oninput' in input) ? 'input' : 'propertychange';
                             // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
                             // **仅仅去除自己绑定的
                             textbox.helper.removeDOMEvent(input, eventName, dispatchInputEvent);
@@ -470,8 +470,8 @@ define(
                  */
                 getValidityLabel: function () {
                     // `TextBox`根据`mode`来分配具体的类型
-                    var label =
-                        InputControl.prototype.getValidityLabel.apply(this, arguments);
+                    var label
+                        = InputControl.prototype.getValidityLabel.apply(this, arguments);
                     if (label) {
                         label.set(
                             'targetType',
@@ -516,8 +516,8 @@ define(
             }
 
             if (!props.placeholder) {
-                props.placeholder =
-                    input.getAttribute('placeholder');
+                props.placeholder
+                    = input.getAttribute('placeholder');
             }
 
             this.helper.extractOptionsFromInput(input, props);

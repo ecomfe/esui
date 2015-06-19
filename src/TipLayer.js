@@ -191,7 +191,9 @@ define(
                             'showDuration'
                         ],
                         paint: function (tipLayer, targetDOM, targetControl,
-                                showMode, positionOpt, delayTime, showDuration) {
+                                showMode, positionOpt, delayTime) {
+                            // 为了绕过函数最多7个参数的fecs要求
+                            var showDuration = arguments[6];
                             var options = {
                                 targetDOM: targetDOM,
                                 targetControl: targetControl,
@@ -343,6 +345,7 @@ define(
                         }
                     }
                 },
+
                 /**
                  * 将提示层捆绑到一个DOM元素或控件上
                  *
@@ -399,8 +402,8 @@ define(
                         targetElement = lib.g(options.targetDOM);
                     }
                     else if (options.targetControl) {
-                        targetElement =
-                            getElementByControl(this, options.targetControl);
+                        targetElement
+                            = getElementByControl(this, options.targetControl);
                     }
 
                     if (!targetElement) {
@@ -415,9 +418,6 @@ define(
                         targetElement: targetElement,
                         // 浮层相关方法
                         layer: {
-                            /**
-                             * 展现浮层
-                             */
                             show: function () {
                                 // 如果tiplayer是over模式
                                 if (options.showMode === 'over') {
@@ -449,7 +449,7 @@ define(
                             /**
                              * 隐藏浮层
                              */
-                            hide: lib.curry(delayHide, me, options.delayTime),
+                            hide: u.partial(delayHide, me, options.delayTime),
 
                             /**
                              * 绑定浮层展现的默认事件，针对于targetDOM
@@ -654,7 +654,7 @@ define(
                     helper.addDOMEvent(
                         window,
                         'resize',
-                        lib.curry(resizeHandler, this, targetElement, options)
+                        u.partial(resizeHandler, this, targetElement, options)
                     );
 
                     // 动态计算layer的zIndex
@@ -901,8 +901,8 @@ define(
         function delayHide(tipLayer, delayTime) {
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
-            tipLayer.hideTimeout =
-                setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
+            tipLayer.hideTimeout
+                = setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
         }
 
         function getElementByControl(tipLayer, control) {
@@ -1103,7 +1103,7 @@ define(
             var okBtn = tipLayer.getFoot().getChild('okBtn');
             okBtn.on(
                 'click',
-                lib.curry(btnClickHandler, tipLayer, 'ok')
+                u.partial(btnClickHandler, tipLayer, 'ok')
             );
 
             // 获取目标节点
@@ -1116,7 +1116,6 @@ define(
 
 
         esui.register(TipLayer);
-
         return TipLayer;
     }
 );

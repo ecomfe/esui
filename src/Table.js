@@ -14,7 +14,7 @@ define(
         var Control = require('./Control');
         var painters = require('./painters');
 
-        require('./behavior/Mouse')
+        require('./behavior/Mouse');
 
         /**
          * 表格控件类
@@ -1235,9 +1235,8 @@ define(
                 '<tr>'
             );
 
-            for (i = 0, len = fields.length; i < len; i++) {
+            u.each(fields, function (field, i) {
                 var thClass = [thCellClass];
-                var field = fields[i];
                 var title = field.title;
                 var sortable = table.sortable && field.sortable;
                 var currentSort = sortable
@@ -1339,7 +1338,7 @@ define(
                         }
                     )
                 );
-            }
+            });
             html.push('</tr></table>');
 
             return html.join('');
@@ -1971,8 +1970,7 @@ define(
                 return a.index - b.index;
             }
 
-            for (i = 0, l = fields.length; i < l; i++) {
-                var field = fields[i];
+            u.each(fields, function (field, i) {
                 var colWidth = table.colsWidth[i];
                 var colClass = [];
                 var textClass = [];
@@ -2067,7 +2065,7 @@ define(
                     contentHtml,
                     '</td>'
                 );
-            }
+            });
 
             html.unshift(
                 lib.format(

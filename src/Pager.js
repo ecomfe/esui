@@ -359,7 +359,7 @@ define(
             pageSizes: [15, 30, 50, 100],
             pageSize: 15
         };
-        
+
         /**
          * 获取控件主元素HTML
          *

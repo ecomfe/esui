@@ -12,6 +12,7 @@ define(
         var esui = require('./main');
         var lib = require('./lib');
         var Control = require('./Control');
+        var u = require('underscore');
 
         /**
          * Toast控件
@@ -214,20 +215,12 @@ define(
             };
         }
 
-        /**
-         * 快捷显示信息的方法
-         *
-         * @param {string} content 显示的内容
-         * @param {Object} options 其它配置项
-         * @ignore
-         */
-        var allType = ['show', 'info', 'alert', 'error', 'success'];
-        for (var key in allType) {
-            if (allType.hasOwnProperty(key)) {
-                var messageType = allType[key];
-                Toast[messageType] = createHandler(messageType);
+        u.each(
+            ['show', 'info', 'alert', 'error', 'success'],
+            function (key) {
+                Toast[key] = createHandler(key);
             }
-        }
+        );
 
         esui.register(Toast);
         return Toast;

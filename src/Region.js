@@ -115,7 +115,12 @@ define(
                         controlHelper.addDOMEvent(this.main, 'click', 'input,label', mainClick);
                         selector = '.' + controlHelper.getPartClassName('text');
                         // 鼠标悬浮事件
-                        controlHelper.addDOMEvent(this.main, 'mouseover', selector, u.partial(mainMouseHandler, 'show'));
+                        controlHelper.addDOMEvent(
+                            this.main,
+                            'mouseover',
+                            selector,
+                            u.partial(mainMouseHandler, 'show')
+                        );
                         selector = '.' + controlHelper.getPartClassName('city-box');
                         // 鼠标悬浮事件
                         controlHelper.addDOMEvent(this.main, 'mouseout', selector, u.partial(mainMouseHandler, 'hide'));

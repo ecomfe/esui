@@ -21,28 +21,28 @@ define(
         // 初始最高的`z-index`值，将浮层移到最上就是参考此值
         var zIndexStack = 1000;
 
+        /**
+         * 浮层基类
+         *
+         * `Layer`类是一个与控件形成组合关系的类，但并不是一个控件
+         *
+         * 当一个控件需要一个浮层（如下拉框）时，可以使用此类，并重写相关方法来实现浮层管理
+         *
+         * 不把`Layer`作为一个控件来实现，是有以下考虑：
+         *
+         * - 即便`Layer`作为子控件使用，也必须重写所有相关方法才能起作用，并未节省代码
+         * - 控件的生命周期管理、事件管理等一大堆事对性能多少有些负面影响
+         * - 通常重写`Layer`的方法时，会依赖控件本身的一些开放接口。
+         * 那么如果`Layer`是个子控件，就形成了 **子控件反调用父控件方法** 的现象，不合理
+         *
+         * 关于如何使用`Layer`控件，可以参考{@link CommandMenu}进行学习
+         *
+         * @constructor
+         * @param {Control} control 关联的控件实例
+         */
         var Layer = eoo.create(
             EventTarget,
             {
-                /**
-                 * 浮层基类
-                 *
-                 * `Layer`类是一个与控件形成组合关系的类，但并不是一个控件
-                 *
-                 * 当一个控件需要一个浮层（如下拉框）时，可以使用此类，并重写相关方法来实现浮层管理
-                 *
-                 * 不把`Layer`作为一个控件来实现，是有以下考虑：
-                 *
-                 * - 即便`Layer`作为子控件使用，也必须重写所有相关方法才能起作用，并未节省代码
-                 * - 控件的生命周期管理、事件管理等一大堆事对性能多少有些负面影响
-                 * - 通常重写`Layer`的方法时，会依赖控件本身的一些开放接口。
-                 * 那么如果`Layer`是个子控件，就形成了 **子控件反调用父控件方法** 的现象，不合理
-                 *
-                 * 关于如何使用`Layer`控件，可以参考{@link CommandMenu}进行学习
-                 *
-                 * @constructor
-                 * @param {Control} control 关联的控件实例
-                 */
                 constructor: function (control) {
                     this.control = control;
                 },
@@ -76,8 +76,8 @@ define(
                 create: function () {
                     var control = this.control;
                     var helper = control.helper;
-                    var element =
-                        helper.createPart('layer', this.nodeName);
+                    var element
+                        = helper.createPart('layer', this.nodeName);
 
                     // 这里添加variant信息到layer上以方便定义variant样式。
                     var variants = control.variants;
@@ -319,8 +319,8 @@ define(
         Layer.getZIndex = function (owner) {
             var zIndex = 0;
             while (!zIndex && owner && owner !== document) {
-                zIndex =
-                    parseInt(lib.getComputedStyle(owner, 'zIndex'), 10);
+                zIndex
+                    = parseInt(lib.getComputedStyle(owner, 'zIndex'), 10);
                 owner = owner.parentNode;
             }
             zIndex = zIndex || 0;
@@ -414,25 +414,25 @@ define(
             properties.left = (lib.page.getViewWidth() - properties.width) / 2;
 
             var viewHeight = lib.page.getViewHeight();
-            if (properties.height >= viewHeight &&
-                options.hasOwnProperty('minTop')
+            if (properties.height >= viewHeight
+                && options.hasOwnProperty('minTop')
             ) {
                 properties.top = options.minTop;
             }
             else {
-                properties.top =
-                    Math.floor((viewHeight - properties.height) / 2);
+                properties.top
+                    = Math.floor((viewHeight - properties.height) / 2);
             }
 
             var viewWidth = lib.page.getViewWidth();
-            if (properties.height >= viewWidth &&
-                options.hasOwnProperty('minLeft')
+            if (properties.height >= viewWidth
+                && options.hasOwnProperty('minLeft')
             ) {
                 properties.left = options.minLeft;
             }
             else {
-                properties.left =
-                    Math.floor((viewWidth - properties.width) / 2);
+                properties.left
+                    = Math.floor((viewWidth - properties.width) / 2);
             }
 
             properties.top += lib.page.getScrollTop();
