@@ -615,16 +615,21 @@ define(
             var properties = {
                 align: []
             };
-            // 用户配置可用
-            if (validConfig[preference[0]] === true) {
-                properties.left = positionConfig[preference[0]];
-                properties.align.push(preference[0]);
-            }
-            // 用户配置不可用，默认放右
-            else {
-                properties.left = positionConfig.right;
-                properties.align.push('right');
-            }
+
+            // 如果用户配置可用，则用用户指定的
+            // 如果用户配置不可用，则使用其中一个可用的
+            // 如果左侧与右侧都不可用，默认在右侧
+            var isLeftValid = validConfig.left;
+            var isRightValid = validConfig.right;
+            var horizontalPreference = preference[0];
+            var defaultHorizontalOrientation = 'right';
+
+            var orientation = isLeftValid && isRightValid
+                ? horizontalPreference
+                : isLeftValid && 'left' || isRightValid && 'right' || defaultHorizontalOrientation;
+
+            properties.left = positionConfig[orientation];
+            properties.align.push(orientation);
 
             // 如果用户配置的是居中，要判断一下是否可以居中
             if (preference[1] === 'center') {
@@ -655,15 +660,20 @@ define(
                 }
             }
 
-            if (validConfig[preference[1]] === true) {
-                properties.top = positionConfig[preference[1]];
-                properties.align.push(preference[1]);
-            }
-            // 用户配置不可用，默认放右
-            else {
-                properties.top = positionConfig.top;
-                properties.align.push('top');
-            }
+            // 如果用户配置可用，则用用户指定的
+            // 如果用户配置不可用，则使用其中一个可用的
+            // 如果顶部与底部都不可用，默认顶部对齐
+            var isTopValid = validConfig.top;
+            var isBottomValid = validConfig.bottom;
+            var verticalPreference = preference[1];
+            var defaultVerticalAlign = 'top';
+
+            var align = isTopValid && isBottomValid
+                ? verticalPreference
+                : isTopValid && 'top' || isBottomValid && 'bottom' || defaultVerticalAlign;
+
+            properties.top = positionConfig[align];
+            properties.align.push(align);
 
             return properties;
         }
@@ -765,16 +775,21 @@ define(
             var properties = {
                 align: []
             };
-            // 用户配置可用
-            if (validConfig[preference[0]] === true) {
-                properties.top = positionConfig[preference[0]];
-                properties.align.push(preference[0]);
-            }
-            // 用户配置不可用，默认放右
-            else {
-                properties.top = positionConfig.bottom;
-                properties.align.push('bottom');
-            }
+
+            // 如果用户配置可用，则用用户指定的
+            // 如果用户配置不可用，则使用其中一个可用的
+            // 如果顶部与底部都不可用，默认在底部
+            var isTopValid = validConfig.top;
+            var isBottomValid = validConfig.bottom;
+            var verticalPreference = preference[0];
+            var defaultVerticalOrientation = 'bottom';
+
+            var orientation = isTopValid && isBottomValid
+                ? verticalPreference
+                : isTopValid && 'top' || isBottomValid && 'bottom' || defaultVerticalOrientation;
+
+            properties.top = positionConfig[orientation];
+            properties.align.push(orientation);
 
             // 如果用户配置的是居中，要判断一下是否可以居中
             if (preference[1] === 'center') {
@@ -805,16 +820,20 @@ define(
                 }
             }
 
-            // 用户配置可用
-            if (validConfig[preference[1]] === true) {
-                properties.left = positionConfig[preference[1]];
-                properties.align.push(preference[1]);
-            }
-            // 用户配置不可用，默认放右
-            else {
-                properties.left = positionConfig.left;
-                properties.align.push('left');
-            }
+            // 如果用户配置可用，则用用户指定的
+            // 如果用户配置不可用，则使用其中一个可用的
+            // 如果左侧与右侧都不可用，默认左侧对齐
+            var isLeftValid = validConfig.left;
+            var isRightValid = validConfig.right;
+            var horizontalPreference = preference[1];
+            var defaultHorizontalAlign = 'left';
+
+            var align = isLeftValid && isRightValid
+                ? horizontalPreference
+                : isLeftValid && 'left' || isRightValid && 'right' || defaultHorizontalAlign;
+
+            properties.left = positionConfig[align];
+            properties.align.push(align);
 
             return properties;
         }
