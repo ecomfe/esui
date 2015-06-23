@@ -9,11 +9,11 @@
 define(
     function (require) {
         var eoo = require('eoo');
-        var u  = require('underscore');
+        var u = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
         var esui = require('./main');
-        var paint = require('./painters');
+        var painters = require('./painters');
 
         var strAddPartClasses = 'addPartClasses';
         var strRemovePartClasses = 'removePartClasses';
@@ -68,27 +68,26 @@ define(
                         activeIndex: 0
                     };
 
-                    var children = lib.getChildren(this.main);
-                    if (!options.steps && children.length) {
-                        properties.steps = u.map(
-                            children,
-                            function (node) {
-                                var config = {text: lib.getText(node)};
-                                var panel = node.getAttribute('data-for');
+                    var $children = $(this.main).children();
+                    if (!options.steps) {
+                        $children.each(
+                            function (idx, node) {
+                                var $node = $(node);
+                                var config = {text: $node.text()};
+                                var panel = $node.attr('data-for');
                                 if (panel) {
                                     config.panel = panel;
                                 }
-                                return config;
+                                var number = $node.attr('data-node-number');
+                                if (number) {
+                                    config.number = number;
+                                }
+                                properties.steps.push(config);
                             }
                         );
                     }
 
                     u.extend(properties, options);
-
-                    if (typeof properties.activeIndex === 'string') {
-                        properties.activeIndex = +properties.activeIndex;
-                    }
-
                     this.setProperties(properties);
                 },
 
@@ -104,17 +103,41 @@ define(
                 nodeTemplate: '<span>${text}</span>',
 
                 /**
+                 * 节点内容的HTML模板
+                 *
+                 * 在模板中可以使用以下占位符：
+                 *
+                 * - `{string} number`：编号
+                 * - `{string} text`：文本内容，经过HTML转义
+                 *
+                 * @type {string}
+                 */
+                numberNodeTemplate: '<span class="${numberNodeClass}">${number}</span>'
+                    + '<span class="${textNodeClass}">${text}</span>',
+
+                /**
                  * 获取节点内容HTML
                  *
                  * @param {meta.WizardItem} node 节点数据项
                  * @return {string} 返回HTML片段
                  */
                 getNodeHTML: function (node) {
+                    if (node.number) {
+                        var controlHelper = this.helper;
+                        return lib.format(
+                            this.numberNodeTemplate,
+                            {
+                                numberNodeClass: controlHelper.getPartClassName('node-number'),
+                                textNodeClass: controlHelper.getPartClassName('node-text'),
+                                text: lib.encodeHTML(node.text),
+                                number: lib.encodeHTML(node.number)
+                            }
+                        );
+                    }
                     return lib.format(
                         this.nodeTemplate,
                         {
-                            text: lib.encodeHTML(node.text),
-                            number: lib.encodeHTML(node.number)
+                            text: lib.encodeHTML(node.text)
                         }
                     );
                 },
@@ -126,7 +149,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: paint.createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
                     {
                         /**
@@ -174,7 +197,7 @@ define(
                                 method = isActive
                                     ? strAddPartClasses
                                     : strRemovePartClasses;
-                                wizard.helper[method]('node-active', node);
+                                controlHelper[method]('node-active', node);
 
                                 if (i === wizard.steps.length - 1) {
                                     controlHelper[method]('node-last-active', node);
@@ -305,25 +328,26 @@ define(
          * @ignore
          */
         function getHTML(wizard) {
+            var controlHelper = wizard.helper;
             var tpl = '<li class="${classes}">${content}</li>';
             var html = '';
 
             for (var i = 0; i < wizard.steps.length; i++) {
                 var node = wizard.steps[i];
 
-                var classes = wizard.helper.getPartClasses('node');
+                var classes = controlHelper.getPartClasses('node');
                 // 第一步
                 if (i === 0) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-first')
+                        controlHelper.getPartClasses('node-first')
                     );
                 }
                 // 最后一步
                 if (i === wizard.steps.length - 1 && !wizard.finishText) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-last')
+                        controlHelper.getPartClasses('node-last')
                     );
                 }
 
@@ -331,14 +355,14 @@ define(
                 if (i === wizard.activeIndex - 1) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-active-prev')
+                        controlHelper.getPartClasses('node-active-prev')
                     );
                 }
                 // 已经完成的步骤
                 if (i <= wizard.activeIndex - 1) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-done')
+                        controlHelper.getPartClasses('node-done')
                     );
                 }
 
@@ -347,12 +371,12 @@ define(
                 if (isActive) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-active')
+                        controlHelper.getPartClasses('node-active')
                     );
                     if (i === wizard.steps.length - 1) {
                         classes.push.apply(
                             classes,
-                            wizard.helper.getPartClasses('node-last-active')
+                            controlHelper.getPartClasses('node-last-active')
                         );
                     }
                 }
@@ -368,11 +392,11 @@ define(
 
             if (wizard.finishText) {
                 var classes2 = [].concat(
-                    wizard.helper.getPartClasses('node'),
-                    wizard.helper.getPartClasses('node-last'),
-                    wizard.helper.getPartClasses('node-finish'),
+                    controlHelper.getPartClasses('node'),
+                    controlHelper.getPartClasses('node-last'),
+                    controlHelper.getPartClasses('node-finish'),
                     wizard.activeIndex === wizard.steps.length
-                        ? wizard.helper.getPartClasses('node-active')
+                        ? controlHelper.getPartClasses('node-active')
                         : []
                 );
                 html += lib.format(
@@ -388,7 +412,6 @@ define(
         }
 
         esui.register(Wizard);
-
         return Wizard;
     }
 );

@@ -13,6 +13,7 @@ define(
         var Control = require('./Control');
         var lib = require('./lib');
         var u = require('underscore');
+        var painters = require('./painters');
 
         var TreeStrategy = require('./TreeStrategy');
 
@@ -120,7 +121,7 @@ define(
                          */
                         checkboxes: false
                     };
-                    var properties = lib.extend(defaults, options);
+                    var properties = u.extend(defaults, options);
                     if (properties.allowUnselectNode == null) {
                         // 默认单选模式下不允许取消选择，多选则可以取消
                         /**
@@ -220,7 +221,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
                     {
                         /**
@@ -392,7 +393,7 @@ define(
                         return;
                     }
 
-                    var level = +lib.getAttribute(nodeElement, 'data-level');
+                    var level = +$(nodeElement).attr('data-level');
                     // 更新过数据或者原本没有子树的情况下重绘
                     if (children
                         || nodeElement.lastChild.nodeName.toLowerCase() !== 'ul'
@@ -486,7 +487,7 @@ define(
                         }
                     }
 
-                    var level = +lib.getAttribute(nodeElement, 'data-level');
+                    var level = +$(nodeElement).attr('data-level');
                     var nodeClasses = getNodeClasses(this, node, level, false);
                     nodeElement.className = nodeClasses.join(' ');
                     var indicator = lib.g(helper.getId('indicator-' + id));
@@ -599,7 +600,7 @@ define(
 
                     // 一个节点会对应多个`indicator`元素，在内容元素前面的全是`indicator`元素，
                     // 其`level`从`0`开始递增，但只需要修改最后一个的样式就行了
-                    var children = lib.getChildren(nodeElement);
+                    var children = $(nodeElement).children();
                     var level = 0;
                     while (!helper.isPart(children[level], 'item-content')) {
                         level++;
@@ -623,7 +624,7 @@ define(
                  * @override
                  */
                 dispose: function () {
-                    Control.prototype.dispose.apply(this, arguments);
+                    this.$super(arguments);
                     this.nodeIndex = null;
                     this.selectedNodes = null;
                     this.selectedNodeIndex = null;
@@ -820,10 +821,9 @@ define(
             // 因此，首先判断是否点在提示元素上，如果不是则向上找看是不是能到wrapper
             var target = e.target;
 
-
             var indicatorClass
                 = this.helper.getPartClasses('node-indicator')[0];
-            var isValidToggleEvent = lib.hasClass(target, indicatorClass);
+            var isValidToggleEvent = $(target).hasClass(indicatorClass);
             // 点在`indicator`上时不触发选中逻辑，只负责展开/收起
             var isValidSelectEvent = !isValidToggleEvent;
 
@@ -832,12 +832,12 @@ define(
                     = this.helper.getPartClasses('content-wrapper')[0];
                 while (target
                     && target !== this.main
-                    && !lib.hasClass(target, wrapperClass)
+                    && !$(target).hasClass(wrapperClass)
                 ) {
                     target = target.parentNode;
                 }
 
-                if (lib.hasClass(target, wrapperClass)) {
+                if ($(target).hasClass(wrapperClass)) {
                     isValidToggleEvent = this.wideToggleArea;
                     isValidSelectEvent = isValidSelectEvent && true;
                 }
@@ -850,11 +850,11 @@ define(
             // 往上找到树的节点，有`data-id`等有用的属性
             while (target
                 && target !== this.main
-                && !lib.hasAttribute(target, 'data-id')
+                && !$(target).attr('data-id')
             ) {
                 target = target.parentNode;
             }
-            var id = target.getAttribute('data-id');
+            var id = $(target).attr('data-id');
 
             if (isValidToggleEvent) {
                 this.triggerToggleStrategy(id);
@@ -896,7 +896,7 @@ define(
          */
         function isEmpty(tree, nodeElement) {
             var className = tree.helper.getPartClasses('node-empty')[0];
-            return lib.hasClass(nodeElement, className);
+            return $(nodeElement).hasClass(className);
         }
 
         /**
@@ -910,7 +910,7 @@ define(
         function isExpanded(tree, nodeElement) {
             // TODO: 放出来给子类用
             var className = tree.helper.getPartClasses('node-expanded')[0];
-            return lib.hasClass(nodeElement, className);
+            return $(nodeElement).hasClass(className);
         }
 
         /**
