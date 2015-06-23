@@ -17,19 +17,7 @@ define(
         var u = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
-        var paint = require('./painters');
-
-        /**
-         * 默认延迟展现时间
-         * @type {number}
-         */
-        var DEFAULT_DELAY_SHOW = 0;
-
-        /**
-         * 默认延迟隐藏时间
-         * @type {number}
-         */
-        var DEFAULT_DELAY_HIDE = 150;
+        var painters = require('./painters');
 
         /**
          * 提示层控件类
@@ -55,7 +43,6 @@ define(
                  * @protected
                  */
                 initOptions: function (options) {
-                    // 由main解析
                     parseMain(options);
                     /**
                      * 默认TipLayer选项配置
@@ -65,7 +52,7 @@ define(
                         showMode: 'manual'
                     };
 
-                    lib.extend(properties, options);
+                    u.extend(properties, TipLayer.defaultProperties, options);
                     this.setProperties(properties);
                 },
 
@@ -94,12 +81,11 @@ define(
                         createBF(this, 'foot', this.roles.foot);
                     }
 
-
                     if (this.arrow) {
                         var arrow = document.createElement('div');
                         // 初始化箭头
                         arrow.id = this.helper.getId('arrow');
-                        arrow.className = this.helper.getPartClasses('arrow').join(' ');
+                        arrow.className = this.helper.getPartClassName('arrow');
                         this.main.appendChild(arrow);
                     }
                 },
@@ -111,9 +97,9 @@ define(
                  * @param {Array=} 变更过的属性的集合
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
-                    paint.style('width'),
+                    painters.style('width'),
                     {
                         name: 'title',
                         paint: function (tipLayer, value) {
@@ -198,8 +184,8 @@ define(
                                 targetDOM: targetDOM,
                                 targetControl: targetControl,
                                 showMode: showMode,
-                                delayTime: delayTime != null ? delayTime : DEFAULT_DELAY_SHOW,
-                                showDuration: showDuration != null ? showDuration : DEFAULT_DELAY_HIDE
+                                delayTime: delayTime != null ? delayTime : tipLayer.delayTime,
+                                showDuration: showDuration != null ? showDuration : tipLayer.showDuration
                             };
                             if (positionOpt) {
                                 positionOpt = positionOpt.split('|');
@@ -306,7 +292,7 @@ define(
                  * @inner
                  */
                 renderLayer: function (element, options) {
-                    var properties = lib.clone(options || {});
+                    var properties = u.clone(options || {});
 
                     // 如果同时有`top`和`bottom`，则计算出`height`来
                     if (properties.hasOwnProperty('top')
@@ -727,12 +713,26 @@ define(
                     }
                     this.hide();
                     // 移除dom
-                    var domId = this.main.id;
-                    lib.removeNode(domId);
-                    Control.prototype.dispose.apply(this, arguments);
+                    this.roles = null;
+                    $(this.main).remove();
+                    this.$super(arguments);
                 }
             }
         );
+
+        TipLayer.defaultProperties = {
+            /**
+             * 默认延迟展现时间
+             * @type {number}
+             */
+            delayTime: 0,
+
+            /**
+             * 默认延迟隐藏时间
+             * @type {number}
+             */
+            showDuration: 150
+        };
 
         /**
          * 渲染控件前重绘控件
@@ -745,19 +745,13 @@ define(
             if (!main) {
                 return;
             }
-            var els = lib.getChildren(main);
-            var len = els.length;
-            var roleName;
+            var $els = $(main).children('[data-role]');
             var roles = {};
 
-            while (len--) {
-                roleName = els[len].getAttribute('data-role');
-                if (roleName) {
-                    // 不再校验，如果设置了相同的data-role，
-                    // 直接覆盖
-                    roles[roleName] = els[len];
-                }
-            }
+            $els.each(function (idx, element) {
+                var roleName = $(element).attr('data-role');
+                roles[roleName] = element;
+            });
 
             options.roles = roles;
         }
@@ -834,9 +828,8 @@ define(
                 }
             }
 
-            lib.addClasses(
-                mainDOM,
-                tipLayer.helper.getPartClasses(type + '-panel')
+            $(mainDOM).addClass(
+                tipLayer.helper.getPartClassName(type + '-panel')
             );
             var properties = {
                 main: mainDOM,
@@ -1068,7 +1061,7 @@ define(
                 arrow: true
             };
 
-            lib.extend(properties, args);
+            u.extend(properties, args);
 
             // 创建main
             var main = document.createElement('div');
@@ -1113,7 +1106,6 @@ define(
 
             return tipLayer;
         };
-
 
         esui.register(TipLayer);
         return TipLayer;
