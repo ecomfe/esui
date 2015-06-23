@@ -60,7 +60,7 @@ define(
          * @param {Object} data 传给handler的data
          * @return {boolean} 是否阻止后续行为
          */
-        exports.trigger = function(type, event, data) {
+        exports.trigger = function (type, event, data) {
             event = $.Event(event);
             event.type = (this.customEventPrefix + type).toLowerCase();
             event.target = this.element[0];
@@ -89,9 +89,9 @@ define(
          * 事件监听
          * @param {boolean=} suppressDisabledCheck disabled状态时是否禁止触发
          * @param {Element=} element 元素
-         * @param {Function|string} handler，如果为string，则为实例的方法名
+         * @param {Function|string} handlers 如果为string，则为实例的方法名
          */
-        exports.on = function(suppressDisabledCheck, element, handlers) {
+        exports.on = function (suppressDisabledCheck, element, handlers) {
 
             // 未指定suppressDisabledCheck
             if (typeof suppressDisabledCheck !== 'boolean') {
@@ -113,7 +113,7 @@ define(
             var me = this;
             $.each(
                 handlers,
-                function(event, handler) {
+                function (event, handler) {
 
                     function handlerProxy() {
                         // 允许子元素自行决定在disabled状态时是否响应事件
@@ -126,8 +126,8 @@ define(
 
                     // 复制guid,方便unbind
                     if (typeof handler !== 'string') {
-                        handlerProxy.guid = handler.guid =
-                            handler.guid || handlerProxy.guid || $.guid++;
+                        handlerProxy.guid = handler.guid
+                            = handler.guid || handlerProxy.guid || $.guid++;
                     }
 
                     // .on(event selector)
@@ -174,11 +174,24 @@ define(
             this.toggleClass.apply(this, args.concat([true]));
         };
 
+        /**
+         * 删除元素指定className
+         *
+         * @param {Element|string} element $元素
+         * @param {string} className class名称
+         */
         exports.removeClass = function (element, className) {
             var args = u.toArray(arguments);
             this.toggleClass.apply(this, args.concat([false]));
         };
 
+        /**
+         * 添加或删除元素class
+         *
+         * @param {Element|string} element $元素
+         * @param {string} className class名称
+         * @param {boolean} toggle 添加或删除
+         */
         exports.toggleClass = function (element, className, toggle) {
             if (u.isBoolean(element)) {
                 toggle = element;
@@ -196,26 +209,29 @@ define(
             element.toggleClass(this.getClassName(className), toggle);
         };
 
-        exports.setOptions = function(options) {
-            for (var key in options) {
-                this.setOption(key, options[key]);
-            }
+        exports.setOptions = function (options) {
+            var me = this;
+            u.each(
+                options,
+                function (item, key) {
+                    me.setOption(key, options[key]);
+                }
+            );
         };
 
-        exports.setOption = function(key, value) {
+        exports.setOption = function (key, value) {
             this.options[key] = value;
         };
 
-        exports.enable = function() {
+        exports.enable = function () {
             return this.setOptions({disabled: false});
         };
 
-        exports.disable = function() {
+        exports.disable = function () {
             return this.setOptions({disabled: true});
         };
 
-        exports.dispose = function() {
-            var me = this;
+        exports.dispose = function () {
 
             // TODO: 考虑自动移除classes
 

@@ -397,10 +397,10 @@ define(function (require) {
             // cannot intersect with itself
             // no useless actions that have been done before
             // no action if the item moved is the parent of the item checked
-            if (itemElement !== this.currentItem[0] &&
-                this.placeholder[intersection === 1 ? 'next' : 'prev']()[0] !== itemElement &&
-                !$.contains(this.placeholder[0], itemElement) &&
-                (this.options.type === 'semi-dynamic' ? !$.contains(this.element[0], itemElement) : true)
+            if (itemElement !== this.currentItem[0]
+                && this.placeholder[intersection === 1 ? 'next' : 'prev']()[0] !== itemElement
+                && !$.contains(this.placeholder[0], itemElement)
+                && (this.options.type === 'semi-dynamic' ? !$.contains(this.element[0], itemElement) : true)
             ) {
 
                 this.direction = intersection === 1 ? 'down' : 'up';
@@ -581,9 +581,9 @@ define(function (require) {
         var isOverElementWidth = (this.options.axis === 'y') || ((x1 + dxClick) > l && (x1 + dxClick) < r);
         var isOverElement = isOverElementHeight && isOverElementWidth;
 
-        if (this.options.tolerance === 'pointer' ||
-            this.options.forcePointerForContainers ||
-            (this.options.tolerance !== 'pointer'
+        if (this.options.tolerance === 'pointer'
+            || this.options.forcePointerForContainers
+            || (this.options.tolerance !== 'pointer'
                 && this.helperProportions[this.floating ? 'width' : 'height']
                 > item[this.floating ? 'width' : 'height'])
         ) {
@@ -777,7 +777,7 @@ define(function (require) {
 
         // Determine whether items are being displayed horizontally
         this.floating = this.items.length
-            ?  this.options.axis === 'x' || isFloating.call(this, this.items[0].item)
+            ? this.options.axis === 'x' || isFloating.call(this, this.items[0].item)
             : false;
 
         // This has to be redone because due to the item being moved out/into the offsetParent,

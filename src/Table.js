@@ -1131,12 +1131,12 @@ define(
                 table.helper.addDOMEvent(
                     head,
                     'mousemove',
-                    u.bind(headMoveHandler, head, table)
+                    headMoveHandler
                 );
 
                 $(head).mouse(
                     {
-                        start: u.bind(dragStartHandler, head, table),
+                        start: u.partial(dragStartHandler, table),
                         drag: u.partial(dragingHandler, table),
                         stop: u.partial(dragEndHandler, table)
                     }
@@ -1327,7 +1327,7 @@ define(
                             index: i,
                             classes: thClass.join(' '),
                             sorable: sortable ? 'data-sortable="1"' : '',
-                            drageRight: i >= canDragBegin && i < canDragEnd
+                            dragRight: i >= canDragBegin && i < canDragEnd
                                 ? 'data-dragright="1"' : '',
                             dragLeft: i <= canDragEnd && i > canDragBegin
                                 ? 'data-dragleft="1"' : '',
@@ -1370,6 +1370,19 @@ define(
         }
 
         /**
+         * 获取表头是否处于拖拽状态
+         *
+         * @private
+         * @param {Object} table table控件
+         * @return {boolean}
+         */
+        function isDragging(table) {
+            var head = table.helper.getPart('head');
+            var mouse = $(head).mouse('instance');
+            return !!mouse.mouseStarted;
+        }
+
+        /**
          * 表格头单元格鼠标移入的事件handler
          *
          * @private
@@ -1386,7 +1399,7 @@ define(
          * @param {Element} element 移出的单元格
          */
         function titleOver(table, element) {
-            if (table.dragReady) {
+            if (isDragging(table) || table.dragReady) {
                 return;
             }
 
@@ -1466,11 +1479,11 @@ define(
          * 获取表格头鼠标移动的事件handler
          *
          * @private
-         * @param {ui.Table} table table控件实例
          * @param {Event} e 事件对象
          */
-        function headMoveHandler(table, e) {
-            if (!table.columnResizable) {
+        function headMoveHandler(e) {
+            var table = this;
+            if (!table.columnResizable || isDragging(table)) {
                 return;
             }
 
@@ -1483,7 +1496,7 @@ define(
             if (!target) {
                 return;
             }
-            var el = this;
+            var head = table.helper.getPart('head');
             var pageX = e.pageX || e.clientX + lib.page.getScrollLeft();
 
             // 获取位置与序号
@@ -1493,7 +1506,7 @@ define(
             // 如果允许拖拽，设置鼠标手型样式与当前拖拽点
             if (getAttr(target, 'dragleft')  && pageX - pos.left < range) {
                 sortable && (titleOut(table, target)); // 清除可排序列的over样式
-                table.helper.addPartClasses(dragClass, el);
+                table.helper.addPartClasses(dragClass, head);
                 table.dragPoint = 'left';
                 table.dragReady = 1;
             }
@@ -1501,15 +1514,15 @@ define(
                 && pos.left + target.offsetWidth - pageX < range
             ) {
                 sortable && (titleOut(table, target)); // 清除可排序列的over样式
-                table.helper.addPartClasses(dragClass, el);
+                table.helper.addPartClasses(dragClass, head);
                 table.dragPoint = 'right';
                 table.dragReady = 1;
             }
             else {
-                table.helper.removePartClasses(dragClass, el);
-                sortable && (titleOver(table, target)); // 附加可排序列的over样式
+                table.helper.removePartClasses(dragClass, head);
                 table.dragPoint = '';
                 table.dragReady = 0;
+                titleOver(table, target); // 附加可排序列的over样式
             }
         }
 
@@ -1687,22 +1700,17 @@ define(
          */
         function dragEndHandler(table, e) {
             var index = parseInt(table.dragIndex, 10);
-            var pageX = e.pageX;
-            var fields = table.realFields;
-            var fieldLen = fields.length;
-            var alterSum = 0;
-            var colsWidth = table.colsWidth;
-            var revise = 0;
-
             // 校正拖拽元素
             // 如果是从左边缘拖动的话，拖拽元素应该上一列
             if (table.dragPoint === 'left') {
                 index--;
             }
 
+            var colsWidth = table.colsWidth;
             // 校正拖拽列的宽度
             // 不允许小于最小宽度
             var minWidth = table.minColsWidth[index];
+            var pageX = e.pageX;
             var offsetX = pageX - table.dragStart;
             var currentWidth = colsWidth[index] + offsetX;
             if (currentWidth < minWidth) {
@@ -1714,6 +1722,9 @@ define(
             var alterWidths = [];
             var alterWidth;
             // 查找宽度允许改变的列
+            var fields = table.realFields;
+            var fieldLen = fields.length;
+            var alterSum = 0;
             for (var i = index + 1; i < fieldLen; i++) {
                 if (!fields[i].stable && colsWidth[i] > 0) {
                     alters.push(i);
@@ -1722,6 +1733,8 @@ define(
                     alterSum += alterWidth;
                 }
             }
+
+            var revise = 0;
 
             // 计算允许改变的列每列的宽度
             var leave = offsetX;
@@ -2215,6 +2228,9 @@ define(
          * @param {Event} e 事件对象
          */
         function rowOverHandler(element, e) {
+            if (isDragging(this)) {
+                return;
+            }
             this.helper.addPartClasses('row-hover', element);
         }
 

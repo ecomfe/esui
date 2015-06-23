@@ -9,6 +9,7 @@
 
 define(
     function (require) {
+
         /**
          * 将类桥接到jquery插件上
          * 桥接效果：
