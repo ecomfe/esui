@@ -267,7 +267,7 @@ define(
              * @override
              */
             initEvents: function () {
-                this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
+                this.helper.addDOMEvent(this.main, 'click', toggle);
                 this.layer.on('rendered', u.bind(addLayerClass, this));
             },
 
@@ -466,6 +466,50 @@ define(
                 return this.get('datasource')[this.get('selectedIndex')];
             }
         });
+
+        /**
+         * 切换下拉框
+         *
+         * @param {Event} e click事件对象
+         */
+        function toggle(e) {
+            this.layer.toggle.call(this.layer, e);
+            focusItem.call(this, this.get('selectedIndex'));
+        }
+
+        /**
+         * 将指定选项滚动到可视范围内
+         * @param {number} index 选项的index
+         */
+        function focusItem(index) {
+            var layer = this.layer;
+            var content = this.layer.getElement();
+            // jquery nth strat with 1
+            var item = $(content).find('li:nth-child(' + (index + 1) + ')');
+            item = item && item[0];
+            if (item) {
+                // item距离父元素偏移
+                var itemOffsetTop = item.offsetTop;
+                // item高度
+                var itemOffsetHeight = item.offsetHeight;
+                // 当前父元素的滚动条偏移
+                var scrollTop = content.scrollTop;
+                // 父元素高度
+                var contentOffsetHeight = content.clientHeight;
+                // item底部距离父元素偏移
+                var bottomDistance = itemOffsetTop + itemOffsetHeight;
+
+                // item在可视范围上面
+                if (scrollTop > itemOffsetTop) {
+                    scrollTop = itemOffsetTop;
+                }
+                // item在可视范围下面
+                else if (bottomDistance > (scrollTop + contentOffsetHeight)) {
+                    scrollTop = (bottomDistance - contentOffsetHeight);
+                }
+                content.scrollTop = scrollTop;
+            }
+        }
 
         /**
          * 根据下拉弹层的`click`事件设置值
