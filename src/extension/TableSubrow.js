@@ -10,10 +10,9 @@ define(
     function (require) {
         var Extension = require('../Extension');
         var lib = require('../lib');
-        var helper = require('../controlHelper');
         var main = require('../main');
         var Table = require('../Table');
-        
+
         /**
          * 获取元素Id
          * @private
@@ -22,7 +21,7 @@ define(
          * @return {string}
          */
         function getId(table, name) {
-            return helper.getId(table, name);
+            return table.helper.getId(name);
         }
 
         /**
@@ -34,7 +33,7 @@ define(
          * @return {string}
          */
         function getClass(table, name) {
-            return helper.getPartClasses(table, name).join(' ');
+            return table.helper.getPartClassName(name);
         }
 
         /**
@@ -124,7 +123,7 @@ define(
             if (opened) {
                 classBase = 'subentry-opened-hover';
             }
-            helper.addPartClasses(table, classBase, element);
+            table.helper.addPartClasses(classBase, element);
         }
 
         /**
@@ -138,8 +137,8 @@ define(
         }
         
         function entryOut(table, element) {
-            helper.removePartClasses(table, 'subentry-hover', element);
-            helper.removePartClasses(table, 'subentry-opened-hover', element);
+            table.helper.removePartClasses(table, 'subentry-hover', element);
+            table.helper.removePartClasses(table, 'subentry-opened-hover', element);
         }
 
         /**
@@ -194,21 +193,19 @@ define(
             if (!eventArgs.isDefaultPrevented()) {
                 entryOut(table, entry);
                 table.subrowIndex = null;
-                
-                helper.removePartClasses(
-                    table, 
+
+                table.helper.removePartClasses(
                     'subentry-opened', 
                     entry
                 );
-                helper.removePartClasses(
-                    table, 
+                table.helper.removePartClasses(
                     'row-unfolded', 
                     table.getRow(index)
                 );
-                
+
                 setAttr(entry, 'title', table.subEntryOpenTip);
                 setAttr(entry, 'subrowopened', '');
-                
+
                 lib.g(getSubrowId(table, index)).style.display = 'none';
 
                 return true;
@@ -240,8 +237,8 @@ define(
                 return;
             }
 
-            helper.addPartClasses(table, 'subentry-opened', entry);
-            helper.addPartClasses(table, 'row-unfolded', table.getRow(index));
+            table.helper.addPartClasses('subentry-opened', entry);
+            table.helper.addPartClasses('row-unfolded', table.getRow(index));
 
             setAttr(entry, 'title', table.subEntryCloseTip);
             setAttr(entry, 'subrowopened', '1');
@@ -411,8 +408,7 @@ define(
                 return;
             }
 
-            var getPartClasses = helper.getPartClasses;
-            var subentryClass = getPartClasses(target, 'subentry')[0];
+            var subentryClass = target.helper.getPartClassName(target, 'subentry');
 
             target.addRowBuilders([
                 {

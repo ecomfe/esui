@@ -49,6 +49,25 @@
                     </div>
                 </div>
             </div>
+            <h2>从模板创建</h2>
+            <div class="intro">
+                <p>从模板创建</p>
+            </div>
+            <div class="view">
+                <ul class="viewer">
+                    <li class="view-markup">结构</li>
+                </ul>
+                <div class="example ui-demo-light-stage">
+                    <div id="container">
+                        <ol data-ui-type="Wizard" data-ui-active-index="1">
+                            <li data-node-number="1">基本信息</li>
+                            <li data-node-number="2">地址</li>
+                            <li data-node-number="3">付款</li>
+                            <li data-node-number="4">配送</li>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -72,8 +91,7 @@
 
                 var wizard = new Wizard({
                     steps: steps, 
-                    activeIndex: 1,
-                    nodeTemplate: '<span class="ui-wizard-node-number">${number}</span><span class="ui-wizard-node-text">${text}</span>'
+                    activeIndex: 1
                 });
                 wizard.appendTo(document.getElementById('wizard-zone'));
                 prev.on('click', function(){

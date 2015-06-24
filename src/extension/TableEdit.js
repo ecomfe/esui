@@ -16,11 +16,11 @@ define(
 
         var Extension = require('../Extension');
         var lib = require('../lib');
-        var helper = require('../controlHelper');
         var main = require('../main');
         var Table = require('../Table');
         var ValidityState = require('../validator/ValidityState');
         var Validity = require('../validator/Validity');
+        var Layer = require('../Layer');
 
         var layContentTpl = [
             '<div class="${optClass}">',
@@ -70,7 +70,7 @@ define(
             currentColIndex = options.columnIndex;
 
             if (!layer) {
-                layer = helper.layer.create();
+                layer = Layer.create();
                 document.body.appendChild(layer);
                 layer.className = table.helper.getPartClassName('editor');
                 initLayer();
@@ -355,7 +355,7 @@ define(
                 );
 
                 if (entrance) {
-                   helper.layer.attachTo(
+                    Layer.attachTo(
                         layer,
                         entrance
                     );
@@ -404,7 +404,7 @@ define(
                     options.columnIndex
                 )
             );
-            helper.layer.attachTo(
+            Layer.attachTo(
                 layer,
                 entrance
             );
@@ -641,9 +641,7 @@ define(
                 'click',
                 {
                     handler: entranceClickHandler,
-                    matchFn: helper.getPartClasses(
-                        target, 'cell-editentry'
-                    )[0]
+                    matchFn: target.helper.getPartClassName('cell-editentry')
                 }
             );
 

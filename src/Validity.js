@@ -11,12 +11,13 @@ define(
     // 你说为啥这东西不继承`Label`？因为有2货要往里放控件！
     // 你说为啥名字不叫`ValidityLabel`？CSS样式里看到`validitylabel`多丑！
     function (require) {
-        var u  = require('underscore');
-        var eoo  = require('eoo');
+        var u = require('underscore');
+        var eoo = require('eoo');
         var esui = require('./main');
-        var lib = require('./lib');
         var Control = require('./Control');
         var Helper = require('./Helper');
+        var painters = require('./painters');
+        var $ = require('jquery');
 
         /**
          * 验证信息显示控件
@@ -49,9 +50,9 @@ define(
                  * @override
                  */
                 initOptions: function (options) {
-                    var properties =
-                        u.extend({}, Validity.defaultProperties, options);
-                    Control.prototype.initOptions.call(this, properties);
+                    var properties
+                        = u.extend({}, options);
+                    this.$super([properties]);
                 },
 
                 /**
@@ -73,7 +74,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
                     {
                         /**
@@ -110,12 +111,13 @@ define(
                          */
                         name: 'focusTarget',
                         paint: function (label, focusTarget) {
-                            if (label.main.nodeName.toLowerCase() === 'label') {
+                            var $labelMain = $(label.main);
+                            if ($labelMain.is('label')) {
                                 if (focusTarget && focusTarget.id) {
-                                    lib.setAttribute(label.main, 'for', focusTarget.id);
+                                    $labelMain.attr('for', focusTarget.id);
                                 }
                                 else {
-                                    lib.removeAttribute(label.main, 'for');
+                                    $labelMain.removeAttr('for');
                                 }
                             }
                         }
@@ -179,11 +181,9 @@ define(
                     }
                     this.focusTarget = null;
 
-                    if (this.main.parentNode) {
-                        this.main.parentNode.removeChild(this.main);
-                    }
+                    $(this.main).remove();
 
-                    Control.prototype.dispose.apply(this, arguments);
+                    this.$super(arguments);
                 }
             }
         );
@@ -241,6 +241,7 @@ define(
             }
             return classes;
         }
+
         esui.register(Validity);
         return Validity;
     }

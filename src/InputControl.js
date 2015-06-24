@@ -17,28 +17,28 @@ define(
         var eoo = require('eoo');
         var painters = require('./painters');
 
+        /**
+         * 输入控件基类
+         *
+         * 输入控件用于表示需要在表单中包含的控件，
+         * 其主要提供`getRawValue`和`getValue`方法供获取值
+         *
+         * 需要注意的是，控件其实并不通过严格的继承关系来判断一个控件是否为输入控件，
+         * 只要`getCategory()`返回为`"input"`、`"check"或`"extend"`就认为是输入控件
+         *
+         * 相比普通控件的 **禁用 / 启用** ，输入控件共有3种状态：
+         *
+         * - 普通状态：可编辑，值随表单提交
+         * - `disabled`：禁用状态，此状态下控件不能编辑，同时值不随表单提交
+         * - `readOnly`：只读状态，此状态下控件不能编辑，但其值会随表单提交
+         *
+         * @extends Control
+         * @constructor
+         * @param {Object} [options] 初始化参数
+         */
         var InputControl = eoo.create(
             Control,
             {
-                /**
-                 * 输入控件基类
-                 *
-                 * 输入控件用于表示需要在表单中包含的控件，
-                 * 其主要提供`getRawValue`和`getValue`方法供获取值
-                 *
-                 * 需要注意的是，控件其实并不通过严格的继承关系来判断一个控件是否为输入控件，
-                 * 只要`getCategory()`返回为`"input"`、`"check"或`"extend"`就认为是输入控件
-                 *
-                 * 相比普通控件的 **禁用 / 启用** ，输入控件共有3种状态：
-                 *
-                 * - 普通状态：可编辑，值随表单提交
-                 * - `disabled`：禁用状态，此状态下控件不能编辑，同时值不随表单提交
-                 * - `readOnly`：只读状态，此状态下控件不能编辑，但其值会随表单提交
-                 *
-                 * @extends Control
-                 * @constructor
-                 * @param {Object} [options] 初始化参数
-                 */
                 constructor: function (options) {
                     options = options ? u.extend({}, options) : {};
                     if (options.main && !options.name) {

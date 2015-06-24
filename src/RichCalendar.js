@@ -13,13 +13,15 @@ define(
         require('./TextBox');
 
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var InputControl = require('./InputControl');
         var Layer = require('./Layer');
 
-        var ui = require('./main');
+        var esui = require('./main');
         var moment = require('moment');
         var u = require('underscore');
+        var eoo = require('eoo');
+        var $ = require('jquery');
+        var painters = require('./painters');
 
         /**
          * 日历用浮层
@@ -28,22 +30,39 @@ define(
          * @ignore
          * @constructor
          */
-        function RichCalendarLayer() {
-            Layer.apply(this, arguments);
-        }
+        var RichCalendarLayer = eoo.create(
+            Layer,
+            {
+                create: function () {
+                    var ele = this.$super(arguments);
+                    $(this.control.main).after(ele);
+                    return ele;
+                },
 
-        lib.inherits(RichCalendarLayer, Layer);
+                render: function (element) {
+                    var calendar = this.control;
+                    element.innerHTML = getLayerHtml(calendar);
+                    calendar.helper.initChildren(element);
 
-        RichCalendarLayer.prototype.render = function (element) {
-            document.body.appendChild(element);
+                    // 渲染日历集
+                    paintCals(calendar, true);
+                },
 
-            var calendar = this.control;
-            element.innerHTML = getLayerHtml(calendar);
-            calendar.helper.initChildren(element);
-
-            // 渲染日历集
-            paintCals(calendar, true);
-        };
+                toggle: function () {
+                    var element = this.getElement();
+                    if (!element
+                        || this.control.helper.isPart(element, 'layer-hidden')
+                    ) {
+                        // 渲染日历集
+                        paintCals(this.control, true);
+                        this.show();
+                    }
+                    else {
+                        this.hide();
+                    }
+                }
+            }
+        );
 
         /**
          * 搭建弹出层内容
@@ -53,6 +72,7 @@ define(
          */
         function getLayerHtml(calendar) {
             var displayNum = calendar.displayNum;
+            var controlHelper = calendar.helper;
             var monthViewContainerTpl = ''
                 + '<div id="${id}" class="${className}">${monthView}</div>';
             var monthViews = [];
@@ -61,9 +81,9 @@ define(
                     lib.format(
                         monthViewContainerTpl,
                         {
-                            id: calendar.helper.getId('month-' + i),
+                            id: controlHelper.getId('month-' + i),
                             className:
-                                calendar.helper.getPartClassName('month-container'),
+                                controlHelper.getPartClassName('month-container'),
                             monthView: getCalendarHtml(calendar, i)
                         }
                     )
@@ -73,8 +93,8 @@ define(
             return lib.format(
                 '<div id="${id}" class="${className}">${monthViews}</div>',
                 {
-                    id: calendar.helper.getId('months'),
-                    className: calendar.helper.getPartClassName('months'),
+                    id: controlHelper.getId('months'),
+                    className: controlHelper.getPartClassName('months'),
                     monthViews: monthViews.join('')
                 }
             );
@@ -100,30 +120,419 @@ define(
             });
         }
 
-        RichCalendarLayer.prototype.toggle = function () {
-            var element = this.getElement();
-            if (!element
-                || this.control.helper.isPart(element, 'layer-hidden')
-            ) {
-                // 渲染日历集
-                paintCals(this.control, true);
-                this.show();
-            }
-            else {
-                this.hide();
-            }
-        };
-
         /**
          * 控件类
          *
          * @constructor
          * @param {Object} options 初始化参数
          */
-        function RichCalendar(options) {
-            InputControl.apply(this, arguments);
-            this.layer = new RichCalendarLayer(this);
-        }
+        var RichCalendar = eoo.create(
+            InputControl,
+            {
+                constructor: function (options) {
+                    this.$super([options]);
+                    this.layer = new RichCalendarLayer(this);
+                },
+
+                /**
+                 * 控件类型
+                 *
+                 * @type {string}
+                 */
+                type: 'RichCalendar',
+
+                /**
+                 * 初始化参数
+                 *
+                 * @param {Object=} options 构造函数传入的参数
+                 * @override
+                 * @protected
+                 */
+                initOptions: function (options) {
+                    var now = new Date();
+                    /**
+                     * 默认选项配置
+                     */
+                    var properties = {
+                        now: now,
+                        rawValue: [],
+                        displayNum: 2,
+                        startYear: now.getFullYear(),
+                        startMonth: now.getMonth() + 1
+                    };
+
+                    if ($(this.main).is('input')) {
+                        this.helper.extractOptionsFromInput(this.main, properties);
+                    }
+                    u.extend(properties, RichCalendar.defaultProperties, options);
+
+                    if (options.range && typeof options.range === 'string') {
+                        properties.range = convertToRaw(properties.range);
+                    }
+
+                    this.setProperties(properties);
+                },
+
+                setProperties: function (properties) {
+                    // 如果么设置rawValue
+                    if (properties.rawValue == null
+                        || properties.rawValue.length === 0) {
+                        // 从value转
+                        if (properties.value) {
+                            properties.rawValue = this.parseValue(properties.value);
+                        }
+                    }
+
+                    // 初始化显示年月
+                    // 如果设置rawValue，则取rawValue的第一个为起始年月
+                    if (properties.rawValue && properties.rawValue.length) {
+                        var startDate = properties.rawValue[0];
+                        properties.startYear = startDate.getFullYear();
+                        properties.startMonth = startDate.getMonth() + 1;
+                    }
+
+                    var changes
+                        = this.$super([properties]);
+
+                    return changes;
+                },
+
+                /**
+                 * 初始化DOM结构
+                 *
+                 * @protected
+                 */
+                initStructure: function () {
+                    // 如果主元素是输入元素，替换成`<div>`
+                    // 如果输入了非块级元素，则不负责
+                    var controlHelper = this.helper;
+                    if ($(this.main).is('input')) {
+                        controlHelper.replaceMain();
+                    }
+
+                    var tpl = [
+                        '<div data-ui-type="Panel" class="${generalPanelClass}"',
+                        ' data-ui-child-name="generalPanel">',
+                        '<label>${beforeTotalDaysLabelText}<span id="${totalNumId}" ',
+                        'class="${totalNumClass}"></span>${afterTotalDaysLabelText},</label>',
+                        '<button data-ui-type="Button" data-ui-variants="link"',
+                        ' data-ui-child-name="deleteBtn">${clearButtonText}</button>',
+                        '</div>',
+                        '<div class="${className}" id="${id}">',
+                        '<textarea data-ui-type="TextBox"',
+                        ' data-ui-mode="textarea"',
+                        ' data-ui-width="${textBoxWidth}"',
+                        ' data-ui-height="${textBoxHeight}"',
+                        ' data-ui-child-name="textInput"></textarea>',
+                        '<button data-ui-type="Button" data-ui-variants="link"',
+                        ' data-ui-child-name="modifyBtn" type="button">',
+                        '<span class="${calendarIconClass}"></span></button>',
+                        '</div>',
+                        '<input type="hidden" id="${inputId}" name="${name}"',
+                        ' value="" />'
+                    ];
+
+                    this.main.innerHTML = lib.format(
+                        tpl.join('\n'),
+                        {
+                            className: controlHelper.getPartClassName('text'),
+                            id: controlHelper.getId('text'),
+                            textBoxWidth: this.textBoxWidth || 200,
+                            textBoxHeight: this.textBoxHeight || 100,
+                            name: this.name,
+                            inputId: controlHelper.getId('param-value'),
+                            generalPanelClass:
+                                controlHelper.getPartClassName('general-info'),
+                            totalNumId: controlHelper.getId('total-num'),
+                            totalNumClass: controlHelper.getPartClassName('total-num'),
+                            calendarIconClass: controlHelper.getIconClass('calendar'),
+                            beforeTotalDaysLabelText: this.beforeTotalDaysLabelText,
+                            afterTotalDaysLabelText: this.afterTotalDaysLabelText,
+                            clearButtonText: this.clearButtonText
+                        }
+                    );
+
+                    this.initChildren(this.main);
+                    this.layer.autoCloseExcludeElements = [this.getChild('modifyBtn').main];
+                },
+
+                /**
+                 * 初始化事件交互
+                 *
+                 * @protected
+                 * @override
+                 */
+                initEvents: function () {
+                    var modifyBtn = this.getChild('modifyBtn');
+                    modifyBtn.on('click', u.bind(this.layer.toggle, this.layer));
+
+                    var deleteAllBtn = this.getChild('generalPanel').getChild('deleteBtn');
+                    deleteAllBtn.on('click', u.partial(deleteAll, this));
+
+                    var textInput = this.getChild('textInput');
+                    textInput.on('blur', u.partial(updateRawValueByTyping, this));
+                },
+
+                /**
+                 * 重新渲染视图
+                 * 仅当生命周期处于RENDER时，该方法才重新渲染
+                 *
+                 * @param {Array=} 变更过的属性的集合
+                 * @override
+                 */
+                repaint: painters.createRepaint(
+                    InputControl.prototype.repaint,
+                    {
+                        name: ['rawValue', 'range'],
+                        paint: function (calendar, rawValue, range) {
+                            if (range) {
+                                if (typeof range === 'string') {
+                                    range = convertToRaw(range);
+                                }
+                                // 还要支持只设置begin或只设置end的情况
+                                if (!range.begin) {
+                                    // 设置一个特别远古的年
+                                    range.begin = new Date(1983, 8, 3);
+                                }
+                                else if (!range.end) {
+                                    // 设置一个特别未来的年
+                                    range.end = new Date(2046, 10, 4);
+                                }
+                                calendar.range = range;
+                            }
+                            if (rawValue) {
+                                updateMain(calendar, rawValue);
+                            }
+                            if (calendar.helper.getPart('months')) {
+                                paintCals(calendar);
+                            }
+                        }
+                    },
+                    {
+                        name: ['disabled', 'hidden', 'readOnly'],
+                        paint: function (calendar, disabled, hidden, readOnly) {
+                            if (disabled || hidden || readOnly) {
+                                calendar.layer.hide();
+                            }
+                            // TODO: read only 的情况没有考虑
+                            var panel = calendar.getChild('generalPanel');
+                            if (disabled) {
+                                panel.helper.disableChildren();
+                                calendar.helper.disableChildren();
+                            }
+                            else {
+                                panel.helper.enableChildren();
+                                calendar.helper.enableChildren();
+                            }
+                        }
+                    }
+                ),
+
+                /**
+                 * 设置日期
+                 *
+                 * @param {Date} date 选取的日期.
+                 */
+                setRawValue: function (date) {
+                    this.setProperties({rawValue: date});
+                },
+
+                /**
+                 * 获取选取日期值
+                 *
+                 * @return {Date}
+                 */
+                getRawValue: function () {
+                    return this.rawValue;
+                },
+
+                /**
+                 * 将value从原始格式转换成string
+                 *
+                 * @param {*} rawValue 原始值，就是包含了区段中的所有日期的数组
+                 * @return {string}
+                 */
+                stringifyValue: function (rawValue) {
+                    var dateStrs = [];
+                    var oneDay = 86400000;
+                    var dateFormat = this.paramFormat;
+
+                    for (var i = 0; i < rawValue.length; i++) {
+                        // 开个头
+                        if (i === 0) {
+                            dateStrs.push(
+                                moment(rawValue[i]).format(dateFormat)
+                            );
+                        }
+                        else {
+                            // 间隔超过1天，说明已中断，则
+                            if ((rawValue[i] - rawValue[i - 1]) > oneDay) {
+                                // 1. 为前一段时间画结尾
+                                dateStrs.push(
+                                    moment(rawValue[i - 1]).format(
+                                        dateFormat
+                                    )
+                                );
+                                // 2. 为下一段开头
+                                dateStrs.push(
+                                    moment(rawValue[i]).format(
+                                        dateFormat
+                                    )
+                                );
+                            }
+                        }
+                        // 已到最后一个数据，无论如何都要收尾了
+                        if (i === (rawValue.length - 1)) {
+                            dateStrs.push(
+                                moment(rawValue[i]).format(
+                                    dateFormat
+                                )
+                            );
+                        }
+                    }
+                    return dateStrs.join(',');
+                },
+
+                /**
+                 * 获得
+                 * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
+                 * 形式的数据
+                 *
+                 * @return {Array}
+                 */
+                getRanges: function () {
+                    var rawValue = this.rawValue;
+                    var dateStrs = this.stringifyValue(rawValue).split(',');
+                    var range = [];
+                    for (var i = 0; i < dateStrs.length - 1; i += 2) {
+                        var begin = parseToDate(dateStrs[i]);
+                        var end = parseToDate(dateStrs[i + 1]);
+                        range.push({
+                            begin: begin,
+                            end: end
+                        });
+                    }
+                    return range;
+                },
+
+                /**
+                 * 将
+                 * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
+                 * 型值转成raw形式
+                 *
+                 * @param {Array} rangeValue 值数组
+                 *
+                 */
+                setRanges: function (rangeValue) {
+                    var dates = {};
+                    for (var i = 0; i < rangeValue.length; i++) {
+                        var begin = rangeValue[i].begin;
+                        var end = rangeValue[i].end;
+                        var temp;
+                        if (!begin || !end) {
+                            continue;
+                        }
+                        if (begin - end === 0) {
+                            dates[begin] = begin;
+                        }
+                        else {
+                            temp = begin;
+                            while (temp <= end) {
+                                dates[temp] = temp;
+                                temp = new Date(
+                                    temp.getFullYear(),
+                                    temp.getMonth(),
+                                    temp.getDate() + 1
+                                );
+                            }
+                        }
+                    }
+                    var rawDates = [];
+                    for (var key in dates) {
+                        if (dates.hasOwnProperty(key)) {
+                            rawDates.push(dates[key]);
+                        }
+                    }
+                    rawDates.sort(function (a, b) {
+                        return a - b;
+                    });
+
+                    this.set('rawValue', rawDates);
+                },
+
+                /**
+                 * 将string类型的value转换成原始格式
+                 *
+                 * @param {string} value 字符串值
+                 * @return {Array}
+                 */
+                parseValue: function (value) {
+                    var dateStrs = value.split(',');
+                    var dates = {};
+                    for (var i = 0; i < dateStrs.length - 1; i += 2) {
+                        var begin = parseToDate(dateStrs[i]);
+                        var end = parseToDate(dateStrs[i + 1]);
+                        var temp;
+                        if (!begin || !end) {
+                            continue;
+                        }
+                        if (begin - end === 0) {
+                            dates[begin] = begin;
+                        }
+                        else {
+                            temp = begin;
+                            while (temp <= end) {
+                                dates[temp] = temp;
+                                temp = new Date(
+                                    temp.getFullYear(),
+                                    temp.getMonth(),
+                                    temp.getDate() + 1
+                                );
+                            }
+                        }
+                    }
+                    var rawDates = [];
+                    for (var key in dates) {
+                        if (dates.hasOwnProperty(key)) {
+                            rawDates.push(dates[key]);
+                        }
+                    }
+                    rawDates.sort(function (a, b) {
+                        return a - b;
+                    });
+                    return rawDates;
+                },
+
+                dispose: function () {
+                    if (this.helper.isInStage('DISPOSED')) {
+                        return;
+                    }
+
+                    if (this.layer) {
+                        this.layer.dispose();
+                        this.layer = null;
+                    }
+
+                    this.$super(arguments);
+                },
+
+                toggleCanlendarLayer: function () {
+                    this.layer.toggle();
+                }
+            }
+        );
+
+        RichCalendar.defaultProperties = {
+            range: {
+                begin: new Date(1983, 8, 3),
+                end: new Date(2046, 10, 4)
+            },
+            paramFormat: 'YYYY-MM-DD',
+            beforeTotalDaysLabelText: '共',
+            afterTotalDaysLabelText: '天',
+            clearButtonText: '全部删除',
+            displayToLabelText: '至'
+        };
 
         function syncValueOfMonthViews(calendar, index) {
             // 要把其他的日历也同步为相同的值
@@ -167,11 +576,11 @@ define(
                     // 再绑回来
                     monthView.on(
                         'changeyear',
-                        lib.curry(updateMonthOrYear, calendar, i)
+                        u.partial(updateMonthOrYear, calendar, i)
                     );
                     monthView.on(
                         'changemonth',
-                        lib.curry(updateMonthOrYear, calendar, i)
+                        u.partial(updateMonthOrYear, calendar, i)
                     );
                 }
             }
@@ -250,15 +659,15 @@ define(
             if (bindEvent === true) {
                 monthView.on(
                     'change',
-                    lib.curry(syncValueOfMonthViews, calendar, index)
+                    u.partial(syncValueOfMonthViews, calendar, index)
                 );
                 monthView.on(
                     'changeyear',
-                    lib.curry(updateMonthOrYear, calendar, index)
+                    u.partial(updateMonthOrYear, calendar, index)
                 );
                 monthView.on(
                     'changemonth',
-                    lib.curry(updateMonthOrYear, calendar, index)
+                    u.partial(updateMonthOrYear, calendar, index)
                 );
             }
         }
@@ -271,7 +680,7 @@ define(
          * @param {Array} value 外部设置的日期
          */
         function updateMain(calendar, value) {
-            var inputId = helper.getId(calendar, 'param-value');
+            var inputId = calendar.helper.getId('param-value');
             lib.g(inputId).value = calendar.stringifyValue(value);
             var textInput = calendar.getChild('textInput');
             var textValue = getValueText(calendar, value);
@@ -284,7 +693,7 @@ define(
         }
 
         function updateTotalInfo(calendar, rawValue) {
-            var totalNum = lib.g(helper.getId(calendar, 'total-num'));
+            var totalNum = lib.g(calendar.helper.getId('total-num'));
             totalNum.innerHTML = rawValue.length;
         }
 
@@ -374,10 +783,12 @@ define(
             var tempDate = [];
             var tempIndex = 0;
             var oneDay = 86400000;
+            var dateFormat = calendar.paramFormat;
+            var displayToLabelText = calendar.displayToLabelText;
             for (var i = 0; i < rawValue.length; i++) {
                 if (i === 0) {
                     dateStrs.push(
-                        lib.date.format(rawValue[i], calendar.paramFormat)
+                        moment(rawValue[i]).format(dateFormat)
                     );
                     tempDate.push(rawValue[i]);
                     tempIndex++;
@@ -387,10 +798,10 @@ define(
                     if ((rawValue[i] - rawValue[i - 1]) > oneDay) {
                         // 只一天
                         if ((rawValue[i - 1] - tempDate[tempIndex - 1]) !== 0) {
-                            dateStrs.push('至');
+                            dateStrs.push(displayToLabelText);
                             dateStrs.push(
-                                lib.date.format(
-                                    rawValue[i - 1], calendar.paramFormat
+                                moment(rawValue[i - 1]).format(
+                                    dateFormat
                                 )
                             );
                             tempDate.push(rawValue[i - 1]);
@@ -398,18 +809,18 @@ define(
                         }
                         dateStrs.push('\n');
                         dateStrs.push(
-                            lib.date.format(
-                                rawValue[i], calendar.paramFormat
+                             moment(rawValue[i]).format(
+                                dateFormat
                             )
                         );
                         tempDate.push(rawValue[i]);
                         tempIndex++;
                     }
                     else if (i === (rawValue.length - 1)) {
-                        dateStrs.push('至');
+                        dateStrs.push(displayToLabelText);
                         dateStrs.push(
-                            lib.date.format(
-                                rawValue[i], calendar.paramFormat
+                            moment(rawValue[i]).format(
+                                dateFormat
                             )
                         );
                     }
@@ -486,396 +897,7 @@ define(
             return newStr === date;
         }
 
-        RichCalendar.prototype = {
-            /**
-             * 控件类型
-             *
-             * @type {string}
-             */
-            type: 'RichCalendar',
-
-            /**
-             * 初始化参数
-             *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
-             * @protected
-             */
-            initOptions: function (options) {
-                var now = new Date();
-                /**
-                 * 默认选项配置
-                 */
-                var properties = {
-                    now: now,
-                    range: {
-                        begin: new Date(1983, 8, 3),
-                        end: new Date(2046, 10, 4)
-                    },
-                    paramFormat: 'YYYY-MM-DD',
-                    rawValue: [],
-                    displayNum: 2,
-                    startYear: now.getFullYear(),
-                    startMonth: now.getMonth() + 1
-                };
-
-                helper.extractValueFromInput(this, options);
-
-                lib.extend(properties, options);
-
-                if (options.range && typeof options.range === 'string') {
-                    properties.range = convertToRaw(properties.range);
-                }
-
-                this.setProperties(properties);
-            },
-
-
-            setProperties: function (properties) {
-                // 如果么设置rawValue
-                if (properties.rawValue == null
-                    || properties.rawValue.length === 0) {
-                    // 从value转
-                    if (properties.value) {
-                        properties.rawValue = this.parseValue(properties.value);
-                    }
-                }
-
-                // 初始化显示年月
-                // 如果设置rawValue，则取rawValue的第一个为起始年月
-                if (properties.rawValue && properties.rawValue.length) {
-                    var startDate = properties.rawValue[0];
-                    properties.startYear = startDate.getFullYear();
-                    properties.startMonth = startDate.getMonth() + 1;
-                }
-
-                var changes =
-                    InputControl.prototype.setProperties.apply(this, arguments);
-
-                return changes;
-            },
-
-            /**
-             * 初始化DOM结构
-             *
-             * @protected
-             */
-            initStructure: function () {
-                // 如果主元素是输入元素，替换成`<div>`
-                // 如果输入了非块级元素，则不负责
-                if (lib.isInput(this.main)) {
-                    helper.replaceMain(this);
-                }
-
-                var tpl = [
-                    '<div data-ui-type="Panel" class="${generalPanelClass}"',
-                    ' data-ui-child-name="generalPanel">',
-                    '<label>共<span id="${totalNumId}" ',
-                    'class="${totalNumClass}"></span>天,</label>',
-                    '<button data-ui-type="Button" data-ui-variants="link"',
-                    ' data-ui-child-name="deleteBtn">全部删除</button>',
-                    '</div>',
-                    '<div class="${className}" id="${id}">',
-                    '<textarea data-ui-type="TextBox"',
-                    ' data-ui-mode="textarea"',
-                    ' data-ui-width="${textBoxWidth}"',
-                    ' data-ui-height="${textBoxHeight}"',
-                    ' data-ui-child-name="textInput"></textarea>',
-                    '<button data-ui-type="Button" data-ui-variants="link"',
-                    ' data-ui-child-name="modifyBtn" type="button">',
-                    '<span class="${calendarIconClass}"></span></button>',
-                    '</div>',
-                    '<input type="hidden" id="${inputId}" name="${name}"',
-                    ' value="" />'
-                ];
-
-                var getClass = helper.getPartClasses;
-                this.main.innerHTML = lib.format(
-                    tpl.join('\n'),
-                    {
-                        className: getClass(this, 'text').join(' '),
-                        id: helper.getId(this, 'text'),
-                        textBoxWidth: this.textBoxWidth || 200,
-                        textBoxHeight: this.textBoxHeight || 100,
-                        name: this.name,
-                        inputId: helper.getId(this, 'param-value'),
-                        generalPanelClass:
-                            getClass(this, 'general-info').join(' '),
-                        totalNumId: helper.getId(this, 'total-num'),
-                        totalNumClass: getClass(this, 'total-num').join(' '),
-                        calendarIconClass: this.helper.getIconClass('calendar')
-                    }
-                );
-
-                this.initChildren(this.main);
-            },
-
-            /**
-             * 初始化事件交互
-             *
-             * @protected
-             * @override
-             */
-            initEvents: function () {
-                var modifyBtn = this.getChild('modifyBtn');
-                modifyBtn.on('click', u.bind(this.layer.toggle, this.layer));
-
-                var deleteAllBtn = this.getChild('generalPanel').getChild('deleteBtn');
-                deleteAllBtn.on('click', lib.curry(deleteAll, this));
-
-                var textInput = this.getChild('textInput');
-                textInput.on('blur', lib.curry(updateRawValueByTyping, this));
-            },
-
-            /**
-             * 重新渲染视图
-             * 仅当生命周期处于RENDER时，该方法才重新渲染
-             *
-             * @param {Array=} 变更过的属性的集合
-             * @override
-             */
-            repaint: helper.createRepaint(
-                InputControl.prototype.repaint,
-                {
-                    name: ['rawValue', 'range'],
-                    paint: function (calendar, rawValue, range) {
-                        if (range) {
-                            if (typeof range === 'string') {
-                                range = convertToRaw(range);
-                            }
-                            // 还要支持只设置begin或只设置end的情况
-                            if (!range.begin) {
-                                // 设置一个特别远古的年
-                                range.begin = new Date(1983, 8, 3);
-                            }
-                            else if (!range.end) {
-                                // 设置一个特别未来的年
-                                range.end = new Date(2046, 10, 4);
-                            }
-                            calendar.range = range;
-                        }
-                        if (rawValue) {
-                            updateMain(calendar, rawValue);
-                        }
-                        if (calendar.helper.getPart('months')) {
-                            paintCals(calendar);
-                        }
-                    }
-                },
-                {
-                    name: ['disabled', 'hidden', 'readOnly'],
-                    paint: function (calendar, disabled, hidden, readOnly) {
-                        if (disabled || hidden || readOnly) {
-                            calendar.layer.hide();
-                        }
-                        // TODO: read only 的情况没有考虑
-                        var panel = calendar.getChild('generalPanel');
-                        if (disabled) {
-                            panel.helper.disableChildren();
-                            calendar.helper.disableChildren();
-                        }
-                        else {
-                            panel.helper.enableChildren();
-                            calendar.helper.enableChildren();
-                        }
-                    }
-                }
-            ),
-
-            /**
-             * 设置日期
-             *
-             * @param {Date} date 选取的日期.
-             */
-            setRawValue: function (date) {
-                this.setProperties({'rawValue': date});
-            },
-
-            /**
-             * 获取选取日期值
-             *
-             * @return {Date}
-             */
-            getRawValue: function () {
-                return this.rawValue;
-            },
-
-            /**
-             * 将value从原始格式转换成string
-             *
-             * @param {*} rawValue 原始值，就是包含了区段中的所有日期的数组
-             * @return {string}
-             */
-            stringifyValue: function (rawValue) {
-                var dateStrs = [];
-                var oneDay = 86400000;
-                for (var i = 0; i < rawValue.length; i++) {
-                    // 开个头
-                    if (i === 0) {
-                        dateStrs.push(
-                            lib.date.format(rawValue[i], this.paramFormat)
-                        );
-                    }
-                    else {
-                        // 间隔超过1天，说明已中断，则
-                        if ((rawValue[i] - rawValue[i - 1]) > oneDay) {
-                            // 1. 为前一段时间画结尾
-                            dateStrs.push(
-                                lib.date.format(
-                                    rawValue[i - 1], this.paramFormat
-                                )
-                            );
-                            // 2. 为下一段开头
-                            dateStrs.push(
-                                lib.date.format(
-                                    rawValue[i], this.paramFormat
-                                )
-                            );
-                        }
-                    }
-                    // 已到最后一个数据，无论如何都要收尾了
-                    if (i === (rawValue.length - 1)) {
-                        dateStrs.push(
-                            lib.date.format(
-                                rawValue[i], this.paramFormat
-                            )
-                        );
-                    }
-                }
-                return dateStrs.join(',');
-            },
-
-            /**
-             * 获得
-             * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
-             * 形式的数据
-             *
-             * @return {Array}
-             */
-            getRanges: function () {
-                var rawValue = this.rawValue;
-                var dateStrs = this.stringifyValue(rawValue).split(',');
-                var range = [];
-                for (var i = 0; i < dateStrs.length - 1; i += 2) {
-                    var begin = parseToDate(dateStrs[i]);
-                    var end = parseToDate(dateStrs[i + 1]);
-                    range.push({
-                        begin: begin,
-                        end: end
-                    });
-                }
-                return range;
-            },
-
-            /**
-             * 将
-             * [{ begin: xxx, end: xxx }, { begin: xxx, end: xxx }]
-             * 型值转成raw形式
-             *
-             * @param {Array} rangeValue 值数组
-             *
-             */
-            setRanges: function (rangeValue) {
-                var dates = {};
-                for (var i = 0; i < rangeValue.length; i++) {
-                    var begin = rangeValue[i].begin;
-                    var end = rangeValue[i].end;
-                    var temp;
-                    if (!begin || !end) {
-                        continue;
-                    }
-                    if (begin - end === 0) {
-                        dates[begin] = begin;
-                    }
-                    else {
-                        temp = begin;
-                        while (temp <= end) {
-                            dates[temp] = temp;
-                            temp = new Date(
-                                temp.getFullYear(),
-                                temp.getMonth(),
-                                temp.getDate() + 1
-                            );
-                        }
-                    }
-                }
-                var rawDates = [];
-                for (var key in dates) {
-                    if (dates.hasOwnProperty(key)) {
-                        rawDates.push(dates[key]);
-                    }
-                }
-                rawDates.sort(function (a, b) {
-                    return a - b;
-                });
-
-                this.set('rawValue', rawDates);
-            },
-
-            /**
-             * 将string类型的value转换成原始格式
-             *
-             * @param {string} value 字符串值
-             * @return {Array}
-             */
-            parseValue: function (value) {
-                var dateStrs = value.split(',');
-                var dates = {};
-                for (var i = 0; i < dateStrs.length - 1; i += 2) {
-                    var begin = parseToDate(dateStrs[i]);
-                    var end = parseToDate(dateStrs[i + 1]);
-                    var temp;
-                    if (!begin || !end) {
-                        continue;
-                    }
-                    if (begin - end === 0) {
-                        dates[begin] = begin;
-                    }
-                    else {
-                        temp = begin;
-                        while (temp <= end) {
-                            dates[temp] = temp;
-                            temp = new Date(
-                                temp.getFullYear(),
-                                temp.getMonth(),
-                                temp.getDate() + 1
-                            );
-                        }
-                    }
-                }
-                var rawDates = [];
-                for (var key in dates) {
-                    if (dates.hasOwnProperty(key)) {
-                        rawDates.push(dates[key]);
-                    }
-                }
-                rawDates.sort(function (a, b) {
-                    return a - b;
-                });
-                return rawDates;
-            },
-
-            dispose: function () {
-                if (helper.isInStage(this, 'DISPOSED')) {
-                    return;
-                }
-
-                if (this.layer) {
-                    this.layer.dispose();
-                    this.layer = null;
-                }
-
-                InputControl.prototype.dispose.apply(this, arguments);
-            },
-
-            toggleCanlendarLayer: function () {
-                this.layer.toggle();
-            }
-        };
-
-        lib.inherits(RichCalendar, InputControl);
-        ui.register(RichCalendar);
-
+        esui.register(RichCalendar);
         return RichCalendar;
     }
 );

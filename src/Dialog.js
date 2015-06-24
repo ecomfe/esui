@@ -10,7 +10,8 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
-        require('./behavior/Draggable')
+        require('./behavior/Draggable');
+        require('./behavior/position');
 
         var lib = require('./lib');
         var Control = require('./Control');
@@ -19,7 +20,6 @@ define(
         var eoo = require('eoo');
         var $ = require('jquery');
         var u = require('underscore');
-        var position = require('./behavior/position');
 
         var maskIdPrefix = 'ctrl-mask';
 
@@ -47,7 +47,7 @@ define(
                  * @protected
                  */
                 initOptions: function (options) {
-                    //由main解析
+                    // 由main解析
                     parseMain(options);
                     /**
                      * 默认Dialog选项配置
@@ -123,7 +123,7 @@ define(
                             this.helper.addDOMEvent(
                                 close,
                                 'click',
-                                lib.curry(closeClickHandler, this)
+                                u.partial(closeClickHandler, this)
                             );
                         }
                     }
@@ -135,6 +135,7 @@ define(
                  * @param {string} type foot | body
                  * @param {HTMLElement} mainDOM body或foot主元素
                  * @inner
+                 * @return {Panel} Panel
                  */
                 createBF: function (type, mainDOM) {
                     if (mainDOM) {
@@ -341,7 +342,6 @@ define(
                         return;
                     }
 
-                    getResizeHandler = lib.curry(resizeHandler, this);
                     // 浮动层自动定位功能初始化
                     if (this.setPositionOnResize) {
                         this.helper.addDOMEvent(window, 'resize', resizeHandler);
@@ -357,25 +357,24 @@ define(
 
                     // 要把dialog置顶
                     var zIndex = 1203;
-                    //if (this.alwaysTop) {
-                        // 查找当前dialog个数
-                        var rawElements = document.body.children;
-                        var dialogNum = 0;
-                        for (var i = 0, len = rawElements.length; i < len; i++) {
-                            if (rawElements[i].nodeType === 1) {
-                                if (lib.hasClass(rawElements[i], this.helper.getPrimaryClassName())
-                                    && !lib.hasClass(
-                                        rawElements[i], this.helper.getPrimaryClassName('hidden'))
-                                ) {
-                                    dialogNum ++;
-                                }
+                    // if (this.alwaysTop) {
+                    // 查找当前dialog个数
+                    var rawElements = document.body.children;
+                    var dialogNum = 0;
+                    for (var i = 0, len = rawElements.length; i < len; i++) {
+                        if (rawElements[i].nodeType === 1) {
+                            if (lib.hasClass(rawElements[i], this.helper.getPrimaryClassName())
+                                && !lib.hasClass(
+                                    rawElements[i], this.helper.getPrimaryClassName('hidden'))
+                            ) {
+                                dialogNum++;
                             }
                         }
+                    }
 
-                        zIndex += dialogNum * 10;
-                    //}
+                    zIndex += dialogNum * 10;
+                    // }
                     this.main.style.zIndex = zIndex;
-
 
                     if (mask) {
                         showMask(this, zIndex - 1);
@@ -425,7 +424,7 @@ define(
                  * @param {string} html 要设置的文字，支持html
                  */
                 setTitle: function (html) {
-                    this.setProperties({'title': html});
+                    this.setProperties({title: html});
                 },
 
                 /**
@@ -434,7 +433,7 @@ define(
                  * @param {string} content 要设置的内容，支持html.
                  */
                 setContent: function (content) {
-                    this.setProperties({'content': content});
+                    this.setProperties({content: content});
                 },
 
                 /**
@@ -443,7 +442,7 @@ define(
                  * @param {string} foot 要设置的内容，支持html.
                  */
                 setFoot: function (foot) {
-                    this.setProperties({'foot': foot});
+                    this.setProperties({foot: foot});
                 },
 
                 /**
@@ -452,7 +451,7 @@ define(
                  * @param {number} height 对话框的高度.
                  */
                 setHeight: function (height) {
-                    this.setProperties({'height': height});
+                    this.setProperties({height: height});
                 },
 
                 /**
@@ -461,7 +460,7 @@ define(
                  * @param {number} width 对话框的宽度.
                  */
                 setWidth: function (width) {
-                    this.setProperties({'width': width});
+                    this.setProperties({width: width});
                 },
 
                 /**
@@ -480,7 +479,7 @@ define(
                         return;
                     }
                     this.hide();
-                    //移除dom
+                    // 移除dom
                     var domId = this.main.id;
                     lib.removeNode(domId);
                     Control.prototype.dispose.apply(this, arguments);
@@ -491,6 +490,7 @@ define(
         /**
          * 渲染控件前重绘控件
          *
+         * @param {Object} options 设置项
          */
         function parseMain(options) {
             var main = options.main;
@@ -518,16 +518,17 @@ define(
         /**
          * 构建对话框标题栏
          *
-         * @param {ui.Dialog} 控件对象
+         * @param {Dialog} control 控件对象
          * @param {HTMLElement} mainDOM head主元素
-         * @innelib
+         * @inner
+         * @return {Panel} panel
          */
         function createHead(control, mainDOM) {
             var title = 'title';
             var close = 'close-icon';
 
-            var closeTpl =
-                '<div class="${clsClass}" id="${clsId}"></div>';
+            var closeTpl
+                = '<div class="${clsClass}" id="${clsId}"></div>';
             var closeIcon = '';
             var cls = [];
 
@@ -537,9 +538,8 @@ define(
                 closeIcon = lib.format(
                     closeTpl,
                     {
-                        'clsId': control.helper.getId(close),
-                        'clsClass':
-                             cls.join(' ')
+                        clsId: control.helper.getId(close),
+                        clsClass: cls.join(' ')
                     }
                 );
             }
@@ -554,9 +554,9 @@ define(
             );
 
             var headData = {
-                'titleId':  control.helper.getId(title),
-                'titleClass':  control.helper.getPartClasses(title).join(' '),
-                'closeIcon': closeIcon
+                titleId: control.helper.getId(title),
+                titleClass: control.helper.getPartClasses(title).join(' '),
+                closeIcon: closeIcon
             };
 
             var headHtml = lib.format(headTpl, headData);
@@ -591,6 +591,7 @@ define(
          * 点击头部关闭按钮时事件处理函数
          *
          * @inner
+         * @return {boolean} 是否被事件阻止了
          */
         function closeClickHandler() {
             var event = this.fire('beforeclose');
@@ -609,8 +610,7 @@ define(
             }
         }
 
-        //resize的句柄
-        var getResizeHandler;
+
 
         /**
          * 页面resize时事件的处理函数
@@ -630,7 +630,7 @@ define(
 
         /**
          * 绑定拖动drag事件
-         * @param {ui.Dialog} 控件对象
+         * @param {ui.Dialog} dialog 控件对象
          * @param {boolean} unbind 是否移除事件
          */
         function initDragHandler(dialog, unbind) {
@@ -650,6 +650,7 @@ define(
         /**
          * 显示遮盖层
          * @param {ui.Dialog} dialog 控件对象
+         * @param {number} zIndex zIndex值
          */
         function showMask(dialog, zIndex) {
             var mask = getMask(dialog);
@@ -693,7 +694,7 @@ define(
         /**
          * 获取遮盖层dom元素
          *
-         * @param {ui.Dialog} 控件对象
+         * @param {ui.Dialog} control 控件对象
          * @inner
          * @return {HTMLElement} 获取到的Mask元素节点.
          */
@@ -715,6 +716,8 @@ define(
         /**
          * 确认提示框
          *
+         * @param {Object} args 参数
+         * @return {ui.Dialog} 窗口实例
          */
         Dialog.confirm = function (args) {
             var dialogPrefix = 'dialog-confirm';
@@ -723,8 +726,8 @@ define(
              * 获取按钮点击的处理函数
              *
              * @private
-             * @param {ui.Dialog} 控件对象
-             * @param {string} 事件类型
+             * @param {ui.Dialog} dialog 控件对象
+             * @param {string} type 事件类型
              */
             function btnClickHandler(dialog, type) {
                 // 如果在参数里设置了处理函数，会在fire时执行
@@ -763,7 +766,7 @@ define(
             dialog.appendTo(document.body);
             dialog.show();
 
-            //使用默认foot，改变显示文字
+            // 使用默认foot，改变显示文字
             var okBtn = dialog.getFoot().getChild('btnOk');
             var cancelBtn = dialog.getFoot().getChild('btnCancel');
             okBtn.setContent(okText);
@@ -795,11 +798,11 @@ define(
 
             okBtn.on(
                 'click',
-                lib.curry(btnClickHandler, dialog, 'ok')
+                u.partial(btnClickHandler, dialog, 'ok')
             );
             cancelBtn.on(
                 'click',
-                lib.curry(btnClickHandler, dialog, 'cancel')
+                u.partial(btnClickHandler, dialog, 'cancel')
             );
 
             return dialog;
@@ -814,8 +817,8 @@ define(
              * 获取按钮点击的处理函数
              *
              * @private
-             * @param {ui.Dialog} 控件对象
-             * @param {string} 事件类型
+             * @param {ui.Dialog} dialog 控件对象
+             * @param {string} okBtn 事件类型
              */
             function btnClickHandler(dialog, okBtn) {
                 // 如果在参数里设置了处理函数，会在fire时执行
@@ -879,7 +882,7 @@ define(
             var okBtn = dialog.getFoot().getChild('okBtn');
             okBtn.on(
                 'click',
-                lib.curry(btnClickHandler, dialog, okBtn)
+                u.partial(btnClickHandler, dialog, okBtn)
             );
 
             // 也可以改宽高

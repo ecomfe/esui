@@ -37,8 +37,8 @@ define(
                 var monthView = calendar.getChild('monthView');
                 monthView.setProperties(
                     {
-                        'rawValue': calendar.rawValue,
-                        'range': calendar.range
+                        rawValue: calendar.rawValue,
+                        range: calendar.range
                     }
                 );
                 monthView.on('change', syncMonthViewValue, calendar);
@@ -61,8 +61,8 @@ define(
                     var monthView = calendar.getChild('monthView');
                     monthView.setProperties(
                         {
-                            'rawValue': calendar.rawValue,
-                            'range': calendar.range
+                            rawValue: calendar.rawValue,
+                            range: calendar.range
                         }
                     );
                     this.show();
@@ -73,19 +73,19 @@ define(
             }
         });
 
+        /**
+         * 日历控件
+         *
+         * 日历控件是由一个按钮和一个浮层组成的，如果你只需要显示一个月日期的效果，
+         * 请使用{@link MonthView}控件
+         *
+         * @extends InputControl
+         * @requires MonthView
+         * @constructor
+         */
         var Calendar = eoo.create(
             InputControl,
             {
-                /**
-                 * 日历控件
-                 *
-                 * 日历控件是由一个按钮和一个浮层组成的，如果你只需要显示一个月日期的效果，
-                 * 请使用{@link MonthView}控件
-                 *
-                 * @extends InputControl
-                 * @requires MonthView
-                 * @constructor
-                 */
                 constructor: function () {
                     this.$super(arguments);
                     this.layer = new CalendarLayer(this);
@@ -232,7 +232,7 @@ define(
                  * @param {meta.DateRange} range 日期可选区间
                  */
                 setRange: function (range) {
-                    this.setProperties({'range': range});
+                    this.setProperties({range: range});
                 },
 
                 /**
