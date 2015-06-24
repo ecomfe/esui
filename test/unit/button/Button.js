@@ -1,8 +1,8 @@
 define(function (require) {
+    var esui = require('esui');
     var Button = require('esui/Button');
     var container = document.getElementById('container');
-
-    describe('Button', function () {
+    describe('Button common', function () {
         it('should be a constructor', function () {
             expect(Button).toBeOfType('function');
         });
@@ -15,11 +15,9 @@ define(function (require) {
             it('should create a `<div>` element as its main element', function () {
                 var button = new Button();
                 button.appendTo(container);
-                expect(container.getElementsByTagName('div').length).toBeGreaterThan(0);
+                expect(container.getElementsByTagName('div').length).toBe(0);
             });
         });
-
-
         describe('created via HTML', function () {
             var button;
             beforeEach(function () {
@@ -36,15 +34,38 @@ define(function (require) {
             it('should read `tagName` from HTML element', function () {
                 expect(button.get('tagName')).toBe('div');
             });
-
         });
-
+    });
+    
+    describe('Button options', function () {
         describe('generally', function () {
             it('should change the lable of button via `setContent`', function () {
                 var button = new Button();
                 button.appendTo(container);
                 button.setContent('New Button');
-                expect(button.main.firstChild.nextSibling.innerHTML).toBe('New Button');
+                expect(button.main.innerHTML).toBe('New Button');
+            });
+        });
+    });
+    
+    describe('Button events', function () {
+        describe('generally', function () {
+            it('should change the lable of button via `setContent`', function () {
+                var button = new Button();
+                button.appendTo(container);
+                button.setContent('New Button');
+                expect(button.main.innerHTML).toBe('New Button');
+            });
+        });
+    });
+    
+    describe('Button methods', function () {
+        describe('generally', function () {
+            it('should change the lable of button via `setContent`', function () {
+                var button = new Button();
+                button.appendTo(container);
+                button.setContent('New Button');
+                expect(button.main.innerHTML).toBe('New Button');
             });
         });
     });
