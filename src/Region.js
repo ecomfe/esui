@@ -82,11 +82,10 @@ define(
 
                 /**
                  * 初始化DOM结构
-                 * ，
                  * @protected
                  */
                 initStructure: function () {
-                    if ($(this.main).is('input')) {
+                    if (lib.isInput(this.main)) {
                         this.helper.replaceMain();
                     }
 
@@ -109,21 +108,14 @@ define(
                  */
                 initEvents: function () {
                     var controlHelper = this.helper;
-                    var selector;
+
                     if (this.mode === 'multi') {
                         // 点击事件
                         controlHelper.addDOMEvent(this.main, 'click', 'input,label', mainClick);
-                        selector = '.' + controlHelper.getPartClassName('text');
                         // 鼠标悬浮事件
-                        controlHelper.addDOMEvent(
-                            this.main,
-                            'mouseover',
-                            selector,
-                            u.partial(mainMouseHandler, 'show')
-                        );
-                        selector = '.' + controlHelper.getPartClassName('city-box');
+                        controlHelper.addDOMEvent(this.main, 'mouseover', u.partial(mainMouseHandler, 'show'));
                         // 鼠标悬浮事件
-                        controlHelper.addDOMEvent(this.main, 'mouseout', selector, u.partial(mainMouseHandler, 'hide'));
+                        controlHelper.addDOMEvent(this.main, 'mouseout', u.partial(mainMouseHandler, 'hide'));
                     }
                     else {
                         var regionSel = this.getChild('regionSel');
@@ -835,8 +827,7 @@ define(
             if (this.disabled || this.readOnly) {
                 return;
             }
-            var tar = e.currentTarget;
-            var $tar = $(tar);
+            var tar = e.target;
             var controlHelper = this.helper;
             var textClass = controlHelper.getPartClassName(
                 'text'
@@ -851,20 +842,23 @@ define(
             }
 
             var itemId;
-            var optionChildLayer;
-            if ($tar.hasClass(textClass)) {
-                itemId = $(tar.firstChild.firstChild).attr('value');
-                optionChildLayer = tar.nextSibling.firstChild;
-            }
-            else if ($tar.hasClass(layerClass)) {
-                optionChildLayer = tar;
-            }
-            if (optionChildLayer) {
-                handler(this, optionChildLayer, itemId);
-                return;
+            while (tar && tar !== document.body) {
+                var optionChildLayer;
+                if ($(tar).hasClass(textClass)) {
+                    itemId = $(tar.firstChild.firstChild).attr('value');
+                    optionChildLayer = tar.nextSibling.firstChild;
+                }
+                else if ($(tar).hasClass(layerClass)) {
+                    optionChildLayer = tar;
+                }
+                if (optionChildLayer) {
+                    handler(this, optionChildLayer, itemId);
+                    return;
+                }
+
+                tar = tar.parentNode;
             }
         }
-
 
         /**
          * 显示子城市

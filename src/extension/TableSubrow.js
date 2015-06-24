@@ -1,24 +1,25 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 表格行内编辑扩展
  * @author wurongyao, otakustay
  */
-define( 
+define(
     function (require) {
         var Extension = require('../Extension');
         var lib = require('../lib');
         var main = require('../main');
         var Table = require('../Table');
+        var $ = require('jquery');
 
         /**
          * 获取元素Id
          * @private
          * @param {Object} table Table示例
-         * @param {string} name
-         * @return {string}
+         * @param {string} name name
+         * @return {string} id
          */
         function getId(table, name) {
             return table.helper.getId(name);
@@ -28,7 +29,7 @@ define(
          * 获取dom子部件的css class
          * @private
          * @param {Object} table Table示例
-         * @param {string} name
+         * @param {string} name name
          *
          * @return {string}
          */
@@ -37,33 +38,21 @@ define(
         }
 
         /**
-         * 获取dom带有data-前缀的属性值
-         * @private
-         * @param {Object} element dom元素
-         * @param {string} key
-         *
-         * @return {string}
-         */
-        function getAttr(element, key){
-            return lib.getAttribute(element, 'data-' + key);
-        }
-
-        /**
          * 设置元素属性 自动加上data-前缀
          * @private
          * @param {Object} element dom元素
-         * @param {string} key
-         * @param {string} value
+         * @param {string} key key
+         * @param {string} value value
          *
          */
-        function setAttr(element, key, value){
-            lib.setAttribute(element, 'data-' + key, value);
+        function setAttr(element, key, value) {
+            $(element).attr('data-' + key, value);
         }
 
         /**
          * 判断值是否为空
          * @private
-         * @param {Object} obj
+         * @param {Object} obj obj
          * @return {bool}
          */
         function hasValue(obj) {
@@ -94,17 +83,16 @@ define(
 
         /**
          * subrow行绘制每行基本参数
-         * @private
          * @param {Object} table Table示例
          * @param {number} rowIndex 行序号
+         * @return {Object} 获取到的参数
          * @private
          */
-        function getSubrowArgs(table, rowIndex){
+        function getSubrowArgs(table, rowIndex) {
             return {
-                subrow : table.subrow && table.subrow !== 'false'
+                subrow: table.subrow && table.subrow !== 'false'
             };
         }
-
 
         /**
          * 处理子行入口元素鼠标移入的行为x
@@ -119,7 +107,7 @@ define(
         function entryOver(table, element) {
             var opened = /subentry-opened/.test(element.className);
             var classBase = 'subentry-hover';
-                
+
             if (opened) {
                 classBase = 'subentry-opened-hover';
             }
@@ -135,7 +123,7 @@ define(
         function entryOutHandler(element, e) {
             entryOut(this, element);
         }
-        
+
         function entryOut(table, element) {
             table.helper.removePartClasses(table, 'subentry-hover', element);
             table.helper.removePartClasses(table, 'subentry-opened-hover', element);
@@ -144,36 +132,38 @@ define(
         /**
          * 触发subrow的打开|关闭
          * @private
-         * @param {object} el 事件元素
-         * @param {object} e 事件对象
+         * @param {Object} el 事件元素
+         * @param {Object} e 事件对象
          */
         function fireSubrow(el, e) {
             var table = this;
-            var index = getAttr(el, 'index');
+            var $el = $(el);
+            var index = $el.attr('index');
             var datasource = table.datasource;
             var dataLen = (datasource instanceof Array && datasource.length);
-            
+
             if (!dataLen || index >= dataLen) {
                 return;
             }
-            
-            if (!getAttr(el, 'subrowopened')) {
+
+            if (!$el.attr('subrowopened')) {
                 var dataItem = datasource[index];
                 var eventArgs = {
-                    index:index, 
+                    index: index,
                     item: dataItem
                 };
                 eventArgs = table.fire('subrowopen', eventArgs);
                 if (!eventArgs.isDefaultPrevented()) {
                     openSubrow(table, index, el);
                 }
-            } else {
+            }
+            else {
                 closeSubrow(table, index, el);
             }
 
             entryOver(table, el);
         }
-        
+
         /**
          * 关闭子行
          * @private
@@ -183,8 +173,8 @@ define(
          * @return {bool}
          */
         function closeSubrow(table, index, entry) {
-            var eventArgs = { 
-                index: index, 
+            var eventArgs = {
+                index: index,
                 item: table.datasource[index]
             };
 
@@ -195,11 +185,11 @@ define(
                 table.subrowIndex = null;
 
                 table.helper.removePartClasses(
-                    'subentry-opened', 
+                    'subentry-opened',
                     entry
                 );
                 table.helper.removePartClasses(
-                    'row-unfolded', 
+                    'row-unfolded',
                     table.getRow(index)
                 );
 
@@ -213,7 +203,7 @@ define(
 
             return false;
         }
-        
+
         /**
          * 打开子行
          * @private
@@ -224,15 +214,15 @@ define(
         function openSubrow(table, index, entry) {
             var currentIndex = table.subrowIndex;
             var closeSuccess = 1;
-            
+
             if (hasValue(currentIndex)) {
                 closeSuccess = closeSubrow(
-                    table, 
-                    currentIndex, 
+                    table,
+                    currentIndex,
                     lib.g(getSubentryId(table, currentIndex))
                 );
             }
-            
+
             if (!closeSuccess) {
                 return;
             }
@@ -242,9 +232,9 @@ define(
 
             setAttr(entry, 'title', table.subEntryCloseTip);
             setAttr(entry, 'subrowopened', '1');
-            
+
             lib.g(getSubrowId(table, index)).style.display = '';
-            
+
             (table.subrowMutex) && (table.subrowIndex = index);
         }
 
@@ -304,13 +294,13 @@ define(
                     result.html = lib.format(
                         tplSubEntry,
                         {
-                            className : 
+                            className:
                                 getClass(table, 'subentry')
                                 + ' '
                                 + iconClass,
-                            id :  getSubentryId(table, rowIndex),
-                            title :  table.subEntryOpenTip,
-                            index : rowIndex
+                            id: getSubentryId(table, rowIndex),
+                            title: table.subEntryOpenTip,
+                            index: rowIndex
                         }
                    );
                 }
@@ -324,6 +314,9 @@ define(
         /**
          * 获取子内容区域的html
          * @private
+         * @param {Control} table table
+         * @param {number} index index
+         * @param {Object} extraArgs extraArgs
          * @return {string}
          */
         function getSubrowHtml(table, index, extraArgs) {
@@ -331,11 +324,10 @@ define(
             return extraArgs.subrow
                     ? '<div id="' + getSubrowId(table, index)
                     +  '" class="' + getClass(table, 'subrow') + ' '
-                    +  ( dataLen === index + 1 ? getClass(table, 'subrow-last') : '' ) + '"'
+                    +  (dataLen === index + 1 ? getClass(table, 'subrow-last') : '') + '"'
                     +  ' style="display:none"></div>'
                     : '';
         }
-
 
         /**
          * 获取子行的容器
@@ -415,7 +407,7 @@ define(
                     index: 0,
                     getRowArgs: getSubrowArgs,
                     getColHtml: getSubEntryHtml,
-                    getSubrowHtml : getSubrowHtml
+                    getSubrowHtml: getSubrowHtml
                 }
             ]);
 
@@ -430,20 +422,19 @@ define(
             target.addHandlers(
                 'mouseover',
                 {
-                    handler: entryOverHandler, 
+                    handler: entryOverHandler,
                     matchFn: subentryClass
                 }
             );
 
             target.addHandlers(
-                'mouseout', 
+                'mouseout',
                 {
-                    handler: entryOutHandler, 
+                    handler: entryOutHandler,
                     matchFn: subentryClass
                 }
             );
 
-            
             /**
              * 获取表格子行的元素
              *
@@ -451,7 +442,7 @@ define(
              * @param {number} index 行序号
              * @return {HTMLElement}
              */
-            target.getSubrow = function(index) {
+            target.getSubrow = function (index) {
                 return getSubrow(this, index);
             };
 
@@ -464,7 +455,7 @@ define(
              * @param {number} index 行序号
              *
              */
-            target.setSubrowContent = function(content, index){
+            target.setSubrowContent = function (content, index) {
                 var subrowPanel = getSubrowContainer(this, index);
 
                 if (subrowPanel) {
@@ -481,9 +472,10 @@ define(
              *
              * @return {Object}
              */
-            target.getSubrowContainer = function(index){
+            target.getSubrowContainer = function (index) {
                 return getSubrowContainer(this, index);
             };
+
             /**
              * 打开子行
              * @public
@@ -493,6 +485,7 @@ define(
                 var entry = lib.g(getSubentryId(this, index));
                 openSubrow(this, index, entry);
             };
+
             /**
              * 关闭子行
              * @public
@@ -525,7 +518,6 @@ define(
 
         lib.inherits(TableSubrow, Extension);
         main.registerExtension(TableSubrow);
-        
         return TableSubrow;
     }
 );

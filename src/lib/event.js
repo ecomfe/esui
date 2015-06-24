@@ -14,6 +14,7 @@ define(
          * @override lib
          */
         return {
+
             /**
              * 为DOM元素添加事件
              *

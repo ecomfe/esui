@@ -23,17 +23,16 @@ define(
                     if (/\./.test(t)) {
                         return t;
                     }
-                    else {
-                        return t + '.' + namespace;
-                    }
+
+                    return t + '.' + namespace;
                 });
                 return arrTypes.join(' ');
             };
 
             if (typeof types === 'string') {
-                return formatString(types)
+                return formatString(types);
             }
-            if (typeof types === "object") {
+            if (typeof types === 'object') {
                 u.map(types, function (t) {
                     var objType = {};
                     objType[formatString(t)] = types[t];
@@ -60,7 +59,8 @@ define(
                 if (typeof selector === 'string') {
                     handler = data;
                     data = undefined;
-                } else {
+                }
+                else {
                     handler = data;
                     data = selector;
                     selector = undefined;
@@ -71,12 +71,14 @@ define(
             ctrl.domEvents.push($element);
 
             function handlerProxy() {
-                if (!option.sikpStateCheck 
+                if (!option.sikpStateCheck
                     && u.any(
                         ctrl.ignoreStates,
                         function (state) {
                             return ctrl.hasState(state);
-                    })) {
+                        }
+                    )
+                ) {
                     return;
                 }
                 return (typeof handler === 'string' ? ctrl[handler] : handler)
@@ -90,12 +92,13 @@ define(
             else {
                 // 方便移除绑定的事件, JQ中通过guid来匹配解除function
                 if (typeof handler !== 'string') {
-                    handlerProxy.guid = handler.guid =
-                        (handler.guid || handlerProxy.guid || $.guid++);
+                    handlerProxy.guid = handler.guid
+                        = (handler.guid || handlerProxy.guid || $.guid++);
                 }
                 $element.on(types, selector, data, handlerProxy);
             }
         }
+
         /**
          * 为控件管理的DOM元素添加DOM事件
          *
@@ -103,12 +106,12 @@ define(
          * - 函数中的`this`对象永远指向当前控件实例
          * - 当控件处于由其{@link Control#ignoreStates}属性定义的状态时，不执行函数
          *
+         * @param {Object=} options 其他事件参数, skipStateCheck, once
          * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
          * @param {string} type 事件的类型
-         * @param {string} selector 
-         * @param {Function} handler 事件处理函数
+         * @param {string} selector 触发事件的selector
          * @param {Object=} data 事件处理函数
-         * @param {Object=} options 其他事件参数, skipStateCheck, once
+         * @param {Function} handler 事件处理函数
          */
         helper.addDOMEvent = function (options, element, type, selector, data, handler) {
             if ($.isPlainObject(options)) {
@@ -149,6 +152,7 @@ define(
          *
          * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
          * @param {string} type 事件的类型
+         * @param {string=} selector selector
          * @param {Function} handler 事件处理函数，不提供则清除所有处理函数
          */
         helper.removeDOMEvent = function (element, type, selector, handler) {
