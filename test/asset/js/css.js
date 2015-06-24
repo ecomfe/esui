@@ -1,26 +1,23 @@
-/**
- * ESL (Enterprise Standard Loader)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file CSS Loader-Plugin
- * @author errorrik(errorrik@gmail.com)
- */
+(function() {
 
-// 构建环境暂不支持分析，为了能合并该plugin到loader里，
-// 只能暂时使用具名id
-define( 'css', {
-    load: function ( resourceId, req, load, config ) {
-        var link = document.createElement( 'link' );
-        link.setAttribute( 'rel', 'stylesheet' );
-        link.setAttribute( 'type', 'text/css' );
-        link.setAttribute( 'href', req.toUrl( resourceId ) );
+function includeStyle( url ) {
+	document.write( "<link rel='stylesheet' href='../../../" + url + "'>" );
+}
 
-        var parent = document.getElementsByTagName( 'head' )[ 0 ] || document.body;
-        parent.appendChild( link );
+// Find the script element
+var scripts = document.getElementsByTagName( "script" );
+var script = scripts[ scripts.length - 1 ];
 
-        parent = null;
-        link = null;
+// Load the modules
+var modules = script.getAttribute( "data-modules" );
+if ( modules ) {
+	modules = modules.split( /\s+/ );
+	for ( var i = 0; i < modules.length; i++ ) {
+		includeStyle( "themes/base/" + modules[ i ] + ".css" );
+	}
+}
 
-        load( true );
-    }
-} );
+// Load the QUnit stylesheet
+includeStyle( "external/qunit/qunit.css" );
+
+} )();

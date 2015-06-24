@@ -3,3 +3,4 @@ dep/
 doc/api
 output/
 .idea/
+/*.project
