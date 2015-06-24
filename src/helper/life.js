@@ -100,20 +100,18 @@ define(
             var me = this;
             var ctrl = me.control;
 
+            // 移除所有扩展
+            u.invoke(ctrl.extensions, 'dispose');
+            ctrl.extensions = null;
+
             // 清理子控件
-            ctrl.disposeChildren();
-            ctrl.children = null;
-            ctrl.childrenIndex = null;
+            ctrl.helper.disposeChildren();
 
             // 移除自身行为
             u.each(ctrl.domEvents, function ($ele) {
                 me.removeDOMEvent($ele, '.' + ctrl.type);
             });
             ctrl.domEvents = [];
-
-            // 移除所有扩展
-            u.invoke(ctrl.extensions, 'dispose');
-            ctrl.extensions = null;
 
             // 从控件树中移除
             if (ctrl.parent) {

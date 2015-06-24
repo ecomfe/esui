@@ -43,8 +43,8 @@ define(
                     child.dispose();
                 }
             );
-            this.children = [];
-            this.childrenIndex = {};
+            this.control.children = [];
+            this.control.childrenIndex = {};
         };
 
         /**

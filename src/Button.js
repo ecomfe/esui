@@ -52,8 +52,12 @@ define(
                         disabled: false // 控件是否禁用
                     };
                     u.extend(properties, options);
-
-                    if (!properties.content) {
+                    properties.tagName = this.main.nodeName.toLowerCase();
+                    var innerDiv = this.main.firstChild;
+                    if (!properties.content
+                        && innerDiv
+                        && innerDiv.nodeName.toLowerCase() !== 'div'
+                    ) {
                         properties.content = this.main.innerHTML;
                     }
 
