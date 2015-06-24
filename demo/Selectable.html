@@ -93,7 +93,20 @@
                                   var index = $( "#selectable-list li" ).index( this );
                                   result.append( " #" + ( index + 1 ) );
                                 });
-                            }
+                            },
+                            selected: function () {
+                                console.log('selected')
+                            },
+                            unselected: function () {
+                                console.log('unselected')
+                            },
+                            selecting: function () {
+                                console.log('selecting')
+                            },
+                            unselecting: function () {
+                                console.log('unselecting')
+                            },
+                            autoRefresh: false
                         }
                     );
                 }
