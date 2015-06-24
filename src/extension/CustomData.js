@@ -15,11 +15,11 @@ define(
          *
          * 该扩展会收集控件上以**data**开头且后面跟大写字符或数字的属性，
          * 并为控件加上`getData`和`setData`来读写数据
-         * 
+         *
          * 使用该扩展后，可在HTML中声明一些自定义属性，
          * 并在后续通过javascript从控件的实例上获取
          *
-         *     <div data-ui-type="Button" 
+         *     <div data-ui-type="Button"
          *         data-ui-id="submitButton"
          *         data-ui-data-auth="admin"
          *         data-ui-extension-data-type="CustomData">提交</div>

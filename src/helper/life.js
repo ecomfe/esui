@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 生命周期相关辅助方法
  * @author otakustay
@@ -10,7 +10,7 @@ define(
     function (require) {
         /**
          * LifeCycle枚举
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -20,7 +20,7 @@ define(
             RENDERED: 2,
             DISPOSED: 4
         };
-        
+
         var u = require('underscore');
         var ui = require('../main');
 
@@ -51,7 +51,7 @@ define(
                 extensions = this.control.extensions = [];
             }
             Array.prototype.push.apply(
-                extensions, 
+                extensions,
                 ui.createGlobalExtensions()
             );
 
@@ -68,7 +68,7 @@ define(
 
         /**
          * 判断控件是否处于相应的生命周期阶段
-         * 
+         *
          * @param {string} stage 生命周期阶段
          * @return {boolean}
          */
@@ -82,7 +82,7 @@ define(
 
         /**
          * 改变控件的生命周期阶段
-         * 
+         *
          * @param {string} stage 生命周期阶段
          */
         helper.changeStage = function (stage) {

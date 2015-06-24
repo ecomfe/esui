@@ -16,9 +16,10 @@ define(
         var lib = {};
 
         var counter = 0x861005;
+
         /**
          * 获取唯一id
-         * 
+         *
          * @param {string} [prefix="esui"] 前缀
          * @return {string}
          */
@@ -41,7 +42,9 @@ define(
             var proto = subClass.prototype = new Empty();
 
             for (var key in selfPrototype) {
-                proto[key] = selfPrototype[key];
+                if (selfPrototype.hasOwnProperty(key)) {
+                    proto[key] = selfPrototype[key];
+                }
             }
             subClass.prototype.constructor = subClass;
             subClass.superClass = superClass.prototype;
@@ -54,9 +57,8 @@ define(
          *
          * @param {Object} source 需要进行复制的对象
          * @return {Object} 复制出来的新对象
-         * @deprecated 将在4.0版本中移除，使用{@link lib#deepClone}方法代替
          */
-        lib.clone = function (source) {
+        lib.deepClone = function (source) {
             if (!source || typeof source !== 'object') {
                 return source;
             }
@@ -87,14 +89,6 @@ define(
         };
 
         /**
-         * 对一个对象进行深度复制
-         *
-         * @param {Object} source 需要进行复制的对象
-         * @return {Object} 复制出来的新对象
-         */
-        lib.deepClone = lib.clone;
-
-        /**
          * 将数组转换为字典
          *
          * @param {Array} array 数组
@@ -111,6 +105,15 @@ define(
 
             return dictionary;
         };
+
+        /**
+         * 对一个对象进行深度复制
+         *
+         * @param {Object} source 需要进行复制的对象
+         * @return {Object} 复制出来的新对象
+         * @deprecated 将在4.0版本中移除，使用{@link lib#deepClone}方法代替
+         */
+        lib.clone = lib.deepClone;
 
         /**
          * 判断一个对象是否为数组

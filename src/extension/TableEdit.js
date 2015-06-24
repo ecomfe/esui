@@ -44,8 +44,8 @@ define(
         var okText = '确定';
         var cancelText = '取消';
 
-        var inputTpl ='<input data-ui="type:TextBox;id:${inputId}"/>';
-        var validTpl ='<label data-ui="type:Validity;id:${validId}"></label>';
+        var inputTpl = '<input data-ui="type:TextBox;id:${inputId}"/>';
+        var validTpl = '<label data-ui="type:Validity;id:${validId}"></label>';
 
         var currentRowIndex = -1;
         var currentColIndex = -1;
@@ -62,6 +62,8 @@ define(
         /**
          * 初始化表格内容编辑器
          *
+         * @param {Table} table table
+         * @param {Object} options 配置
          * @ignore
          */
         function init(table, options) {
@@ -110,6 +112,7 @@ define(
         /**
          * 初始化输入及验证控件
          *
+         * @param {Object} options 配置
          * @ignore
          */
         function initInputControl(options) {
@@ -126,14 +129,14 @@ define(
 
                 inputField.innerHTML = lib.format(
                     inputTpl,
-                    { inputId: newInputId }
+                    {inputId: newInputId}
                 );
                 errorField.innerHTML = lib.format(
                     validTpl,
-                    { validId: newValidId }
+                    {validId: newValidId}
                 );
 
-                var inputCtrlOptions = {properties:{}};
+                var inputCtrlOptions = {properties: {}};
                 inputCtrlOptions.properties[newInputId] = lib.extend(
                     {
                         id: newInputId,
@@ -154,6 +157,7 @@ define(
         /**
          * 销毁释放控件
          *
+         * @param {Table} table table
          * @ignore
          */
         function disposeEditorControl(table) {
@@ -164,9 +168,10 @@ define(
                 okButton.dispose();
                 cancelButton.dispose();
 
-                try{
+                try {
                     layer && document.body.removeChild(layer);
-                } catch (ex){}
+                }
+                catch (ex) {}
 
                 layer = null;
                 inputCtrl = null;
@@ -202,6 +207,9 @@ define(
         /**
          * 获取初始化后的控件
          *
+         * @param {Array} controlMap control数组
+         * @param {string} id control ID
+         * @return {Control} 匹配的组件
          * @ignore
          */
         function getControlFromMap(controlMap, id) {
@@ -218,7 +226,7 @@ define(
          *
          * @ignore
          */
-        function hideLayer(argument) {
+        function hideLayer() {
             (layer) && (layer.style.display = 'none');
         }
 
@@ -227,13 +235,14 @@ define(
          *
          * @ignore
          */
-        function showLayer(argument) {
+        function showLayer() {
             (layer) && (layer.style.display = '');
         }
 
         /**
          * 显示错误信息
          *
+         * @param {string} error 错误信息
          * @ignore
          */
         function showErrorMsg(error) {
@@ -250,6 +259,7 @@ define(
         /**
          * 清空错误信息
          *
+         * @param {string} error 错误信息
          * @ignore
          */
         function clearErrorMsg(error) {
@@ -287,7 +297,8 @@ define(
 
                 if (!eventArgs.isDefaultPrevented()) {
                     saveSuccessHandler.call(currentTable, eventArgs);
-                } else {
+                }
+                else {
                     saveFailedHandler.call(currentTable, eventArgs);
                 }
             }
@@ -343,6 +354,7 @@ define(
         /**
          * 让浮层跟随编辑单元格
          *
+         * @param {Table} table table
          * @ignore
          */
         function layerFollow(table) {
@@ -447,8 +459,8 @@ define(
         /**
          * 编辑按钮单击事件处理函数
          *
-         * @param {object} element 事件元素
-         * @param {object} e 事件元素
+         * @param {Object} element 事件元素
+         * @param {Object} e 事件元素
          * @ignore
          */
         function entranceClickHandler(element, e) {
@@ -464,6 +476,7 @@ define(
          * 开始某行的编辑逻辑，初始化子控件
          * @param {number} rowIndex 行序号
          * @param {number} columnIndex 列序号
+         * @param {DOMElement} element DOM元素
          * @ignore
          */
         function startEdit(rowIndex, columnIndex, element) {
@@ -523,7 +536,7 @@ define(
          * 显示编辑浮层
          * @ignore
          */
-        function showEditError () {
+        function showEditError() {
             if (this === currentTable) {
                 showLayer();
             }
@@ -531,15 +544,12 @@ define(
 
         var editentryTpl = '<div class="${className}" '
                          + 'data-row="${row}" data-col="${col}"></div>';
-        /**
-         * 生成每单元格内容
-         * @ignore
-         */
+
         function getColHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
             var fieldEditable = field.editable;
-            if ('function' == typeof fieldEditable) {
+            if ('function' === typeof fieldEditable) {
                 fieldEditable = fieldEditable.call(table, data, rowIndex, fieldIndex, extraArgs);
             }
             var iconClass = table.helper.getIconClass();
@@ -549,8 +559,8 @@ define(
                     html: lib.format(
                         editentryTpl,
                         {
-                            className: 
-                                table.getClass('cell-editentry') 
+                            className:
+                                table.getClass('cell-editentry')
                                 + ' '
                                 + iconClass,
                             row: rowIndex,

@@ -6,9 +6,11 @@
  * @file DOM属性相关基础库
  * @author otakustay
  */
- define(
+
+define(
     function (require) {
         var dom = require('./dom');
+        var $ = require('jquery');
 
         /**
          * @override lib
@@ -26,46 +28,10 @@
             if (element.hasAttribute) {
                 return element.hasAttribute(name);
             }
-            else {
-                return element.attributes
-                    && element.attributes[name]
-                    && element.attributes[name].specified;
-            }
+            return element.attributes
+                && element.attributes[name]
+                && element.attributes[name].specified;
         };
-
-        // 提供给 setAttribute 与 getAttribute 方法作名称转换使用
-        var ATTRIBUTE_NAME_MAPPING = (function () {
-            var result = {
-                cellpadding: 'cellPadding',
-                cellspacing: 'cellSpacing',
-                colspan: 'colSpan',
-                rowspan: 'rowSpan',
-                valign: 'vAlign',
-                usemap: 'useMap',
-                frameborder: 'frameBorder'
-            };
-
-            var div = document.createElement('div');
-            div.innerHTML = '<label for="test" class="test"></label>';
-            var label = div.getElementsByTagName('label')[0];
-
-            if (label.getAttribute('className') === 'test') {
-                result['class'] = 'className';
-            }
-            else {
-                result.className = 'class';
-            }
-
-            if (label.getAttribute('for') === 'test') {
-                result.htmlFor = 'for';
-            }
-            else {
-                result['for'] = 'htmlFor';
-            }
-
-            return result;
-        }());
-
 
         /**
          * 设置元素属性，会对某些值做转换
@@ -78,13 +44,7 @@
         lib.setAttribute = function (element, key, value) {
             element = dom.g(element);
 
-            if (key === 'style') {
-                element.style.cssText = value;
-            }
-            else {
-                key = ATTRIBUTE_NAME_MAPPING[key] || key;
-                element.setAttribute(key, value);
-            }
+            $(element).attr(key, value);
 
             return element;
         };
@@ -99,12 +59,7 @@
         lib.getAttribute = function (element, key) {
             element = dom.g(element);
 
-            if (key === 'style') {
-                return element.style.cssText;
-            }
-
-            key = ATTRIBUTE_NAME_MAPPING[key] || key;
-            return element.getAttribute(key);
+            return $(element).attr(key);
         };
 
         /**
@@ -116,8 +71,7 @@
         lib.removeAttribute = function (element, key) {
             element = dom.g(element);
 
-            key = ATTRIBUTE_NAME_MAPPING[key] || key;
-            element.removeAttribute(key);
+            $(element).removeAttr(key);
         };
 
         return lib;

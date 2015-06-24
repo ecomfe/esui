@@ -83,9 +83,9 @@ define(
             var target = e.target;
             // 为了让`main`上的点击也能触发，要一直追溯到`main`的父节点
             var endpoint = this.main && this.main.parentNode;
-            
+
             while (target && target !== endpoint) {
-                if (target.nodeType === 1 
+                if (target.nodeType === 1
                     // 点击事件不在禁用的元素上触发，其它事件则可以
                     && (target.disabled !== true || e.type !== 'click')
                 ) {
@@ -96,13 +96,13 @@ define(
                             e,
                             'command',
                             {
-                                name: commandName, 
-                                triggerType: e.type, 
+                                name: commandName,
+                                triggerType: e.type,
                                 args: args
                             }
                         );
                         event = this.fire('command', event);
-                        
+
                         if (event.isPropagationStopped()) {
                             return;
                         }
@@ -120,8 +120,8 @@ define(
         Command.prototype.activate = function () {
             for (var i = 0; i < this.events.length; i++) {
                 this.target.helper.addDOMEvent(
-                    this.target.main, 
-                    this.events[i], 
+                    this.target.main,
+                    this.events[i],
                     this.handleCommand
                 );
             }
@@ -137,8 +137,8 @@ define(
         Command.prototype.inactivate = function () {
             for (var i = 0; i < this.events.length; i++) {
                 this.target.helper.removeDOMEvent(
-                    this.target.main, 
-                    this.events[i], 
+                    this.target.main,
+                    this.events[i],
                     this.handleCommand
                 );
             }
@@ -150,15 +150,15 @@ define(
          * 创建一个根据事件类型和命令名称分发至对应处理函数的函数
          *
          * 可以采用以下两种形式的配置：
-         *     
+         *
          *         [
          *             { type: 'click', name: 'xxx', handler: xxx },
          *             { type: 'mouseover', name: 'xxx', handler: yyy },
          *             { type: 'click', name: 'yyy', handler: zzz },
          *         ]
-         *     
+         *
          * 或
-         *     
+         *
          *         {
          *             'click:xxx': xxx,
          *             'mouseover:xxx': yyy,
@@ -167,7 +167,7 @@ define(
          *
          * @param {Object} config 相关的配置
          * @return {Function} 分发函数，用于注册到`command`事件上
-         * @static 
+         * @static
          */
         Command.createDispatcher = function (config) {
             var map = config;
@@ -184,27 +184,29 @@ define(
 
             return function (e) {
                 // 处理函数的查找规则，优先级从高到低依次是：
-                // 
+                //
                 // 1. 从`config`中传过来的且能对上类型及命令名称的
                 // 2. 从`config`中传过来的且能对上命令名称的
                 // 3. 控件实例上以`execute${name}${triggerType}`为名称的方法
                 // 4. 控件实例上以`execute${name}`为名称的方法
                 // 5. `config`中命令名称为`*`且类型能对上的
                 // 6. `config`中命令名称为`*`且没提供类型的
-                // 
+                //
                 // 其中3和4两条中的`${name}`和`${triggerType}`均转为PascalCase
                 var handler = map[e.triggerType + ':' + e.name];
+                var method;
+
                 if (!handler) {
                     handler = map[e.name];
                 }
                 if (!handler) {
-                    var method = 'execute' 
+                    method = 'execute'
                         + lib.pascalize(e.name)
                         + lib.pascalize(e.triggerType);
                     handler = this[method];
                 }
                 if (typeof handler !== 'function') {
-                    var method = 'execute' 
+                    method = 'execute'
                         + lib.pascalize(e.name);
                     handler = this[method];
                 }

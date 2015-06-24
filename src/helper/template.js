@@ -109,7 +109,7 @@ define(
          * 在控件的实现中，即可使用本方法输出HTML：
          *
          *     MyClass.prototype.initStructure = function () {
-         *         this.main.innerHTML = 
+         *         this.main.innerHTML =
          *             this.helper.renderTemplate('content', data);
          *     }
          *

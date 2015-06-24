@@ -64,7 +64,7 @@ define(
         /**
          * 将字符串转换成`camelCase`格式
          *
-         * 该方法将横线`-`视为单词的 **唯一分隔符** 
+         * 该方法将横线`-`视为单词的 **唯一分隔符**
          *
          * @param {string} source 源字符串
          * @return {string}
@@ -85,7 +85,7 @@ define(
         /**
          * 将字符串转换成`PascalCase`格式
          *
-         * 该方法将横线`-`视为单词的 **唯一分隔符** 
+         * 该方法将横线`-`视为单词的 **唯一分隔符**
          *
          * @param {string} source 源字符串
          * @return {string}
