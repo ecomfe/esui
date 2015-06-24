@@ -208,8 +208,7 @@ define(
         function delayHide(tipLayer, delayTime) {
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
-            tipLayer.hideTimeout =
-                setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
+            tipLayer.hideTimeout = setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
         }
 
         function getElementByControl(tipLayer, control) {
@@ -307,8 +306,7 @@ define(
                     var arrow = document.createElement('div');
                     // 初始化箭头
                     arrow.id = helper.getId(this, 'arrow');
-                    arrow.className =
-                        helper.getPartClasses(this, 'arrow').join(' ');
+                    arrow.className = helper.getPartClasses(this, 'arrow').join(' ');
                     this.main.appendChild(arrow);
                 }
             },
@@ -400,6 +398,7 @@ define(
                         'showDuration'
                     ],
                     paint:
+                        /* eslint-disable max-params */
                         function (tipLayer, targetDOM, targetControl, showMode, positionOpt, delayTime, showDuration) {
                             var options = {
                                 targetDOM: targetDOM,
@@ -419,6 +418,7 @@ define(
                                 tipLayer.attachTo(options);
                             }
                         }
+                        /* eslint-enable max-params */
                 }
             ),
 
@@ -620,6 +620,7 @@ define(
                     }
                 }
             },
+
             /**
              * 将提示层捆绑到一个DOM元素或控件上
              *
@@ -676,8 +677,7 @@ define(
                     targetElement = lib.g(options.targetDOM);
                 }
                 else if (options.targetControl) {
-                    targetElement =
-                        getElementByControl(this, options.targetControl);
+                    targetElement = getElementByControl(this, options.targetControl);
                 }
 
                 if (!targetElement) {
@@ -692,6 +692,7 @@ define(
                     targetElement: targetElement,
                     // 浮层相关方法
                     layer: {
+
                         /**
                          * 展现浮层
                          */
@@ -956,6 +957,11 @@ define(
              *
              */
             hide: function () {
+
+                // 干掉之前的定时器
+                clearTimeout(this.showTimeout);
+                clearTimeout(this.hideTimeout);
+
                 if (!this.isShow) {
                     return;
                 }
@@ -972,7 +978,7 @@ define(
              * @param {string} html 要设置的文字，支持html
              */
             setTitle: function (html) {
-                this.setProperties({'title': html});
+                this.setProperties({title: html});
             },
 
             /**
@@ -981,7 +987,7 @@ define(
              * @param {string} content 要设置的内容，支持html.
              */
             setContent: function (content) {
-                this.setProperties({'content': content});
+                this.setProperties({content: content});
             },
 
             /**
@@ -990,7 +996,7 @@ define(
              * @param {string} foot 要设置的内容，支持html.
              */
             setFoot: function (foot) {
-                this.setProperties({'foot': foot});
+                this.setProperties({foot: foot});
             },
 
             /**
