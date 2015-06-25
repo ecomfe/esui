@@ -103,14 +103,9 @@ define(
 
             // 清理子控件
             this.control.helper.disposeChildren();
-            // 这个在helper disposeChildren做过了。
-            // this.control.children = null;
-            // this.control.childrenIndex = null;
 
             // 移除自身行为
             this.clearDOMEvents();
-
-
 
             // 从控件树中移除
             if (this.control.parent) {
