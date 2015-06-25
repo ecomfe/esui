@@ -97,17 +97,20 @@ define(
          * 销毁控件
          */
         helper.dispose = function () {
+            // 移除所有扩展
+            u.invoke(this.control.extensions, 'dispose');
+            this.control.extensions = null;
+
             // 清理子控件
-            this.control.disposeChildren();
-            this.control.children = null;
-            this.control.childrenIndex = null;
+            this.control.helper.disposeChildren();
+            // 这个在helper disposeChildren做过了。
+            // this.control.children = null;
+            // this.control.childrenIndex = null;
 
             // 移除自身行为
             this.clearDOMEvents();
 
-            // 移除所有扩展
-            u.invoke(this.control.extensions, 'dispose');
-            this.control.extensions = null;
+
 
             // 从控件树中移除
             if (this.control.parent) {
