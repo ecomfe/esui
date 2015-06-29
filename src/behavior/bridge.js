@@ -9,6 +9,7 @@
 
 define(
     function (require) {
+        var $ = require('jquery');
 
         /**
          * 将类桥接到jquery插件上

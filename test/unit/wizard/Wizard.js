@@ -1,5 +1,6 @@
 define(function (require) {
     var Wizard = require('esui/Wizard');
+    var $ = require('jquery');
     var steps = [
         { text: '1', panel: 'a' },
         { text: '2', panel: 'b' },
@@ -96,9 +97,9 @@ define(function (require) {
                 wizard.appendTo(container);
                 var nodes = container.getElementsByTagName('li');
                 expect(nodes.length).toBe(steps.length);
-                expect(getText(nodes[0])).toBe('1');
-                expect(getText(nodes[1])).toBe('2');
-                expect(getText(nodes[2])).toBe('3');
+                expect($(nodes[0]).text()).toBe('1');
+                expect($(nodes[1]).text()).toBe('2');
+                expect($(nodes[2]).text()).toBe('3');
             });
 
             it('should create an extra `<li>` element if `finishText` is given', function () {
@@ -106,7 +107,7 @@ define(function (require) {
                 wizard.appendTo(container);
                 var nodes = container.getElementsByTagName('li');
                 expect(nodes.length).toBe(steps.length + 1);
-                expect(getText(nodes[3])).toBe('4');
+                expect($(nodes[3]).text()).toBe('4');
             });
 
             it('should add a `ui-wizard-node` class to each node', function () {
@@ -155,8 +156,8 @@ define(function (require) {
                 wizard.set('steps', steps.slice(0, 2));
                 var nodes = container.getElementsByTagName('li');
                 expect(nodes.length).toBe(2);
-                expect(getText(nodes[0])).toBe('1');
-                expect(getText(nodes[1])).toBe('2');
+                expect($(nodes[0]).text()).toBe('1');
+                expect($(nodes[1]).text()).toBe('2');
             });
 
             it('should rerender nodes when `finishText` is changed', function () {
@@ -165,7 +166,7 @@ define(function (require) {
                 wizard.set('finishText', '4');
                 var nodes = container.getElementsByTagName('li');
                 expect(nodes.length).toBe(4);
-                expect(getText(nodes[3])).toBe('4');
+                expect($(nodes[3]).text()).toBe('4');
             });
 
             it('should add a `ui-wizard-panel-hidden` class on all related `panel` for non-active nodes when rendered', function () {

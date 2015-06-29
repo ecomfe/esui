@@ -14,6 +14,7 @@ define(
         var Control = require('./Control');
         var esui = require('./main');
         var painters = require('./painters');
+        var $ = require('jquery');
 
         var strAddPartClasses = 'addPartClasses';
         var strRemovePartClasses = 'removePartClasses';

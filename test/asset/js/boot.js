@@ -29,19 +29,6 @@
                 'main': 'main'
             },
             {
-                'name': 'esf',
-                'location': '../dep/esf/1.0.0-beta.1/src'
-            },
-            {
-                'name': 'est',
-                'location': '../dep/est/1.3.0/src'
-            },
-            {
-                'name': 'eicons',
-                'location': '../dep/eicons/1.0.0-beta.1/src',
-                'main': 'main.less'
-            },
-            {
                 'name': 'eoo',
                 'location': '../dep/eoo/0.1.3/src',
                 'main': 'main'
@@ -72,7 +59,7 @@
         var navItems = [
             'button', 'control', 'crumb', 'form', 'inputControl',
             'label', 'panel', 'safeWrapper', 'searchBox', 'select', 'tab',
-            'textBox', 'validity', 'viewContext', 'wizard'
+            'textBox', 'validity', 'viewContext', 'wizard', 'libs'
         ];
         var navHtml = '';
         $(navItems).each(function (index, item) {
@@ -98,10 +85,9 @@
                 });
                 require(
                     ['esui', 'ctrPath', 'jasmine-html', 'matchers'],
-                    function (esui) {
+                    function (esui, control, jasmine_html, matchers) {
                         afterEach(function () {
                             esui.getViewContext().clean();
-                            $('#container').html('');
                         });
                         var jasmineEnv = jasmine.getEnv();
                         jasmineEnv.updateInterval = 1000;
