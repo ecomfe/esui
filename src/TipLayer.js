@@ -12,6 +12,8 @@ define(
         require('./Label');
         require('./Panel');
 
+        var $ = require('jquery');
+        require('./behavior/position');
         var eoo = require('eoo');
         var esui = require('./main');
         var u = require('underscore');
@@ -173,11 +175,11 @@ define(
                     {
                         name: [
                             'targetDOM', 'targetControl',
-                            'showMode', 'positionOpt', 'delayTime',
+                            'showMode', 'positionOpt', 'targetPositionOpt', 'delayTime',
                             'showDuration'
                         ],
                         paint: function (tipLayer, targetDOM, targetControl,
-                                showMode, positionOpt, delayTime) {
+                                showMode, positionOpt, targetPositionOpt, delayTime) {
                             // 为了绕过函数最多7个参数的fecs要求
                             var showDuration = arguments[6];
                             var options = {
@@ -200,89 +202,6 @@ define(
                         }
                     }
                 ),
-
-                /**
-                 * 让当前层靠住一个元素
-                 *
-                 * @param {HTMLElement} target 目标元素
-                 * @param {Object=} options 停靠相关的选项
-                 * @param {string=} options.top 指示目标的上边缘靠住当前层的哪个边，
-                 * 可选值为**top**或**bottom**
-                 * @param {string=} options.bottom 指示目标的下边缘靠住当前层的哪个边，
-                 * 可选值为**top**或**bottom**，* 当`top`值为**bottom**时，该值无效
-                 * @param {string=} options.left 指示目标的左边缘靠住当前层的哪个边，
-                 * 可选值为**left**或**right**
-                 * @param {string=} options.right 指示目标的右边缘靠住当前层的哪个边，
-                 * 可选值为**left**或**right**，* 当`left`值为**right**时，该值无效
-                 * @param {number=} options.width 指定层的宽度
-                 * @param {number=} options.height 指定层的高度
-                 * @public
-                 */
-                autoPosition: function (target, options) {
-                    var tipLayer = this;
-                    var element = this.main;
-                    options = options || {left: 'right', top: 'top'};
-
-                    var rect = target.getBoundingClientRect();
-                    var offset = lib.getOffset(target);
-                    var targetPosition = {
-                        top: rect.top,
-                        right: rect.right,
-                        bottom: rect.bottom,
-                        left: rect.left,
-                        width: rect.right - rect.left,
-                        height: rect.bottom - rect.top
-                    };
-
-                    // 浮层的存在会影响页面高度计算，必须先让它消失，
-                    // 但在消失前，又必须先计算到浮层的正确高度
-                    var previousDisplayValue = element.style.display;
-                    element.style.display = 'block';
-                    var elementHeight = element.offsetHeight;
-                    var elementWidth = element.offsetWidth;
-                    element.style.display = 'none';
-
-                    // 获取一个不带targetControl的参数副本
-                    var config = u.omit(options, 'targetControl');
-                    setupConfig(
-                        config, targetPosition,
-                        elementWidth, elementHeight
-                    );
-
-                    var properties = {};
-                    var arrowClass;
-                    if (config.right) {
-                        properties.left = offset.right;
-                        if (config.top) {
-                            arrowClass = 'lt';
-                        }
-                        else {
-                            arrowClass = 'lb';
-                        }
-                    }
-                    else if (config.left) {
-                        properties.left = offset.left - elementWidth;
-                        if (config.top) {
-                            arrowClass = 'rt';
-                        }
-                        else {
-                            arrowClass = 'rb';
-                        }
-                    }
-
-                    if (config.top) {
-                        properties.top = offset.top;
-                    }
-                    else if (config.bottom) {
-                        properties.top = offset.bottom - elementHeight;
-                    }
-
-                    element.style.display = previousDisplayValue;
-
-                    addTipLayerClasses(tipLayer, element, arrowClass);
-
-                    tipLayer.renderLayer(element, properties);
-                },
 
                 /**
                  * 渲染层样式
@@ -341,6 +260,7 @@ define(
                  *    {ui.Control | string} targetControl 绑定控件的实例或id
                  *    {number} delayTime 延迟展示时间
                  *    {Object=} positionOpt 层布局参数
+                 *    {Object=} targetPositionOpt 参照物对象的层布局参数
                  */
                 attachTo: function (options) {
                     // 根据参数获取行为处理器
@@ -377,11 +297,19 @@ define(
                  *    {number} delayTime 延迟展示时间
                  *    {number} showDuration 展示后自动隐藏的延迟时间
                  *    {Object=} positionOpt 层布局参数
+                 *    {Object=} targetPositionOpt 参照物对象的层布局参数
                  * @return {Object}
                  */
                 getInitHandler: function (options) {
                     var me = this;
-
+                    var positionOpt = options.positionOpt || {
+                        top: 'top',
+                        right: 'left'
+                    };
+                    var targetPositionOpt = options.targetPositionOpt || {
+                        top: 'top',
+                        right: 'right'
+                    };
                     // 获取绑定的目标
                     var targetElement;
                     if (options.targetDOM) {
@@ -416,7 +344,10 @@ define(
                                     me.helper.addDOMEvent(
                                         me.main,
                                         'mouseover',
-                                        u.bind(me.show, me, targetElement, options.positionOpt)
+                                        u.bind(me.show, me, targetElement, {
+                                            targetPositionOpt: targetPositionOpt,
+                                            positionOpt: positionOpt
+                                        })
                                     );
 
                                     // 鼠标划出弹层元素，隐藏
@@ -429,7 +360,10 @@ define(
                                     );
                                 }
 
-                                delayShow(me, options.delayTime, targetElement, options.positionOpt);
+                                delayShow(me, options.delayTime, targetElement, {
+                                    targetPositionOpt: targetPositionOpt,
+                                    positionOpt: positionOpt
+                                });
                             },
 
                             /**
@@ -514,6 +448,7 @@ define(
                  *    {number} delayTime 延迟展示时间
                  *    {number} showDuration 展示后自动隐藏的延迟时间
                  *    {Object=} positionOpt 层布局参数
+                 *    {Object=} targetPositionOpt 参照物对象的层布局参数
                  */
                 initAutoMode: function (options) {
                     var handler = options.handler;
@@ -547,6 +482,7 @@ define(
                  *    {number} delayTime 延迟展示时间
                  *    {number} showDuration 展示后自动隐藏的延迟时间
                  *    {Object=} positionOpt 层布局参数
+                 *    {Object=} targetPositionOpt 参照物对象的层布局参数
                  */
                 initClickMode: function (options) {
                     var handler = options.handler;
@@ -572,6 +508,7 @@ define(
                  *    {number} delayTime 延迟展示时间
                  *    {number} showDuration 展示后自动隐藏的延迟时间
                  *    {Object=} positionOpt 层布局参数
+                 *    {Object=} targetPositionOpt 参照物对象的层布局参数
                  */
                 initOverMode: function (options) {
                     var handler = options.handler;
@@ -648,11 +585,11 @@ define(
 
                     this.removeState('hidden');
 
-                    // 定位，八种。。
-                    this.autoPosition(
-                        targetElement,
-                        options
-                    );
+                   $(this.main).position({
+                       of: $(targetElement),
+                       at: options.targetPositionOpt.right + ' ' + options.targetPositionOpt.top,
+                       my: options.positionOpt.right + ' ' + options.positionOpt.top
+                   });
 
                     if (this.isShow) {
                         return;
@@ -855,10 +792,12 @@ define(
             if (!tipLayer.isShow) {
                 return;
             }
-            tipLayer.autoPosition(
-                targetElement,
-                options
-            );
+
+            $(this.main).position({
+                of: $(targetElement),
+                at: options.targetPositionOpt.right + ' ' + options.targetPositionOpt.top,
+                my: options.positionOpt.right + ' ' + options.positionOpt.top
+            });
         }
 
         /**
