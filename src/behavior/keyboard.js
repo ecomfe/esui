@@ -167,7 +167,7 @@ define(
                     possible[modif + character] = true;
                     possible[modif + shiftNums[character]] = true;
 
-                    // '$' can be triggered as 'Shift+4' or 'Shift+$' or just '$'
+                    // '$' --> 'Shift+4' /  'Shift+$' / '$'
                     if (modif === 'shift+') {
                         possible[shiftNums[character]] = true;
                     }
