@@ -53,6 +53,7 @@ define(
                     if (lib.isInput(this.main)) {
                         this.helper.extractOptionsFromInput(this.main, properties);
                     }
+                    properties.placeholder = this.main.getAttribute('placeholder') || '';
                     u.extend(properties, options);
 
                     if (!properties.hasOwnProperty('title') && this.main.title) {
@@ -276,6 +277,7 @@ define(
             var textareaHTML = ''
                 + '<textarea wrap="off" '
                 + 'id="' + textLine.helper.getId('text') + '"'
+                + 'placeholder="' + textLine.placeholder + '"'
                 + '></textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
