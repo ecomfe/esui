@@ -23,12 +23,10 @@ define(
                 type: 'behaviorBase',
 
                 constructor: function (options, element) {
-                    var defaultProp = Base.defaultProperties;
-
-                    this.options = u.extend({}, options);
-                    this.customEventPrefix = defaultProp.customEventPrefix;
+                    this.options = u.extend({}, Base.defaultProperties, options);
+                    this.customEventPrefix = this.options.customEventPrefix;
                     this.eventNamespace = '.' + this.type + $.guid++;
-                    this.classPrefix = [defaultProp.classPrefix, this.type].join('-');
+                    this.classPrefix = this.options.classPrefix;
                     this.bindings = $();
 
                     this.element = $(element);
@@ -85,7 +83,6 @@ define(
                  * @param {Function|string} handlers 如果为string，则为实例的方法名
                  */
                 on: function (suppressDisabledCheck, element, handlers) {
-
                     // 未指定suppressDisabledCheck
                     if (typeof suppressDisabledCheck !== 'boolean') {
                         handlers = element;
@@ -134,24 +131,47 @@ define(
 
                 /**
                  * 获取带前缀的class
+                 * @param {boolean=} fullName 是否返回全称
+                 * @param {string} typeName typeName
                  * @param {string} styleType class名称
                  * @return {string}
                  */
-                getClassName: function (styleType) {
+                getClassName: function (fullName, styleType, typeName) {
                     var me = this;
-                    if (!styleType) {
-                        return this.classPrefix;
+                    var prefix = me.classPrefix;
+
+                    if (u.isString(fullName)) {
+                        styleType = fullName;
+                        typeName = styleType;
+                        fullName = false;
                     }
-                    var options = this.options;
-                    styleType = styleType.split(/\s+/g);
+
+                    if (!typeName) {
+                        typeName = this.type;
+                    }
+
+                    styleType = styleType || '';
+
+                    var options = me.options;
                     var classes = [];
                     u.each(
-                        styleType,
+                        styleType.split(/\s+/g),
                         function (type) {
-                            if (type.indexOf(me.classPrefix) === 0) {
-                                return type;
+                            var result;
+
+                            if (type) {
+                                if (type.indexOf(prefix) === 0) {
+                                    result = type;
+                                }
+                                result = [prefix, typeName, type].join('-');
                             }
-                            classes.push(options[type + 'Class'] || [me.classPrefix, type].join('-'));
+                            else {
+                                result = [prefix, typeName].join('-');
+                            }
+                            if (fullName) {
+                                result = '.' + result
+                            }
+                            classes.push(result);
                         }
                     );
                     return classes.join(' ');
@@ -163,8 +183,7 @@ define(
                  * @param {string} className class名称
                  */
                 addClass: function (element, className) {
-                    var args = u.toArray(arguments);
-                    this.toggleClass.apply(this, args.concat([true]));
+                    this.toggleClass(element, className, true);
                 },
 
                 /**
@@ -174,8 +193,7 @@ define(
                  * @param {string} className class名称
                  */
                 removeClass: function (element, className) {
-                    var args = u.toArray(arguments);
-                    this.toggleClass.apply(this, args.concat([false]));
+                    this.toggleClass(element, className, false);
                 },
 
                 /**

@@ -9,157 +9,344 @@
 
 define(
     function (require) {
-
         var $ = require('jquery');
         var u = require('underscore');
         var lib = require('esui/lib');
 
         var Mouse = require('./Mouse');
         var behaviorUtil = require('./util');
+        var jqBridge = require('./bridge');
+        var eoo = require('eoo');
+        var typeName = 'draggable';
 
-        var exports = {};
+        var Draggable = eoo.create(
+            Mouse,
+            {
+                type: typeName,
 
-        exports.type = 'draggable';
+                /**
+                 * 构造函数
+                 * @param {Object} options
+                 * options属性参考defaultProperties
+                 */
+                constructor: function (options) {
+                    options = u.extend(
+                        {
+                            // 是否添加`prefix-draggable`
+                            // 如果可拖拽元素过多，处于性能考虑，可以设为false
+                            addClasses: true,
+                            // 如果helper不在文档中，为其指定父元素
+                            appendTo: 'parent',
+                            // 元素只能在一个方向移动，x / y
+                            axis: false,
+                            // TODO: sortable
+                            //connectToSortable: false,
+                            // 拖拽范围
+                            containment: false,
+                            // 鼠标的css值
+                            cursor: 'auto',
+                            // helper和鼠标的偏移
+                            cursorAt: false,
+                            // 限定按指定步长移动
+                            grid: false,
+                            // 拖拽手柄
+                            handle: false,
+                            // 指定helper为element还是重新clone一个
+                            helper: 'original',
+                            iframeFix: false,
+                            // 拖拽过程中helper透明度
+                            opacity: false,
+                            refreshPositions: false,
+                            /**
+                             * 拖拽结束后是否回到起点
+                             * 如果是string，可取`invalid` / `valid`,即如果没有放到droppable上，则回到起点
+                             * @type {boolean|Function|string}
+                             */
+                            revert: false,
+                            /**
+                             * revert动画时间, false则不使用动画
+                             * @type {number|boolean}
+                             */
+                            revertDuration: 500,
 
-        /**
-         * 构造函数
-         * @param {Object} options
-         * options属性参考defaultProperties
-         */
-        exports.constructor = function (options) {
-            options = u.extend(
-                {
-                    // 是否添加`prefix-draggable`
-                    // 如果可拖拽元素过多，处于性能考虑，可以设为false
-                    addClasses: true,
-                    // 如果helper不在文档中，为其指定父元素
-                    appendTo: 'parent',
-                    // 元素只能在一个方向移动，x / y
-                    axis: false,
-                    connectToSortable: false,
-                    // 拖拽范围
-                    containment: false,
-                    // 鼠标的css值
-                    cursor: 'auto',
-                    // helper和鼠标的偏移
-                    cursorAt: false,
-                    // 限定按指定步长移动
-                    grid: false,
-                    // 拖拽手柄
-                    handle: false,
-                    // 指定helper为element还是重新clone一个
-                    helper: 'original',
-                    iframeFix: false,
-                    // 拖拽过程中helper透明度
-                    opacity: false,
-                    refreshPositions: false,
-                    /**
-                     * 拖拽结束后是否回到起点
-                     * 如果是string，可取`invalid` / `valid`,即如果没有放到droppable上，则回到起点
-                     * @type {boolean|Function|string}
-                     */
-                    revert: false,
-                    /**
-                     * revert动画时间, false则不使用动画
-                     * @type {number|boolean}
-                     */
-                    revertDuration: 500,
+                            scope: 'default',
+                            // 拖拽时元素溢出时父元素滚动条自动滚动
+                            scroll: true,
+                            // 距离多少时触发滚动
+                            scrollSensitivity: 20,
+                            // 滚动速度
+                            scrollSpeed: 20,
+                            // 接近边缘时吸附, `false` / `selector`
+                            snap: false,
+                            // 吸附到哪一边, 可取`inner` / `outer` / `both`
+                            snapMode: 'both',
+                            // 吸附的阈值
+                            snapTolerance: 20,
+                            // 对一类元素进行分组，总是当前拖拽的元素在最上方
+                            // 类似操作系统的窗口
+                            stack: false,
+                            // 拖拽过程中helper的z-index
+                            zIndex: false,
 
-                    scope: 'default',
-                    // 拖拽时元素溢出时父元素滚动条自动滚动
-                    scroll: true,
-                    // 距离多少时触发滚动
-                    scrollSensitivity: 20,
-                    // 滚动速度
-                    scrollSpeed: 20,
-                    // 接近边缘时吸附, `false` / `selector`
-                    snap: false,
-                    // 吸附到哪一边, 可取`inner` / `outer` / `both`
-                    snapMode: 'both',
-                    // 吸附的阈值
-                    snapTolerance: 20,
-                    // 对一类元素进行分组，总是当前拖拽的元素在最上方
-                    // 类似操作系统的窗口
-                    stack: false,
-                    // 拖拽过程中helper的z-index
-                    zIndex: false,
+                            // callbacks
+                            drag: null,
+                            start: null,
+                            stop: null
+                        },
+                        options
+                    );
 
-                    // callbacks
-                    drag: null,
-                    start: null,
-                    stop: null
+                    this.$super(arguments);
+
+                    this.customEventPrefix = 'drag';
+                    this.plugins = {};
                 },
-                options
-            );
 
-            this.$super(arguments);
+                /**
+                 * 初始化
+                 */
+                init: function () {
+                    var me = this;
+                    var element = me.element;
+                    var opts = me.options;
 
-            this.customEventPrefix = 'drag';
-            this.plugins = {};
-        };
+                    me.$super(arguments);
+                    if (opts.helper === 'original') {
+                        setPositionRelative.call(me);
+                    }
+                    if (opts.addClasses) {
+                        me.addClass(element);
+                    }
+                    if (opts.disabled) {
+                        me.addClass(element, 'disabled');
+                    }
+                    setHandleClassName.call(this);
+                },
 
-        /**
-         * 初始化
-         */
-        exports.init = function () {
-            this.$super(arguments);
+                /**
+                 * 销毁
+                 */
+                dispose: function () {
+                    var fullDraggingClass = this.getClassName(true, 'dragging');
+                    if ((this.helper || this.element).is(fullDraggingClass)) {
+                        this.destroyOnClear = true;
+                        return;
+                    }
+                    removeHandleClassName.call(this);
+                    this.$super(arguments);
+                },
 
-            if (this.options.helper === 'original') {
-                setPositionRelative.call(this);
+                /**
+                 * @override
+                 */
+                mouseCapture: function (event) {
+                    if (this.$super(arguments) === false) {
+                        return false;
+                    }
+                    var options = this.options;
+
+                    blurActiveElement.call(this, event);
+
+                    var resizableHandleCls = this.getClassName(true, 'handle', 'resizable');
+                    if (this.helper || options.disabled
+                        || $(event.target).closest(resizableHandleCls).length > 0) {
+                        return false;
+                    }
+
+                    // 鼠标不在handle中
+                    this.handle = getHandle.call(this, event);
+                    if (!this.handle) {
+                        return false;
+                    }
+                    blockFrames.call(this, options.iframeFix === true ? 'iframe' : options.iframeFix);
+
+                    return true;
+                },
+
+                /**
+                 * @override
+                 */
+                mouseStart: function (event) {
+                    var options = this.options;
+
+                    // Create and append the visible helper
+                    this.helper = createHelper.call(this, event);
+
+                    this.addClass(this.helper, 'dragging');
+
+                    // Cache the helper size
+                    cacheHelperProportions.call(this);
+
+                    // If ddmanager is used for droppables, set the global draggable
+                    // FIXME
+                    // if ($.ui.ddmanager) {
+                    //     $.ui.ddmanager.current = this;
+                    // }
+
+                    cacheMargins.call(this);
+
+                    this.cssPosition = this.helper.css('position');
+                    this.scrollParent = this.helper.scrollParent(true);
+                    this.offsetParent = this.helper.offsetParent();
+                    this.hasFixedAncestor = this.helper.parents().filter(
+                        function () {
+                            return $(this).css('position') === 'fixed';
+                        }
+                    ).length > 0;
+
+                    this.positionAbs = this.element.offset();
+                    refreshOffsets.call(this, event);
+
+                    // 拖拽前元素、鼠标位置信息
+                    this.originalPosition = this.position = generatePosition.call(this, event, false);
+                    this.originalPageX = event.pageX;
+                    this.originalPageY = event.pageY;
+
+                    // cursorAt是鼠标相对于helper的位置
+                    (options.cursorAt && adjustOffsetFromHelper.call(this, options.cursorAt));
+
+                    // 元素移动的限定范围
+                    setContainment.call(this);
+
+                    if (this.trigger('start', event) === false) {
+                        clear.call(this);
+                        return false;
+                    }
+
+                    // Recache the helper size
+                    cacheHelperProportions.call(this);
+
+                    // Prepare the droppable offsets
+                    // FIXME
+                    // if ($.ui.ddmanager && !options.dropBehaviour) {
+                    //     $.ui.ddmanager.prepareOffsets(this, event);
+                    // }
+
+                    this.mouseDrag(event, true);
+
+                    // If the ddmanager is used for droppables, inform the manager that dragging has started (see #5003)
+                    // FIXME
+                    // if ($.ui.ddmanager) {
+                    //     $.ui.ddmanager.dragStart(this, event);
+                    // }
+
+                    return true;
+                },
+
+                /**
+                 * 鼠标移动过程中，调整helper位置
+                 * @param {Event} event 事件对象
+                 * @param {boolean} noPropagation 是否冒泡drag事件到外部
+                 * @return {boolean}
+                 */
+                mouseDrag: function (event, noPropagation) {
+                    if (this.hasFixedAncestor) {
+                        this.offset.parent = getParentOffset.call(this);
+                    }
+
+                    // 计算helper位置
+                    this.position = generatePosition.call(this, event, true);
+                    this.positionAbs = convertPositionTo.call(this, 'absolute');
+
+                    if (!noPropagation) {
+                        var ui = uiHash.call(this);
+                        if (this.trigger('drag', u.extend({}, event, ui)) === false) {
+                            this.mouseUp({});
+                            return false;
+                        }
+                        this.position = ui.position;
+                    }
+
+                    this.helper[0].style.left = this.position.left + 'px';
+                    this.helper[0].style.top = this.position.top + 'px';
+
+                    // FIXME
+                    // if ($.ui.ddmanager) {
+                    // 	$.ui.ddmanager.drag(this, event);
+                    // }
+
+                    return false;
+                },
+
+                mouseStop: function (event) {
+                    // If we are using droppables, inform the manager about the drop
+                    var me = this;
+                    var dropped = false;
+                    // if ($.ui.ddmanager && !this.options.dropBehaviour) {
+                    //     dropped = $.ui.ddmanager.drop(this, event);
+                    // }
+
+                    // if a drop comes from outside (a sortable)
+                    if (this.dropped) {
+                        dropped = this.dropped;
+                        this.dropped = false;
+                    }
+
+                    if (
+                        (this.options.revert === 'invalid' && !dropped)
+                            || (this.options.revert === 'valid' && dropped)
+                            || this.options.revert === true
+                            || (
+                                $.isFunction(this.options.revert)
+                                    && this.options.revert.call(this.element, dropped)
+                            )
+                    ) {
+                        $(this.helper).animate(
+                            this.originalPosition,
+                            parseInt(this.options.revertDuration, 10),
+                            function () {
+                                if (me.trigger('stop', event) !== false) {
+                                    clear.call(this);
+                                }
+                            }
+                        );
+                    }
+                    else {
+                        if (this.trigger('stop', event) !== false) {
+                            clear.call(this);
+                        }
+                    }
+
+                    return false;
+                },
+
+                mouseUp: function (event) {
+                    unblockFrames.call();
+
+                    // If the ddmanager is used for droppables, inform the manager that dragging has stopped (see #5003)
+                    // FIXME
+                    // if ($.ui.ddmanager) {
+                    // 	$.ui.ddmanager.dragStop(this, event);
+                    // }
+
+                    if (this.handleElement.is(event.target)) {
+                        this.element.focus();
+                    }
+
+                    return this.$super(arguments);
+                },
+
+                cancel: function () {
+                    var helperDraggingFullCls = this.getClassName(true, 'dragging');
+                    console.log(helperDraggingFullCls);
+                    if (this.helper.is(helperDraggingFullCls)) {
+                        this.mouseUp({});
+                    }
+                    else {
+                        clear.call(this);
+                    }
+
+                    return this;
+                }
             }
-            if (this.options.addClasses) {
-                lib.addClass(this.element, 'ui-draggable');
-            }
-            if (this.options.disabled) {
-                lib.addClass(this.element, 'ui-draggable-disabled');
-            }
-            setHandleClassName.call(this);
-        };
-
-        /**
-         * 销毁
-         */
-        exports.dispose = function () {
-            if ((this.helper || this.element).is('.ui-draggable-dragging')) {
-                this.destroyOnClear = true;
-                return;
-            }
-            removeHandleClassName.call(this);
-            this.$super(arguments);
-        };
-
-        /**
-         * @override
-         */
-        exports.mouseCapture = function (event) {
-
-            if (this.$super(arguments) === false) {
-                return false;
-            }
-            var options = this.options;
-
-            blurActiveElement.call(this, event);
-
-            if (this.helper || options.disabled
-                || $(event.target).closest('.ui-resizable-handle').length > 0) {
-                return false;
-            }
-
-            // 鼠标不在handle中
-            this.handle = getHandle.call(this, event);
-            if (!this.handle) {
-                return false;
-            }
-            blockFrames.call(this, options.iframeFix === true ? 'iframe' : options.iframeFix);
-
-            return true;
-        };
+        );
 
         /**
          * 拖拽的时候如果鼠标滑过iframe上空，
          * 则当前文档会失去mousemove事件
          * 这里做个hack，给指定iframe上遮一个div
          * @param {Element|string|boolean} selector 要处理的iframe
+         * @inner
          */
         function blockFrames(selector) {
             this.iframeBlocks = this.document.find(selector).map(
@@ -216,184 +403,6 @@ define(
         }
 
         /**
-         * @override
-         */
-        exports.mouseStart = function (event) {
-
-            var options = this.options;
-
-            // Create and append the visible helper
-            this.helper = createHelper.call(this, event);
-
-            this.helper.addClass('ui-draggable-dragging');
-
-            // Cache the helper size
-            cacheHelperProportions.call(this);
-
-            // If ddmanager is used for droppables, set the global draggable
-            // FIXME
-            // if ($.ui.ddmanager) {
-            //     $.ui.ddmanager.current = this;
-            // }
-
-            cacheMargins.call(this);
-
-            this.cssPosition = this.helper.css('position');
-            this.scrollParent = this.helper.scrollParent(true);
-            this.offsetParent = this.helper.offsetParent();
-            this.hasFixedAncestor = this.helper.parents().filter(
-                function () {
-                    return $(this).css('position') === 'fixed';
-                }
-            ).length > 0;
-
-            this.positionAbs = this.element.offset();
-            refreshOffsets.call(this, event);
-
-            // 拖拽前元素、鼠标位置信息
-            this.originalPosition = this.position = generatePosition.call(this, event, false);
-            this.originalPageX = event.pageX;
-            this.originalPageY = event.pageY;
-
-            // cursorAt是鼠标相对于helper的位置
-            (options.cursorAt && adjustOffsetFromHelper.call(this, options.cursorAt));
-
-            // 元素移动的限定范围
-            setContainment.call(this);
-
-            if (this.trigger('start', event) === false) {
-                clear.call(this);
-                return false;
-            }
-
-            // Recache the helper size
-            cacheHelperProportions.call(this);
-
-            // Prepare the droppable offsets
-            // FIXME
-            // if ($.ui.ddmanager && !options.dropBehaviour) {
-            //     $.ui.ddmanager.prepareOffsets(this, event);
-            // }
-
-            this.mouseDrag(event, true);
-
-            // If the ddmanager is used for droppables, inform the manager that dragging has started (see #5003)
-            // FIXME
-            // if ($.ui.ddmanager) {
-            //     $.ui.ddmanager.dragStart(this, event);
-            // }
-
-            return true;
-        },
-
-        /**
-         * 鼠标移动过程中，调整helper位置
-         * @param {Event} event 事件对象
-         * @param {boolean} noPropagation 是否冒泡drag事件到外部
-         * @return {boolean}
-         */
-        exports.mouseDrag = function (event, noPropagation) {
-            if (this.hasFixedAncestor) {
-                this.offset.parent = getParentOffset.call(this);
-            }
-
-            // 计算helper位置
-            this.position = generatePosition.call(this, event, true);
-            this.positionAbs = convertPositionTo.call(this, 'absolute');
-
-            if (!noPropagation) {
-            	var ui = uiHash.call(this);
-                if (this.trigger('drag', u.extend({}, event, ui)) === false) {
-            		this.mouseUp({});
-            		return false;
-            	}
-            	this.position = ui.position;
-            }
-
-            this.helper[0].style.left = this.position.left + 'px';
-            this.helper[0].style.top = this.position.top + 'px';
-
-            // FIXME
-            // if ($.ui.ddmanager) {
-            // 	$.ui.ddmanager.drag(this, event);
-            // }
-
-            return false;
-        };
-
-        exports.mouseStop = function (event) {
-
-            // If we are using droppables, inform the manager about the drop
-            var me = this;
-            var dropped = false;
-            // if ($.ui.ddmanager && !this.options.dropBehaviour) {
-            //     dropped = $.ui.ddmanager.drop(this, event);
-            // }
-
-            // if a drop comes from outside (a sortable)
-            if (this.dropped) {
-                dropped = this.dropped;
-                this.dropped = false;
-            }
-
-            if (
-                (this.options.revert === 'invalid' && !dropped)
-                    || (this.options.revert === 'valid' && dropped)
-                    || this.options.revert === true
-                    || (
-                        $.isFunction(this.options.revert)
-                            && this.options.revert.call(this.element, dropped)
-                    )
-            ) {
-                $(this.helper).animate(
-                    this.originalPosition,
-                    parseInt(this.options.revertDuration, 10),
-                    function () {
-                        if (me.trigger('stop', event) !== false) {
-                            clear.call(this);
-                        }
-                    }
-                );
-            }
-            else {
-                if (this.trigger('stop', event) !== false) {
-                    clear.call(this);
-                }
-            }
-
-            return false;
-        };
-
-        exports.mouseUp = function (event) {
-            unblockFrames.call();
-
-            // If the ddmanager is used for droppables, inform the manager that dragging has stopped (see #5003)
-            // FIXME
-            // if ($.ui.ddmanager) {
-            // 	$.ui.ddmanager.dragStop(this, event);
-            // }
-
-            if (this.handleElement.is(event.target)) {
-                this.element.focus();
-            }
-
-            return this.$super(arguments);
-        };
-
-        exports.cancel = function () {
-
-            if (this.helper.is('.ui-draggable-dragging')) {
-                this.mouseUp({});
-            }
-            else {
-                clear.call(this);
-            }
-
-            return this;
-
-        };
-
-        /**
          * 判断指定事件是否发生在handle上
          * @param {Event} event 事件对象
          * @return {boolean}
@@ -410,14 +419,14 @@ define(
         function setHandleClassName() {
             this.handleElement = this.options.handle ?
                 this.element.find(this.options.handle) : this.element;
-            this.handleElement.addClass('ui-draggable-handle');
+            this.addClass(this.handleElement, 'handle');
         }
 
         /**
          * 移除handle的className
          */
         function removeHandleClassName() {
-            this.handleElement.removeClass('ui-draggable-handle');
+            this.removeClass(this.handleElement, 'handle');
         }
 
         /**
@@ -426,7 +435,6 @@ define(
          * @return {jQuery}
          */
         function createHelper(event) {
-
             var options = this.options;
             var helperIsFunction = $.isFunction(options.helper);
             var helper = helperIsFunction
@@ -661,7 +669,6 @@ define(
          * @return {Object} 变换后的位置信息
          */
         function convertPositionTo(d, pos) {
-
             if (!pos) {
                 pos = this.position;
             }
@@ -691,7 +698,6 @@ define(
                     ) * mod
                 )
             };
-
         }
 
         /**
@@ -702,7 +708,6 @@ define(
          * @return {Object} top / left
          */
         function generatePosition(event, constrainPosition) {
-
             var scrollIsRootNode = isRootNode.call(this, this.scrollParent[0]);
             // Cache the scroll
             if (!scrollIsRootNode || !this.offset.scroll) {
@@ -830,7 +835,7 @@ define(
          * 拖拽完成后清理现场
          */
         function clear() {
-            this.helper.removeClass('ui-draggable-dragging');
+            this.removeClass(this.helper, 'dragging');
             if (this.helper[0] !== this.element[0] && !this.cancelHelperRemoval) {
                 this.helper.remove();
             }
@@ -863,10 +868,7 @@ define(
             };
         }
 
-        var Draggable = require('eoo').create(Mouse, exports);
-
-        require('./bridge')(exports.type, Draggable);
-
+        jqBridge(typeName, Draggable);
         return Draggable;
 
     }
