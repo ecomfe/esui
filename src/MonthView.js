@@ -1575,7 +1575,7 @@ define(
          */
         function addCustomClassesForSelectLayer(monthView, selectClass, e) {
             var layerClasses = monthView.helper.getPartClasses(selectClass + '-layer');
-            var layer = e.layer;
+            var layer = this.layer;
             layer.addCustomClasses(layerClasses);
             monthView.fire('selectlayerrendered', {layer: layer});
         }

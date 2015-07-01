@@ -157,7 +157,7 @@ define(
                 // 但是会遇上`key:`这样的串，即只有键没有值，
                 // 这时我们就认为值是个空字符串了
                 var value = lib.trim(source.slice(lastStop, cursor));
-                result[key] = valueParser ? valueParser(value) : value;
+                value = valueParser ? valueParser(value) : value;
                 // 加入到结果中
                 result[key] = valueReplacer ? valueReplacer(value) : value;
                 // 再往前进一格，开始下一次查找

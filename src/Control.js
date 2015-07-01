@@ -13,7 +13,7 @@ define(
         var ui = require('./main');
         var Helper = require('./Helper');
         var eoo = require('eoo');
-        var EventTarget = require('mini-event/EventTarget');
+        var EventTarget = require('./EventTarget');
 
         /**
          * 控件基类
