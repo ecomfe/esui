@@ -27,6 +27,14 @@
     
     #selectable-list { list-style-type: none; margin: 0; padding: 0; width: 60%; }
     #selectable-list li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+
+    .ui-selectable-selecting {
+        background: #FECA40;
+    }
+    .ui-selectable-selected {
+        background: #F39814;
+        color: white;
+    }
     </style>
 </head>
 <body>
@@ -89,7 +97,7 @@
                         {
                             stop: function (d) {
                                 var result = $( "#items" ).empty();
-                                $( ".ui-selected", this.element ).each(function() {
+                                $( ".ui-selectable-selected", this.element ).each(function() {
                                   var index = $( "#selectable-list li" ).index( this );
                                   result.append( " #" + ( index + 1 ) );
                                 });

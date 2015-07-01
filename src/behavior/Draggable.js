@@ -11,7 +11,6 @@ define(
     function (require) {
         var $ = require('jquery');
         var u = require('underscore');
-        var lib = require('esui/lib');
 
         var Mouse = require('./Mouse');
         var behaviorUtil = require('./util');
@@ -39,8 +38,6 @@ define(
                             appendTo: 'parent',
                             // 元素只能在一个方向移动，x / y
                             axis: false,
-                            // TODO: sortable
-                            //connectToSortable: false,
                             // 拖拽范围
                             containment: false,
                             // 鼠标的css值
@@ -169,19 +166,13 @@ define(
                 mouseStart: function (event) {
                     var options = this.options;
 
-                    // Create and append the visible helper
+                    // 创建helper
                     this.helper = createHelper.call(this, event);
 
                     this.addClass(this.helper, 'dragging');
 
-                    // Cache the helper size
+                    // 缓存helper的尺寸
                     cacheHelperProportions.call(this);
-
-                    // If ddmanager is used for droppables, set the global draggable
-                    // FIXME
-                    // if ($.ui.ddmanager) {
-                    //     $.ui.ddmanager.current = this;
-                    // }
 
                     cacheMargins.call(this);
 
@@ -213,22 +204,10 @@ define(
                         return false;
                     }
 
-                    // Recache the helper size
+                    // 重新缓存helper的尺寸
                     cacheHelperProportions.call(this);
 
-                    // Prepare the droppable offsets
-                    // FIXME
-                    // if ($.ui.ddmanager && !options.dropBehaviour) {
-                    //     $.ui.ddmanager.prepareOffsets(this, event);
-                    // }
-
                     this.mouseDrag(event, true);
-
-                    // If the ddmanager is used for droppables, inform the manager that dragging has started (see #5003)
-                    // FIXME
-                    // if ($.ui.ddmanager) {
-                    //     $.ui.ddmanager.dragStart(this, event);
-                    // }
 
                     return true;
                 },
@@ -260,37 +239,13 @@ define(
                     this.helper[0].style.left = this.position.left + 'px';
                     this.helper[0].style.top = this.position.top + 'px';
 
-                    // FIXME
-                    // if ($.ui.ddmanager) {
-                    // 	$.ui.ddmanager.drag(this, event);
-                    // }
-
                     return false;
                 },
 
                 mouseStop: function (event) {
-                    // If we are using droppables, inform the manager about the drop
                     var me = this;
-                    var dropped = false;
-                    // if ($.ui.ddmanager && !this.options.dropBehaviour) {
-                    //     dropped = $.ui.ddmanager.drop(this, event);
-                    // }
 
-                    // if a drop comes from outside (a sortable)
-                    if (this.dropped) {
-                        dropped = this.dropped;
-                        this.dropped = false;
-                    }
-
-                    if (
-                        (this.options.revert === 'invalid' && !dropped)
-                            || (this.options.revert === 'valid' && dropped)
-                            || this.options.revert === true
-                            || (
-                                $.isFunction(this.options.revert)
-                                    && this.options.revert.call(this.element, dropped)
-                            )
-                    ) {
+                    if (this.options.revert === 'invalid' || this.options.revert === true) {
                         $(this.helper).animate(
                             this.originalPosition,
                             parseInt(this.options.revertDuration, 10),
@@ -306,18 +261,11 @@ define(
                             clear.call(this);
                         }
                     }
-
                     return false;
                 },
 
                 mouseUp: function (event) {
                     unblockFrames.call();
-
-                    // If the ddmanager is used for droppables, inform the manager that dragging has stopped (see #5003)
-                    // FIXME
-                    // if ($.ui.ddmanager) {
-                    // 	$.ui.ddmanager.dragStop(this, event);
-                    // }
 
                     if (this.handleElement.is(event.target)) {
                         this.element.focus();
@@ -328,7 +276,6 @@ define(
 
                 cancel: function () {
                     var helperDraggingFullCls = this.getClassName(true, 'dragging');
-                    console.log(helperDraggingFullCls);
                     if (this.helper.is(helperDraggingFullCls)) {
                         this.mouseUp({});
                     }
@@ -375,6 +322,7 @@ define(
 
         /**
          * 拖拽时要blur当前页面焦点元素
+         * @param {Event} event 事件对象
          */
         function blurActiveElement(event) {
             if (!this.handleElement.is(event.target)) {
@@ -688,8 +636,8 @@ define(
                     ) * mod
                 ),
                 left: (
-                    pos.left +
-                    this.offset.relative.left * mod
+                    pos.left
+                    + this.offset.relative.left * mod
                     + this.offset.parent.left * mod
                     - (
                         this.cssPosition === 'fixed'
@@ -845,19 +793,6 @@ define(
                 this.dispose();
             }
         }
-
-        // FIXME
-        // _trigger: function (type, event, ui) {
-        //     ui = ui || this._uiHash();
-        //     $.ui.plugin.call(this, type, [event, ui, this], true);
-
-        //     // Absolute position and offset (see #6884) have to be recalculated after plugins
-        //     if (/^(drag|start|stop)/.test(type)) {
-        //         this.positionAbs = convertPositionTo.call(this, 'absolute');
-        //         ui.offset = this.positionAbs;
-        //     }
-        //     return $.Widget.prototype._trigger.call(this, type, event, ui);
-        // },
 
         function uiHash() {
             return {

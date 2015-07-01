@@ -51,13 +51,12 @@ define(
 
             var me = this;
             this.addClass();
-            this.dragged = false;
 
             var selectees;
             // 缓存每个可选择元素
             this.refresh = function () {
                 selectees = $(me.options.filter, me.element[0]);
-                selectees.addClass('ui-selectee');
+                this.addClass(selectees, 'selectee');
                 selectees.each(
                     function () {
                         var $this = $(this);
@@ -73,9 +72,9 @@ define(
                                 right: pos.left + $this.outerWidth(),
                                 bottom: pos.top + $this.outerHeight(),
                                 startselected: false,
-                                selected: $this.hasClass('ui-selected'),
-                                selecting: $this.hasClass('ui-selecting'),
-                                unselecting: $this.hasClass('ui-unselecting')
+                                selected: me.hasClass('selected'),
+                                selecting: me.hasClass('selecting'),
+                                unselecting: me.hasClass('unselecting')
                             }
                         );
                     }
@@ -83,16 +82,22 @@ define(
             };
             this.refresh();
 
-            this.selectees = selectees.addClass('ui-selectee');
-            this.helper = $('<div class="ui-selectable-helper"></div>');
+            this.selectees = selectees;
+            var helperClass = this.getClassName('helper');
+            this.helper = $('<div class="' + helperClass + '"></div>');
         };
 
         exports.dispose = function () {
             this.$super(arguments);
-            this.selectees
-                .removeClass('ui-selectee')
-                .removeData('selectable-item');
-            this.element.removeClass('ui-selectable ui-selectable-disabled');
+            var me = this;
+            this.selectees.each(
+                function () {
+                    var selectee = $.data(this, 'selectable-item');
+                    me.removeClass(selectee, 'selectee');
+                }
+            );
+            this.removeClass('selectable, selectable-disabled');
+            this.selectees.removeData('selectable-item');
         };
 
         exports.mouseStart = function (event) {
@@ -122,14 +127,16 @@ define(
             }
 
             // 将已选中元素取消选择
-            this.selectees.filter('.ui-selected').each(
+            var selectedClass = this.getClassName(true, 'selected');
+            this.selectees.filter(selectedClass).each(
                 function () {
                     var selectee = $.data(this, 'selectable-item');
+                    var $element = selectee.$element;
                     selectee.startselected = true;
                     if (!event.metaKey && !event.ctrlKey) {
-                        selectee.$element.removeClass('ui-selected');
+                        me.removeClass($element, 'selected');
+                        me.addClass($element, 'unselecting');
                         selectee.selected = false;
-                        selectee.$element.addClass('ui-unselecting');
                         selectee.unselecting = true;
                         // selectable UNSELECTING callback
                         me.trigger('unselecting', event, {unselecting: selectee.element});
@@ -141,11 +148,12 @@ define(
                 function () {
                     var selectee = $.data(this, 'selectable-item');
                     if (selectee) {
+                        var $element = selectee.$element;
                         var doSelect = (!event.metaKey && !event.ctrlKey)
-                            || !selectee.$element.hasClass('ui-selected');
-                        selectee.$element
-                            .removeClass(doSelect ? 'ui-unselecting' : 'ui-selected')
-                            .addClass(doSelect ? 'ui-selecting' : 'ui-unselecting');
+                            || !me.hasClass($element, 'selected');
+                        me.removeClass($element, doSelect ? 'unselecting' : 'selected');
+                        me.addClass($element, doSelect ? 'selecting' : 'unselecting');
+
                         selectee.unselecting = !doSelect;
                         selectee.selecting = doSelect;
                         selectee.selected = doSelect;
@@ -164,7 +172,6 @@ define(
         };
 
         exports.mouseDrag = function (event) {
-            this.dragged = true;
 
             if (this.options.disabled) {
                 return;
@@ -195,6 +202,7 @@ define(
             this.selectees.each(
                 function () {
                     var selectee = $.data(this, 'selectable-item');
+                    var $element = selectee.$element;
                     var hit = false;
 
                     // prevent helper from being selected if appendTo: selectable
@@ -217,15 +225,15 @@ define(
                     // 选中处理,拖拽结束前，置状态为selecting
                     if (hit) {
                         if (selectee.selected) {
-                            selectee.$element.removeClass('ui-selected');
+                            me.removeClass($element, 'selected');
                             selectee.selected = false;
                         }
                         if (selectee.unselecting) {
-                            selectee.$element.removeClass('ui-unselecting');
+                            me.removeClass($element, 'unselecting');
                             selectee.unselecting = false;
                         }
                         if (!selectee.selecting) {
-                            selectee.$element.addClass('ui-selecting');
+                            me.addClass($element, 'selecting');
                             selectee.selecting = true;
                             me.trigger('selecting', event, {selecting: selectee.element});
                         }
@@ -234,16 +242,16 @@ define(
                     else {
                         if (selectee.selecting) {
                             if ((event.metaKey || event.ctrlKey) && selectee.startselected) {
-                                selectee.$element.removeClass('ui-selecting');
+                                me.removeClass($element, 'selecting');
                                 selectee.selecting = false;
-                                selectee.$element.addClass('ui-selected');
+                                me.addClass($element, 'selected');
                                 selectee.selected = true;
                             }
                             else {
-                                selectee.$element.removeClass('ui-selecting');
+                                me.removeClass($element, 'selecting');
                                 selectee.selecting = false;
                                 if (selectee.startselected) {
-                                    selectee.$element.addClass('ui-unselecting');
+                                    me.addClass($element, 'unselecting');
                                     selectee.unselecting = true;
                                 }
                                 me.trigger('unselecting', event, {unselecting: selectee.element});
@@ -251,10 +259,9 @@ define(
                         }
                         if (selectee.selected) {
                             if (!event.metaKey && !event.ctrlKey && !selectee.startselected) {
-                                selectee.$element.removeClass('ui-selected');
+                                me.removeClass($element, 'selected');
                                 selectee.selected = false;
-
-                                selectee.$element.addClass('ui-unselecting');
+                                me.addClass($element, 'unselecting');
                                 selectee.unselecting = true;
                                 me.trigger('unselecting', event, {unselecting: selectee.element});
                             }
@@ -268,25 +275,25 @@ define(
         exports.mouseStop = function (event) {
             var me = this;
 
-            this.dragged = false;
-
             // 选择结束后处理
             // unselecting --> unselected
             // selecting --> selected
-            $('.ui-unselecting', this.element[0]).each(
+            $(this.getClassName(true, 'unselecting'), this.element[0]).each(
                 function () {
                     var selectee = $.data(this, 'selectable-item');
-                    selectee.$element.removeClass('ui-unselecting');
+                    me.removeClass(selectee.$element, 'unselecting');
                     selectee.unselecting = false;
                     selectee.startselected = false;
                     me.trigger('unselected', event, {unselected: selectee.element});
                 }
             );
 
-            $('.ui-selecting', this.element[0]).each(
+            $(this.getClassName(true, 'selecting'), this.element[0]).each(
                 function () {
                     var selectee = $.data(this, 'selectable-item');
-                    selectee.$element.removeClass('ui-selecting').addClass('ui-selected');
+                    var $element = selectee.$element;
+                    me.removeClass($element, 'selecting');
+                    me.addClass($element, 'selected');
                     selectee.selecting = false;
                     selectee.selected = true;
                     selectee.startselected = true;

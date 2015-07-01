@@ -141,8 +141,8 @@ define(
                     var prefix = me.classPrefix;
 
                     if (u.isString(fullName)) {
-                        styleType = fullName;
                         typeName = styleType;
+                        styleType = fullName;
                         fullName = false;
                     }
 
@@ -163,7 +163,9 @@ define(
                                 if (type.indexOf(prefix) === 0) {
                                     result = type;
                                 }
-                                result = [prefix, typeName, type].join('-');
+                                else {
+                                    result = [prefix, typeName, type].join('-');
+                                }
                             }
                             else {
                                 result = [prefix, typeName].join('-');
@@ -215,9 +217,23 @@ define(
                         element = this.element;
                     }
                     else {
-                        element = $(element);
+                        element = $(element || this.element);
                     }
                     element.toggleClass(this.getClassName(className), toggle);
+                },
+
+                /**
+                 * 判断是否包含指定class
+                 *
+                 * @param {Element|string} element $元素
+                 * @param {string} className class名称
+                 */
+                hasClass: function (element, className) {
+                    if (u.isString(element)) {
+                        className = element;
+                        element = this.element;
+                    }
+                    element.hasClass(this.getClassName(className));
                 },
 
                 setOptions: function (options) {
