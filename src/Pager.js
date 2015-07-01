@@ -106,7 +106,7 @@ define(
                 initEvents: function () {
                     // 每页显示的select控件
                     var select = this.getChild('select');
-                    select.on('change', changePageSize, this);
+                    select.on('change', u.bind(changePageSize, this));
 
                     // pager主元素绑定事件
                     this.helper.addDOMEvent('main', 'click', pagerClick);

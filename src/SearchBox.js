@@ -141,7 +141,7 @@ define(
                     var delegate = require('mini-event').delegate;
 
                     // 处理输入事件
-                    textbox.on('input', onInput, this);
+                    textbox.on('input', lib.bind(onInput, this));
                     // 即时模式下输入触发搜索
                     if (this.searchMode === 'instant') {
                         delegate(textbox, 'input', this, 'search');
@@ -160,7 +160,7 @@ define(
                     );
 
                     // 清除搜索按钮
-                    textbox.on('iconclick', clear, this);
+                    textbox.on('iconclick', lib.bind(clear, this));
                     textbox.on('focus', lib.bind(this.addState, this, 'focus'));
                     textbox.on('blur', lib.bind(this.removeState, this, 'focus'));
 

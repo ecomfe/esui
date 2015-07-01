@@ -486,6 +486,12 @@ define(
                         shouldAttachSubmit = true;
                     }
 
+                    var me = this;
+                    var submitHandler = function (event) {
+                        me.validateAndSubmit.call(me, event);
+                        return false;
+                    };
+
                     if (changesIndex
                         && changesIndex.hasOwnProperty('submitButton')
                     ) {
@@ -496,8 +502,7 @@ define(
                                 var oldButton
                                     = this.viewContext.get(record.oldValue[i]);
                                 if (oldButton) {
-                                    oldButton.un('click', this.validateAndSubmit, this);
-                                    oldButton.un('click', false);
+                                    oldButton.un('click', submitHandler);
                                 }
                             }
 
@@ -509,8 +514,7 @@ define(
                         for (var j = 0; j < this.submitButton.length; j++) {
                             var button = this.viewContext.get(this.submitButton[j]);
                             if (button) {
-                                button.on('click', this.validateAndSubmit, this);
-                                button.on('click', false);
+                                button.on('click', submitHandler);
                             }
                         }
                     }

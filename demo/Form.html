@@ -135,8 +135,8 @@
                 var form = ui.get('form');
                 var nameText = form.getChild('amount');
 
-                function submit(e) {
-                    console.log(e.triggerSource.id);
+                function submit(e, args) {
+                    console.log(args.triggerSource.id);
                     var data = form.getData();
                 }
 
