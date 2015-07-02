@@ -13,6 +13,8 @@ define(
         var Control = require('./Control');
         var esui = require('./main');
         var Panel = require('./Panel');
+        var $ = require('jquery');
+        var u = require('underscore');
 
         /**
          * Sidebar控件
@@ -100,7 +102,7 @@ define(
                     // 挂载scorll的listener
                     // ie6下不做滚动
                     if (!lib.ie || lib.ie >= 7) {
-                        this.topReset    = lib.curry(resetTop, this);
+                        this.topReset    = u.partial(resetTop, this);
                         lib.on(window, 'scroll', this.topReset);
                     }
 
@@ -121,8 +123,8 @@ define(
                  */
                 initEvents: function () {
                     // 给主元素添加over和out的事件handler
-                    this.helper.addDOMEvent(this.main, 'mouseover', lib.bind(mainOverHandler, null, this));
-                    this.helper.addDOMEvent(this.main, 'mouseout', lib.bind(mainOutHandler, null, this));
+                    this.helper.addDOMEvent(this.main, 'mouseover', u.bind(mainOverHandler, null, this));
+                    this.helper.addDOMEvent(this.main, 'mouseout', u.bind(mainOutHandler, null, this));
                 },
 
                 /**
@@ -262,20 +264,20 @@ define(
          * @param {ui.Sidebar} sidebar Sidebar控件实例
          */
         function initContent(sidebar) {
-            var head = lib.dom.first(sidebar.main);
+            var $head = $(sidebar.main).children(':first');
 
-            if (head) {
+            if ($head.size() > 0) {
 
-                lib.addClasses(head, sidebar.helper.getPartClasses(sidebar, 'head'));
+                $head.addClass(sidebar.helper.getPartClassName('head'));
                 sidebar.headEl = head;
 
-                var body = lib.dom.next(head);
+                var $body = $head.next();
+                var body = $body.get(0);
 
                 if (body) {
                     sidebar.bodyEl = body;
-                    lib.addClasses(
-                        body,
-                        sidebar.helper.getPartClasses('body')
+                    $body.addClass(
+                        sidebar.helper.getPartClassName('body')
                     );
 
                     // 添加panel，以便控制子元素
@@ -342,9 +344,9 @@ define(
 
             // 挂载行为
             helper.addDOMEvent(div, 'mouseover',
-                lib.bind(miniOverHandler, null, me, div));
+                u.bind(miniOverHandler, null, me, div));
             helper.addDOMEvent(div, 'mouseout',
-                lib.bind(miniOutHandler, null, me, div));
+                u.bind(miniOutHandler, null, me, div));
 
             document.body.appendChild(div);
         }
@@ -377,8 +379,8 @@ define(
             me.addChild(btnFixed, 'btnFixed');
 
             // 挂载行为
-            btnAutoHide.onclick = lib.curry(autoHideClickHandler, me);
-            btnFixed.onclick    = lib.curry(fixedClickHandler, me);
+            btnAutoHide.onclick = u.partial(autoHideClickHandler, me);
+            btnFixed.onclick    = u.partial(fixedClickHandler, me);
         }
 
         /**
@@ -450,8 +452,6 @@ define(
          * @inner
          */
         function show(sidebar) {
-
-            //
             getMat(sidebar).style.display = 'block';
             sidebar.main.style.display = 'block';
 
@@ -486,11 +486,12 @@ define(
          */
         function miniOverHandler(sidebar, element) {
             var me = sidebar;
-            var hoverClass = me.helper.getPartClasses('minibar-hover');
+            var $ele = $(element);
+            var hoverClass = me.helper.getPartClassName('minibar-hover');
 
-            if (!lib.hasClass(element, hoverClass[0])) {
+            if (!$ele.hasClass(hoverClass)) {
 
-                lib.addClasses(element, hoverClass);
+                $ele.addClass(hoverClass);
                 me.minibarDisplayTick = setTimeout(
                     function () {
                         show(me);
@@ -508,9 +509,9 @@ define(
          */
         function miniOutHandler(sidebar, element) {
             var me = sidebar;
-            var hoverClass = me.helper.getPartClasses('minibar-hover');
+            var hoverClass = me.helper.getPartClassName('minibar-hover');
 
-            lib.removeClasses(element, hoverClass);
+            $(element).removeClass(hoverClass);
             clearTimeout(me.minibarDisplayTick);
         }
 
@@ -521,7 +522,6 @@ define(
          * @inner
          */
         function fixedClickHandler(sidebar) {
-
             sidebar.setMode('fixed');
         }
 
@@ -531,7 +531,6 @@ define(
          * @inner
          */
         function autoHideClickHandler(sidebar) {
-
             sidebar.setMode('autohide');
         }
 

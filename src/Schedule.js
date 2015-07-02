@@ -13,6 +13,8 @@ define(
         var esui = require('./main');
         var InputControl = require('./InputControl');
         var Layer = require('./Layer');
+        var $ = require('jquery');
+        var u = require('underscore');
 
         require('esui/behavior/Selectable');
 
@@ -191,10 +193,10 @@ define(
                     this.helper.addDOMEvent(shortcut, 'click', shortcutClickHandler);
 
                     // shortcut mouseover
-                    this.helper.addDOMEvent(shortcut, 'mouseover', lib.curry(shortcutOverOutHandler, true));
+                    this.helper.addDOMEvent(shortcut, 'mouseover', u.partial(shortcutOverOutHandler, true));
 
                     // shortover mouseout
-                    this.helper.addDOMEvent(shortcut, 'mouseout', lib.curry(shortcutOverOutHandler, false));
+                    this.helper.addDOMEvent(shortcut, 'mouseout', u.partial(shortcutOverOutHandler, false));
 
                     // shortcut mousemove
                     this.helper.addDOMEvent(shortcut, 'mousemove', shortcutMoveHandler);
@@ -674,8 +676,8 @@ define(
          */
         function repaintView(schedule, value) {
             var me = schedule;
-            var selectedClass = me.helper.getPartClasses('time-selected');
-            var hoverClass = me.helper.getPartClasses('time-hover');
+            var selectedClass = me.helper.getPartClassName('time-selected');
+            var hoverClass = me.helper.getPartClassName('time-hover');
 
             for (var i = 0; i < 7; i++) {
                 var statusArr = [];
@@ -687,18 +689,18 @@ define(
 
                 for (var j = 0; j < 24; j++) {
 
-                    var item = lib.g(getId(me, 'time_' + i + '_' + j));
+                    var $item = $(lib.g(getId(me, 'time_' + i + '_' + j)));
                     var val  = value[i][j];
 
                     // 根据value,设置item的选中状态
                     if (val) {
-                        lib.addClasses(item, selectedClass);
+                        $item.addClass(selectedClass);
                     }
                     else {
-                        lib.removeClasses(item, selectedClass);
+                        $item.removeClass(selectedClass);
                     }
 
-                    lib.removeClasses(item, hoverClass);
+                    $item.removeClass(hoverClass);
                     statusArr.push(val);
                 }
                 // 根据每周的value, 创建连续选中遮罩
@@ -771,7 +773,7 @@ define(
                 me.helper.addDOMEvent(
                     coverDiv,
                     'mouseover',
-                    lib.curry(coverTipOverHandler, coverDiv, me)
+                    u.partial(coverTipOverHandler, coverDiv, me)
                 );
             }
         }
@@ -1005,21 +1007,21 @@ define(
 
 
             var me = this;
-            var dom = element;
-            var index = dom.getAttribute('data-item');
+            var $dom = $(element);
+            var index = $dom.attr('data-item');
             var tipId = getId(me, 'shortcut-item') + index;
 
             // 构建并获取tip
-            var clazz = me.helper.getPartClasses('shortcut-item-hover');
+            var clazz = me.helper.getPartClassName('shortcut-item-hover');
 
             if (isOver) {
-                lib.addClasses(dom, clazz);
+                $dom.addClass(clazz);
 
                 var tipText = me.shortcut[index].tip;
                 showPromptTip(me, tipId, mousepos, tipText);
             }
             else {
-                lib.removeClasses(dom, clazz);
+                $dom.removeClass(clazz);
                 hidePromptTip(me, tipId);
             }
         }
@@ -1038,16 +1040,14 @@ define(
             var target = e.target;
 
             if (!target || !target.getAttribute('data-time-item')) {
-
                 return;
             }
 
-            var element = target;
+            var $element = $(target);
 
             // 添加hover class
-            lib.addClasses(
-                element,
-                this.helper.getPartClasses('time-hover')
+            $element.addClass(
+                this.helper.getPartClassName('time-hover')
             );
 
             // 获取鼠标位置
@@ -1058,8 +1058,8 @@ define(
             var me = this;
 
             // 获取当前元素所代表的时间
-            var time = parseInt(element.getAttribute('data-time'), 10);
-            var day  = parseInt(element.getAttribute('data-day'), 10);
+            var time = parseInt($element.attr('data-time'), 10);
+            var day  = parseInt($element.attr('data-day'), 10);
 
             // 创立并显示提示tip
             var tipText = lib.format(timeTipTpl,
@@ -1138,9 +1138,8 @@ define(
             }
 
             // 移除hover效果
-            lib.removeClasses(
-                target,
-                me.helper.getPartClasses('time-hover')
+            $(target).removeClasses(
+                me.helper.getPartClassName('time-hover')
             );
 
             // 隐藏tip

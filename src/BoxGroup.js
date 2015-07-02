@@ -288,13 +288,13 @@ define(
         }
 
         function syncCheckedState(element) {
-            var label = element.parentNode;
-            var checkedClass = this.helper.getPartClasses('wrapper-checked');
+            var $label = $(element.parentNode);
+            var checkedClass = this.helper.getPartClassName('wrapper-checked');
             if (element.checked) {
-                lib.addClasses(label, checkedClass);
+                $label.addClass(checkedClass);
             }
             else {
-                lib.removeClasses(label, checkedClass);
+                $label.removeClass(checkedClass);
             }
         }
 

@@ -14,6 +14,7 @@ define(
         var u = require('underscore');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
+        var $ = require('jquery');
 
         require('./TextBox');
 
@@ -327,17 +328,17 @@ define(
 
         function inputFocus() {
             var me = this;
-            var mainElement = me.main;
+            var $mainElement = $(me.main);
             var helper = me.helper;
             var focusClass = helper.getPrimaryClassName('focus');
             var textArea = helper.getPart('text');
             var blurEvent = function () {
-                lib.removeClass(mainElement, focusClass);
+                $mainElement.removeClass(focusClass);
                 me.removeState('focus');
                 helper.removeDOMEvent(textArea, 'blur', blurEvent);
             };
 
-            lib.addClass(mainElement, focusClass);
+            $mainElement.addClass(focusClass);
             me.addState('focus');
             helper.addDOMEvent(textArea, 'blur', blurEvent);
         }
