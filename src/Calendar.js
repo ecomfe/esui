@@ -20,44 +20,22 @@ define(
         var $ = require('jquery');
         var painters = require('./painters');
 
-        var CalendarLayer = eoo.create(Layer, {
-            create: function () {
-                var ele = this.$super(arguments);
-                $(this.control.main).after(ele);
-                return ele;
-            },
+        var CalendarLayer = eoo.create(
+            Layer,
+            {
+                create: function () {
+                    var ele = this.$super(arguments);
+                    $(this.control.main).after(ele);
+                    return ele;
+                },
 
-            render: function (element) {
-                element.innerHTML = '<div data-ui-type="MonthView" '
-                    + 'data-ui-child-name="monthView"></div>';
+                render: function (element) {
+                    element.innerHTML = '<div data-ui-type="MonthView" '
+                        + 'data-ui-child-name="monthView"></div>';
 
-                var calendar = this.control;
-                calendar.helper.initChildren(element);
-
-                var monthView = calendar.getChild('monthView');
-                monthView.setProperties(
-                    {
-                        rawValue: calendar.rawValue,
-                        range: calendar.range
-                    }
-                );
-                monthView.on('change', syncMonthViewValue, calendar);
-
-                if (calendar.autoHideLayer) {
-                    monthView.on(
-                        'itemclick',
-                        u.bind(calendar.layer.toggle, calendar.layer)
-                    );
-                }
-            },
-
-            toggle: function () {
-                var element = this.getElement();
-                if (!element
-                    || this.control.helper.isPart(element, 'layer-hidden')
-                ) {
-                    // 展示之前先跟main同步
                     var calendar = this.control;
+                    calendar.helper.initChildren(element);
+
                     var monthView = calendar.getChild('monthView');
                     monthView.setProperties(
                         {
@@ -65,13 +43,38 @@ define(
                             range: calendar.range
                         }
                     );
-                    this.show();
-                }
-                else {
-                    this.hide();
+                    monthView.on('change', syncMonthViewValue, calendar);
+
+                    if (calendar.autoHideLayer) {
+                        monthView.on(
+                            'itemclick',
+                            u.bind(calendar.layer.toggle, calendar.layer)
+                        );
+                    }
+                },
+
+                toggle: function () {
+                    var element = this.getElement();
+                    if (!element
+                        || this.control.helper.isPart(element, 'layer-hidden')
+                    ) {
+                        // 展示之前先跟main同步
+                        var calendar = this.control;
+                        var monthView = calendar.getChild('monthView');
+                        monthView.setProperties(
+                            {
+                                rawValue: calendar.rawValue,
+                                range: calendar.range
+                            }
+                        );
+                        this.show();
+                    }
+                    else {
+                        this.hide();
+                    }
                 }
             }
-        });
+        );
 
         /**
          * 日历控件

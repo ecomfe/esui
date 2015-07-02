@@ -13,6 +13,7 @@ define(
         var Control = require('./Control');
         var $ = require('jquery');
         var esui = require('./main');
+        var eoo = require('eoo');
 
         /**
          * 按钮控件
@@ -20,7 +21,7 @@ define(
          * @extends Control
          * @constructor
          */
-        var Button = require('eoo').create(
+        var Button = eoo.create(
             Control,
             {
                 constructor: function () {
