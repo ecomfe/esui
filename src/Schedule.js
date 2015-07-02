@@ -41,7 +41,7 @@ define(
                  */
                 createMain: function (options) {
                     if (!options.tagName) {
-                        return InputControl.prototype.createMain.call(this);
+                        return this.$super(arguments);
                     }
                     return document.createElement(options.tagName);
                 },

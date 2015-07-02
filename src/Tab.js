@@ -13,6 +13,7 @@ define(
         var lib = require('./lib');
         var Control = require('./Control');
         var esui = require('./main');
+        var $ = require('jquery');
 
         /**
          * 标签页控件
@@ -74,7 +75,7 @@ define(
                     // 而如果有子元素且没有`[data-role="navigator"]`元素，
                     // 同时构造控件的时候没给`tabs`选项，
                     // 则认为每个子元素是一个标签页，从`title`属性中找出对应的`title`
-                    var children = lib.getChildren(this.main);
+                    var children = $(this.main).children().toArray();
                     if (children.length) {
                         var tabs = [];
                         for (var i = 0; i < children.length; i++) {
@@ -324,7 +325,7 @@ define(
                     // 新加的标签页不可能是激活状态的，唯一的例外下面会覆盖到
                     var tabElement = createTabElement(this, config, false, this.allowClose);
                     var navigator = this.helper.getPart('navigator');
-                    var children = lib.getChildren(navigator);
+                    var children = $(navigator).children().toArray();
                     navigator.insertBefore(
                         tabElement, children[index] || null);
 
@@ -387,7 +388,7 @@ define(
                     var removed = this.tabs.splice(index, 1)[0];
                     var navigator = this.helper.getPart('navigator');
                     if (removed) {
-                        var children = lib.getChildren(navigator);
+                        var children = $(navigator).children().toArray();
                         var tabElement = children[index];
                         tabElement.parentNode.removeChild(tabElement);
 
@@ -456,7 +457,7 @@ define(
          */
         function extractTabsFromNavigatorElement(element) {
             var tabs = [];
-            var children = lib.getChildren(element);
+            var children = $(element).children().toArray();
             for (var i = 0; i < children.length; i++) {
                 var tab = children[i];
                 var config = {
@@ -489,7 +490,7 @@ define(
 
             if (tabElement && tabElement.nodeName.toLowerCase() === 'li') {
                 var parent = tabElement.parentNode;
-                var children = lib.getChildren(parent);
+                var children = $(parent).children().toArray();
                 for (var i = 0; i < children.length; i++) {
                     if (children[i] === tabElement) {
                         // 如果点在关闭区域上，则移除这个元素，
@@ -576,7 +577,7 @@ define(
                 }
 
                 var navigator = tab.helper.getPart('navigator');
-                var children = lib.getChildren(navigator);
+                var children = $(navigator).children().toArray();
                 var tabElement = children[i];
                 var methodName = i === index ? 'addPartClasses' : 'removePartClasses';
                 tab.helper[methodName]('item-active', tabElement);

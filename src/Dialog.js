@@ -497,19 +497,15 @@ define(
             if (!main) {
                 return;
             }
-            var els = lib.getChildren(main);
-            var len = els.length;
-            var roleName;
+            var $els = $(main).children();
             var roles = {};
 
-            while (len--) {
-                roleName = els[len].getAttribute('data-role');
+            $els.each(function (idx, ele) {
+                var roleName = $(ele).attr('data-role');
                 if (roleName) {
-                    // 不再校验，如果设置了相同的data-role，
-                    // 直接覆盖
-                    roles[roleName] = els[len];
+                    roles[roleName] = ele;
                 }
-            }
+            });
 
             options.roles = roles;
         }
