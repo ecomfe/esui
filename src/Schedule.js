@@ -41,7 +41,7 @@ define(
                  */
                 createMain: function (options) {
                     if (!options.tagName) {
-                        return InputControl.prototype.createMain.call(this);
+                        return this.$super(arguments);
                     }
                     return document.createElement(options.tagName);
                 },
@@ -1139,7 +1139,7 @@ define(
             }
 
             // 移除hover效果
-            $(target).removeClasses(
+            $(target).removeClass(
                 me.helper.getPartClassName('time-hover')
             );
 
