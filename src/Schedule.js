@@ -1139,7 +1139,7 @@ define(
             }
 
             // 移除hover效果
-            $(target).removeClasses(
+            $(target).removeClass(
                 me.helper.getPartClassName('time-hover')
             );
 
