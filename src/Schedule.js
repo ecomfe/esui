@@ -134,6 +134,7 @@ define(
                             filter: '.' + getClass(this, 'time'),
                             start: function (e) {
 
+                                console.log('start')
                                 // ondragHuck(e.target);
 
                                 // 记录鼠标位置
