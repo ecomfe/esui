@@ -35,16 +35,13 @@ define(
                             }
                             if (!instance) {
                                 return $.error(
-                                    'cannot call methods on ' + name
-                                    + ' prior to initialization; '
-                                    + 'attempted to call method "'
-                                    + method + '"'
+                                    'cannot call methods on ' + name + ' prior to initialization; '
+                                    + 'attempted to call method "' + method + '"'
                                 );
                             }
                             if (!$.isFunction(instance[method]) || method.charAt(0) === '_') {
                                 return $.error(
-                                    'no such method "' + method + '" for '
-                                    + name + ' widget instance'
+                                    'no such method "' + method + '" for ' + name + ' widget instance'
                                 );
                             }
                             var methodValue = instance[method].apply(instance, args);
@@ -59,7 +56,7 @@ define(
                 }
                 else {
 
-                    // Allow multiple hashes to be passed on init
+                    // 将...参数全部extend到options上
                     if (args.length) {
                         options = $.extend.apply(null, [options].concat(args));
                     }

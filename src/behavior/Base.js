@@ -262,14 +262,11 @@ define(
 
                     // TODO: 考虑自动移除classes
 
-                    // we can probably remove the unbind calls in 2.0
-                    // all event bindings should go through this._on()
                     this.element
-                        .unbind(this.eventNamespace)
+                        .off(this.eventNamespace)
                         .removeData(this.type);
 
-                    // clean up events and states
-                    this.bindings.unbind(this.eventNamespace);
+                    this.bindings.off(this.eventNamespace);
                 }
             }
         );
