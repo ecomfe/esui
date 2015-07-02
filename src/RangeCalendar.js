@@ -85,7 +85,7 @@ define(
                 if (endlessCheck) {
                     endlessCheck.on(
                         'change',
-                        lib.curry(makeCalendarEndless, calendar)
+                        u.partial(makeCalendarEndless, calendar)
                     );
                     // 设置endless
                     if (calendar.isEndless) {
@@ -99,7 +99,7 @@ define(
 
                 // 绑定提交和取消按钮
                 var okBtn = calendar.getChild('okBtn');
-                okBtn.on('click', lib.curry(commitValue, calendar));
+                okBtn.on('click', u.partial(commitValue, calendar));
                 var cancelBtn = calendar.getChild('cancelBtn');
                 cancelBtn.on(
                     'click',

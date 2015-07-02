@@ -165,9 +165,8 @@ define(
                         }
                     }
 
-                    lib.addClasses(
-                        mainDOM,
-                        this.helper.getPartClasses(type + '-panel')
+                    $(mainDOM).addClass(
+                        this.helper.getPartClassName(type + '-panel')
                     );
                     var properties = {
                         main: mainDOM,
@@ -549,9 +548,8 @@ define(
                 + '</div>'
                 + '${closeIcon}';
 
-            var headClasses = [].concat(
-                control.helper.getPartClasses('head')
-            );
+            var headClass =
+                control.helper.getPartClassName('head');
 
             var headData = {
                 titleId: control.helper.getId(title),
@@ -575,7 +573,7 @@ define(
             }
 
             mainDOM.innerHTML = headHtml;
-            lib.addClasses(mainDOM, headClasses);
+            $(mainDOM).addClass(headClass);
             var properties = {
                 main: mainDOM,
                 renderOptions: control.renderOptions

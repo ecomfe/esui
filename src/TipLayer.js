@@ -714,10 +714,9 @@ define(
                     tipLayer.main.appendChild(mainDOM);
                 }
             }
-            var headClasses = [].concat(
-                tipLayer.helper.getPartClasses('title')
-            );
-            lib.addClasses(mainDOM, headClasses);
+            var headClass
+                = tipLayer.helper.getPartClassName('title');
+            $(mainDOM).addClass(headClass);
             var properties = {
                 main: mainDOM,
                 childName: 'title',
@@ -879,18 +878,17 @@ define(
                 helper.getPartClasses(arrowClass)
             );
 
-            lib.addClasses(element, selectors);
+            var $ele = $(element);
+            $ele.addClass(selectors.join(' '));
             helper.addVariantClasses();
 
             var arrow = lib.g(helper.getId('arrow'));
             if (arrow) {
-                lib.addClasses(
-                    element,
-                    helper.getPartClasses('arrow')
+                $ele.addClass(
+                    helper.getPartClassName('arrow')
                 );
-                lib.addClasses(
-                    element,
-                    helper.getPartClasses(
+                $ele.addClass(
+                    helper.getPartClassName(
                         'arrow-' + arrowClass
                     )
                 );
