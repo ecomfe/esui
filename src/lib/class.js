@@ -73,7 +73,7 @@ define(
         lib.removeClass = function (element, className) {
             element = dom.g(element);
 
-            $(element).addClass(className);
+            $(element).removeClass(className);
             return element;
         };
 

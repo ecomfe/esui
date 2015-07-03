@@ -78,6 +78,8 @@ define(
                     var helper = control.helper;
                     var element = helper.createPart('layer', this.nodeName);
 
+                    $(element).addClass(esui.getConfig('uiClassPrefix') + '-layer');
+
                     // 这里添加variant信息到layer上以方便定义variant样式。
                     var variants = control.variants;
                     var variantsCls = [];
