@@ -13,6 +13,8 @@ define(
         var lib = require('./lib');
         var Control = require('./Control');
         var u = require('underscore');
+        var painters = require('./painters');
+        var $ = require('jquery');
 
         /**
          * Toast控件
@@ -64,7 +66,7 @@ define(
                          */
                         autoShow: false
                     };
-                    lib.extend(properties, options);
+                    u.extend(properties, options);
                     if (properties.content == null) {
                         properties.content = this.main.innerHTML;
                     }
@@ -89,7 +91,7 @@ define(
                  * @override
                  * @protected
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
                     {
                         /**
@@ -139,11 +141,11 @@ define(
                         return;
                     }
 
-                    Control.prototype.show.apply(this, arguments);
+                    this.$super(arguments);
                     this.fire('show');
                     clearTimeout(this.timer);
                     if (!isNaN(this.duration) && this.duration !== Infinity) {
-                        this.timer = setTimeout(lib.bind(this.hide, this), this.duration);
+                        this.timer = setTimeout(u.bind(this.hide, this), this.duration);
                     }
                 },
 
@@ -156,7 +158,7 @@ define(
                     if (this.isHidden()) {
                         return;
                     }
-                    Control.prototype.hide.apply(this, arguments);
+                    this.$super.hide(arguments);
                     clearTimeout(this.timer);
                     this.fire('hide');
                     if (this.disposeOnHide) {
@@ -175,8 +177,8 @@ define(
                     if (this.helper.isInStage('DISPOSED')) {
                         return;
                     }
-                    lib.removeNode(this.main);
-                    Control.prototype.dispose.apply(this, arguments);
+                    this.$super(arguments);
+                    $(this.main).remove();
                 }
             }
         );

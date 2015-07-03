@@ -66,7 +66,30 @@ define(
                 initOptions: function (options) {
                     var properties = {
                         steps: [],
-                        activeIndex: 0
+                        activeIndex: 0,
+                        /**
+                         * 节点内容的HTML模板
+                         *
+                         * 在模板中可以使用以下占位符：
+                         *
+                         * - `{string} text`：文本内容，经过HTML转义
+                         *
+                         * @type {string}
+                         */
+                        nodeTemplate: '<span>${text}</span>',
+
+                        /**
+                         * 节点内容的HTML模板
+                         *
+                         * 在模板中可以使用以下占位符：
+                         *
+                         * - `{string} number`：编号
+                         * - `{string} text`：文本内容，经过HTML转义
+                         *
+                         * @type {string}
+                         */
+                        numberNodeTemplate: '<span class="${numberNodeClass}">${number}</span>'
+                            + '<span class="${textNodeClass}">${text}</span>'
                     };
 
                     var $children = $(this.main).children();
@@ -91,30 +114,6 @@ define(
                     u.extend(properties, options);
                     this.setProperties(properties);
                 },
-
-                /**
-                 * 节点内容的HTML模板
-                 *
-                 * 在模板中可以使用以下占位符：
-                 *
-                 * - `{string} text`：文本内容，经过HTML转义
-                 *
-                 * @type {string}
-                 */
-                nodeTemplate: '<span>${text}</span>',
-
-                /**
-                 * 节点内容的HTML模板
-                 *
-                 * 在模板中可以使用以下占位符：
-                 *
-                 * - `{string} number`：编号
-                 * - `{string} text`：文本内容，经过HTML转义
-                 *
-                 * @type {string}
-                 */
-                numberNodeTemplate: '<span class="${numberNodeClass}">${number}</span>'
-                    + '<span class="${textNodeClass}">${text}</span>',
 
                 /**
                  * 获取节点内容HTML
