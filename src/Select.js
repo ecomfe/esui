@@ -15,6 +15,7 @@ define(
         var eoo = require('eoo');
         var painters = require('./painters');
         var $ = require('jquery');
+        var esui = require('./main');
 
         /**
          * `Select`控件使用的层类
@@ -171,9 +172,6 @@ define(
                     this.helper.extractOptionsFromInput(this.main, properties);
                 }
 
-                if (typeof properties.selectedIndex === 'string') {
-                    properties.selectedIndex = +properties.selectedIndex;
-                }
                 this.setProperties(properties);
             },
 
@@ -620,7 +618,7 @@ define(
             }
         }
 
-        require('./main').register(Select);
+        esui.register(Select);
         return Select;
     }
 );

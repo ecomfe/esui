@@ -11,6 +11,10 @@ define(
 
         var eoo = require('eoo');
         var lib = require('./lib');
+        // 添加eventPrefix的原因是为了把组件抛出的event作为一个自定义事件。
+        // JQ在调用自定义的非自定义事件的时候会把触发当前对象上的事件同名函数。
+        // 为了利用JQ的事件机制。
+        var eventPrefix = 'esui:';
 
         /**
          * 提供事件相关操作的基类
@@ -55,7 +59,7 @@ define(
                  */
                 on: function (type, fn) {
                     var namespace = getNamespace.call(this);
-                    $(this).on(type + namespace, fn);
+                    $(this).on(eventPrefix + type + namespace, fn);
                 },
 
                 /**
@@ -65,7 +69,7 @@ define(
                  * @param {Function} fn 事件的处理函数
                  */
                 once: function (type, fn) {
-                    $(this).one(type, fn);
+                    $(this).one(eventPrefix + type, fn);
                 },
 
                 /**
@@ -78,7 +82,7 @@ define(
                  */
                 un: function (type, handler) {
                     var namespace = getNamespace.call(this);
-                    $(this).off(type + namespace, handler);
+                    $(this).off(eventPrefix + type + namespace, handler);
                 },
 
                 /**
@@ -95,7 +99,7 @@ define(
                  * @return {Event} 事件传递过程中的`Event`对象
                  */
                 fire: function (type, args) {
-                    var event = $.Event(type);
+                    var event = $.Event(eventPrefix + type);
                     $(this).trigger(event, args);
                     return event;
                 },
@@ -115,7 +119,7 @@ define(
                  * @static
                  */
                 enable: function (target) {
-                    lib.extend(target, EventTarget.prototype);
+                    u.extend(target, EventTarget.prototype);
                 }
             }
         );
