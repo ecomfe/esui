@@ -4647,7 +4647,6 @@ span.ui-crumb-node {
 .ui-selectable-helper {
   position: absolute;
   z-index: 100;
-  border: 1px dotted black;
 }
 .ui-draggable-handle {
   -ms-touch-action: none;

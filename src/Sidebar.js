@@ -269,7 +269,7 @@ define(
             if ($head.size() > 0) {
 
                 $head.addClass(sidebar.helper.getPartClassName('head'));
-                sidebar.headEl = head;
+                sidebar.headEl = $head.get(0);
 
                 var $body = $head.next();
                 var body = $body.get(0);

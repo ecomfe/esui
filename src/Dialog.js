@@ -544,8 +544,8 @@ define(
                 + '</div>'
                 + '${closeIcon}';
 
-            var headClass =
-                control.helper.getPartClassName('head');
+            var headClass
+                = control.helper.getPartClassName('head');
 
             var headData = {
                 titleId: control.helper.getId(title),

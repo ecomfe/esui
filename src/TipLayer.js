@@ -169,9 +169,10 @@ define(
                             'showDuration'
                         ],
                         paint: function (tipLayer, targetDOM, targetControl,
-                                showMode, positionOpt, targetPositionOpt, delayTime) {
+                                showMode, positionOpt, targetPositionOpt) {
                             // 为了绕过函数最多7个参数的fecs要求
-                            var showDuration = arguments[6];
+                            var delayTime = arguments[6];
+                            var showDuration = arguments[7];
                             var options = {
                                 targetDOM: targetDOM,
                                 targetControl: targetControl,

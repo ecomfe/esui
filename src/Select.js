@@ -480,7 +480,6 @@ define(
          * @param {number} index 选项的index
          */
         function focusItem(index) {
-            var layer = this.layer;
             var content = this.layer.getElement();
             // jquery nth strat with 1
             var item = $(content).find('li:nth-child(' + (index + 1) + ')');

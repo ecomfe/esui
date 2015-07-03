@@ -15,6 +15,7 @@ define(
         var Layer = require('./Layer');
         var $ = require('jquery');
         var u = require('underscore');
+        var painters = require('./painters');
 
         require('esui/behavior/Selectable');
 
@@ -135,10 +136,6 @@ define(
                         {
                             filter: '.' + getClass(this, 'time'),
                             start: function (e) {
-
-                                console.log('start')
-                                // ondragHuck(e.target);
-
                                 // 记录鼠标位置
                                 me.dragStartPos = {x: e.pageX, y: e.pageY};
 
@@ -159,8 +156,10 @@ define(
                             selecting: function (e) {
                                 repaintFollowEle.call(me, e);
                             },
+                            unselecting: function (e) {
+                                repaintFollowEle.call(me, e);
+                            },
                             stop: function (e) {
-
                                 // 隐藏鼠标跟随div
                                 var followEle = lib.g(getId(me, 'follow-item'));
                                 followEle.style.display = 'none';
@@ -230,7 +229,7 @@ define(
                  * @override
                  * @protected
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     InputControl.prototype.repaint,
                     {
                         name: 'rawValue',
@@ -247,6 +246,9 @@ define(
                         name: ['disabled', 'readOnly'],
                         paint: function (schedule, disabled, readOnly) {
                             setDayCheckboxState(schedule, 'disabled', disabled || readOnly);
+                            var timebody = lib.g(getId(schedule, 'time-body'));
+                            // 绑定拖动drag事件
+                            $(timebody).selectable({disabled: disabled || readOnly});
                         }
                     }
                 ),
@@ -1241,19 +1243,20 @@ define(
             var slotSize = me.slotSize;
 
             // 计算当前显示区域
-            var cellPos = getTragTimeCellPos(this,
+            var cellPos = getTragTimeCellPos(
+                this,
                 {x: e.pageX, y: e.pageY}
             );
 
             var followEleId = getId(me, 'follow-item');
             var followEle = lib.g(followEleId);
+
             if (!followEle) {
                 followEle = document.createElement('div');
                 followEle.className = getClass(me, 'follow-item');
                 followEle.id = followEleId;
                 lib.g(getId(me, 'time-body')).appendChild(followEle);
             }
-
 
             var startcell = cellPos.startcell;
             var endcell = cellPos.endcell;

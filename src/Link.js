@@ -122,7 +122,7 @@ define(
                         this.$super(arguments);
                     }
                     else {
-                        throw new Error('Invalid Tag: Only a element is allowed.');
+                        alert('Invalid Tag: Only a element is allowed.');
                     }
                 },
 
