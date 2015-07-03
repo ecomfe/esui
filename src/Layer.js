@@ -13,13 +13,9 @@ define(
         var lib = require('./lib');
         var esui = require('./main');
         var eoo = require('eoo');
-        var EventTarget = require('mini-event/EventTarget');
+        var EventTarget = require('./EventTarget');
         var $ = require('jquery');
         require('./behavior/position');
-
-        // 它们无法组合`Layer`实例，因此需要静态方法为其服务
-        // 初始最高的`z-index`值，将浮层移到最上就是参考此值
-        var zIndexStack = 1000;
 
         /**
          * 浮层基类
@@ -329,40 +325,6 @@ define(
         };
 
         /**
-         * 将当前层移到最前
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @static
-         */
-        Layer.moveToTop = function (element) {
-            element.style.zIndex = ++zIndexStack;
-        };
-
-        /**
-         * 移动层的位置
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @param {number} top 上边界距离
-         * @param {number} left 左边界距离
-         * @static
-         */
-        Layer.moveTo = function (element, top, left) {
-            positionLayerElement(element, {top: top, left: left});
-        };
-
-        /**
-         * 缩放层的大小
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @param {number} width 宽度
-         * @param {number} height 高度
-         * @static
-         */
-        Layer.resize = function (element, width, height) {
-            positionLayerElement(element, {width: width, height: height});
-        };
-
-        /**
          * 让当前层靠住一个指定的元素
          *
          * @param {HTMLElement} layer 目标层元素
@@ -389,98 +351,6 @@ define(
             );
         };
 
-        /**
-         * 将层在视图中居中
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @param {Object} [options] 相关配置项
-         * @param {number} [options.width] 指定层的宽度
-         * @param {number} [options.height] 指定层的高度
-         * @param {number} [options.minTop] 如果层高度超过视图高度，
-         * 则留下该值的上边界保底
-         * @param {number} [options.minLeft] 如果层宽度超过视图高度，
-         * 则留下该值的左边界保底
-         * @static
-         */
-        Layer.centerToView = function (element, options) {
-            var properties = options ? lib.clone(options) : {};
-
-            if (typeof properties.width !== 'number') {
-                properties.width = this.width;
-            }
-            if (typeof properties.height !== 'number') {
-                properties.height = this.height;
-            }
-
-            properties.left = (lib.page.getViewWidth() - properties.width) / 2;
-
-            var viewHeight = lib.page.getViewHeight();
-            if (properties.height >= viewHeight
-                && options.hasOwnProperty('minTop')
-            ) {
-                properties.top = options.minTop;
-            }
-            else {
-                properties.top
-                    = Math.floor((viewHeight - properties.height) / 2);
-            }
-
-            var viewWidth = lib.page.getViewWidth();
-            if (properties.height >= viewWidth
-                && options.hasOwnProperty('minLeft')
-            ) {
-                properties.left = options.minLeft;
-            }
-            else {
-                properties.left
-                    = Math.floor((viewWidth - properties.width) / 2);
-            }
-
-            properties.top += lib.page.getScrollTop();
-            this.setProperties(properties);
-        };
-
-        // 统一浮层放置方法方法
-        function positionLayerElement(element, options) {
-            var properties = lib.clone(options || {});
-
-            // 如果同时有`top`和`bottom`，则计算出`height`来
-            if (properties.hasOwnProperty('top')
-                && properties.hasOwnProperty('bottom')
-            ) {
-                properties.height = properties.bottom - properties.top;
-                delete properties.bottom;
-            }
-            // 同样处理`left`和`right`
-            if (properties.hasOwnProperty('left')
-                && properties.hasOwnProperty('right')
-            ) {
-                properties.width = properties.right - properties.left;
-                delete properties.right;
-            }
-
-            // 避免原来的属性影响
-            if (properties.hasOwnProperty('top')
-                || properties.hasOwnProperty('bottom')
-            ) {
-                element.style.top = '';
-                element.style.bottom = '';
-            }
-
-            if (properties.hasOwnProperty('left')
-                || properties.hasOwnProperty('right')
-            ) {
-                element.style.left = '';
-                element.style.right = '';
-            }
-
-            // 设置位置和大小
-            for (var name in properties) {
-                if (properties.hasOwnProperty(name)) {
-                    element.style[name] = properties[name] + 'px';
-                }
-            }
-        }
         return Layer;
     }
 );

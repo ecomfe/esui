@@ -20,6 +20,7 @@ define(
         var lib = require('./lib');
         var Control = require('./Control');
         var painters = require('./painters');
+        var Layer = require('./Layer');
 
         /**
          * 提示层控件类
@@ -68,10 +69,7 @@ define(
                         && main.parentNode.nodeName.toLowerCase() !== 'body') {
                         document.body.appendChild(main);
                     }
-
-                    // 设置样式
-                    this.main.style.left = '-10000px';
-
+                    this.addState('hidden');
                     // 不是所有的提示层都需要title
                     if (this.title || this.roles.title) {
                         createHead(this, this.roles.title);
@@ -81,14 +79,6 @@ define(
                     // 不是所有的提示层都需要foot
                     if (this.foot || this.roles.foot) {
                         createBF(this, 'foot', this.roles.foot);
-                    }
-
-                    if (this.arrow) {
-                        var arrow = document.createElement('div');
-                        // 初始化箭头
-                        arrow.id = this.helper.getId('arrow');
-                        arrow.className = this.helper.getPartClassName('arrow');
-                        this.main.appendChild(arrow);
                     }
                 },
 
@@ -202,54 +192,6 @@ define(
                         }
                     }
                 ),
-
-                /**
-                 * 渲染层样式
-                 *
-                 * @param {HTMLElement} element 提示层元素
-                 * @param {Object} options 定位参数
-                 * @inner
-                 */
-                renderLayer: function (element, options) {
-                    var properties = u.clone(options || {});
-
-                    // 如果同时有`top`和`bottom`，则计算出`height`来
-                    if (properties.hasOwnProperty('top')
-                        && properties.hasOwnProperty('bottom')
-                    ) {
-                        properties.height = properties.bottom - properties.top;
-                        delete properties.bottom;
-                    }
-                    // 同样处理`left`和`right`
-                    if (properties.hasOwnProperty('left')
-                        && properties.hasOwnProperty('right')
-                    ) {
-                        properties.width = properties.right - properties.left;
-                        delete properties.right;
-                    }
-
-                    // 避免原来的属性影响
-                    if (properties.hasOwnProperty('top')
-                        || properties.hasOwnProperty('bottom')
-                    ) {
-                        element.style.top = '';
-                        element.style.bottom = '';
-                    }
-
-                    if (properties.hasOwnProperty('left')
-                        || properties.hasOwnProperty('right')
-                    ) {
-                        element.style.left = '';
-                        element.style.right = '';
-                    }
-
-                    // 设置位置和大小
-                    for (var name in properties) {
-                        if (properties.hasOwnProperty(name)) {
-                            element.style[name] = properties[name] + 'px';
-                        }
-                    }
-                },
 
                 /**
                  * 将提示层捆绑到一个DOM元素或控件上
@@ -546,7 +488,6 @@ define(
                     return this.getChild('body');
                 },
 
-
                 /**
                  * 获取提示层腿部的控件对象
                  *
@@ -581,15 +522,15 @@ define(
                     );
 
                     // 动态计算layer的zIndex
-                    this.main.style.zIndex = require('./Layer').getZIndex(targetElement);
+                    this.main.style.zIndex = Layer.getZIndex(targetElement);
 
                     this.removeState('hidden');
 
-                   $(this.main).position({
-                       of: $(targetElement),
-                       at: options.targetPositionOpt.right + ' ' + options.targetPositionOpt.top,
-                       my: options.positionOpt.right + ' ' + options.positionOpt.top
-                   });
+                    $(this.main).position({
+                        of: $(targetElement),
+                        at: options.targetPositionOpt.right + ' ' + options.targetPositionOpt.top,
+                        my: options.positionOpt.right + ' ' + options.positionOpt.top
+                    });
 
                     if (this.isShow) {
                         return;
@@ -612,7 +553,6 @@ define(
                     this.addState('hidden');
                     this.fire('hide');
                 },
-
 
                 /**
                  * 设置标题文字
@@ -813,7 +753,7 @@ define(
                 clearTimeout(tipLayer.showTimeout);
                 clearTimeout(tipLayer.hideTimeout);
                 tipLayer.showTimeout = setTimeout(
-                    lib.bind(tipLayer.show, tipLayer, targetElement, options),
+                    u.bind(tipLayer.show, tipLayer, targetElement, options),
                     delayTime
                 );
             }
@@ -871,94 +811,6 @@ define(
             );
         }
 
-        function addTipLayerClasses(tipLayer, element, arrowClass) {
-            var helper = tipLayer.helper;
-            var selectors = [].concat(
-                helper.getPartClasses(),
-                helper.getPartClasses(arrowClass)
-            );
-
-            var $ele = $(element);
-            $ele.addClass(selectors.join(' '));
-            helper.addVariantClasses();
-
-            var arrow = lib.g(helper.getId('arrow'));
-            if (arrow) {
-                $ele.addClass(
-                    helper.getPartClassName('arrow')
-                );
-                $ele.addClass(
-                    helper.getPartClassName(
-                        'arrow-' + arrowClass
-                    )
-                );
-            }
-        }
-
-        function setupConfig(config, targetPosition, elementWidth, elementHeight) {
-            // 计算出所有的位置
-            // 目标元素 —— 层元素
-            // left —— right
-            var viewWidth = lib.page.getViewWidth();
-            var viewHeight = lib.page.getViewHeight();
-            var gapLR = targetPosition.left - elementWidth;
-            // right —— left
-            var gapRL = viewWidth - targetPosition.right - elementWidth;
-
-            // top —— top
-            var gapTT = viewHeight - targetPosition.top - elementHeight;
-            // bottom —— bottom
-            var gapBB = targetPosition.bottom - elementHeight;
-
-            if (gapLR >= 0) {
-                if (gapRL >= 0) {
-                    // 如果没有设置，哪边大放哪边
-                    if (!config.right && !config.left) {
-                        if (gapRL < gapLR) {
-                            config.left = 'right';
-                            config.right = null;
-                        }
-                        else {
-                            config.right = 'left';
-                            config.left = null;
-                        }
-                    }
-                }
-                else {
-                    config.left = 'right';
-                    config.right = null;
-                }
-            }
-            else {
-                config.right = 'left';
-                config.left = null;
-            }
-
-            if (gapTT >= 0) {
-                if (gapBB >= 0) {
-                    // 如果没有设置，哪边大放哪边
-                    if (!config.bottom && !config.top) {
-                        if (gapBB < gapTT) {
-                            config.top = 'top';
-                            config.bottom = null;
-                        }
-                        else {
-                            config.bottom = 'bottom';
-                            config.top = null;
-                        }
-                    }
-                }
-                else {
-                    config.top = 'top';
-                    config.bottom = null;
-                }
-            }
-            else {
-                config.bottom = 'bottom';
-                config.top = null;
-            }
-        }
-
         /**
          * 一次提醒提示
          * @param {Object=} args 参数 支持如下字段
@@ -994,8 +846,7 @@ define(
 
             var properties = {
                 type: 'onceNotice',
-                skin: 'onceNotice',
-                arrow: true
+                skin: 'onceNotice'
             };
 
             u.extend(properties, args);

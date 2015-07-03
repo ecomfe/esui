@@ -14,6 +14,7 @@ define(
         var lib = require('./lib');
         var u = require('underscore');
         var painters = require('./painters');
+        var $ = require('jquery');
 
         var TreeStrategy = require('./TreeStrategy');
 

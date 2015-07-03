@@ -10,6 +10,8 @@ define(
     function (require) {
         var eoo = require('eoo');
         var ControlCollection = require('./ControlCollection');
+        var u = require('underscore');
+        var SafeWrapper = require('./SafeWrapper');
 
         /**
          * 控件分组
@@ -228,7 +230,7 @@ define(
                  * @return {Control[]} viewContext内所有控件
                  */
                 getControls: function () {
-                    return require('./lib').extend({}, this.controls);
+                    return u.extend({}, this.controls);
                 },
 
                 /**
@@ -241,7 +243,6 @@ define(
                     var control = this.get(id);
 
                     if (!control) {
-                        var SafeWrapper = require('./SafeWrapper');
                         control = new SafeWrapper();
                         control.id = id;
                         control.viewContext = this;

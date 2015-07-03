@@ -14,6 +14,7 @@ define(
         var Control = require('./Control');
         var esui = require('./main');
         var $ = require('jquery');
+        var painters = require('./painters');
 
         /**
          * 标签页控件
@@ -63,7 +64,17 @@ define(
                         tabs: [],
                         activeIndex: 0,
                         allowClose: false,
-                        orientation: 'horizontal'
+                        orientation: 'horizontal',
+                        /**
+                         * 标签页内容的模板
+                         *
+                         * 在模板中可以使用以下占位符：
+                         *
+                         * - `{string} title`：文本内容，经过HTML转义
+                         *
+                         * @type {string}
+                         */
+                        contentTemplate: '<span>${title}</span>'
                     };
 
                     u.extend(properties, options);
@@ -111,10 +122,6 @@ define(
                         }
                     }
 
-                    if (typeof properties.activeIndex === 'string') {
-                        properties.activeIndex = +properties.activeIndex;
-                    }
-
                     this.setProperties(properties);
                 },
 
@@ -145,19 +152,8 @@ define(
                  * @override
                  */
                 initEvents: function () {
-                    this.helper.addDOMEvent('navigator', 'click', clickTab);
+                    this.helper.addDOMEvent('navigator', 'click', 'li', clickTab);
                 },
-
-                /**
-                 * 标签页内容的模板
-                 *
-                 * 在模板中可以使用以下占位符：
-                 *
-                 * - `{string} title`：文本内容，经过HTML转义
-                 *
-                 * @type {string}
-                 */
-                contentTemplate: '<span>${title}</span>',
 
                 /**
                  * 获取标签页内容的HTML
@@ -227,7 +223,7 @@ define(
                         }
                     }
 
-                    Control.prototype.setProperties.apply(this, arguments);
+                    this.$super(arguments);
 
                     // TODO: 现在的逻辑下，如果`tabs`和`activeIndex`同时变化，
                     // 会导致2次reflow（一次`fillNavigator`，一次`activateTab`），
@@ -241,7 +237,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     Control.prototype.repaint,
                     {
                         /**
@@ -429,8 +425,6 @@ define(
                     }
                 },
 
-                // TODO: 添加`allowClose`属性的控制
-
                 /**
                  * 获取当前激活的{@link meta.TabItem}对象
                  *
@@ -458,11 +452,12 @@ define(
         function extractTabsFromNavigatorElement(element) {
             var tabs = [];
             var children = $(element).children().toArray();
+
             for (var i = 0; i < children.length; i++) {
                 var tab = children[i];
                 var config = {
-                    title: lib.getText(tab),
-                    panel: tab.getAttribute('data-for')
+                    title: $(tab).text(),
+                    panel: $(tab).attr('data-for')
                 };
 
                 if (tab.className) {
@@ -483,27 +478,16 @@ define(
          */
         function clickTab(e) {
             var target = e.target;
-            var tabElement = target;
-            while (tabElement && tabElement.nodeName.toLowerCase() !== 'li') {
-                tabElement = tabElement.parentNode;
-            }
+            var tabElement = e.currentTarget;
 
-            if (tabElement && tabElement.nodeName.toLowerCase() === 'li') {
-                var parent = tabElement.parentNode;
-                var children = $(parent).children().toArray();
-                for (var i = 0; i < children.length; i++) {
-                    if (children[i] === tabElement) {
-                        // 如果点在关闭区域上，则移除这个元素，
-                        // 其它情况为激活该元素
-                        if (this.helper.isPart(target, 'close')) {
-                            this.removeAt(i);
-                        }
-                        else {
-                            this.set('activeIndex', i);
-                        }
-                        return;
-                    }
-                }
+            var $children = $(tabElement).parent().children();
+            var idx = $children.index(tabElement);
+
+            if (this.helper.isPart(target, 'close')) {
+                this.removeAt(idx);
+            }
+            else {
+                this.set('activeIndex', idx);
             }
         }
 
