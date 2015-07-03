@@ -13,7 +13,7 @@ define(
         var u = require('underscore');
         var moment = require('moment');
         var lib = require('./lib');
-        var ui = require('./main');
+        var esui = require('./main');
         var InputControl = require('./InputControl');
         var Layer = require('./Layer');
         var eoo = require('eoo');
@@ -362,7 +362,7 @@ define(
             );
         }
 
-        ui.register(Calendar);
+        esui.register(Calendar);
         return Calendar;
     }
 );

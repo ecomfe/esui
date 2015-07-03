@@ -65,7 +65,7 @@ define(
                         mode: 'fixed'
                     };
 
-                    lib.extend(properties, options);
+                    u.extend(properties, options);
 
                     var main = this.main;
                     var parent = main.parentNode;
@@ -83,7 +83,7 @@ define(
                         properties.top = parentPos.top + this.initialOffsetTop;
                     }
 
-                    lib.extend(this, properties);
+                    u.extend(this, properties);
                 },
 
                 /**

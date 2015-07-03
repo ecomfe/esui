@@ -13,6 +13,7 @@ define(
         var esui = require('esui');
         var Control = require('./Control');
         var painters = require('./painters');
+        var u = require('underscore');
 
         require('./TextBox');
         require('./Button');
@@ -56,11 +57,7 @@ define(
                         searched: false,
                         width: ''
                     };
-                    lib.extend(properties, options);
-
-                    if (properties.disabled === 'false') {
-                        properties.disabled = false;
-                    }
+                    u.extend(properties, options);
 
                     if (lib.isInput(this.main)) {
                         if (!properties.placeholder) {

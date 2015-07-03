@@ -13,6 +13,7 @@ define(
         var u = require('underscore');
         var Control = require('./Control');
         var painters = require('./painters');
+        var $ = require('jquery');
 
         require('./behavior/Mouse');
 
@@ -625,7 +626,6 @@ define(
         function getBody(table) {
             return lib.g(getId(table, 'body'));
         }
-
 
         /**
          * 获取列表尾容器元素

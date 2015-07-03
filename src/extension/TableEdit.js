@@ -21,6 +21,7 @@ define(
         var ValidityState = require('../validator/ValidityState');
         var Validity = require('../validator/Validity');
         var Layer = require('../Layer');
+        var u = require('underscore');
 
         var layContentTpl = [
             '<div class="${optClass}">',
@@ -137,7 +138,7 @@ define(
                 );
 
                 var inputCtrlOptions = {properties: {}};
-                inputCtrlOptions.properties[newInputId] = lib.extend(
+                inputCtrlOptions.properties[newInputId] = u.extend(
                     {
                         id: newInputId,
                         validityLabel: validId + guid

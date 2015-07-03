@@ -208,7 +208,7 @@ define(
                 if (messageType === 'show') {
                     messageType = 'normal';
                 }
-                options = lib.extend({content: content}, options);
+                options = u.extend({content: content}, options);
                 options.messageType = options.messageType || messageType;
                 var toast = new Toast(options);
                 Control.prototype.hide.apply(toast);

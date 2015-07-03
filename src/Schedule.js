@@ -57,7 +57,7 @@ define(
                 initOptions: function (options) {
                     var properties = {};
 
-                    lib.extend(properties, Schedule.defaultProperties, options);
+                    u.extend(properties, Schedule.defaultProperties, options);
 
                     this.setProperties(properties);
 

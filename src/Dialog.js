@@ -740,7 +740,7 @@ define(
                 title: ''
             };
 
-            lib.extend(properties, args);
+            u.extend(properties, args);
 
             var tpl = [
                 '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
@@ -831,7 +831,7 @@ define(
                 title: ''
             };
 
-            lib.extend(properties, args);
+            u.extend(properties, args);
 
             var tpl = [
                 '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
