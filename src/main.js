@@ -302,6 +302,7 @@ define(
             return collection;
         };
 
+
         /**
          * 从容器DOM元素批量初始化内部的控件渲染
          *
@@ -420,14 +421,25 @@ define(
             // 控件渲染的过程会导致Collection的改变
             var uiPrefix = main.getConfig('uiPrefix');
             var extPrefix = main.getConfig('extensionPrefix');
-            var $elements = $(wrap).find('[' + uiPrefix + '],[' + uiPrefix + '-type]');
+            var customElementPrefix = main.getConfig('customElementPrefix');
 
             var uiPrefixLen = uiPrefix.length;
             var extPrefixLen = extPrefix.length;
             var properties = options.properties || {};
             var controls = [];
 
-            $elements.each(function (i, element) {
+            // 添加一个:xxx伪类选择符
+            // 选出所有需要通过esui初始化的element
+            var pseudoClassName = customElementPrefix;
+            if (u.isObject($.expr[':']) && !$.expr[':'][pseudoClassName]) {
+                $.expr[':'][pseudoClassName] = function (element) {
+                    return $(element).is(
+                        '[' + uiPrefix + '],[' + uiPrefix + '-type]'
+                    ) || element.tagName.indexOf(customElementPrefix.toUpperCase() + '-') === 0;
+                };
+            }
+
+            $(wrap).find(':' + pseudoClassName).each(function (i, element) {
                 // 有时候，一个控件会自己把`main.innerHTML`生成子控件，比如`Panel`，
                 // 但这边有缓存这些子元素，可能又会再生成一次，所以要去掉
                 if (element.getAttribute(config.instanceAttr)) {
