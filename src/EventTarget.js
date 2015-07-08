@@ -14,6 +14,7 @@ define(
         // 为了利用JQ的事件机制。
         var eventPrefix = 'esui:';
         var u = require('underscore');
+        var $ = require('jquery');
 
         /**
          * 提供事件相关操作的基类
