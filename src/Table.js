@@ -90,7 +90,7 @@ define(
                  * @override
                  */
                 repaint: function (changes, changesIndex) {
-                    Control.prototype.repaint.apply(this, arguments);
+                    this.$super(arguments);
                      // 初始化控件主元素上的行为
                     var table = this;
                     if (!table.realWidth) {
@@ -225,11 +225,9 @@ define(
                     return getId(this, id);
                 },
 
-
                 getBodyCellId: function (rowIndex, fieldIndex) {
                     return getBodyCellId(this, rowIndex, fieldIndex);
                 },
-
 
                 /**
                  * 设置单元格的文字
@@ -284,7 +282,6 @@ define(
                 addRowBuilders: function (builders) {
                     addRowBuilderList(this, builders);
                 },
-
 
                 /**
                  * 添加table主元素上事件委托
@@ -439,7 +436,6 @@ define(
                     this.setRowSelected(-1, isSelected);
                 },
 
-
                 /**
                  * 重置表头跟随设置
                  *
@@ -487,7 +483,6 @@ define(
             }
         );
 
-
         /**
          * 默认属性值
          *
@@ -529,7 +524,6 @@ define(
         function hasValue(obj) {
             return !(typeof obj === 'undefined' || obj === null);
         }
-
 
         /**
          * 判断值是否为空,包括空字符串

@@ -101,6 +101,7 @@ define(
                  */
                 fire: function (type, args, domEvent) {
                     var jqEvent = $.Event;
+                    // 这里添加了一个custom event, 为了避免jq触发this上的同名函数。
                     var event = jqEvent(eventPrefix + type);
 
                     // 把args extend到event上去。

@@ -774,7 +774,7 @@ define(
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
             tipLayer.hideTimeout
-                = setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
+                = setTimeout(u.bind(tipLayer.hide, tipLayer), delayTime);
         }
 
         function getElementByControl(tipLayer, control) {
