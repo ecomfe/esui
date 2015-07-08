@@ -156,8 +156,8 @@ define(
                  */
                 getItemHTML: function (node) {
                     var data = {
-                        id: lib.encodeHTML(node.id),
-                        text: lib.encodeHTML(node.text)
+                        id: u.escape(node.id),
+                        text: u.escape(node.text)
                     };
                     return lib.format(this.itemTemplate, data);
                 },

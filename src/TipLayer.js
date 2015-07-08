@@ -843,7 +843,7 @@ define(
                 tipLayer.dispose();
             }
 
-            var content = lib.encodeHTML(args.content) || '';
+            var content = u.escape(args.content) || '';
 
             var properties = {
                 type: 'onceNotice',

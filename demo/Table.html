@@ -42,7 +42,13 @@
                         </div>
                         <h3>Fixed Header</h3>
                         <div class="row">
-                            <div data-ui="type:Table;id:myTable;data-ui-column-resizable:true;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
+                            <div
+                            data-ui="type:Table;id:myTable;data-ui-column-resizable:true;"
+                            data-ui-extension-tableedit-type="TableEdit"
+                            data-ui-extension-tablesubrow-type="TableSubrow"
+                            data-ui-extension-command-type="Command"
+                            data-ui-extension-command-events="click mousedown mouseup"
+                            ></div>
                         </div>
                     <!--
                         <div style="width:1024px;margin: 0 auto;overflow:hidden;">
@@ -82,6 +88,7 @@
                 'esui/Panel',
                 'esui/extension/TableEdit',
                 'esui/extension/TableSubrow',
+                'esui/extension/Command',
                 'esui/Tip',
                 'esui/Table',
                 'esui/Button',

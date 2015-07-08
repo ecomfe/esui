@@ -43,7 +43,6 @@ define(
                  */
                 type: 'Table',
 
-
                 /**
                  * 初始化参数
                  *
@@ -243,7 +242,7 @@ define(
                  */
                 setCellText: function (text, rowIndex, columnIndex, isEncodeHtml) {
                     if (isEncodeHtml) {
-                        text = lib.encodeHTML(text);
+                        text = u.escape(text);
                     }
                     text = isNullOrEmpty(text) ? '&nbsp' : text;
 
@@ -497,6 +496,8 @@ define(
          */
         Table.defaultProperties = {
             noDataHtml: '没有数据',
+            subEntryOpenTip: '点击展开',
+            subEntryCloseTip: '点击收起',
             noFollowHeadCache: false,
             followHead: false,
             sortable: false,
@@ -506,8 +507,6 @@ define(
             select: '',
             selectMode: 'box',
             subrowMutex: 1,
-            subEntryOpenTip: '点击展开',
-            subEntryCloseTip: '点击收起',
             subEntryWidth: 18,
             breakLine: false,
             hasTip: false,
@@ -2194,7 +2193,7 @@ define(
             var contentHtml = 'function' === typeof content
                 ? content.call(table, data, rowIndex, fieldIndex)
                 : (table.encode
-                    ? lib.encodeHTML(data[content])
+                    ? u.escape(data[content])
                     : data[content]
                 );
 
@@ -2820,7 +2819,6 @@ define(
             }
         }
 
-
         /**
          * 重置Table主元素的ZIndex
          * @param {ui.Table} table table控件实例
@@ -3123,7 +3121,6 @@ define(
         }
 
         esui.register(Table);
-
         return Table;
     }
 );
