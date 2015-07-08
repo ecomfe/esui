@@ -11,6 +11,8 @@ define(
         var u = require('underscore');
         var Table = require('../Table');
         var Extension = require('../Extension');
+        var eoo = require('eoo');
+        var esui = require('esui');
 
         /**
          * 表格自动排序扩展
@@ -24,16 +26,50 @@ define(
          * @extends Extension
          * @constructor
          */
-        function AutoSort() {
-            Extension.apply(this, arguments);
-        }
+        var AutoSort = eoo.create(
+            Extension,
+            {
 
-        /**
-         * 指定扩展类型，始终为`"AutoSort"`
-         *
-         * @type {string}
-         */
-        AutoSort.prototype.type = 'AutoSort';
+                /**
+                 * 指定扩展类型，始终为`"AutoSort"`
+                 *
+                 * @type {string}
+                 */
+                type: 'AutoSort',
+
+                /**
+                 * 激活扩展
+                 *
+                 * @override
+                 */
+                activate: function () {
+                    // 只对`Table`控件生效
+                    if (!(this.target instanceof Table)) {
+                        return;
+                    }
+
+                    this.target.on('sort', sort);
+
+                    this.$super(arguments);
+                },
+
+                /**
+                 * 取消扩展的激活状态
+                 *
+                 * @override
+                 */
+                inactivate: function () {
+                    // 只对`Table`控件生效
+                    if (!(this.target instanceof Table)) {
+                        return;
+                    }
+
+                    this.target.un('sort', sort);
+
+                    this.$super(arguments);
+                }
+            }
+        );
 
         function sort(e) {
             var computeDiff = e.field.comparer;
@@ -61,40 +97,7 @@ define(
             this.setDatasource(datasource);
         }
 
-        /**
-         * 激活扩展
-         *
-         * @override
-         */
-        AutoSort.prototype.activate = function () {
-            // 只对`Table`控件生效
-            if (!(this.target instanceof Table)) {
-                return;
-            }
-
-            this.target.on('sort', sort);
-
-            Extension.prototype.activate.apply(this, arguments);
-        };
-
-        /**
-         * 取消扩展的激活状态
-         *
-         * @override
-         */
-        AutoSort.prototype.inactivate = function () {
-            // 只对`Table`控件生效
-            if (!(this.target instanceof Table)) {
-                return;
-            }
-
-            this.target.un('sort', sort);
-
-            Extension.prototype.inactivate.apply(this, arguments);
-        };
-
-        require('../lib').inherits(AutoSort, Extension);
-        require('../main').registerExtension(AutoSort);
+        esui.registerExtension(AutoSort);
         return AutoSort;
     }
 );

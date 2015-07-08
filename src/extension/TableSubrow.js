@@ -10,9 +10,155 @@ define(
     function (require) {
         var Extension = require('../Extension');
         var lib = require('../lib');
-        var main = require('../main');
+        var esui = require('../main');
         var Table = require('../Table');
         var $ = require('jquery');
+        var eoo = require('eoo');
+
+        /**
+         * 表格子行扩展
+         *
+         * @constructor
+         */
+        var TableSubrow = eoo.create(
+            Extension,
+            {
+                /**
+                 * 指定扩展类型，始终为`"TableEdit"`
+                 *
+                 * @type {string}
+                 */
+                type: 'TableSubrow',
+
+                /**
+                 * 激活扩展
+                 *
+                 * @override
+                 */
+                activate: function () {
+                    var target = this.target;
+                    // 只对`Table`控件生效
+                    if (!(target instanceof Table)) {
+                        return;
+                    }
+
+                    var subentryClass = target.helper.getPartClassName('subentry');
+
+                    target.addRowBuilders([
+                        {
+                            index: 0,
+                            getRowArgs: getSubrowArgs,
+                            getColHtml: getSubEntryHtml,
+                            getSubrowHtml: getSubrowHtml
+                        }
+                    ]);
+
+                    target.addHandlers(
+                        'click',
+                        {
+                            handler: fireSubrow,
+                            matchFn: subentryClass
+                        }
+                    );
+
+                    target.addHandlers(
+                        'mouseover',
+                        {
+                            handler: entryOverHandler,
+                            matchFn: subentryClass
+                        }
+                    );
+
+                    target.addHandlers(
+                        'mouseout',
+                        {
+                            handler: entryOutHandler,
+                            matchFn: subentryClass
+                        }
+                    );
+
+                    /**
+                     * 获取表格子行的元素
+                     *
+                     * @public
+                     * @param {number} index 行序号
+                     * @return {HTMLElement}
+                     */
+                    target.getSubrow = function (index) {
+                        return getSubrow(this, index);
+                    };
+
+                    /**
+                     * 设置子行内容
+                     *
+                     * @public
+                     *
+                     * @param {string} content 内容
+                     * @param {number} index 行序号
+                     *
+                     */
+                    target.setSubrowContent = function (content, index) {
+                        var subrowPanel = getSubrowContainer(this, index);
+
+                        if (subrowPanel) {
+                            subrowPanel.set('content', content);
+                        }
+                    };
+
+                    /**
+                     * 获取子行Panel
+                     *
+                     * @public
+                     *
+                     * @param {number} index 行序号
+                     *
+                     * @return {Object}
+                     */
+                    target.getSubrowContainer = function (index) {
+                        return getSubrowContainer(this, index);
+                    };
+
+                    /**
+                     * 打开子行
+                     * @public
+                     * @param {number} index 子行的序号
+                     */
+                    target.openSubrow = function (index) {
+                        var entry = lib.g(getSubentryId(this, index));
+                        openSubrow(this, index, entry);
+                    };
+
+                    /**
+                     * 关闭子行
+                     * @public
+                     * @param {number} index 子行的序号
+                     */
+                    target.closeSubrow = function (index) {
+                        var entry = lib.g(getSubentryId(this, index));
+                        closeSubrow(this, index, entry);
+                    };
+
+                    this.$super(arguments);
+                },
+
+                /**
+                 * 取消扩展的激活状态
+                 *
+                 * @override
+                 */
+                inactivate: function () {
+                    var target = this.target;
+                    // 只对`Table`控件生效
+                    if (!(target instanceof Table)) {
+                        return;
+                    }
+
+                    delete target.getSubrow;
+
+                    this.$super(arguments);
+                }
+            }
+        );
 
         /**
          * 获取元素Id
@@ -371,153 +517,7 @@ define(
             return subrowPanel;
         }
 
-
-        /**
-         * 表格子行扩展
-         *
-         * @constructor
-         */
-        function TableSubrow() {
-            Extension.apply(this, arguments);
-        }
-
-        /**
-         * 指定扩展类型，始终为`"TableEdit"`
-         *
-         * @type {string}
-         */
-        TableSubrow.prototype.type = 'TableSubrow';
-
-        /**
-         * 激活扩展
-         *
-         * @override
-         */
-        TableSubrow.prototype.activate = function () {
-            var target = this.target;
-            // 只对`Table`控件生效
-            if (!(target instanceof Table)) {
-                return;
-            }
-
-            var subentryClass = target.helper.getPartClassName('subentry');
-
-            target.addRowBuilders([
-                {
-                    index: 0,
-                    getRowArgs: getSubrowArgs,
-                    getColHtml: getSubEntryHtml,
-                    getSubrowHtml: getSubrowHtml
-                }
-            ]);
-
-            target.addHandlers(
-                'click',
-                {
-                    handler: fireSubrow,
-                    matchFn: subentryClass
-                }
-            );
-
-            target.addHandlers(
-                'mouseover',
-                {
-                    handler: entryOverHandler,
-                    matchFn: subentryClass
-                }
-            );
-
-            target.addHandlers(
-                'mouseout',
-                {
-                    handler: entryOutHandler,
-                    matchFn: subentryClass
-                }
-            );
-
-            /**
-             * 获取表格子行的元素
-             *
-             * @public
-             * @param {number} index 行序号
-             * @return {HTMLElement}
-             */
-            target.getSubrow = function (index) {
-                return getSubrow(this, index);
-            };
-
-            /**
-             * 设置子行内容
-             *
-             * @public
-             *
-             * @param {string} content 内容
-             * @param {number} index 行序号
-             *
-             */
-            target.setSubrowContent = function (content, index) {
-                var subrowPanel = getSubrowContainer(this, index);
-
-                if (subrowPanel) {
-                    subrowPanel.set('content', content);
-                }
-            };
-
-            /**
-             * 获取子行Panel
-             *
-             * @public
-             *
-             * @param {number} index 行序号
-             *
-             * @return {Object}
-             */
-            target.getSubrowContainer = function (index) {
-                return getSubrowContainer(this, index);
-            };
-
-            /**
-             * 打开子行
-             * @public
-             * @param {number} index 子行的序号
-             */
-            target.openSubrow = function (index) {
-                var entry = lib.g(getSubentryId(this, index));
-                openSubrow(this, index, entry);
-            };
-
-            /**
-             * 关闭子行
-             * @public
-             * @param {number} index 子行的序号
-             */
-            target.closeSubrow = function (index) {
-                var entry = lib.g(getSubentryId(this, index));
-                closeSubrow(this, index, entry);
-            };
-
-            Extension.prototype.activate.apply(this, arguments);
-        };
-
-        /**
-         * 取消扩展的激活状态
-         *
-         * @override
-         */
-        TableSubrow.prototype.inactivate = function () {
-            var target = this.target;
-            // 只对`Table`控件生效
-            if (!(target instanceof Table)) {
-                return;
-            }
-
-            delete target.getSubrow;
-
-            Extension.prototype.inactivate.apply(this, arguments);
-        };
-
-        lib.inherits(TableSubrow, Extension);
-        main.registerExtension(TableSubrow);
+        esui.registerExtension(TableSubrow);
         return TableSubrow;
     }
 );
