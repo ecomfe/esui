@@ -138,7 +138,7 @@ define(
         function fireSubrow(el, e) {
             var table = this;
             var $el = $(el);
-            var index = $el.attr('index');
+            var index = $el.data('index');
             var datasource = table.datasource;
             var dataLen = (datasource instanceof Array && datasource.length);
 
@@ -152,8 +152,8 @@ define(
                     index: index,
                     item: dataItem
                 };
-                eventArgs = table.fire('subrowopen', eventArgs);
-                if (!eventArgs.isDefaultPrevented()) {
+                var event = table.fire('subrowopen', eventArgs);
+                if (!event.isDefaultPrevented()) {
                     openSubrow(table, index, el);
                 }
             }
@@ -400,7 +400,7 @@ define(
                 return;
             }
 
-            var subentryClass = target.helper.getPartClassName(target, 'subentry');
+            var subentryClass = target.helper.getPartClassName('subentry');
 
             target.addRowBuilders([
                 {

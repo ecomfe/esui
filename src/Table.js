@@ -3004,7 +3004,6 @@ define(
          */
         function getDelegateHandler(element, handlerQueue, scope) {
             return function (e) {
-                e = e || window.event;
                 var cur = e.target;
                 while (cur) {
                     if (cur.nodeType === 1) {

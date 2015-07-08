@@ -251,22 +251,22 @@
                 });
 
                 myTable = ui.get('myTable');
-                myTable.onsubrowopen = function ( arg ) {
+                myTable.onsubrowopen = function (e, arg) {
                     this.setSubrowContent(
                         '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>',
                         arg.index
                     );
                 };
 
-                myTable.onsubrowclose = function ( arg ) {
+                myTable.onsubrowclose = function (e, arg ) {
                     this.getSubrowContainer(arg.index).setContent('');
                 };
 
-                myTable.onselect = function ( arg ) {
+                myTable.onselect = function (e, arg ) {
                     alert(arg.selectedIndex.toString());
                 };
 
-                myTable.onresize = function ( arg ) {
+                myTable.onresize = function (e, arg ) {
                    myTable.set('tableHeight', myTable.tableHeight + 100);
                 };
 

@@ -19,7 +19,7 @@ define(
          * 控件基类
          *
          * @constructor
-         * @extends {mini-event.EventTarget}
+         * @extends {EventTarget}
          * @param {Object} [options] 初始化参数
          * @fires init
          */

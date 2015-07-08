@@ -293,10 +293,10 @@ define(
                     field: currentTable.realFields[currentColIndex]
                 };
 
-                eventArgs = currentTable.fire('saveedit', eventArgs);
+                var event = currentTable.fire('saveedit', eventArgs);
                 fieldHanlder(currentTable, 'saveedit', eventArgs);
 
-                if (!eventArgs.isDefaultPrevented()) {
+                if (!event.isDefaultPrevented()) {
                     saveSuccessHandler.call(currentTable, eventArgs);
                 }
                 else {
@@ -391,7 +391,7 @@ define(
                 field: currentTable.realFields[currentColIndex]
             };
 
-            eventArgs = currentTable.fire('canceledit', eventArgs);
+            currentTable.fire('canceledit', eventArgs);
             fieldHanlder(currentTable, 'canceledit', eventArgs);
         }
 
@@ -489,10 +489,10 @@ define(
                     field: field
                 };
 
-                eventArgs = this.fire('startedit', eventArgs);
+                var event = this.fire('startedit', eventArgs);
                 fieldHanlder(this, 'startedit', eventArgs);
 
-                if (!eventArgs.isDefaultPrevented()) {
+                if (!event.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
                     var content = field.editContent;
                     var value = 'function' === typeof content

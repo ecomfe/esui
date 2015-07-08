@@ -100,6 +100,10 @@ define(
                 fire: function (type, args) {
                     var jqEvent = $.Event;
                     var event = jqEvent(eventPrefix + type);
+                    var inlineHandler = this['on' + type];
+                    if (typeof inlineHandler === 'function') {
+                        inlineHandler.call(this, event, args);
+                    }
                     $(this).trigger(event, args);
                     return event;
                 },
