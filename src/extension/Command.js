@@ -92,16 +92,15 @@ define(
                     var commandName = target.getAttribute('data-command');
                     if (commandName) {
                         var args = target.getAttribute('data-command-args');
-                        var event = require('mini-event').fromDOMEvent(
-                            e,
+                        event = this.fire(
                             'command',
                             {
                                 name: commandName,
                                 triggerType: e.type,
                                 args: args
-                            }
+                            },
+                            e
                         );
-                        event = this.fire('command', event);
 
                         if (event.isPropagationStopped()) {
                             return;

@@ -725,7 +725,7 @@ define(
         /**
          * 更新`Select`控件的`value`属性
          *
-         * @param {mini-event.Event} e 事件对象
+         * @param {Event} e 事件对象
          * @ignore
          */
         function changePageSize(e) {

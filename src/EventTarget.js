@@ -95,16 +95,29 @@ define(
                  *
                  * @param {string | Mixed} type 事件类型
                  * @param {Mixed} [args] 事件对象
+                 * @param {DOMEvent} [domEvent] 事件对象
                  * @return {Event} 事件传递过程中的`Event`对象
                  */
-                fire: function (type, args) {
+                fire: function (type, args, domEvent) {
                     var jqEvent = $.Event;
                     var event = jqEvent(eventPrefix + type);
+
+                    // 把args extend到event上去。
+                    // 但是推荐使用handler(event, args)方式来绑定事件
+                    makeEventCompatible(event, args);
+
+                    // 触发实例上的on type方法。
                     var inlineHandler = this['on' + type];
                     if (typeof inlineHandler === 'function') {
                         inlineHandler.call(this, event, args);
                     }
+                    // 触发绑定的handlers
                     $(this).trigger(event, args);
+                    // 在取消control event时候同时取消相关DOMEvent
+                    // event.delegate中会用到这个方法
+                    // 因为preventDefault和冒泡是同步的，所以这里可以保证执行
+                    handleDOMEvent(domEvent, event);
+
                     return event;
                 },
 
@@ -127,6 +140,31 @@ define(
                 }
             }
         );
+
+        function makeEventCompatible(event, args) {
+            var oldType = event.type;
+            if (u.isObject(args)) {
+                u.extend(event, args);
+            }
+            else if (args) {
+                event.data = args;
+            }
+            event.type = oldType;
+        }
+
+        function handleDOMEvent(domEvent, event) {
+            if (domEvent) {
+                if (event.isDefaultPrevented()) {
+                    domEvent.preventDefault();
+                }
+                if (event.isPropagationStopped()) {
+                    domEvent.stopPropagation();
+                }
+                if (event.isImmediatePropagationStopped()) {
+                    domEvent.stopImmediatePropagation();
+                }
+            }
+        }
 
         function getNamespace() {
             var namespace = this.type || 'default';

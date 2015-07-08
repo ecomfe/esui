@@ -66,20 +66,6 @@ define(
                 },
 
                 /**
-                 * 创建控件主元素，默认使用`<button type="button">`元素
-                 *
-                 * 如果需要使用其它类型作为主元素，
-                 * 需要在始终化时提供{@link Control#main}属性
-                 *
-                 * @return {HTMLElement}
-                 * @protected
-                 * @override
-                 */
-                createMain: function () {
-                    return $('<button type="button"></button>')[0];
-                },
-
-                /**
                  * 初始化事件交互
                  *
                  * @protected

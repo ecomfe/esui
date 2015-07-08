@@ -530,7 +530,7 @@ define(
          * @ignore
          */
         function dispatchSpecialKey(e) {
-            var keyCode = e.which || e.keyCode;
+            var keyCode = e.which;
 
             if (keyCode === 13) {
                 /**
@@ -550,7 +550,6 @@ define(
                 altKey: e.altKey
             };
 
-            var event = require('mini-event').fromDOMEvent(e, 'keypress', args);
             /**
              * @event keypress
              *
@@ -562,7 +561,7 @@ define(
              * @param {boolean} altKey ALT键是否按下
              * @member TextBox
              */
-            this.fire('keypress', event);
+            this.fire('keypress', args);
         }
 
         /**
