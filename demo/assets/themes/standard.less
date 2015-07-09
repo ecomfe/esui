@@ -4,18 +4,70 @@
 .global-normalize();
 
 // import esf
-@import "../../../dep/esf/1.0.0-beta.1/theme/standard/main.less";
+@import "../../../dep/esf/1.0.0-beta.2/theme/standard/main.less";
 
 // import esui
 @import "../../../theme/standard/Main.less";
-
-// Behavior
-@import "../../../src/css/behavior.less";
 
 // import eicons
 @import "../../../dep/eicons/1.0.0-beta.1/src/main.less";
 
 @fa-font-path: "../../../dep/eicons/1.0.0-beta.1/fonts/font-awesome";
+
+@dark-color: #2C3E50;
+
+.ui-tab-vertical-container-left {
+   .esui-vertical-tab-def(
+       8em,
+       300px,
+       left
+   );
+}
+
+.ui-tab-vertical-container-right {
+   .esui-vertical-tab-def(
+       8em,
+       300px,
+       right
+   );
+}
+.ui-navbar-mordern {
+    background: @dark-color;
+    li:hover a,
+    li:active a {
+        background: @dark-color;
+        color: @esf-palette-primary-color;
+    }
+}
+
+#branding {
+    margin: 0 0 0 20px;
+    line-height: 60px;
+    color: #fff;
+}
+
+.container-primary {
+    background: @esf-palette-primary-color;
+    padding: 7em 10em 20em 15em;
+}
+
+.hero {
+    font-size: 4em;
+}
+
+.ui-button-contrast {
+    .esf-button-variant(
+        #FFF,
+        @dark-color,
+        lighten(@dark-color, 5%),
+        darken(@dark-color, 10%),
+        lighten(@dark-color, 5%)
+    );
+}
+
+.contrast {
+    color: #FFF !important;
+}
 
 .ui-tab-vertical-container-left {
    .esui-vertical-tab-def(
@@ -33,121 +85,178 @@
    );
 }
 
-.ui-demo-light-stage {
-    background: white;
+.footer {
     padding: 1em;
+    background: @dark-color;
 }
 
-#branding {
-    color: @esf-palette-contrast-color;
-    margin: 0;
-    padding: .5em;
+.main-container {
+    margin-top: 2em;
 }
 
-/* User CSS */
-#navigator {
-  float: left;
-  width: 160px;
-  margin: 0;
-  list-style: none;
-  padding: 0;
-}
-#navigator li a {
-    text-decoration: none;
-    display: block;
-    background-color: #f5f5f5;
-    color: #000;
-    border: 1px solid #a2a2a2;
-    margin-top: -1px;
-    padding: 8px 14px;
-}
-#navigator li:first-child a {
-    border-radius: 6px 6px 0 0;
-}
-#navigator li:last-child a {
-    border-radius: 0 0 6px 6px;
-}
-#navigator li a:hover {
-    background-color: #a2a2a2;
-    color: #fff;
-}
-#navigator li.cur a{
-    background-color: #a2a2a2;
-    color: #fff;
+#content {
+    padding-left: 2em;
+    border-left: 1px solid #ddd;
+    .box-sizing(border-box);
 }
 
-#page {
-    width: 1200px;
-    margin: 0 auto 40px;
-    padding-top: 20px;
-}
-#main {
-    margin-left: 200px;
-    overflow: visible;
-}
-h1 {
-    background: #252525;
-    color: #fff;
-    margin-bottom: 10px;
-    font-size: 22px;
-    line-height: 40px;
-    padding: 0 8px;
-    margin: 0;
-    font-weight: normal;
-    text-rendering: optimizelegibility;
-}
-h2 {
-    font-size: 24px;
-}
-.view {
-    padding: 20px;
-    line-height: 1.5;
-    background-color: #eee;
-    border-radius: 6px;
-    position: relative;
-}
-.viewer {
-    margin: -10px 0 20px -10px;
+// sidebar
+.ui-sidebar {
+    font-family: @esf-global-heading-font-family;
     padding: 0;
+    margin: 0;
     list-style: none;
+    .ui-sidebar-item-header {
+        padding: .3em 2em;
+        color: #ACB6C0;
+    }
+    a {
+        padding: .3em 3em;
+        display: block;
+        color: #ACB6C0;
+        text-decoration: none !important;
+        &:hover {
+            background: #f5f5f5;
+        }
+    }
+    li.ui-sidebar-item-active a {
+        color: #333;
+    }
 }
-.viewer li {
+
+// grid
+.ui-g {
+  letter-spacing: -0.31em;
+  *letter-spacing: normal;
+  *word-spacing: -0.43em;
+  word-spacing: -0.43em;
+  text-rendering: optimizespeed;
+  font-family: FreeSans, Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
+  display: -webkit-flex;
+  -webkit-flex-flow: row wrap;
+  display: -ms-flexbox;
+  -ms-flex-flow: row wrap;
+}
+/* Opera as of 12 on Windows needs word-spacing.
+   The ".opera-only" selector is used to prevent actual prefocus styling
+   and is not required in markup.
+*/
+.opera-only :-o-prefocus {
+  word-spacing: -0.43em;
+}
+
+.ui-u-4-5,
+.ui-u-1-5 {
     display: inline-block;
     *display: inline;
     zoom: 1;
-    padding: 4px 12px;
-    margin-right: 10px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    cursor: default;
+    letter-spacing: normal;
+    word-spacing: normal;
+    vertical-align: top;
+    text-rendering: auto;
+    font-family: @default-base-font-family;
 }
-.viewer li:hover {
-    background-color: #a2a2a2;
-    color: #fff;
+
+.ui-u-1-5 {
+    width: 20%;
 }
-.source {
-    max-height: 480px;
-    border: 1px solid #ddd !important;
-    border-radius: 0 6px 6px 6px;
-    background-color: #f5f5f5;
-    display: none;
-    color: #333;
-    margin-top: 20px !important;
+
+.ui-u-4-5 {
+    width: 80%;
+}
+
+// code 
+.example {
+    position: relative;
+    padding: 45px 0px 15px;
+    margin-bottom: 15px;
+}
+
+.example:after {
+    position: absolute;
+    top: 15px;
+    left: 0px;
+    font-size: 16px; 
+    font-weight: bold;
+    color: #70ccc0;
+    content: "Example";
+}
+
+.example + .highlight {
+  margin-bottom: 15px;
+  margin-top: 15px;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  position: relative;
+}
+
+.highlight {
+    max-height: 300px;
     overflow: auto;
 }
-.source-markup:before,
-.source-script:before {
-    content: '结构代码';
-    border-bottom: 1px solid #ccc;
-    display: block;
-    padding-bottom: 3px;
-}
-.source-script:before {
-    content: '脚本代码';
-}
-.source-visible {
-    display: block;
-}
+
 .row {
-    margin-bottom: 10px;
+    margin-bottom: .5em;
+}
+
+.ui-tab-align-right-democode {
+    .ui-tab-navigator {
+        text-align: left;
+        padding: 0;
+    }
+    .ui-tab-item {
+        border: 1px solid #e5e5e5;
+        border: 0;
+        line-height: 1;
+        min-width: 3em;
+        font-size: 16px; 
+        font-weight: bold;
+        color: #999;
+        padding: 0 10px 0 0;
+        margin: 0 0px 10px 0;
+    }
+    .ui-tab-item:first-child {
+        border-radius: 0;
+        border-right: 3px solid #bbb;
+    }
+    .ui-tab-item:last-child {
+        border: 0;
+    }
+    .ui-tab-item:hover {
+        background: #fff;
+    }
+    .ui-tab-item-active {
+        cursor: default;
+        background: #fff;
+        color: #70ccc0;
+    }
+}
+
+.ui-tab-content-democode-border {
+    border: 1px solid #e5e5e5;
+}
+.viewer {
+    display: none;
+}
+pre.prettyprint {
+    border: 0;
+    margin: 0;
+    code {
+        font-family: monospace;
+        font: 12px/18px Consolas,monospace,serif;
+    }
+}
+.highlight {
+    margin-left: 20px;
+}
+#main {
+  padding-left: 2em;
+  border-left: 1px solid #ddd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.header {
+    height: 60px;
+    background: #2c3e50;
 }

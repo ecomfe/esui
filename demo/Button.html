@@ -4,30 +4,27 @@
         <meta charset="UTF-8"/>
         <title>Button - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
         <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
 <body>
-    <h1 id="branding">ESUI - Button</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Button</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>样式</h2>
-            <div class="intro">
-                <p>Button的样式。</p>
-            </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <button data-ui="type:Button;">Button</button>
                     <button data-ui="type:Button;variants:primary">Primary</button>
                     <button data-ui="type:Button;variants:success">Success</button>
@@ -36,16 +33,14 @@
                     <button data-ui="type:Button;variants:danger">danger</button>
                     <button data-ui="type:Button;variants:link">link</button>
                 </div>
+                <script type="text/sample">
+                    var s = 10;
+                    var ui = 398;
+                </script>
             </div>
             <h2>尺寸</h2>
-            <div class="intro">
-                <p>Button的尺寸。</p>
-            </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <button data-ui="type:Button" class="ui-x-small">ui-x-small</button>
                     <button data-ui="type:Button" class="ui-small">ui-x-small</button>
                     <button data-ui="type:Button">medium</button>
@@ -56,14 +51,8 @@
                 </div>
             </div>
             <h2>全宽</h2>
-            <div class="intro">
-                <p>Fluid Button.</p>
-            </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <div class="row">
                         <div data-ui="type:Button;variants:success" class="ui-button-fluid">Fluid</div>
                     </div>
@@ -73,14 +62,8 @@
                 </div>
             </div>
             <h2>状态</h2>
-            <div class="intro">
-                <p>状态。</p>
-            </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <div data-ui="type:Button;variants:primary">Normal</div>
                     <div data-ui="type:Button;variants:primary" class="state-hover">Hover</div>
                     <div data-ui="type:Button;variants:primary" class="state-active">Active</div>
@@ -88,14 +71,8 @@
                 </div>
             </div>
             <h2>组合</h2>
-            <div class="intro">
-                <p>按钮组合。</p>
-            </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <div class="ui-button-group ui-button-group-separated">
                         <div data-ui="type:Button;" class="ui-button-primary">Hello</div>
                         <div data-ui="type:Button;" class="ui-button-primary state-active">World</div>
@@ -109,31 +86,27 @@
                 </div>
             </div>
             <h2>图标</h2>
-            <div class="intro">
-                <p>状态。</p>
-            </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <div data-ui="type:Button;" class="ui-button-primary"><span class="ui-icon-user"></span> Icon</div>
                     <div data-ui="type:Button;" class="ui-button-primary">Icon <span class="ui-icon-user"></span></div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
+    <script src="demo.js"></script>
+    <script id="requireJs">
         require(
                 [
                     'esui',
-                    'esui/Button'
+                    'esui/Button',
+                    'esui/Tab',
+                    'demo'
                 ],
                 function (ui) {
                     ui.init();
                 }
         );
-        copyExample();
     </script>
 </body>
 </html>
