@@ -1,4 +1,3 @@
-
 function genNavigator() {
     var navItems =
         '<li><a href="BoxGroup.html">BoxGroup</a></li>' +
@@ -42,8 +41,6 @@ function genNavigator() {
             parent.setAttribute("class", "ui-sidebar-item-active"); 
         }
     }
-
-    
 }
 genNavigator();
 

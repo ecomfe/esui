@@ -2288,7 +2288,7 @@ h4,
 h5,
 h6 {
   font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
-  font-weight: bold;
+  font-weight: normal;
   color: #666666;
   margin: 0.67em 0;
 }
@@ -6208,91 +6208,30 @@ span.ui-crumb-node {
     transform: rotate(359deg);
   }
 }
-.ui-tab-vertical-container-left .ui-tab-vertical {
-  width: 8em;
-  height: 300px;
-}
-.ui-tab-vertical-container-left .ui-tab-content {
-  height: 300px;
-  margin-left: 8em;
-}
-.ui-tab-vertical-container-right .ui-tab-vertical {
-  width: 8em;
-  height: 300px;
-}
-.ui-tab-vertical-container-right .ui-tab-content {
-  height: 300px;
-  margin-right: 8em;
-}
-.ui-navbar-mordern {
+.header {
+  height: 60px;
   background: #2c3e50;
-}
-.ui-navbar-mordern li:hover a,
-.ui-navbar-mordern li:active a {
-  background: #2c3e50;
-  color: #70ccc0;
 }
 #branding {
   margin: 0 0 0 20px;
   line-height: 60px;
   color: #fff;
 }
-.container-primary {
-  background: #70ccc0;
-  padding: 7em 10em 20em 15em;
-}
-.hero {
-  font-size: 4em;
-}
-.ui-button-contrast {
-  color: #ffffff;
-  background-color: #2c3e50;
-}
-.ui-button-contrast:hover,
-.ui-button-contrast.state-hover {
-  background-color: #354b60;
-  color: #ffffff;
-}
-.ui-button-contrast:focus,
-.ui-button-contrast.state-focus {
-  background-color: #354b60;
-}
-.ui-button-contrast:active,
-.ui-button-contrast.state-active {
-  background-color: #1a242f;
-}
-.contrast {
-  color: #FFF !important;
-}
-.ui-tab-vertical-container-left .ui-tab-vertical {
-  width: 8em;
-  height: 300px;
-}
-.ui-tab-vertical-container-left .ui-tab-content {
-  height: 300px;
-  margin-left: 8em;
-}
-.ui-tab-vertical-container-right .ui-tab-vertical {
-  width: 8em;
-  height: 300px;
-}
-.ui-tab-vertical-container-right .ui-tab-content {
-  height: 300px;
-  margin-right: 8em;
-}
-.footer {
-  padding: 1em;
-  background: #2c3e50;
-}
-.main-container {
-  margin-top: 2em;
-}
-#content {
-  padding-left: 2em;
+#main {
+  padding: 0 2em;
   border-left: 1px solid #ddd;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+.main-container {
+  margin-top: 2em;
+  margin-bottom: 5em;
+}
+.footer {
+  padding: 1em;
+  background: #2c3e50;
+  color: #fff;
 }
 .ui-sidebar {
   font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
@@ -6328,10 +6267,6 @@ span.ui-crumb-node {
   display: -ms-flexbox;
   -ms-flex-flow: row wrap;
 }
-/* Opera as of 12 on Windows needs word-spacing.
-   The ".opera-only" selector is used to prevent actual prefocus styling
-   and is not required in markup.
-*/
 .opera-only :-o-prefocus {
   word-spacing: -0.43em;
 }
@@ -6363,8 +6298,9 @@ span.ui-crumb-node {
   left: 0px;
   font-size: 16px;
   font-weight: bold;
-  color: #70ccc0;
+  border-left: 3px solid #70ccc0;
   content: "Example";
+  padding-left: 0.5em;
 }
 .example + .highlight {
   margin-bottom: 15px;
@@ -6380,6 +6316,10 @@ span.ui-crumb-node {
 .row {
   margin-bottom: .5em;
 }
+.ui-tab-align-right-democode {
+  border-left: 3px solid #70ccc0;
+  padding-left: 0.5em;
+}
 .ui-tab-align-right-democode .ui-tab-navigator {
   text-align: left;
   padding: 0;
@@ -6393,7 +6333,6 @@ span.ui-crumb-node {
   font-weight: bold;
   color: #999;
   padding: 0 10px 0 0;
-  margin: 0 0px 10px 0;
 }
 .ui-tab-align-right-democode .ui-tab-item:first-child {
   border-radius: 0;
@@ -6408,13 +6347,12 @@ span.ui-crumb-node {
 .ui-tab-align-right-democode .ui-tab-item-active {
   cursor: default;
   background: #fff;
-  color: #70ccc0;
+  color: #333;
 }
 .ui-tab-content-democode-border {
   border: 1px solid #e5e5e5;
-}
-.viewer {
-  display: none;
+  margin-top: 1.2em;
+  margin-bottom: 3em;
 }
 pre.prettyprint {
   border: 0;
@@ -6427,14 +6365,19 @@ pre.prettyprint code {
 .highlight {
   margin-left: 20px;
 }
-#main {
-  padding-left: 2em;
-  border-left: 1px solid #ddd;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+.ui-tab-vertical-container-left .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
 }
-.header {
-  height: 60px;
-  background: #2c3e50;
+.ui-tab-vertical-container-left .ui-tab-content {
+  height: 300px;
+  margin-left: 8em;
+}
+.ui-tab-vertical-container-right .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-right .ui-tab-content {
+  height: 300px;
+  margin-right: 8em;
 }
