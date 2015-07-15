@@ -33,8 +33,13 @@ define('demo',
                     targetArr.push(arr[i].replace(reg, ''));
                 }
                 $code.text(targetArr.join('\n'));
-                
-                var jsText = $item.nextAll('script').text();
+
+                var $script = $item.nextAll('script');
+                var refId = $script.data('refid');
+                if (refId) {
+                    $script = $('#' + refId);
+                }
+                var jsText = $script.text();
                 var jsArray = jsText.split('\n');
                 var jsNewArray = [];
                 var jsIndex = 0;
@@ -59,28 +64,4 @@ define('demo',
         renderSample();
         prettyPrint();
     }
-)
-
-// var ready = (function () {
-//     var list = [];
-//     return function (callback) {
-//         if (callback) {
-//             list.push(callback);
-//         }
-//         else {
-//             for (var i = 0; i < list.length; i++) {
-//                 list[i]();
-//             }
-//             ready = function (callback) {
-//                 callback();
-//             };
-//         }
-//     }
-// }());
-
-// function writeScript(url) {
-//     var gaJsHost = (("https:" == document.location.protocol) ?
-//         "https://" : "http://");
-//     document.write(unescape("%3Cscript src='" + gaJsHost + url +
-//         "' type='text/javascript'%3E%3C/script%3E"));
-// }
+);
