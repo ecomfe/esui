@@ -25,12 +25,11 @@
         </div>
         <div id="main" class="ui-u-4-5">
             <h2>Radiobox List</h2>
-            
             <div class="intro">
                 <p>Radiobox列表。支持从DOM元素直接创建。</p>
             </div>
             <div class="view">
-                <div class="example">
+                <div class="example ui-demo-light-stage">
                     <h3>Vertical</h3>
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" data-ui-name="frameworks1" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom" data-ui-orientation="vertical">
                         <div>
@@ -320,11 +319,12 @@
         require(
             [
                 'esui',
+                'jquery',
                 'esui/BoxGroup',
                 'esui/Tab',
                 'demo'
             ],
-            function (ui) {
+            function (ui, $) {
                 ui.init();
                 ui.get('box-group-button2').on(
                     'change',

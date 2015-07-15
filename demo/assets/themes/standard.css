@@ -2326,7 +2326,7 @@ h4,
 h5,
 h6 {
   font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
-  font-weight: normal;
+  font-weight: bold;
   color: #666666;
   margin: 0.67em 0;
 }
@@ -2796,150 +2796,16 @@ hr {
 .ui-calendar-layer .ui-monthview {
   vertical-align: top;
 }
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- * 
- * @file 对话框样式
- * @author dbear
- */
-.ui-commandmenu-layer {
-  position: absolute;
-}
-/**
-  * ESUI (Enterprise Simple UI)
-  * Copyright 2013 Baidu Inc. All rights reserved.
-  * 
-  * @file Breadcrumbs样式
-  * @author yankun01
-*/
-.ui-crumb {
-  padding: 0;
-  line-height: 1.3;
-  vertical-align: middle;
-  display: block;
-}
-.ui-crumb-separator {
-  margin: 0 0.5em;
-  color: #666666;
-}
-span.ui-crumb-node {
-  color: #666666;
-}
-.ui-crumb-nav-container {
-  background: #f6f6f6;
-}
-.ui-crumb-nav {
-  display: inline-block;
-  height: 4em;
-  line-height: 4em;
-  overflow: hidden;
-}
-.ui-crumb-nav .ui-crumb-node {
-  padding: 0 20px;
-}
-.ui-crumb-nav span.ui-crumb-node {
-  color: #70ccc0;
-}
-.ui-crumb-nav a.ui-crumb-node {
-  color: #666666;
-  text-decoration: none;
-}
-.ui-crumb-nav a.ui-crumb-node:hover {
-  color: #666666;
-  text-decoration: underline;
-}
-.ui-crumb-nav .ui-crumb-separator {
-  margin: 0 0.5em;
-  color: #999999;
-}
-/**
- * ESUI (Enterprise Simple UI)
- * Copyright 2013 Baidu Inc. All rights reserved.
- *
- * @file 对话框样式
- * @author dbear
- */
-.ui-dialog {
-  position: absolute;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  z-index: 1203;
-  width: 600px;
-  display: block;
-  background: #ffffff;
-  border: none;
-  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
-.ui-dialog-head {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  color: #666666;
-  font-weight: bold;
-}
-.ui-dialog-close-icon {
-  position: absolute;
-  right: 0.5em;
-  top: 0.75em;
-  cursor: pointer;
-  color: #999999;
-}
-.ui-dialog-close-icon:hover {
-  color: #666666;
-}
-.ui-dialog-title {
-  line-height: 2.5em;
-  padding: 0 0.5em;
-}
-.ui-dialog-body {
-  padding: 0.5em;
-}
-.ui-dialog-foot-panel {
-  padding: 0.5em;
-  margin: 0;
-  border-top: none;
-}
-.ui-dialog-draggable .ui-dialog-head {
-  cursor: move;
-}
-.ui-dialog-dragging {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.ui-dialog-mask {
-  opacity: 0.2;
-  filter: alpha(opacity=20);
-}
-.ui-dialog-text {
-  min-height: 4em;
-}
-.ui-dialog-alert .ui-dialog-body,
-.ui-dialog-confirm .ui-dialog-body {
-  overflow: auto;
-}
-.ui-dialog-icon {
-  float: left;
-  margin-right: 1em;
-}
-.ui-dialog-icon span {
-  font-size: 4em;
-}
-.ui-dialog-icon-warning {
-  color: #f16c6c;
-}
-.ui-dialog-icon-confirm {
-  color: #6bd5ec;
-}
 .ui-layer {
   position: absolute;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin: 0;
+}
+.ui-layer-hidden {
+  display: none;
 }
 /**
  * ESUI (Enterprise Simple UI)
@@ -3215,6 +3081,147 @@ span.ui-crumb-node {
 .ui-select-layer-compact .ui-select-item-selected > :first-child {
   background: #fbfbfb;
   color: #666666 !important;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ * 
+ * @file 对话框样式
+ * @author dbear
+ */
+.ui-commandmenu-layer {
+  position: absolute;
+}
+/**
+  * ESUI (Enterprise Simple UI)
+  * Copyright 2013 Baidu Inc. All rights reserved.
+  * 
+  * @file Breadcrumbs样式
+  * @author yankun01
+*/
+.ui-crumb {
+  padding: 0;
+  line-height: 1.3;
+  vertical-align: middle;
+  display: block;
+}
+.ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #666666;
+}
+span.ui-crumb-node {
+  color: #666666;
+}
+.ui-crumb-nav-container {
+  background: #f6f6f6;
+}
+.ui-crumb-nav {
+  display: inline-block;
+  height: 4em;
+  line-height: 4em;
+  overflow: hidden;
+}
+.ui-crumb-nav .ui-crumb-node {
+  padding: 0 20px;
+}
+.ui-crumb-nav span.ui-crumb-node {
+  color: #70ccc0;
+}
+.ui-crumb-nav a.ui-crumb-node {
+  color: #666666;
+  text-decoration: none;
+}
+.ui-crumb-nav a.ui-crumb-node:hover {
+  color: #666666;
+  text-decoration: underline;
+}
+.ui-crumb-nav .ui-crumb-separator {
+  margin: 0 0.5em;
+  color: #999999;
+}
+/**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file 对话框样式
+ * @author dbear
+ */
+.ui-dialog {
+  position: absolute;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  z-index: 1203;
+  width: 600px;
+  display: block;
+  background: #ffffff;
+  border: none;
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+.ui-dialog-head {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #666666;
+  font-weight: bold;
+}
+.ui-dialog-close-icon {
+  position: absolute;
+  right: 0.5em;
+  top: 0.75em;
+  cursor: pointer;
+  color: #999999;
+}
+.ui-dialog-close-icon:hover {
+  color: #666666;
+}
+.ui-dialog-title {
+  line-height: 2.5em;
+  padding: 0 0.5em;
+}
+.ui-dialog-body {
+  padding: 0.5em;
+}
+.ui-dialog-foot-panel {
+  padding: 0.5em;
+  margin: 0;
+  border-top: none;
+}
+.ui-dialog-draggable .ui-dialog-head {
+  cursor: move;
+}
+.ui-dialog-dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ui-dialog-mask {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.ui-dialog-text {
+  min-height: 4em;
+}
+.ui-dialog-alert .ui-dialog-body,
+.ui-dialog-confirm .ui-dialog-body {
+  overflow: auto;
+}
+.ui-dialog-icon {
+  float: left;
+  margin-right: 1em;
+}
+.ui-dialog-icon span {
+  font-size: 4em;
+}
+.ui-dialog-icon-warning {
+  color: #f16c6c;
+}
+.ui-dialog-icon-confirm {
+  color: #6bd5ec;
 }
 /**
 * ESUI (Enterprise Simple UI)
@@ -6237,29 +6244,91 @@ span.ui-crumb-node {
     transform: rotate(359deg);
   }
 }
-.header {
-  height: 60px;
+.ui-tab-vertical-container-left .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-left .ui-tab-content {
+  height: 300px;
+  margin-left: 8em;
+}
+.ui-tab-vertical-container-right .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-right .ui-tab-content {
+  height: 300px;
+  margin-right: 8em;
+}
+.ui-navbar-mordern {
   background: #2c3e50;
+}
+.ui-navbar-mordern li:hover a,
+.ui-navbar-mordern li:active a {
+  background: #2c3e50;
+  color: #70ccc0;
 }
 #branding {
   margin: 0 0 0 20px;
   line-height: 60px;
   color: #fff;
 }
-#main {
-  padding: 0 2em;
-  border-left: 1px solid #ddd;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+.container-primary {
+  background: #70ccc0;
+  padding: 7em 10em 20em 15em;
 }
-.main-container {
-  margin-top: 2em;
-  margin-bottom: 5em;
+.hero {
+  font-size: 4em;
+}
+.ui-button-contrast {
+  color: #ffffff;
+  background-color: #2c3e50;
+}
+.ui-button-contrast:hover,
+.ui-button-contrast.state-hover {
+  background-color: #354b60;
+  color: #ffffff;
+}
+.ui-button-contrast:focus,
+.ui-button-contrast.state-focus {
+  background-color: #354b60;
+}
+.ui-button-contrast:active,
+.ui-button-contrast.state-active {
+  background-color: #1a242f;
+}
+.contrast {
+  color: #FFF !important;
+}
+.ui-tab-vertical-container-left .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-left .ui-tab-content {
+  height: 300px;
+  margin-left: 8em;
+}
+.ui-tab-vertical-container-right .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-right .ui-tab-content {
+  height: 300px;
+  margin-right: 8em;
 }
 .footer {
   padding: 1em;
   background: #2c3e50;
+}
+.main-container {
+  margin-top: 2em;
+}
+#content {
+  padding-left: 2em;
+  border-left: 1px solid #ddd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .ui-sidebar {
   font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
@@ -6295,6 +6364,10 @@ span.ui-crumb-node {
   display: -ms-flexbox;
   -ms-flex-flow: row wrap;
 }
+/* Opera as of 12 on Windows needs word-spacing.
+   The ".opera-only" selector is used to prevent actual prefocus styling
+   and is not required in markup.
+*/
 .opera-only :-o-prefocus {
   word-spacing: -0.43em;
 }
@@ -6326,9 +6399,8 @@ span.ui-crumb-node {
   left: 0px;
   font-size: 16px;
   font-weight: bold;
-  border-left: 3px solid #70ccc0;
+  color: #70ccc0;
   content: "Example";
-  padding-left: 0.5em;
 }
 .example + .highlight {
   margin-bottom: 15px;
@@ -6344,10 +6416,6 @@ span.ui-crumb-node {
 .row {
   margin-bottom: .5em;
 }
-.ui-tab-align-right-democode {
-  border-left: 3px solid #70ccc0;
-  padding-left: 0.5em;
-}
 .ui-tab-align-right-democode .ui-tab-navigator {
   text-align: left;
   padding: 0;
@@ -6361,6 +6429,7 @@ span.ui-crumb-node {
   font-weight: bold;
   color: #999;
   padding: 0 10px 0 0;
+  margin: 0 0px 10px 0;
 }
 .ui-tab-align-right-democode .ui-tab-item:first-child {
   border-radius: 0;
@@ -6375,12 +6444,13 @@ span.ui-crumb-node {
 .ui-tab-align-right-democode .ui-tab-item-active {
   cursor: default;
   background: #fff;
-  color: #333;
+  color: #70ccc0;
 }
 .ui-tab-content-democode-border {
   border: 1px solid #e5e5e5;
-  margin-top: 1.2em;
-  margin-bottom: 3em;
+}
+.viewer {
+  display: none;
 }
 pre.prettyprint {
   border: 0;
@@ -6393,19 +6463,14 @@ pre.prettyprint code {
 .highlight {
   margin-left: 20px;
 }
-.ui-tab-vertical-container-left .ui-tab-vertical {
-  width: 8em;
-  height: 300px;
+#main {
+  padding-left: 2em;
+  border-left: 1px solid #ddd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
-.ui-tab-vertical-container-left .ui-tab-content {
-  height: 300px;
-  margin-left: 8em;
-}
-.ui-tab-vertical-container-right .ui-tab-vertical {
-  width: 8em;
-  height: 300px;
-}
-.ui-tab-vertical-container-right .ui-tab-content {
-  height: 300px;
-  margin-right: 8em;
+.header {
+  height: 60px;
+  background: #2c3e50;
 }

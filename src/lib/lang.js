@@ -55,27 +55,37 @@ define(
         /**
          * 对一个对象进行深度复制
          *
-         * @param {Object} obj 需要进行复制的对象
+         * @param {Object} source 需要进行复制的对象
          * @return {Object} 复制出来的新对象
          */
-        lib.deepClone = function (obj) {
-            // 非对象以及函数就直接返回
-            if (!u.isObject(obj) || u.isFunction(obj) || u.isRegExp(obj)) {
-                return obj;
+        lib.deepClone = function (source) {
+            if (!source || typeof source !== 'object') {
+                return source;
             }
 
-            if (u.isArray(obj)) {
-                return u.map(obj, lib.deepClone);
-            }
-
-            var clone = {};
-            u.each(
-                obj,
-                function (value, key) {
-                    clone[key] = lib.deepClone(value);
+            var result = source;
+            if (u.isArray(source)) {
+                result = [];
+                for (var i = 0; i < source.length; i++) {
+                    result[i] = lib.deepClone(source[i]);
                 }
-            );
-            return clone;
+            }
+            else if (({}).toString.call(source) === '[object Object]'
+                // IE下，DOM和BOM对象上一个语句为true，
+                // isPrototypeOf挂在`Object.prototype`上的，
+                // 因此所有的字面量都应该会有这个属性
+                // 对于在`window`上挂了`isPrototypeOf`属性的情况，直接忽略不考虑
+                && ('isPrototypeOf' in source)
+            ) {
+                result = {};
+                for (var key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        result[key] = lib.deepClone(source[key]);
+                    }
+                }
+            }
+
+            return result;
         };
 
         /**

@@ -68,16 +68,6 @@ define(
                 hasMask: false
             };
 
-            var booleanProperties = ['fixed', 'autoClose', 'hasMask'];
-            u.each(
-                booleanProperties,
-                function (property) {
-                    if (options[property] === 'false') {
-                        options[property] = false;
-                    }
-                }
-            );
-
             u.extend(properties, options);
             Panel.prototype.initOptions.call(this, properties);
         };
@@ -901,6 +891,9 @@ define(
          * @return {HTMLElement} 获取到的Mask元素节点.
          */
         function getMask() {
+            if (!this.hasMask) {
+                return;
+            }
             var id = 'ctrl-mask-' + this.helper.getId();
             var mask = lib.g(id);
 

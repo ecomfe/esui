@@ -14,7 +14,6 @@ define(
         var Helper = require('./Helper');
         var eoo = require('eoo');
         var EventTarget = require('./EventTarget');
-        var $ = require('jquery');
 
         /**
          * 控件基类
@@ -409,6 +408,14 @@ define(
                 if (properties.hasOwnProperty('viewContext')) {
                     this.setViewContext(properties.viewContext);
                     delete properties.viewContext;
+                }
+
+                // 几个状态选项是要转为`boolean`的
+                if (this.hasOwnProperty('disabled')) {
+                    this.disabled = !!this.disabled;
+                }
+                if (this.hasOwnProperty('hidden')) {
+                    this.hidden = !!this.hidden;
                 }
 
                 var changes = [];
