@@ -1,65 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
         <meta charset="utf-8" />
         <title>TextLine - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
 <body>
-    <h1 id="branding">ESUI - TextLine</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - TextLine</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>展示</h2>
-            <div class="intro">
-                <p>描述</p>
-            </div>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <h3>Error</h3>
-                    <div data-ui="type:TextLine;name:textLine;">
-                    </div>
-                    <h3>Disabled</h3>
-                    <div data-ui="type:TextLine;name:textLine;disabled:disabled;rawValue:disabled"></div>
-                    <h3>Read Only</h3>
-                    <div data-ui="type:TextLine;name:textLine;readOnly:readOnly;rawValue:readOnly"></div>
-                    <h3>Success</h3>
-                    <div data-ui="type:TextLine;name:textLine;rawValue:success;states:success;placeholder:我草今天又吃面了;"></div>
-                    <h3>Warning</h3>
-                    <div data-ui="type:TextLine;name:textLine;rawValue:warning;states:warning"></div>
+            <p>描述</p>
+            <div class="example">
+                <h3>Error</h3>
+                <div data-ui="type:TextLine;name:textLine;">
                 </div>
+                <h3>Disabled</h3>
+                <div data-ui="type:TextLine;name:textLine;disabled:disabled;rawValue:disabled"></div>
+                <h3>Read Only</h3>
+                <div data-ui="type:TextLine;name:textLine;readOnly:readOnly;rawValue:readOnly"></div>
+                <h3>Success</h3>
+                <div data-ui="type:TextLine;name:textLine;rawValue:success;states:success"></div>
+                <h3>Warning</h3>
+                <div data-ui="type:TextLine;name:textLine;rawValue:warning;states:warning"></div>
+                <h3>PlaceHolder</h3>
+                <div data-ui="type:TextLine;name:textLine;placeholder:warning;"></div>
             </div>
         </div>
-        <script>
-        require(
-            [
-                'esui',
-                'esui/TextLine'
-            ],
-            function (ui) {
-                var controls = ui.init();
-                var textLine = controls[0];
-
-                textLine.setProperties({
-                    value: 'value1\nvalue2\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf'
-                });
-                textLine.showValidationMessage('invalid', '错误信息！');
-            }
-        );
-        copyExample();
-        </script>
     </div>
+    <script src="assets/loader/esl.js"></script>
+    <script src="assets/loader/config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'esui',
+            'esui/TextLine',
+            'esui/Tab',
+            'demo'
+        ],
+        function (ui) {
+            var controls = ui.init();
+            var textLine = controls[0];
+
+            textLine.setProperties({
+                value: 'value1\nvalue2\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf'
+            });
+            textLine.showValidationMessage('invalid', '错误信息！');
+        }
+    );
+    </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>
