@@ -44,4 +44,13 @@ window.onload = function() {
         }
     }
     genNavigator();
+
+    function footer() {
+        var footHtml = '<p class="ui-text-center contrast">HI群：1392158</p>';
+        var footerNode = document.createElement('div');
+        footerNode.setAttribute("class", 'footer');
+        footerNode.innerHTML = footHtml;
+        document.getElementsByTagName('body')[0].appendChild(footerNode);
+    }
+    footer();
 }
