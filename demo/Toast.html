@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>Toast - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/loader/config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
-
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
@@ -25,37 +22,34 @@
             </div>
             <div id="main" class="ui-u-4-5">
                 <h2>Toast</h2>
-                <div class="intro">
-                    <p>全局报错。</p>
-                </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>设置内容</h3>
-                        <div class="row">
-                            <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
-                                data-ui-width="200" data-ui-height="80" placeholder="messageContent"><strong>标题：</strong>这是提示信息</textarea>
-                        </div>
-                        <div class="row">
-                            <button id="op-show" class="ui-button">show default</button>
-                            <button id="op-info" class="ui-button ui-button-info">show info</button>
-                            <button id="op-alert" class="ui-button ui-button-warning">show alert</button>
-                            <button id="op-success" class="ui-button ui-button-success">show success</button>
-                            <button id="op-error" class="ui-button ui-button-danger">show error</button>
-                        </div>
-                        <div class="row">
-                            <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
-                                data-ui-hint-type="suffix"/>
-                            <button id="op-time" class="ui-button">Set Display Time</button>
-                        </div>
+                <p>全局报错。</p>
+                <div class="example">
+                    <h3>设置内容</h3>
+                    <div class="row">
+                        <textarea data-ui-id="messageContent" type="textarea" data-ui-type="TextBox"
+                            data-ui-width="300" data-ui-height="200" placeholder="messageContent">&lt;strong&gt;标题：&lt;/strong&gt;这是提示信息
+                        </textarea>
+                    </div>
+                    <div class="row">
+                        <button type="button" id="op-show" class="ui-button">show default</button>
+                        <button type="button" id="op-info" class="ui-button ui-button-info">show info</button>
+                        <button type="button" id="op-alert" class="ui-button ui-button-warning">show alert</button>
+                        <button type="button" id="op-success" class="ui-button ui-button-success">show success</button>
+                        <button type="button" id="op-error" class="ui-button ui-button-danger">show error</button>
+                    </div>
+                    <div class="row">
+                        <input data-ui-id="time" type="text" data-ui-type="TextBox" placeholder="显示时间" value="3000" data-ui-hint="ms"
+                            data-ui-hint-type="suffix"/>
+                        <button type="button" id="op-time" class="ui-button">Set Display Time</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/loader/config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',

@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>Tip - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/loader/config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
-
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
@@ -24,48 +21,39 @@
                 </ul>
             </div>
             <div id="main" class="ui-u-4-5">
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
-                <h2>Tip</h2>
-                <section class="intro">
-                    <p>在页面上放置一个提示信息。</p>
-                </section>
-                <section class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>自动展现</h3>
-                        <dl>
-                            <dt>说明：</dt> 
-                            <dd>自动展现在隐藏之后，就自动转为点击触发展现</dd>
-                        </dl>
-                        <div class="row">
-                            普通自动展现
-                            <div class="ui-tip ui-small" data-ui="type:Tip;id:auto-tip-normal;title:普通自动展现;content:普通自动展现内容;"></div>
-                        </div>
-                        <div class="row">
-                            3s后隐藏
-                            <div class="ui-tip" data-ui="type:Tip;id:auto-tip-auto;title:自动展现自动隐藏;content:3s后隐藏;"></div>
-                        </div>
-                        <h3>点击展现</h3>
-                        <div class="row">
-                            点击展现
-                            <div class="ui-tip" data-ui="type:Tip;id:click-tip-normal;title:点击展现;content:普通点击展现内容;arrow:1;showMode:click;"></div>
-                        </div>
-                        <h3>悬停展现</h3>
-                        <div class="row">
-                            悬停展现
-                            <div data-ui="type:Tip;id:over-tip-normal;title:悬停展现;content:普通悬停展现内容;arrow:1;showMode:over;"></div>
-                        </div>
-                        </div>
+                <h2>自动展现</h2>
+                <p>在页面上放置一个提示信息。</p>
+                <div class="example">
+                    <div class="row">
+                        普通自动展现
+                        <div class="ui-tip ui-small" data-ui="type:Tip;id:auto-tip-normal;title:普通自动展现;content:普通自动展现内容;"></div>
                     </div>
-                </section>
+                    <div class="row">
+                        3s后隐藏
+                        <div class="ui-tip" data-ui="type:Tip;id:auto-tip-auto;title:自动展现自动隐藏;content:3s后隐藏;"></div>
+                    </div>
+                </div>
+                <h2>点击展现</h2>
+                <div class="example">
+                    <div class="row">
+                        点击展现
+                        <div class="ui-tip" data-ui="type:Tip;id:click-tip-normal;title:点击展现;content:普通点击展现内容;arrow:1;showMode:click;"></div>
+                    </div>
+                </div>
+                <h2>悬停展现</h2>
+                <div class="example">
+                    <div class="row">
+                        悬停展现
+                        <div data-ui="type:Tip;id:over-tip-normal;title:悬停展现;content:普通悬停展现内容;arrow:1;showMode:over;"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/loader/config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
