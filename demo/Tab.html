@@ -1,37 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
         <meta charset="utf-8" />
-        <title>Wizard</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/loader/config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <title>Tab - ESUI Demo</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
-
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <style>
-            .ui-tab-content {
-                //border: 1px solid #DFDFDF;
-                padding: 1em;
-                background: #FFF;
-            }
-            .ui-border-top-0 {
-                border-top: 0;
-            }
-            .ui-border-bottom-0 {
-                border-bottom: 0;
-            }
-            .ui-border-left-0 {
-                border-left: 0;
-            }
-            .ui-border-right-0 {
-                border-right: 0;
-            }
-        </style>
     </head>
 <body>
     <div class="header">
@@ -44,29 +22,26 @@
         </div>
         <div id="main" class="ui-u-4-5">
             <h2>Tab</h2>
-            <div class="intro">
-                <p>横向</p>
-            </div>
-            <div class="view">
-                <div class="example ui-demo-light-stage">
-                    <div
-                    data-ui-type="Tab"
-                    data-ui-id="test"
-                    data-ui-height="500"
-                    data-ui-variants="align-right">
-                        <ul data-role="navigator">
-                            <li data-for="a">TAB1</li>
-                            <li data-for="b">TAB2</li>
-                            <li data-for="c">TAB3</li>
-                        </ul>
-                    </div>
-                    <div class="ui-tab-content ui-tab-content-top-border">
-                        <div class="ui-tab-panel" title="tab1" id="a">我是Tab1</div>
-                        <div class="ui-tab-panel" title="tab2" id="b">我是Tab2</div>
-                        <div class="ui-tab-panel" title="tab3" id="c">我是Tab3</div>
-                    </div>
+            <p>横向</p>
+            <div class="example">
+                <div
+                data-ui-type="Tab"
+                data-ui-id="test"
+                data-ui-height="500"
+                data-ui-variants="align-right">
+                    <ul data-role="navigator">
+                        <li data-for="a">TAB1</li>
+                        <li data-for="b">TAB2</li>
+                        <li data-for="c">TAB3</li>
+                    </ul>
+                </div>
+                <div class="ui-tab-content ui-tab-content-top-border">
+                    <div class="ui-tab-panel" title="tab1" id="a">我是Tab1</div>
+                    <div class="ui-tab-panel" title="tab2" id="b">我是Tab2</div>
+                    <div class="ui-tab-panel" title="tab3" id="c">我是Tab3</div>
                 </div>
             </div>
+            <h2>Tab</h2>
             <div class="intro">
                 <p>头向下</p>
             </div>
@@ -140,7 +115,11 @@
             </div>
         </div>
     </div>
-    <script>
+    <script src="assets/loader/esl.js"></script>
+    <script src="assets/loader/config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
         require(
             [
                 'esui',
