@@ -131,17 +131,7 @@ define(
          */
         helper.delegateDOMEvent = function (element, type, newType) {
             var handler = function (e) {
-                var event = require('mini-event').fromDOMEvent(e);
-                event.rawEvent = e;
-                this.fire(newType || e.type, event);
-
-                if (event.isDefaultPrevented()) {
-                    e.preventDefault();
-                }
-
-                if (event.isPropagationStopped()) {
-                    e.stopPropagation();
-                }
+                this.fire(newType || e.type, {}, e);
             };
 
             this.addDOMEvent(element, type, handler);

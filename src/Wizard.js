@@ -129,15 +129,15 @@ define(
                             {
                                 numberNodeClass: controlHelper.getPartClassName('node-number'),
                                 textNodeClass: controlHelper.getPartClassName('node-text'),
-                                text: lib.encodeHTML(node.text),
-                                number: lib.encodeHTML(node.number)
+                                text: u.escape(node.text),
+                                number: u.escape(node.number)
                             }
                         );
                     }
                     return lib.format(
                         this.nodeTemplate,
                         {
-                            text: lib.encodeHTML(node.text)
+                            text: u.escape(node.text)
                         }
                     );
                 },

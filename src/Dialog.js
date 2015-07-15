@@ -729,10 +729,10 @@ define(
                 dialog.dispose();
             }
 
-            var title = lib.encodeHTML(args.title) || '';
-            var content = lib.encodeHTML(args.content) || '';
-            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
-            var cancelText = lib.encodeHTML(args.cancelText) || Dialog.CANCEL_TEXT;
+            var title = u.escape(args.title) || '';
+            var content = u.escape(args.content) || '';
+            var okText = u.escape(args.okText) || Dialog.OK_TEXT;
+            var cancelText = u.escape(args.cancelText) || Dialog.CANCEL_TEXT;
 
             var properties = {
                 type: 'confirm',
@@ -821,9 +821,9 @@ define(
                 dialog.dispose();
             }
 
-            var title = lib.encodeHTML(args.title) || '';
-            var content = lib.encodeHTML(args.content) || '';
-            var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
+            var title = u.escape(args.title) || '';
+            var content = u.escape(args.content) || '';
+            var okText = u.escape(args.okText) || Dialog.OK_TEXT;
 
             var properties = {
                 type: 'warning',

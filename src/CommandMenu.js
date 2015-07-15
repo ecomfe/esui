@@ -9,6 +9,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var $ = require('jquery');
         var lib = require('./lib');
         var Control = require('./Control');
         var Layer = require('./Layer');

@@ -4,14 +4,15 @@
         <meta charset="utf-8" />
         <title>Wizard</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <style>
             .ui-tab-content {
                 //border: 1px solid #DFDFDF;
@@ -33,19 +34,20 @@
         </style>
     </head>
 <body>
-    <h1>Tab</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Tab</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Tab</h2>
             <div class="intro">
                 <p>横向</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <div
                     data-ui-type="Tab"
@@ -69,9 +71,6 @@
                 <p>头向下</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <div class="ui-tab-content ui-tab-content-bottom-border">
                         <div class="ui-tab-panel" title="tab1" id="a_bottom">我是Tab1</div>
@@ -94,9 +93,6 @@
                 <p>纵向</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <div class="ui-tab-vertical-container-left">
                         <div
@@ -121,9 +117,6 @@
                 <p>纵向</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <div class="ui-tab-vertical-container-right">
                         <div
@@ -151,23 +144,14 @@
         require(
             [
                 'esui',
-                'esui/Tab'
+                'esui/Tab',
+                'demo'
             ],
             function (ui, Tab) {
                 var tab = ui.init()[0];
-                /*
-                var a = {title: 'test'};
-                tab.add(a);
-                tab.add(a);
-                tab.add(a);
-                tab.add(a);
-                setTimeout(function() {
-                    tab.remove(a);
-                }, 1000);
-                */
             }
         );
-        copyExample();
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

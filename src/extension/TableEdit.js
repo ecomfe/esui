@@ -16,12 +16,13 @@ define(
 
         var Extension = require('../Extension');
         var lib = require('../lib');
-        var main = require('../main');
+        var esui = require('../main');
         var Table = require('../Table');
         var ValidityState = require('../validator/ValidityState');
         var Validity = require('../validator/Validity');
         var Layer = require('../Layer');
         var u = require('underscore');
+        var eoo = require('eoo');
 
         var layContentTpl = [
             '<div class="${optClass}">',
@@ -59,6 +60,112 @@ define(
         var currentTable = null;
         var currentField = null;
         var guid = 1;
+
+        /**
+         * 表格行内编辑扩展
+         *
+         * 启用该扩展后，{@link Table}控件将可以在行内进行字段的编辑
+         *
+         * 在{@link Table#fields}配置中，可编辑的字段有以下属性控制：
+         *
+         * - `{boolean editable}`：设置为`true`表示可编辑
+         * - `{Object} editRules`：配置编辑的验证规则，同{@link validator.Rule}定义
+         * - `{Function | Mixed} editContent`：指定最终编辑后的内容，
+         * 如果是函数则取函数的返回值作为最终编辑后的内容，其它类型则作为常量
+         *
+         * 在编辑过程中，{@link Table}控件将触发以下事件：
+         *
+         * - `startedit`：开始编辑
+         * - `saveedit`：编辑生效
+         * - `canceledit`：取消编辑
+         *
+         * 以上3个事件的事件对象均提供以下属性：
+         *
+         *
+         * - `{number} rowIndex`：行索引
+         * - `{number} columnIndex`：列索引
+         * - `{number} field`：对应的字段
+         *
+         * 而`saveedit`还额外提供`{Mixed} value`属性表示保存的值
+         *
+         * 其中`saveedit`和`startedit`均可以通过`preventDefault()`阻止默认行为
+         *
+         * @class extension.TableEdit
+         * @extends Extension
+         * @constructor
+         */
+        var TableEdit = eoo.create(
+            Extension,
+            {
+                /**
+                 * 指定扩展类型，始终为`"TableEdit"`
+                 *
+                 * @type {string}
+                 */
+                type: 'TableEdit',
+
+                /**
+                 * 激活扩展
+                 *
+                 * @override
+                 */
+                activate: function () {
+                    var target = this.target;
+                    // 只对`Table`控件生效
+                    if (!(target instanceof Table)) {
+                        return;
+                    }
+
+                    target.startEdit = startEdit;
+                    target.cancelEdit = cancelEdit;
+                    target.hideEditLayer = hideEditLayer;
+                    target.showEditError = showEditError;
+
+                    target.addRowBuilders([
+                        {
+                            index: 3,
+                            getColHtml: getColHtml
+                        }
+                    ]);
+
+                    target.addHandlers(
+                        'click',
+                        {
+                            handler: entranceClickHandler,
+                            matchFn: target.helper.getPartClassName('cell-editentry')
+                        }
+                    );
+
+                    target.on('enddrag', tableEndDragHandler);
+                    target.on('resize', tableResizeHandler);
+
+                    this.$super(arguments);
+                },
+
+                /**
+                 * 取消扩展的激活状态
+                 *
+                 * @override
+                 */
+                inactivate: function () {
+                    var target = this.target;
+                    // 只对`Table`控件生效
+                    if (!(target instanceof Table)) {
+                        return;
+                    }
+
+                    delete target.startEdit;
+                    delete target.cancelEdit;
+
+                    target.un('enddrag', tableEndDragHandler);
+                    target.un('resize', tableResizeHandler);
+
+                    disposeEditorControl(target);
+
+                    this.$super(arguments);
+                }
+            }
+        );
 
         /**
          * 初始化表格内容编辑器
@@ -100,7 +207,7 @@ define(
          * @ignore
          */
         function initButtonControl() {
-            var controlMap = main.init(layer);
+            var controlMap = esui.init(layer);
             okButton = getControlFromMap(controlMap, okId);
             cancelButton = getControlFromMap(controlMap, cancelId);
 
@@ -146,8 +253,8 @@ define(
                     options.field.editRules
                 );
 
-                inputCtrl = main.init(inputField, inputCtrlOptions)[0];
-                main.init(errorField);
+                inputCtrl = esui.init(inputField, inputCtrlOptions)[0];
+                esui.init(errorField);
 
                 inputCtrl.on('enter', getOkHandler());
 
@@ -580,114 +687,7 @@ define(
             }
         }
 
-        /**
-         * 表格行内编辑扩展
-         *
-         * 启用该扩展后，{@link Table}控件将可以在行内进行字段的编辑
-         *
-         * 在{@link Table#fields}配置中，可编辑的字段有以下属性控制：
-         *
-         * - `{boolean editable}`：设置为`true`表示可编辑
-         * - `{Object} editRules`：配置编辑的验证规则，同{@link validator.Rule}定义
-         * - `{Function | Mixed} editContent`：指定最终编辑后的内容，
-         * 如果是函数则取函数的返回值作为最终编辑后的内容，其它类型则作为常量
-         *
-         * 在编辑过程中，{@link Table}控件将触发以下事件：
-         *
-         * - `startedit`：开始编辑
-         * - `saveedit`：编辑生效
-         * - `canceledit`：取消编辑
-         *
-         * 以上3个事件的事件对象均提供以下属性：
-         *
-         *
-         * - `{number} rowIndex`：行索引
-         * - `{number} columnIndex`：列索引
-         * - `{number} field`：对应的字段
-         *
-         * 而`saveedit`还额外提供`{Mixed} value`属性表示保存的值
-         *
-         * 其中`saveedit`和`startedit`均可以通过`preventDefault()`阻止默认行为
-         *
-         * @class extension.TableEdit
-         * @extends Extension
-         * @constructor
-         */
-        function TableEdit() {
-            Extension.apply(this, arguments);
-        }
-
-        /**
-         * 指定扩展类型，始终为`"TableEdit"`
-         *
-         * @type {string}
-         */
-        TableEdit.prototype.type = 'TableEdit';
-
-        /**
-         * 激活扩展
-         *
-         * @override
-         */
-        TableEdit.prototype.activate = function () {
-            var target = this.target;
-            // 只对`Table`控件生效
-            if (!(target instanceof Table)) {
-                return;
-            }
-
-            target.startEdit = startEdit;
-            target.cancelEdit = cancelEdit;
-            target.hideEditLayer = hideEditLayer;
-            target.showEditError = showEditError;
-
-            target.addRowBuilders([
-                {
-                    index: 3,
-                    getColHtml: getColHtml
-                }
-            ]);
-
-            target.addHandlers(
-                'click',
-                {
-                    handler: entranceClickHandler,
-                    matchFn: target.helper.getPartClassName('cell-editentry')
-                }
-            );
-
-            target.on('enddrag', tableEndDragHandler);
-            target.on('resize', tableResizeHandler);
-
-            Extension.prototype.activate.apply(this, arguments);
-        };
-
-        /**
-         * 取消扩展的激活状态
-         *
-         * @override
-         */
-        TableEdit.prototype.inactivate = function () {
-            var target = this.target;
-            // 只对`Table`控件生效
-            if (!(target instanceof Table)) {
-                return;
-            }
-
-            delete target.startEdit;
-            delete target.cancelEdit;
-
-            target.un('enddrag', tableEndDragHandler);
-            target.un('resize', tableResizeHandler);
-
-            disposeEditorControl(target);
-
-            Extension.prototype.inactivate.apply(this, arguments);
-        };
-
-        lib.inherits(TableEdit, Extension);
-        main.registerExtension(TableEdit);
-
+        esui.registerExtension(TableEdit);
         return TableEdit;
     }
 );

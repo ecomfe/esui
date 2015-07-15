@@ -1,59 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>TipLayer - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - TipLayer</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">ESUI - TipLayer</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-sidebar">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>基本TipLayer</h2>
-                <div class="intro">
-                    <p>可以把TipLayer绑定到一个ESUI控件上或DOM元素。</p>
-                </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>绑定到控件</h3>
-                        <div class="row">
-                            <button data-ui-id="control-tip" data-ui-type="Button">
-                                Hover to see Help
-                            </button>
-                        </div>
-                        <div class="row">
-                            <button data-ui-id="control-tip-2" data-ui-type="Button">
-                                共享一个TipLayer
-                            </button>
-                        </div>
-                        <h3>绑定到DOM</h3>
-                        <div class="row">
-                            <a href="#" id="tip-layer-label">
-                                See Help <span class="ui-icon-question"></span>
-                            </a>
-                        </div>
+                <p>可以把TipLayer绑定到一个ESUI控件上或DOM元素。</p>
+                <div class="example">
+                    <h3>绑定到控件</h3>
+                    <div class="row">
+                        <button data-ui-id="control-tip" data-ui-type="Button">
+                            Hover to see Help
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button data-ui-id="control-tip-2" data-ui-type="Button">
+                            共享一个TipLayer
+                        </button>
+                    </div>
+                    <h3>绑定到DOM</h3>
+                    <div class="row">
+                        <a href="#" id="tip-layer-label">
+                            See Help <span class="ui-icon-question"></span>
+                        </a>
                     </div>
                 </div>
+                <script type="text/sample" data-refid="main-js">
+                </script>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="assets/loader/config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
-                'esui/TipLayer'
+                'esui/TipLayer',
+                'esui/Tab',
+                'demo'
             ],
             function (ui, TipLayer) {
                 ui.init();
@@ -87,7 +90,7 @@
                 });
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

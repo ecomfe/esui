@@ -6224,118 +6224,217 @@ span.ui-crumb-node {
   height: 300px;
   margin-right: 8em;
 }
-.ui-demo-light-stage {
-  background: white;
-  padding: 1em;
+.ui-navbar-mordern {
+  background: #2c3e50;
+}
+.ui-navbar-mordern li:hover a,
+.ui-navbar-mordern li:active a {
+  background: #2c3e50;
+  color: #70ccc0;
 }
 #branding {
+  margin: 0 0 0 20px;
+  line-height: 60px;
+  color: #fff;
+}
+.container-primary {
+  background: #70ccc0;
+  padding: 7em 10em 20em 15em;
+}
+.hero {
+  font-size: 4em;
+}
+.ui-button-contrast {
   color: #ffffff;
-  margin: 0;
-  padding: .5em;
+  background-color: #2c3e50;
 }
-/* User CSS */
-#navigator {
-  float: left;
-  width: 160px;
+.ui-button-contrast:hover,
+.ui-button-contrast.state-hover {
+  background-color: #354b60;
+  color: #ffffff;
+}
+.ui-button-contrast:focus,
+.ui-button-contrast.state-focus {
+  background-color: #354b60;
+}
+.ui-button-contrast:active,
+.ui-button-contrast.state-active {
+  background-color: #1a242f;
+}
+.contrast {
+  color: #FFF !important;
+}
+.ui-tab-vertical-container-left .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-left .ui-tab-content {
+  height: 300px;
+  margin-left: 8em;
+}
+.ui-tab-vertical-container-right .ui-tab-vertical {
+  width: 8em;
+  height: 300px;
+}
+.ui-tab-vertical-container-right .ui-tab-content {
+  height: 300px;
+  margin-right: 8em;
+}
+.footer {
+  padding: 1em;
+  background: #2c3e50;
+}
+.main-container {
+  margin-top: 2em;
+}
+#content {
+  padding-left: 2em;
+  border-left: 1px solid #ddd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ui-sidebar {
+  font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
+  padding: 0;
   margin: 0;
   list-style: none;
-  padding: 0;
 }
-#navigator li a {
-  text-decoration: none;
+.ui-sidebar .ui-sidebar-item-header {
+  padding: .3em 2em;
+  color: #ACB6C0;
+}
+.ui-sidebar a {
+  padding: .3em 3em;
   display: block;
-  background-color: #f5f5f5;
-  color: #000;
-  border: 1px solid #a2a2a2;
-  margin-top: -1px;
-  padding: 8px 14px;
+  color: #ACB6C0;
+  text-decoration: none !important;
 }
-#navigator li:first-child a {
-  border-radius: 6px 6px 0 0;
+.ui-sidebar a:hover {
+  background: #f5f5f5;
 }
-#navigator li:last-child a {
-  border-radius: 0 0 6px 6px;
+.ui-sidebar li.ui-sidebar-item-active a {
+  color: #333;
 }
-#navigator li a:hover {
-  background-color: #a2a2a2;
-  color: #fff;
+.ui-g {
+  letter-spacing: -0.31em;
+  *letter-spacing: normal;
+  *word-spacing: -0.43em;
+  word-spacing: -0.43em;
+  text-rendering: optimizespeed;
+  font-family: FreeSans, Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
+  display: -webkit-flex;
+  -webkit-flex-flow: row wrap;
+  display: -ms-flexbox;
+  -ms-flex-flow: row wrap;
 }
-#navigator li.cur a {
-  background-color: #a2a2a2;
-  color: #fff;
+/* Opera as of 12 on Windows needs word-spacing.
+   The ".opera-only" selector is used to prevent actual prefocus styling
+   and is not required in markup.
+*/
+.opera-only :-o-prefocus {
+  word-spacing: -0.43em;
 }
-#page {
-  width: 1200px;
-  margin: 0 auto 40px;
-  padding-top: 20px;
-}
-#main {
-  margin-left: 200px;
-  overflow: visible;
-}
-h1 {
-  background: #252525;
-  color: #fff;
-  margin-bottom: 10px;
-  font-size: 22px;
-  line-height: 40px;
-  padding: 0 8px;
-  margin: 0;
-  font-weight: normal;
-  text-rendering: optimizelegibility;
-}
-h2 {
-  font-size: 24px;
-}
-.view {
-  padding: 20px;
-  line-height: 1.5;
-  background-color: #eee;
-  border-radius: 6px;
-  position: relative;
-}
-.viewer {
-  margin: -10px 0 20px -10px;
-  padding: 0;
-  list-style: none;
-}
-.viewer li {
+.ui-u-4-5,
+.ui-u-1-5 {
   display: inline-block;
   *display: inline;
   zoom: 1;
-  padding: 4px 12px;
-  margin-right: 10px;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  cursor: default;
+  letter-spacing: normal;
+  word-spacing: normal;
+  vertical-align: top;
+  text-rendering: auto;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
 }
-.viewer li:hover {
-  background-color: #a2a2a2;
-  color: #fff;
+.ui-u-1-5 {
+  width: 20%;
 }
-.source {
-  max-height: 480px;
-  border: 1px solid #ddd !important;
-  border-radius: 0 6px 6px 6px;
-  background-color: #f5f5f5;
-  display: none;
-  color: #333;
-  margin-top: 20px !important;
+.ui-u-4-5 {
+  width: 80%;
+}
+.example {
+  position: relative;
+  padding: 45px 0px 15px;
+  margin-bottom: 15px;
+}
+.example:after {
+  position: absolute;
+  top: 15px;
+  left: 0px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #70ccc0;
+  content: "Example";
+}
+.example + .highlight {
+  margin-bottom: 15px;
+  margin-top: 15px;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  position: relative;
+}
+.highlight {
+  max-height: 300px;
   overflow: auto;
 }
-.source-markup:before,
-.source-script:before {
-  content: '结构代码';
-  border-bottom: 1px solid #ccc;
-  display: block;
-  padding-bottom: 3px;
-}
-.source-script:before {
-  content: '脚本代码';
-}
-.source-visible {
-  display: block;
-}
 .row {
-  margin-bottom: 10px;
+  margin-bottom: .5em;
+}
+.ui-tab-align-right-democode .ui-tab-navigator {
+  text-align: left;
+  padding: 0;
+}
+.ui-tab-align-right-democode .ui-tab-item {
+  border: 1px solid #e5e5e5;
+  border: 0;
+  line-height: 1;
+  min-width: 3em;
+  font-size: 16px;
+  font-weight: bold;
+  color: #999;
+  padding: 0 10px 0 0;
+  margin: 0 0px 10px 0;
+}
+.ui-tab-align-right-democode .ui-tab-item:first-child {
+  border-radius: 0;
+  border-right: 3px solid #bbb;
+}
+.ui-tab-align-right-democode .ui-tab-item:last-child {
+  border: 0;
+}
+.ui-tab-align-right-democode .ui-tab-item:hover {
+  background: #fff;
+}
+.ui-tab-align-right-democode .ui-tab-item-active {
+  cursor: default;
+  background: #fff;
+  color: #70ccc0;
+}
+.ui-tab-content-democode-border {
+  border: 1px solid #e5e5e5;
+}
+.viewer {
+  display: none;
+}
+pre.prettyprint {
+  border: 0;
+  margin: 0;
+}
+pre.prettyprint code {
+  font-family: monospace;
+  font: 12px/18px Consolas, monospace, serif;
+}
+.highlight {
+  margin-left: 20px;
+}
+#main {
+  padding-left: 2em;
+  border-left: 1px solid #ddd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.header {
+  height: 60px;
+  background: #2c3e50;
 }

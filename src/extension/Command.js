@@ -11,6 +11,8 @@ define(
         var u = require('underscore');
         var lib = require('../lib');
         var Extension = require('../Extension');
+        var eoo = require('eoo');
+        var esui = require('../main');
 
         /**
          * 从DOM元素中抓取命令事件的扩展
@@ -43,108 +45,112 @@ define(
          * @param {Object} [options] 初始化配置
          * @constructor
          */
-        function Command(options) {
-            options = options || {};
-            if (!options.events) {
-                options.events = ['click'];
-            }
-            else {
-                options.events = lib.splitTokenList(options.events);
-            }
-            Extension.apply(this, arguments);
-        }
-
-        /**
-         * 指定扩展类型，始终为`"Command"`
-         *
-         * @type {string}
-         */
-        Command.prototype.type = 'Command';
-
-        /**
-         * 处理事件
-         *
-         * 该方法包含了以下逻辑：
-         *
-         * 1. 判断元素是否符合触发`command`事件的条件，默认条件为有`data-command`属性
-         * 2. 构造事件对象，默认带有以下属性：
-         *     - `{string} name`：命令名称，来自`data-command`属性的值
-         *     - `{string} args`：命令参数，来自`data-command-args`属性的值
-         *     - `{string} triggerType`：触发的DOM事件类型
-         * 3. 触发`command`事件
-         * 4. 控制`stopPropagation`等逻辑
-         *
-         * 通过重写本方法可以改变以上逻辑，多数情况下不需要重写
-         *
-         * @param {Event} e 事件对象
-         * @protected
-         */
-        Command.prototype.handleCommand = function (e) {
-            var target = e.target;
-            // 为了让`main`上的点击也能触发，要一直追溯到`main`的父节点
-            var endpoint = this.main && this.main.parentNode;
-
-            while (target && target !== endpoint) {
-                if (target.nodeType === 1
-                    // 点击事件不在禁用的元素上触发，其它事件则可以
-                    && (target.disabled !== true || e.type !== 'click')
-                ) {
-                    var commandName = target.getAttribute('data-command');
-                    if (commandName) {
-                        var args = target.getAttribute('data-command-args');
-                        var event = require('mini-event').fromDOMEvent(
-                            e,
-                            'command',
-                            {
-                                name: commandName,
-                                triggerType: e.type,
-                                args: args
-                            }
-                        );
-                        event = this.fire('command', event);
-
-                        if (event.isPropagationStopped()) {
-                            return;
-                        }
+        var Command = eoo.create(
+            Extension,
+            {
+                constructor: function (options) {
+                    options = options || {};
+                    if (!options.events) {
+                        options.events = ['click'];
                     }
+                    else {
+                        options.events = lib.splitTokenList(options.events);
+                    }
+                    this.$super(arguments);
+                },
+
+                /**
+                 * 指定扩展类型，始终为`"Command"`
+                 *
+                 * @type {string}
+                 */
+                type: 'Command',
+
+                /**
+                 * 处理事件
+                 *
+                 * 该方法包含了以下逻辑：
+                 *
+                 * 1. 判断元素是否符合触发`command`事件的条件，默认条件为有`data-command`属性
+                 * 2. 构造事件对象，默认带有以下属性：
+                 *     - `{string} name`：命令名称，来自`data-command`属性的值
+                 *     - `{string} args`：命令参数，来自`data-command-args`属性的值
+                 *     - `{string} triggerType`：触发的DOM事件类型
+                 * 3. 触发`command`事件
+                 * 4. 控制`stopPropagation`等逻辑
+                 *
+                 * 通过重写本方法可以改变以上逻辑，多数情况下不需要重写
+                 *
+                 * @param {Event} e 事件对象
+                 * @protected
+                 */
+                handleCommand: function (e) {
+                    var target = e.target;
+                    // 为了让`main`上的点击也能触发，要一直追溯到`main`的父节点
+                    var endpoint = this.main && this.main.parentNode;
+
+                    while (target && target !== endpoint) {
+                        if (target.nodeType === 1
+                            // 点击事件不在禁用的元素上触发，其它事件则可以
+                            && (target.disabled !== true || e.type !== 'click')
+                        ) {
+                            var commandName = target.getAttribute('data-command');
+                            if (commandName) {
+                                var args = target.getAttribute('data-command-args');
+                                var event = this.fire(
+                                    'command',
+                                    {
+                                        name: commandName,
+                                        triggerType: e.type,
+                                        args: args
+                                    },
+                                    e
+                                );
+
+                                if (event.isPropagationStopped()) {
+                                    return;
+                                }
+                            }
+                        }
+                        target = target.parentNode;
+                    }
+                },
+
+                /**
+                 * 激活扩展
+                 *
+                 * @override
+                 */
+                activate: function () {
+                    for (var i = 0; i < this.events.length; i++) {
+                        this.target.helper.addDOMEvent(
+                            this.target.main,
+                            this.events[i],
+                            this.handleCommand
+                        );
+                    }
+
+                    this.$super(arguments);
+                },
+
+                /**
+                 * 取消扩展的激活状态
+                 *
+                 * @override
+                 */
+                inactivate: function () {
+                    for (var i = 0; i < this.events.length; i++) {
+                        this.target.helper.removeDOMEvent(
+                            this.target.main,
+                            this.events[i],
+                            this.handleCommand
+                        );
+                    }
+
+                    this.$super(arguments);
                 }
-                target = target.parentNode;
             }
-        };
-
-        /**
-         * 激活扩展
-         *
-         * @override
-         */
-        Command.prototype.activate = function () {
-            for (var i = 0; i < this.events.length; i++) {
-                this.target.helper.addDOMEvent(
-                    this.target.main,
-                    this.events[i],
-                    this.handleCommand
-                );
-            }
-
-            Extension.prototype.activate.apply(this, arguments);
-        };
-
-        /**
-         * 取消扩展的激活状态
-         *
-         * @override
-         */
-        Command.prototype.inactivate = function () {
-            for (var i = 0; i < this.events.length; i++) {
-                this.target.helper.removeDOMEvent(
-                    this.target.main,
-                    this.events[i],
-                    this.handleCommand
-                );
-            }
-
-            Extension.prototype.inactivate.apply(this, arguments);
-        };
+        );
 
         /**
          * 创建一个根据事件类型和命令名称分发至对应处理函数的函数
@@ -223,9 +229,7 @@ define(
             };
         };
 
-        lib.inherits(Command, Extension);
-        require('../main').registerExtension(Command);
-
+        esui.registerExtension(Command);
         return Command;
     }
 );

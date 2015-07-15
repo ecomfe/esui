@@ -9,6 +9,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var $ = require('jquery');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var eoo = require('eoo');

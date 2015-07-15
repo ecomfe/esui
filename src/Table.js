@@ -43,7 +43,6 @@ define(
                  */
                 type: 'Table',
 
-
                 /**
                  * 初始化参数
                  *
@@ -91,7 +90,7 @@ define(
                  * @override
                  */
                 repaint: function (changes, changesIndex) {
-                    Control.prototype.repaint.apply(this, arguments);
+                    this.$super(arguments);
                      // 初始化控件主元素上的行为
                     var table = this;
                     if (!table.realWidth) {
@@ -226,11 +225,9 @@ define(
                     return getId(this, id);
                 },
 
-
                 getBodyCellId: function (rowIndex, fieldIndex) {
                     return getBodyCellId(this, rowIndex, fieldIndex);
                 },
-
 
                 /**
                  * 设置单元格的文字
@@ -243,7 +240,7 @@ define(
                  */
                 setCellText: function (text, rowIndex, columnIndex, isEncodeHtml) {
                     if (isEncodeHtml) {
-                        text = lib.encodeHTML(text);
+                        text = u.escape(text);
                     }
                     text = isNullOrEmpty(text) ? '&nbsp' : text;
 
@@ -285,7 +282,6 @@ define(
                 addRowBuilders: function (builders) {
                     addRowBuilderList(this, builders);
                 },
-
 
                 /**
                  * 添加table主元素上事件委托
@@ -440,7 +436,6 @@ define(
                     this.setRowSelected(-1, isSelected);
                 },
 
-
                 /**
                  * 重置表头跟随设置
                  *
@@ -488,7 +483,6 @@ define(
             }
         );
 
-
         /**
          * 默认属性值
          *
@@ -497,6 +491,8 @@ define(
          */
         Table.defaultProperties = {
             noDataHtml: '没有数据',
+            subEntryOpenTip: '点击展开',
+            subEntryCloseTip: '点击收起',
             noFollowHeadCache: false,
             followHead: false,
             sortable: false,
@@ -506,8 +502,6 @@ define(
             select: '',
             selectMode: 'box',
             subrowMutex: 1,
-            subEntryOpenTip: '点击展开',
-            subEntryCloseTip: '点击收起',
             subEntryWidth: 18,
             breakLine: false,
             hasTip: false,
@@ -530,7 +524,6 @@ define(
         function hasValue(obj) {
             return !(typeof obj === 'undefined' || obj === null);
         }
-
 
         /**
          * 判断值是否为空,包括空字符串
@@ -2194,7 +2187,7 @@ define(
             var contentHtml = 'function' === typeof content
                 ? content.call(table, data, rowIndex, fieldIndex)
                 : (table.encode
-                    ? lib.encodeHTML(data[content])
+                    ? u.escape(data[content])
                     : data[content]
                 );
 
@@ -2820,7 +2813,6 @@ define(
             }
         }
 
-
         /**
          * 重置Table主元素的ZIndex
          * @param {ui.Table} table table控件实例
@@ -3123,7 +3115,6 @@ define(
         }
 
         esui.register(Table);
-
         return Table;
     }
 );

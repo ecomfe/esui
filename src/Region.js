@@ -9,6 +9,7 @@
 define(
     function (require) {
         require('./Select');
+        var $ = require('jquery');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var esui = require('./main');

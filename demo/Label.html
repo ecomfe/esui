@@ -4,29 +4,32 @@
         <meta charset="UTF-8" />
         <title>Label - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - Label</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        
+        <div class="header">
+            <h1 id="branding">ESUI - Label</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-sidebar">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>无样式Label</h2>
                 <div class="intro">
                     <p>基本Label。</p>
                 </div>
                 <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
                     <div class="example ui-demo-light-stage">
                         <strong data-ui-type="Label">Hello Label!</strong>
                         <label data-ui-type="Label">Custom Label!</label>
@@ -41,9 +44,6 @@
                 <div class="intro">
                 </div>
                 <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
                     <div class="example ui-demo-light-stage">
                         <h2>箭头Label</h2>
                         <div class="row">
@@ -87,7 +87,9 @@
             [
                 'esui',
                 'esui/Label',
-                'esui/TextBox'
+                'esui/TextBox',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
                 var label = ui.init()[0];
@@ -108,7 +110,7 @@
                 };
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

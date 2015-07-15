@@ -340,7 +340,7 @@ define(
 
                             /**
                              * 绑定于浮层元素上的阻止冒泡的方法
-                             * @param {mini-event.Event} e 事件对象
+                             * @param {Event} e 事件对象
                              */
                             preventPopMethod: function (e) {
                                 e.stopPropagation();
@@ -348,7 +348,7 @@ define(
 
                             /**
                              * 绑定于body主体上面的隐藏layer的方法
-                             * @param {mini-event.Event} e 事件对象
+                             * @param {Event} e 事件对象
                              */
                             clickOutsideHideHandler: function (e) {
                                 handler.layer.hide();
@@ -774,7 +774,7 @@ define(
             clearTimeout(tipLayer.showTimeout);
             clearTimeout(tipLayer.hideTimeout);
             tipLayer.hideTimeout
-                = setTimeout(lib.bind(tipLayer.hide, tipLayer), delayTime);
+                = setTimeout(u.bind(tipLayer.hide, tipLayer), delayTime);
         }
 
         function getElementByControl(tipLayer, control) {
@@ -843,7 +843,7 @@ define(
                 tipLayer.dispose();
             }
 
-            var content = lib.encodeHTML(args.content) || '';
+            var content = u.escape(args.content) || '';
 
             var properties = {
                 type: 'onceNotice',

@@ -14,6 +14,7 @@ define(
         var Control = require('./Control');
         var painters = require('./painters');
         var u = require('underscore');
+        var $ = require('jquery');
 
         require('./TextBox');
         require('./Button');
@@ -59,6 +60,7 @@ define(
                     };
                     u.extend(properties, options);
 
+                    var $main = $(main)
                     if (lib.isInput(this.main)) {
                         if (!properties.placeholder) {
                             properties.placeholder = lib.getAttribute(this.main, 'placeholder');
@@ -135,17 +137,11 @@ define(
                  */
                 initEvents: function () {
                     var textbox = this.getChild('text');
-                    var delegate = require('mini-event').delegate;
+                    var me = this;
 
                     // 处理输入事件
-                    textbox.on('input', lib.bind(onInput, this));
-                    // 即时模式下输入触发搜索
-                    if (this.searchMode === 'instant') {
-                        delegate(textbox, 'input', this, 'search');
-                    }
+                    textbox.on('input', u.bind(onInput, me));
 
-                    // 代理回车键事件
-                    delegate(textbox, 'enter', this, 'search');
                     // 回车时要取消掉默认行为，否则会把所在的表单给提交了
                     textbox.on(
                         'keypress',
@@ -156,14 +152,20 @@ define(
                         }
                     );
 
-                    // 清除搜索按钮
-                    textbox.on('iconclick', lib.bind(clear, this));
-                    textbox.on('focus', lib.bind(this.addState, this, 'focus'));
-                    textbox.on('blur', lib.bind(this.removeState, this, 'focus'));
+                    textbox.on('enter', function () {
+                        me.fire('search');
+                    });
 
-                    var searchButton = this.getChild('search');
+                    // 清除搜索按钮
+                    textbox.on('iconclick', u.bind(clear, me));
+                    textbox.on('focus', u.bind(me.addState, me, 'focus'));
+                    textbox.on('blur', u.bind(me.removeState, me, 'focus'));
+
+                    var searchButton = me.getChild('search');
                     if (searchButton) {
-                        delegate(searchButton, 'click', this, 'search');
+                        searchButton.on('click', function () {
+                            me.fire('search');
+                        });
                     }
                 },
 
@@ -177,7 +179,6 @@ define(
                     var text = this.getChild('text');
                     return text.getValue();
                 },
-
 
                 /**
                  * 渲染自身
@@ -316,9 +317,15 @@ define(
          * 处理输入框的input事件，根据输入框是否有内容增加/移除`searched`状态
          */
         function onInput() {
+            var me = this;
             var textbox = this.getChild('text');
             var method = textbox.getValue() ? 'addState' : 'removeState';
             this[method]('searched');
+            
+            // 即时模式下输入触发搜索
+            if (me.searchMode === 'instant') {
+                me.fire('search');
+            }
         }
 
         /**

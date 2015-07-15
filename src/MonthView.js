@@ -11,6 +11,7 @@ define(
         require('./Button');
         require('./Select');
         require('./Panel');
+        var $ = require('jquery')
         var lib = require('./lib');
         var Control = require('./Control');
         var esui = require('./main');
