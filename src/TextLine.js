@@ -90,11 +90,10 @@ define(
                  */
                 initEvents: function () {
                     // 输入区变化监听
-                    var textArea = this.helper.getPart('text');
-                    var inputEvent = ('oninput' in textArea)
-                        ? 'input'
-                        : 'propertychange';
-                    this.helper.addDOMEvent(textArea, inputEvent, refreshOnInput);
+                    var textbox = this.viewContext.get(this.helper.getId('text'));
+                    textbox.on('input', u.bind(onInput, this));
+
+                    var textArea = this.getTextArea();
                     this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
                     this.helper.addDOMEvent(textArea, 'focus', inputFocus);
                 },
@@ -147,7 +146,6 @@ define(
                         name: 'rawValue',
                         paint: function (textLine, value) {
                             // 输入区
-                            var textArea = textLine.helper.getPart('text');
 
                             if (value) {
                                 if (u.isArray(value)) {
@@ -158,15 +156,8 @@ define(
                                     textLine.value = u.unescape(value);
                                 }
 
-                                var inputEvent = 'oninput' in textArea
-                                    ? 'input'
-                                    : 'propertychange';
-                                textLine.helper.removeDOMEvent(
-                                    textArea, inputEvent, refreshOnInput);
-                                textArea.value = textLine.value;
-                                textLine.helper.addDOMEvent(
-                                    textArea, inputEvent, refreshOnInput);
-
+                                var textbox = textLine.getTextBox();
+                                textbox.setRawValue(textLine.value);
                                 refreshLineNum.call(textLine);
                             }
                         }
@@ -174,9 +165,13 @@ define(
                     {
                         name: ['disabled', 'readOnly'],
                         paint: function (textLine, disabled, readOnly) {
-                            var textArea = textLine.helper.getPart('text');
-                            textArea.disabled = !!disabled;
-                            textArea.readOnly = !!readOnly;
+                            var textbox = textLine.getTextBox();
+                            textbox.setProperties(
+                                {
+                                    disabled: !!disabled,
+                                    readOnly: !!readOnly
+                                }
+                            );
                         }
                     }
                 ),
@@ -185,7 +180,7 @@ define(
                  * 滚动文本输入框
                  */
                 resetScroll: function () {
-                    var textArea = this.helper.getPart('text');
+                    var textArea = this.getTextArea();
                     var lineNumber = this.helper.getPart('num-line');
                     // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
                     lineNumber.scrollTop = textArea.scrollTop;
@@ -231,7 +226,8 @@ define(
                  * @return {string[]}
                  */
                 getValueRepeatableItems: function () {
-                    var text = this.helper.getPart('text').value;
+                    var textbox = this.getTextBox();
+                    var text = textbox.getValue();
                     var items = text.split('\n');
 
                     return u.chain(items).map(lib.trim).compact().value();
@@ -261,8 +257,26 @@ define(
                     }
 
                     this.setRawValue(content);
-                }
+                },
 
+                /**
+                 * 获取TextBox子控件
+                 *
+                 * @return {ui.TextBox}
+                 */
+                getTextBox: function () {
+                    return this.viewContext.get(this.helper.getId('text'));
+                },
+
+                /**
+                 * 获取TextBox子控件中的textarea元素
+                 *
+                 * @return {Element}
+                 */
+                getTextArea: function () {
+                    var textbox = this.getTextBox();
+                    return lib.g(textbox.inputId);
+                }
             }
         );
 
@@ -275,11 +289,22 @@ define(
          * @return {string}
          */
         function getMainHTML(textLine) {
-            var textareaHTML = ''
-                + '<textarea wrap="off" '
-                + 'id="' + textLine.helper.getId('text') + '"'
-                + 'placeholder="' + textLine.placeholder + '"'
-                + '></textarea>';
+            var textareaHTML = [
+                '<div style="width:100%;height:100%;" data-ui-id="${id}"',
+                    ' data-ui-type="TextBox" data-ui-mode="textarea"',
+                    ' data-ui-width="100%" data-ui-height="100%"',
+                    ' data-ui-placeholder="${placeholder}">',
+                '</div>'
+            ].join('');
+
+            textareaHTML = lib.format(
+                textareaHTML,
+                {
+                    id: textLine.helper.getId('text'),
+                    placeholder: textLine.placeholder
+                }
+            );
+
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                 '1', // 默认至少有一行
@@ -297,10 +322,9 @@ define(
          * @param {Event} e DOM事件对象
          * @ignore
          */
-        function refreshOnInput(e) {
-            if (e.type === 'input' || e.propertyName === 'value') {
-                refreshLineNum.call(this);
-            }
+        function onInput(e) {
+            refreshLineNum.call(this);
+            this.fire('input');
         }
 
         /**
@@ -309,7 +333,8 @@ define(
          * @ignore
          */
         function refreshLineNum() {
-            var num = this.helper.getPart('text').value.split('\n').length;
+            var textbox = this.getTextBox();
+            var num = textbox.getValue().split('\n').length;
             if (num !== this.number) {
                 this.number = num;
                 var numLine = this.helper.getPart('num-line');
@@ -331,7 +356,7 @@ define(
             var $mainElement = $(me.main);
             var helper = me.helper;
             var focusClass = helper.getPrimaryClassName('focus');
-            var textArea = helper.getPart('text');
+            var textArea = this.getTextArea();
             var blurEvent = function () {
                 $mainElement.removeClass(focusClass);
                 me.removeState('focus');

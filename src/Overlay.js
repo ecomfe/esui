@@ -10,7 +10,12 @@ define(
         var lib = require('./lib');
         var ui = require('./main');
         var Panel = require('./Panel');
+        var $ = require('jquery');
         var u = require('underscore');
+        var eoo = require('eoo');
+        var painters = require('./painters');
+
+        require('./behavior/position');
 
         /**
          * 浮层控件类
@@ -18,123 +23,368 @@ define(
          * @constructor
          * @param {Object} options 初始化参数
          */
-        function Overlay(options) {
-            Panel.apply(this, arguments);
-        }
-
-        lib.inherits(Overlay, Panel);
-
-        Overlay.prototype.type = 'Overlay';
-
-        /**
-         * 根据DOM解析出控件各角色，这个方法看情况使用
-         *
-         * @param {Object} options 控件初始参数
-         */
-        Overlay.prototype.parseMain = function (options) {
-            var main = options.main;
-            // 如果main未定义，则不作解析
-            if (!main) {
-                return;
-            }
-            var els = lib.getChildren(main);
-            var len = els.length;
-            var roleName;
-            var roles = {};
-
-            while (len--) {
-                roleName = els[len].getAttribute('data-role');
-                if (roleName) {
-                    // 不再校验，如果设置了相同的data-role，
-                    // 直接覆盖
-                    roles[roleName] = els[len];
-                }
-            }
-
-            options.roles = roles;
-        };
-
-        /**
-         * @override
-         */
-        Overlay.prototype.initOptions = function (options) {
-            // 默认属性
-            var properties = {
-                // 位置是否固定，固定时，scroll、 resize都触发重新布局
-                fixed: false,
-                // 点击浮层外部，是否自动关闭
-                autoClose: true,
-                // 是否具有遮挡层
-                hasMask: false
-            };
-
-            var booleanProperties = ['fixed', 'autoClose', 'hasMask'];
-            u.each(
-                booleanProperties,
-                function (property) {
-                    if (options[property] === 'false') {
-                        options[property] = false;
-                    }
-                }
-            );
-
-            u.extend(properties, options);
-            Panel.prototype.initOptions.call(this, properties);
-        };
-
-        /**
-         * @override
-         */
-        Overlay.prototype.initStructure = function () {
-            var main = this.main;
-            // 判断main是否在body下，如果不在，要移到body下
-            if (main.parentNode
-                && main.parentNode.nodeName.toLowerCase() !== 'body') {
-                document.body.appendChild(main);
-            }
-
-            // 设置隐藏样式，如果直接隐藏可能会影响尺寸计算，所以只是移出
-            this.addState('hidden');
-
-            Panel.prototype.initStructure.apply(this, arguments);
-        };
-
-        /**
-         * @override
-         */
-        Overlay.prototype.repaint = require('./painters').createRepaint(
-            Panel.prototype.repaint,
+        var Overlay = eoo.create(
+            Panel,
             {
-                name: ['width', 'height'],
-                paint: function (overlay, width, height) {
-                    if (!isPropertyEmpty(width)) {
-                        if (width === 'auto') {
-                            overlay.main.style.width = 'auto';
-                        }
-                        else {
-                            overlay.main.style.width = width + 'px';
+
+                type: 'Overlay',
+
+                /**
+                 * 根据DOM解析出控件各角色，这个方法看情况使用
+                 *
+                 * @param {Object} options 控件初始参数
+                 */
+                parseMain: function (options) {
+                    var main = options.main;
+                    // 如果main未定义，则不作解析
+                    if (!main) {
+                        return;
+                    }
+                    var els = lib.getChildren(main);
+                    var len = els.length;
+                    var roleName;
+                    var roles = {};
+
+                    while (len--) {
+                        roleName = els[len].getAttribute('data-role');
+                        if (roleName) {
+                            // 不再校验，如果设置了相同的data-role，
+                            // 直接覆盖
+                            roles[roleName] = els[len];
                         }
                     }
 
-                    if (!isPropertyEmpty(height)) {
-                        if (height === 'auto') {
-                            overlay.main.style.height = 'auto';
+                    options.roles = roles;
+                },
+
+                /**
+                 * @override
+                 */
+                initOptions: function (options) {
+                    // 默认属性
+                    var properties = {
+                        // 位置是否固定，固定时，scroll、 resize都触发重新布局
+                        fixed: false,
+                        // 点击浮层外部，是否自动关闭
+                        autoClose: true,
+                        // 是否具有遮挡层
+                        hasMask: false
+                    };
+
+                    var booleanProperties = ['fixed', 'autoClose', 'hasMask'];
+                    u.each(
+                        booleanProperties,
+                        function (property) {
+                            if (options[property] === 'false') {
+                                options[property] = false;
+                            }
                         }
-                        else {
-                            overlay.main.style.height = height + 'px';
+                    );
+
+                    u.extend(properties, options);
+                    Panel.prototype.initOptions.call(this, properties);
+                },
+
+                /**
+                 * @override
+                 */
+                initStructure: function () {
+                    var main = this.main;
+                    // 判断main是否在body下，如果不在，要移到body下
+                    if (main.parentNode
+                        && main.parentNode.nodeName.toLowerCase() !== 'body') {
+                        document.body.appendChild(main);
+                    }
+
+                    // 设置隐藏样式，如果直接隐藏可能会影响尺寸计算，所以只是移出
+                    this.addState('hidden');
+
+                    Panel.prototype.initStructure.apply(this, arguments);
+                },
+
+                /**
+                 * @override
+                 */
+                repaint: painters.createRepaint(
+                    Panel.prototype.repaint,
+                    {
+                        name: ['width', 'height'],
+                        paint: function (overlay, width, height) {
+                            if (!isPropertyEmpty(width)) {
+                                if (width === 'auto') {
+                                    overlay.main.style.width = 'auto';
+                                }
+                                else {
+                                    overlay.main.style.width = width + 'px';
+                                }
+                            }
+
+                            if (!isPropertyEmpty(height)) {
+                                if (height === 'auto') {
+                                    overlay.main.style.height = 'auto';
+                                }
+                                else {
+                                    overlay.main.style.height = height + 'px';
+                                }
+                            }
+
+                            if (!overlay.isHidden()) {
+                                autoLayout.apply(overlay);
+                            }
+                        }
+                    },
+                    {
+                        name: ['attachedDOM', 'attachedControl'],
+                        paint: function (overlay, attachedDOM, attachedControl) {
+                            var targetDOM = getTargetDOM.call(overlay, attachedDOM, attachedControl);
+                            overlay.attachedTarget = targetDOM;
+                        }
+                    }
+                ),
+
+                /**
+                 * 显示浮层
+                 */
+                show: function () {
+                    if (this.helper.isInStage('INITED')) {
+                        this.render();
+                    }
+                    else if (this.helper.isInStage('DISPOSED')) {
+                        return;
+                    }
+
+                    if (this.autoClose) {
+                        // 点击文档自动关闭
+                        this.helper.addDOMEvent(document, 'mousedown', close);
+                    }
+
+                    if (this.fixed) {
+                        this.helper.addDOMEvent(window, 'resize', resizeHandler);
+                        this.helper.addDOMEvent(window, 'scroll', resizeHandler);
+                    }
+
+                    this.removeState('hidden');
+
+                    // 配置遮罩层zIndex
+                    if (this.hasMask) {
+                        showMask.call(this);
+                    }
+
+                    // 置顶
+                    this.moveToTop();
+
+                    // 先人肉执行一下layout
+                    autoLayout.apply(this);
+                    this.fire('show');
+                },
+
+                /**
+                 * 隐藏对话框
+                 *
+                 */
+                hide: function () {
+                    if (!this.isHidden()) {
+                        if (this.autoClose) {
+                            // 点击文档自动关闭
+                            this.helper.removeDOMEvent(document, 'mousedown', close);
+                        }
+
+                        this.helper.removeDOMEvent(window, 'resize', resizeHandler);
+                        this.helper.removeDOMEvent(window, 'scroll', resizeHandler);
+
+                        // 设置隐藏样式，如果直接隐藏可能会影响尺寸计算，所以只是移出
+                        this.addState('hidden');
+
+                        if (this.hasMask) {
+                            hideMask.call(this);
                         }
                     }
 
-                    if (!overlay.isHidden()) {
-                        autoLayout.apply(overlay);
+                    this.fire('hide');
+                },
+
+                /**
+                 * 置顶方法
+                 *
+                 */
+                moveToTop: function () {
+                    var zIndex = this.getZIndex();
+                    this.main.style.zIndex = zIndex;
+
+                    var mask = getMask.call(this);
+                    if (mask) {
+                        mask.style.zIndex = zIndex - 1;
                     }
-                }
-            },
-            {
-                name: ['attachedDOM', 'attachedControl'],
-                paint: function (overlay, attachedDOM, attachedControl) {
-                    var targetDOM = getTargetDOM.call(overlay, attachedDOM, attachedControl);
-                    overlay.attachedTarget = targetDOM;
+                },
+
+                /**
+                 * 获取当前Overlay要显示所要的ZIndex
+                 * @return {number}
+                 */
+                getZIndex: function () {
+                    var primaryClassName = this.helper.getPrimaryClassName();
+                    var hiddenPrimaryClassName = this.helper.getPrimaryClassName('hidden');
+                    var zIndex = 1203;
+                    // 查找当前overlay个数
+                    var rawElements = lib.getChildren(document.body);
+                    for (var i = 0, len = rawElements.length; i < len; i++) {
+                        if (lib.hasClass(rawElements[i], primaryClassName)
+                            && !lib.hasClass(rawElements[i], hiddenPrimaryClassName)) {
+                            zIndex = Math.max(zIndex, rawElements[i].style.zIndex) + 10;
+                        }
+                    }
+
+                    return zIndex;
+                },
+
+                /**
+                 * 独立摆置
+                 *
+                 * @param {Object} options 放置相关的选项，选项中的所有边距都是css规范的
+                 * @param {number} options.top 上边距
+                 * @param {number} options.bottom 下边距
+                 * @param {number} options.left 左边距
+                 * @param {number} options.right 右边距
+                 */
+                selfLayout: function (options) {
+                    var page = lib.page;
+                    var main = this.main;
+
+                    var properties = lib.clone(options || {});
+                    var layerPosition = lib.getOffset(main);
+
+                    // 如果左右都没配，则自动居中
+                    if (isPropertyEmpty(properties, 'left') && isPropertyEmpty(properties, 'right')) {
+                        properties.left = (page.getViewWidth() - layerPosition.width) / 2;
+                    }
+                    // 如果都配了，则计算出宽度，然后取消right的设置
+                    else if (!isPropertyEmpty(properties, 'left') && !isPropertyEmpty(properties, 'right')) {
+                        // 如果宽度没配，才计算
+                        if (isPropertyEmpty(properties, 'width')) {
+                            // 还要考虑padding和border
+                            properties.width = page.getViewWidth()
+                                - properties.right
+                                - properties.left
+                                - $(this.main).css('padding-left')
+                                - $(this.main).css('padding-right')
+                                - $(this.main).css('border-left-width')
+                                - $(this.main).css('border-right-width');
+                        }
+                        properties = u.omit(properties, 'right');
+                    }
+
+                    // 不可越界
+                    properties.left = Math.max(properties.left, 0);
+                    // 独立展开层的位置是相对viewPort的，因此要考虑进来scroll
+                    properties.left = page.getScrollLeft() + properties.left;
+
+                    // 如果上下都没配，则自动居中
+                    if (isPropertyEmpty(properties, 'top') && isPropertyEmpty(properties, 'bottom')) {
+                        properties.top = (page.getViewHeight() - layerPosition.height) / 2;
+                    }
+                    // 如果都配了，则计算出高度，然后取消bottom的设置
+                    else if (!isPropertyEmpty(properties, 'top') && !isPropertyEmpty(properties, 'bottom')) {
+                        // 如果高度没配，才计算
+                        if (isPropertyEmpty(properties, 'height')) {
+                            // 还要考虑padding和border
+                            properties.height = page.getViewHeight()
+                                - properties.top
+                                - properties.bottom
+                                - $(this.main).css('padding-top')
+                                - $(this.main).css('padding-bottom')
+                                - $(this.main).css('border-top-width')
+                                - $(this.main).css('border-bottom-width');
+                        }
+                        properties = u.omit(properties, 'bottom');
+                    }
+
+                    // 不可越界
+                    properties.top = Math.max(properties.top, 0);
+                    // 算上滚动
+                    properties.top = page.getScrollTop() + properties.top;
+
+                    renderLayer.call(this, properties);
+                },
+
+                /**
+                 * 有粘连元素的摆置
+                 *
+                 * @param {HTMLElement} target 目标元素
+                 * @param {Object} [options] 停靠相关的选项
+                 * @param {boolean} [options.strictWidth] 是否要求层的宽度不小于目标元素的宽度
+                 * @param {Array} [options.preference] 首选位置
+                 * --- 布局支持12种
+                 * --- bottom left
+                 * --- bottom right
+                 * --- bottom center
+                 * --- top right
+                 * --- top left
+                 * --- top center
+                 * --- left top
+                 * --- left bottom
+                 * --- left center
+                 * --- right top
+                 * --- right bottom
+                 * --- right center
+                 */
+                attachLayout: function (target, options) {
+                    var main = this.main;
+                    options = options || ['bottom', 'left'];
+
+                    // 由于layer不会跑到target的内部
+                    // 所以这里my选项取值与at相反即可
+                    // 具体参考./behavior/position
+                    var myPosition = 'right';
+                    if (options[0] === 'right') {
+                        myPosition = 'left';
+                    }
+                    else if (options[0] === 'top') {
+                        myPosition = 'bottom';
+                    }
+                    else if (options[0] === 'bottom') {
+                        myPosition = 'top';
+                    }
+
+                    $(main).position(
+                        {
+                            of: target,
+                            at: options[1] + ' ' + options[0],
+                            my: options[1] + ' ' + myPosition
+                        }
+                    );
+                },
+
+                /**
+                 * 移动层的位置
+                 *
+                 * @param {number} top 上边界距离
+                 * @param {number} left 左边界距离
+                 * @public
+                 */
+                moveTo: function (top, left) {
+                    this.selfLayout({top: top, left: left});
+                },
+
+                /**
+                 * 缩放层的大小
+                 *
+                 */
+                resize: function () {
+                    autoLayout.apply(this);
+                },
+
+                /**
+                 * 销毁控件
+                 */
+                dispose: function () {
+                    if (this.helper.isInStage('DISPOSED')) {
+                        return;
+                    }
+                    // 移除mask
+                    lib.removeNode('ctrl-mask-' + this.helper.getId());
+                    // 移除dom
+                    lib.removeNode(this.main);
+                    Panel.prototype.dispose.apply(this, arguments);
                 }
             }
         );
@@ -159,100 +409,6 @@ define(
             }
         }
 
-        /**
-         * 显示浮层
-         */
-        Overlay.prototype.show = function () {
-            if (this.helper.isInStage('INITED')) {
-                this.render();
-            }
-            else if (this.helper.isInStage('DISPOSED')) {
-                return;
-            }
-
-            if (this.autoClose) {
-                // 点击文档自动关闭
-                this.helper.addDOMEvent(document, 'mousedown', close);
-            }
-
-            if (this.fixed) {
-                this.helper.addDOMEvent(window, 'resize', resizeHandler);
-                this.helper.addDOMEvent(window, 'scroll', resizeHandler);
-            }
-
-            this.removeState('hidden');
-
-            // 配置遮罩层zIndex
-            if (this.hasMask) {
-                showMask.call(this);
-            }
-
-            // 置顶
-            this.moveToTop();
-
-            // 先人肉执行一下layout
-            autoLayout.apply(this);
-            this.fire('show');
-        };
-
-        /**
-         * 隐藏对话框
-         *
-         */
-        Overlay.prototype.hide = function () {
-            if (!this.isHidden()) {
-                if (this.autoClose) {
-                    // 点击文档自动关闭
-                    this.helper.removeDOMEvent(document, 'mousedown', close);
-                }
-
-                this.helper.removeDOMEvent(window, 'resize', resizeHandler);
-                this.helper.removeDOMEvent(window, 'scroll', resizeHandler);
-
-                // 设置隐藏样式，如果直接隐藏可能会影响尺寸计算，所以只是移出
-                this.addState('hidden');
-
-                if (this.hasMask) {
-                    hideMask.call(this);
-                }
-            }
-
-            this.fire('hide');
-        };
-
-        /**
-         * 置顶方法
-         *
-         */
-        Overlay.prototype.moveToTop = function () {
-            var zIndex = this.getZIndex();
-            this.main.style.zIndex = zIndex;
-
-            var mask = getMask.call(this);
-            if (mask) {
-                mask.style.zIndex = zIndex - 1;
-            }
-        };
-
-        /**
-         * 获取当前Overlay要显示所要的ZIndex
-         * @return {number}
-         */
-        Overlay.prototype.getZIndex = function () {
-            var primaryClassName = this.helper.getPrimaryClassName();
-            var hiddenPrimaryClassName = this.helper.getPrimaryClassName('hidden');
-            var zIndex = 1203;
-            // 查找当前overlay个数
-            var rawElements = lib.getChildren(document.body);
-            for (var i = 0, len = rawElements.length; i < len; i++) {
-                if (lib.hasClass(rawElements[i], primaryClassName)
-                    && !lib.hasClass(rawElements[i], hiddenPrimaryClassName)) {
-                    zIndex = Math.max(zIndex, rawElements[i].style.zIndex) + 10;
-                }
-            }
-
-            return zIndex;
-        };
 
         /**
          * 自动布局
@@ -300,7 +456,7 @@ define(
         /**
          * 渲染层样式
          *
-         * @param {object} options 定位参数
+         * @param {Object} options 定位参数
          * @param {number} options.left
          * @param {number} options.top
          * @param {Array} options.align 如 ['right', 'top']
@@ -350,526 +506,6 @@ define(
 
             return properties == null || (properties !== 0 && lib.trim(properties) === '');
         }
-
-        /**
-         * 获取dom的样式
-         *
-         * @private
-         * @return {string}
-         */
-        function getStyleNum(dom, styleName) {
-            var result = lib.getStyle(dom, styleName);
-            return parseInt(result, 10) || 0;
-        }
-
-        /**
-         * 独立摆置
-         *
-         * @param {Object} options 放置相关的选项，选项中的所有边距都是css规范的
-         * @param {number} options.top 上边距
-         * @param {number} options.bottom 下边距
-         * @param {number} options.left 左边距
-         * @param {number} options.right 右边距
-         */
-        Overlay.prototype.selfLayout = function (options) {
-            var page = lib.page;
-            var main = this.main;
-
-            var properties = lib.clone(options || {});
-            var layerPosition = lib.getOffset(main);
-
-            // 如果左右都没配，则自动居中
-            if (isPropertyEmpty(properties, 'left') && isPropertyEmpty(properties, 'right')) {
-                properties.left = (page.getViewWidth() - layerPosition.width) / 2;
-            }
-            // 如果都配了，则计算出宽度，然后取消right的设置
-            else if (!isPropertyEmpty(properties, 'left') && !isPropertyEmpty(properties, 'right')) {
-                // 如果宽度没配，才计算
-                if (isPropertyEmpty(properties, 'width')) {
-                    // 还要考虑padding和border
-                    properties.width = page.getViewWidth()
-                        - properties.right
-                        - properties.left
-                        - getStyleNum(this.main, 'padding-left')
-                        - getStyleNum(this.main, 'padding-right')
-                        - getStyleNum(this.main, 'border-left-width')
-                        - getStyleNum(this.main, 'border-right-width');
-                }
-                properties = u.omit(properties, 'right');
-            }
-
-            // 不可越界
-            properties.left = Math.max(properties.left, 0);
-            // 独立展开层的位置是相对viewPort的，因此要考虑进来scroll
-            properties.left = page.getScrollLeft() + properties.left;
-
-            // 如果上下都没配，则自动居中
-            if (isPropertyEmpty(properties, 'top') && isPropertyEmpty(properties, 'bottom')) {
-                properties.top = (page.getViewHeight() - layerPosition.height) / 2;
-            }
-            // 如果都配了，则计算出高度，然后取消bottom的设置
-            else if (!isPropertyEmpty(properties, 'top') && !isPropertyEmpty(properties, 'bottom')) {
-                // 如果高度没配，才计算
-                if (isPropertyEmpty(properties, 'height')) {
-                    // 还要考虑padding和border
-                    properties.height = page.getViewHeight()
-                        - properties.top
-                        - properties.bottom
-                        - getStyleNum(this.main, 'padding-top')
-                        - getStyleNum(this.main, 'padding-bottom')
-                        - getStyleNum(this.main, 'border-top-width')
-                        - getStyleNum(this.main, 'border-bottom-width');
-                }
-                properties = u.omit(properties, 'bottom');
-            }
-
-            // 不可越界
-            properties.top = Math.max(properties.top, 0);
-            // 算上滚动
-            properties.top = page.getScrollTop() + properties.top;
-
-            renderLayer.call(this, properties);
-        };
-
-        /**
-         * 有粘连元素的摆置
-         *
-         * @param {HTMLElement} target 目标元素
-         * @param {Object} [options] 停靠相关的选项
-         * @param {boolean} [options.strictWidth] 是否要求层的宽度不小于目标元素的宽度
-         * @param {Array} [options.preference] 首选位置
-         * --- 布局支持12种
-         * --- bottom left
-         * --- bottom right
-         * --- bottom center
-         * --- top right
-         * --- top left
-         * --- top center
-         * --- left top
-         * --- left bottom
-         * --- left center
-         * --- right top
-         * --- right bottom
-         * --- right center
-         */
-        Overlay.prototype.attachLayout = function (target, options) {
-            var main = this.main;
-            options = options || ['bottom', 'left'];
-
-            // 0. 获取页面的属性
-            var pagePosition = {
-                width: lib.page.getViewWidth(),
-                height: lib.page.getViewHeight(),
-                scrollTop: lib.page.getScrollTop(),
-                scrollLeft: lib.page.getScrollLeft()
-            };
-
-            // 1. 获取目标元素的属性
-            var rect = target.getBoundingClientRect();
-            var targetOffset = lib.getOffset(target);
-            var targetPosition = {
-                layoutLeft: targetOffset.left,
-                viewLeft: rect.left,
-                layoutTop: targetOffset.top,
-                viewTop: rect.top,
-                layoutRight: targetOffset.right,
-                viewRight: rect.right,
-                layoutBottom: targetOffset.bottom,
-                viewBottom: rect.bottom,
-                width: targetOffset.width,
-                height: targetOffset.height
-            };
-
-            // 2. 获取浮层元素的属性
-            // 如果对层宽度有要求，则先设置好最小宽度
-            if (this.strictWidth) {
-                main.style.minWidth = targetOffset.width + 'px';
-            }
-            // IE7下，如果浮层隐藏着反而会影响offset的获取，
-            // 但浮层显示出来又可能造成滚动条出现，
-            // 因此显示浮层显示后移到屏幕外面，然后计算坐标
-            // 先记录一下原始的状态，之后再恢复回去
-            var previousDisplayValue = main.style.display;
-            main.style.display = 'block';
-            main.style.top = '-5000px';
-            main.style.left = '-5000px';
-
-            var layerPosition = lib.getOffset(main);
-
-            // 用完改回来再计算后面的
-            main.style.top = '';
-            main.style.left = '';
-            main.style.display = previousDisplayValue;
-
-            // 3. 根据配置计算位置
-            var positionOptions = {
-                target: targetPosition,
-                layer: layerPosition,
-                page: pagePosition
-            };
-            var properties;
-            if (options[0] === 'right' || options[0] === 'left') {
-                properties = positionHorizontal(positionOptions, options);
-            }
-            else {
-                properties = positionVertical(positionOptions, options);
-            }
-
-            renderLayer.call(this, properties);
-        };
-
-        /**
-         * 放置位置如下图：
-         *
-         * [right bottom]
-         *           _______
-         *          |       |
-         *  ________| layer |
-         * |target  |       |
-         * |________|_______|
-         *
-         * [right top]
-         *  ________ _______
-         * |target  |       |
-         * |________| layer |
-         *          |       |
-         *          |_______|
-         *
-         * [right center]
-         *           _______
-         *          |       |
-         *  ________|       |
-         * |target  | layer |
-         * |________|       |
-         *          |       |
-         *          |_______|
-         *
-         * [left top]
-         *  _______ ________
-         * |       |target  |
-         * | layer |________|
-         * |       |
-         * |_______|
-         *
-         * [left bottom]
-         *  _______
-         * |       |
-         * | layer |________
-         * |       |target  |
-         * |_______|________|
-         *
-         * [left center]
-         *  _______
-         * |       |
-         * | layer |________
-         * |       |target  |
-         * |       |________|
-         * |       |
-         * |_______|
-         *
-         * @param {Object} options 位置参数
-         * @param {Array} preference 用户这是的默认参数
-         * @param {string} preference[0] 'right' | 'left'
-         * @param {string} preference[1] 'top' | 'bottom' | 'center'
-         * @return {Object} 定位配置
-         */
-        function positionHorizontal(options, preference) {
-            var spaceRight = options.page.width - options.target.viewRight;
-            var spaceLeft = options.target.viewLeft;
-
-            var spaceBottomToTop = options.target.viewBottom;
-            var spaceTopToBottom = options.page.height - options.target.viewTop;
-
-            // 空间可用判断
-            var validConfig = {};
-
-            // 可以放置右侧
-            if (spaceRight >= options.layer.width) {
-                validConfig.right = true;
-            }
-
-            // 可以放置左侧
-            if (spaceLeft >= options.layer.width) {
-                validConfig.left = true;
-            }
-
-            // 可以底部对齐，放置上侧
-            if (spaceBottomToTop >= options.layer.height) {
-                validConfig.bottom = true;
-            }
-
-            // 可以顶部对齐，放置下侧
-            if (spaceTopToBottom >= options.layer.height) {
-                validConfig.top = true;
-            }
-
-            // 位置配置
-            var positionConfig = {
-                right: options.target.layoutRight,
-                left: options.target.layoutLeft - options.layer.width,
-                bottom: options.target.layoutBottom - options.layer.height,
-                top: options.target.layoutTop,
-                center: options.target.layoutTop - (options.layer.height - options.target.height) * 1 / 2
-            };
-
-            var properties = {
-                align: []
-            };
-
-            // 如果用户配置可用，则用用户指定的
-            // 如果用户配置不可用，则使用其中一个可用的
-            // 如果左侧与右侧都不可用，默认在右侧
-            var isLeftValid = validConfig.left;
-            var isRightValid = validConfig.right;
-            var horizontalPreference = preference[0];
-            var defaultHorizontalOrientation = 'right';
-
-            var orientation = isLeftValid && isRightValid
-                ? horizontalPreference
-                : isLeftValid && 'left' || isRightValid && 'right' || defaultHorizontalOrientation;
-
-            properties.left = positionConfig[orientation];
-            properties.align.push(orientation);
-
-            // 如果用户配置的是居中，要判断一下是否可以居中
-            if (preference[1] === 'center') {
-                var topIsOk = 1;
-                var bottomIsOk = 1;
-                // 某一边不行
-                if (positionConfig.center < 0) {
-                    topIsOk = -1;
-                }
-
-                if (options.page.height - positionConfig.center - options.layer.height < 0) {
-                    bottomIsOk = -1;
-                }
-
-                // 两边都不行或者都行，继续center
-                if (topIsOk * bottomIsOk === 1) {
-                    properties.top = positionConfig.center;
-                    properties.align.push('center');
-
-                    return properties;
-                }
-                // 有一个不行，就改成相反的方向偏移
-                else if (topIsOk) {
-                    preference[1] = 'bottom';
-                }
-                else {
-                    preference[1] = 'top';
-                }
-            }
-
-            // 如果用户配置可用，则用用户指定的
-            // 如果用户配置不可用，则使用其中一个可用的
-            // 如果顶部与底部都不可用，默认顶部对齐
-            var isTopValid = validConfig.top;
-            var isBottomValid = validConfig.bottom;
-            var verticalPreference = preference[1];
-            var defaultVerticalAlign = 'top';
-
-            var align = isTopValid && isBottomValid
-                ? verticalPreference
-                : isTopValid && 'top' || isBottomValid && 'bottom' || defaultVerticalAlign;
-
-            properties.top = positionConfig[align];
-            properties.align.push(align);
-
-            return properties;
-        }
-
-        /**
-         * [top left]
-         *  __________
-         * |          |
-         * | layer    |
-         * |__________|
-         * | target|
-         * |_______|
-         *
-         * [top right]
-         *  __________
-         * |          |
-         * | layer    |
-         * |__________|
-         *    | target|
-         *    |_______|
-         *
-         * [top center]
-         *  ______________
-         * |     layer    |
-         * |              |
-         * |______________|
-         *    | target |
-         *    |________|
-         *
-         * [bottom left]
-         *  ________
-         * | target |
-         * |________|__
-         * | layer     |
-         * |           |
-         * |___________|
-         *
-         * [bottom right]
-         *     ________
-         *    | target |
-         *  __|________|
-         * | layer     |
-         * |           |
-         * |___________|
-         *
-         * [bottom center]
-         *     ________
-         *    | target |
-         *  __|________|__
-         * |     layer    |
-         * |              |
-         * |______________|
-         *
-         * @param {Object} options 位置参数
-         * @param {Array} preference 用户这是的默认参数
-         * @param {string} preference[0] 'top' | 'bottom'
-         * @param {string} preference[1] 'right' | 'left' | 'center'
-         * @return {Object} 定位配置
-         */
-        function positionVertical(options, preference) {
-            var spaceRightToLeft = options.target.viewRight;
-            var spaceLeftToRight = options.page.width - options.target.viewLeft;
-
-            var spaceTop = options.target.viewTop;
-            var spaceBottom = options.page.height - options.target.viewBottom;
-
-            // 空间可用判断
-            var validConfig = {};
-
-            // 可以右边对齐
-            if (spaceRightToLeft >= options.layer.width) {
-                validConfig.right = true;
-            }
-
-            // 可以左边对齐
-            if (spaceLeftToRight >= options.layer.width) {
-                validConfig.left = true;
-            }
-
-            // 可以放置下侧
-            if (spaceBottom >= options.layer.height) {
-                validConfig.bottom = true;
-            }
-
-            // 可以放置上侧
-            if (spaceTop >= options.layer.height) {
-                validConfig.top = true;
-            }
-
-            // 位置配置
-            var positionConfig = {
-                right: options.target.layoutRight - options.layer.width,
-                left: options.target.layoutLeft,
-                center: options.target.layoutLeft - (options.layer.width - options.target.width) * 1 / 2,
-                bottom: options.target.layoutBottom,
-                top: options.target.layoutTop - options.layer.height
-            };
-
-            var properties = {
-                align: []
-            };
-
-            // 如果用户配置可用，则用用户指定的
-            // 如果用户配置不可用，则使用其中一个可用的
-            // 如果顶部与底部都不可用，默认在底部
-            var isTopValid = validConfig.top;
-            var isBottomValid = validConfig.bottom;
-            var verticalPreference = preference[0];
-            var defaultVerticalOrientation = 'bottom';
-
-            var orientation = isTopValid && isBottomValid
-                ? verticalPreference
-                : isTopValid && 'top' || isBottomValid && 'bottom' || defaultVerticalOrientation;
-
-            properties.top = positionConfig[orientation];
-            properties.align.push(orientation);
-
-            // 如果用户配置的是居中，要判断一下是否可以居中
-            if (preference[1] === 'center') {
-                var leftIsOk = 1;
-                var rightIsOk = 1;
-                // 某一边不行
-                if (positionConfig.center < 0) {
-                    leftIsOk = -1;
-                }
-
-                if (options.page.width - positionConfig.center - options.layer.width < 0) {
-                    rightIsOk = -1;
-                }
-
-                // 两边都不行或者都行，继续center
-                if (leftIsOk * rightIsOk === 1) {
-                    properties.left = positionConfig.center;
-                    properties.align.push('center');
-
-                    return properties;
-                }
-                // 有一个不行，就改成相反的方向偏移
-                else if (leftIsOk) {
-                    preference[1] = 'right';
-                }
-                else {
-                    preference[1] = 'left';
-                }
-            }
-
-            // 如果用户配置可用，则用用户指定的
-            // 如果用户配置不可用，则使用其中一个可用的
-            // 如果左侧与右侧都不可用，默认左侧对齐
-            var isLeftValid = validConfig.left;
-            var isRightValid = validConfig.right;
-            var horizontalPreference = preference[1];
-            var defaultHorizontalAlign = 'left';
-
-            var align = isLeftValid && isRightValid
-                ? horizontalPreference
-                : isLeftValid && 'left' || isRightValid && 'right' || defaultHorizontalAlign;
-
-            properties.left = positionConfig[align];
-            properties.align.push(align);
-
-            return properties;
-        }
-
-        /**
-         * 移动层的位置
-         *
-         * @param {number} top 上边界距离
-         * @param {number} left 左边界距离
-         * @public
-         */
-        Overlay.prototype.moveTo = function (top, left) {
-            this.selfLayout({top: top, left: left});
-        };
-
-        /**
-         * 缩放层的大小
-         *
-         */
-        Overlay.prototype.resize = function () {
-            autoLayout.apply(this);
-        };
-
-        /**
-         * 销毁控件
-         */
-        Overlay.prototype.dispose = function () {
-            if (this.helper.isInStage('DISPOSED')) {
-                return;
-            }
-            // 移除mask
-            lib.removeNode('ctrl-mask-' + this.helper.getId());
-            // 移除dom
-            lib.removeNode(this.main);
-            Panel.prototype.dispose.apply(this, arguments);
-        };
 
         /**
          * 页面resize时事件的处理函数
