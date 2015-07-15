@@ -14,30 +14,15 @@
 
 @fa-font-path: "../../../dep/eicons/1.0.0-beta.1/fonts/font-awesome";
 
+// ¸²¸ÇÕûÌåheadingµÄfont-weight
+@esf-type-headings-font-weight: normal;
+
 @dark-color: #2C3E50;
 
-.ui-tab-vertical-container-left {
-   .esui-vertical-tab-def(
-       8em,
-       300px,
-       left
-   );
-}
-
-.ui-tab-vertical-container-right {
-   .esui-vertical-tab-def(
-       8em,
-       300px,
-       right
-   );
-}
-.ui-navbar-mordern {
+// header
+.header {
+    height: 60px;
     background: @dark-color;
-    li:hover a,
-    li:active a {
-        background: @dark-color;
-        color: @esf-palette-primary-color;
-    }
 }
 
 #branding {
@@ -46,58 +31,24 @@
     color: #fff;
 }
 
-.container-primary {
-    background: @esf-palette-primary-color;
-    padding: 7em 10em 20em 15em;
+// main content
+#main {
+    padding: 0 2em;
+    border-left: 1px solid #ddd;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-.hero {
-    font-size: 4em;
-}
-
-.ui-button-contrast {
-    .esf-button-variant(
-        #FFF,
-        @dark-color,
-        lighten(@dark-color, 5%),
-        darken(@dark-color, 10%),
-        lighten(@dark-color, 5%)
-    );
-}
-
-.contrast {
-    color: #FFF !important;
-}
-
-.ui-tab-vertical-container-left {
-   .esui-vertical-tab-def(
-       8em,
-       300px,
-       left
-   );
-}
-
-.ui-tab-vertical-container-right {
-   .esui-vertical-tab-def(
-       8em,
-       300px,
-       right
-   );
+.main-container {
+    margin-top: 2em;
+    margin-bottom: 5em;
 }
 
 .footer {
     padding: 1em;
     background: @dark-color;
-}
-
-.main-container {
-    margin-top: 2em;
-}
-
-#content {
-    padding-left: 2em;
-    border-left: 1px solid #ddd;
-    .box-sizing(border-box);
+    color: #fff;
 }
 
 // sidebar
@@ -126,23 +77,20 @@
 
 // grid
 .ui-g {
-  letter-spacing: -0.31em;
-  *letter-spacing: normal;
-  *word-spacing: -0.43em;
-  word-spacing: -0.43em;
-  text-rendering: optimizespeed;
-  font-family: FreeSans, Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
-  display: -webkit-flex;
-  -webkit-flex-flow: row wrap;
-  display: -ms-flexbox;
-  -ms-flex-flow: row wrap;
+    letter-spacing: -0.31em;
+    *letter-spacing: normal;
+    *word-spacing: -0.43em;
+    word-spacing: -0.43em;
+    text-rendering: optimizespeed;
+    font-family: FreeSans, Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
+    display: -webkit-flex;
+    -webkit-flex-flow: row wrap;
+    display: -ms-flexbox;
+    -ms-flex-flow: row wrap;
 }
-/* Opera as of 12 on Windows needs word-spacing.
-   The ".opera-only" selector is used to prevent actual prefocus styling
-   and is not required in markup.
-*/
+
 .opera-only :-o-prefocus {
-  word-spacing: -0.43em;
+    word-spacing: -0.43em;
 }
 
 .ui-u-4-5,
@@ -178,16 +126,17 @@
     left: 0px;
     font-size: 16px; 
     font-weight: bold;
-    color: #70ccc0;
+    border-left: 3px solid #70ccc0;
     content: "Example";
+    padding-left: .5em
 }
 
 .example + .highlight {
-  margin-bottom: 15px;
-  margin-top: 15px;
-  border-width: 0 0 1px;
-  border-radius: 0;
-  position: relative;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border-width: 0 0 1px;
+    border-radius: 0;
+    position: relative;
 }
 
 .highlight {
@@ -213,7 +162,6 @@
         font-weight: bold;
         color: #999;
         padding: 0 10px 0 0;
-        margin: 0 0px 10px 0;
     }
     .ui-tab-item:first-child {
         border-radius: 0;
@@ -228,16 +176,18 @@
     .ui-tab-item-active {
         cursor: default;
         background: #fff;
-        color: #70ccc0;
+        color: #333;
     }
+    border-left: 3px solid #70ccc0;
+    padding-left: .5em
 }
 
 .ui-tab-content-democode-border {
     border: 1px solid #e5e5e5;
+    margin-top: 1.2em;
+    margin-bottom: 3em;
 }
-.viewer {
-    display: none;
-}
+
 pre.prettyprint {
     border: 0;
     margin: 0;
@@ -246,17 +196,24 @@ pre.prettyprint {
         font: 12px/18px Consolas,monospace,serif;
     }
 }
+
 .highlight {
     margin-left: 20px;
 }
-#main {
-  padding-left: 2em;
-  border-left: 1px solid #ddd;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+
+// demo page
+.ui-tab-vertical-container-left {
+   .esui-vertical-tab-def(
+       8em,
+       300px,
+       left
+   );
 }
-.header {
-    height: 60px;
-    background: #2c3e50;
+
+.ui-tab-vertical-container-right {
+   .esui-vertical-tab-def(
+       8em,
+       300px,
+       right
+   );
 }
