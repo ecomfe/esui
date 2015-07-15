@@ -70,14 +70,18 @@ define(
                  * @return {HTMLElement}
                  */
                 create: function () {
-                    var control = this.control;
-                    var helper = control.helper;
-                    var element = helper.createPart('layer', this.nodeName);
+                    var element = this.control.helper.createPart('layer', this.nodeName);
+                    this.prepareLayer(element);
 
+                    return element;
+                },
+
+                prepareLayer: function (element) {
                     $(element).addClass(esui.getConfig('uiClassPrefix') + '-layer');
 
                     // 这里添加variant信息到layer上以方便定义variant样式。
-                    var variants = control.variants;
+                    var variants = this.control.variants;
+                    var helper = this.control.helper;
                     var variantsCls = [];
                     if (variants) {
                         variants = typeof variants === 'string'
@@ -85,14 +89,13 @@ define(
                             : variants;
 
                         // 处理过一次在control render时候就不处理了。
-                        control.variants = variants;
+                        this.control.variants = variants;
                         u.each(variants, function (v) {
                             variantsCls.push(helper.getPrimaryClassName('layer-' + v));
                         });
                         $(element).addClass(variantsCls.join(' '));
                     }
-
-                    return element;
+                    $(element).hide();
                 },
 
                 /**
@@ -155,9 +158,6 @@ define(
                     if (!element && create !== false) {
                         element = this.create();
                         this.render(element);
-
-                        $(element).addClass(getHiddenClasses(this));
-
                         this.initBehavior(element);
                         this.syncState(element);
 
@@ -175,12 +175,13 @@ define(
                 /**
                  * 隐藏层
                  */
-                hide: function () {
-                    var classes = getHiddenClasses(this);
-
+                hide: function (silent) {
                     var element = this.getElement();
-                    $(element).addClass(classes);
-                    this.control.removeState('active');
+                    $(element).hide();
+                    if (this.docClickHandler) {
+                        $(document).off('mousedown', this.docClickHandler);
+                        this.docClickHandler = null;
+                    }
                     this.fire('hide');
                 },
 
@@ -195,10 +196,8 @@ define(
                         // 点击文档自动关闭
                         setDocClickHandler(me);
                     }
-                    var classes = getHiddenClasses(me);
-                    $(element).removeClass(classes);
+                    $(element).show();
                     me.position();
-                    me.control.addState('active');
                     me.fire('show');
                 },
 
@@ -208,7 +207,7 @@ define(
                 toggle: function () {
                     var element = this.getElement();
                     if (!element
-                        || this.control.helper.isPart(element, 'layer-hidden')
+                        || !$(element).is(':visible')
                     ) {
                         this.show();
                     }
@@ -267,7 +266,7 @@ define(
             var inLayer = layer === target || $.contains(layer, target);
             var inElements = false;
             u.each(me.autoCloseExcludeElements, function (ele) {
-                inElements = $.contains(ele, target);
+                inElements = $.contains(ele, target) || ele === target;
                 if (inElements) {
                     return false;
                 }
@@ -281,16 +280,10 @@ define(
         }
 
         function setDocClickHandler(layer) {
-            $(document).one('mousedown', function (e) {
+            layer.docClickHandler = function (e) {
                 close.call(layer, e);
-            });
-        }
-
-        function getHiddenClasses(layer) {
-            var classes = layer.control.helper.getPartClasses('layer-hidden');
-            classes.unshift(esui.getConfig('uiClassPrefix') + '-layer-hidden');
-
-            return classes.join(' ');
+            };
+            $(document).one('mousedown', layer.docClickHandler);
         }
 
         /**
