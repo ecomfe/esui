@@ -65,14 +65,14 @@ define(
             }
 
             if (u.isArray(obj)) {
-                return u.map(obj, util.deepClone);
+                return u.map(obj, lib.deepClone);
             }
 
             var clone = {};
             u.each(
                 obj,
                 function (value, key) {
-                    clone[key] = util.deepClone(value);
+                    clone[key] = lib.deepClone(value);
                 }
             );
             return clone;
