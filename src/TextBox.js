@@ -13,8 +13,8 @@ define(
         var u = require('underscore');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
-        var supportPlaceholder
-            = ('placeholder' in document.createElement('input'));
+        var supportPlaceholder = ('placeholder' in document.createElement('input'));
+        var supportInputEvent = ('oninput' in document.createElement('input'));
 
         /**
          * 文本框输入控件
@@ -212,10 +212,105 @@ define(
                     this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
                     this.helper.addDOMEvent(input, 'focus', focus);
                     this.helper.addDOMEvent(input, 'blur', blur);
-                    var inputEventName = ('oninput' in input)
-                        ? 'input'
-                        : 'propertychange';
-                    this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
+
+                    // 对input事件的兼容处理：
+                    // 1. 解决input / propertychange(IE9-)的兼容性问题
+                    // 2. 坚决element.value在ie下触发propertychange的问题
+                    // 3. 解决IE下delete 不触发 propertychange 事件的问题
+                    if (supportInputEvent) {
+                        this.helper.addDOMEvent(input, 'input', dispatchInputEvent);
+                    }
+                    else {
+                        var activeElement;
+                        var activeElementValue;
+                        var activeElementValueProp;
+
+                        var handlePropertyChange = function (event) {
+                            var originalEvent = event.originalEvent;
+                            if (originalEvent.propertyName !== 'value') {
+                                return;
+                            }
+
+                            var value = event.target.value;
+                            if (value === activeElementValue) {
+                                return;
+                            }
+                            activeElementValue = value;
+
+                            dispatchInputEvent.call(this, originalEvent);
+                        };
+
+                        // 通过focusin / focusout动态添加、移除propertychange事件，
+                        // 以避免通过element.value赋值时触发propertychange事件
+                        this.helper.addDOMEvent(
+                            document,
+                            'focusin',
+                            function (event) {
+
+                                var target = event.target;
+                                var nodeName = target.nodeName.toLowerCase();
+                                if (!/input|textarea/.test(nodeName)) {
+                                    return;
+                                }
+                                activeElement = target;
+                                activeElementValue = target.value;
+
+                                activeElementValueProp = Object.getOwnPropertyDescriptor(
+                                    target.constructor.prototype, 'value'
+                                );
+                                Object.defineProperty(
+                                    activeElement,
+                                    'value',
+                                    {
+                                        get: function () {
+                                            return activeElementValueProp.get.call(this);
+                                        },
+                                        set: function (val) {
+                                            activeElementValue = val;
+                                            activeElementValueProp.set.call(this, val);
+                                        }
+                                    }
+                                );
+                                this.helper.addDOMEvent(input, 'propertychange', handlePropertyChange);
+                            }
+                        );
+
+                        this.helper.addDOMEvent(
+                            document,
+                            'focusout',
+                            function (event) {
+                                if (!activeElement) {
+                                    return;
+                                }
+
+                                //
+                                delete activeElement.value;
+                                this.helper.removeDOMEvent(
+                                    input,
+                                    'propertychange',
+                                    handlePropertyChange
+                                );
+
+                                activeElement = null;
+                                activeElementValue = null;
+                                activeElementValueProp = null;
+                            }
+                        );
+
+                        // IE9 delete不触发propertychange事件
+                        // 幸好有selectionchange
+                        this.helper.addDOMEvent(
+                            input,
+                            'selectionchange keyup keydown',
+                            function (event) {
+                                if (activeElement && activeElement.value !== activeElementValue) {
+                                    activeElementValue = activeElement.value;
+                                    dispatchInputEvent.call(this, event.originalEvent);
+                                }
+                            }
+                        );
+                    }
+
                     this.helper.delegateDOMEvent(input, 'change');
                     if (this.icon) {
                         this.helper.addDOMEvent(this.main.firstChild, 'click', iconClick);
@@ -235,14 +330,7 @@ define(
                         name: 'rawValue',
                         paint: function (textbox, rawValue) {
                             var input = lib.g(textbox.inputId);
-                            var eventName
-                                = ('oninput' in input) ? 'input' : 'propertychange';
-                            // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
-                            // **仅仅去除自己绑定的
-                            textbox.helper.removeDOMEvent(input, eventName, dispatchInputEvent);
                             input.value = textbox.stringifyValue(rawValue);
-                            textbox.helper.addDOMEvent(
-                                input, eventName, dispatchInputEvent);
 
                             togglePlaceholder(textbox);
                         }
@@ -646,8 +734,6 @@ define(
                  * @event input
                  *
                  * 输入内容变化时触发
-                 *
-                 * 在IE下，使用退格（Backspace或Delete）键时可能不触发此事件
                  *
                  * @member TextBox
                  */
