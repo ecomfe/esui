@@ -11,10 +11,13 @@ define(
         var eoo = require('eoo');
         var esui = require('./main');
         var u = require('underscore');
+        var $ = require('jquery');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var supportPlaceholder
             = ('placeholder' in document.createElement('input'));
+
+        require('./behavior/textchange');
 
         /**
          * 文本框输入控件
@@ -212,10 +215,10 @@ define(
                     this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
                     this.helper.addDOMEvent(input, 'focus', focus);
                     this.helper.addDOMEvent(input, 'blur', blur);
-                    var inputEventName = ('oninput' in input)
-                        ? 'input'
-                        : 'propertychange';
-                    this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
+                    $(input).on(
+                        'textchange',
+                        u.bind(dispatchInputEvent, this)
+                    );
                     this.helper.delegateDOMEvent(input, 'change');
                     if (this.icon) {
                         this.helper.addDOMEvent(this.main.firstChild, 'click', iconClick);
@@ -235,15 +238,7 @@ define(
                         name: 'rawValue',
                         paint: function (textbox, rawValue) {
                             var input = lib.g(textbox.inputId);
-                            var eventName
-                                = ('oninput' in input) ? 'input' : 'propertychange';
-                            // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
-                            // **仅仅去除自己绑定的
-                            textbox.helper.removeDOMEvent(input, eventName, dispatchInputEvent);
                             input.value = textbox.stringifyValue(rawValue);
-                            textbox.helper.addDOMEvent(
-                                input, eventName, dispatchInputEvent);
-
                             togglePlaceholder(textbox);
                         }
                     },
@@ -636,11 +631,11 @@ define(
         /**
          * 同步DOM的值与控件的属性
          *
-         * @param {Event} e DOM事件对象
+         * @param {Event} e jquery事件对象
          * @ignore
          */
         function dispatchInputEvent(e) {
-            if (e.type === 'input' || e.propertyName === 'value') {
+            if (e.type === 'textchange') {
                 /**
                  * @event input
                  *

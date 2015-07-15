@@ -22,6 +22,14 @@
         @esui-textline-border-radius
     );
     .esui-textline-theme();
+
+    // 取出textarea focus边框
+    .ui-textbox {
+        > textarea:focus,
+        > textarea[readonly] {
+            border: none;
+        }
+    }
 }
 
 .@{ui-class-prefix}-textline-num-line {
