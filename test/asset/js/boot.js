@@ -1,7 +1,7 @@
 
 require.config({
     'waitSeconds': 2,
-    'baseUrl': '../../../test',
+    'baseUrl': '../../../src',
     'packages': [
         {
             'name': 'esui',
@@ -30,13 +30,26 @@ require.config({
         },
         {
             'name': 'eoo',
-            'location': '../dep/eoo/0.1.3/src',
-            'main': 'main'
+            'location': '../dep/eoo/0.1.4/src',
+            'main': 'src/main'
         },
         {
             'name': 'jquery',
             'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery.min'
+            'main': 'jquery'
+        },
+        {
+            'name': 'eicons',
+            'location': '../dep/eicons/1.0.0-beta.1/src',
+            'main': 'main.less'
+        },
+        {
+            'name': 'esf',
+            'location': '../dep/esf/1.0.0-beta.1/src'
+        },
+        {
+            'name': 'est',
+            'location': '../dep/est/1.3.0/src'
         }
     ],
     'paths': {
@@ -47,9 +60,7 @@ require.config({
     },
     'shim': {
         'jquery-simulate': ['jquery'],
-        'jasmine': {
-            'exports': 'jasmine'
-        },
+        'jasmine': { 'exports': 'jasmine' },
         'jasmine-html': ['jasmine'],
         'matchers': ['jasmine']
     }

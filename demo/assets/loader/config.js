@@ -1,5 +1,5 @@
 require.config({
-    'baseUrl': '../src',
+    'baseUrl': '../../../src',
     'paths': {},
     'packages': [
         {
@@ -14,7 +14,7 @@ require.config({
         },
         {
             'name': 'etpl',
-            'location': '../dep/etpl/3.0.1/src',
+            'location': '../dep/etpl/3.0.0/src',
             'main': 'main'
         },
         {
@@ -29,7 +29,7 @@ require.config({
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-beta.2/src'
+            'location': '../dep/esf/1.0.0-beta.1/src'
         },
         {
             'name': 'est',
@@ -37,13 +37,17 @@ require.config({
         },
         {
             'name': 'eoo',
-            'location': '../dep/eoo/0.1.4/src',
-            'main': 'main'
+            'location': '../dep/eoo/0.1.4/src'
         },
         {
             'name': 'jquery',
             'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery.min'
+            'main': 'jquery'
+        },
+        {
+            'name': 'mini-event',
+            'location': '../dep/mini-event/1.0.2/src',
+            'main': 'main'
         }
     ]
 });

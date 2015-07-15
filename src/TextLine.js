@@ -90,7 +90,7 @@ define(
                  */
                 initEvents: function () {
                     // 输入区变化监听
-                    var textbox = this.viewContext.get(this.helper.getId('text'));
+                    var textbox = this.getTextBox();
                     textbox.on('input', u.bind(onInput, this));
 
                     var textArea = this.getTextArea();
@@ -265,7 +265,7 @@ define(
                  * @return {ui.TextBox}
                  */
                 getTextBox: function () {
-                    return this.viewContext.get(this.helper.getId('text'));
+                    return this.getChild('input');
                 },
 
                 /**
@@ -290,7 +290,7 @@ define(
          */
         function getMainHTML(textLine) {
             var textareaHTML = [
-                '<div style="width:100%;height:100%;" data-ui-id="${id}"',
+                '<div style="width:100%;height:100%;" data-ui-child-name="input"',
                     ' data-ui-type="TextBox" data-ui-mode="textarea"',
                     ' data-ui-width="100%" data-ui-height="100%"',
                     ' data-ui-placeholder="${placeholder}">',
@@ -300,7 +300,6 @@ define(
             textareaHTML = lib.format(
                 textareaHTML,
                 {
-                    id: textLine.helper.getId('text'),
                     placeholder: textLine.placeholder
                 }
             );
