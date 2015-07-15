@@ -4,30 +4,33 @@
         <meta charset="UTF-8" />
         <title>Calendar - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="assets/google-code-prettify/prettify.js"></script>
         <script src="demo.js"></script>
-        <link rel="stylesheet" href="assets/themes/standard.css" />
+        
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+        <link rel="stylesheet" href="assets/themes/standard.css" />
     </head>
     <body>
-        <h1 id="branding">Calendar</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">Calendar</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-sidebar">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>状态</h2>
                 <div class="intro">
                     <p>日期选择组件缺省样式。</p>
                 </div>
                 <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
                     <div class="example ui-demo-light-stage">
+                        <h3>默认样式</h3>
                         <div class="row">
                             <input data-ui="type:Calendar;autoHideLayer:1" />
                         </div>
@@ -51,15 +54,16 @@
         require(
             [
                 'esui',
-                'esui/Calendar'
+                'esui/Calendar',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
                 var controls = ui.init();
-
                 ui.get('error').showValidationMessage('invalid', '时间错误！');
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

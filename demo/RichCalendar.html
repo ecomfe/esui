@@ -4,21 +4,27 @@
         <meta charset="UTF-8" />
         <title>RichCalendar - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - RichCalendar</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        
+        <div class="header">
+            <h1 id="branding">ESUI - RichCalendar</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-sidebar">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>多个日期选择工具</h2>
                 <div class="intro">
                     <p>选择多个日期时间段。</p>
@@ -68,13 +74,15 @@
         require(
             [
                 'esui',
-                'esui/RichCalendar'
+                'esui/RichCalendar',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
                 var calendar = ui.init()[0];
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

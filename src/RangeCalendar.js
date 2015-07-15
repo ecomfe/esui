@@ -12,7 +12,7 @@ define(
         require('./MonthView');
         require('./CheckBox');
         require('./Label');
-
+        var $ = require('jquery');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var Layer = require('./Layer');

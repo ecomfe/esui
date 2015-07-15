@@ -4,21 +4,26 @@
         <meta charset="utf-8" />
         <title>Tree - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
 <body>
-    <h1 id="branding">ESUI - Tree</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Tree</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Tree</h2>
             <div class="intro">
                 <p>默认样式</p>
@@ -47,7 +52,9 @@
         require(
             [
                 'esui/Tree',
-                'esui/TreeStrategy'
+                'esui/TreeStrategy',
+                'esui/Tab',
+                'demo'
             ],
             function (Tree, TreeStrategy) {
                 var datasource = {
@@ -93,7 +100,7 @@
                 tree5.appendTo(document.getElementById('container5'));
             }
         );
-        copyExample();
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

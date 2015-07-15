@@ -10,6 +10,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var $ = require('jquery');
         var lib = require('./lib');
         var esui = require('./main');
         var Control = require('./Control');

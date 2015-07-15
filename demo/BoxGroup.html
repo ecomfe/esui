@@ -4,29 +4,31 @@
         <meta charset="utf-8"/>
         <title>BoxGroup - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
 <body>
-    <h1 id="branding">ESUI - BoxGroup</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - BoxGroup</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Radiobox List</h2>
             <div class="intro">
                 <p>Radiobox列表。支持从DOM元素直接创建。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>Vertical</h3>
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" data-ui-name="frameworks1" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom" data-ui-orientation="vertical">
@@ -76,9 +78,6 @@
                 <p>Checkbox列表。支持从DOM元素直接创建。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>Vertical</h3>
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-change-vertical2" data-ui-name="frameworks3" data-ui-box-type="checkbox" data-ui-box-class="ui-checkbox-custom" data-ui-orientation="vertical">
@@ -129,10 +128,6 @@
                 <p>自定义Butotn样式。使用<code>change</code>事件监听选中状态的变化。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                    <li class="view-script">脚本</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>Button样式</h3>
                     <div class="row">
@@ -306,44 +301,45 @@
                         </div>
                     </div>
                     <p id="box-group-change-log">已选值：</p>
-                    <pre class="source source-script prettyprint">
-<code class="language-javascript">
-    function () {
-        require('esui').get('box-group-button2').on(
-                'change',
-                function () {
-                    $('#box-group-change-log').text('已选值：' + this.getValue());
-                }
-        );
-    }
-</code>
-                    </pre>
                 </div>
-            </div>
-            <script>
-                require(
-                    [
-                        'esui',
-                        'esui/BoxGroup'
-                    ],
-                    function (ui) {
-                        ui.init();
-                        ui.get('box-group-button2').on(
+                <script type="text/sample">
+                    function () {
+                        require('esui').get('box-group-button2').on(
                             'change',
                             function () {
                                 $('#box-group-change-log').text('已选值：' + this.getValue());
                             }
                         );
-                        $('#setType').on('click', function () {
-                            ui.get('box-group-vertical').setProperties(
-                                {boxType: 'checkbox'}
-                            );
-                        });
                     }
-                );
-                copyExample();
-            </script>
+                </script>
+            </div>
         </div>
     </div>
+    <script>
+        require(
+            [
+                'esui',
+                'jquery',
+                'esui/BoxGroup',
+                'esui/Tab',
+                'demo'
+            ],
+            function (ui, $) {
+                ui.init();
+                ui.get('box-group-button2').on(
+                    'change',
+                    function () {
+                        $('#box-group-change-log').text('已选值：' + this.getValue());
+                    }
+                );
+                $('#setType').on('click', function () {
+                    ui.get('box-group-vertical').setProperties(
+                        {boxType: 'checkbox'}
+                    );
+                });
+            }
+        );
+    </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>
