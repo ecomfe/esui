@@ -4,6 +4,8 @@
         <meta charset="UTF-8"/>
         <title>Button - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
+        <script src="assets/loader/config.js"></script>
+        <script src="demo.js"></script>
         <script src="assets/google-code-prettify/prettify.js"></script>
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
@@ -33,10 +35,6 @@
                     <button data-ui="type:Button;variants:danger">danger</button>
                     <button data-ui="type:Button;variants:link">link</button>
                 </div>
-                <script type="text/sample">
-                    var s = 10;
-                    var ui = 398;
-                </script>
             </div>
             <h2>尺寸</h2>
             <div class="view">
@@ -94,19 +92,20 @@
             </div>
         </div>
     </div>
-    <script src="demo.js"></script>
+
     <script id="requireJs">
         require(
-                [
-                    'esui',
-                    'esui/Button',
-                    'esui/Tab',
-                    'demo'
-                ],
-                function (ui) {
-                    ui.init();
-                }
+            [
+                'esui',
+                'esui/Button',
+                'esui/Tab',
+                'demo'
+            ],
+            function (ui) {
+                ui.init();
+            }
         );
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

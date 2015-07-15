@@ -4,30 +4,31 @@
     <meta charset="utf-8" />
     <title>Dialog - ESUI Demo</title>
     <script src="assets/loader/esl.js"></script>
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script src="assets/loader/config.js"></script>
     <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <link rel="stylesheet" href="assets/themes/standard.css" />
+
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
 </head>
 <body>
-    <h1 id="branding">ESUI - Dialog</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Dialog</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>多种创建方式</h2>
             <div class="intro">
                 <p>两种创建方式：js动态；html静态。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-script">脚本</li>
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg;closeOnHide:false;">
                         <div data-role="title">我来自静态html</div>
@@ -77,29 +78,53 @@
                         </tbody>
                     </table>
                 </div>
-                <pre class="source source-script"><code class="language-javascript">
-//创建main
-var main = document.createElement('div');
-document.body.appendChild(main);
+                <!-- <pre class="source source-script">
+                    <code class="language-javascript">
+                        //创建main
+                        var main = document.createElement('div');
+                        document.body.appendChild(main);
 
-var dialog = ui.create('Dialog', {
-    title: '电你',
-    content: '随便创建随便创建随便创建',
-    width: 400,
-    main: main
-});
-dialog.show();
-var btnOk = dialog.getFoot().getChild('btnOk');
-var btnCancel = dialog.getFoot().getChild('btnCancel');
-btnOk.on('click', function(){
-    alert('随便创建！');
-    dialog.dispose();
-});
-btnCancel.on('click', function(){
-    alert('不！！！！');
-    dialog.dispose();
-});
-                </code></pre>
+                        var dialog = ui.create('Dialog', {
+                            title: '电你',
+                            content: '随便创建随便创建随便创建',
+                            width: 400,
+                            main: main
+                        });
+                        dialog.show();
+                        var btnOk = dialog.getFoot().getChild('btnOk');
+                        var btnCancel = dialog.getFoot().getChild('btnCancel');
+                        btnOk.on('click', function(){
+                            alert('随便创建！');
+                            dialog.dispose();
+                        });
+                        btnCancel.on('click', function(){
+                            alert('不！！！！');
+                            dialog.dispose();
+                        });
+                    </code>
+                </pre> -->
+                <script type="text/sample">
+                    var main = document.createElement('div');
+                    document.body.appendChild(main);
+
+                    var dialog = ui.create('Dialog', {
+                        title: '电你',
+                        content: '随便创建随便创建随便创建',
+                        width: 400,
+                        main: main
+                    });
+                    dialog.show();
+                    var btnOk = dialog.getFoot().getChild('btnOk');
+                    var btnCancel = dialog.getFoot().getChild('btnCancel');
+                    btnOk.on('click', function(){
+                        alert('随便创建！');
+                        dialog.dispose();
+                    });
+                    btnCancel.on('click', function(){
+                        alert('不！！！！');
+                        dialog.dispose();
+                    });
+                </script>
             </div>
             <h2>两种默认框</h2>
             <div class="intro">
@@ -119,35 +144,35 @@ btnCancel.on('click', function(){
                         <button id="trigger-confirm" class="ui-button ui-button-info">Comfirm</button>
                     </div>
                 </div>
-                <pre class="source source-markup"><code class="language-javascript">
-    var alertDialog = Dialog.alert({
-        title: '电你',
-        content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
-        width: 400,
-        onok: function() {
-            alert('关了2！');
-        }
-    });
+                <script type="text/sample">
+                    var alertDialog = Dialog.alert({
+                        title: '电你',
+                        content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
+                        width: 400,
+                        onok: function() {
+                            alert('关了2！');
+                        }
+                    });
 
-    alertDialog.on('ok', function(){
-        alert('关了！');
-    });
+                    alertDialog.on('ok', function(){
+                        alert('关了！');
+                    });
 
-    var confirmDialog = Dialog.confirm({
-        title: '给你机会选择',
-        content: '确定要点我吗？te',
-        onok: function() {
-            alert('你死定了2！');
-        },
-        width: 400
-    });
-    confirmDialog.on('ok', function(){
-        alert('你死定了！');
-    })
-    confirmDialog.on('cancel', function(){
-        alert('算你识相！');
-    });
-                </code></pre>
+                    var confirmDialog = Dialog.confirm({
+                        title: '给你机会选择',
+                        content: '确定要点我吗？te',
+                        onok: function() {
+                            alert('你死定了2！');
+                        },
+                        width: 400
+                    });
+                    confirmDialog.on('ok', function(){
+                        alert('你死定了！');
+                    })
+                    confirmDialog.on('cancel', function(){
+                        alert('算你识相！');
+                    });
+                </script>
             </div>
             <h2>mask优先级</h2>
             <div class="intro">
@@ -169,7 +194,9 @@ btnCancel.on('click', function(){
         [
             'esui',
             'esui/Button',
-            'esui/Dialog'
+            'esui/Dialog',
+            'esui/Tab',
+            'demo'
         ],
         function (ui, Button, Dialog) {
             var controls = ui.init();
@@ -282,7 +309,7 @@ btnCancel.on('click', function(){
             };
         }
     );
-    copyExample();
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

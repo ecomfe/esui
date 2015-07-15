@@ -4,28 +4,31 @@
     <meta charset="utf-8" />
     <title>TextBox - ESUI Demo</title>
     <script src="assets/loader/esl.js"></script>
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script src="assets/loader/config.js"></script>
     <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <link rel="stylesheet" href="assets/themes/standard.css" />
+
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
 </head>
 <body>
-    <h1 id="branding">ESUI - TextBox</h1>
-    <div id="page">
-        <ul id="navigator"></ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - TextBox</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-sidebar">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>多种模式</h2>
             <div class="intro">
                 <p>文本框有3种模式：文本、密码、多行。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>文本框</h3>
                     <div class="row">
@@ -57,9 +60,6 @@
                 <p>使用<code>hint</code>和<code>hintType</code>属性灵活定义前后缀式的提示信息。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>前置</h3>
                     <div class="row">
@@ -82,9 +82,6 @@
                 <p>使用<code>placeholder</code>属性为文本框加上输入提示信息。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <input id="text-box-with-placeholder"
                         placeholder="使用placeholder属性"
@@ -98,10 +95,6 @@
                 <p>使用<code>input</code>事件监听输入的内容。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                    <li class="view-script">脚本</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <input id="text-box-with-input-listener"
                         placeholder="使用placeholder属性"
@@ -111,60 +104,40 @@
                     <label id="left-length-hint" for="text-box-with-input-listener">还可以输入40个字符</label>
                 </div>
                 <script>
-                    ready(
-                        function () {
-                            var maxLength = 40;
-                            var textbox = require('esui').get('text-box-with-input-listener');
-                            var label = document.getElementById('left-length-hint');
-                            textbox.on(
-                                'input',
-                                function () {
-                                    var value = this.getValue();
-                                    var leftLength = maxLength - value.length;
-                                    if (leftLength > 0) {
-                                        label.innerHTML = '还可以输入' + leftLength + '个字符';
-                                        label.className = '';
+                    require(['jquery'], function($) {
+                        $(document).ready(
+                            function () {
+                                var maxLength = 40;
+                                var textbox = require('esui').get('text-box-with-input-listener');
+                                var label = document.getElementById('left-length-hint');
+                                textbox.on(
+                                    'input',
+                                    function () {
+                                        var value = this.getValue();
+                                        var leftLength = maxLength - value.length;
+                                        if (leftLength > 0) {
+                                            label.innerHTML = '还可以输入' + leftLength + '个字符';
+                                            label.className = '';
+                                        }
+                                        else {
+                                            label.innerHTML = '已经超出了' + (-leftLength) + '个字符';
+                                            label.className = 'invalid';
+                                        }
                                     }
-                                    else {
-                                        label.innerHTML = '已经超出了' + (-leftLength) + '个字符';
-                                        label.className = 'invalid';
-                                    }
-                                }
-                            );
-                        }
-                    );
+                                );
+                            }
+                        );
+                    })
                 </script>
-                <pre class="source source-script"><code class="language-javascript">var maxLength = 40;
-var textbox = require(&#039;esui&#039;).get(&#039;text-box-with-input-listener&#039;);
-var label = document.getElementById(&#039;left-length-hint&#039;);
-textbox.on(
-    &#039;input&#039;,
-    function () {
-        var value = this.getValue();
-        var leftLength = maxLength - value.length;
-        if (leftLength &gt; 0) {
-            label.innerHTML = &#039;&#x8fd8;&#x53ef;&#x4ee5;&#x8f93;&#x5165;&#039; + leftLength + &#039;&#x4e2a;&#x5b57;&#x7b26;&#039;;
-            label.className = &#039;&#039;;
-        }
-        else {
-            label.innerHTML = &#039;&#x5df2;&#x7ecf;&#x8d85;&#x51fa;&#x4e86;&#039; + (-leftLength) + &#039;&#x4e2a;&#x5b57;&#x7b26;&#039;;
-            label.className = &#039;invalid&#039;;
-        }
-    }
-);</code></pre>
             </div>
             <h2>状态</h2>
             <div class="intro">
                 <p>显示验证信息。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>出错</h3>
-                    <div class="row">
-                        
+                    <div class="row">    
                         <div 
                             placeholder="使用placeholder属性"
                             data-ui-id="text-box-with-invalid"
@@ -227,9 +200,6 @@ textbox.on(
                 <p>Textbox图标。</p>
             </div>
             <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
                 <div class="example ui-demo-light-stage">
                     <h3>前置</h3>
                     <div class="row">
@@ -260,15 +230,17 @@ textbox.on(
         require(
             [
                 'esui',
-                'esui/TextBox'
+                'esui/TextBox',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
                 ui.init();
                 ui.get('text-box-with-invalid').showValidationMessage('invalid', '不能为空！');
-                ready();
+                //ready();
             }
         );
-        copyExample();
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

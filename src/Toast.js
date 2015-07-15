@@ -158,7 +158,7 @@ define(
                     if (this.isHidden()) {
                         return;
                     }
-                    this.$super.hide(arguments);
+                    this.$super(arguments);
                     clearTimeout(this.timer);
                     this.fire('hide');
                     if (this.disposeOnHide) {

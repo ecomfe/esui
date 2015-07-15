@@ -4,29 +4,31 @@
         <meta charset="UTF-8" />
         <title>Table - ESUI Demo</title>
         <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script src="assets/loader/config.js"></script>
         <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
+
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - Table</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">ESUI - Table</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-sidebar">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>Table</h2>
                 <div class="intro">
                     <p>Table</p>
                 </div>
                 <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
                     <div class="example ui-demo-light-stage">
                         <div data-follow-thead="myTable" class="row">
                             <button  id="disabledBtn" data-ui="id:disabledBtn;type:Button;">toggleDisable</button> &nbsp;
@@ -52,12 +54,6 @@
                             data-ui-extension-customdata-type="CustomData"
                             ></div>
                         </div>
-                    <!--
-                        <div style="width:1024px;margin: 0 auto;overflow:hidden;">
-                            <div data-follow-thead="myTable2">I am not</div>
-                            <div data-ui="type:Table;id:myTable2;"  data-ui-extension-tableedit-type="TableEdit"></div>
-                        </div>
-                    -->
                         <h3>空表格</h3>
                         <div class="row">
                             <div data-ui="type:Table;id:myTable4;" data-ui-extension-tableedit-type="TableEdit" data-ui-extension-tablesubrow-type="TableSubrow"></div>
@@ -97,7 +93,9 @@
                 'esui/Table',
                 'esui/Button',
                 'esui/TextBox',
-                'esui/Select'
+                'esui/Select',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
                 var fields = [
@@ -408,7 +406,7 @@
                 */
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>
