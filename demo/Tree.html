@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
         <meta charset="utf-8" />
         <title>Tree - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/loader/config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
-
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
@@ -25,38 +22,38 @@
         </div>
         <div id="main" class="ui-u-4-5">
             <h2>Tree</h2>
-            <div class="intro">
-                <p>默认样式</p>
+            <p>默认样式</p>
+            <div class="example">
+                <h3>小箭头</h3>
+                <div id="container"></div>
+                <h3>文件夹</h3>
+                <div id="container2"></div>
+                <h3>三角</h3>
+                <div id="container3"></div>
+                <h3>没有根节点</h3>
+                <div id="container4"></div>
+                <h3>checkbox</h3>
+                <div id="container5"></div>
             </div>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <h3>小箭头</h3>
-                    <div id="container"></div>
-                    <h3>文件夹</h3>
-                    <div id="container2"></div>
-                    <h3>三角</h3>
-                    <div id="container3"></div>
-                    <h3>没有根节点</h3>
-                    <div id="container4"></div>
-
-                    <h3>checkbox</h3>
-                    <div id="container5"></div>
-                </div>
-            </div>
+            <script type="text/sample" data-refid="main-js">
+            </script>
         </div>
     </div>
-    <script>
+    <script src="assets/loader/esl.js"></script>
+    <script src="assets/loader/config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
         require(
             [
+                'esui',
                 'esui/Tree',
                 'esui/TreeStrategy',
                 'esui/Tab',
                 'demo'
             ],
-            function (Tree, TreeStrategy) {
+            function (esui, Tree, TreeStrategy) {
+                esui.init();
                 var datasource = {
                     id: '1',
                     text: '百度',
