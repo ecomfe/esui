@@ -21,7 +21,7 @@
             </ul>
         </div>
         <div id="main" class="ui-u-4-5">
-            <h2>Tab</h2>
+            <h2>横向Tab</h2>
             <p>横向</p>
             <div class="example">
                 <div
@@ -41,27 +41,24 @@
                     <div class="ui-tab-panel" title="tab3" id="c">我是Tab3</div>
                 </div>
             </div>
-            <h2>Tab</h2>
-            <div class="intro">
-                <p>头向下</p>
-            </div>
-            <div class="view">
-                <div class="example ui-demo-light-stage">
-                    <div class="ui-tab-content ui-tab-content-bottom-border">
-                        <div class="ui-tab-panel" title="tab1" id="a-bottom">我是Tab1</div>
-                        <div class="ui-tab-panel" title="tab2" id="b-bottom">我是Tab2</div>
-                        <div class="ui-tab-panel" title="tab3" id="c-bottom">我是Tab3</div>
-                    </div>
-                    <div
-                    data-ui-type="Tab"
-                    data-ui-id="test_bottom"
-                    data-ui-variants="horizontal-flip">
-                        <ul data-role="navigator">
-                            <li data-for="a-bottom">TAB1</li>
-                            <li data-for="b-bottom">TAB2</li>
-                            <li data-for="c-bottom">TAB3</li>
-                        </ul>
-                    </div>
+
+            <h2>头向下Tab</h2>
+            <p>头向下</p>
+            <div class="example ui-demo-light-stage">
+                <div class="ui-tab-content ui-tab-content-bottom-border">
+                    <div class="ui-tab-panel" title="tab1" id="a-bottom">我是Tab1</div>
+                    <div class="ui-tab-panel" title="tab2" id="b-bottom">我是Tab2</div>
+                    <div class="ui-tab-panel" title="tab3" id="c-bottom">我是Tab3</div>
+                </div>
+                <div
+                data-ui-type="Tab"
+                data-ui-id="test_bottom"
+                data-ui-variants="horizontal-flip">
+                    <ul data-role="navigator">
+                        <li data-for="a-bottom">TAB1</li>
+                        <li data-for="b-bottom">TAB2</li>
+                        <li data-for="c-bottom">TAB3</li>
+                    </ul>
                 </div>
             </div>
             <div class="intro">
@@ -127,7 +124,7 @@
                 'demo'
             ],
             function (ui, Tab) {
-                var tab = ui.init()[0];
+                ui.init();
             }
         );
     </script>

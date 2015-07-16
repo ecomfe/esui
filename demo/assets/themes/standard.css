@@ -6453,10 +6453,13 @@ pre.prettyprint code {
   font-size: 1.4em;
   height: 18px;
 }
-.ui-selectable-selecting {
+#selectable-demo .ui-selectable-selecting {
   background: #FECA40;
 }
-.ui-selectable-selected {
+#selectable-demo .ui-selectable-selected {
   background: #F39814;
   color: white;
+}
+#selectable-demo .ui-selectable-helper {
+  border: 1px dotted #666;
 }

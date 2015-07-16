@@ -46,9 +46,6 @@
                             <label for="framework-tangram">Tangram</label>
                         </div>
                     </div>
-                    <div>
-                        <button type="button" id="settype" class="ui-button ui-button-primary">Set Box Type</button>
-                    </div>
                     <h3>Horizontal</h3>
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" data-ui-name="frameworks2" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
                         <div>
@@ -333,11 +330,6 @@
                     $('#box-group-change-log').text('已选值：' + this.getValue());
                 }
             );
-            $('#settype').on('click', function () {
-                ui.get('box-group-vertical').setProperties(
-                    {boxType: 'checkbox'}
-                );
-            });
         }
     );
     </script>

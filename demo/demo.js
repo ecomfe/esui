@@ -2,6 +2,7 @@
  * @file demo.js
  * @author fe
  */
+
 define('demo',
     function (localRequire) {
         var $ = localRequire('jquery');
