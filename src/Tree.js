@@ -446,7 +446,7 @@ define(
                     // CSS3动画可以通过这个class来操作
                     var node2 = this.nodeIndex[id];
                     var nodeClasses = getNodeClasses(this, node2, level, true);
-                    nodeElement.className = nodeClasses.join(' ');
+                    nodeElement.className = nodeClasses;
                 },
 
                 /**
@@ -490,7 +490,7 @@ define(
 
                     var level = +$(nodeElement).attr('data-level');
                     var nodeClasses = getNodeClasses(this, node, level, false);
-                    nodeElement.className = nodeClasses.join(' ');
+                    nodeElement.className = nodeClasses;
                     var indicator = lib.g(helper.getId('indicator-' + id));
                     var indicatorClasses = [].concat(
                         helper.getPartClasses('node-indicator'),

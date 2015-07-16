@@ -48,7 +48,7 @@ define(
 
                     return function () {
                         return this.on(
-                            eventType + '.ui-disableSelection',
+                            eventType + '.esui-disableSelection',
                             function (event) {
                                 event.preventDefault();
                             }
@@ -61,7 +61,7 @@ define(
                  * @return {$}
                  */
                 enableSelection: function () {
-                    return this.off('.ui-disableSelection');
+                    return this.off('.esui-disableSelection');
                 }
             }
         );
