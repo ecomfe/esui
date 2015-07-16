@@ -1,5 +1,5 @@
 require.config({
-    'baseUrl': '../../../src',
+    'baseUrl': '../src',
     'paths': {},
     'packages': [
         {
@@ -29,7 +29,7 @@ require.config({
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-beta.1/src'
+            'location': '../dep/esf/1.0.0-beta.2/src'
         },
         {
             'name': 'est',
@@ -37,12 +37,13 @@ require.config({
         },
         {
             'name': 'eoo',
-            'location': '../dep/eoo/0.1.4/src'
+            'location': '../dep/eoo/0.1.4/src',
+            'main': 'main'
         },
         {
             'name': 'jquery',
             'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery'
+            'main': 'jquery.min'
         },
         {
             'name': 'mini-event',

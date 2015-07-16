@@ -36,7 +36,7 @@ require.config({
         {
             'name': 'jquery',
             'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery'
+            'main': 'jquery.min'
         },
         {
             'name': 'eicons',
@@ -45,7 +45,7 @@ require.config({
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-beta.1/src'
+            'location': '../dep/esf/1.0.0-beta.2/src'
         },
         {
             'name': 'est',
