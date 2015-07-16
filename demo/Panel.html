@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Panel - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
-        <link rel="stylesheet" href="assets/themes/standard.css" />
-
-        <!--[if lt IE 9]>
-        <link rel="stylesheet" href="assets/ie8.css" />
-        <![endif]-->
-    </head>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <title>Panel - ESUI Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    <link rel="stylesheet" href="assets/themes/standard.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="assets/ie8.css" />
+    <![endif]-->
+</head>
     <body>
-        
         <div class="header">
             <h1 id="branding">ESUI - Panel</h1>
         </div>
         <div class="ui-g main-container">
             <div id="side-bar" class="ui-u-1-5">
-                <ul id="navigator" class="ui-sidebar">
+                <ul id="navigator" class="ui-nav">
                 </ul>
             </div>
             <div id="main" class="ui-u-4-5">
@@ -29,61 +25,55 @@
                 <div class="intro">
                     <p>骨架</p>
                 </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <div class="row" data-ui-type="Panel" data-ui-id="panel">
-                            <div class="ui-panel-header">Panel heading title</div>
-                            <div class="ui-panel-body">
-                                Panel content
-                                <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
-                            </div>
+                <div class="example ui-demo-light-stage">
+                    <div class="row" data-ui-type="Panel" data-ui-id="panel">
+                        <div class="ui-panel-header">Panel heading title</div>
+                        <div class="ui-panel-body">
+                            Panel content
+                            <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
                         </div>
-                        <button data-ui-id="btnSetContent" data-ui-type="Button" type="button">set Content</button>
-                        <button data-ui-id="btnHide" data-ui-type="Button" type="button">Hide</button>
-                        <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
                     </div>
+                    <button data-ui-id="btnSetContent" data-ui-type="Button" type="button">set Content</button>
+                    <button data-ui-id="btnHide" data-ui-type="Button" type="button">Hide</button>
+                    <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
                 </div>
                 <h2>自定义Panel样式</h2>
                 <div class="intro">
                     <p>自定义样式</p>
                 </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <div class="row"  data-ui-type="Panel" data-ui-id="panel2" data-ui-variants="custom">
-                            <div class="ui-panel-body">
-                                Body content
-                                <a href="#" data-ui-type="Link">Child link control</a>
+                <div class="example ui-demo-light-stage">
+                    <div class="row"  data-ui-type="Panel" data-ui-id="panel2" data-ui-variants="custom">
+                        <div class="ui-panel-body">
+                            Body content
+                            <a href="#" data-ui-type="Link">Child link control</a>
+                        </div>
+                    </div>
+                    <div class="row" data-ui-type="Panel" data-ui-variants="custom">
+                        <div class="ui-panel-header">
+                            <div class="ui-panel-left">
+                                Panel heading title
+                            </div>
+                            <div class="ui-panel-right">
+                                <span class="ui-icon-search ui-hover-fade-in"></span>
+                                <span class="ui-icon-close ui-hover-fade-in"></span>
                             </div>
                         </div>
-                        <div class="row" data-ui-type="Panel" data-ui-variants="custom">
-                            <div class="ui-panel-header">
-                                <div class="ui-panel-left">
-                                    Panel heading title
-                                </div>
-                                <div class="ui-panel-right">
-                                    <span class="ui-icon-search ui-hover-fade-in"></span>
-                                    <span class="ui-icon-close ui-hover-fade-in"></span>
-                                </div>
-                            </div>
-                            <div class="ui-panel-body">
-                                Panel content
-                                <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
-                            </div>
-                            <div class="ui-panel-footer">
-                                Panel Footer
-                            </div>
+                        <div class="ui-panel-body">
+                            Panel content
+                            <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
+                        </div>
+                        <div class="ui-panel-footer">
+                            Panel Footer
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
@@ -92,7 +82,7 @@
                 'esui/Button'
             ],
             function (ui) {
-                var link = ui.init();
+                ui.init();
                 var p = ui.get('panel');
                 ui.get('btnSetContent').onclick = function () {
                     p.setContent('Date:' + new Date());

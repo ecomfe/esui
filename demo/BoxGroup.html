@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" />
         <title>BoxGroup - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
-
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
@@ -20,7 +17,7 @@
     </div>
     <div class="ui-g main-container">
         <div id="side-bar" class="ui-u-1-5">
-            <ul id="navigator" class="ui-sidebar">
+            <ul id="navigator" class="ui-nav">
             </ul>
         </div>
         <div id="main" class="ui-u-4-5">
@@ -37,7 +34,7 @@
                             <label for="framework-er">ER</label>
                         </div>
                         <div>
-                            <input type="radio" id="framework-esui" name="frameworks1" value="esui" checked="checked">
+                            <input type="radio" id="framework-esui" name="frameworks1" value="esui" checked>
                             <label for="framework-esui">ESUI</label>
                         </div>
                         <div>
@@ -50,7 +47,7 @@
                         </div>
                     </div>
                     <div>
-                        <button id="setType" class="ui-button ui-button-primary">Set Box Type</button>
+                        <button type="button" id="settype" class="ui-button ui-button-primary">Set Box Type</button>
                     </div>
                     <h3>Horizontal</h3>
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" data-ui-name="frameworks2" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
@@ -59,7 +56,7 @@
                             <label for="framework-er1">ER</label>
                         </div>
                         <div>
-                            <input type="radio" id="framework-esui1" name="frameworks2" value="esui" checked="checked">
+                            <input type="radio" id="framework-esui1" name="frameworks2" value="esui" checked>
                             <label for="framework-esui1">ESUI</label>
                         </div>
                         <div>
@@ -160,20 +157,20 @@
                              class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-success">
                             <ul>
                                 <li>
-                                    <input type="radio" id="framework-er4" name="frameworks6" value="er" checked />
-                                    <label for="framework-er4">ER</label>
+                                    <input type="radio" id="framework-er5" name="frameworks6" value="er" checked />
+                                    <label for="framework-er5">ER</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-esui4" name="frameworks6" value="esui"/>
-                                    <label for="framework-esui4">ESUI</label>
+                                    <input type="radio" id="framework-esui5" name="frameworks6" value="esui"/>
+                                    <label for="framework-esui5">ESUI</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-ef4" name="frameworks6" value="ef"/>
-                                    <label for="framework-ef4">EF</label>
+                                    <input type="radio" id="framework-ef5" name="frameworks6" value="ef"/>
+                                    <label for="framework-ef5">EF</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-tangram4" name="frameworks6" value="tangram"/>
-                                    <label for="framework-tangram4">Tangram</label>
+                                    <input type="radio" id="framework-tangram5" name="frameworks6" value="tangram"/>
+                                    <label for="framework-tangram5">Tangram</label>
                                 </li>
                             </ul>
                         </div>
@@ -184,20 +181,20 @@
                              class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-info">
                             <ul>
                                 <li>
-                                    <input type="radio" id="framework-er4" name="frameworks7" value="er" checked />
-                                    <label for="framework-er4">ER</label>
+                                    <input type="radio" id="framework-er6" name="frameworks7" value="er" checked />
+                                    <label for="framework-er6">ER</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-esui4" name="frameworks7" value="esui"/>
-                                    <label for="framework-esui4">ESUI</label>
+                                    <input type="radio" id="framework-esui6" name="frameworks7" value="esui"/>
+                                    <label for="framework-esui6">ESUI</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-ef4" name="frameworks7" value="ef"/>
-                                    <label for="framework-ef4">EF</label>
+                                    <input type="radio" id="framework-ef6" name="frameworks7" value="ef"/>
+                                    <label for="framework-ef6">EF</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-tangram4" name="frameworks7" value="tangram"/>
-                                    <label for="framework-tangram4">Tangram</label>
+                                    <input type="radio" id="framework-tangram6" name="frameworks7" value="tangram"/>
+                                    <label for="framework-tangram6">Tangram</label>
                                 </li>
                             </ul>
                         </div>
@@ -208,20 +205,20 @@
                              class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-warning">
                             <ul>
                                 <li>
-                                    <input type="radio" id="framework-er4" name="frameworks8" value="er" checked />
-                                    <label for="framework-er4">ER</label>
+                                    <input type="radio" id="framework-er7" name="frameworks8" value="er" checked />
+                                    <label for="framework-er7">ER</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-esui4" name="frameworks8" value="esui"/>
-                                    <label for="framework-esui4">ESUI</label>
+                                    <input type="radio" id="framework-esui7" name="frameworks8" value="esui"/>
+                                    <label for="framework-esui7">ESUI</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-ef4" name="frameworks8" value="ef"/>
-                                    <label for="framework-ef4">EF</label>
+                                    <input type="radio" id="framework-ef7" name="frameworks8" value="ef"/>
+                                    <label for="framework-ef7">EF</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-tangram4" name="frameworks8" value="tangram"/>
-                                    <label for="framework-tangram4">Tangram</label>
+                                    <input type="radio" id="framework-tangram7" name="frameworks8" value="tangram"/>
+                                    <label for="framework-tangram7">Tangram</label>
                                 </li>
                             </ul>
                         </div>
@@ -232,20 +229,20 @@
                              class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-danger">
                             <ul>
                                 <li>
-                                    <input type="radio" id="framework-er4" name="frameworks9" value="er" checked />
-                                    <label for="framework-er4">ER</label>
+                                    <input type="radio" id="framework-er8" name="frameworks9" value="er" checked />
+                                    <label for="framework-er8">ER</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-esui4" name="frameworks9" value="esui"/>
-                                    <label for="framework-esui4">ESUI</label>
+                                    <input type="radio" id="framework-esui8" name="frameworks9" value="esui"/>
+                                    <label for="framework-esui8">ESUI</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-ef4" name="frameworks9" value="ef"/>
-                                    <label for="framework-ef4">EF</label>
+                                    <input type="radio" id="framework-ef8" name="frameworks9" value="ef"/>
+                                    <label for="framework-ef8">EF</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-tangram4" name="frameworks9" value="tangram"/>
-                                    <label for="framework-tangram4">Tangram</label>
+                                    <input type="radio" id="framework-tangram8" name="frameworks9" value="tangram"/>
+                                    <label for="framework-tangram8">Tangram</label>
                                 </li>
                             </ul>
                         </div>
@@ -257,20 +254,20 @@
                              class="ui-boxgroup-button-style">
                             <ul>
                                 <li>
-                                    <input type="radio" id="framework-er4" name="frameworks10" value="er" checked />
-                                    <label for="framework-er4">ER</label>
+                                    <input type="radio" id="framework-er9" name="frameworks10" value="er" checked />
+                                    <label for="framework-er9">ER</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-esui4" name="frameworks10" value="esui"/>
-                                    <label for="framework-esui4">ESUI</label>
+                                    <input type="radio" id="framework-esui9" name="frameworks10" value="esui"/>
+                                    <label for="framework-esui9">ESUI</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-ef4" name="frameworks10" value="ef"/>
-                                    <label for="framework-ef4">EF</label>
+                                    <input type="radio" id="framework-ef9" name="frameworks10" value="ef"/>
+                                    <label for="framework-ef9">EF</label>
                                 </li>
                                 <li>
-                                    <input type="radio" id="framework-tangram4" name="frameworks10" value="tangram"/>
-                                    <label for="framework-tangram4">Tangram</label>
+                                    <input type="radio" id="framework-tangram9" name="frameworks10" value="tangram"/>
+                                    <label for="framework-tangram9">Tangram</label>
                                 </li>
                             </ul>
                         </div>
@@ -282,20 +279,20 @@
                                 class="ui-boxgroup-button-style ui-boxgroup-button-style-separated custom">
                             <ul>
                                 <li>
-                                    <input type="checkbox" id="framework-er5" name="frameworks11" value="er"/>
-                                    <label for="framework-er5">ER</label>
+                                    <input type="checkbox" id="framework-er10" name="frameworks11" value="er"/>
+                                    <label for="framework-er10">ER</label>
                                 </li>
                                 <li>
-                                    <input type="checkbox" id="framework-esui5" name="frameworks11" value="esui"/>
-                                    <label for="framework-esui5">ESUI</label>
+                                    <input type="checkbox" id="framework-esui10" name="frameworks11" value="esui"/>
+                                    <label for="framework-esui10">ESUI</label>
                                 </li>
                                 <li>
-                                    <input type="checkbox" id="framework-ef5" name="frameworks11" value="ef"/>
-                                    <label for="framework-ef5">EF</label>
+                                    <input type="checkbox" id="framework-ef10" name="frameworks11" value="ef"/>
+                                    <label for="framework-ef10">EF</label>
                                 </li>
                                 <li>
-                                    <input type="checkbox" id="framework-tangram5" name="frameworks11" value="tangram"/>
-                                    <label for="framework-tangram5">Tangram</label>
+                                    <input type="checkbox" id="framework-tangram10" name="frameworks11" value="tangram"/>
+                                    <label for="framework-tangram10">Tangram</label>
                                 </li>
                             </ul>
                         </div>
@@ -315,30 +312,34 @@
             </div>
         </div>
     </div>
-    <script>
-        require(
-            [
-                'esui',
-                'jquery',
-                'esui/BoxGroup',
-                'esui/Tab',
-                'demo'
-            ],
-            function (ui, $) {
-                ui.init();
-                ui.get('box-group-button2').on(
-                    'change',
-                    function () {
-                        $('#box-group-change-log').text('已选值：' + this.getValue());
-                    }
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'esui',
+            'jquery',
+            'esui/BoxGroup',
+            'esui/Tab',
+            'demo'
+        ],
+        function (ui, $) {
+            ui.init();
+            ui.get('box-group-button2').on(
+                'change',
+                function () {
+                    $('#box-group-change-log').text('已选值：' + this.getValue());
+                }
+            );
+            $('#settype').on('click', function () {
+                ui.get('box-group-vertical').setProperties(
+                    {boxType: 'checkbox'}
                 );
-                $('#setType').on('click', function () {
-                    ui.get('box-group-vertical').setProperties(
-                        {boxType: 'checkbox'}
-                    );
-                });
-            }
-        );
+            });
+        }
+    );
     </script>
     <script src="sitemap.js"></script>
 </body>

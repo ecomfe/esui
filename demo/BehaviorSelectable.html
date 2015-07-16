@@ -1,125 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="utf-8" />
     <title>Selectable - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/google-code-prettify/prettify.js"></script>
-    <script src="demo.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <link rel="stylesheet" href="assets/themes/standard.css" />
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
-    <style>
-    .ui-widget-content {
-      border: 1px solid #aaaaaa;
-      color: #222222;
-    }
-    .ui-state-default {
-      border: 1px solid #d3d3d3;
-      font-weight: normal;
-      color: #555555;
-    }
-    #selectable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
-    #selectable li { margin: 3px; padding: 1px; float: left; width: 100px; height: 80px; font-size: 4em; text-align: center; }
-    
-    #selectable-list { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-    #selectable-list li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
-
-    .ui-selectable-selecting {
-        background: #FECA40;
-    }
-    .ui-selectable-selected {
-        background: #F39814;
-        color: white;
-    }
-    </style>
 </head>
 <body>
-    <h1 id="branding">ESUI - Selectable</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Selectable</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-nav">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Selectable</h2>
             <section class="intro">
                 <p>Selectable</p>
             </section>
-            <section class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <ol id="selectable" class="esf-clearfix">
-                        <li class="ui-state-default">1</li>
-                        <li class="ui-state-default">2</li>
-                        <li class="ui-state-default">3</li>
-                        <li class="ui-state-default">4</li>
-                        <li class="ui-state-default">5</li>
-                        <li class="ui-state-default">6</li>
-                        <li class="ui-state-default">7</li>
-                        <li class="ui-state-default">8</li>
-                        <li class="ui-state-default">9</li>
-                        <li class="ui-state-default">10</li>
-                        <li class="ui-state-default">11</li>
-                        <li class="ui-state-default">12</li>
-                    </ol>
+            <div class="example ui-demo-light-stage">
+                <ol id="selectable" class="esf-clearfix">
+                    <li class="ui-state-default">1</li>
+                    <li class="ui-state-default">2</li>
+                    <li class="ui-state-default">3</li>
+                    <li class="ui-state-default">4</li>
+                    <li class="ui-state-default">5</li>
+                    <li class="ui-state-default">6</li>
+                    <li class="ui-state-default">7</li>
+                    <li class="ui-state-default">8</li>
+                    <li class="ui-state-default">9</li>
+                    <li class="ui-state-default">10</li>
+                    <li class="ui-state-default">11</li>
+                    <li class="ui-state-default">12</li>
+                </ol>
 
-                    <ol id="selectable-list">
-                        <li class="ui-widget-content">Item 1</li>
-                        <li class="ui-widget-content">Item 2</li>
-                        <li class="ui-widget-content">Item 3</li>
-                        <li class="ui-widget-content">Item 4</li>
-                        <li class="ui-widget-content">Item 5</li>
-                        <li class="ui-widget-content">Item 6</li>
-                        <li class="ui-widget-content">Item 7</li>
-                    </ol>
-                    <div>
-                        <span>selected items: </span>
-                        <span id="items"></span>
-                    </div>
-
+                <ol id="selectable-list">
+                    <li class="ui-widget-content">Item 1</li>
+                    <li class="ui-widget-content">Item 2</li>
+                    <li class="ui-widget-content">Item 3</li>
+                    <li class="ui-widget-content">Item 4</li>
+                    <li class="ui-widget-content">Item 5</li>
+                    <li class="ui-widget-content">Item 6</li>
+                    <li class="ui-widget-content">Item 7</li>
+                </ol>
+                <div>
+                    <span>selected items: </span>
+                    <span id="items"></span>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
-    <script>
-        require(
-                [
-                    'esui/behavior/Selectable'
-                ],
-                function (selectable) {
-                    $('#selectable').selectable();
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'jquery',
+            'esui/behavior/Selectable'
+        ],
+        function ($, selectable) {
+            $('#selectable').selectable();
 
-                    $('#selectable-list').selectable(
-                        {
-                            stop: function (d) {
-                                var result = $( "#items" ).empty();
-                                $( ".ui-selectable-selected", this.element ).each(function() {
-                                  var index = $( "#selectable-list li" ).index( this );
-                                  result.append( " #" + ( index + 1 ) );
-                                });
-                            },
-                            selected: function () {
-                                console.log('selected')
-                            },
-                            unselected: function () {
-                                console.log('unselected')
-                            },
-                            selecting: function () {
-                                console.log('selecting')
-                            },
-                            unselecting: function () {
-                                console.log('unselecting')
-                            },
-                            autoRefresh: false
-                        }
-                    );
+            $('#selectable-list').selectable(
+                {
+                    stop: function (d) {
+                        var result = $('#items').empty();
+                        $('.ui-selectable-selected', this.element).each(function () {
+                            var index = $('#selectable-list li').index(this);
+                            result.append('#' + (index + 1));
+                        });
+                    },
+                    selected: function () {
+                        // console.log('selected')
+                    },
+                    unselected: function () {
+                        // console.log('unselected')
+                    },
+                    selecting: function () {
+                        // console.log('selecting')
+                    },
+                    unselecting: function () {
+                        // console.log('unselecting')
+                    },
+                    autoRefresh: false
                 }
-        );
-        copyExample();
+            );
+        }
+    );
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

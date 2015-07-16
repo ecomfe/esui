@@ -1,142 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
-    <meta charset='UTF-8'/>
+    <meta charset="utf-8" />
     <title>Position - ESUI Demo</title>
-    <script src='assets/loader/esl.js'></script>
-    <script src='assets/jquery-1.9.1.min.js'></script>
-    <script src='assets/google-code-prettify/prettify.js'></script>
-    <script src='demo.js'></script>
-    <link rel='stylesheet' href='assets/themes/standard.css' />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    <link rel="stylesheet" href="assets/themes/standard.css" />
     <!--[if lt IE 9]>
-    <link rel='stylesheet' href='assets/ie8.css' />
+    <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel='stylesheet' href='assets/google-code-prettify/prettify.css' />
-    <style>
-        #parent {
-            border: 1px solid #000;
-            width: 500px;
-            height: 80px;
-            margin: 0 auto;
-        }
-        .positionable {
-            position: absolute;
-            display: block;
-            background-color: #bcd5e6;
-            text-align: center;
-        }
-        #positionable1 {
-            width: 75px;
-            height: 75px;
-        }
-        #positionable2 {
-            width: 120px;
-            height: 40px;
-        }
-    </style>
 </head>
 <body>
-    <h1 id='branding'>ESUI - Behavior Position</h1>
-    <div id='page'>
-        <ul id='navigator'>
-        </ul>
-        <div id='main'>
+    <div class="header">
+        <h1 id="branding">ESUI - Behavior Position</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-nav">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Position</h2>
-            <div class='intro'>
+            <div class="intro">
                 <p>Position</p>
             </div>
-            <div class='view'>
-                <ul class='viewer'>
-                    <li class='view-markup'>结构</li>
-                </ul>
-                <div class='example ui-demo-light-stage'>
-                    <div id='parent'>
-                        <p>
-                        This is the position parent element.
-                        </p>
+            <div class="example ui-demo-light-stage">
+                <div id="parent" style="border:1px solid #000;width:500px;height:80px;margin:0 auto">
+                    <p>
+                    This is the position parent element.
+                    </p>
+                </div>
+                <div class="positionable" id="positionable1" style="width:75px;height:75px;position:absolute;display:block;background:#bcd5e6;text-align:center">
+                    <p>
+                    to position
+                    </p>
+                </div>
+                <div class="positionable" id="positionable2" style="width:120px;height:40px;position:absolute;display:block;background:#bcd5e6;text-align:center">
+                    <p>
+                    to position 2
+                    </p>
+                </div>
+                <div style="padding: 20px; margin-top: 75px;">
+                    position
+                    <div style="padding-bottom: 20px;">
+                        <b>my:</b>
+                        <select id="my-horizontal">
+                            <option value="left">left</option>
+                            <option value="center">center</option>
+                            <option value="right">right</option>
+                        </select>
+                        <select id="my-vertical">
+                            <option value="top">top</option>
+                            <option value="center">center</option>
+                            <option value="bottom">bottom</option>
+                        </select>
                     </div>
-                    <div class='positionable' id='positionable1'>
-                        <p>
-                        to position
-                        </p>
+                    <div style="padding-bottom: 20px;">
+                        <b>at:</b>
+                        <select id="at-horizontal">
+                            <option value="left">left</option>
+                            <option value="center">center</option>
+                            <option value="right">right</option>
+                        </select>
+                        <select id="at-vertical">
+                            <option value="top">top</option>
+                            <option value="center">center</option>
+                            <option value="bottom">bottom</option>
+                        </select>
                     </div>
-                    <div class='positionable' id='positionable2'>
-                      <p>
-                      to position 2
-                      </p>
+                    <div style="padding-bottom: 20px;">
+                        <b>collision:</b>
+                        <select id="collision-horizontal">
+                            <option value="flip">flip</option>
+                            <option value="fit">fit</option>
+                            <option value="flipfit">flipfit</option>
+                            <option value="none">none</option>
+                        </select>
+                        <select id="collision-vertical">
+                            <option value="flip">flip</option>
+                            <option value="fit">fit</option>
+                            <option value="flipfit">flipfit</option>
+                            <option value="none">none</option>
+                        </select>
                     </div>
-                    <div style='padding: 20px; margin-top: 75px;'>
-                        position...
-                        <div style='padding-bottom: 20px;'>
-                            <b>my:</b>
-                            <select id='my_horizontal'>
-                                <option value='left'>left</option>
-                                <option value='center'>center</option>
-                                <option value='right'>right</option>
-                            </select>
-                            <select id='my_vertical'>
-                                <option value='top'>top</option>
-                                <option value='center'>center</option>
-                                <option value='bottom'>bottom</option>
-                            </select>
-                      </div>
-                      <div style='padding-bottom: 20px;'>
-                          <b>at:</b>
-                          <select id='at_horizontal'>
-                              <option value='left'>left</option>
-                              <option value='center'>center</option>
-                              <option value='right'>right</option>
-                          </select>
-                          <select id='at_vertical'>
-                              <option value='top'>top</option>
-                              <option value='center'>center</option>
-                              <option value='bottom'>bottom</option>
-                          </select>
-                      </div>
-                      <div style='padding-bottom: 20px;'>
-                          <b>collision:</b>
-                          <select id='collision_horizontal'>
-                              <option value='flip'>flip</option>
-                              <option value='fit'>fit</option>
-                              <option value='flipfit'>flipfit</option>
-                              <option value='none'>none</option>
-                          </select>
-                          <select id='collision_vertical'>
-                              <option value='flip'>flip</option>
-                              <option value='fit'>fit</option>
-                              <option value='flipfit'>flipfit</option>
-                              <option value='none'>none</option>
-                          </select>
-                      </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        require(
-                [
-                    'esui/behavior/position',
-                    'esui/behavior/Draggable'
-                ],
-                function () {
-                    function setPosition() {
-                        $('.positionable').position({
-                            of: $('#parent'),
-                            my: $('#my_horizontal').val() + ' ' + $('#my_vertical').val(),
-                            at: $('#at_horizontal').val() + ' ' + $('#at_vertical').val(),
-                            collision: $('#collision_horizontal').val() + ' ' + $('#collision_vertical').val()
-                        });
-                    }
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'jquery',
+            'esui/behavior/position',
+            'esui/behavior/Draggable'
+        ],
+        function ($) {
+            function setPosition() {
+                $('.positionable').position({
+                    of: $('#parent'),
+                    my: $('#my-horizontal').val() + ' ' + $('#my-vertical').val(),
+                    at: $('#at-horizontal').val() + ' ' + $('#at-vertical').val(),
+                    collision: $('#collision-horizontal').val() + ' ' + $('#collision-vertical').val()
+                });
+            }
 
-                    $('.positionable').css('opacity', 0.5);
-                    $('select, input').bind('click keyup change', setPosition);
-                    $('#parent').draggable({
-                        drag: setPosition
-                    });
-                    setPosition();
-                }
-       );
-        copyExample();
+            $('.positionable').css('opacity', 0.5);
+            $('select, input').bind('click keyup change', setPosition);
+            $('#parent').draggable({
+                drag: setPosition
+            });
+            setPosition();
+        }
+    );
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

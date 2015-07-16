@@ -1,88 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>Label - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
-
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
     </head>
-    <body>
-        
+    <body>    
         <div class="header">
             <h1 id="branding">ESUI - Label</h1>
         </div>
         <div class="ui-g main-container">
             <div id="side-bar" class="ui-u-1-5">
-                <ul id="navigator" class="ui-sidebar">
+                <ul id="navigator" class="ui-nav">
                 </ul>
             </div>
             <div id="main" class="ui-u-4-5">
                 <h2>无样式Label</h2>
-                <div class="intro">
-                    <p>基本Label。</p>
-                </div>
-                <div class="view">
-                    <div class="example ui-demo-light-stage">
-                        <strong data-ui-type="Label">Hello Label!</strong>
-                        <label data-ui-type="Label">Custom Label!</label>
-                        <button class="ui-button" id="op-show">show</button>
-                        <button class="ui-button" id="op-hide">hide</button>
-                        <button class="ui-button" id="op-toggle">toggle</button>
-                        <button class="ui-button" id="op-set-text">set text</button>
-                        <button class="ui-button" id="op-set-content">set content</button>
-                    </div>
+                <div class="example ui-demo-light-stage">
+                    <strong data-ui-type="Label">Hello Label!</strong>
+                    <label data-ui-type="Label">Custom Label!</label>
+                    <button type="button" class="ui-button" id="op-show">show</button>
+                    <button type="button" class="ui-button" id="op-hide">hide</button>
+                    <button type="button" class="ui-button" id="op-toggle">toggle</button>
+                    <button type="button" class="ui-button" id="op-set-text">set text</button>
+                    <button type="button" class="ui-button" id="op-set-content">set content</button>
                 </div>
                 <h2>预设样式Label</h2>
-                <div class="intro">
-                </div>
-                <div class="view">
-                    <div class="example ui-demo-light-stage">
-                        <h2>箭头Label</h2>
-                        <div class="row">
-                            <label data-ui-type="Label" data-ui-variants="custom primary pointer-right">Primary Pointer Right</label>
-                        </div>
-                        <div class="row">
-                            <label data-ui-type="Label" data-ui-variants="custom info pointer-left">Info Pointer Left</label>
-                        </div>
-                        <div class="row">
-                            <label data-ui-type="Label" data-ui-variants="custom warning pointer-bottom">Warning Pointer Bottom</label>
-                        </div>
-                        <div class="row">
-                            <label data-ui-type="Label" data-ui-variants="custom danger pointer">Danger Pointer Top</label>
-                        </div>
-                        <h2>普通Label</h2>
-                        <div class="row">
-                            <label data-ui-type="Label" data-ui-variants="custom">Hello Label!</label>
-                        </div>
-                        <h2>瘦Label</h2>
-                        <div class="row">
-                            <label data-ui-type="Label" data-ui-variants="custom success slim">Success Slim Label!</label>
-                        </div>
-                        <h2>圈Label</h2>
-                        <div class="row">
-                            <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">3</label>
-                            <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">2</label>
-                        </div>
-                        <h2>ForTarget</h2>
-                        <div class="row">
-                            <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-for-target="Label2" data-ui-variants="custom circular">3</label>
-                            <div data-ui-type="TextBox" data-ui-id="Label2">
-                            
-                            </div>
+                <div class="example ui-demo-light-stage">
+                    <h2>箭头Label</h2>
+                    <div class="row">
+                        <label data-ui-type="Label" data-ui-variants="custom primary pointer-right">Primary Pointer Right</label>
+                    </div>
+                    <div class="row">
+                        <label data-ui-type="Label" data-ui-variants="custom info pointer-left">Info Pointer Left</label>
+                    </div>
+                    <div class="row">
+                        <label data-ui-type="Label" data-ui-variants="custom warning pointer-bottom">Warning Pointer Bottom</label>
+                    </div>
+                    <div class="row">
+                        <label data-ui-type="Label" data-ui-variants="custom danger pointer">Danger Pointer Top</label>
+                    </div>
+                    <h2>普通Label</h2>
+                    <div class="row">
+                        <label data-ui-type="Label" data-ui-variants="custom">Hello Label!</label>
+                    </div>
+                    <h2>瘦Label</h2>
+                    <div class="row">
+                        <label data-ui-type="Label" data-ui-variants="custom success slim">Success Slim Label!</label>
+                    </div>
+                    <h2>圈Label</h2>
+                    <div class="row">
+                        <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">3</label>
+                        <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-variants="custom circular">2</label>
+                    </div>
+                    <h2>ForTarget</h2>
+                    <div class="row">
+                        <label class="ui-hover-fade-in" data-ui-type="Label" data-ui-for-target="Label2" data-ui-variants="custom circular">3</label>
+                        <div data-ui-type="TextBox" data-ui-id="Label2">
+                        
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',

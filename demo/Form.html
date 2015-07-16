@@ -1,121 +1,112 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Form - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="config.js"></script>
-        <script src="demo.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
-        <link rel="stylesheet" href="assets/themes/standard.css" />
-
-        <!--[if lt IE 9]>
-        <link rel="stylesheet" href="assets/ie8.css" />
-        <![endif]-->
-        <style>
-            .edit-form .ui-form-key {
-                width: 8em;
-            }
-        </style>
-    </head>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <title>Form - ESUI Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    <link rel="stylesheet" href="assets/themes/standard.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="assets/ie8.css" />
+    <![endif]-->
+</head>
     <body>
-        
         <div class="header">
             <h1 id="branding">ESUI - Form</h1>
         </div>
         <div class="ui-g main-container">
             <div id="side-bar" class="ui-u-1-5">
-                <ul id="navigator" class="ui-sidebar">
+                <ul id="navigator" class="ui-nav">
                 </ul>
             </div>
             <div id="main" class="ui-u-4-5">
                 <h2>Form</h2>
                 <div class="intro">
-                    <p>基本Form。</p>
+                    <p>表单</p>
                 </div>
-                <div class="view">
-                    <div class="example ui-demo-light-stage">
-                        <form class="edit-form"
-                        data-ui-type="Form"
-                        data-ui-id="form"
-                        data-ui-auto-validate="true"
-                        data-ui-submit-button="submit-button,submit-and-continue-button">
-                            <div class="ui-form-row">
-                                <div class="ui-form-key"><label>当前余额：</label></div>
-                                <div class="ui-form-value ui-form-valign">
-                                    <label data-ui-type="Label"
-                                        data-ui-id="balance" data-ui-text="1000"></label>
-                                </div>
+                <div class="example ui-demo-light-stage">
+                    <form class="edit-form"
+                    data-ui-type="Form"
+                    data-ui-id="form"
+                    data-ui-auto-validate="true"
+                    data-ui-submit-button="submit-button,submit-and-continue-button">
+                        <div class="ui-form-row">
+                            <div class="ui-form-key"><label>当前余额：</label></div>
+                            <div class="ui-form-value ui-form-valign">
+                                <label data-ui-type="Label"
+                                    data-ui-id="balance" data-ui-text="1000"></label>
                             </div>
-                            <div class="ui-form-row">
-                                <div class="ui-form-key"><label>付款日期：</label></div>
-                                <div class="ui-form-value ui-form-wrap-hint">
-                                    <div data-ui-type="Calendar" data-ui-id="time"
-                                         data-ui-name="time"></div>
-                                    <span class="ui-form-hint">选择日期</span>
-                                </div>
+                        </div>
+                        <div class="ui-form-row">
+                            <div class="ui-form-key"><label>付款日期：</label></div>
+                            <div class="ui-form-value ui-form-wrap-hint">
+                                <div data-ui-type="Calendar" data-ui-id="time"
+                                     data-ui-name="time"></div>
+                                <span class="ui-form-hint">选择日期</span>
                             </div>
-                            <div class="ui-form-row">
-                                <div class="ui-form-key"><label>收款人：</label></div>
-                                <div class="ui-form-value">
-                                    <select data-ui-type="Select" data-ui-id="member" name="member">
-                                        <option value="1">灰大</option>
-                                        <option value="2">欣欣</option>
-                                        <option value="3">享享</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="ui-form-row">
+                            <div class="ui-form-key"><label>收款人：</label></div>
+                            <div class="ui-form-value">
+                                <select data-ui-type="Select" data-ui-id="member" name="member">
+                                    <option value="1">灰大</option>
+                                    <option value="2">欣欣</option>
+                                    <option value="3">享享</option>
+                                </select>
                             </div>
-                            <div class="ui-form-row">
-                                <div class="ui-form-key"><label>银行：</label></div>
-                                <div class="ui-form-value">
-                                    <select data-ui-type="Select" data-ui-id="type" name="type"
-                                    data-ui-required="required">
-                                        <option value="">没人</option>
-                                        <option value="1">中国银行</option>
-                                        <option value="2">中国工商银行</option>
-                                        <option value="3">大不列颠群岛果树银行</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="ui-form-row">
+                            <div class="ui-form-key"><label>银行：</label></div>
+                            <div class="ui-form-value">
+                                <select data-ui-type="Select" data-ui-id="type" name="type"
+                                data-ui-required="required">
+                                    <option value="">没人</option>
+                                    <option value="1">中国银行</option>
+                                    <option value="2">中国工商银行</option>
+                                    <option value="3">大不列颠群岛果树银行</option>
+                                </select>
                             </div>
-                            <div class="ui-form-row">
-                                <div class="ui-form-key ui-form-required"><label>金额：</label></div>
-                                <div class="ui-form-value">
-                                    <input data-ui-type="TextBox" data-ui-id="amount"
-                                         data-ui-child-name="amount"
-                                         data-ui-name="amount" data-ui-mode="text"
-                                         data-ui-title="金额"
-                                         data-ui-required="required"
-                                         data-ui-pattern="^[0-9]\d*(\.\d+)?$"
-                                         data-ui-patternErrorMessage="金额必须为整数"
-                                         data-ui-value="100" />
-                                    <span class="ui-form-hint">请输入金额</span>
-                                </div>
+                        </div>
+                        <div class="ui-form-row">
+                            <div class="ui-form-key ui-form-required"><label>金额：</label></div>
+                            <div class="ui-form-value">
+                                <input data-ui-type="TextBox" data-ui-id="amount"
+                                     data-ui-child-name="amount"
+                                     data-ui-name="amount" data-ui-mode="text"
+                                     data-ui-title="金额"
+                                     data-ui-required="required"
+                                     data-ui-value="100" />
+                                <span class="ui-form-hint">请输入金额</span>
                             </div>
-                            <div class="ui-form-row">
-                                <div class="ui-form-key ui-form-required"><label>备注：</label></div>
-                                <div class="ui-form-value ui-form-wrap-hint">
-                                    <textarea data-ui-type="TextLine"
-                                         data-ui-id="memo"
-                                         data-ui-required="required"
-                                         data-ui-name="memo" data-ui-mode="textarea"
-                                         data-ui-value=""></textarea>
-                                </div>
+                        </div>
+                        <div class="ui-form-row">
+                            <div class="ui-form-key ui-form-required"><label>备注：</label></div>
+                            <div class="ui-form-value ui-form-wrap-hint">
+                                <textarea data-ui-type="TextLine"
+                                     data-ui-id="memo"
+                                     data-ui-required="required"
+                                     data-ui-name="memo" data-ui-mode="textarea"
+                                     data-ui-value=""></textarea>
                             </div>
-                            <div class="ui-form-buttons">
-                                <div data-ui-type="Button" data-ui-id="submit-button"
-                                         data-ui-variants="primary">保存</div>
-                                <div data-ui-type="Button" data-ui-id="submit-and-continue-button"
-                                 data-ui-variants="success">保存并继续</div>
-                                <div data-ui-type="Button"
-                                 data-ui-variants="link" data-ui-id="cancel-button">取消新建</div>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="ui-form-buttons">
+                            <div data-ui-type="Button" data-ui-id="submit-button"
+                                     data-ui-variants="primary">保存</div>
+                            <div data-ui-type="Button" data-ui-id="submit-and-continue-button"
+                             data-ui-variants="success">保存并继续</div>
+                            <div data-ui-type="Button"
+                             data-ui-variants="link" data-ui-id="cancel-button">取消新建</div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
@@ -136,13 +127,12 @@
                 'demo'
             ],
             function (ui, lib, Validity) {
-                var controls = ui.init();
+                ui.init();
                 var form = ui.get('form');
                 var nameText = form.getChild('amount');
 
                 function submit(e, args) {
-                    console.log(args.triggerSource.id);
-                    var data = form.getData();
+                    // var data = form.getData();
                 }
 
                 form.on('submit', submit);

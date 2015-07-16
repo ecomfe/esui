@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>CheckBox and Switch - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    <script src="config.js"></script>
-    <script src="demo.js"></script>
-    <script src="assets/google-code-prettify/prettify.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <link rel="stylesheet" href="assets/themes/standard.css" />
-
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
@@ -20,7 +17,7 @@
     </div>
     <div class="ui-g main-container">
         <div id="side-bar" class="ui-u-1-5">
-            <ul id="navigator" class="ui-sidebar">
+            <ul id="navigator" class="ui-nav">
             </ul>
         </div>
         <div id="main" class="ui-u-4-5">
@@ -28,116 +25,110 @@
             <div class="intro">
                 <p>支持从已有元素生成。</p>
             </div>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <h3>默认样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="未选中(Unchecked)" class="ui-checkbox-custom" data-ui-type="CheckBox" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="已选中(Checked)" class="ui-checkbox-custom" data-ui-type="CheckBox" data-ui-checked="checked" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="混合状态(Indeterminate)" data-ui-type="CheckBox" data-ui-checked="checked" data-ui-indeterminate="true" class="ui-checkbox-custom" />
-                    </div>
-                    <h3>Disabled样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="无效状态(Disabled)" data-ui-type="CheckBox" data-ui-disabled="disabled"  class="ui-checkbox-custom" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="无效状态(Disabled)" checked="checked" data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-custom" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="混合状态(Indeterminate)" data-ui-type="CheckBox" data-ui-checked="checked" data-ui-disabled="disabled" data-ui-indeterminate="true"  class="ui-checkbox-custom" />
-                    </div>
-                    <h3>系统样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="没有皮肤的" data-ui-type="CheckBox" data-ui-indeterminate="true" />
-                    </div>
-                    <h3>大小</h3>
-                    <div class="row ui-x-small">
-                        <input type="checkbox" title="ui-x-small" data-ui-type="CheckBox" class="ui-checkbox-custom" />
-                    </div>
-                    <div class="row ui-small">
-                        <input type="checkbox" title="ui-small" data-ui-type="CheckBox" class="ui-checkbox-custom" />
-                    </div>
-                    <div class="row ui-large">
-                        <input type="checkbox" title="ui-large" data-ui-type="CheckBox" class="ui-checkbox-custom" />
-                    </div>
-                    <div class="row ui-xx-large">
-                        <input type="checkbox" title="ui-xx-large" data-ui-type="CheckBox" class="ui-checkbox-custom" />
-                    </div>
+            <div class="example ui-demo-light-stage">
+                <h3>默认样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="未选中(Unchecked)" class="ui-checkbox-custom" data-ui-type="CheckBox" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="已选中(Checked)" class="ui-checkbox-custom" data-ui-type="CheckBox" data-ui-checked="checked" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="混合状态(Indeterminate)" data-ui-type="CheckBox" data-ui-checked="checked" data-ui-indeterminate="true" class="ui-checkbox-custom" />
+                </div>
+                <h3>Disabled样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="无效状态(Disabled)" data-ui-type="CheckBox" data-ui-disabled="disabled"  class="ui-checkbox-custom" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="无效状态(Disabled)" checked data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-custom" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="混合状态(Indeterminate)" data-ui-type="CheckBox" data-ui-checked="checked" data-ui-disabled="disabled" data-ui-indeterminate="true"  class="ui-checkbox-custom" />
+                </div>
+                <h3>系统样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="没有皮肤的" data-ui-type="CheckBox" data-ui-indeterminate="true" />
+                </div>
+                <h3>大小</h3>
+                <div class="row ui-x-small">
+                    <input type="checkbox" title="ui-x-small" data-ui-type="CheckBox" class="ui-checkbox-custom" />
+                </div>
+                <div class="row ui-small">
+                    <input type="checkbox" title="ui-small" data-ui-type="CheckBox" class="ui-checkbox-custom" />
+                </div>
+                <div class="row ui-large">
+                    <input type="checkbox" title="ui-large" data-ui-type="CheckBox" class="ui-checkbox-custom" />
+                </div>
+                <div class="row ui-xx-large">
+                    <input type="checkbox" title="ui-xx-large" data-ui-type="CheckBox" class="ui-checkbox-custom" />
                 </div>
             </div>
             <h2>Switch</h2>
             <div class="intro">
                 <p>可以变成开关。</p>
             </div>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <h3>默认样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="Switch Off" data-ui-type="CheckBox" class="ui-checkbox-switch" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="Switch On" checked="checked" data-ui-type="CheckBox" class="ui-checkbox-switch" />
-                    </div>
-                    <h3>Disabled样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="Switch Off Disabled" checked="checked" data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-switch" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="Switch Off Disabled" data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-switch" />
-                    </div>
-                    <h3>圆角样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="Round Switch Off" data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="Round Switch On" checked="checked" data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
-                    </div>
-                    <h3>Disabled圆角样式</h3>
-                    <div class="row">
-                        <input type="checkbox" title="Round Switch Off" data-ui-disabled="disabled" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                    </div>
-                    <div class="row">
-                        <input type="checkbox" title="Round Switch On" data-ui-disabled="disabled" checked="checked" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                    </div>
-                    <h3>大小</h3>
-                    <div class="row ui-x-small">
-                        <input type="checkbox" title="ui-x-small" checked="checked" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                    </div>
-                    <div class="row ui-small">
-                        <input type="checkbox" title="ui-small" data-ui-type="CheckBox" checked="checked" class="ui-checkbox-switch-round" />
-                    </div>
-                    <div class="row ui-large">
-                        <input type="checkbox" title="ui-large" checked="checked" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                    </div>
-                    <div class="row ui-xx-large">
-                        <input type="checkbox" title="ui-xx-large" checked="checked" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                    </div>
+            <div class="example ui-demo-light-stage">
+                <h3>默认样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="Switch Off" data-ui-type="CheckBox" class="ui-checkbox-switch" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="Switch On" checked data-ui-type="CheckBox" class="ui-checkbox-switch" />
+                </div>
+                <h3>Disabled样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="Switch Off Disabled" checked data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-switch" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="Switch Off Disabled" data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-switch" />
+                </div>
+                <h3>圆角样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="Round Switch Off" data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="Round Switch On" checked data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
+                </div>
+                <h3>Disabled圆角样式</h3>
+                <div class="row">
+                    <input type="checkbox" title="Round Switch Off" data-ui-disabled="disabled" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
+                </div>
+                <div class="row">
+                    <input type="checkbox" title="Round Switch On" data-ui-disabled="disabled" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
+                </div>
+                <h3>大小</h3>
+                <div class="row ui-x-small">
+                    <input type="checkbox" title="ui-x-small" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
+                </div>
+                <div class="row ui-small">
+                    <input type="checkbox" title="ui-small" data-ui-type="CheckBox" checked class="ui-checkbox-switch-round" />
+                </div>
+                <div class="row ui-large">
+                    <input type="checkbox" title="ui-large" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
+                </div>
+                <div class="row ui-xx-large">
+                    <input type="checkbox" title="ui-xx-large" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        require(
-            [
-                'esui',
-                'esui/CheckBox',
-                'esui/Tab',
-                'demo'
-            ],
-            function (ui) {
-                ui.init();
-            }
-        );
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'esui',
+            'esui/CheckBox',
+            'esui/Tab',
+            'demo'
+        ],
+        function (ui) {
+            ui.init();
+        }
+    );
     </script>
     <script src="sitemap.js"></script>
     </body>
