@@ -51,7 +51,7 @@ define(
                 toggle: function () {
                     var element = this.getElement();
                     if (!element
-                        || this.control.helper.isPart(element, 'layer-hidden')
+                        || !$(element).is(':visible')
                     ) {
                         // 渲染日历集
                         paintCals(this.control, true);

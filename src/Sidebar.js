@@ -37,7 +37,7 @@ define(
                  */
                 createMain: function (options) {
                     if (!options.tagName) {
-                        return Control.prototype.createMain.call(this);
+                        return this.$super([options]);
                     }
                     return document.createElement(options.tagName);
                 },

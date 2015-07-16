@@ -56,7 +56,7 @@ define(
                 toggle: function () {
                     var element = this.getElement();
                     if (!element
-                        || this.control.helper.isPart(element, 'layer-hidden')
+                        || !$(element).is(':visible')
                     ) {
                         // 展示之前先跟main同步
                         var calendar = this.control;
