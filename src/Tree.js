@@ -771,7 +771,7 @@ define(
                     classes
                 );
             }
-            return classes;
+            return classes.join(' ');
         }
 
         /**
