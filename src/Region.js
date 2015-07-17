@@ -208,7 +208,7 @@ define(
                     if (checkbox.checked) {
                         region.rawValue.push(data.id);
                     }
-                    // 好像不用了
+
                     indexData.isSelected = checkbox.checked;
                     return checkbox.checked;
                 }
