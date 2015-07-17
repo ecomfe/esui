@@ -208,8 +208,8 @@ define(
                     if (checkbox.checked) {
                         region.rawValue.push(data.id);
                     }
-                    // 好像不用了
-                    // indexData.isSelected = checkbox.checked;
+
+                    indexData.isSelected = checkbox.checked;
                     return checkbox.checked;
                 }
                 // 弹出层城市不一定创建，所以使用数据源判断选择状态

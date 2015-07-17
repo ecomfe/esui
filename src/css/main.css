@@ -2376,6 +2376,10 @@ button.skin-link-button:hover {
 .ui-textbox textarea:hover {
   border: 1px solid #6e8ab8;
 }
+.ui-textbox input:-ms-input-placeholder,
+.ui-textbox textarea:-ms-input-placeholder {
+  color: #999;
+}
 .ui-textbox textarea {
   height: 200px;
   overflow: auto;
