@@ -7,8 +7,8 @@
 
 .@{ui-class-prefix}-textbox-hint {
     display: inline-block;
-    height: @esf-textbox-height;
-    line-height: @esf-textbox-height;
+    height: @esui-textbox-height;
+    line-height: @esui-textbox-height;
     .box-sizing(border-box);
     padding: 0 @esui-textbox-hint-horizontal-padding;
     vertical-align: top;
@@ -16,10 +16,10 @@
 }
 
 .esui-textbox-hint-border-radius() {}
-.esui-textbox-hint-border-radius() when (@esf-textbox-radius > 0) {
+.esui-textbox-hint-border-radius() when (@esui-textbox-radius > 0) {
     .@{ui-class-prefix}-textbox.@{ui-state-prefix}-hint-prefix {
         .@{ui-class-prefix}-textbox-hint {
-            .border-left-radius(@esf-textbox-radius);
+            .border-left-radius(@esui-textbox-radius);
         }
         input {
             .border-left-radius(0);
@@ -27,7 +27,7 @@
     }
     .@{ui-class-prefix}-textbox.@{ui-state-prefix}-hint-suffix {
         .@{ui-class-prefix}-textbox-hint {
-            .border-right-radius(@esf-textbox-radius);
+            .border-right-radius(@esui-textbox-radius);
         }
         input {
             .border-right-radius(0);
@@ -41,10 +41,10 @@
 .esui-textbox-hint-theme() {}
 
 .@{ui-class-prefix}-textbox-placeholder {
-    height: @esf-textbox-height;
-    line-height: @esf-textbox-height;
-    padding-left: @esf-textbox-padding;
-    padding-right: @esf-textbox-padding;
+    height: @esui-textbox-height;
+    line-height: @esui-textbox-height;
+    padding-left: @esui-textbox-padding;
+    padding-right: @esui-textbox-padding;
     position: absolute;
     left: 0;
     top: 0;
@@ -54,7 +54,7 @@
 
 .@{ui-class-prefix}-textbox-icon-left {
     .@{ui-class-prefix}-textbox-placeholder {
-        left: @esf-textbox-icon-width;
+        left: @esui-textbox-icon-width;
     }
 }
 
@@ -73,8 +73,8 @@
 .@{ui-class-prefix}-textbox-validity-invalid {
     border: 0 !important;
     input, textarea {
-        border-color: @esf-textbox-error-border-color !important;
-        color: @esf-textbox-error-text-color !important;
+        border-color: @esui-textbox-error-border-color !important;
+        color: @esui-textbox-error-text-color !important;
     }
 }
 
@@ -97,15 +97,15 @@
 // 验证
 .@{ui-class-prefix}-textbox-validity-label-notice,
 .@{ui-class-prefix}-textarea-validity-label-notice {
-    color: @esf-textbox-error-border-color;
+    color: @esui-textbox-error-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-warn,
 .@{ui-class-prefix}-textarea-validity-label-warn {
-    color: @esf-textbox-warning-border-color;
+    color: @esui-textbox-warning-border-color;
 }
 
 .@{ui-class-prefix}-textbox-validity-label-invalid,
 .@{ui-class-prefix}-textarea-validity-label-invalid {
-    color: @esf-textbox-error-border-color;
+    color: @esui-textbox-error-border-color;
 }

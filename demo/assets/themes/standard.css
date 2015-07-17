@@ -447,8 +447,8 @@ input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
-.esf-clearfix:before,
-.esf-clearfix:after,
+.esui-clearfix:before,
+.esui-clearfix:after,
 .ui-navbar:before,
 .ui-navbar:after,
 .ui-region-region-box0:before,
@@ -462,7 +462,7 @@ input[type="search"]::-webkit-search-decoration {
   display: table;
   content: "";
 }
-.esf-clearfix:after,
+.esui-clearfix:after,
 .ui-navbar:after,
 .ui-region-region-box0:after,
 .ui-region-region-box1:after,
@@ -547,9 +547,9 @@ input[type="search"]::-webkit-search-decoration {
   -ms-transition: background-color 0.3s ease-out, -ms-box-shadow 0.2s ease, border-color 0.2s ease;
   -o-transition: background-color 0.3s ease-out, -o-box-shadow 0.2s ease, border-color 0.2s ease;
   transition: background-color 0.3s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   color: #666666;
   background-color: #f6f6f6;
 }
@@ -612,28 +612,7 @@ input[type="search"]::-webkit-search-decoration {
   float: left;
 }
 .ui-button-group .ui-button:first-child {
-  margin-left: 0px;
-}
-.ui-button-group .ui-button:not(:first-child):not(:last-child) {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-}
-.ui-button-group .ui-button:first-child:not(:last-child) {
-  -webkit-border-top-right-radius: 0;
-  -moz-border-radius-topright: 0;
-  border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  border-bottom-right-radius: 0;
-}
-.ui-button-group .ui-button:last-child:not(:first-child) {
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-left-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  border-bottom-left-radius: 0;
+  margin-left: 0;
 }
 .ui-button-group.ui-button-group-separated .ui-button {
   margin-left: 0;
@@ -738,8 +717,8 @@ input[type="search"]::-webkit-search-decoration {
  * 9. `min-height` is necessary for `input` elements in Firefox and Opera because `line-height` is not working.
  * 10. Required for `a`.
  */
-/*@esf-palette-primary-light-color: #E3F6F3;*/
-.esf-checkbox-style-base,
+/*@esui-palette-primary-light-color: #E3F6F3;*/
+.esui-checkbox-style-base,
 .ui-checkbox-custom,
 .ui-radio-custom,
 .ui-checkbox-switch,
@@ -751,8 +730,8 @@ input[type="search"]::-webkit-search-decoration {
   height: 1.1em;
   vertical-align: middle;
 }
-.esf-checkbox-style-base .ui-checkbox-box,
-.esf-checkbox-style-base label,
+.esui-checkbox-style-base .ui-checkbox-box,
+.esui-checkbox-style-base label,
 .ui-checkbox-custom .ui-checkbox-box,
 .ui-checkbox-custom label,
 .ui-radio-custom .ui-checkbox-box,
@@ -764,8 +743,8 @@ input[type="search"]::-webkit-search-decoration {
   display: inline-block;
   padding-left: 1.5em;
 }
-.esf-checkbox-style-base .ui-checkbox-box:before,
-.esf-checkbox-style-base label:before,
+.esui-checkbox-style-base .ui-checkbox-box:before,
+.esui-checkbox-style-base label:before,
 .ui-checkbox-custom .ui-checkbox-box:before,
 .ui-checkbox-custom label:before,
 .ui-radio-custom .ui-checkbox-box:before,
@@ -790,12 +769,12 @@ input[type="search"]::-webkit-search-decoration {
   transition: background-color 0.3s ease, border-color 0.3s ease;
   background: #f6f6f6;
   border: 1px solid #dddddd;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
 }
-.esf-checkbox-style-base .ui-checkbox-box:after,
-.esf-checkbox-style-base label:after,
+.esui-checkbox-style-base .ui-checkbox-box:after,
+.esui-checkbox-style-base label:after,
 .ui-checkbox-custom .ui-checkbox-box:after,
 .ui-checkbox-custom label:after,
 .ui-radio-custom .ui-checkbox-box:after,
@@ -815,8 +794,8 @@ input[type="search"]::-webkit-search-decoration {
   -o-transition: background 0.3s ease 0s;
   transition: background 0.3s ease 0s;
 }
-.esf-checkbox-style-base .ui-checkbox-box:active:before,
-.esf-checkbox-style-base label:active:before,
+.esui-checkbox-style-base .ui-checkbox-box:active:before,
+.esui-checkbox-style-base label:active:before,
 .ui-checkbox-custom .ui-checkbox-box:active:before,
 .ui-checkbox-custom label:active:before,
 .ui-radio-custom .ui-checkbox-box:active:before,
@@ -827,7 +806,7 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round label:active:before {
   background: #f6f6f6;
 }
-.esf-checkbox-style-base input,
+.esui-checkbox-style-base input,
 .ui-checkbox-custom input,
 .ui-radio-custom input,
 .ui-checkbox-switch input,
@@ -839,8 +818,8 @@ input[type="search"]::-webkit-search-decoration {
   filter: alpha(opacity=0);
   outline: none;
 }
-.esf-checkbox-style-base input:focus ~ label,
-.esf-checkbox-style-base input:focus ~ .ui-checkbox-box,
+.esui-checkbox-style-base input:focus ~ label,
+.esui-checkbox-style-base input:focus ~ .ui-checkbox-box,
 .ui-checkbox-custom input:focus ~ label,
 .ui-checkbox-custom input:focus ~ .ui-checkbox-box,
 .ui-radio-custom input:focus ~ label,
@@ -851,8 +830,8 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round input:focus ~ .ui-checkbox-box {
   color: #666666;
 }
-.esf-checkbox-style-base input:focus ~ label:before,
-.esf-checkbox-style-base input:focus ~ .ui-checkbox-box:before,
+.esui-checkbox-style-base input:focus ~ label:before,
+.esui-checkbox-style-base input:focus ~ .ui-checkbox-box:before,
 .ui-checkbox-custom input:focus ~ label:before,
 .ui-checkbox-custom input:focus ~ .ui-checkbox-box:before,
 .ui-radio-custom input:focus ~ label:before,
@@ -865,8 +844,8 @@ input[type="search"]::-webkit-search-decoration {
   -moz-box-shadow: 0 0 1px #70ccc0;
   box-shadow: 0 0 1px #70ccc0;
 }
-.esf-checkbox-style-base input:checked ~ label:before,
-.esf-checkbox-style-base input:checked ~ .ui-checkbox-box:before,
+.esui-checkbox-style-base input:checked ~ label:before,
+.esui-checkbox-style-base input:checked ~ .ui-checkbox-box:before,
 .ui-checkbox-custom input:checked ~ label:before,
 .ui-checkbox-custom input:checked ~ .ui-checkbox-box:before,
 .ui-radio-custom input:checked ~ label:before,
@@ -878,8 +857,8 @@ input[type="search"]::-webkit-search-decoration {
   background: #70ccc0;
   border-color: #70ccc0;
 }
-.esf-checkbox-style-base input:checked ~ label:after,
-.esf-checkbox-style-base input:checked ~ .ui-checkbox-box:after,
+.esui-checkbox-style-base input:checked ~ label:after,
+.esui-checkbox-style-base input:checked ~ .ui-checkbox-box:after,
 .ui-checkbox-custom input:checked ~ label:after,
 .ui-checkbox-custom input:checked ~ .ui-checkbox-box:after,
 .ui-radio-custom input:checked ~ label:after,
@@ -902,8 +881,8 @@ input[type="search"]::-webkit-search-decoration {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-.esf-checkbox-style-base input[disabled] ~ label,
-.esf-checkbox-style-base input[disabled] ~ .ui-checkbox-box,
+.esui-checkbox-style-base input[disabled] ~ label,
+.esui-checkbox-style-base input[disabled] ~ .ui-checkbox-box,
 .ui-checkbox-custom input[disabled] ~ label,
 .ui-checkbox-custom input[disabled] ~ .ui-checkbox-box,
 .ui-radio-custom input[disabled] ~ label,
@@ -916,8 +895,8 @@ input[type="search"]::-webkit-search-decoration {
   filter: alpha(opacity=40);
   cursor: not-allowed !important;
 }
-.esf-checkbox-style-base label,
-.esf-checkbox-style-base ~ label,
+.esui-checkbox-style-base label,
+.esui-checkbox-style-base ~ label,
 .ui-checkbox-custom label,
 .ui-checkbox-custom ~ label,
 .ui-radio-custom label,
@@ -935,8 +914,8 @@ input[type="search"]::-webkit-search-decoration {
   transition: color 0.2s ease;
   color: rgba(102, 102, 102, 0.9);
 }
-.esf-checkbox-style-base label:hover,
-.esf-checkbox-style-base ~ label:hover,
+.esui-checkbox-style-base label:hover,
+.esui-checkbox-style-base ~ label:hover,
 .ui-checkbox-custom label:hover,
 .ui-checkbox-custom ~ label:hover,
 .ui-radio-custom label:hover,
@@ -947,8 +926,8 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round ~ label:hover {
   color: #666666;
 }
-.esf-checkbox-style-base.state-readonly input ~ label,
-.esf-checkbox-style-base.state-readonly input ~ .ui-checkbox-box,
+.esui-checkbox-style-base.state-readonly input ~ label,
+.esui-checkbox-style-base.state-readonly input ~ .ui-checkbox-box,
 .ui-checkbox-custom.state-readonly input ~ label,
 .ui-checkbox-custom.state-readonly input ~ .ui-checkbox-box,
 .ui-radio-custom.state-readonly input ~ label,
@@ -1368,9 +1347,9 @@ input[type="search"]::-webkit-search-decoration {
   display: inline-block;
   vertical-align: middle;
   padding: 0.5em 0.8em;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   background: #f6f6f6;
   color: #666666;
 }
@@ -1686,9 +1665,9 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-panel-custom {
   margin: 1.5em 0;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   background: #ffffff;
   border: 1px solid #dddddd;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -1698,12 +1677,12 @@ input[type="search"]::-webkit-search-decoration {
 .ui-panel-custom .ui-panel-header {
   padding: 10px 15px;
   overflow: auto;
-  -webkit-border-top-left-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  border-top-left-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-topright: 5px;
-  border-top-right-radius: 5px;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-left-radius: 0;
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
   color: #666666;
   background: #f6f6f6;
   border-bottom: 1px solid #dddddd;
@@ -1717,12 +1696,12 @@ input[type="search"]::-webkit-search-decoration {
 .ui-panel-custom .ui-panel-footer {
   padding: 10px 15px;
   overflow: auto;
-  -webkit-border-bottom-right-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-left-radius: 5px;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  border-bottom-left-radius: 0;
   color: #666666;
   background: #f6f6f6;
   border-top: 1px solid #dddddd;
@@ -1734,7 +1713,9 @@ input[type="search"]::-webkit-search-decoration {
 .ui-progress {
   margin-bottom: 1em;
   overflow: hidden;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -1779,11 +1760,11 @@ input[type="search"]::-webkit-search-decoration {
   background-size: 40px 40px;
 }
 .ui-progress-bar.ui-progress-bar-animated {
-  -webkit-animation: esf-progress-bar-stripes 2s linear infinite;
-  -moz-animation: esf-progress-bar-stripes 2s linear infinite;
-  -ms-animation: esf-progress-bar-stripes 2s linear infinite;
-  -o-animation: esf-progress-bar-stripes 2s linear infinite;
-  animation: esf-progress-bar-stripes 2s linear infinite;
+  -webkit-animation: esui-progress-bar-stripes 2s linear infinite;
+  -moz-animation: esui-progress-bar-stripes 2s linear infinite;
+  -ms-animation: esui-progress-bar-stripes 2s linear infinite;
+  -o-animation: esui-progress-bar-stripes 2s linear infinite;
+  animation: esui-progress-bar-stripes 2s linear infinite;
 }
 .ui-progress-bar-small {
   height: 1em;
@@ -1793,7 +1774,7 @@ input[type="search"]::-webkit-search-decoration {
   height: 2em;
   line-height: 2em;
 }
-@-webkit-keyframes esf-progress-bar-stripes {
+@-webkit-keyframes esui-progress-bar-stripes {
   0% {
     background-position: 0 0;
   }
@@ -1801,7 +1782,7 @@ input[type="search"]::-webkit-search-decoration {
     background-position: 40px 0;
   }
 }
-@keyframes esf-progress-bar-stripes {
+@keyframes esui-progress-bar-stripes {
   0% {
     background-position: 0 0;
   }
@@ -1817,9 +1798,9 @@ input[type="search"]::-webkit-search-decoration {
   box-sizing: border-box;
   height: 2.5em;
   vertical-align: middle;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   background: #f6f6f6;
   border: 1px solid #dddddd;
   color: #666666;
@@ -2003,9 +1984,9 @@ a.ui-text-info:hover {
   position: relative;
   display: inline-block;
   vertical-align: middle;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
 }
 .ui-textbox > input {
   height: 2.5em;
@@ -2017,9 +1998,9 @@ a.ui-text-info:hover {
   width: 100%;
   margin: 0;
   outline: 0;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   -webkit-transition: background-color 0.3s ease-out, -webkit-box-shadow 0.2s ease, border-color 0.2s ease;
   -moz-transition: background-color 0.3s ease-out, -moz-box-shadow 0.2s ease, border-color 0.2s ease;
   -ms-transition: background-color 0.3s ease-out, -ms-box-shadow 0.2s ease, border-color 0.2s ease;
@@ -2305,9 +2286,9 @@ kbd {
   color: #666666;
   white-space: nowrap;
   border: 1px solid #dddddd;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   background: #f6f6f6;
   font-family: Monaco, Consolas, monospace;
   padding: 0 0.3em;
@@ -2550,27 +2531,6 @@ hr {
   filter: alpha(opacity=0);
   outline: none;
 }
-.ui-boxgroup-button-style .ui-boxgroup-wrapper:not(:first-child):not(:last-child) label {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-}
-.ui-boxgroup-button-style .ui-boxgroup-wrapper:first-child:not(:last-child) label {
-  -webkit-border-top-right-radius: 0;
-  -moz-border-radius-topright: 0;
-  border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  border-bottom-right-radius: 0;
-}
-.ui-boxgroup-button-style .ui-boxgroup-wrapper:last-child:not(:first-child) label {
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-left-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  border-bottom-left-radius: 0;
-}
 .ui-boxgroup-button-style label {
   -webkit-appearance: none;
   margin: 0;
@@ -2601,9 +2561,9 @@ hr {
   -ms-transition: background-color 0.3s ease-out, -ms-box-shadow 0.2s ease, border-color 0.2s ease;
   -o-transition: background-color 0.3s ease-out, -o-box-shadow 0.2s ease, border-color 0.2s ease;
   transition: background-color 0.3s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   color: #666666;
   background-color: #f6f6f6;
 }
@@ -4097,38 +4057,6 @@ span.ui-crumb-node {
   color: inherit;
   background-color: #f6f6f6;
   border: 1px solid #dddddd;
-}
-.ui-textbox.state-hint-prefix .ui-textbox-hint {
-  -webkit-border-top-left-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  border-top-left-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-left-radius: 5px;
-}
-.ui-textbox.state-hint-prefix input {
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-left-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  border-bottom-left-radius: 0;
-}
-.ui-textbox.state-hint-suffix .ui-textbox-hint {
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-topright: 5px;
-  border-top-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  border-bottom-right-radius: 5px;
-}
-.ui-textbox.state-hint-suffix input {
-  -webkit-border-top-right-radius: 0;
-  -moz-border-radius-topright: 0;
-  border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  border-bottom-right-radius: 0;
 }
 .ui-textbox-placeholder {
   height: 2.5em;
