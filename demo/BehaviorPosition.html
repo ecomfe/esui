@@ -22,10 +22,8 @@
         </div>
         <div id="main" class="ui-u-4-5">
             <h2>Position</h2>
-            <div class="intro">
-                <p>Position</p>
-            </div>
-            <div class="example ui-demo-light-stage">
+            <p>Position</p>
+            <div class="example">
                 <div id="parent" style="border:1px solid #000;width:500px;height:80px;margin:0 auto">
                     <p>
                     This is the position parent element.
@@ -86,6 +84,8 @@
                     </div>
                 </div>
             </div>
+            <script type="text/sample" data-refid="main-js">
+            </script>
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -96,10 +96,14 @@
     require(
         [
             'jquery',
+            'esui',
             'esui/behavior/position',
-            'esui/behavior/Draggable'
+            'esui/behavior/Draggable',
+            'esui/Tab',
+            'demo'
         ],
-        function ($) {
+        function ($, esui) {
+            esui.init()
             function setPosition() {
                 $('.positionable').position({
                     of: $('#parent'),

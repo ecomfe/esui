@@ -22,11 +22,13 @@
             </div>
             <div id="main" class="ui-u-4-5">
                 <h2>Draggable</h2>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <div id="block" class="block" style="width:100px;height:100px;background:orange;border:blue"></div>
+                    <iframe src="http://www.baidu.com" width="1000" height="300"></iframe>
+                    <input type="text" style="width:100px;" value="xxxx" />
                 </div>
-                <iframe src="http://www.baidu.com" width="1000" height="800"></iframe>
-                <input type="text" style="width:100px;" value="xxxx" />
+                <script type="text/sample" data-refid="main-js">
+                </script>
             </div>
         </div>
         <script src="assets/loader/esl.js"></script>
@@ -38,14 +40,13 @@
             [
                 'esui',
                 'esui/behavior/Draggable',
-                'jquery'
+                'jquery',
+                'esui/Tab',
+                'demo'
             ],
             function (ui, Draggable, $) {
-                $('#block').draggable(
-                    {
-                        containment: '.example'
-                    }
-                );
+                ui.init();
+                $('#block').draggable();
             }
         );
         </script>

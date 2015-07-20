@@ -5895,9 +5895,9 @@ span.ui-crumb-node {
   z-index: 1002;
   position: absolute;
   display: block;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   border: 1px solid #bfeff3;
   color: #999999;
   background: #e3f6f3;

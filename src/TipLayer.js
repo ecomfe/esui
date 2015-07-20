@@ -63,12 +63,7 @@ define(
                  * 初始化DOM结构，仅在第一次渲染时调用
                  */
                 initStructure: function () {
-                    var main = this.main;
-                    // 判断main是否在body下，如果不在，要移到body下
-                    if (main.parentNode
-                        && main.parentNode.nodeName.toLowerCase() !== 'body') {
-                        document.body.appendChild(main);
-                    }
+                    $(this.main).appendTo(this.appendToEle);
                     this.addState('hidden');
                     // 不是所有的提示层都需要title
                     if (this.title || this.roles.title) {
@@ -609,7 +604,13 @@ define(
              * 默认延迟隐藏时间
              * @type {number}
              */
-            showDuration: 150
+            showDuration: 150,
+
+            /**
+             * append到哪个元素下
+             * @type {string}
+             */
+            appendToEle: 'body'
         };
 
         /**

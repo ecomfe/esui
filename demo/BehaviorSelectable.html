@@ -22,9 +22,7 @@
         </div>
         <div id="main" class="ui-u-4-5">
             <h2>Selectable</h2>
-            <section class="intro">
-                <p>Selectable</p>
-            </section>
+            <p>Selectable</p>
             <div class="example">
                 <ol id="selectable" class="esui-clearfix">
                     <li class="ui-state-default">1</li>
@@ -55,6 +53,8 @@
                     <span id="items"></span>
                 </div>
             </div>
+            <script type="text/sample" data-refid="main-js">
+            </script>
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -64,10 +64,14 @@
     <script id="main-js">
     require(
         [
+            'esui',
             'jquery',
-            'esui/behavior/Selectable'
+            'esui/behavior/Selectable',
+            'esui/Tab',
+            'demo'
         ],
-        function ($, selectable) {
+        function (esui, $) {
+            esui.init();
             $('#selectable').selectable();
 
             $('#selectable-list').selectable(
