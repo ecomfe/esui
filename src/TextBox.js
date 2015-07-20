@@ -16,6 +16,7 @@ define(
         var InputControl = require('./InputControl');
         var supportPlaceholder
             = ('placeholder' in document.createElement('input'));
+        var painters = require('./painters');
 
         require('./behavior/textchange');
 
@@ -215,10 +216,7 @@ define(
                     this.helper.addDOMEvent(input, 'keypress', dispatchSpecialKey);
                     this.helper.addDOMEvent(input, 'focus', focus);
                     this.helper.addDOMEvent(input, 'blur', blur);
-                    $(input).on(
-                        'textchange',
-                        u.bind(dispatchInputEvent, this)
-                    );
+                    this.helper.addDOMEvent(input, 'textchange', u.bind(dispatchInputEvent, this));
                     this.helper.delegateDOMEvent(input, 'change');
                     if (this.icon) {
                         this.helper.addDOMEvent(this.main.firstChild, 'click', iconClick);
@@ -232,7 +230,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     InputControl.prototype.repaint,
                     {
                         name: 'rawValue',
