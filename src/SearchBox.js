@@ -60,7 +60,6 @@ define(
                     };
                     u.extend(properties, options);
 
-                    var $main = $(main)
                     if (lib.isInput(this.main)) {
                         if (!properties.placeholder) {
                             properties.placeholder = lib.getAttribute(this.main, 'placeholder');
