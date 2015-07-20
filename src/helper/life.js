@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 生命周期相关辅助方法
  * @author otakustay
@@ -10,7 +10,7 @@ define(
     function (require) {
         /**
          * LifeCycle枚举
-         * 
+         *
          * @type {Object}
          * @ignore
          */
@@ -20,7 +20,7 @@ define(
             RENDERED: 2,
             DISPOSED: 4
         };
-        
+
         var u = require('underscore');
         var ui = require('../main');
 
@@ -51,7 +51,7 @@ define(
                 extensions = this.control.extensions = [];
             }
             Array.prototype.push.apply(
-                extensions, 
+                extensions,
                 ui.createGlobalExtensions()
             );
 
@@ -68,7 +68,7 @@ define(
 
         /**
          * 判断控件是否处于相应的生命周期阶段
-         * 
+         *
          * @param {string} stage 生命周期阶段
          * @return {boolean}
          */
@@ -82,7 +82,7 @@ define(
 
         /**
          * 改变控件的生命周期阶段
-         * 
+         *
          * @param {string} stage 生命周期阶段
          */
         helper.changeStage = function (stage) {
@@ -97,29 +97,33 @@ define(
          * 销毁控件
          */
         helper.dispose = function () {
-            // 清理子控件
-            this.control.disposeChildren();
-            this.control.children = null;
-            this.control.childrenIndex = null;
-
-            // 移除自身行为
-            this.clearDOMEvents();
+            var me = this;
+            var ctrl = me.control;
 
             // 移除所有扩展
-            u.invoke(this.control.extensions, 'dispose');
-            this.control.extensions = null;
+            u.invoke(ctrl.extensions, 'dispose');
+            ctrl.extensions = null;
+
+            // 清理子控件
+            ctrl.helper.disposeChildren();
+
+            // 移除自身行为
+            u.each(ctrl.domEvents, function ($ele) {
+                me.removeDOMEvent($ele, '.' + ctrl.type);
+            });
+            ctrl.domEvents = [];
 
             // 从控件树中移除
-            if (this.control.parent) {
-                this.control.parent.removeChild(this.control);
+            if (ctrl.parent) {
+                ctrl.parent.removeChild(ctrl);
             }
 
             // 从视图环境移除
-            if (this.control.viewContext) {
-                this.control.viewContext.remove(this.control);
+            if (ctrl.viewContext) {
+                ctrl.viewContext.remove(ctrl);
             }
 
-            this.control.renderOptions = null;
+            ctrl.renderOptions = null;
         };
 
         /**

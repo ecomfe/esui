@@ -1,79 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8" />
     <title>Crumb - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/google-code-prettify/prettify.js"></script>
-    <script src="demo.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <link rel="stylesheet" href="assets/themes/standard.css" />
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
 </head>
 <body>
-    <h1 id="branding">ESUI - Crumb</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Crumb</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-nav">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Crumb</h2>
             <div class="intro">
                 <p>Crumb介绍。</p>
             </div>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <h3>缺省样式</h3>
-                    <div id="container" class="row">
-                        <div data-ui-type="Crumb">
-                            <a href="#1">Node1</a>
-                            <a href="#2">Node2</a>
-                            <a href="#3">Node3</a>
-                            <a href="#4">Node4</a>
-                            <span>Node5</span>
-                        </div>
+            <div class="example ui-demo-light-stage">
+                <h3>缺省样式</h3>
+                <div id="container" class="row">
+                    <div data-ui-type="Crumb">
+                        <a href="#1">Node1</a>
+                        <a href="#2">Node2</a>
+                        <a href="#3">Node3</a>
+                        <a href="#4">Node4</a>
+                        <span>Node5</span>
                     </div>
-                    <h3>配置Separator</h3>
-                    <div id="container2" class="row">
+                </div>
+                <h3>配置Separator</h3>
+                <div id="container2" class="row">
+                </div>
+                <h3>自定义样式</h3>
+                <div class="ui-crumb-nav-container">
+                    <div id="nav-container">
                     </div>
-                    <h3>自定义样式</h3>
-                    <div class="ui-crumb-nav-container">
-                        <div id="nav-container">
-                        </div>
-                        <div class="ui-tip" data-ui="type:Tip;id:auto-tip-auto;content:Hello;"></div>
-                    </div>
+                    <div class="ui-tip" data-ui="type:Tip;id:auto-tip-auto;content:Hello;"></div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        require(
-            [
-                'esui',
-                'esui/Crumb',
-                'esui/Tip'
-            ],
-            function (ui, Crumb) {
-                ui.init();
-                var path = [
-                    { text: '首页', href: 'http://test.com' },
-                    { text: '投放管理', href: 'http://test2.com' },
-                    { text: '订单管理'}
-                ];
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'esui',
+            'esui/Crumb',
+            'esui/Tip',
+            'esui/Tab',
+            'demo'
+        ],
+        function (ui, Crumb) {
+            ui.init();
+            var path = [
+                {
+                    text: '首页',
+                    href: 'http://test.com'
+                },
+                {
+                    text: '投放管理',
+                    href: 'http://test2.com'
+                },
+                {
+                    text: '订单管理'
+                }
+            ];
 
-                var crumb = new Crumb({ path: path, variants: ['nav'], main: document.getElementById('nav-container') });
-                crumb.render();
+            var crumb = new Crumb({
+                path: path,
+                variants: ['nav'],
+                main: document.getElementById('nav-container')
+            });
+            crumb.render();
 
-                var crumb2 = new Crumb({ path: path, separator: '|' });
-                crumb2.appendTo(document.getElementById('container2'));
-            }
-        );
-        copyExample();
+            var crumb2 = new Crumb({
+                path: path,
+                separator: '|'
+            });
+            crumb2.appendTo(document.getElementById('container2'));
+        }
+    );
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

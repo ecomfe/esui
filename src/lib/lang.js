@@ -16,9 +16,10 @@ define(
         var lib = {};
 
         var counter = 0x861005;
+
         /**
          * 获取唯一id
-         * 
+         *
          * @param {string} [prefix="esui"] 前缀
          * @return {string}
          */
@@ -41,7 +42,9 @@ define(
             var proto = subClass.prototype = new Empty();
 
             for (var key in selfPrototype) {
-                proto[key] = selfPrototype[key];
+                if (selfPrototype.hasOwnProperty(key)) {
+                    proto[key] = selfPrototype[key];
+                }
             }
             subClass.prototype.constructor = subClass;
             subClass.superClass = superClass.prototype;
@@ -52,47 +55,28 @@ define(
         /**
          * 对一个对象进行深度复制
          *
-         * @param {Object} source 需要进行复制的对象
+         * @param {Object} obj 需要进行复制的对象
          * @return {Object} 复制出来的新对象
-         * @deprecated 将在4.0版本中移除，使用{@link lib#deepClone}方法代替
          */
-        lib.clone = function (source) {
-            if (!source || typeof source !== 'object') {
-                return source;
+        lib.deepClone = function (obj) {
+            // 非对象以及函数就直接返回
+            if (!u.isObject(obj) || u.isFunction(obj) || u.isRegExp(obj)) {
+                return obj;
             }
 
-            var result = source;
-            if (u.isArray(source)) {
-                result = [];
-                for (var i = 0; i < source.length; i++) {
-                    result[i] = lib.deepClone(source[i]);
-                }
-            }
-            else if (({}).toString.call(source) === '[object Object]'
-                // IE下，DOM和BOM对象上一个语句为true，
-                // isPrototypeOf挂在`Object.prototype`上的，
-                // 因此所有的字面量都应该会有这个属性
-                // 对于在`window`上挂了`isPrototypeOf`属性的情况，直接忽略不考虑
-                && ('isPrototypeOf' in source)
-            ) {
-                result = {};
-                for (var key in source) {
-                    if (source.hasOwnProperty(key)) {
-                        result[key] = lib.deepClone(source[key]);
-                    }
-                }
+            if (u.isArray(obj)) {
+                return u.map(obj, lib.deepClone);
             }
 
-            return result;
+            var clone = {};
+            u.each(
+                obj,
+                function (value, key) {
+                    clone[key] = lib.deepClone(value);
+                }
+            );
+            return clone;
         };
-
-        /**
-         * 对一个对象进行深度复制
-         *
-         * @param {Object} source 需要进行复制的对象
-         * @return {Object} 复制出来的新对象
-         */
-        lib.deepClone = lib.clone;
 
         /**
          * 将数组转换为字典
@@ -111,6 +95,15 @@ define(
 
             return dictionary;
         };
+
+        /**
+         * 对一个对象进行深度复制
+         *
+         * @param {Object} source 需要进行复制的对象
+         * @return {Object} 复制出来的新对象
+         * @deprecated 将在4.0版本中移除，使用{@link lib#deepClone}方法代替
+         */
+        lib.clone = lib.deepClone;
 
         /**
          * 判断一个对象是否为数组

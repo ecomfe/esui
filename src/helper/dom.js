@@ -8,6 +8,7 @@
  */
 define(
     function (require) {
+
         /**
          * 获取控件用于生成css class的类型
          *
@@ -23,7 +24,7 @@ define(
         /**
          * 将参数用`-`连接成字符串
          *
-         * @param {string...} args 需要连接的串
+         * @param {...string} args 需要连接的串
          * @return {string}
          * @ignore
          */
@@ -35,6 +36,7 @@ define(
         var lib = require('../lib');
         var ui = require('../main');
         var uiClassPrefix = 'uiClassPrefix';
+        var $ = require('jquery');
 
         /**
          * @override Helper
@@ -131,20 +133,19 @@ define(
             if (part) {
                 return joinByStrike(ui.getConfig(uiClassPrefix), type, part);
             }
-            else {
-                return joinByStrike(ui.getConfig(uiClassPrefix), type);
-            }
+            return joinByStrike(ui.getConfig(uiClassPrefix), type);
         };
 
         /**
          * 获取class
          *
          * 格式为:ui-xxx
-          
+         *
          * @param {string} name Class名称
+         * @return {string} ui-xxx
          */
         helper.getPrefixClass = function (name) {
-            var pre = ui.getConfig(uiClassPrefix)
+            var pre = ui.getConfig(uiClassPrefix);
 
             return joinByStrike(pre, name);
         };
@@ -152,9 +153,8 @@ define(
         /**
          * 获取图标class
          *
-         * 格式为:ui-icon-xxx
-          
          * @param {string} name 图标名称
+         * @return {string} ui-icon-xxx, ui-icon (name为空时)
          */
         helper.getIconClass = function (name) {
             var icon = 'icon';
@@ -176,12 +176,7 @@ define(
             }
 
             element = element || this.control.main;
-            if (element) {
-                lib.addClasses(
-                    element,
-                    this.getPartClasses(part)
-                );
-            }
+            $(element).addClass(this.getPartClassName(part));
         };
 
         /**
@@ -196,12 +191,7 @@ define(
             }
 
             element = element || this.control.main;
-            if (element) {
-                lib.removeClasses(
-                    element,
-                    this.getPartClasses(part)
-                );
-            }
+            $(element).removeClass(this.getPartClassName(part));
         };
 
         /**
@@ -258,12 +248,7 @@ define(
          */
         helper.addStateClasses = function (state) {
             var element = this.control.main;
-            if (element) {
-                lib.addClasses(
-                    element,
-                    this.getStateClasses(state)
-                );
-            }
+            $(element).addClass(this.getStateClasses(state).join(' '));
         };
 
         /**
@@ -273,12 +258,7 @@ define(
          */
         helper.removeStateClasses = function (state) {
             var element = this.control.main;
-            if (element) {
-                lib.removeClasses(
-                    element,
-                    this.getStateClasses(state)
-                );
-            }
+            $(element).removeClass(this.getStateClasses(state).join(' '));
         };
 
         /**
@@ -303,12 +283,7 @@ define(
                     cls.push(me.getPrimaryClassName(variant));
                 }
             );
-            if (element) {
-                lib.addClasses(
-                    element,
-                    cls
-                );
-            }
+            $(element).addClass(cls.join(' '));
         };
 
         /**
@@ -320,11 +295,11 @@ define(
         helper.getId = function (part) {
             part = part ? '-' + part : '';
             if (!this.control.domIDPrefix) {
-                this.control.domIDPrefix =
-                    this.control.viewContext && this.control.viewContext.id;
+                this.control.domIDPrefix
+                    = this.control.viewContext && this.control.viewContext.id;
             }
             var prefix = this.control.domIDPrefix
-                ? this.control.domIDPrefix+ '-'
+                ? this.control.domIDPrefix + '-'
                 : '';
             return 'ctrl-' + prefix + this.control.id + part;
         };
@@ -334,6 +309,7 @@ define(
          *
          * @param {string} part 部件名称
          * @param {string} [nodeName="div"] 使用的元素类型
+         * @return {DOMElement} DOM Element
          */
         helper.createPart = function (part, nodeName) {
             nodeName = nodeName || 'div';
@@ -389,14 +365,16 @@ define(
         helper.replaceMain = function (main) {
             main = main || this.control.createMain();
             var initialMain = this.control.main;
+            var $initialMain = $(initialMain);
 
             // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
-            initialMain.setAttribute(
+            $initialMain.attr(
                 ui.getConfig('instanceAttr'),
                 lib.getGUID()
             );
 
             // 把能复制的属性全复制过去
+            var $main = $(main);
             var attributes = initialMain.attributes;
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
@@ -404,33 +382,33 @@ define(
                 if (lib.hasAttribute(initialMain, name)
                     && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
                 ) {
-                    lib.setAttribute(main, name, attribute.value);
+                    $main.attr(name, attribute.value);
 
                     // 原主元素的ui属性需要移除，否则若再次init会重复处理
                     if (name.indexOf(ui.getConfig('uiPrefix')) === 0) {
-                        initialMain.removeAttribute(name);
+                        $initialMain.removeAttr(name);
                         i--;
                     }
                 }
             }
 
-            lib.insertBefore(main, initialMain);
-            initialMain.parentNode.removeChild(initialMain);
+            $initialMain.before($main);
+            $initialMain.remove();
             this.control.main = main;
 
             return initialMain;
         };
 
         var INPUT_PROPERTY_MAPPING = {
-            name: { name: 'name' },
-            maxlength: { name: 'maxLength', type: 'number' },
-            required: { name: 'required', type: 'boolean' },
-            pattern: { name: 'pattern' },
-            min: { name: 'min', type: 'number' },
-            max: { name: 'max', type: 'number' },
-            autofocus: { name: 'autoFocus', type: 'boolean' },
-            disabled: { name: 'disabled', type: 'boolean' },
-            readonly: { name: 'readOnly', type: 'boolean' }
+            name: {name: 'name'},
+            maxlength: {name: 'maxLength', type: 'number'},
+            required: {name: 'required', type: 'boolean'},
+            pattern: {name: 'pattern'},
+            min: {name: 'min', type: 'number'},
+            max: {name: 'max', type: 'number'},
+            autofocus: {name: 'autoFocus', type: 'boolean'},
+            disabled: {name: 'disabled', type: 'boolean'},
+            readonly: {name: 'readOnly', type: 'boolean'}
         };
 
         /**
@@ -455,12 +433,14 @@ define(
          */
         helper.extractOptionsFromInput = function (input, options) {
             var result = {};
+            var $input = $(input);
+
             u.each(
                 INPUT_PROPERTY_MAPPING,
                 function (config, attributeName) {
                     var specified = lib.hasAttribute(input, attributeName);
                     if (specified) {
-                        var value = lib.getAttribute(input, attributeName);
+                        var value = $input.attr(attributeName);
 
                         switch (config.type) {
                             case 'boolean':

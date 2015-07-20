@@ -9,6 +9,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var eoo = require('eoo');
 
         /**
          * 树的数据交互策略
@@ -28,7 +29,7 @@ define(
          * `TreeStrategy`将根据自身的逻辑来决定是否进行对应的修改。
          *
          * `TreeStrategy`类是对树的数据交互的策略的抽象，其包含以下方法：
-         * 
+         *
          * `{boolean} isLeafNode({meta.TreeItem} node)`：判断一个节点是否为叶子，
          * 树对叶子节点的展现样式是特殊的
          * `{boolean} shouldExpand({meta.TreeItem} node)`：判断一个节点是否应展开，
@@ -39,14 +40,14 @@ define(
          * {@link Tree#expand}和{@link Tree#collapse}事件，
          * 在事件的处理函数中获取数据，并调用{@link Tree#expandNode}
          * 和{@link Tree#collapseNode}来使树得到正确的交互
-         * 
+         *
          * 当{@link Tree#collapse}事件发生时，通常简单地调用
          * {@link Tree#collapseNode}方法收起节点即可，
          * 需要时可以通过{@link Tree#collapseNode}方法的`removeChild`参数设为`true`，
          * 控制子节点的删除以回收内存和提高性能
-         * 
+         *
          * 当{@link Tree#expand}事件发生时，需要根据数据的获取方案来提供不同的逻辑：
-         * 
+         *
          * - 如果数据是静态的，则直接调用{@link Tree#expandNode}，
          * 不传递`children`参数，由控件自动查找数据并生成子节点
          * - 如果数据是远程加载的，则：
@@ -73,87 +74,92 @@ define(
          * @param {boolean} [options.defaultExpand=false] 节点是否展开
          * @constructor
          */
-        function TreeStrategy(options) {
-            var defaults = {
-                defaultExpand: false
-            };
-            u.extend(this, defaults, options);
-        }
 
-        /**
-         * 判断一个节点是否叶子节点
-         *
-         * @param {meta.TreeItem} node 节点数据项
-         * @return {boolean}
-         */
-        TreeStrategy.prototype.isLeafNode = function (node) {
-            return !node.children || !node.children.length;
-        };
+        var TreeStrategy = eoo.create(
+            {
+                constructor: function (options) {
+                    var defaults = {
+                        defaultExpand: false
+                    };
+                    u.extend(this, defaults, options);
+                },
 
-        /**
-         * 判断一个节点是否应该展开
-         *
-         * @param {meta.TreeItem} node 节点数据项
-         * @return {boolean}
-         */
-        TreeStrategy.prototype.shouldExpand = function (node) {
-            return this.defaultExpand;
-        };
+                /**
+                 * 判断一个节点是否叶子节点
+                 *
+                 * @param {meta.TreeItem} node 节点数据项
+                 * @return {boolean}
+                 */
+                isLeafNode: function (node) {
+                    return !node.children || !node.children.length;
+                },
 
-        /**
-         * 将当前策略依附到控件上
-         *
-         * @param {Tree} tree 控件实例
-         */
-        TreeStrategy.prototype.attachTo = function (tree) {
-            this.enableToggleStrategy(tree);
-            this.enableSelectStrategy(tree);
-        };
+                /**
+                 * 判断一个节点是否应该展开
+                 *
+                 * @param {meta.TreeItem} node 节点数据项
+                 * @return {boolean}
+                 */
+                shouldExpand: function (node) {
+                    return this.defaultExpand;
+                },
 
-        /**
-         * 开启展开/收起相关的策略
-         *
-         * @param {Tree} tree 控件实例
-         * @protected
-         */
-        TreeStrategy.prototype.enableToggleStrategy = function (tree) {
-            tree.on(
-                'expand',
-                function (e) {
-                    // 默认的方案是同步更新数据的，所以不提示loading了
-                    this.expandNode(e.node.id);
+                /**
+                 * 将当前策略依附到控件上
+                 *
+                 * @param {Tree} tree 控件实例
+                 */
+                attachTo: function (tree) {
+                    this.enableToggleStrategy(tree);
+                    this.enableSelectStrategy(tree);
+                },
+
+                /**
+                 * 开启展开/收起相关的策略
+                 *
+                 * @param {Tree} tree 控件实例
+                 * @protected
+                 */
+                enableToggleStrategy: function (tree) {
+                    tree.on(
+                        'expand',
+                        function (e, data) {
+                            // 默认的方案是同步更新数据的，所以不提示loading了
+                            this.expandNode(data.node.id);
+                        }
+                    );
+                    tree.on(
+                        'collapse',
+                        function (e, data) {
+                            this.collapseNode(data.node.id, false);
+                        }
+                    );
+                },
+
+                /**
+                 * 开启选中/取消选中相关的策略
+                 *
+                 * @param {Tree} tree 控件实例
+                 * @protected
+                 */
+                enableSelectStrategy: function (tree) {
+                    tree.on(
+                        'select',
+                        function (e, data) {
+                            this.selectNode(data.node.id);
+                        }
+                    );
+                    tree.on(
+                        'unselect',
+                        function (e, data) {
+                            if (tree.get('allowUnselectNode')) {
+                                tree.unselectNode(data.node.id);
+                            }
+                        }
+                    );
                 }
-            );
-            tree.on(
-                'collapse',
-                function (e) {
-                    this.collapseNode(e.node.id, false);
-                }
-            );
-        };
-
-        /**
-         * 开启选中/取消选中相关的策略
-         *
-         * @param {Tree} tree 控件实例
-         * @protected
-         */
-        TreeStrategy.prototype.enableSelectStrategy = function (tree) {
-            tree.on(
-                'select',
-                function (e) {
-                    this.selectNode(e.node.id);
-                }
-            );
-            tree.on(
-                'unselect',
-                function (e) {
-                    if (tree.get('allowUnselectNode')) {
-                        tree.unselectNode(e.node.id);
-                    }
-                }
-            );
-        };
+            }
+        );
 
         return TreeStrategy;
     }

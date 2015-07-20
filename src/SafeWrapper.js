@@ -1,13 +1,14 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file 控件包装类，用于模拟一个不存在的控件
  * @author otakustay
  */
 define(
     function (require) {
+        var eoo = require('eoo');
         var u = require('underscore');
 
         /**
@@ -58,8 +59,26 @@ define(
          * @extends Control
          * @constructor
          */
-        function SafeWrapper() {
-        }
+        var SafeWrapper = eoo.create(
+            {
+                // 特殊的几个
+                getCategory: function () {
+                    return 'control';
+                },
+
+                getChildSafely: function (childName) {
+                    var wrapper = new SafeWrapper();
+
+                    wrapper.childName = childName;
+                    wrapper.parent = this;
+                    if (this.viewContext) {
+                        wrapper.viewContext = this.viewContext;
+                    }
+
+                    return wrapper;
+                }
+            }
+        );
 
         // 设置值的方法
         u.each(
@@ -118,23 +137,6 @@ define(
                 };
             }
         );
-
-        // 特殊的几个
-        SafeWrapper.prototype.getCategory = function () {
-            return 'control';
-        };
-
-        SafeWrapper.prototype.getChildSafely = function (childName) {
-            var wrapper = new SafeWrapper();
-            
-            wrapper.childName = childName;
-            wrapper.parent = this;
-            if (this.viewContext) {
-                wrapper.viewContext = this.viewContext;
-            }
-
-            return wrapper;
-        };
 
         return SafeWrapper;
     }

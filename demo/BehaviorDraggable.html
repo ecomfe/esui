@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <title>Draggable - ESUI Demo</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+    </head>
+    <body>
+        <div class="header">
+            <h1 id="branding">ESUI - Behavior - Draggable</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
+                <h2>Draggable</h2>
+                <div class="example">
+                    <div id="block" class="block" style="width:100px;height:100px;background:orange;border:blue"></div>
+                    <iframe src="http://www.baidu.com" width="1000" height="300"></iframe>
+                    <input type="text" style="width:100px;" value="xxxx" />
+                </div>
+                <script type="text/sample" data-refid="main-js">
+                </script>
+            </div>
+        </div>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
+        require(
+            [
+                'esui',
+                'esui/behavior/Draggable',
+                'jquery',
+                'esui/Tab',
+                'demo'
+            ],
+            function (ui, Draggable, $) {
+                ui.init();
+                $('#block').draggable();
+            }
+        );
+        </script>
+        <script src="sitemap.js"></script>
+    </body>
+</html>

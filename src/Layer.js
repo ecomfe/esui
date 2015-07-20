@@ -6,11 +6,16 @@
  * @file 控件浮层基类
  * @author otakustay
  */
+
 define(
-    function(require) {
+    function (require) {
         var u = require('underscore');
         var lib = require('./lib');
-        var ui = require('./main');
+        var esui = require('./main');
+        var eoo = require('eoo');
+        var EventTarget = require('./EventTarget');
+        var $ = require('jquery');
+        require('./behavior/position');
 
         /**
          * 浮层基类
@@ -31,25 +36,218 @@ define(
          * @constructor
          * @param {Control} control 关联的控件实例
          */
-        function Layer(control) {
-            this.control = control;
-        }
+        var Layer = eoo.create(
+            EventTarget,
+            {
+                constructor: function (control) {
+                    this.control = control;
+                },
 
-        /**
-         * 创建的元素标签类型
-         *
-         * @type {string}
-         */
-        Layer.prototype.nodeName = 'div';
+                /**
+                 * 创建的元素标签类型
+                 *
+                 * @type {string}
+                 */
+                nodeName: 'div',
 
-        /**
-         * 控制是否在页面滚动等交互发生时自动隐藏，默认为`true`
-         *
-         * 如果需要改变此属性，必须在初始化后立即设置，仅在第一次创建层时生效
-         *
-         * @type {boolean}
-         */
-        Layer.prototype.autoHide = true;
+                /**
+                 * 点击到浮层外是关闭
+                 *
+                 * @type {bool}
+                 */
+                autoClose: true,
+
+                /**
+                 * 当这些元素是父元素时，不自动关闭浮层。
+                 *
+                 * @type {Array}
+                 */
+                autoCloseExcludeElements: [],
+
+                /**
+                 * 创建浮层
+                 *
+                 * @return {HTMLElement}
+                 */
+                create: function () {
+                    var element = this.control.helper.createPart('layer', this.nodeName);
+                    this.prepareLayer(element);
+
+                    return element;
+                },
+
+                prepareLayer: function (element) {
+                    $(element).addClass(esui.getConfig('uiClassPrefix') + '-layer');
+
+                    // 这里添加variant信息到layer上以方便定义variant样式。
+                    var variants = this.control.variants;
+                    var helper = this.control.helper;
+                    var variantsCls = [];
+                    if (variants) {
+                        variants = typeof variants === 'string'
+                            ? variants.split(' ')
+                            : variants;
+
+                        // 处理过一次在control render时候就不处理了。
+                        this.control.variants = variants;
+                        u.each(variants, function (v) {
+                            variantsCls.push(helper.getPrimaryClassName('layer-' + v));
+                        });
+                        $(element).addClass(variantsCls.join(' '));
+                    }
+                    $(element).hide();
+                },
+
+                /**
+                 * 给Layer增加自定义class
+                 *
+                 * @param {Array} layerClassNames 样式集合
+                 */
+                addCustomClasses: function (layerClassNames) {
+                    var element = this.getElement();
+                    $(element).addClass(layerClassNames.join(' '));
+                },
+
+                /**
+                 * 渲染层内容
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @abstract
+                 */
+                render: function (element) {
+                },
+
+                /**
+                 * 同步控件状态到层
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @abstract
+                 */
+                syncState: function (element) {
+                },
+
+                /**
+                 * 重新渲染
+                 */
+                repaint: function () {
+                    var element = this.getElement(false);
+
+                    if (element) {
+                        this.render(element);
+                    }
+                },
+
+                /**
+                 * 初始化层的交互行为
+                 *
+                 * @param {HTMLElement} element 层元素
+                 * @abstract
+                 */
+                initBehavior: function (element) {
+                },
+
+                /**
+                 * 获取浮层DOM元素
+                 *
+                 * @param {boolean} [create=true] 不存在时是否创建
+                 * @return {HTMLElement}
+                 */
+                getElement: function (create) {
+                    var element = this.control.helper.getPart('layer');
+
+                    if (!element && create !== false) {
+                        element = this.create();
+                        this.render(element);
+                        this.initBehavior(element);
+                        this.syncState(element);
+
+                        // IE下元素始终有`parentNode`，无法判断是否进入了DOM
+                        if (!element.parentElement) {
+                            document.body.appendChild(element);
+                        }
+
+                        this.fire('rendered');
+                    }
+
+                    return element;
+                },
+
+                /**
+                 * 隐藏层
+                 */
+                hide: function (silent) {
+                    var element = this.getElement();
+                    $(element).hide();
+                    if (this.docClickHandler) {
+                        $(document).off('mousedown', this.docClickHandler);
+                        this.docClickHandler = null;
+                    }
+                    this.fire('hide');
+                    this.control.removeState('active');
+                },
+
+                /**
+                 * 显示层
+                 */
+                show: function () {
+                    var me = this;
+                    var element = me.getElement();
+                    element.style.zIndex = me.getZIndex();
+                    if (me.autoClose) {
+                        // 点击文档自动关闭
+                        setDocClickHandler(me);
+                    }
+                    $(element).show();
+                    me.position();
+                    me.fire('show');
+                    me.control.addState('active');
+                },
+
+                /**
+                 * 切换显示状态
+                 */
+                toggle: function () {
+                    var element = this.getElement();
+                    if (!element
+                        || !$(element).is(':visible')
+                    ) {
+                        this.show();
+                    }
+                    else {
+                        this.hide();
+                    }
+                },
+
+                /**
+                 * 放置层
+                 */
+                position: function () {
+                    var layer = this.getElement();
+                    Layer.attachTo(layer, this.control.main, this.dock);
+                },
+
+                /**
+                 * 获取层应该有的`z-index`样式值
+                 *
+                 * @return {number}
+                 */
+                getZIndex: function () {
+                    return Layer.getZIndex(this.control.main);
+                },
+
+                /**
+                 * 销毁
+                 */
+                dispose: function () {
+                    var element = this.getElement(false);
+                    this.autoCloseExcludeElements = [];
+                    if (element) {
+                        $(element).remove();
+                    }
+                    this.control = null;
+                }
+            }
+        );
 
         /**
          * 通过点击关闭弹层的处理方法
@@ -59,251 +257,36 @@ define(
          */
         function close(e) {
             var target = e.target;
-            var layer = this.getElement(this);
-            var main = this.control.main;
+            var me = this;
+            var layer = me.getElement(me);
 
             if (!layer) {
                 return;
             }
 
-            while (target && (target !== layer && target !== main)) {
-                target = target.parentNode;
-            }
-
-            if (target !== layer && target !== main) {
-                this.hide();
-            }
-        }
-
-        /**
-         * 启用自动隐藏功能
-         *
-         * @param {HTMLElement} element 需要控制隐藏的层元素
-         */
-        Layer.prototype.enableAutoHide = function (element) {
-            var eventName = 'onwheel' in document.body ? 'wheel' : 'mousewheel';
-            this.control.helper.addDOMEvent(
-                document.documentElement,
-                eventName,
-                u.bind(this.hide, this)
-            );
-            // 自己的滚动不要关掉
-            this.control.helper.addDOMEvent(
-                element,
-                eventName,
-                function (e) { e.stopPropagation(); }
-            );
-        };
-
-        /**
-         * 创建浮层
-         *
-         * @return {HTMLElement}
-         */
-        Layer.prototype.create = function () {
-            var control = this.control;
-            var helper = control.helper;
-            var element =
-                helper.createPart('layer', this.nodeName);
-            lib.addClass(element, ui.getConfig('uiClassPrefix') + '-layer');
-            if (control.inheritFont || ui.getConfig('inheritFont')) {
-                element.style.fontSize = lib.getComputedStyle(control.main, 'fontSize');
-            }
-
-            // 现阶段许多layer都漂浮在body下面。
-            // 因此父组件的variant常常对。
-            // 这里添加variant信息到layer上以方便定义variant样式。
-            var variants = control.variants;
-            var variantsCls = [];
-            if (variants) {
-                variants = typeof variants === 'string'
-                    ? variants.split(' ')
-                    : variants;
-
-                // 处理过一次在control render时候就不处理了。
-                control.variants = variants;
-                u.each(variants, function (v) {
-                    variantsCls.push(helper.getPrimaryClassName('layer-' + v));
-                });
-                lib.addClasses(element, variantsCls);
-            }
-
-            if (this.autoHide) {
-                this.enableAutoHide(element);
-            }
-
-            return element;
-        };
-
-        /**
-         * 给Layer增加自定义class
-         *
-         * @return {array} layerClassNames样式集合
-         */
-        Layer.prototype.addCustomClasses = function (layerClassNames) {
-           var element = this.getElement();
-           lib.addClasses(element, layerClassNames);
-        };
-
-        /**
-         * 渲染层内容
-         *
-         * @param {HTMLElement} element 层元素
-         * @abstract
-         */
-        Layer.prototype.render = function (element) {
-        };
-
-        /**
-         * 同步控件状态到层
-         *
-         * @param {HTMLElement} element 层元素
-         * @abstract
-         */
-        Layer.prototype.syncState = function (element) {
-        };
-
-        /**
-         * 重新渲染
-         */
-        Layer.prototype.repaint = function () {
-            var element = this.getElement(false);
-
-            if (element) {
-                this.render(element);
-            }
-        };
-
-        /**
-         * 初始化层的交互行为
-         *
-         * @param {HTMLElement} element 层元素
-         * @abstract
-         */
-        Layer.prototype.initBehavior = function (element) {
-        };
-
-        function getHiddenClasses(layer) {
-            var classes = layer.control.helper.getPartClasses('layer-hidden');
-            classes.unshift(ui.getConfig('uiClassPrefix') + '-layer-hidden');
-
-            return classes;
-        }
-
-        /**
-         * 获取浮层DOM元素
-         *
-         * @param {boolean} [create=true] 不存在时是否创建
-         * @return {HTMLElement}
-         */
-        Layer.prototype.getElement = function (create) {
-            var element = this.control.helper.getPart('layer');
-
-            if (!element && create !== false) {
-                element = this.create();
-                this.render(element);
-
-                lib.addClasses(element, getHiddenClasses(this));
-
-                this.initBehavior(element);
-                this.control.helper.addDOMEvent(
-                    document, 'mousedown', u.bind(close, this));
-                // 不能点层自己也关掉，所以阻止冒泡到`document`
-                this.control.helper.addDOMEvent(
-                    element,
-                    'mousedown',
-                    function (e) { e.stopPropagation(); }
-                );
-
-                this.syncState(element);
-
-                // IE下元素始终有`parentNode`，无法判断是否进入了DOM
-                if (!element.parentElement) {
-                    document.body.appendChild(element);
+            // 在内部点击
+            var inLayer = layer === target || $.contains(layer, target);
+            var inElements = false;
+            u.each(me.autoCloseExcludeElements, function (ele) {
+                inElements = $.contains(ele, target) || ele === target;
+                if (inElements) {
+                    return false;
                 }
-
-                this.fire('rendered');
+            });
+            if (!inLayer && !inElements) {
+                me.hide();
             }
-
-            return element;
-        };
-
-        /**
-         * 隐藏层
-         */
-        Layer.prototype.hide = function () {
-            var classes = getHiddenClasses(this);
-
-            var element = this.getElement();
-            lib.addClasses(element, classes);
-            this.control.removeState('active');
-            this.fire('hide');
-        };
-
-        /**
-         * 显示层
-         */
-        Layer.prototype.show = function () {
-            var element = this.getElement();
-            element.style.zIndex = this.getZIndex();
-
-            this.position();
-
-            var classes = getHiddenClasses(this);
-            lib.removeClasses(element, classes);
-            this.control.addState('active');
-            this.fire('show');
-        };
-
-        /**
-         * 切换显示状态
-         */
-        Layer.prototype.toggle = function () {
-            var element = this.getElement();
-            if (!element
-                || this.control.helper.isPart(element, 'layer-hidden')
-            ) {
-                this.show();
+            else if (me.autoClose) {
+                setDocClickHandler(me);
             }
-            else {
-                this.hide();
-            }
-        };
+        }
 
-        /**
-         * 放置层
-         */
-        Layer.prototype.position = function () {
-            var element = this.getElement();
-            Layer.attachTo(element, this.control.main, this.dock);
-        };
-
-        /**
-         * 获取层应该有的`z-index`样式值
-         *
-         * @return {number}
-         */
-        Layer.prototype.getZIndex = function () {
-            return Layer.getZIndex(this.control.main);
-        };
-
-        /**
-         * 销毁
-         */
-        Layer.prototype.dispose = function () {
-            var element = this.getElement(false);
-            if (element) {
-                element.innerHTML = '';
-                lib.removeNode(element);
-            }
-            this.control = null;
-        };
-
-        // 控制浮层的静态方法，用与本身就漂浮的那些控件（如`Dialog`），
-        // 它们无法组合`Layer`实例，因此需要静态方法为其服务
-
-        // 初始最高的`z-index`值，将浮层移到最上就是参考此值
-        var zIndexStack = 1000;
+        function setDocClickHandler(layer) {
+            layer.docClickHandler = function (e) {
+                close.call(layer, e);
+            };
+            $(document).one('mousedown', layer.docClickHandler);
+        }
 
         /**
          * 创建层元素
@@ -328,46 +311,12 @@ define(
         Layer.getZIndex = function (owner) {
             var zIndex = 0;
             while (!zIndex && owner && owner !== document) {
-                zIndex =
-                    parseInt(lib.getComputedStyle(owner, 'zIndex'), 10);
+                zIndex
+                    = parseInt(lib.getComputedStyle(owner, 'zIndex'), 10);
                 owner = owner.parentNode;
             }
             zIndex = zIndex || 0;
             return zIndex + 1;
-        };
-
-        /**
-         * 将当前层移到最前
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @static
-         */
-        Layer.moveToTop = function (element) {
-            element.style.zIndex = ++zIndexStack;
-        };
-
-        /**
-         * 移动层的位置
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @param {number} top 上边界距离
-         * @param {number} left 左边界距离
-         * @static
-         */
-        Layer.moveTo = function (element, top, left) {
-            positionLayerElement(element, { top: top, left: left });
-        };
-
-        /**
-         * 缩放层的大小
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @param {number} width 宽度
-         * @param {number} height 高度
-         * @static
-         */
-        Layer.resize = function (element, width, height) {
-            positionLayerElement(element, { width: width, height: height });
         };
 
         /**
@@ -380,174 +329,22 @@ define(
          * @static
          */
         Layer.attachTo = function (layer, target, options) {
-            options = options || { strictWidth: false };
-            // 垂直算法：
-            //
-            // 1. 将层的上边缘贴住目标元素的下边缘
-            // 2. 如果下方空间不够，则转为层的下边缘贴住目标元素的上边缘
-            // 3. 如果上方空间依旧不够，则强制使用第1步的位置
-            //
-            // 水平算法：
-            //
-            // 1. 如果要求层和目标元素等宽，则设置宽度，层的左边缘贴住目标元素的左边缘，结束
-            // 2. 将层的左边缘贴住目标元素的左边缘
-            // 3. 如果右侧空间不够，则转为层的右边缘贴住目标元素的右边缘
-            // 4. 如果左侧空间依旧不够，则强制使用第2步的位置
-
-            // 虽然这2个变量下面不一定用得到，但是不能等层出来了再取，
-            // 一但层出现，可能造成滚动条出现，导致页面尺寸变小
-            var pageWidth = lib.page.getViewWidth();
-            var pageHeight = lib.page.getViewHeight();
-            var pageScrollTop = lib.page.getScrollTop();
-            var pageScrollLeft = lib.page.getScrollLeft();
-
-            // 获取目标元素的属性
-            var targetOffset = lib.getOffset(target);
-
-            // 浮层的存在会影响页面高度计算，必须先让它消失，
-            // 但在消失前，又必须先计算到浮层的正确高度
-            var previousDisplayValue = layer.style.display;
-            layer.style.display = 'block';
-            layer.style.top = '-5000px';
-            layer.style.left = '-5000px';
+            options = options || {strictWidth: false};
             // 如果对层宽度有要求，则先设置好最小宽度
             if (options.strictWidth) {
-                layer.style.minWidth = targetOffset.width + 'px';
+                layer.style.minWidth = target.offsetWidth + 'px';
             }
-            // IE7下，如果浮层隐藏着反而会影响offset的获取，
-            // 但浮层显示出来又可能造成滚动条出现，
-            // 因此显示浮层显示后移到屏幕外面，然后计算坐标
-            var layerOffset = lib.getOffset(layer);
-            // 用完改回来再计算后面的
-            layer.style.top = '';
-            layer.style.left = '';
-            layer.style.display = previousDisplayValue;
-
-
-            var properties = {};
-
-            // 先算垂直的位置
-            var bottomSpace = pageHeight - (targetOffset.bottom - pageScrollTop);
-            var topSpace = targetOffset.top - pageScrollTop;
-            if (bottomSpace <= layerOffset.height && topSpace > layerOffset.height) {
-                // 放上面
-                properties.top = targetOffset.top - layerOffset.height;
-            }
-            else {
-                // 放下面
-                properties.top = targetOffset.bottom;
-            }
-
-            // 再算水平的位置
-            var rightSpace = pageWidth - (targetOffset.left - pageScrollLeft);
-            var leftSpace = targetOffset.right - pageScrollLeft;
-            if (rightSpace <= layerOffset.width && leftSpace > layerOffset.width) {
-                // 靠右侧
-                properties.left = targetOffset.right - layerOffset.width;
-            }
-            else {
-                // 靠左侧
-                properties.left = targetOffset.left;
-            }
-
-            positionLayerElement(layer, properties);
+            $(layer).position(
+                u.extend(
+                    {
+                        my: 'left top',
+                        of: target,
+                        at: 'left bottom'
+                    },
+                    options
+                )
+            );
         };
-
-        /**
-         * 将层在视图中居中
-         *
-         * @param {HTMLElement} element 目标层元素
-         * @param {Object} [options] 相关配置项
-         * @param {number} [options.width] 指定层的宽度
-         * @param {number} [options.height] 指定层的高度
-         * @param {number} [options.minTop] 如果层高度超过视图高度，
-         * 则留下该值的上边界保底
-         * @param {number} [options.minLeft] 如果层宽度超过视图高度，
-         * 则留下该值的左边界保底
-         * @static
-         */
-        Layer.centerToView = function (element, options) {
-            var properties = options ? lib.clone(options) : {};
-
-            if (typeof properties.width !== 'number') {
-                properties.width = this.width;
-            }
-            if (typeof properties.height !== 'number') {
-                properties.height = this.height;
-            }
-
-            properties.left = (lib.page.getViewWidth() - properties.width) / 2;
-
-            var viewHeight = lib.page.getViewHeight();
-            if (properties.height >= viewHeight &&
-                options.hasOwnProperty('minTop')
-            ) {
-                properties.top = options.minTop;
-            }
-            else {
-                properties.top =
-                    Math.floor((viewHeight - properties.height) / 2);
-            }
-
-            var viewWidth = lib.page.getViewWidth();
-            if (properties.height >= viewWidth &&
-                options.hasOwnProperty('minLeft')
-            ) {
-                properties.left = options.minLeft;
-            }
-            else {
-                properties.left =
-                    Math.floor((viewWidth - properties.width) / 2);
-            }
-
-            properties.top += lib.page.getScrollTop();
-            this.setProperties(properties);
-        };
-
-        // 统一浮层放置方法方法
-        function positionLayerElement(element, options) {
-            var properties = lib.clone(options || {});
-
-            // 如果同时有`top`和`bottom`，则计算出`height`来
-            if (properties.hasOwnProperty('top')
-                && properties.hasOwnProperty('bottom')
-            ) {
-                properties.height = properties.bottom - properties.top;
-                delete properties.bottom;
-            }
-            // 同样处理`left`和`right`
-            if (properties.hasOwnProperty('left')
-                && properties.hasOwnProperty('right')
-            ) {
-                properties.width = properties.right - properties.left;
-                delete properties.right;
-            }
-
-            // 避免原来的属性影响
-            if (properties.hasOwnProperty('top')
-                || properties.hasOwnProperty('bottom')
-            ) {
-                element.style.top = '';
-                element.style.bottom = '';
-            }
-
-            if (properties.hasOwnProperty('left')
-                || properties.hasOwnProperty('right')
-            ) {
-                element.style.left = '';
-                element.style.right = '';
-            }
-
-            // 设置位置和大小
-            for (var name in properties) {
-                if (properties.hasOwnProperty(name)) {
-                    element.style[name] = properties[name] + 'px';
-                }
-            }
-        }
-
-        var EventTarget = require('mini-event/EventTarget');
-        lib.inherits(Layer, EventTarget);
 
         return Layer;
     }

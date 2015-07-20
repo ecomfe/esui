@@ -12,112 +12,88 @@ define(
         var u = require('underscore');
         var ui = require('./main');
         var Helper = require('./Helper');
+        var eoo = require('eoo');
+        var EventTarget = require('./EventTarget');
+        var $ = require('jquery');
 
         /**
          * 控件基类
          *
          * @constructor
-         * @extends {mini-event.EventTarget}
+         * @extends {EventTarget}
          * @param {Object} [options] 初始化参数
          * @fires init
          */
-        function Control(options) {
-            options = options || {};
+        var Control = eoo.create(EventTarget, {
+            constructor: function (options) {
+                options = options || {};
 
-            /**
-             * 控件关联的{@link Helper}对象
-             *
-             * @type {Helper}
-             * @protected
-             */
-            this.helper = new Helper(this);
+                var helper = new Helper(this);
+                this.helper = helper;
+                /**
+                 * 控件关联的{@link Helper}对象
+                 *
+                 * @type {Helper}
+                 * @protected
+                 */
 
-            this.helper.changeStage('NEW');
+                helper.changeStage('NEW');
 
-            /**
-             * 子控件数组
-             *
-             * @type {Control[]}
-             * @protected
-             * @readonly
-             */
-            this.children = [];
-            this.childrenIndex = {};
-            this.currentStates = {};
-            this.domEvents = {};
+                /**
+                 * 子控件数组
+                 *
+                 * @type {Control[]}
+                 * @protected
+                 * @readonly
+                 */
+                this.children = [];
+                this.childrenIndex = {};
+                this.currentStates = {};
+                this.domEvents = [];
 
-            /**
-             * 控件的主元素
-             *
-             * @type {HTMLElement}
-             * @protected
-             * @readonly
-             */
-            this.main = options.main ? options.main : this.createMain(options);
+                /**
+                 * 控件的主元素
+                 *
+                 * @type {HTMLElement}
+                 * @protected
+                 * @readonly
+                 */
+                this.main = options.main ? options.main : this.createMain(options);
 
-            // 如果没给id，自己创建一个，
-            // 这个有可能在后续的`initOptions`中被重写，则会在`setProperties`中处理，
-            // 这个不能放到`initOptions`的后面，
-            // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
-            // 会把其它控件的`ViewContext`给冲掉导致各种错误
+                // 如果没给id，自己创建一个，
+                // 这个有可能在后续的`initOptions`中被重写，则会在`setProperties`中处理，
+                // 这个不能放到`initOptions`的后面，
+                // 不然会导致很多个没有id的控件放到一个`ViewContext`中，
+                // 会把其它控件的`ViewContext`给冲掉导致各种错误
 
-            /**
-             * 控件的id，在一个{@link ViewContext}中不能重复
-             *
-             * @property {string} id
-             * @readonly
-             */
-            if (!this.id && !options.id) {
-                this.id = lib.getGUID();
-            }
+                /**
+                 * 控件的id，在一个{@link ViewContext}中不能重复
+                 *
+                 * @property {string} id
+                 * @readonly
+                 */
+                if (!this.id && !options.id) {
+                    this.id = lib.getGUID();
+                }
 
-            this.initOptions(options);
+                this.initOptions(options);
 
-            // 初始化视图环境
-            this.helper.initViewContext();
+                // 初始化视图环境
+                helper.initViewContext();
 
-            // 初始化扩展
-            this.helper.initExtensions();
+                // 初始化扩展
+                helper.initExtensions();
 
-            // 切换控件所属生命周期阶段
-            this.helper.changeStage('INITED');
+                // 切换控件所属生命周期阶段
+                helper.changeStage('INITED');
 
-            /**
-             * @event init
-             *
-             * 完成初始化
-             */
-            this.fire('init', {options: options});
-        }
-
-        /**
-         * @property {string} type
-         *
-         * 控件的类型
-         * @readonly
-         */
-
-        /**
-         * @property {string} skin
-         *
-         * 控件皮肤，仅在初始化时设置有效，运行时不得变更
-         *
-         * @protected
-         * @readonly
-         */
-
-        /**
-         * @property {string} styleType
-         *
-         * 控件的样式类型，用于生成各class使用
-         *
-         * 如无此属性，则使用{@link Control#type}属性代替
-         *
-         * @readonly
-         */
-
-        Control.prototype = {
-            constructor: Control,
+                /**
+                 * @event init
+                 *
+                 * 完成初始化
+                 */
+                this.fire('init', {options: options});
+            },
 
             /**
              * 指定在哪些状态下该元素不处理相关的DOM事件
@@ -166,7 +142,9 @@ define(
 
                 var name = this.type.replace(
                     /([A-Z])/g,
-                    function (match, ch) { return '-' + ch.toLowerCase(); }
+                    function (match, ch) {
+                        return '-' + ch.toLowerCase();
+                    }
                 );
                 return document.createElement(ui.getConfig('customElementPrefix') + '-' + name.slice(1));
             },
@@ -275,14 +253,15 @@ define(
              * @protected
              */
             repaint: function (changes, changesIndex) {
+                var method;
                 if (!changesIndex
                     || changesIndex.hasOwnProperty('disabled')
                     ) {
-                    var method = this.disabled ? 'addState' : 'removeState';
+                    method = this.disabled ? 'addState' : 'removeState';
                     this[method]('disabled');
                 }
                 if (!changesIndex || changesIndex.hasOwnProperty('hidden')) {
-                    var method = this.hidden ? 'addState' : 'removeState';
+                    method = this.hidden ? 'addState' : 'removeState';
                     this[method]('hidden');
                 }
             },
@@ -347,7 +326,8 @@ define(
                 // 为了避免`dispose()`的时候把`main`置空了，这里先留存一个
                 var main = this.main;
                 this.dispose();
-                lib.removeNode(main);
+                $(main).remove();
+                this.main = null;
             },
 
             /**
@@ -371,6 +351,7 @@ define(
              *
              * @param {string} name 属性名
              * @param {Mixed} value 属性值
+             * @return {Object} 父类返回
              */
             set: function (name, value) {
                 var method = this['set' + lib.pascalize(name)];
@@ -430,27 +411,19 @@ define(
                     delete properties.viewContext;
                 }
 
-                // 几个状态选项是要转为`boolean`的
-                if (this.hasOwnProperty('disabled')) {
-                    this.disabled = !!this.disabled;
-                }
-                if (this.hasOwnProperty('hidden')) {
-                    this.hidden = !!this.hidden;
-                }
-
                 var changes = [];
                 var changesIndex = {};
                 for (var key in properties) {
                     if (properties.hasOwnProperty(key)) {
                         var newValue = properties[key];
-                        var getterMethodName =
-                            'get' + lib.pascalize(key) + 'Property';
+                        var getterMethodName
+                            = 'get' + lib.pascalize(key) + 'Property';
                         var oldValue = this[getterMethodName]
                             ? this[getterMethodName]()
                             : this[key];
 
-                        var isChanged =
-                            this.isPropertyChanged(key, newValue, oldValue);
+                        var isChanged
+                            = this.isPropertyChanged(key, newValue, oldValue);
                         if (isChanged) {
                             this[key] = newValue;
                             var record = {
@@ -513,6 +486,7 @@ define(
 
             /**
              * 设置控件禁用状态
+             * @param {boolean} disabled 是否禁用
              */
             setDisabled: function (disabled) {
                 this[disabled ? 'disable' : 'enable']();
@@ -589,7 +563,9 @@ define(
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/,
-                        function (m, c) { return c.toUpperCase(); }
+                        function (m, c) {
+                            return c.toUpperCase();
+                        }
                     );
                     properties[statePropertyName] = true;
                     this.setProperties(properties);
@@ -614,7 +590,9 @@ define(
                     var properties = {};
                     var statePropertyName = state.replace(
                         /-(\w)/,
-                        function (m, c) { return c.toUpperCase(); }
+                        function (m, c) {
+                            return c.toUpperCase();
+                        }
                     );
                     properties[statePropertyName] = false;
                     this.setProperties(properties);
@@ -755,10 +733,33 @@ define(
             initChildren: function (wrap, options) {
                 this.helper.initChildren(wrap, options);
             }
-        };
+        });
 
-        var EventTarget = require('mini-event/EventTarget');
-        lib.inherits(Control, EventTarget);
+        /**
+         * @property {string} type
+         *
+         * 控件的类型
+         * @readonly
+         */
+
+        /**
+         * @property {string} skin
+         *
+         * 控件皮肤，仅在初始化时设置有效，运行时不得变更
+         *
+         * @protected
+         * @readonly
+         */
+
+        /**
+         * @property {string} styleType
+         *
+         * 控件的样式类型，用于生成各class使用
+         *
+         * 如无此属性，则使用{@link Control#type}属性代替
+         *
+         * @readonly
+         */
 
         return Control;
     }

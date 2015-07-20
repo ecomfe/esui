@@ -1,78 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8"/>
+        <meta charset="utf-8" />
         <title>CommandMenu - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - CommandMenu</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">ESUI - CommandMenu</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>绑定到DOM Button</h2>
                 <div class="intro">
                     <p>可以为一个Button添加一个下拉列表。</p>
                 </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <div class="row">
-                            <button
-                            id="test"
-                            class="ui-button">Command Menu <span class="ui-icon-caret-down"></span></button>
-                        </div>
-                        <h3>Split Button</h3>
-                        <div id="createElement" class="ui-button-group ui-button-group-separated">
-                            <button class="ui-button">Split Button</button>
-                            <button
-                            id="test2"
-                            class="ui-button ui-button-icon ui-icon-caret-down"></button>
-                        </div>
+                <div class="example ui-demo-light-stage">
+                    <div class="row">
+                        <button type="button" 
+                        id="test"
+                        class="ui-button ui-button-primary">Command Menu <span class="ui-icon-caret-down"></span></button>
+                    </div>
+                    <h3>Split Button</h3>
+                    <div id="create-element" class="ui-button-group ui-button-group-separated">
+                        <button type="button" class="ui-button ui-button-primary">Split Button</button>
+                        <button type="button" 
+                        id="test2"
+                        class="ui-button ui-button-primary ui-button-icon ui-icon-caret-down"></button>
                     </div>
                 </div>
                 <h2>动态创建</h2>
                 <div class="intro">
                     <p>从JS创建一个Command Menu。</p>
                 </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>Use Text</h3>
-                        <div id="createElement1" class="row">
-                        </div>
-                        <h3>Use Html</h3>
-                        <div id="createElement2" class="row">
-                        </div>
+                <div class="example ui-demo-light-stage">
+                    <h3>Use Text</h3>
+                    <div id="create-element1" class="row">
+                    </div>
+                    <h3>Use Html</h3>
+                    <div id="create-element2" class="row">
                     </div>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
-                'esui/CommandMenu'
+                'esui/CommandMenu',
+                'esui/Tab',
+                'demo'
             ],
             function (ui, CommandMenu) {
                 var data = [
-                    { text: 'Item 1 Item 1 ' },
-                    { text: 'Item 2 Item 2 ', handler: function () { console.log('b'); } },
-                    { text: 'Item 3 Item 3 ', handler: function () { console.log('c'); } },
-                    { text: 'Item 4 Item 4 ', handler: function () {  } }
+                    {
+                        text: 'Item 1 Item 1 '
+                    },
+                    {
+                        text: 'Item 2 Item 2 ',
+                        handler: function () {
+                        }
+                    },
+                    {
+                        text: 'Item 3 Item 3 ',
+                        handler: function () {
+                        }
+                    },
+                    {
+                        text: 'Item 4 Item 4 ',
+                        handler: function () {
+                        }
+                    }
                 ];
                 function newMenu(id) {
                     var options = {
@@ -80,7 +92,8 @@
                         main: document.getElementById(id)
                     };
                     var menu = new CommandMenu(options);
-                    menu.on('select', function (e) { console.log(e.item, e.index); });
+                    menu.on('select', function (e) {
+                    });
                     menu.render();
                 }
                 newMenu('test');
@@ -92,17 +105,17 @@
                     // displayHTML should not work
                     displayHTML: 'Dynamic Created HTML'
                 });
-                menuCreated.appendTo(document.getElementById('createElement1'));
+                menuCreated.appendTo(document.getElementById('create-element1'));
 
                 var menuCreated2 = new CommandMenu({
                     datasource: data,
                     // displayHTML should work
                     displayHTML: 'Dynamic Created HTML <span class="ui-icon-users"></span>'
                 });
-                menuCreated2.appendTo(document.getElementById('createElement2'));
+                menuCreated2.appendTo(document.getElementById('create-element2'));
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

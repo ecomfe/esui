@@ -9,9 +9,9 @@
 @import "Variable.less";
 
 
-@esui-calendar-height: 2.4em;
+@esui-calendar-height: 2.5em;
 @esui-calendar-horizontal-padding: 1em;
-@esui-calendar-border-radius: 5px;
+@esui-calendar-border-radius: 0;
 
 @esui-calendar-text-right-padding: 2em;
 
@@ -21,12 +21,13 @@
     display: inline-block;
     cursor: pointer;
     position: relative;
-    .esf-border-radius(
+    .esui-border-radius(
         @esui-calendar-border-radius,
         @esui-calendar-border-radius
     );
     .user-select(none);
     vertical-align: middle;
+    .esui-transition(background-color 0.3s ease);
     .esui-calendar-theme();
 }
 
@@ -39,9 +40,16 @@
     position: absolute;
     right: @esui-calendar-horizontal-padding;
     top: 0;
+    span {
+        .eicons-icon(calendar);
+    }
 }
 
 .@{ui-class-prefix}-calendar-layer {
+    position: absolute;
+    .@{ui-class-prefix}-monthview {
+        vertical-align: top;
+    }
     .esui-calendar-layer-theme();
 }
 

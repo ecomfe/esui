@@ -1,73 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
         <meta charset="utf-8" />
         <title>Link - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1>ESUI - Link</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">ESUI - Link</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>Link</h2>
                 <div class="intro">
                     <p>基本Link。</p>
                 </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <a data-ui-type="Link" href="http://www.baidu.com" target="_blank">www.baidu.com</a>
-                        <br />
-                        <hr />
-                        <a data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">www.baidu.com</a>
-                        <br />
-                        <br />
-                        <button class="ui-button" id="op-get-href">get href</button>
-                        <button class="ui-button" id="op-get-content">get content</button>
-                        <button class="ui-button" id="op-get-target">get target</button>
-                        <br />
-                        <br />
-                        <button class="ui-button" id="op-set-href">set href</button>
-                        <button class="ui-button" id="op-set-target">set target(_self)</button>
-                        <button class="ui-button" id="op-set-content">set content</button>
-                        <br />
-                        <br />
-                        设置content为Label ui(&lt;span data-ui-type=&quot;Label&quot; data-ui-text=&quot;www.google.com&quot;&gt;&lt;/span&gt; ):
-                        <br />
-                        <br />
-                        <button class="ui-button" id="op-set-ui-content">set ui content</button>
-                        <br />
-                        <br />
-                        <span data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">tagName not A</span>
-                    </div>
+                <div class="example ui-demo-light-stage">
+                    <a data-ui-type="Link" href="http://www.baidu.com" target="_blank">www.baidu.com</a>
+                    <br />
+                    <a data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">www.baidu.com</a>
+                    <br />
+                    <br />
+                    <button type="button" class="ui-button" id="op-get-href">get href</button>
+                    <button type="button" class="ui-button" id="op-get-content">get content</button>
+                    <button type="button" class="ui-button" id="op-get-target">get target</button>
+                    <br />
+                    <br />
+                    <button type="button" class="ui-button" id="op-set-href">set href</button>
+                    <button type="button" class="ui-button" id="op-set-target">set target(_self)</button>
+                    <button type="button" class="ui-button" id="op-set-content">set content</button>
+                    <br />
+                    <br />
+                    设置content为Label ui(&lt;span data-ui-type=&quot;Label&quot; data-ui-text=&quot;www.google.com&quot;&gt;&lt;/span&gt; ):
+                    <br />
+                    <br />
+                    <button type="button" class="ui-button" id="op-set-ui-content">set ui content</button>
+                    <br />
+                    <br />
+                    <span data-ui-type="Link" data-ui-href="http://www.baidu.com" data-ui-target="_blank">tagName not A</span>
                 </div>
             </div>
         </div>
 
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
                 'esui/Label',
-                'esui/Link'
+                'esui/Link',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
                 var link = ui.init()[1];
-                link.onclick = function() {
+                link.onclick = function () {
                     alert('dont click me ok?');
-                }
+                };
                 document.getElementById('op-get-href').onclick = function () {
                     alert(link.get('href'));
                 };
@@ -91,7 +93,7 @@
                 };
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

@@ -11,11 +11,14 @@ define(
         require('./Button');
         require('./Select');
         require('./Panel');
+        var $ = require('jquery')
         var lib = require('./lib');
-        var helper = require('./controlHelper');
         var Control = require('./Control');
-        var ui = require('./main');
+        var esui = require('./main');
         var m = require('moment');
+        var eoo = require('eoo');
+        var painters = require('./painters');
+        var u = require('underscore');
 
         /**
          * 日历控件类
@@ -23,9 +26,371 @@ define(
          * @constructor
          * @param {Object} options 初始化参数
          */
-        function MonthView(options) {
-            Control.apply(this, arguments);
-        }
+        var MonthView = eoo.create(
+            Control,
+            {
+                /**
+                 * 控件类型
+                 *
+                 * @type {string}
+                 */
+                type: 'MonthView',
+
+                /**
+                 * 初始化参数
+                 *
+                 * @param {Object=} options 构造函数传入的参数
+                 * @override
+                 * @protected
+                 */
+                initOptions: function (options) {
+                    /**
+                     * 默认选项配置
+                     */
+                    var properties = {
+                        viewValue: {},
+                        mode: 'single',
+                        dateItemRender: null
+                    };
+                    u.extend(properties, MonthView.defaultProperties, options);
+                    this.setProperties(properties);
+                },
+
+                /**
+                 * 设置属性
+                 *
+                 * @param {Object} properties 属性集合
+                 * @override
+                 * @protected
+                 */
+                setProperties: function (properties) {
+                    var format = properties.paramFormat || this.paramFormat;
+                    if (properties.range) {
+                        properties.range = rangeAdapter(
+                            properties.range,
+                            format
+                        );
+                    }
+
+                    // 如果么设置rawValue
+                    var now = new Date();
+                    var mode = properties.mode || this.mode;
+                    if (properties.rawValue == null) {
+                        // 从value转
+                        if (properties.value) {
+                            properties.rawValue
+                                = parseValueByMode(properties.value, mode, format);
+                        }
+                        // 都没设
+                        else {
+                            // 来自初始设置
+                            if (this.rawValue == null) {
+                                // 单模式下rawValue默认当天
+                                if (mode === 'single') {
+                                    properties.rawValue = now;
+                                }
+                                // 多选模式下rawValue默认空数组
+                                else {
+                                    properties.rawValue = [];
+                                }
+                            }
+                        }
+                    }
+
+                    // 初始化显示年月
+                    var year = properties.year;
+                    var month = properties.month;
+
+                    // 都没设置
+                    if ((!year && month == null)) {
+                        // 单选模式下，year和month取rawValue的年月
+                        if (mode === 'single') {
+                            if (properties.rawValue) {
+                                year = properties.rawValue.getFullYear();
+                                month = properties.rawValue.getMonth() + 1;
+                            }
+                        }
+                        // 多选模式下，year和month取当天的年月
+                        else {
+                            year = now.getFullYear();
+                            month = now.getMonth() + 1;
+                        }
+                    }
+
+                    if (year && month) {
+                        properties.year = parseInt(year, 10);
+                        // 开放给外部的month，为了符合正常思维，计数从1开始
+                        // 但是保存时要按照Date的规则从0开始
+                        properties.month = parseInt(month, 10) - 1;
+                    }
+                    else if (properties.hasOwnProperty('year')) {
+                        // 如果此时month还没初始化，为了不混淆，year的设置也是无效的
+                        if (this.month == null) {
+                            delete properties.year;
+                        }
+                    }
+                    else if (properties.hasOwnProperty('month')) {
+                        // 如果此时year还没初始化，为了不混淆，month的设置也是无效的
+                        if (this.year == null) {
+                            delete properties.month;
+                        }
+                        else {
+                            properties.month = parseInt(month, 10) - 1;
+                        }
+                    }
+                    var changes
+                        = Control.prototype.setProperties.apply(this, arguments);
+
+                    // yankun:真的需要在这里触发change吗？
+                    if (changes.hasOwnProperty('rawValue')) {
+                        this.fire('change');
+                    }
+                    return changes;
+                },
+
+                /**
+                 * 初始化DOM结构
+                 *
+                 * @protected
+                 */
+                initStructure: function () {
+                    this.main.innerHTML = getMainHTML(this);
+
+                    // 创建控件树
+                    this.initChildren(this.main);
+
+                    if (this.mode === 'multi') {
+                        this.addState('multi-select');
+                    }
+                },
+
+                /**
+                 * 初始化事件交互
+                 *
+                 * @protected
+                 * @override
+                 */
+                initEvents: function () {
+                    // 向后按钮
+                    var monthBack = this.getChild('monthBack');
+                    monthBack.on(
+                        'click',
+                        u.partial(goToPrevMonth, this)
+                    );
+
+                    // 向前按钮
+                    var monthForward = this.getChild('monthForward');
+                    monthForward.on(
+                        'click',
+                        u.partial(goToNextMonth, this)
+                    );
+
+                    // 月份选择
+                    var monthSel = this.getChild('monthSel');
+                    monthSel.on(
+                        'change',
+                        u.partial(changeMonth, this, monthSel)
+                    );
+
+                    // 给layer人肉增加class命名空间
+                    monthSel.on(
+                        'layerrendered',
+                        u.partial(addCustomClassesForSelectLayer, this, 'month-select')
+                    );
+
+                    // 年份选择
+                    var yearSel = this.getChild('yearSel');
+                    yearSel.on(
+                        'change',
+                        u.partial(changeYear, this, yearSel)
+                    );
+
+                    yearSel.on(
+                        'layerrendered',
+                        u.partial(addCustomClassesForSelectLayer, this, 'year-select')
+                    );
+
+                    var controlHelper = this.helper;
+                    var selectors = [
+                        '.' + controlHelper.getPartClassName('month-item'),
+                        '.' + controlHelper.getPartClassName('month-select-all'),
+                        '.' + controlHelper.getPartClassName('month-title'),
+                        '.' + controlHelper.getPartClassName('month-row-select')
+                    ];
+
+                    controlHelper.addDOMEvent(
+                        controlHelper.getPart('monthMain'),
+                        'click',
+                        selectors.join(','),
+                        monthViewClick
+                    );
+                },
+
+                /**
+                 * 重新渲染视图
+                 * 仅当生命周期处于RENDER时，该方法才重新渲染
+                 *
+                 * @param {Array=} 变更过的属性的集合
+                 * @override
+                 */
+                repaint: painters.createRepaint(
+                    Control.prototype.repaint,
+                    {
+                        name: ['range', 'rawValue', 'year', 'month'],
+                        paint: function (monthView, range, rawValue, year, month) {
+                            // 如果只是改变了rawValue，year和month也会跟随更改
+                            // 只对单选模式日历有效
+                            if (rawValue) {
+                                if (monthView.mode === 'multi') {
+                                    parseToCache(monthView);
+                                }
+                            }
+                            repaintMonthView(
+                                monthView,
+                                monthView.year,
+                                monthView.month
+                            );
+
+                        }
+                    },
+                    {
+                        name: 'disabled',
+                        paint: function (monthView, disabled) {
+                            // 向后按钮
+                            var monthBack = monthView.getChild('monthBack');
+                            monthBack.setProperties({disabled: disabled});
+                            // 向前按钮
+                            var monthForward = monthView.getChild('monthForward');
+                            monthForward.setProperties({disabled: disabled});
+
+                            // 月份选择
+                            var monthSel = monthView.getChild('monthSel');
+                            monthSel.setProperties({disabled: disabled});
+                            // 月份选择
+                            var yearSel = monthView.getChild('yearSel');
+                            yearSel.setProperties({disabled: disabled});
+                        }
+                    }
+                ),
+
+                /**
+                 * 设置控件状态为禁用
+                 */
+                disable: function () {
+                    this.setProperties({
+                        disabled: true
+                    });
+                    this.addState('disabled');
+                },
+
+                /**
+                 * 设置控件状态为启用
+                 */
+                enable: function () {
+                    this.setProperties({
+                        disabled: false
+                    });
+                    this.removeState('disabled');
+                },
+
+                /**
+                 * 设置可选中的日期区间
+                 *
+                 * @param {Object} range 可选中的日期区间
+                 */
+                setRange: function (range) {
+                    this.setProperties({range: range});
+                },
+
+                /**
+                 * 设置日期
+                 *
+                 * @param {Date|Array} date 选取的日期.
+                 */
+                setRawValue: function (date) {
+                    this.setProperties({rawValue: date});
+                },
+
+                /**
+                 * 获取选取日期值
+                 *
+                 * @return {Date|Array}
+                 */
+                getRawValue: function () {
+                    return this.rawValue;
+                },
+
+                getValue: function () {
+                    return this.stringifyValue(this.rawValue);
+                },
+
+                /**
+                 * 将value从原始格式转换成string
+                 *
+                 * @param {*} rawValue 原始值
+                 * @return {string}
+                 */
+                stringifyValue: function (rawValue) {
+                    var paramFormat = this.paramFormat;
+                    if (this.mode === 'single') {
+                        return m(rawValue).format(this.paramFormat) || '';
+                    }
+
+                    var dateStrs = [];
+                    var oneDay = 86400000;
+                    for (var i = 0; i < rawValue.length; i++) {
+                        if (i === 0) {
+                            dateStrs.push(
+                                m(rawValue[i]).format(paramFormat)
+                            );
+                        }
+                        else {
+                            if ((rawValue[i] - rawValue[i - 1]) > oneDay) {
+                                dateStrs.push(
+                                    m(rawValue[i - 1]).format(paramFormat)
+                                );
+                                dateStrs.push(
+                                    m(rawValue[i]).format(paramFormat)
+                                );
+                            }
+                            else if (i === (rawValue.length - 1)) {
+                                dateStrs.push(
+                                    m(rawValue[i]).format(paramFormat)
+                                );
+                            }
+                            else {
+                                continue;
+                            }
+                        }
+                    }
+                    return dateStrs.join(',');
+                },
+
+                parseValue: function (value) {
+                    return parseValueByMode(value, this.mode, this.paramFormat);
+                },
+
+                setRawValueWithoutFireChange: function (value) {
+                    this.rawValue = value;
+                    parseToCache(this);
+                },
+
+                getDateItemHTML: function (date) {
+                    return lib.g(getItemId(this, date));
+                }
+            }
+        );
+
+        MonthView.defaultProperties = {
+            range: {
+                begin: new Date(1982, 10, 4),
+                end: new Date(2046, 10, 4)
+            },
+            paramFormat: 'YYYY-MM-DD',
+            dayNamesMin: ['一', '二', '三', '四', '五', '六', '日'],
+            monthSelectLabel: '月',
+            yearSelectLabel: '年'
+        };
 
         /**
          * 获取可选择的年列表
@@ -81,6 +446,7 @@ define(
          *
          * @param {MonthView} monthView MonthView控件实例
          * @inner
+         * @return {string} HTML string
          */
         function getMainHTML(monthView) {
             var tpl = [
@@ -98,7 +464,7 @@ define(
                         ' id:${yearSelId};"></div>',
                     '</td>',
                     '<td class="${selectLabelClass}">',
-                        '<div>年</div>',
+                        '<div>${yearSelectLabel}</div>',
                     '</td>',
                     '<td class="${monthSelectTdClass}">',
                         '<div class="${monthSelectClass}"',
@@ -106,7 +472,7 @@ define(
                         ' id:${monthSelId};"></div>',
                     '</td>',
                     '<td class="${selectLabelClass}">',
-                        '<div>月</div>',
+                        '<div>${monthSelectLabel}</div>',
                     '</td>',
                     '<td class="${monthForTdClass}">',
                         '<div class="${monthForClass}"',
@@ -120,68 +486,63 @@ define(
             ];
             tpl = tpl.join('');
 
+            var controlHelper = monthView.helper;
             return lib.format(
                 tpl,
                 {
-                    headClass: monthView.helper.getPartClassName('head'),
-                    monthBackId: monthView.helper.getId('monthBack'),
-                    monthBackIcon: monthView.helper.getIconClass('caret-left'),
-                    monthForwardId: monthView.helper.getId('monthForward'),
-                    monthForwardIcon: monthView.helper.getIconClass('caret-right'),
-                    yearSelId: monthView.helper.getId('yearSel'),
-                    monthSelId: monthView.helper.getId('monthSel'),
-                    monthMainId: monthView.helper.getId('monthMain'),
-                    monthMainClass: monthView.helper.getPartClassName('month'),
+                    headClass: controlHelper.getPartClassName('head'),
+                    monthBackId: controlHelper.getId('monthBack'),
+                    monthBackIcon: controlHelper.getIconClass('caret-left'),
+                    monthForwardId: controlHelper.getId('monthForward'),
+                    monthForwardIcon: controlHelper.getIconClass('caret-right'),
+                    yearSelId: controlHelper.getId('yearSel'),
+                    monthSelId: controlHelper.getId('monthSel'),
+                    monthMainId: controlHelper.getId('monthMain'),
+                    monthMainClass: controlHelper.getPartClassName('month'),
                     monthBackClass:
-                        monthView.helper.getPartClassName('month-back'),
+                        controlHelper.getPartClassName('month-back'),
                     monthForClass:
-                        monthView.helper.getPartClassName('month-forward'),
+                        controlHelper.getPartClassName('month-forward'),
                     yearSelectClass:
-                        monthView.helper.getPartClassName('year-select'),
+                        controlHelper.getPartClassName('year-select'),
                     monthSelectClass:
-                        monthView.helper.getPartClassName('month-select'),
+                        controlHelper.getPartClassName('month-select'),
                     monthBackTdClass:
-                        monthView.helper.getPartClassName('month-back-td'),
+                        controlHelper.getPartClassName('month-back-td'),
                     monthForTdClass:
-                        monthView.helper.getPartClassName('month-forward-td'),
+                        controlHelper.getPartClassName('month-forward-td'),
                     yearSelectTdClass:
-                        monthView.helper.getPartClassName('year-select-td'),
+                        controlHelper.getPartClassName('year-select-td'),
                     monthSelectTdClass:
-                        monthView.helper.getPartClassName('month-select-td'),
+                        controlHelper.getPartClassName('month-select-td'),
                     selectLabelClass:
-                        monthView.helper.getPartClassName('select-label')
+                        controlHelper.getPartClassName('select-label'),
+                    yearSelectLabel: monthView.yearSelectLabel,
+                    monthSelectLabel: monthView.monthSelectLabel
                 }
             );
         }
 
-        /**
-         * 日历月份显示单元的HTML
-         *
-         * @param {MonthView} monthView MonthView控件实例
-         * @inner
-         */
-        function getMonthMainHTML(monthView) {
-
-            /** 绘制表头 */
-            // 标题显示配置
+        function generateMonthViewHead(monthView, html) {
+            // 绘制表头
+            var controlHelper = monthView.helper;
             var titles = [];
             if (monthView.mode === 'multi') {
                 titles.push('');
             }
-            titles = titles.concat(['一', '二', '三', '四', '五', '六', '日']);
+            titles = titles.concat(monthView.dayNamesMin);
 
             // 日期表格头的模板
             var tplHead = ''
                 + '<table border="0" cellpadding="0" cellspacing="0" '
                 + 'class="${className}"><thead><tr>';
 
-            var html = [];
             html.push(
                 lib.format(
                     tplHead,
                     {
                         className:
-                            monthView.helper.getPartClassName('month-main')
+                            controlHelper.getPartClassName('month-main')
                     }
                 )
             );
@@ -190,11 +551,11 @@ define(
             var tplHeadItem = ''
                 + '<td id="${id}" data-index="${index}" class="${className}">'
                 + '${text}</td>';
-            var headItemClass =
-                monthView.helper.getPartClassName('month-title');
-            var headItemId = monthView.helper.getId('month-title');
-            var emptyHeadItemClass =
-                monthView.helper.getPartClassName('month-select-all');
+            var headItemClass
+                = controlHelper.getPartClassName('month-title');
+            var headItemId = controlHelper.getId('month-title');
+            var emptyHeadItemClass
+                = controlHelper.getPartClassName('month-select-all');
 
             var tLen = titles.length;
             for (var tIndex = 0; tIndex < tLen; tIndex++) {
@@ -211,9 +572,13 @@ define(
                     )
                 );
             }
-            html.push('</tr></thead><tbody><tr>');
+            html.push('</tr></thead>');
+        }
 
-            /** 绘制表体 */
+        function generateMonthViewBody(monthView, html) {
+            var controlHelper = monthView.helper;
+            // 绘制表体
+            html.push('<tbody><tr>');
             // 日期单元的模板
             var tplItem = ''
                 + '<td data-year="${year}" data-month="${month}" '
@@ -221,9 +586,9 @@ define(
                 + 'id="${id}">${date}</td>';
 
             // 单行全选模板
-            var rowSelectClass =
-                monthView.helper.getPartClassName('month-row-select');
-            var tplRowSelectId = monthView.helper.getId('row-select');
+            var rowSelectClass
+                = controlHelper.getPartClassName('month-row-select');
+            var tplRowSelectId = controlHelper.getId('row-select');
             var rowTagIndex = 0;
             var tplRowSelectTpl = ''
                 + '<td id="${id}" class="' + rowSelectClass + '">&gt;</td>';
@@ -236,21 +601,21 @@ define(
             var begin = 1 - (repeater.getDay() + 6) % 7;
             repeater.setDate(begin);
 
-            var itemClass = monthView.helper.getPartClassName('month-item');
+            var itemClass = controlHelper.getPartClassName('month-item');
 
-            var todayClass =
-                monthView.helper.getPartClassName('month-item-today');
+            var todayClass
+                = controlHelper.getPartClassName('month-item-today');
 
-            var virClass =
-                monthView.helper.getPartClassName('month-item-virtual');
-            var disabledClass =
-                monthView.helper.getPartClassName('month-item-disabled');
+            var virClass
+                = controlHelper.getPartClassName('month-item-virtual');
+            var disabledClass
+                = controlHelper.getPartClassName('month-item-disabled');
             var range = monthView.range;
 
             if (monthView.mode === 'multi') {
                 html.push(lib.format(
                     tplRowSelectTpl,
-                    { 'id': tplRowSelectId + '-' + rowTagIndex++ }
+                    {id: tplRowSelectId + '-' + rowTagIndex++}
                 ));
             }
             while (nextMonth - repeater > 0 || index % 7 !== 0) {
@@ -260,7 +625,7 @@ define(
                     if (monthView.mode === 'multi') {
                         html.push(lib.format(
                             tplRowSelectTpl,
-                            {'id': tplRowSelectId + '-' + rowTagIndex++}
+                            {id: tplRowSelectId + '-' + rowTagIndex++}
                         ));
                     }
                 }
@@ -271,7 +636,7 @@ define(
                 // 不可选的日期
                 var disabled = false;
 
-                //range定义的begin之前的日期不可选
+                // range定义的begin之前的日期不可选
                 if (repeater < range.begin) {
                     disabled = true;
                 }
@@ -289,19 +654,29 @@ define(
                 if (disabled) {
                     currentClass += ' ' + disabledClass;
                 }
-
-                html.push(
-                    lib.format(
-                        tplItem,
-                        {
-                            year: repeater.getFullYear(),
-                            month: repeater.getMonth(),
-                            date: repeater.getDate(),
-                            className: currentClass,
-                            id: getItemId(monthView, repeater)
-                        }
-                    )
-                );
+                var dateData = {
+                    year: repeater.getFullYear(),
+                    month: repeater.getMonth(),
+                    date: repeater.getDate(),
+                    className: currentClass,
+                    id: getItemId(monthView, repeater)
+                };
+                if (monthView.dateItemRender) {
+                    html.push(
+                        monthView.dateItemRender(
+                            tplItem,
+                            dateData
+                        )
+                    );
+                }
+                else {
+                    html.push(
+                        lib.format(
+                            tplItem,
+                            dateData
+                        )
+                    );
+                }
 
                 repeater = new Date(year, month, ++begin);
                 index++;
@@ -309,6 +684,20 @@ define(
             monthView.rowTagNum = rowTagIndex;
 
             html.push('</tr></tbody></table>');
+        }
+
+        /**
+         * 日历月份显示单元的HTML
+         *
+         * @param {MonthView} monthView MonthView控件实例
+         * @inner
+         * @return {string} html string
+         */
+        function getMonthMainHTML(monthView) {
+            var html = [];
+
+            generateMonthViewHead(monthView, html);
+            generateMonthViewBody(monthView, html);
             return html.join('');
         }
 
@@ -328,53 +717,50 @@ define(
             );
         }
 
-
         /**
          * 日历元素点击事件
          *
          * @inner
-         * @param {MonthView} this MonthView控件实例
-         * @param {Event} 触发事件的事件对象
+         * @param {Event} e 触发事件的事件对象
          */
         function monthViewClick(e) {
-            var tar = e.target || e.srcElement;
-            var allSelectClasses =
-                helper.getPartClasses(this, 'month-select-all');
-            var headClasses = helper.getPartClasses(this, 'month-title');
-            var itemClasses = helper.getPartClasses(this, 'month-item');
-            var rowSelectClasses =
-                helper.getPartClasses(this, 'month-row-select');
-            var virClasses =
-                helper.getPartClasses(this, 'month-item-virtual');
-            var disabledClasses =
-                helper.getPartClasses(this, 'month-item-disabled');
-            while (tar && tar !== document.body) {
-                if (lib.hasClass(tar, itemClasses[0])
-                    && !lib.hasClass(tar, virClasses[0])
-                    && !lib.hasClass(tar, disabledClasses[0])
-                ) {
-                    selectByItem(this, tar);
+            var tar = e.currentTarget;
+            var $tar = $(tar);
+            var controlHelper = this.helper;
+            var allSelectClass
+                = controlHelper.getPartClassName('month-select-all');
+            var headClass
+                = controlHelper.getPartClassName('month-title');
+            var itemClass
+                = controlHelper.getPartClassName('month-item');
+            var rowSelectClass
+                = controlHelper.getPartClassName('month-row-select');
+            var virClass
+                = controlHelper.getPartClassName('month-item-virtual');
+            var disabledClass
+                = controlHelper.getPartClassName('month-item-disabled');
+
+            if ($tar.hasClass(itemClass)
+                && !$tar.hasClass(virClass)
+                && !$tar.hasClass(disabledClass)
+            ) {
+                selectByItem(this, tar);
+                this.fire('itemclick', tar);
+            }
+            else if (this.mode === 'multi') {
+                if ($tar.hasClass(rowSelectClass)) {
+                    selectByTagClick(this, tar);
                     return;
                 }
-                // 点击行批量选中
-                else if (this.mode === 'multi') {
-                    if (lib.hasClass(tar, rowSelectClasses[0])) {
-                        selectByTagClick(this, tar);
-                        return;
-                    }
-                    if (lib.hasClass(tar, headClasses[0])) {
-                        selectByColumn(this, tar);
-                        return;
-                    }
-                    if (lib.hasClass(tar, allSelectClasses[0])) {
-                        selectAll(this);
-                        return;
-                    }
+                if ($tar.hasClass(headClass)) {
+                    selectByColumn(this, tar);
+                    return;
                 }
-                tar = tar.parentNode;
+                if ($tar.hasClass(allSelectClass)) {
+                    selectAll(this, $tar);
+                }
             }
         }
-
 
         /**
          * 将元数据转换为简单格式
@@ -396,7 +782,6 @@ define(
                     value: new Date(year, month, date)
                 };
             }
-
         }
 
         /**
@@ -408,41 +793,26 @@ define(
          * @return {number} 1: 可以选择 -1: 虚拟日期 0:
          */
         function isItemSelectable(monthView, dateItem) {
-            var virtualClasses =
-                helper.getPartClasses(monthView, 'month-item-virtual');
-            var disabledClasses =
-                helper.getPartClasses(monthView, 'month-item-disabled');
-                // 既不是范围外的，又不是虚拟的
-                if (!lib.hasClass(dateItem, virtualClasses[0])
-                    && !lib.hasClass(dateItem, disabledClasses[0])) {
-                    return 1;
-                }
-                // 虚拟的但不是范围外的
-                else if (lib.hasClass(dateItem, virtualClasses[0])
-                    && !lib.hasClass(dateItem, disabledClasses[0])) {
-                    return -1;
-                }
-                return 0;
+            var controlHelper = monthView.helper;
+            var virtualClass
+                = controlHelper.getPartClassName('month-item-virtual');
+            var disabledClass
+                = controlHelper.getPartClassName('month-item-disabled');
+            var $dateItem = $(dateItem);
+
+            // 既不是范围外的，又不是虚拟的
+            if (!$dateItem.hasClass(virtualClass)
+                && !$dateItem.hasClass(disabledClass)) {
+                return 1;
+            }
+            // 虚拟的但不是范围外的
+            else if ($dateItem.hasClass(virtualClass)
+                && !$dateItem.hasClass(disabledClass)) {
+                return -1;
+            }
+            return 0;
         }
 
-        /**
-         * 更新横向批量选择按钮状态
-         *
-         * @inner
-         * @param {MonthView} monthView MonthView控件实例
-         * @param {HTMLElement} rowTagItem 横向批量选择按钮
-         * @param {boolean} isSelected 置为已选还是未选
-         */
-        function setRowTagSelected(monthView, rowTagItem, isSelected) {
-            helper.removePartClasses(
-                monthView, 'month-row-select-selected', rowTagItem
-            );
-            if (isSelected) {
-                helper.addPartClasses(
-                    monthView, 'month-row-select-selected', rowTagItem
-                );
-            }
-        }
 
         /**
          * 批量渲染横向批量选择按钮状态
@@ -452,7 +822,7 @@ define(
          */
         function batchRepaintRowTag(monthView) {
             var rowTagNum = monthView.rowTagNum;
-            var rowTagId = helper.getId(monthView, 'row-select');
+            var rowTagId = monthView.helper.getId('row-select');
 
             for (var i = 0; i < rowTagNum; i++) {
                 var rowTag = lib.g(rowTagId + '-' + i);
@@ -466,18 +836,19 @@ define(
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
-         * @param {HTMLElement} rowTagItem 横向批量选择按钮
+         * @param {HTMLElement} rowTag 横向批量选择按钮
          */
         function repaintRowTag(monthView, rowTag) {
-            var selectedClasses =
-                helper.getPartClasses(monthView, 'month-item-selected');
+            var controlHelper = monthView.helper;
+            var selectedClass
+                = controlHelper.getPartClassName('month-item-selected');
             var dateItem = rowTag.nextSibling;
             var isAllSelected = true;
             var selectableNum = 0;
             while (dateItem) {
                 if (isItemSelectable(monthView, dateItem) === 1) {
                     ++selectableNum;
-                    if (!lib.hasClass(dateItem, selectedClasses[0])) {
+                    if (!$(dateItem).hasClass(selectedClass)) {
                         isAllSelected = false;
                         break;
                     }
@@ -487,7 +858,11 @@ define(
             if (selectableNum === 0) {
                 isAllSelected = false;
             }
-            setRowTagSelected(monthView, rowTag, isAllSelected);
+            setTagSelected(
+                rowTag,
+                isAllSelected,
+                controlHelper.getPartClassName('month-row-select-selected')
+            );
         }
 
         /**
@@ -495,29 +870,25 @@ define(
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
-         * @param {Element} item 行箭头元素.
+         * @param {Element} columnTag 行箭头元素.
          */
         function selectByColumn(monthView, columnTag) {
             var index = columnTag.getAttribute('data-index');
-            var columnSelectedClasses =
-                helper.getPartClasses(monthView, 'month-title-selected');
+            var controlHelper = monthView.helper;
+            var columnSelectedClass
+                = controlHelper.getPartClassName('month-title-selected');
 
-            var selectAll = true;
-            if (lib.hasClass(columnTag, columnSelectedClasses[0])) {
-                selectAll = false;
-                helper.removePartClasses(
-                    monthView, 'month-title-selected', columnTag
-                );
-            }
-            else {
-                helper.addPartClasses(
-                    monthView, 'month-title-selected', columnTag
-                );
-            }
+            var selectAll = !$(columnTag).hasClass(columnSelectedClass);
+
+            setTagSelected(
+                columnTag,
+                selectAll,
+                columnSelectedClass
+            );
 
             // 可以通过rowTag寻找节点
             var rowTagNum = monthView.rowTagNum;
-            var rowTagId = helper.getId(monthView, 'row-select');
+            var rowTagId = controlHelper.getId('row-select');
 
             var viewValue = monthView.viewValue;
             var changedDates = [];
@@ -552,18 +923,16 @@ define(
          * 更新纵向批量选择按钮状态
          *
          * @inner
-         * @param {MonthView} monthView MonthView控件实例
-         * @param {HTMLElement} columnTagItem 纵向批量选择按钮
+         * @param {HTMLElement} tagItem 要操作的tagItem
          * @param {boolean} isSelected 置为已选还是未选
+         * @param {string} cls class
          */
-        function setColumnTagSelected(monthView, columnTagItem, isSelected) {
-            helper.removePartClasses(
-                monthView, 'month-title-selected', columnTagItem
-            );
+        function setTagSelected(tagItem, isSelected, cls) {
+            var $tagItem = $(tagItem);
+
+            $tagItem.removeClass(cls);
             if (isSelected) {
-                helper.addPartClasses(
-                    monthView, 'month-title-selected', columnTagItem
-                );
+                $tagItem.addClass(cls);
             }
         }
 
@@ -574,7 +943,7 @@ define(
          * @param {MonthView} monthView MonthView控件实例
          */
         function batchRepaintColumnTag(monthView) {
-            var headItemId = helper.getId(monthView, 'month-title');
+            var headItemId = monthView.helper.getId('month-title');
             for (var i = 1; i <= 7; i++) {
                 var columnTag = lib.g(headItemId + '-' + i);
                 // 遍历这一行，如果都选了，则置为选择状态
@@ -590,15 +959,16 @@ define(
          * @param {HTMLElement} columnTagItem 纵向批量选择按钮
          */
         function repaintColumnTag(monthView, columnTagItem) {
-            var selectedClasses =
-                helper.getPartClasses(monthView, 'month-item-selected');
+            var controlHelper = monthView.helper;
+            var selectedClass
+                = controlHelper.getPartClassName('month-item-selected');
             var index = columnTagItem.getAttribute('data-index');
             var isAllSelected = true;
             var selectableNum = 0;
 
             // 可以通过rowTag寻找节点
             var rowTagNum = monthView.rowTagNum;
-            var rowTagId = helper.getId(monthView, 'row-select');
+            var rowTagId = controlHelper.getId('row-select');
 
             for (var i = 0; i < rowTagNum; i++) {
                 var rowTag = lib.g(rowTagId + '-' + i);
@@ -606,7 +976,7 @@ define(
                 var sibling = rowTag.parentNode.children[index];
                 if (isItemSelectable(monthView, sibling) === 1) {
                     ++selectableNum;
-                    if (!lib.hasClass(sibling, selectedClasses[0])) {
+                    if (!$(sibling).hasClass(selectedClass)) {
                         isAllSelected = false;
                         break;
                     }
@@ -617,7 +987,11 @@ define(
                 isAllSelected = false;
             }
 
-            setColumnTagSelected(monthView, columnTagItem, isAllSelected);
+            setTagSelected(
+                columnTagItem,
+                isAllSelected,
+                controlHelper.getPartClassName('month-title-selected')
+            );
         }
 
         /**
@@ -629,49 +1003,44 @@ define(
          */
         function selectByTagClick(monthView, rowTag) {
             var row = rowTag.parentNode;
-            var rowSelectClasses =
-                helper.getPartClasses(monthView, 'month-row-select');
-            var rowSelectedClasses =
-                helper.getPartClasses(monthView, 'month-row-select-selected');
-            var virtualClasses =
-                helper.getPartClasses(monthView, 'month-item-virtual');
-            var disabledClasses =
-                helper.getPartClasses(monthView, 'month-item-disabled');
+            var controlHelper = monthView.helper;
+            var rowSelectClass
+                = controlHelper.getPartClassName('month-row-select');
+            var rowSelectedClass
+                = controlHelper.getPartClassName('month-row-select-selected');
+            var virtualClass
+                = controlHelper.getPartClassName('month-item-virtual');
+            var disabledClass
+                = controlHelper.getPartClassName('month-item-disabled');
 
-            var selectAll = true;
-            if (lib.hasClass(rowTag, rowSelectedClasses[0])) {
-                selectAll = false;
-                helper.removePartClasses(
-                    monthView, 'month-row-select-selected', rowTag
-                );
-            }
-            else {
-                helper.addPartClasses(
-                    monthView, 'month-row-select-selected', rowTag
-                );
-            }
+            var selectAll = !$(rowTag).hasClass(rowSelectedClass);
+            setTagSelected(
+                rowTag,
+                selectAll,
+                rowSelectedClass
+            );
 
-            var children = row.children;
             var viewValue = monthView.viewValue;
             var changedDates = [];
 
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i];
-                if (child.nodeType === 1
-                    && !lib.hasClass(child, rowSelectClasses[0])
-                    && !lib.hasClass(child, virtualClasses[0])
-                    && !lib.hasClass(child, disabledClasses[0])) {
-                    var date = child.getAttribute('data-date');
-                    var month = child.getAttribute('data-month');
-                    var year = child.getAttribute('data-year');
-                    var id = year + '-' + month + '-' + date;
-                    viewValue[id] = {
-                        isSelected: selectAll,
-                        value: new Date(year, month, date)
-                    };
-                    changedDates.push(id);
+            $(row).children().each(
+                function (i, child) {
+                    var $child = $(child);
+                    if (!$child.hasClass(rowSelectClass)
+                        && !$child.hasClass(virtualClass)
+                        && !$child.hasClass(disabledClass)) {
+                        var date = $child.attr('data-date');
+                        var month = $child.attr('data-month');
+                        var year = $child.attr('data-year');
+                        var id = year + '-' + month + '-' + date;
+                        viewValue[id] = {
+                            isSelected: selectAll,
+                            value: new Date(year, month, date)
+                        };
+                        changedDates.push(id);
+                    }
                 }
-            }
+            );
 
             if (changedDates && changedDates.length > 0) {
                 updateMultiRawValue(monthView);
@@ -690,45 +1059,51 @@ define(
         function repaintAllSelectTag(monthView) {
             // 获取横向选择状态
             var rowTagNum = monthView.rowTagNum;
-            var rowTagId = helper.getId(monthView, 'row-select');
-            var selectAllTag = lib.g(helper.getId(monthView, 'month-title-0'));
-            var rowSelectedClasses =
-                helper.getPartClasses(monthView, 'month-row-select-selected');
+            var controlHelper = monthView.helper;
+            var rowTagId = controlHelper.getId('row-select');
+            var selectAllTag = lib.g(controlHelper.getId('month-title-0'));
+            var rowSelectedClass
+                = controlHelper.getPartClassName('month-row-select-selected');
             var selectedRowNum = 0;
             for (var i = 0; i < rowTagNum; i++) {
                 var rowTag = lib.g(rowTagId + '-' + i);
-                if (lib.hasClass(rowTag, rowSelectedClasses[0])) {
-                    selectedRowNum ++;
+                if ($(rowTag).hasClass(rowSelectedClass)) {
+                    selectedRowNum++;
                 }
             }
 
-            if (selectedRowNum === rowTagNum) {
-                helper.addPartClasses(
-                    monthView, 'month-select-all-selected', selectAllTag);
-            }
-            else {
-                helper.removePartClasses(
-                    monthView, 'month-select-all-selected', selectAllTag);
-            }
+            setTagSelected(
+                selectAllTag,
+                selectedRowNum === rowTagNum,
+                rowSelectedClass
+            );
         }
-
 
         /**
          * 选择全部
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
+         * @param {Object} $tar 点击的全选DOM节点的JQuery对象
          */
-        function selectAll(monthView) {
+        function selectAll(monthView, $tar) {
             // 获取横向选择状态
+            var controlHelper = monthView.helper;
             var rowTagNum = monthView.rowTagNum;
-            var rowTagId = helper.getId(monthView, 'row-select');
+            var rowTagId = controlHelper.getId('row-select');
+            var rowSelctedClass
+                = controlHelper.getPartClassName('month-row-select-selected');
+            var rowTag;
+            var slected = $tar.hasClass(rowSelctedClass);
             for (var i = 0; i < rowTagNum; i++) {
-                var rowTag = lib.g(rowTagId + '-' + i);
+                rowTag = lib.g(rowTagId + '-' + i);
                 // 先移除所有的选择
-                helper.removePartClasses(
-                    monthView, 'month-row-select-selected', rowTag
-                );
+                if (slected) {
+                    $(rowTag).addClass(rowSelctedClass);
+                }
+                else {
+                    $(rowTag).removeClass(rowSelctedClass);
+                }
                 selectByTagClick(monthView, rowTag);
             }
         }
@@ -749,7 +1124,11 @@ define(
                     selectedDates.push(monthView.viewValue[key].value);
                 }
             }
-            selectedDates.sort(function(a, b) { return a - b; });
+            selectedDates.sort(
+                function (a, b) {
+                    return a - b;
+                }
+            );
             monthView.rawValue = selectedDates;
             monthView.fire('change');
         }
@@ -771,16 +1150,17 @@ define(
          * @param {Array} dates 日期集合.
          */
         function resetMultiSelected(monthView, dates) {
-            var me = monthView;
-            for (var i = 0; i < dates.length; i++) {
-                var id = helper.getId(monthView, dates[i]);
-                var item = lib.g(id);
-                if (item) {
-                    lib.removeClasses(
-                        item,
-                        helper.getPartClasses(me, 'month-item-selected')
-                    );
-                }
+            var controlHelper = monthView.helper;
+            var id;
+            var item;
+            var dLength = dates.length;
+
+            for (var i = 0; i < dLength; i++) {
+                id = controlHelper.getId(dates[i]);
+                item = lib.g(id);
+                $(item).removeClass(
+                    controlHelper.getPartClassName('month-item-selected')
+                );
             }
         }
 
@@ -792,16 +1172,17 @@ define(
          * @param {Array} dates 日期集合.
          */
         function paintMultiSelected(monthView, dates) {
-            var me = monthView;
-            for (var i = 0; i < dates.length; i++) {
-                var id = helper.getId(monthView, dates[i]);
-                var item = lib.g(id);
-                if (item) {
-                    lib.addClasses(
-                        item,
-                        helper.getPartClasses(me, 'month-item-selected')
-                    );
-                }
+            var controlHelper = monthView.helper;
+            var id;
+            var item;
+            var dLength = dates.length;
+
+            for (var i = 0; i < dLength; i++) {
+                id = controlHelper.getId(dates[i]);
+                item = lib.g(id);
+                $(item).addClass(
+                    controlHelper.getPartClassName('month-item-selected')
+                );
             }
         }
 
@@ -815,18 +1196,19 @@ define(
          * @return {boolean} 切换后状态 true为选中，false为未选中
          */
         function switchState(monthView, item, className) {
+            var controlHelper = monthView.helper;
             if (!item) {
                 return false;
             }
-            var classes = helper.getPartClasses(monthView, className);
-            if (lib.hasClass(item, classes[0])) {
-                helper.removePartClasses(monthView, className, item);
+            var $item = $(item);
+            var cls = controlHelper.getPartClassName(className);
+            if ($item.hasClass(cls)) {
+                $item.removeClass(cls);
                 return false;
             }
-            else {
-                helper.addPartClasses(monthView, className, item);
-                return true;
-            }
+
+            $item.addClass(cls);
+            return true;
         }
 
         /**
@@ -858,20 +1240,17 @@ define(
                 repaintAllSelectTag(monthView);
             }
             else {
-                var itemSelectClasses =
-                    helper.getPartClasses(monthView, 'month-item-selected');
-                if (lib.hasClass(item, itemSelectClasses[0])) {
+                var itemSelectClass
+                    = monthView.helper.getPartClassName('month-item-selected');
+                if ($(item).hasClass(itemSelectClass)) {
                     return;
                 }
                 var newDate = new Date(year, month, date);
                 updateSingleSelectState(monthView, monthView.rawValue, newDate);
                 monthView.rawValue = newDate;
                 monthView.fire('change');
-                monthView.fire('itemclick');
-
             }
         }
-
 
         /**
          * 根据range修正year month
@@ -911,7 +1290,6 @@ define(
                 year: year,
                 month: month
             };
-
         }
 
         /**
@@ -945,14 +1323,12 @@ define(
                 value: me.year
             });
 
-
             // 如果year选择的数据没改变，
             // 但可能还是需要重回日历，
             // 因此要手动触发year的change
             if (+lastYear === me.year) {
                 yearSelect.fire('change');
             }
-
         }
 
         /**
@@ -960,9 +1336,9 @@ define(
          *
          * @inner
          * @param {MonthView} monthView MonthView控件实例
-         * @param {Date} oldValue 旧日期.
-         * @param {Date} newValue 新日期.
-         * @param {Date} 真实有效的新日期
+         * @param {Date} oldDate 旧日期.
+         * @param {Date} newDate 新日期.
+         * @return {Date} 真实有效的新日期
          */
         function updateSingleSelectState(monthView, oldDate, newDate) {
             if (oldDate !== newDate) {
@@ -1067,32 +1443,27 @@ define(
          * @param {Select} monthSel Select控件实例
          */
         function updateMain(monthView) {
-            //填充日历主体
-            var monthMainId = helper.getId(monthView, 'monthMain');
+            // 填充日历主体
+            var controlHelper = monthView.helper;
+            var monthMainId = controlHelper.getId('monthMain');
             var monthMain = lib.g(monthMainId);
             monthMain.innerHTML = getMonthMainHTML(monthView);
             // 找到最后一行，增加一个class
             var rowElements = monthMain.getElementsByTagName('tr');
             var lastRow = rowElements[rowElements.length - 1];
-            helper.addPartClasses(monthView, 'last-row', lastRow);
+            controlHelper.addPartClasses('last-row', lastRow);
             // 更新选择状态
             updateSelectStateByValue(monthView);
         }
 
-        /**
-         * range适配器，将string型range适配为Object
-         *
-         * @inner
-         * @param {Object | string} range
-         */
-         function rangeAdapter(range) {
+        function rangeAdapter(range, format) {
             var begin;
             var end;
             // range类型如果是string
             if (typeof range === 'string') {
                 var beginAndEnd = range.split(',');
-                begin = parseToDate(beginAndEnd[0]);
-                end = parseToDate(beginAndEnd[1]);
+                begin = m(beginAndEnd[0], format).toDate();
+                end = m(beginAndEnd[1], format).toDate();
             }
             else {
                 begin = range.begin;
@@ -1113,79 +1484,49 @@ define(
         }
 
         /**
-         * 字符串日期转换为Date对象
-         *
-         * @inner
-         * @param {string} dateStr 字符串日期
-         */
-        function parseToDate(dateStr) {
-            /** 2011-11-04 */
-            function parse(source) {
-                var dates = source.split('-');
-                if (dates) {
-                    return new Date(
-                        parseInt(dates[0], 10),
-                        parseInt(dates[1], 10) - 1,
-                        parseInt(dates[2], 10)
-                    );
-                }
-                return null;
-            }
-
-            dateStr = dateStr + '';
-            var dateAndHour =  dateStr.split(' ');
-            var date = parse(dateAndHour[0]);
-            if (dateAndHour[1]) {
-                var clock = dateAndHour[1].split(':');
-                date.setHours(clock[0]);
-                date.setMinutes(clock[1]);
-                date.setSeconds(clock[2]);
-            }
-            return date;
-        }
-
-        /**
          * 根据不同模式将字符串值解析为rawValue
          *
          * @inner
          * @param {string} value 字符串日期
          * @param {string} mode 日历模式 multi | single
+         * @param {string} format 日期格式
          * @return {Date | Array}
          */
-        function parseValueByMode(value, mode) {
+        function parseValueByMode(value, mode, format) {
             if (mode === 'single') {
-                return parseToDate(value);
+                return m(value, format).toDate();
             }
-            else {
-                var dateStrs = value.split(',');
-                var dates = [];
-                for (var i = 0; i < dateStrs.length - 1; i += 2) {
-                    var begin = parseToDate(dateStrs[i]);
-                    var end = parseToDate(dateStrs[i + 1]);
-                    var temp;
-                    if (!begin || !end) {
-                        continue;
-                    }
-                    if (begin - end === 0) {
-                        dates.push(begin);
-                    } else {
-                        temp = begin;
-                        while (temp <= end) {
-                            dates.push(temp);
-                            temp = new Date(
-                                temp.getFullYear(),
-                                temp.getMonth(),
-                                temp.getDate() + 1
-                            );
-                        }
+
+            var dateStrs = value.split(',');
+            var dates = [];
+            for (var i = 0; i < dateStrs.length - 1; i += 2) {
+                var begin = m(dateStrs[i], format).toDate();
+                var end = m(dateStrs[i + 1], format).toDate();
+                var temp;
+                if (!begin || !end) {
+                    continue;
+                }
+                if (begin - end === 0) {
+                    dates.push(begin);
+                }
+                else {
+                    temp = begin;
+                    while (temp <= end) {
+                        dates.push(temp);
+                        temp = new Date(
+                            temp.getFullYear(),
+                            temp.getMonth(),
+                            temp.getDate() + 1
+                        );
                     }
                 }
-                return dates;
             }
+            return dates;
         }
 
         function updateSelectStateByValue(monthView) {
             // 单选模式
+            var controlHelper = monthView.helper;
             if (monthView.mode !== 'multi') {
                 updateSingleSelectState(monthView, null, monthView.rawValue);
                 return;
@@ -1194,27 +1535,29 @@ define(
             // 多选模式
             var viewValue = monthView.viewValue;
             for (var key in viewValue) {
-                var item = lib.g(helper.getId(monthView, key));
-                if (item) {
-                    // 有可能这个item是不可选的
-                    var isSelectable = isItemSelectable(monthView, item);
-                    if (isSelectable === 1) {
-                        if (viewValue[key].isSelected) {
-                            helper.addPartClasses(
-                                monthView, 'month-item-selected', item
-                            );
+                if (viewValue.hasOwnProperty(key)) {
+                    var item = lib.g(controlHelper.getId(key));
+                    if (item) {
+                        // 有可能这个item是不可选的
+                        var isSelectable = isItemSelectable(monthView, item);
+                        if (isSelectable === 1) {
+                            if (viewValue[key].isSelected) {
+                                controlHelper.addPartClasses(
+                                    'month-item-selected', item
+                                );
+                            }
+                            else {
+                                controlHelper.removePartClasses(
+                                    'month-item-selected', item
+                                );
+                            }
                         }
-                        else {
-                            helper.removePartClasses(
-                                monthView, 'month-item-selected', item
-                            );
+                        // 应该修正了rawValue和viewValue
+                        else if (isSelectable === 0) {
+                            // 有可能是virtual的，这种不应该更新数据
+                            viewValue[key].isSelected = false;
+                            updateMultiRawValue(monthView);
                         }
-                    }
-                    // 应该修正了rawValue和viewValue
-                    else if (isSelectable === 0) {
-                        // 有可能是virtual的，这种不应该更新数据
-                        viewValue[key].isSelected = false;
-                        updateMultiRawValue(monthView);
                     }
                 }
             }
@@ -1223,373 +1566,22 @@ define(
             repaintAllSelectTag(monthView);
         }
 
-
         /**
          * 给select的layer人肉增加class命名空间
          *
          * @inner
+         * @param {Object} monthView layer渲染事件
+         * @param {string} selectClass layer渲染事件
          * @param {Event} e layer渲染事件
          */
         function addCustomClassesForSelectLayer(monthView, selectClass, e) {
             var layerClasses = monthView.helper.getPartClasses(selectClass + '-layer');
-            var layer = e.layer;
+            var layer = this.layer;
             layer.addCustomClasses(layerClasses);
-            monthView.fire('selectlayerrendered', { layer: layer });
+            monthView.fire('selectlayerrendered', {layer: layer});
         }
 
-        MonthView.prototype = {
-            /**
-             * 控件类型
-             *
-             * @type {string}
-             */
-            type: 'MonthView',
-
-            /**
-             * 初始化参数
-             *
-             * @param {Object=} options 构造函数传入的参数
-             * @override
-             * @protected
-             */
-            initOptions: function (options) {
-                /**
-                 * 默认选项配置
-                 */
-                var properties = {
-                    range: {
-                        begin: new Date(1982, 10, 4),
-                        end: new Date(2046, 10, 4)
-                    },
-                    dateFormat: 'YYYY-MM-DD',
-                    paramFormat: 'YYYY-MM-DD',
-                    viewValue: {},
-                    mode: 'single'
-                };
-                lib.extend(properties, options);
-                this.setProperties(properties);
-            },
-
-            /**
-             * 设置属性
-             * 
-             * @param {Object} properties 属性集合
-             * @override
-             * @protected
-             */
-            setProperties: function (properties) {
-                if (properties.range) {
-                    properties.range = rangeAdapter(properties.range);
-                }
-
-                // 如果么设置rawValue
-                var now = new Date();
-                var mode = properties.mode || this.mode;
-                if (properties.rawValue == null) {
-                    // 从value转
-                    if (properties.value) {
-                        properties.rawValue =
-                            parseValueByMode(properties.value, mode);
-                    }
-                    // 都没设
-                    else {
-                        // 来自初始设置
-                        if (this.rawValue == null) {
-                            // 单模式下rawValue默认当天
-                            if (mode === 'single') {
-                                properties.rawValue = now;
-                            }
-                            // 多选模式下rawValue默认空数组
-                            else {
-                                properties.rawValue = [];
-                            }
-                        }
-                    }
-                }
-
-                // 初始化显示年月
-                var year = properties.year;
-                var month = properties.month;
-
-                // 都没设置
-                if ((!year && month == null)) {
-                    // 单选模式下，year和month取rawValue的年月
-                    if (mode === 'single') {
-                        if (properties.rawValue) {
-                            year = properties.rawValue.getFullYear();
-                            month = properties.rawValue.getMonth() + 1;
-                        }
-                    }
-                    // 多选模式下，year和month取当天的年月
-                    else {
-                        year = now.getFullYear();
-                        month = now.getMonth() + 1;
-                    }
-                }
-
-                if (year && month) {
-                    properties.year = parseInt(year, 10);
-                    // 开放给外部的month，为了符合正常思维，计数从1开始
-                    // 但是保存时要按照Date的规则从0开始
-                    properties.month = parseInt(month, 10) - 1;
-                }
-                else if (properties.hasOwnProperty('year')) {
-                    // 如果此时month还没初始化，为了不混淆，year的设置也是无效的
-                    if (this.month == null) {
-                        delete properties.year;
-                    }
-                }
-                else if (properties.hasOwnProperty('month')) {
-                    // 如果此时year还没初始化，为了不混淆，month的设置也是无效的
-                    if (this.year == null) {
-                        delete properties.month;
-                    }
-                    else {
-                        properties.month = parseInt(month, 10) - 1;
-                    }
-                }
-                var changes =
-                    Control.prototype.setProperties.apply(this, arguments);
-
-                if (changes.hasOwnProperty('rawValue')) {
-                    this.fire('change');
-                }
-                return changes;
-            },
-
-            /**
-             * 初始化DOM结构
-             *
-             * @protected
-             */
-            initStructure: function () {
-                this.main.innerHTML = getMainHTML(this);
-
-                // 创建控件树
-                this.initChildren(this.main);
-
-                if (this.mode === 'multi') {
-                    this.addState('multi-select');
-                }
-            },
-
-            /**
-             * 初始化事件交互
-             *
-             * @protected
-             * @override
-             */
-            initEvents: function () {
-                // 向后按钮
-                var monthBack = this.getChild('monthBack');
-                monthBack.on(
-                    'click',
-                    lib.curry(goToPrevMonth, this)
-                );
-
-                // 向前按钮
-                var monthForward = this.getChild('monthForward');
-                monthForward.on(
-                    'click',
-                    lib.curry(goToNextMonth, this)
-                );
-
-                // 月份选择
-                var monthSel = this.getChild('monthSel');
-                monthSel.on(
-                    'change',
-                    lib.curry(changeMonth, this, monthSel)
-                );
-
-                // 给layer人肉增加class命名空间
-                monthSel.on(
-                    'layerrendered',
-                    lib.curry(addCustomClassesForSelectLayer, this, 'month-select')
-                );
-
-                // 年份选择
-                var yearSel = this.getChild('yearSel');
-                yearSel.on(
-                    'change',
-                    lib.curry(changeYear, this, yearSel)
-                );
-
-                yearSel.on(
-                    'layerrendered',
-                    lib.curry(addCustomClassesForSelectLayer, this, 'year-select')
-                );
-
-                // 为日期绑定点击事件
-                var monthMain = this.helper.getPart('monthMain');
-                helper.addDOMEvent(this, monthMain, 'click', monthViewClick);
-            },
-
-            /**
-             * 重新渲染视图
-             * 仅当生命周期处于RENDER时，该方法才重新渲染
-             *
-             * @param {Array=} 变更过的属性的集合
-             * @override
-             */
-            repaint: helper.createRepaint(
-                Control.prototype.repaint,
-                {
-                    name: ['range', 'rawValue', 'year', 'month'],
-                    paint: function (monthView, range, rawValue, year, month) {
-                        // 如果只是改变了rawValue，year和month也会跟随更改
-                        // 只对单选模式日历有效
-                        if (rawValue) {
-                            if (monthView.mode === 'multi') {
-                                parseToCache(monthView);
-                            }
-                        }
-                        repaintMonthView(
-                            monthView,
-                            monthView.year,
-                            monthView.month
-                        );
-
-                    }
-                },
-                {
-                    name: 'disabled',
-                    paint: function (monthView, disabled) {
-                        // 向后按钮
-                        var monthBack = monthView.getChild('monthBack');
-                        monthBack.setProperties({disabled: disabled});
-                        // 向前按钮
-                        var monthForward = monthView.getChild('monthForward');
-                        monthForward.setProperties({disabled: disabled});
-
-                        // 月份选择
-                        var monthSel = monthView.getChild('monthSel');
-                        monthSel.setProperties({disabled: disabled});
-                        // 月份选择
-                        var yearSel = monthView.getChild('yearSel');
-                        yearSel.setProperties({disabled: disabled});
-                    }
-                }
-            ),
-
-
-            /**
-             * 设置控件状态为禁用
-             */
-            disable: function () {
-                this.setProperties({
-                    disabled: true
-                });
-                this.addState('disabled');
-            },
-
-            /**
-             * 设置控件状态为启用
-             */
-            enable: function () {
-                this.setProperties({
-                    disabled: false
-                });
-                this.removeState('disabled');
-            },
-
-            /**
-             * 设置可选中的日期区间
-             *
-             * @param {Object} range 可选中的日期区间
-             */
-            setRange: function (range) {
-                this.setProperties({ 'range': range });
-            },
-
-
-            /**
-             * 设置日期
-             *
-             * @param {Date|Array} date 选取的日期.
-             */
-            setRawValue: function (date) {
-                this.setProperties({ 'rawValue': date });
-            },
-
-            /**
-             * 获取选取日期值
-             *
-             * @return {Date|Array}
-             */
-            getRawValue: function () {
-                return this.rawValue;
-            },
-
-            getValue: function () {
-                return this.stringifyValue(this.rawValue);
-            },
-
-            /**
-             * 将value从原始格式转换成string
-             *
-             * @param {*} rawValue 原始值
-             * @return {string}
-             */
-            stringifyValue: function (rawValue) {
-                if (this.mode === 'single') {
-                    return lib.date.format(rawValue, this.paramFormat) || '';
-                }
-                else {
-                    var dateStrs = [];
-                    var oneDay = 86400000;
-                    for (var i = 0; i < rawValue.length; i ++) {
-                        if (i === 0) {
-                            dateStrs.push(
-                                lib.date.format(rawValue[i], this.paramFormat)
-                            );
-                        }
-                        else {
-                            if ((rawValue[i] - rawValue[i-1]) > oneDay) {
-                                dateStrs.push(
-                                    lib.date.format(
-                                        rawValue[i-1], this.paramFormat
-                                    )
-                                );
-                                dateStrs.push(
-                                    lib.date.format(
-                                        rawValue[i], this.paramFormat
-                                    )
-                                );
-                            }
-                            else if (i === (rawValue.length - 1)) {
-                                dateStrs.push(
-                                    lib.date.format(
-                                        rawValue[i], this.paramFormat
-                                    )
-                                );
-                            }
-                            else {
-                                continue;
-                            }
-                        }
-                    }
-                    return dateStrs.join(',');
-                }
-            },
-
-            parseValue: function (value) {
-                return parseValueByMode(value, this.mode);
-            },
-
-            setRawValueWithoutFireChange: function (value) {
-                this.rawValue = value;
-                parseToCache(this);
-            },
-
-            getDateItemHTML: function (date) {
-                return lib.g(getItemId(this, date));
-            }
-
-        };
-
-        lib.inherits(MonthView, Control);
-        ui.register(MonthView);
-
+        esui.register(MonthView);
         return MonthView;
     }
 );

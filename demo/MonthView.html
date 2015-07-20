@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>MonthView - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
-        <link rel="stylesheet" href="assets/themes/standard.css" />
-        <!--[if lt IE 9]>
-        <link rel="stylesheet" href="assets/ie8.css" />
-        <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
-    </head>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <title>MonthView - ESUI Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    <link rel="stylesheet" href="assets/themes/standard.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="assets/ie8.css" />
+    <![endif]-->
+</head>
 <body>
-    <h1>MonthView</h1>
-    <div id="page">
-        <ul id="navigator"></ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">MonthView</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-nav">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>单选模式日历</h2>
             <div class="intro">
                 <p>单选模式日历。</p>
@@ -27,7 +30,7 @@
                     <tr>
                         <th width="50">属性名</th>
                         <th width="150">描述</th>
-                        <th width="450" colspan=2>格式</th>
+                        <th width="450" colspan="2">格式</th>
                         <th width="150">默认值</th>
                     </tr>
                 </thead>
@@ -39,10 +42,10 @@
                         <td>对象。如：<br>{beign: new Date(2013, 7, 3), end:new Date(2016, 7, 3)}</td>
                         <td>开始：1982-11-04 <br> 结束：2046-11-04</td>
                     </tr>
-                    <tr><td>value</td><td>日历高亮选择日期</td><td colspan=2>YYYY-MM-DD，如：2013-07-01</td><td>当天</td></tr>
-                    <tr><td>rawValue</td><td>日历高亮选择日期</td><td colspan=2>Date</td><td>当天</td></tr>
-                    <tr><td>year</td><td>日历显示年</td><td colspan=2>number，如：2013</td><td>value所在年</td></tr>
-                    <tr><td>month</td><td>日历显示月</td><td colspan=2>从1开始的number，如：11</td><td>value所在月</td></tr>
+                    <tr><td>value</td><td>日历高亮选择日期</td><td colspan="2">YYYY-MM-DD，如：2013-07-01</td><td>当天</td></tr>
+                    <tr><td>rawValue</td><td>日历高亮选择日期</td><td colspan="2">Date</td><td>当天</td></tr>
+                    <tr><td>year</td><td>日历显示年</td><td colspan="2">number，如：2013</td><td>value所在年</td></tr>
+                    <tr><td>month</td><td>日历显示月</td><td colspan="2">从1开始的number，如：11</td><td>value所在月</td></tr>
                 </tbody>
             </table>
             <p class="desc-title">
@@ -53,88 +56,83 @@
                 <li>year或month超出range，自动纠错为最近的正确值</li>
                 <li>range的开始值大于结束值，自动调整顺序</li>
             </ul>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <div data-ui="type:MonthView;id:test1;">
-                    </div>
-                    <p>
-                        预期结果：
-                        <span id="test1-result">
-                        </span>
-                    </p>
-                    <h3>动态设置属性</h3>
-                    <div class="row">
-                        <table class="ui-raw-table ui-raw-table-horizontal">
-                            <thead>
-                                <tr>
-                                    <th>属性名</th>
-                                    <th>值</th>
-                                    <th>设置</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        value
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="yyyy-mm-dd" type="textbox" id="test1-ipt0"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test1-btn0" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        月
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="mm" type="textbox" id="test1-ipt1" class="ui-textbox"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test1-btn1" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        年
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="yyyy" type="textbox" id="test1-ipt2" class="ui-textbox"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test1-btn2" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        range
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="yyyy-mm-dd,yyyy-mm-dd" type="textbox" id="test1-ipt3" class="ui-textbox"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test1-btn3" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h3>不可用状态</h3>
-                    <div class="row">
-                        <div data-ui="type:MonthView;disabled:1">
-                        </div>
+            <div class="example ui-demo-light-stage">
+                <div data-ui="type:MonthView;id:test1;">
+                </div>
+                <p>
+                    预期结果：
+                    <span id="test1-result">
+                    </span>
+                </p>
+                <h3>动态设置属性</h3>
+                <div class="row">
+                    <table class="ui-raw-table ui-raw-table-horizontal">
+                        <thead>
+                            <tr>
+                                <th>属性名</th>
+                                <th>值</th>
+                                <th>设置</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    value
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="yyyy-mm-dd" type="textbox" id="test1-ipt0"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test1-btn0" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    月
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="mm" type="textbox" id="test1-ipt1" class="ui-textbox"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test1-btn1" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    年
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="yyyy" type="textbox" id="test1-ipt2" class="ui-textbox"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test1-btn2" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    range
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="yyyy-mm-dd,yyyy-mm-dd" type="textbox" id="test1-ipt3" class="ui-textbox"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test1-btn3" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>不可用状态</h3>
+                <div class="row">
+                    <div data-ui="type:MonthView;disabled:1">
                     </div>
                 </div>
             </div>
@@ -148,7 +146,7 @@
                     <tr>
                         <th width="50">属性名</th>
                         <th width="150">描述</th>
-                        <th width="450" colspan=2>格式</th>
+                        <th width="450" colspan="2">格式</th>
                         <th width="150">默认值</th>
                     </tr>
                 </thead>
@@ -159,10 +157,10 @@
                         <td>字符串。逗号分隔开始结束，如：<br>2013-07-03,2013-08-29</td>
                         <td>对象。如：<br>{beign: new Date(2013, 7, 3), end:new Date(2016, 7, 3)}</td>
                         <td>开始：1982-11-04 <br> 结束：2046-11-04</td></tr>
-                    <tr><td>value</td><td>日历高亮选择日期</td><td colspan=2>逗号分隔多个日期，两个一组，分别代表一个小区段的开始和结束，如：2013-07-01,2013-07-01,2013-07-03,2013-07-28</td><td>''</td></tr>
-                    <tr><td>rawValue</td><td>日历高亮选择日期</td><td colspan=2>数组，选择的所有日期对象的集合</td><td>[]</td></tr>
-                    <tr><td>year</td><td>日历显示年</td><td colspan=2>number，如：2013</td><td>当前日期所在年</td></tr>
-                    <tr><td>month</td><td>日历显示月</td><td colspan=2>从1开始的number，如：11</td><td>当前日期所在月</td></tr>
+                    <tr><td>value</td><td>日历高亮选择日期</td><td colspan="2">逗号分隔多个日期，两个一组，分别代表一个小区段的开始和结束，如：2013-07-01,2013-07-01,2013-07-03,2013-07-28</td><td>''</td></tr>
+                    <tr><td>rawValue</td><td>日历高亮选择日期</td><td colspan="2">数组，选择的所有日期对象的集合</td><td>[]</td></tr>
+                    <tr><td>year</td><td>日历显示年</td><td colspan="2">number，如：2013</td><td>当前日期所在年</td></tr>
+                    <tr><td>month</td><td>日历显示月</td><td colspan="2">从1开始的number，如：11</td><td>当前日期所在月</td></tr>
                 </tbody>
             </table>
             <p class="desc-title">
@@ -175,100 +173,101 @@
                 <li>value中出现重叠区，自动去重，但不修正value</li>
             </ul>
 
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <div
-                        data-ui="type:MonthView;id:test2;mode:multi;"
-                        data-ui-range="2013-03-01,2013-04-1"
-                        data-ui-value="2013-03-01,2013-03-01,2013-03-03,2013-03-28,2013-03-29,2013-03-29,2013-04-01,2013-04-27">
-                    </div>
-                    <p>预期结果：
-                        <span id="test2-result">
-                        </span>
-                    </p>
-                    <h3>动态设置属性</h3>
-                    <div class="row">
-                        <table class="ui-raw-table ui-raw-table-horizontal">
-                            <thead>
-                                <tr>
-                                    <th>属性名</th>
-                                    <th>值</th>
-                                    <th>设置</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        value
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="yyyy-mm-dd" type="textbox" id="test2-ipt0"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test2-btn0" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        月
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="mm" type="textbox" id="test2-ipt1" class="ui-textbox"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test2-btn1" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        年
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="yyyy" type="textbox" id="test2-ipt2" class="ui-textbox"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test2-btn2" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        range
-                                    </td>
-                                    <td>
-                                        <div class="ui-textbox">
-                                            <input placeholder="yyyy-mm-dd,yyyy-mm-dd" type="textbox" id="test2-ipt3" class="ui-textbox"></input>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button id="test2-btn3" class="ui-button ui-button-info">设置</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h3>不可用状态</h3>
-                    <div class="row">
-                        <div data-ui="type:MonthView;disabled:1;mode:multi;">
-                        </div>
+            <div class="example ui-demo-light-stage">
+                <div
+                    data-ui="type:MonthView;id:test2;mode:multi;"
+                    data-ui-range="2013-03-01,2013-04-1"
+                    data-ui-value="2013-03-01,2013-03-01,2013-03-03,2013-03-28,2013-03-29,2013-03-29,2013-04-01,2013-04-27">
+                </div>
+                <p>预期结果：
+                    <span id="test2-result">
+                    </span>
+                </p>
+                <h3>动态设置属性</h3>
+                <div class="row">
+                    <table class="ui-raw-table ui-raw-table-horizontal">
+                        <thead>
+                            <tr>
+                                <th>属性名</th>
+                                <th>值</th>
+                                <th>设置</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    value
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="yyyy-mm-dd" type="textbox" id="test2-ipt0"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test2-btn0" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    月
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="mm" type="textbox" id="test2-ipt1" class="ui-textbox"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test2-btn1" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    年
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="yyyy" type="textbox" id="test2-ipt2" class="ui-textbox"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test2-btn2" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    range
+                                </td>
+                                <td>
+                                    <div class="ui-textbox">
+                                        <input placeholder="yyyy-mm-dd,yyyy-mm-dd" type="textbox" id="test2-ipt3" class="ui-textbox"></input>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" id="test2-btn3" class="ui-button ui-button-info">设置</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>不可用状态</h3>
+                <div class="row">
+                    <div data-ui="type:MonthView;disabled:1;mode:multi;">
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
     require(
         [
             'esui',
-            'esui/MonthView'
+            'esui/MonthView',
+            'esui/Tab',
+            'demo'
         ],
         function (ui, TipLayer) {
             ui.init();
@@ -277,89 +276,90 @@
 
             var test1Btn0 = document.getElementById('test1-btn0');
             var test1Ipt0 = document.getElementById('test1-ipt0');
-            test1Btn0.onclick = function() {
+            test1Btn0.onclick = function () {
                 var value = test1Ipt0.value;
                 singleMonthView.setProperties({
                     value: value
                 });
-            }
+            };
 
             var test1Btn1 = document.getElementById('test1-btn1');
             var test1Ipt1 = document.getElementById('test1-ipt1');
-            test1Btn1.onclick = function() {
+            test1Btn1.onclick = function () {
                 var month = test1Ipt1.value;
                 singleMonthView.setProperties({
                     month: month
                 });
-            }
+            };
 
             var test1Btn2 = document.getElementById('test1-btn2');
             var test1Ipt2 = document.getElementById('test1-ipt2');
-            test1Btn2.onclick = function() {
+            test1Btn2.onclick = function () {
                 var year = test1Ipt2.value;
                 singleMonthView.setProperties({
                     year: year
                 });
-            }
+            };
 
             var test1Btn3 = document.getElementById('test1-btn3');
             var test1Ipt3 = document.getElementById('test1-ipt3');
-            test1Btn3.onclick = function() {
+            test1Btn3.onclick = function () {
                 var range = test1Ipt3.value;
-                multiMonthView.setProperties({
+                singleMonthView.setProperties({
                     range: range
                 });
-            }
+            };
 
             var test2Btn0 = document.getElementById('test2-btn0');
             var test2Ipt0 = document.getElementById('test2-ipt0');
-            test2Btn0.onclick = function() {
+            test2Btn0.onclick = function () {
                 var value = test2Ipt0.value;
                 multiMonthView.setProperties({
                     value: value
                 });
-            }
+            };
 
 
             var test2Btn1 = document.getElementById('test2-btn1');
             var test2Ipt1 = document.getElementById('test2-ipt1');
-            test2Btn1.onclick = function() {
+            test2Btn1.onclick = function () {
                 var month = test2Ipt1.value;
                 multiMonthView.setProperties({
                     month: month
                 });
-            }
+            };
 
 
             var test2Btn2 = document.getElementById('test2-btn2');
             var test2Ipt2 = document.getElementById('test2-ipt2');
-            test2Btn2.onclick = function() {
+            test2Btn2.onclick = function () {
                 var year = test2Ipt2.value;
                 multiMonthView.setProperties({
                     year: year
                 });
-            }
+            };
 
             var test2Btn3 = document.getElementById('test2-btn3');
             var test2Ipt3 = document.getElementById('test2-ipt3');
-            test2Btn3.onclick = function() {
+            test2Btn3.onclick = function () {
                 var range = test2Ipt3.value;
                 multiMonthView.setProperties({
                     range: range
                 });
-            }
+            };
 
             var result1Container = document.getElementById('test1-result');
             var result2Container = document.getElementById('test2-result');
-            singleMonthView.on('change', function(){
+            singleMonthView.on('change', function () {
                 result1Container.innerHTML = this.getValue();
-            })
-            multiMonthView.on('change', function(){
+            });
+            multiMonthView.on('change', function () {
                 result2Container.innerHTML = this.getValue();
-            })
+            });
         }
     );
-    copyExample();
+    
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

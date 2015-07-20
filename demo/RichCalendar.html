@@ -1,81 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>RichCalendar - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - RichCalendar</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        
+        <div class="header">
+            <h1 id="branding">ESUI - RichCalendar</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>多个日期选择工具</h2>
                 <div class="intro">
                     <p>选择多个日期时间段。</p>
                 </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>正常</h3>
-                        <div class="row">
-                            <div data-ui-type="RichCalendar" data-ui-name="test4"
-                            data-ui-id="test4"
-                            data-ui-text-box-width="400"
-                            data-ui-text-box-height="200"
-                            data-ui-range="2013-07-03,2013-09-29"
-                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
-                        </div>
-                        
-                        <h3>不可用</h3>
-                        <div class="row">
-                            <div data-ui-type="RichCalendar" data-ui-name="test5"
-                            data-ui-id="test5"
-                            data-ui-text-box-width="400"
-                            data-ui-disabled="1"
-                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
-                        </div>
-                        <h3>只读</h3>
-                        <div class="row">
-                            <div data-ui-type="RichCalendar" data-ui-name="test6"
-                            data-ui-id="test6"
-                            data-ui-read-only="1"
-                            data-ui-range="2013-07-03,2013-09-29"
-                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
-                        </div>
-                        <h3>错误</h3>
-                        <div class="row">
-                            <div data-ui-type="RichCalendar" data-ui-name="test6"
-                            data-ui-states="validity-invalid"
-                            data-ui-range="2013-07-03,2013-09-29"
-                            data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
-                        </div>
+                <div class="example ui-demo-light-stage">
+                    <h3>正常</h3>
+                    <div class="row">
+                        <div data-ui-type="RichCalendar" data-ui-name="test4"
+                        data-ui-id="test4"
+                        data-ui-text-box-width="400"
+                        data-ui-text-box-height="200"
+                        data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                    </div>
+                    
+                    <h3>不可用</h3>
+                    <div class="row">
+                        <div data-ui-type="RichCalendar" data-ui-name="test5"
+                        data-ui-id="test5"
+                        data-ui-text-box-width="400"
+                        data-ui-disabled="true"
+                        data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                    </div>
+                    <h3>只读</h3>
+                    <div class="row">
+                        <div data-ui-type="RichCalendar" data-ui-name="test6"
+                        data-ui-id="test6"
+                        data-ui-read-only="true"
+                        data-ui-range="2013-07-03,2013-09-29"
+                        data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
+                    </div>
+                    <h3>错误</h3>
+                    <div class="row">
+                        <div data-ui-type="RichCalendar" data-ui-name="test6"
+                        data-ui-states="validity-invalid"
+                        data-ui-range="2013-07-03,2013-09-29"
+                        data-ui-value="2013-07-03,2013-07-28,2013-07-29,2013-07-29,2013-08-01,2013-08-27"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
-                'esui/RichCalendar'
+                'esui/RichCalendar',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
-                var calendar = ui.init()[0];
+                ui.init()[0];
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

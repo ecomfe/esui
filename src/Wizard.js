@@ -8,9 +8,14 @@
  */
 define(
     function (require) {
-        var u  = require('underscore');
+        var eoo = require('eoo');
+        var u = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
+        var esui = require('./main');
+        var painters = require('./painters');
+        var $ = require('jquery');
+
         var strAddPartClasses = 'addPartClasses';
         var strRemovePartClasses = 'removePartClasses';
 
@@ -22,72 +27,271 @@ define(
          * @extends Control
          * @constructor
          */
-        function Wizard() {
-            Control.apply(this, arguments);
-        }
+        var Wizard = eoo.create(
+            Control,
+            {
+                /**
+                 * 控件类型，始终为`"Wizard"`
+                 *
+                 * @type {string}
+                 * @readonly
+                 * @override
+                 */
+                type: 'Wizard',
 
-        /**
-         * 控件类型，始终为`"Wizard"`
-         *
-         * @type {string}
-         * @readonly
-         * @override
-         */
-        Wizard.prototype.type = 'Wizard';
+                /**
+                 * 创建控件主元素
+                 *
+                 * @return {HTMLElement}
+                 * @protected
+                 * @override
+                 */
+                createMain: function () {
+                    return document.createElement('ol');
+                },
 
-        /**
-         * 创建控件主元素
-         *
-         * @return {HTMLElement}
-         * @protected
-         * @override
-         */
-        Wizard.prototype.createMain = function () {
-            return document.createElement('ol');
-        };
+                /**
+                 * 初始化参数
+                 *
+                 * 如果初始化时未给出{@link Wizard#steps}属性，则按以下规则从主元素下提取：
+                 *
+                 * 1. 遍历主元素的所有子元素
+                 * 2. 使用子元素的文本内容作为节点的`text`属性
+                 * 3. 使用子元素的`data-for`作为节点的`panel`属性
+                 *
+                 * @param {Object} [options] 构造函数传入的参数
+                 * @protected
+                 * @override
+                 */
+                initOptions: function (options) {
+                    var properties = {
+                        steps: [],
+                        activeIndex: 0,
+                        /**
+                         * 节点内容的HTML模板
+                         *
+                         * 在模板中可以使用以下占位符：
+                         *
+                         * - `{string} text`：文本内容，经过HTML转义
+                         *
+                         * @type {string}
+                         */
+                        nodeTemplate: '<span>${text}</span>',
 
-        /**
-         * 初始化参数
-         *
-         * 如果初始化时未给出{@link Wizard#steps}属性，则按以下规则从主元素下提取：
-         *
-         * 1. 遍历主元素的所有子元素
-         * 2. 使用子元素的文本内容作为节点的`text`属性
-         * 3. 使用子元素的`data-for`作为节点的`panel`属性
-         *
-         * @param {Object} [options] 构造函数传入的参数
-         * @protected
-         * @override
-         */
-        Wizard.prototype.initOptions = function (options) {
-            var properties = {
-                steps: [],
-                activeIndex: 0
-            };
+                        /**
+                         * 节点内容的HTML模板
+                         *
+                         * 在模板中可以使用以下占位符：
+                         *
+                         * - `{string} number`：编号
+                         * - `{string} text`：文本内容，经过HTML转义
+                         *
+                         * @type {string}
+                         */
+                        numberNodeTemplate: '<span class="${numberNodeClass}">${number}</span>'
+                            + '<span class="${textNodeClass}">${text}</span>'
+                    };
 
-            var children = lib.getChildren(this.main);
-            if (!options.steps && children.length) {
-                properties.steps = u.map(
-                    children,
-                    function (node) {
-                        var config = {text: lib.getText(node)};
-                        var panel = node.getAttribute('data-for');
-                        if (panel) {
-                            config.panel = panel;
-                        }
-                        return config;
+                    var $children = $(this.main).children();
+                    if (!options.steps) {
+                        $children.each(
+                            function (idx, node) {
+                                var $node = $(node);
+                                var config = {text: $node.text()};
+                                var panel = $node.attr('data-for');
+                                if (panel) {
+                                    config.panel = panel;
+                                }
+                                var number = $node.attr('data-node-number');
+                                if (number) {
+                                    config.number = number;
+                                }
+                                properties.steps.push(config);
+                            }
+                        );
                     }
-                );
+
+                    u.extend(properties, options);
+                    this.setProperties(properties);
+                },
+
+                /**
+                 * 获取节点内容HTML
+                 *
+                 * @param {meta.WizardItem} node 节点数据项
+                 * @return {string} 返回HTML片段
+                 */
+                getNodeHTML: function (node) {
+                    if (node.number) {
+                        var controlHelper = this.helper;
+                        return lib.format(
+                            this.numberNodeTemplate,
+                            {
+                                numberNodeClass: controlHelper.getPartClassName('node-number'),
+                                textNodeClass: controlHelper.getPartClassName('node-text'),
+                                text: u.escape(node.text),
+                                number: u.escape(node.number)
+                            }
+                        );
+                    }
+                    return lib.format(
+                        this.nodeTemplate,
+                        {
+                            text: u.escape(node.text)
+                        }
+                    );
+                },
+
+                /**
+                 * 渲染自身
+                 *
+                 * @method
+                 * @protected
+                 * @override
+                 */
+                repaint: painters.createRepaint(
+                    Control.prototype.repaint,
+                    {
+                        /**
+                         * @property {meta.WizardItem[]} steps
+                         *
+                         * 步骤集合
+                         */
+
+                        /**
+                         * @property {string} [finishText]
+                         *
+                         * “已完成”状态的显示文字，有此属性则在所有步骤后会加一个纯文本节点
+                         */
+                        name: ['steps', 'finishText'],
+                        paint: function (wizard) {
+                            wizard.main.innerHTML = getHTML(wizard);
+                        }
+                    },
+                    {
+                        /**
+                         * @property {number} activeIndex
+                         *
+                         * 当前步骤节点的下标
+                         */
+                        name: 'activeIndex',
+                        paint: function (wizard, value) {
+                            var controlHelper = wizard.helper;
+                            // 初始化时`steps`的渲染器会处理掉`activeIndex`，不需要这里
+                            if (!controlHelper.isInStage('RENDERED')) {
+                                return;
+                            }
+
+                            var nodes = wizard.main.getElementsByTagName('li');
+                            var method;
+                            var node;
+                            var isActive;
+                            var isDone;
+                            var isCurPrev;
+
+                            for (var i = nodes.length - 1; i >= 0; i--) {
+                                isActive = i === wizard.activeIndex;
+                                togglePanel(wizard, wizard.steps[i], isActive);
+
+                                node = nodes[i];
+                                method = isActive
+                                    ? strAddPartClasses
+                                    : strRemovePartClasses;
+                                controlHelper[method]('node-active', node);
+
+                                if (i === wizard.steps.length - 1) {
+                                    controlHelper[method]('node-last-active', node);
+                                }
+
+                                isDone = i <= (wizard.activeIndex - 1);
+                                method = isDone
+                                    ? strAddPartClasses
+                                    : strRemovePartClasses;
+                                controlHelper[method]('node-done', node);
+
+                                isCurPrev = i === (wizard.activeIndex - 1);
+                                method = isCurPrev
+                                    ? strAddPartClasses
+                                    : strRemovePartClasses;
+                                controlHelper[method]('node-active-prev', node);
+                            }
+                        }
+                    }
+                ),
+
+                /**
+                 * 批量设置控件的属性值
+                 *
+                 * @param {Object} properties 属性值集合
+                 * @fires enter
+                 */
+                setProperties: function (properties) {
+                    if (properties.hasOwnProperty('steps')) {
+                        // 如果同时有`activeIndex`和`steps`，
+                        // 则`activeIndex`可以只赋在实例上不丢进更新列表，
+                        // 因为`getHTML`是会处理这事的
+                        if (properties.hasOwnProperty('activeIndex')) {
+                            this.activeIndex = properties.activeIndex;
+                            delete properties.activeIndex;
+                        }
+                        // 如果没给`activeIndex`，则回到最初那一步
+                        else {
+                            this.activeIndex = 0;
+                        }
+
+                        // 如果同时有`steps`和`finishText`，由于这两个都会引发全刷新，
+                        // 因此只要保留一个就行了
+                        if (properties.hasOwnProperty('finishText')) {
+                            this.finishText = properties.finishText;
+                            delete properties.finishText;
+                        }
+                    }
+
+                    var changes
+                        = this.$super([properties]);
+                    if (changes.hasOwnProperty('steps')
+                        || changes.hasOwnProperty('activeIndex')
+                    ) {
+                        /**
+                         * @event enter
+                         *
+                         * 进入某个步骤时触发
+                         */
+                        this.fire('enter');
+                    }
+                },
+
+                /**
+                 * 获取当前激活的步骤的{@link meta.WizardItem}对象
+                 *
+                 * @return {meta.WizardItem}
+                 */
+                getActiveStep: function () {
+                    return this.get('steps')[this.get('activeIndex')];
+                },
+
+                /**
+                 * 进入下一步
+                 */
+                stepNext: function () {
+                    var maxStep = this.finishText
+                        ? this.steps.length
+                        : this.steps.length - 1;
+                    if (this.activeIndex < maxStep) {
+                        this.set('activeIndex', this.activeIndex + 1);
+                    }
+                },
+
+                /**
+                 * 进入上一步
+                 */
+                stepPrevious: function () {
+                    if (this.activeIndex > 0) {
+                        this.set('activeIndex', this.activeIndex - 1);
+                    }
+                }
             }
-
-            u.extend(properties, options);
-
-            if (typeof properties.activeIndex === 'string') {
-                properties.activeIndex = +properties.activeIndex;
-            }
-
-            this.setProperties(properties);
-        };
+        );
 
         /**
          * 控制对应面板的显示或隐藏
@@ -115,32 +319,6 @@ define(
             wizard.helper[method]('panel-hidden', panel);
         }
 
-        /**
-         * 节点内容的HTML模板
-         *
-         * 在模板中可以使用以下占位符：
-         *
-         * - `{string} text`：文本内容，经过HTML转义
-         *
-         * @type {string}
-         */
-        Wizard.prototype.nodeTemplate = '<span>${text}</span>';
-
-        /**
-         * 获取节点内容HTML
-         *
-         * @param {meta.WizardItem} node 节点数据项
-         * @return {string} 返回HTML片段
-         */
-        Wizard.prototype.getNodeHTML = function (node) {
-            return lib.format(
-                this.nodeTemplate,
-                {
-                    text: lib.encodeHTML(node.text),
-                    number: lib.encodeHTML(node.number)
-                }
-            );
-        };
 
         /**
          * 获取导航HTML
@@ -150,24 +328,26 @@ define(
          * @ignore
          */
         function getHTML(wizard) {
+            var controlHelper = wizard.helper;
+            var tpl = '<li class="${classes}">${content}</li>';
             var html = '';
 
             for (var i = 0; i < wizard.steps.length; i++) {
                 var node = wizard.steps[i];
 
-                var classes = wizard.helper.getPartClasses('node');
+                var classes = controlHelper.getPartClasses('node');
                 // 第一步
                 if (i === 0) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-first')
+                        controlHelper.getPartClasses('node-first')
                     );
                 }
                 // 最后一步
                 if (i === wizard.steps.length - 1 && !wizard.finishText) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-last')
+                        controlHelper.getPartClasses('node-last')
                     );
                 }
 
@@ -175,14 +355,14 @@ define(
                 if (i === wizard.activeIndex - 1) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-active-prev')
+                        controlHelper.getPartClasses('node-active-prev')
                     );
                 }
                 // 已经完成的步骤
                 if (i <= wizard.activeIndex - 1) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-done')
+                        controlHelper.getPartClasses('node-done')
                     );
                 }
 
@@ -191,191 +371,47 @@ define(
                 if (isActive) {
                     classes.push.apply(
                         classes,
-                        wizard.helper.getPartClasses('node-active')
+                        controlHelper.getPartClasses('node-active')
                     );
                     if (i === wizard.steps.length - 1) {
                         classes.push.apply(
                             classes,
-                            wizard.helper.getPartClasses('node-last-active')
+                            controlHelper.getPartClasses('node-last-active')
                         );
                     }
                 }
 
-                html += '<li class="' + classes.join(' ') + '">';
-                html += wizard.getNodeHTML(node);
-                html += '</li>';
+                html += lib.format(
+                    tpl,
+                    {
+                        classes: classes.join(' '),
+                        content: wizard.getNodeHTML(node)
+                    }
+                );
             }
 
             if (wizard.finishText) {
                 var classes2 = [].concat(
-                    wizard.helper.getPartClasses('node'),
-                    wizard.helper.getPartClasses('node-last'),
-                    wizard.helper.getPartClasses('node-finish'),
+                    controlHelper.getPartClasses('node'),
+                    controlHelper.getPartClasses('node-last'),
+                    controlHelper.getPartClasses('node-finish'),
                     wizard.activeIndex === wizard.steps.length
-                        ? wizard.helper.getPartClasses('node-active')
+                        ? controlHelper.getPartClasses('node-active')
                         : []
                 );
-                html += '<li class="' + classes2.join(' ') + '">';
-                html += '<span>' + wizard.finishText + '</span>';
-                html += '</li>';
+                html += lib.format(
+                    tpl,
+                    {
+                        classes: classes2.join(' '),
+                        content: '<span>' + wizard.finishText + '</span>'
+                    }
+                );
             }
 
             return html;
         }
 
-        var paint = require('./painters');
-        /**
-         * 渲染自身
-         *
-         * @method
-         * @protected
-         * @override
-         */
-        Wizard.prototype.repaint = paint.createRepaint(
-            Control.prototype.repaint,
-            {
-                /**
-                 * @property {meta.WizardItem[]} steps
-                 *
-                 * 步骤集合
-                 */
-
-                /**
-                 * @property {string} [finishText]
-                 *
-                 * “已完成”状态的显示文字，有此属性则在所有步骤后会加一个纯文本节点
-                 */
-                name: ['steps', 'finishText'],
-                paint: function (wizard) {
-                    wizard.main.innerHTML = getHTML(wizard);
-                }
-            },
-            {
-                /**
-                 * @property {number} activeIndex
-                 *
-                 * 当前步骤节点的下标
-                 */
-                name: 'activeIndex',
-                paint: function (wizard, value) {
-                    var controlHelper = wizard.helper;
-                    // 初始化时`steps`的渲染器会处理掉`activeIndex`，不需要这里
-                    if (!controlHelper.isInStage('RENDERED')) {
-                        return;
-                    }
-
-                    var nodes = wizard.main.getElementsByTagName('li');
-                    var method;
-                    var node;
-                    var isActive;
-                    var isDone;
-                    var isCurPrev;
-
-                    for (var i = nodes.length - 1; i >= 0; i--) {
-                        isActive = i === wizard.activeIndex;
-                        togglePanel(wizard, wizard.steps[i], isActive);
-
-                        node = nodes[i];
-                        method = isActive
-                            ? strAddPartClasses
-                            : strRemovePartClasses;
-                        wizard.helper[method]('node-active', node);
-
-                        if (i === wizard.steps.length - 1) {
-                            controlHelper[method]('node-last-active', node);
-                        }
-
-                        isDone = i <= (wizard.activeIndex - 1);
-                        method = isDone
-                            ? strAddPartClasses
-                            : strRemovePartClasses;
-                        controlHelper[method]('node-done', node);
-
-                        isCurPrev = i === (wizard.activeIndex - 1);
-                        method = isCurPrev
-                            ? strAddPartClasses
-                            : strRemovePartClasses;
-                        controlHelper[method]('node-active-prev', node);
-                    }
-                }
-            }
-        );
-
-        /**
-         * 批量设置控件的属性值
-         *
-         * @param {Object} properties 属性值集合
-         * @fires enter
-         */
-        Wizard.prototype.setProperties = function (properties) {
-            if (properties.hasOwnProperty('steps')) {
-                // 如果同时有`activeIndex`和`steps`，
-                // 则`activeIndex`可以只赋在实例上不丢进更新列表，
-                // 因为`getHTML`是会处理这事的
-                if (properties.hasOwnProperty('activeIndex')) {
-                    this.activeIndex = properties.activeIndex;
-                    delete properties.activeIndex;
-                }
-                // 如果没给`activeIndex`，则回到最初那一步
-                else {
-                    this.activeIndex = 0;
-                }
-
-                // 如果同时有`steps`和`finishText`，由于这两个都会引发全刷新，
-                // 因此只要保留一个就行了
-                if (properties.hasOwnProperty('finishText')) {
-                    this.finishText = properties.finishText;
-                    delete properties.finishText;
-                }
-            }
-
-            var changes =
-                Control.prototype.setProperties.apply(this, arguments);
-            if (changes.hasOwnProperty('steps')
-                || changes.hasOwnProperty('activeIndex')
-            ) {
-                /**
-                 * @event enter
-                 *
-                 * 进入某个步骤时触发
-                 */
-                this.fire('enter');
-            }
-        };
-
-        /**
-         * 获取当前激活的步骤的{@link meta.WizardItem}对象
-         *
-         * @return {meta.WizardItem}
-         */
-        Wizard.prototype.getActiveStep = function () {
-            return this.get('steps')[this.get('activeIndex')];
-        };
-
-        /**
-         * 进入下一步
-         */
-        Wizard.prototype.stepNext = function () {
-            var maxStep = this.finishText
-                ? this.steps.length
-                : this.steps.length - 1;
-            if (this.activeIndex < maxStep) {
-                this.set('activeIndex', this.activeIndex + 1);
-            }
-        };
-
-        /**
-         * 进入上一步
-         */
-        Wizard.prototype.stepPrevious = function () {
-            if (this.activeIndex > 0) {
-                this.set('activeIndex', this.activeIndex - 1);
-            }
-        };
-
-        require('./main').register(Wizard);
-        lib.inherits(Wizard, Control);
-
+        esui.register(Wizard);
         return Wizard;
     }
 );

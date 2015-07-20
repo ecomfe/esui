@@ -16,11 +16,13 @@ define(
 
         var Extension = require('../Extension');
         var lib = require('../lib');
-        var helper = require('../controlHelper');
-        var main = require('../main');
+        var esui = require('../main');
         var Table = require('../Table');
         var ValidityState = require('../validator/ValidityState');
         var Validity = require('../validator/Validity');
+        var Layer = require('../Layer');
+        var u = require('underscore');
+        var eoo = require('eoo');
 
         var layContentTpl = [
             '<div class="${optClass}">',
@@ -44,8 +46,8 @@ define(
         var okText = '确定';
         var cancelText = '取消';
 
-        var inputTpl ='<input data-ui="type:TextBox;id:${inputId}"/>';
-        var validTpl ='<label data-ui="type:Validity;id:${validId}"></label>';
+        var inputTpl = '<input data-ui="type:TextBox;id:${inputId}"/>';
+        var validTpl = '<label data-ui="type:Validity;id:${validId}"></label>';
 
         var currentRowIndex = -1;
         var currentColIndex = -1;
@@ -60,8 +62,116 @@ define(
         var guid = 1;
 
         /**
+         * 表格行内编辑扩展
+         *
+         * 启用该扩展后，{@link Table}控件将可以在行内进行字段的编辑
+         *
+         * 在{@link Table#fields}配置中，可编辑的字段有以下属性控制：
+         *
+         * - `{boolean editable}`：设置为`true`表示可编辑
+         * - `{Object} editRules`：配置编辑的验证规则，同{@link validator.Rule}定义
+         * - `{Function | Mixed} editContent`：指定最终编辑后的内容，
+         * 如果是函数则取函数的返回值作为最终编辑后的内容，其它类型则作为常量
+         *
+         * 在编辑过程中，{@link Table}控件将触发以下事件：
+         *
+         * - `startedit`：开始编辑
+         * - `saveedit`：编辑生效
+         * - `canceledit`：取消编辑
+         *
+         * 以上3个事件的事件对象均提供以下属性：
+         *
+         *
+         * - `{number} rowIndex`：行索引
+         * - `{number} columnIndex`：列索引
+         * - `{number} field`：对应的字段
+         *
+         * 而`saveedit`还额外提供`{Mixed} value`属性表示保存的值
+         *
+         * 其中`saveedit`和`startedit`均可以通过`preventDefault()`阻止默认行为
+         *
+         * @class extension.TableEdit
+         * @extends Extension
+         * @constructor
+         */
+        var TableEdit = eoo.create(
+            Extension,
+            {
+                /**
+                 * 指定扩展类型，始终为`"TableEdit"`
+                 *
+                 * @type {string}
+                 */
+                type: 'TableEdit',
+
+                /**
+                 * 激活扩展
+                 *
+                 * @override
+                 */
+                activate: function () {
+                    var target = this.target;
+                    // 只对`Table`控件生效
+                    if (!(target instanceof Table)) {
+                        return;
+                    }
+
+                    target.startEdit = startEdit;
+                    target.cancelEdit = cancelEdit;
+                    target.hideEditLayer = hideEditLayer;
+                    target.showEditError = showEditError;
+
+                    target.addRowBuilders([
+                        {
+                            index: 3,
+                            getColHtml: getColHtml
+                        }
+                    ]);
+
+                    target.addHandlers(
+                        'click',
+                        {
+                            handler: entranceClickHandler,
+                            matchFn: target.helper.getPartClassName('cell-editentry')
+                        }
+                    );
+
+                    target.on('enddrag', tableEndDragHandler);
+                    target.on('resize', tableResizeHandler);
+
+                    this.$super(arguments);
+                },
+
+                /**
+                 * 取消扩展的激活状态
+                 *
+                 * @override
+                 */
+                inactivate: function () {
+                    var target = this.target;
+                    // 只对`Table`控件生效
+                    if (!(target instanceof Table)) {
+                        return;
+                    }
+
+                    delete target.startEdit;
+                    delete target.cancelEdit;
+
+                    target.un('enddrag', tableEndDragHandler);
+                    target.un('resize', tableResizeHandler);
+
+                    disposeEditorControl(target);
+
+                    this.$super(arguments);
+                }
+            }
+        );
+
+        /**
          * 初始化表格内容编辑器
          *
+         * @param {Table} table table
+         * @param {Object} options 配置
          * @ignore
          */
         function init(table, options) {
@@ -70,7 +180,7 @@ define(
             currentColIndex = options.columnIndex;
 
             if (!layer) {
-                layer = helper.layer.create();
+                layer = Layer.create();
                 document.body.appendChild(layer);
                 layer.className = table.helper.getPartClassName('editor');
                 initLayer();
@@ -97,7 +207,7 @@ define(
          * @ignore
          */
         function initButtonControl() {
-            var controlMap = main.init(layer);
+            var controlMap = esui.init(layer);
             okButton = getControlFromMap(controlMap, okId);
             cancelButton = getControlFromMap(controlMap, cancelId);
 
@@ -110,6 +220,7 @@ define(
         /**
          * 初始化输入及验证控件
          *
+         * @param {Object} options 配置
          * @ignore
          */
         function initInputControl(options) {
@@ -126,15 +237,15 @@ define(
 
                 inputField.innerHTML = lib.format(
                     inputTpl,
-                    { inputId: newInputId }
+                    {inputId: newInputId}
                 );
                 errorField.innerHTML = lib.format(
                     validTpl,
-                    { validId: newValidId }
+                    {validId: newValidId}
                 );
 
-                var inputCtrlOptions = {properties:{}};
-                inputCtrlOptions.properties[newInputId] = lib.extend(
+                var inputCtrlOptions = {properties: {}};
+                inputCtrlOptions.properties[newInputId] = u.extend(
                     {
                         id: newInputId,
                         validityLabel: validId + guid
@@ -142,8 +253,8 @@ define(
                     options.field.editRules
                 );
 
-                inputCtrl = main.init(inputField, inputCtrlOptions)[0];
-                main.init(errorField);
+                inputCtrl = esui.init(inputField, inputCtrlOptions)[0];
+                esui.init(errorField);
 
                 inputCtrl.on('enter', getOkHandler());
 
@@ -154,6 +265,7 @@ define(
         /**
          * 销毁释放控件
          *
+         * @param {Table} table table
          * @ignore
          */
         function disposeEditorControl(table) {
@@ -164,9 +276,10 @@ define(
                 okButton.dispose();
                 cancelButton.dispose();
 
-                try{
+                try {
                     layer && document.body.removeChild(layer);
-                } catch (ex){}
+                }
+                catch (ex) {}
 
                 layer = null;
                 inputCtrl = null;
@@ -202,6 +315,9 @@ define(
         /**
          * 获取初始化后的控件
          *
+         * @param {Array} controlMap control数组
+         * @param {string} id control ID
+         * @return {Control} 匹配的组件
          * @ignore
          */
         function getControlFromMap(controlMap, id) {
@@ -218,7 +334,7 @@ define(
          *
          * @ignore
          */
-        function hideLayer(argument) {
+        function hideLayer() {
             (layer) && (layer.style.display = 'none');
         }
 
@@ -227,13 +343,14 @@ define(
          *
          * @ignore
          */
-        function showLayer(argument) {
+        function showLayer() {
             (layer) && (layer.style.display = '');
         }
 
         /**
          * 显示错误信息
          *
+         * @param {string} error 错误信息
          * @ignore
          */
         function showErrorMsg(error) {
@@ -250,6 +367,7 @@ define(
         /**
          * 清空错误信息
          *
+         * @param {string} error 错误信息
          * @ignore
          */
         function clearErrorMsg(error) {
@@ -282,12 +400,13 @@ define(
                     field: currentTable.realFields[currentColIndex]
                 };
 
-                eventArgs = currentTable.fire('saveedit', eventArgs);
+                var event = currentTable.fire('saveedit', eventArgs);
                 fieldHanlder(currentTable, 'saveedit', eventArgs);
 
-                if (!eventArgs.isDefaultPrevented()) {
+                if (!event.isDefaultPrevented()) {
                     saveSuccessHandler.call(currentTable, eventArgs);
-                } else {
+                }
+                else {
                     saveFailedHandler.call(currentTable, eventArgs);
                 }
             }
@@ -343,6 +462,7 @@ define(
         /**
          * 让浮层跟随编辑单元格
          *
+         * @param {Table} table table
          * @ignore
          */
         function layerFollow(table) {
@@ -355,7 +475,7 @@ define(
                 );
 
                 if (entrance) {
-                   helper.layer.attachTo(
+                    Layer.attachTo(
                         layer,
                         entrance
                     );
@@ -378,7 +498,7 @@ define(
                 field: currentTable.realFields[currentColIndex]
             };
 
-            eventArgs = currentTable.fire('canceledit', eventArgs);
+            currentTable.fire('canceledit', eventArgs);
             fieldHanlder(currentTable, 'canceledit', eventArgs);
         }
 
@@ -404,7 +524,7 @@ define(
                     options.columnIndex
                 )
             );
-            helper.layer.attachTo(
+            Layer.attachTo(
                 layer,
                 entrance
             );
@@ -447,8 +567,8 @@ define(
         /**
          * 编辑按钮单击事件处理函数
          *
-         * @param {object} element 事件元素
-         * @param {object} e 事件元素
+         * @param {Object} element 事件元素
+         * @param {Object} e 事件元素
          * @ignore
          */
         function entranceClickHandler(element, e) {
@@ -464,6 +584,7 @@ define(
          * 开始某行的编辑逻辑，初始化子控件
          * @param {number} rowIndex 行序号
          * @param {number} columnIndex 列序号
+         * @param {DOMElement} element DOM元素
          * @ignore
          */
         function startEdit(rowIndex, columnIndex, element) {
@@ -475,10 +596,10 @@ define(
                     field: field
                 };
 
-                eventArgs = this.fire('startedit', eventArgs);
+                var event = this.fire('startedit', eventArgs);
                 fieldHanlder(this, 'startedit', eventArgs);
 
-                if (!eventArgs.isDefaultPrevented()) {
+                if (!event.isDefaultPrevented()) {
                     var data = this.datasource[rowIndex];
                     var content = field.editContent;
                     var value = 'function' === typeof content
@@ -523,7 +644,7 @@ define(
          * 显示编辑浮层
          * @ignore
          */
-        function showEditError () {
+        function showEditError() {
             if (this === currentTable) {
                 showLayer();
             }
@@ -531,15 +652,12 @@ define(
 
         var editentryTpl = '<div class="${className}" '
                          + 'data-row="${row}" data-col="${col}"></div>';
-        /**
-         * 生成每单元格内容
-         * @ignore
-         */
+
         function getColHtml(
             table, data, field, rowIndex, fieldIndex, extraArgs
         ) {
             var fieldEditable = field.editable;
-            if ('function' == typeof fieldEditable) {
+            if ('function' === typeof fieldEditable) {
                 fieldEditable = fieldEditable.call(table, data, rowIndex, fieldIndex, extraArgs);
             }
             var iconClass = table.helper.getIconClass();
@@ -549,8 +667,8 @@ define(
                     html: lib.format(
                         editentryTpl,
                         {
-                            className: 
-                                table.getClass('cell-editentry') 
+                            className:
+                                table.getClass('cell-editentry')
                                 + ' '
                                 + iconClass,
                             row: rowIndex,
@@ -569,116 +687,7 @@ define(
             }
         }
 
-        /**
-         * 表格行内编辑扩展
-         *
-         * 启用该扩展后，{@link Table}控件将可以在行内进行字段的编辑
-         *
-         * 在{@link Table#fields}配置中，可编辑的字段有以下属性控制：
-         *
-         * - `{boolean editable}`：设置为`true`表示可编辑
-         * - `{Object} editRules`：配置编辑的验证规则，同{@link validator.Rule}定义
-         * - `{Function | Mixed} editContent`：指定最终编辑后的内容，
-         * 如果是函数则取函数的返回值作为最终编辑后的内容，其它类型则作为常量
-         *
-         * 在编辑过程中，{@link Table}控件将触发以下事件：
-         *
-         * - `startedit`：开始编辑
-         * - `saveedit`：编辑生效
-         * - `canceledit`：取消编辑
-         *
-         * 以上3个事件的事件对象均提供以下属性：
-         *
-         *
-         * - `{number} rowIndex`：行索引
-         * - `{number} columnIndex`：列索引
-         * - `{number} field`：对应的字段
-         *
-         * 而`saveedit`还额外提供`{Mixed} value`属性表示保存的值
-         *
-         * 其中`saveedit`和`startedit`均可以通过`preventDefault()`阻止默认行为
-         *
-         * @class extension.TableEdit
-         * @extends Extension
-         * @constructor
-         */
-        function TableEdit() {
-            Extension.apply(this, arguments);
-        }
-
-        /**
-         * 指定扩展类型，始终为`"TableEdit"`
-         *
-         * @type {string}
-         */
-        TableEdit.prototype.type = 'TableEdit';
-
-        /**
-         * 激活扩展
-         *
-         * @override
-         */
-        TableEdit.prototype.activate = function () {
-            var target = this.target;
-            // 只对`Table`控件生效
-            if (!(target instanceof Table)) {
-                return;
-            }
-
-            target.startEdit = startEdit;
-            target.cancelEdit = cancelEdit;
-            target.hideEditLayer = hideEditLayer;
-            target.showEditError = showEditError;
-
-            target.addRowBuilders([
-                {
-                    index: 3,
-                    getColHtml: getColHtml
-                }
-            ]);
-
-            target.addHandlers(
-                'click',
-                {
-                    handler: entranceClickHandler,
-                    matchFn: helper.getPartClasses(
-                        target, 'cell-editentry'
-                    )[0]
-                }
-            );
-
-            target.on('enddrag', tableEndDragHandler);
-            target.on('resize', tableResizeHandler);
-
-            Extension.prototype.activate.apply(this, arguments);
-        };
-
-        /**
-         * 取消扩展的激活状态
-         *
-         * @override
-         */
-        TableEdit.prototype.inactivate = function () {
-            var target = this.target;
-            // 只对`Table`控件生效
-            if (!(target instanceof Table)) {
-                return;
-            }
-
-            delete target.startEdit;
-            delete target.cancelEdit;
-
-            target.un('enddrag', tableEndDragHandler);
-            target.un('resize', tableResizeHandler);
-
-            disposeEditorControl(target);
-
-            Extension.prototype.inactivate.apply(this, arguments);
-        };
-
-        lib.inherits(TableEdit, Extension);
-        main.registerExtension(TableEdit);
-
+        esui.registerExtension(TableEdit);
         return TableEdit;
     }
 );

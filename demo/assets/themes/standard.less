@@ -4,16 +4,21 @@
 .global-normalize();
 
 // import esf
-@import "../../../dep/esf/1.0.0-beta.1/theme/standard/main.less";
-
-// import esui
-@import "../../../theme/standard/Main.less";
+@import "../../../dep/esf/1.0.0-beta.2/theme/standard/main.less";
 
 // import eicons
 @import "../../../dep/eicons/1.0.0-beta.1/src/main.less";
 
 @fa-font-path: "../../../dep/eicons/1.0.0-beta.1/fonts/font-awesome";
 
+@esui-type-headings-font-weight: normal;
+
+// import esui
+@import "../../../theme/standard/Main.less";
+
+@import "site.less";
+
+// demo page
 .ui-tab-vertical-container-left {
    .esui-vertical-tab-def(
        8em,
@@ -30,121 +35,61 @@
    );
 }
 
-.ui-demo-light-stage {
-    background: white;
-    padding: 1em;
+// form.html
+.edit-form .ui-form-key {
+    width: 8em;
 }
 
-#branding {
-    color: @esf-palette-contrast-color;
-    margin: 0;
-    padding: .5em;
+// BehaviorSelectable
+.ui-widget-content {
+    border: 1px solid #aaaaaa;
+    color: #222222;
 }
-
-/* User CSS */
-#navigator {
-  float: left;
-  width: 160px;
-  margin: 0;
-  list-style: none;
-  padding: 0;
-}
-#navigator li a {
-    text-decoration: none;
-    display: block;
-    background-color: #f5f5f5;
-    color: #000;
-    border: 1px solid #a2a2a2;
-    margin-top: -1px;
-    padding: 8px 14px;
-}
-#navigator li:first-child a {
-    border-radius: 6px 6px 0 0;
-}
-#navigator li:last-child a {
-    border-radius: 0 0 6px 6px;
-}
-#navigator li a:hover {
-    background-color: #a2a2a2;
-    color: #fff;
-}
-#navigator li.cur a{
-    background-color: #a2a2a2;
-    color: #fff;
-}
-
-#page {
-    width: 1200px;
-    margin: 0 auto 40px;
-    padding-top: 20px;
-}
-#main {
-    margin-left: 200px;
-    overflow: auto;
-}
-h1 {
-    background: #252525;
-    color: #fff;
-    margin-bottom: 10px;
-    font-size: 22px;
-    line-height: 40px;
-    padding: 0 8px;
-    margin: 0;
+.ui-state-default {
+    border: 1px solid #d3d3d3;
     font-weight: normal;
-    text-rendering: optimizelegibility;
+    color: #555555;
 }
-h2 {
-    font-size: 24px;
-}
-.view {
-    padding: 20px;
-    line-height: 1.5;
-    background-color: #eee;
-    border-radius: 6px;
-    position: relative;
-}
-.viewer {
-    margin: -10px 0 20px -10px;
+#selectable {
+    list-style-type: none;
+    margin: 0;
     padding: 0;
-    list-style: none;
+    width: 450px;
 }
-.viewer li {
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    padding: 4px 12px;
-    margin-right: 10px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    cursor: default;
+#selectable li {
+    margin: 3px;
+    padding: 1px;
+    float: left;
+    width: 100px;
+    height: 80px;
+    font-size: 4em;
+    text-align: center;
 }
-.viewer li:hover {
-    background-color: #a2a2a2;
-    color: #fff;
+
+#selectable-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 60%;
 }
-.source {
-    max-height: 480px;
-    border: 1px solid #ddd !important;
-    border-radius: 0 6px 6px 6px;
-    background-color: #f5f5f5;
-    display: none;
-    color: #333;
-    margin-top: 20px !important;
-    overflow: auto;
+#selectable-list li {
+    margin: 3px;
+    padding: 0.4em;
+    font-size: 1.4em;
+    height: 18px;
 }
-.source-markup:before,
-.source-script:before {
-    content: '结构代码';
-    border-bottom: 1px solid #ccc;
-    display: block;
-    padding-bottom: 3px;
-}
-.source-script:before {
-    content: '脚本代码';
-}
-.source-visible {
-    display: block;
-}
-.row {
-    margin-bottom: 10px;
+
+#selectable-demo {
+    .ui-selectable-selecting {
+        background: #FECA40;
+    }
+
+    .ui-selectable-selected {
+        background: #F39814;
+        color: white;
+    }
+    
+    .ui-selectable-helper {
+        border: 1px dotted #666;
+    }
 }

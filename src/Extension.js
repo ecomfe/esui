@@ -6,9 +6,10 @@
  * @file 扩展基类
  * @author otakustay
  */
+
 define(
     function (require) {
-        var lib = require('./lib');
+        var u = require('underscore');
 
         /**
          * 扩展基类
@@ -18,7 +19,7 @@ define(
          * `Extension`类为扩展基类，所有扩展类需要继承于`Extension`。
          * 扩展类需要通过`{@link main#registerExtension}`方法，注册扩展类型。
          * 注册扩展类型时将自动根据`prototype.type`进行类型关联。
-         * 
+         *
          * 一个控件实例可以组合多个`Extension`实例，
          * 但一个控件实例对同种类型（即`type`相同）的`Extension`，只能拥有一份。
          *
@@ -100,7 +101,7 @@ define(
          * @constructor
          */
         function Extension(options) {
-            lib.extend(this, options);
+            u.extend(this, options);
         }
 
         /**

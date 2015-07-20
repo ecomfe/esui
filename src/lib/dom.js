@@ -8,8 +8,7 @@
  */
 define(
     function (require) {
-        var u = require('underscore');
-        var string = require('./string');
+        var $ = require('jquery');
 
         /**
          * @override lib
@@ -53,14 +52,7 @@ define(
                 element = lib.g(element);
             }
 
-            if (!element) {
-                return;
-            }
-
-            var parent = element.parentNode;
-            if (parent) {
-                parent.removeChild(element);
-            }
+            $(element).remove();
         };
 
         /**
@@ -71,11 +63,7 @@ define(
          * @return {HTMLElement} 被添加的目标元素
          */
         lib.insertAfter = function (element, reference) {
-            var parent = reference.parentNode;
-
-            if (parent) {
-                parent.insertBefore(element, reference.nextSibling);
-            }
+            $(reference).after(element);
             return element;
         };
 
@@ -87,11 +75,7 @@ define(
          * @return {HTMLElement} 被添加的目标元素
          */
         lib.insertBefore = function (element, reference) {
-            var parent = reference.parentNode;
-
-            if (parent) {
-                parent.insertBefore(element, reference);
-            }
+            $(reference).before(element);
 
             return element;
         };
@@ -102,14 +86,8 @@ define(
          * @return {HTMLElement[]} 目标元素的所有子元素
          */
         lib.getChildren = function (element) {
-            return u.filter(
-                element.children,
-                function (child) {
-                    return child.nodeType === 1;
-                }
-            );
+            return $(element).children().toArray();
         };
-
 
         /**
          * 获取计算样式值
@@ -123,68 +101,8 @@ define(
                 return '';
             }
 
-            key = getCssPropertyName(element, key);
-
-            var doc = element.nodeType === 9
-                ? element
-                : element.ownerDocument || element.document;
-
-            if (doc.defaultView && doc.defaultView.getComputedStyle) {
-                var styles = doc.defaultView.getComputedStyle(element, null);
-                if (styles) {
-                    return styles[key] || styles.getPropertyValue(key);
-                }
-            }
-            else if (element && element.currentStyle) {
-                // 解决IE8下非px单位取值不对的问题
-                var core_pnum = /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source;
-                var rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" );
-                var rposition = /^(top|right|bottom|left)$/;
-                var ret = element.currentStyle[key];
-                var getCurrentPixelStyle = function (elem, prop) {
-                    var value = elem.currentStyle[prop] || 0;
-
-                    // we use 'left' property as a place holder so backup values
-                    var leftCopy = elem.style.left;
-                    var runtimeLeftCopy = elem.runtimeStyle.left;
-
-                    // assign to runtimeStyle and get pixel value
-                    elem.runtimeStyle.left = elem.currentStyle.left;
-                    elem.style.left = (prop === "fontSize") ? "1em" : value;
-                    value = elem.style.pixelLeft + "px";
-
-                    // restore values for left
-                    elem.style.left = leftCopy;
-                    elem.runtimeStyle.left = runtimeLeftCopy;
-
-                    return value
-                }
-
-                if (rnumnonpx.test(ret) && !rposition.test(key)) {
-                    return getCurrentPixelStyle(element, key);
-                }
-                return ret;
-            }
-            return '';
+            return $(element).css(key);
         };
-
-        /**
-         * 重设css样式名，为了兼容ie
-         *
-         * @param {HTMLElement} element 目标元素
-         * @param {string} css 样式名
-         * @return {string} 重设后的样式名
-         */
-        function getCssPropertyName(element, css) {
-            var ret = css;
-            switch (css) {
-                case 'float': 
-                    ret = 'cssFloat' in element.style ? 'cssFloat' : 'styleFloat';
-                    break;
-            }
-
-            return ret;
-        }
 
         /**
          * 获取元素样式值
@@ -194,7 +112,7 @@ define(
          * @return {string} 目标元素的指定样式值
          */
         lib.getStyle = function (element, key) {
-            key = string.camelize(key);
+            key = $.camelCase(key);
             return element.style[key]
                 || (element.currentStyle ? element.currentStyle[key] : '')
                 || lib.getComputedStyle(element, key);
@@ -242,23 +160,7 @@ define(
          * @return {string}
          */
         lib.getText = function (element) {
-            var text = '';
-
-            //  text 和 CDATA 节点，取nodeValue
-            if (element.nodeType === 3 || element.nodeType === 4) {
-                text += element.nodeValue;
-            }
-            // 8 是 comment Node
-            else if (element.nodeType !== 8) {
-                u.each(
-                    element.childNodes,
-                    function (child) {
-                        text += lib.getText(child);
-                    }
-                );
-            }
-
-            return text;
+            return $(element).text();
         };
 
         /**
@@ -276,18 +178,8 @@ define(
         lib.dom.first = function (element) {
             element = lib.g(element);
 
-            if (element.firstElementChild) {
-                return element.firstElementChild;
-            }
-
-            var node = element.firstChild;
-            for (; node; node = node.nextSibling) {
-                if (node.nodeType === 1) {
-                    return node;
-                }
-            }
-
-            return null;
+            var result = $(element).children(':first-child').get(0);
+            return result || null;
         };
 
         /**
@@ -299,18 +191,8 @@ define(
         lib.dom.last = function (element) {
             element = lib.g(element);
 
-            if (element.lastElementChild) {
-                return element.lastElementChild;
-            }
-
-            var node = element.lastChild;
-            for (; node; node = node.previousSibling) {
-                if (node.nodeType === 1) {
-                    return node;
-                }
-            }
-
-            return null;
+            var result = $(element).children(':last-child').get(0);
+            return result || null;
         };
 
         /**
@@ -322,18 +204,8 @@ define(
         lib.dom.next = function (element) {
             element = lib.g(element);
 
-            if (element.nextElementSibling) {
-                return element.nextElementSibling;
-            }
-
-            var node = element.nextSibling;
-            for (; node; node = node.nextSibling) {
-                if (node.nodeType === 1) {
-                    return node;
-                }
-            }
-
-            return null;
+            var result = $(element).next().get(0);
+            return result || null;
         };
 
         /**
@@ -345,18 +217,8 @@ define(
         lib.dom.previous = function (element) {
             element = lib.g(element);
 
-            if (element.previousElementSibling) {
-                return element.previousElementSibling;
-            }
-
-            var node = element.previousSibling;
-            for (; node; node = node.previousSibling) {
-                if (node.nodeType == 1) {
-                    return node;
-                }
-            }
-
-            return null;
+            var result = $(element).prev().get(0);
+            return result || null;
         };
 
         /**
@@ -370,29 +232,9 @@ define(
             container = lib.g(container);
             contained = lib.g(contained);
 
-            //fixme: 无法处理文本节点的情况(IE)
-            return container.contains
-                ? container !== contained && container.contains(contained)
-                : !!(container.compareDocumentPosition(contained) & 16);
+            return $.contains(container, contained);
         };
 
-        /**
-         * 从HTML创建 HTML elements
-         *
-         * @param {string} html string
-         * @return {HTMLElement | NodeList} HTML Element 或数组
-        */
-        lib.dom.createElement = function (html) {
-            var div = document.createElement('div');
-            div.innerHTML = html;
-            var nodes = div.children;
-            if (nodes.length === 1) {
-                return nodes[0]
-            }
-            else {
-                return nodes;
-            }
-        };
         return lib;
     }
 );

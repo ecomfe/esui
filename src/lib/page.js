@@ -113,6 +113,6 @@ define(
                 || 0;
         };
 
-        return { page: page };
+        return {page: page};
     }
 );

@@ -8,7 +8,7 @@
 
 @import "Variable.less";
 
-@esui-textline-border-radius: 5px;
+@esui-textline-border-radius: 0;
 @esui-textline-line-height: 1.5;
 @esui-textline-number-column-width: 2em;
 @esui-textline-number-column-font-size: 1em;
@@ -17,11 +17,19 @@
     position: relative;
     display: inline-block;
 
-    .esf-border-radius(
+    .esui-border-radius(
         @esui-textline-border-radius,
         @esui-textline-border-radius
     );
     .esui-textline-theme();
+
+    // 取出textarea focus边框
+    .ui-textbox {
+        > textarea:focus,
+        > textarea[readonly] {
+            border: none;
+        }
+    }
 }
 
 .@{ui-class-prefix}-textline-num-line {
@@ -34,7 +42,7 @@
     left: 0;
     top: 0;
     height: 100%;
-    .esf-border-left-radius(
+    .esui-border-left-radius(
         @esui-textline-border-radius,
         @esui-textline-border-radius
     );

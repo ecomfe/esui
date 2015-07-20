@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>RangeCalendar - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - RangeCalendar</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">ESUI - RangeCalendar</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>连续时间段选择控件</h2>
                 <div class="intro">
                     <p>连续时间段选择控件</p>
@@ -31,7 +33,7 @@
                         <tr>
                             <th>属性名</th>
                             <th>描述</th>
-                            <th colspan=2>格式</th>
+                            <th colspan="2">格式</th>
                             <th>默认值</th>
                         </tr>
                         <tr>
@@ -39,13 +41,26 @@
                             <td>日历可选区间</td>
                             <td>&lt;string&gt; 逗号分隔开始结束，如：<br>2013-07-03,2013-08-29</td>
                             <td>&lt;Object&gt; 如：<br>{beign: new Date(2013, 7, 3), end:new Date(2016, 7, 3)}</td>
-                            <td>开始：1982-11-04 <br> 结束：2046-11-04</td></tr>
-                        <tr><td>value</td><td>选择区间</td><td colspan=2>&lt;string&gt; 逗号分隔开始结束，如：2013-07-01,2013-09-01。如果没有设置结束时间，日历默认当作“无结束”处理。</td><td>当天到当天</td></tr>
-                        <tr><td>rawValue</td><td>选择区间</td><td colspan=2>&lt;Object&gt; 如：{beign: new Date(2013, 7, 3), end:new Date(2016, 10, 3)}</td><td>当天到当天</td></tr>
-                        <tr><td>miniMode</td><td>默认显示的快捷区间</td><td colspan=2>&lt;number&gt; 是快捷链接的索引</td><td>不选</td></tr>
-                        <tr><td>showedShortCut</td><td>要显示的快捷日历链接</td><td colspan=2>&lt;string&gt; 如：'昨天,最近7天,上周'</td><td>默认全部。'昨天,最近7天,上周,本月,上个月,上个季度'</td></tr>
-                        <tr><td>endlessCheck</td><td>是否是无限日历</td><td colspan=2>&lt;boolean | string&gt;'true' 或 true代表日历为可无限型；'false' 或 false代表日历为区间型。setProperties设置无效。</td><td>false</td></tr>
-                        <tr><td>isEndless</td><td>无限日历是否置为无限</td><td colspan=2>&lt;boolean | string&gt; 'true' 或 true代表结束无限；'false' 或 false代表结束有限。</td><td>false</td></tr>
+                            <td>开始：1982-11-04 <br> 结束：2046-11-04</td>
+                        </tr>
+                        <tr>
+                            <td>value</td><td>选择区间</td><td colspan="2">&lt;string&gt; 逗号分隔开始结束，如：2013-07-01,2013-09-01。如果没有设置结束时间，日历默认当作“无结束”处理。</td><td>当天到当天</td>
+                        </tr>
+                        <tr>
+                            <td>rawValue</td><td>选择区间</td><td colspan="2">&lt;Object&gt; 如：{beign: new Date(2013, 7, 3), end:new Date(2016, 10, 3)}</td><td>当天到当天</td>
+                        </tr>
+                        <tr>
+                            <td>miniMode</td><td>默认显示的快捷区间</td><td colspan="2">&lt;number&gt; 是快捷链接的索引</td><td>不选</td>
+                        </tr>
+                        <tr>
+                            <td>showedShortCut</td><td>要显示的快捷日历链接</td><td colspan="2">&lt;string&gt; 如：'昨天,最近7天,上周'</td><td>默认全部。'昨天,最近7天,上周,本月,上个月,上个季度'</td>
+                        </tr>
+                        <tr>
+                            <td>endlessCheck</td><td>是否是无限日历</td><td colspan="2">&lt;boolean | string&gt;'true' 或 true代表日历为可无限型；'false' 或 false代表日历为区间型。setProperties设置无效。</td><td>false</td>
+                        </tr>
+                        <tr>
+                            <td>isEndless</td><td>无限日历是否置为无限</td><td colspan="2">&lt;boolean | string&gt; 'true' 或 true代表结束无限；'false' 或 false代表结束有限。</td><td>false</td>
+                        </tr>
                     </tbody>
                 </table>
                 <p class="desc-title">
@@ -58,61 +73,59 @@
                     <li>如果设置了isEndless，value中又包含结束时间，则删除value中的结束时间信息</li>
                     <li>如果设置了isEndless，endlessCheck设置为false，则isEndless优先级高，即endlessCheck纠正为true</li>
                 </ul>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example">
-                        <div class="demo-container ui-demo-light-stage">
-                            <h3>普通</h3>
-                            <div class="row">
-                                <div data-ui-type="RangeCalendar" data-ui-name="test"
-                                    data-ui-endless-check="false"
-                                    data-ui-is-endless="true"
-                                    data-ui-showed-short-cut="昨天,最近7天,上周"></div>
-                            </div>
-                            <h3>Disabled</h3>
-                            <div class="row">
-                                <input data-ui-type="RangeCalendar" name="test2"
-                                    data-ui-mini-mode="1"
-                                    data-ui-disabled="1"
-                                    data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59" />
-                            </div>
-                            <h3>Read Only</h3>
-                            <div class="row">
-                                <div
-                                    data-ui-mini-type="RangeCalendar"
-                                    data-ui-mini-mode="1"
-                                    data-ui-states="readOnly"
-                                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></div>
-                            </div>
-                            <h3>Error</h3>
-                            <div class="row">
-                                <div
-                                    data-ui-mini-type="RangeCalendar"
-                                    data-ui-mini-mode="1"
-                                    data-ui-states="validity-invalid"
-                                    data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></div>
-                            </div>
+                <div class="example">
+                    <div class="demo-container ui-demo-light-stage">
+                        <h3>普通</h3>
+                        <div class="row">
+                            <div data-ui-type="RangeCalendar" data-ui-name="test"
+                                data-ui-endless-check="false"
+                                data-ui-is-endless="true"
+                                data-ui-showed-short-cut="昨天,最近7天,上周"></div>
+                        </div>
+                        <h3>Disabled</h3>
+                        <div class="row">
+                            <input data-ui-type="RangeCalendar" name="test2"
+                                data-ui-mini-mode="1"
+                                data-ui-disabled="1"
+                                data-ui-range="2013-06-01 00:00:00,2013-07-10 23:59:59" />
+                        </div>
+                        <h3>Read Only</h3>
+                        <div class="row">
+                            <div
+                                data-ui-type="RangeCalendar"
+                                data-ui-mini-mode="1"
+                                data-ui-states="readOnly"
+                                data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></div>
+                        </div>
+                        <h3>Error</h3>
+                        <div class="row">
+                            <div
+                                data-ui-type="RangeCalendar"
+                                data-ui-mini-mode="1"
+                                data-ui-states="validity-invalid"
+                                data-ui-range="2013-10-01 00:00:00,2013-07-10 23:59:59"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
-                'esui/RangeCalendar'
+                'esui/RangeCalendar',
+                'esui/Tab',
+                'demo'
             ],
             function (ui) {
-                var calendar = ui.init()[0];
-                // document.getElementById('disposeBtn').onclick = function(){
-                //     calendar.dispose();
-                // };
+                ui.init()[0];
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

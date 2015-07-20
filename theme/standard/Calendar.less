@@ -3,17 +3,18 @@
 @import "MonthView.less";
 
 // core variable overrides
-@esui-calendar-height: @esf-single-line-control-height;
+@esui-calendar-height: @esui-single-line-control-height;
 
 // theme variables
 @esui-calendar-border: none;
-@esui-calendar-background: @esf-palette-neutral-color;
-@esui-calendar-color: @esf-palette-color;
-@esui-calendar-hover-background: @esf-palette-neutral-highlight-color;
-@esui-calendar-active-background: @esf-palette-neutral-shadow-color;
+@esui-calendar-background: @esui-palette-neutral-color;
+@esui-calendar-color: @esui-palette-color;
+@esui-calendar-hover-background: @esui-palette-neutral-highlight-color;
+@esui-calendar-active-arrow-color: @esui-palette-primary-color;
+@esui-calendar-active-background: @esui-palette-neutral-shadow-color;
 
-@esui-calendar-readonly-color: @esf-palette-muted-color;
-@esui-calendar-readonly-background: @esf-palette-neutral-color;
+@esui-calendar-readonly-color: @esui-palette-muted-color;
+@esui-calendar-readonly-background: @esui-palette-neutral-color;
 
 .esui-calendar-theme() {
     background: @esui-calendar-background;
@@ -22,6 +23,9 @@
     &:focus,
     &:hover {
         background: @esui-calendar-hover-background;
+        .@{ui-class-prefix}-calendar-arrow {
+            color: @esui-calendar-active-arrow-color;
+        }
     }
     &.@{ui-state-prefix}-active {
         background: @esui-calendar-active-background;
@@ -29,5 +33,11 @@
     &.@{ui-state-prefix}-read-only {
         color: @esui-calendar-readonly-color;
         background: @esui-calendar-readonly-background;
+    }
+    &.@{ui-state-prefix}-disabled,
+    &.@{ui-state-prefix}-read-only {
+        .@{ui-class-prefix}-calendar-arrow {
+            color: @esui-calendar-color;
+        }
     }
 }

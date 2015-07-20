@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <title>Wizard - ESUI Demo</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/ie8.css" />
+        <![endif]-->
+    </head>
+    <body>
+        <div class="header">
+            <h1 id="branding">ESUI - Frame</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
+                <h2>Form</h2>
+                <div class="intro">
+                    <p>基本Form。</p>
+                </div>
+                <div class="example ui-demo-light-stage">
+                    <iframe class="edit-form"
+                    data-ui-type="Frame"
+                    data-ui-src="http://www.baidu.com"
+                    data-ui-width="1000"
+                    data-ui-height="500"
+                    data-ui-id="form">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
+        require(
+            [
+                'esui',
+                'esui/Frame'
+            ],
+            function (ui) {
+                ui.init();
+            }
+        );
+        </script>
+        <script src="sitemap.js"></script>
+    </body>
+</html>

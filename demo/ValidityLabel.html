@@ -1,50 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="utf-8" />
         <title>Validity Label - ESUI Demo</title>
-        <script src="assets/loader/esl.js"></script>
-        <script src="assets/jquery-1.9.1.min.js"></script>
-        <script src="assets/google-code-prettify/prettify.js"></script>
-        <script src="demo.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
         <link rel="stylesheet" href="assets/themes/standard.css" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     </head>
     <body>
-        <h1 id="branding">ESUI - Validity Label</h1>
-        <div id="page">
-            <ul id="navigator">
-            </ul>
-            <div id="main">
+        <div class="header">
+            <h1 id="branding">ESUI - Validity Label</h1>
+        </div>
+        <div class="ui-g main-container">
+            <div id="side-bar" class="ui-u-1-5">
+                <ul id="navigator" class="ui-nav">
+                </ul>
+            </div>
+            <div id="main" class="ui-u-4-5">
                 <h2>验证信息标签可以放置到其他位置</h2>
-                <div class="intro">
-                    <p>Validity Label</p>
-                </div>
-                <div class="view">
-                    <ul class="viewer">
-                        <li class="view-markup">结构</li>
-                    </ul>
-                    <div class="example ui-demo-light-stage">
-                        <h3>文字不能为空</h3>
-                        <div id="container" class="container">
-                        </div>
-                        <div id="validator">
-                        
-                        </div>
+                <p>Validity Label</p>
+                <div class="example">
+                    <h3>文字不能为空</h3>
+                    <div id="container" class="container">
+                    </div>
+                    <div id="validator">
                     </div>
                 </div>
             </div>
         </div>
-        <script>
+        <script src="assets/loader/esl.js"></script>
+        <script src="config.js"></script>
+        <script src="demo.js"></script>
+        <script src="assets/google-code-prettify/prettify.js"></script>
+        <script id="main-js">
         require(
             [
                 'esui',
                 'esui/TextBox',
                 'esui/Validity',
-                'esui/validator/RequiredRule'
+                'esui/validator/RequiredRule',
+                'esui/Tab',
+                'demo'
             ],
             function (ui, TextBox, ValidityLabel) {
                 var validityLabel = new ValidityLabel({
@@ -64,7 +64,7 @@
                 textbox.validate();
             }
         );
-        copyExample();
         </script>
+        <script src="sitemap.js"></script>
     </body>
 </html>

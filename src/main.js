@@ -6,9 +6,12 @@
  * @file 主模块
  * @author erik
  */
+
 define(
     function (require) {
         var lib = require('./lib');
+        var u = require('underscore');
+        var $ = require('jquery');
 
         /**
          * 主模块
@@ -53,8 +56,7 @@ define(
             viewContextAttr: 'data-ctrl-view-context',
             uiClassPrefix: 'ui',
             skinClassPrefix: 'skin',
-            stateClassPrefix: 'state',
-            inheritFont: true
+            stateClassPrefix: 'state'
         };
 
         /**
@@ -75,7 +77,7 @@ define(
          * @param {Object} info 控件库配置信息对象
          */
         main.config = function (info) {
-            lib.extend(config, info);
+            u.extend(config, info);
         };
 
         /**
@@ -95,9 +97,10 @@ define(
          *
          * @param {string} source 属性值源字符串
          * @param {Function} valueReplacer 替换值的处理函数，每个值都将经过此函数
+         * @param {Function} valueParser 分两步处理value，为了兼容已经重写过的valueReplacer
          * @return {Object}
          */
-        main.parseAttribute = function (source, valueReplacer) {
+        main.parseAttribute = function (source, valueReplacer, valueParser) {
             if (!source) {
                 return {};
             }
@@ -154,6 +157,7 @@ define(
                 // 但是会遇上`key:`这样的串，即只有键没有值，
                 // 这时我们就认为值是个空字符串了
                 var value = lib.trim(source.slice(lastStop, cursor));
+                value = valueParser ? valueParser(value) : value;
                 // 加入到结果中
                 result[key] = valueReplacer ? valueReplacer(value) : value;
                 // 再往前进一格，开始下一次查找
@@ -202,7 +206,7 @@ define(
             if (typeof classFunc === 'function') {
                 var type = classFunc.prototype.type;
                 if (type in container) {
-                    throw new Error(type + ' is exists!');
+                    throw new Error(type + ' already exists!');
                 }
 
                 container[type] = classFunc;
@@ -216,6 +220,7 @@ define(
          * @param {Object} options 初始化参数
          * @param {Object} container 类容器
          * @ignore
+         * @return {Object} Control Instance
          */
         function createInstance(type, options, container) {
             var Constructor = container[type];
@@ -284,7 +289,7 @@ define(
         /**
          * 创建控件包裹，返回一个{@link ControlCollection}对象
          *
-         * @param {Control...} controls 需要包裹的控件
+         * @param {...Control} arguments 需要包裹的控件
          * @return {ControlCollection}
          */
         main.wrap = function () {
@@ -297,6 +302,7 @@ define(
             return collection;
         };
 
+
         /**
          * 从容器DOM元素批量初始化内部的控件渲染
          *
@@ -304,13 +310,35 @@ define(
          * @param {Object} [options] init参数
          * @param {Object} [options.viewContext] 视图环境
          * @param {Object} [options.properties] 属性集合，通过id映射
-         * @param {Object} [options.valueReplacer] 属性值替换函数
+         * @param {Function} [options.valueParser] 在parse element attribute的时候调用
+         *      缺省的value parser这里会处理几种特殊情况：
+         *          1. 字符串true,false --> bool
+         *          2. 全部为数字的字符串 --> number
+         *          3. 使用'false' / 'number'这一类不进行类型转换，但是去掉'(trim)
+         * @param {Function} [options.valueReplacer] 属性值替换函数
          * @return {Control[]} 初始化的控件对象集合
          */
         main.init = function (wrap, options) {
             wrap = wrap || document.body;
             options = options || {};
 
+            var defaultValueParser = function (value) {
+                var coreNumber = /^[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)$/;
+                if (value === 'true') {
+                    value = true;
+                }
+                else if (value === 'false') {
+                    value = false;
+                }
+                else if (coreNumber.test(value)) {
+                    value = +value;
+                }
+                else if (/^'.+?'$/.test(value)) {
+                    value = value.slice(1, -1);
+                }
+                return value;
+            };
+            var valueParser = options.valueParser || defaultValueParser;
             var valueReplacer = options.valueReplacer || function (value) {
                 return value;
             };
@@ -361,53 +389,73 @@ define(
                 if (terms.length === 0) {
                     noOverrideExtend(
                         optionObject,
-                        main.parseAttribute(value, valueReplacer)
+                        main.parseAttribute(value, valueReplacer, valueParser)
                     );
                 }
                 else {
-                    optionObject[joinCamelCase(terms)] = valueReplacer(value);
+                    optionObject[joinCamelCase(terms)] = valueReplacer(valueParser(value));
                 }
+            }
+
+            function parseTypeFormCustomTag(element) {
+                var customElementPrefix = main.getConfig('customElementPrefix');
+                var nodeName = element.nodeName.toLowerCase();
+                var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
+                if (esuiPrefixIndex === 0) {
+                    var typeFromCustomElement;
+                    /* jshint ignore:start */
+                    typeFromCustomElement = nodeName.replace(
+                        /-(\S)/g,
+                        function (match, ch) {
+                            return ch.toUpperCase();
+                        }
+                    );
+                    /* jshint ignore:end */
+                    typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
+                    return typeFromCustomElement;
+                }
+                return;
             }
 
             // 把dom元素存储到临时数组中
             // 控件渲染的过程会导致Collection的改变
-            var rawElements = wrap.getElementsByTagName('*');
-            var elements = [];
-            for (var i = 0, len = rawElements.length; i < len; i++) {
-                if (rawElements[i].nodeType === 1) {
-                    elements.push(rawElements[i]);
-                }
-            }
-
             var uiPrefix = main.getConfig('uiPrefix');
             var extPrefix = main.getConfig('extensionPrefix');
             var customElementPrefix = main.getConfig('customElementPrefix');
+
             var uiPrefixLen = uiPrefix.length;
             var extPrefixLen = extPrefix.length;
             var properties = options.properties || {};
             var controls = [];
-            for (var i = 0, len = elements.length; i < len; i++) {
-                var element = elements[i];
 
+            // 添加一个:xxx伪类选择符
+            // 选出所有需要通过esui初始化的element
+            var pseudoClassName = customElementPrefix;
+            if (u.isObject($.expr[':']) && !$.expr[':'][pseudoClassName]) {
+                $.expr[':'][pseudoClassName] = function (element) {
+                    return $(element).is(
+                        '[' + uiPrefix + '],[' + uiPrefix + '-type]'
+                    ) || element.tagName.indexOf(customElementPrefix.toUpperCase() + '-') === 0;
+                };
+            }
+
+            $(wrap).find(':' + pseudoClassName).each(function (i, element) {
                 // 有时候，一个控件会自己把`main.innerHTML`生成子控件，比如`Panel`，
                 // 但这边有缓存这些子元素，可能又会再生成一次，所以要去掉
                 if (element.getAttribute(config.instanceAttr)) {
-                    continue;
+                    return;
                 }
 
-                var attributes = element.attributes;
                 var controlOptions = {};
                 var extensionOptions = {};
-
-                // 解析attribute中的参数
-                for (var j = 0, attrLen = attributes.length; j < attrLen; j++) {
-                    var attribute = attributes[j];
+                u.each(element.attributes, function (attribute, j) {
                     var name = attribute.name;
                     var value = attribute.value;
+                    var terms;
 
                     if (name.indexOf(extPrefix) === 0) {
                         // 解析extension的key
-                        var terms = name.slice(extPrefixLen + 1).split('-');
+                        terms = name.slice(extPrefixLen + 1).split('-');
                         var extKey = terms[0];
                         terms.shift();
 
@@ -420,30 +468,18 @@ define(
                         extendToOption(extOption, terms, value);
                     }
                     else if (name.indexOf(uiPrefix) === 0) {
-                        var terms = name.length === uiPrefixLen
+                        terms = name.length === uiPrefixLen
                             ? []
                             : name.slice(uiPrefixLen + 1).split('-');
                         extendToOption(controlOptions, terms, value);
                     }
-                }
+                });
 
                 // 根据选项创建控件
                 var type = controlOptions.type;
                 if (!type) {
-                    var nodeName = element.nodeName.toLowerCase();
-                    var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
-                    if (esuiPrefixIndex === 0) {
-                        var typeFromCustomElement;
-                        /* jshint ignore:start */
-                        typeFromCustomElement = nodeName.replace(
-                            /-(\S)/g,
-                            function (match, ch) { return ch.toUpperCase(); }
-                        );
-                        /* jshint ignore:end */
-                        typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
-                        controlOptions.type = typeFromCustomElement;
-                        type = typeFromCustomElement;
-                    }
+                    type = parseTypeFormCustomTag(element);
+                    controlOptions.type = type;
                 }
                 if (type) {
                     // 从用户传入的properties中merge控件初始化属性选项
@@ -452,19 +488,23 @@ define(
                         ? properties[controlId]
                         : {};
                     for (var key in customOptions) {
-                        controlOptions[key] = valueReplacer(customOptions[key]);
+                        if (customOptions.hasOwnProperty(key)) {
+                            controlOptions[key] = valueReplacer(customOptions[key]);
+                        }
                     }
 
                     // 创建控件的插件
                     var extensions = controlOptions.extensions || [];
                     controlOptions.extensions = extensions;
-                    for (var key in extensionOptions) {
-                        var extOption = extensionOptions[key];
-                        var extension = main.createExtension(
-                            extOption.type,
-                            extOption
-                        );
-                        extension && extensions.push(extension);
+                    for (var key2 in extensionOptions) {
+                        if (extensionOptions.hasOwnProperty(key2)) {
+                            var extOption = extensionOptions[key2];
+                            var extension = main.createExtension(
+                                extOption.type,
+                                extOption
+                            );
+                            extension && extensions.push(extension);
+                        }
                     }
 
                     // 绑定视图环境和控件主元素
@@ -483,23 +523,10 @@ define(
                         if (options.parent) {
                             options.parent.addChild(control);
                         }
-                        try {
-                            control.render();
-                        }
-                        catch (ex) {
-                            var error = new Error(
-                                'Render control '
-                                    + '"' + (control.id || 'anonymous') + '" '
-                                    + 'of type ' + control.type + ' '
-                                    + 'failed because: '
-                                    + ex.message
-                            );
-                            error.actualError = ex;
-                            throw error;
-                        }
+                        control.render();
                     }
                 }
-            }
+            });
 
             return controls;
         };
@@ -564,7 +591,6 @@ define(
          * @return {Extension[]}
          */
         main.createGlobalExtensions = function () {
-            var options = globalExtensionOptions;
             var extensions = [];
             for (var type in globalExtensionOptions) {
                 if (globalExtensionOptions.hasOwnProperty(type)) {
@@ -596,10 +622,13 @@ define(
          */
         main.registerRule = function (ruleClass, priority) {
             // 多个Rule共享一个属性似乎也没问题
-            ruleClasses.push({ type: ruleClass, priority: priority });
+            ruleClasses.push({type: ruleClass, priority: priority});
             // 能有几个规则，这里就不优化为插入排序了
             ruleClasses.sort(
-                function (x, y) { return x.priority - y.priority; });
+                function (x, y) {
+                    return x.priority - y.priority;
+                }
+            );
         };
 
         /**

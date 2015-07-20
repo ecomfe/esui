@@ -1,63 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8" />
     <title>Wizard - ESUI Demo</title>
-    <script src="assets/loader/esl.js"></script>
-    <script src="assets/jquery-1.9.1.min.js"></script>
-    <script src="assets/google-code-prettify/prettify.js"></script>
-    <script src="demo.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
     <link rel="stylesheet" href="assets/themes/standard.css" />
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="assets/ie8.css" />
     <![endif]-->
-    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
-    <style>
-        .panel {
-            height: 200px;
-        }
-    </style>
 </head>
 <body>
-    <h1 id="branding">ESUI - Wizard</h1>
-    <div id="page">
-        <ul id="navigator">
-        </ul>
-        <div id="main">
+    <div class="header">
+        <h1 id="branding">ESUI - Wizard</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-nav">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
             <h2>Wizard</h2>
-            <div class="intro">
-                <p>Wizard</p>
-            </div>
-            <div class="view">
-                <ul class="viewer">
-                    <li class="view-markup">结构</li>
-                </ul>
-                <div class="example ui-demo-light-stage">
-                    <div id="container">
-                        <div id="wizard-zone" class="ui-large">
-                        </div>
-                        <div style="padding: 2em;">
-                            <div id="a" class="panel">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
-                            <div id="b" class="panel">Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</div>
-                            <div data-ui="type:Panel;id:c;" class="panel">Panel 3</div>
-                            <div id="d" class="panel">Panel 4</div>
-                        </div>
-                        <div style="text-align:center; padding: 1em">
-                            <button data-ui="type:Button;id:prev;">上一步</button>
-                            <button data-ui="type:Button;id:next;variants:primary">下一步</button>
-                        </div>
-                    </div>
+            <p>Wizard</p>
+            <div class="example">
+                <div id="wizard-zone" class="ui-large">
                 </div>
+                <div style="padding: 2em;">
+                    <div id="a" class="panel">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
+                    <div id="b" class="panel">Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</div>
+                    <div data-ui="type:Panel;id:c;" class="panel">Panel 3</div>
+                    <div id="d" class="panel">Panel 4</div>
+                </div>
+                <div style="text-align:center; padding: 1em">
+                    <button type="button" data-ui="type:Button;id:prev;">上一步</button>
+                    <button type="button" data-ui="type:Button;id:next;variants:primary">下一步</button>
+                </div>
+            </div>
+
+            <h2>从模板创建</h2>
+            <p>从模板创建</p>
+            <div class="example">
+                <ol data-ui-type="Wizard" data-ui-active-index="1">
+                    <li data-node-number="1">基本信息</li>
+                    <li data-node-number="2">地址</li>
+                    <li data-node-number="3">付款</li>
+                    <li data-node-number="4">配送</li>
+                </ol>
             </div>
         </div>
     </div>
-    <script>
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
         require(
             [
                 'esui',
                 'esui/Button',
                 'esui/Wizard',
-                'esui/Panel'
+                'esui/Panel',
+                'esui/Tab',
+                'demo'
             ],
             function (ui, Button, Wizard) {
                 var buttons = ui.init();
@@ -72,8 +77,7 @@
 
                 var wizard = new Wizard({
                     steps: steps, 
-                    activeIndex: 1,
-                    nodeTemplate: '<span class="ui-wizard-node-number">${number}</span><span class="ui-wizard-node-text">${text}</span>'
+                    activeIndex: 1
                 });
                 wizard.appendTo(document.getElementById('wizard-zone'));
                 prev.on('click', function(){
@@ -84,7 +88,7 @@
                 });
             }
         );
-        copyExample();
     </script>
+    <script src="sitemap.js"></script>
 </body>
 </html>

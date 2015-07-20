@@ -8,8 +8,13 @@
  */
 define(
     function (require) {
+        var eoo = require('eoo');
+        var esui = require('./main');
         var lib = require('./lib');
         var Control = require('./Control');
+        var u = require('underscore');
+        var painters = require('./painters');
+        var $ = require('jquery');
 
         /**
          * Toast控件
@@ -18,165 +23,165 @@ define(
          * @extends Control
          * @constructor
          */
-        function Toast(options) {
-            Control.apply(this, arguments);
-        }
-
-        /**
-         * @cfg defaultProperties
-         *
-         * 默认属性值
-         *
-         * @cfg {number} [defaultProperties.duration=3000] 显示时间
-         * @cfg {string} [defaultProperties.messageType='normal'] 消息类型
-         *      `normal`：默认信息：灰色背景
-         *      `info`：通知信息：蓝色背景
-         *      `alert`：警告信息：黄色背景
-         *      `error`：错误信息：红色背景
-         *      `success`：成功信息：绿色背景
-         * @cfg {boolean} [defaultProperties.disposeOnHide=true] 隐藏后是否立即销毁
-         * @cfg {boolean} [defaultProperties.autoShow=false] 初始化后是否自动展示，默认为否
-         * @static
-         */
-        Toast.defaultProperties = {
-            duration: 3000,
-            messageType: 'normal',
-            disposeOnHide: true,
-            autoShow: false
-        };
-
-        /**
-         * 控件类型，始终为`"Toast"`
-         *
-         * @type {string}
-         * @readonly
-         * @override
-         */
-        Toast.prototype.type = 'Toast';
-
-        /**
-         * 初始化参数
-         *
-         * @param {Object=} options 构造函数传入的参数
-         * @protected
-         * @override
-         */
-        Toast.prototype.initOptions = function (options) {
-            var properties = {};
-            lib.extend(properties, Toast.defaultProperties, options);
-            if (properties.content == null) {
-                properties.content = this.main.innerHTML;
-            }
-            this.setProperties(properties);
-        };
-
-        /**
-         * 初始化结构
-         *
-         * @protected
-         * @override
-         */
-        Toast.prototype.initStructure = function () {
-            this.main.innerHTML = this.helper.getPartHTML('content', 'p');
-            // 增加一个默认的状态hidden
-            this.addState('hidden');
-        };
-
-        /**
-         * 重渲染
-         *
-         * @override
-         * @protected
-         */
-        Toast.prototype.repaint = require('./painters').createRepaint(
-            Control.prototype.repaint,
+        var Toast = eoo.create(
+            Control,
             {
                 /**
-                 * @property {string} content
+                 * 控件类型，始终为`"Toast"`
                  *
-                 * 提示的内容，支持HTML
+                 * @type {string}
+                 * @readonly
+                 * @override
                  */
-                name: 'content',
-                paint: function (toast, content) {
-                    var container = toast.main.firstChild;
-                    container.innerHTML = content;
-                    // 检查autoShow，如果希望初始化的那次repaint后自动展示，就show出来
-                    if (toast.autoShow && toast.helper.isInStage('INITED')) {
-                        toast.show();
+                type: 'Toast',
+
+                /**
+                 * 初始化参数
+                 *
+                 * @param {Object=} options 构造函数传入的参数
+                 * @protected
+                 * @override
+                 */
+                initOptions: function (options) {
+                    var properties = {
+                        /**
+                         * @type {numberl} duration 显示时间
+                         */
+                        duration: 3000,
+                        /**
+                         * @type {numberl} messageType 消息类型
+                         *  `normal`：默认信息：灰色背景
+                         *  `info`：通知信息：蓝色背景
+                         *  `alert`：警告信息：黄色背景
+                         *  `error`：错误信息：红色背景
+                         *  `success`：成功信息：绿色背景
+                         */
+                        messageType: 'normal',
+                        /**
+                         * @type {numberl} disponseOnHide 隐藏之后是否立即销毁
+                         */
+                        disposeOnHide: true,
+                        /**
+                         * @type {numberl} autoShow 初始化后是否自动展示，默认为否
+                         */
+                        autoShow: false
+                    };
+                    u.extend(properties, options);
+                    if (properties.content == null) {
+                        properties.content = this.main.innerHTML;
                     }
-                }
-            },
-            {
+                    this.setProperties(properties);
+                },
+
                 /**
-                 * @property {string} messageType
+                 * 初始化结构
                  *
-                 * 提示的类型
+                 * @protected
+                 * @override
                  */
-                name: 'messageType',
-                paint: function (toast, messageType) {
-                    toast.helper.addPartClasses(toast.messageType);
+                initStructure: function () {
+                    this.main.innerHTML = this.helper.getPartHTML('content', 'p');
+                    // 增加一个默认的状态hidden
+                    this.addState('hidden');
+                },
+
+                /**
+                 * 重渲染
+                 *
+                 * @override
+                 * @protected
+                 */
+                repaint: painters.createRepaint(
+                    Control.prototype.repaint,
+                    {
+                        /**
+                         * @property {string} content
+                         *
+                         * 提示的内容，支持HTML
+                         */
+                        name: 'content',
+                        paint: function (toast, content) {
+                            var container = toast.main.firstChild;
+                            container.innerHTML = content;
+                            // 检查autoShow，如果希望初始化的那次repaint后自动展示，就show出来
+                            if (toast.autoShow && toast.helper.isInStage('INITED')) {
+                                toast.show();
+                            }
+                        }
+                    },
+                    {
+                        /**
+                         * @property {string} messageType
+                         *
+                         * 提示的类型
+                         */
+                        name: 'messageType',
+                        paint: function (toast, messageType) {
+                            toast.helper.addPartClasses(toast.messageType);
+                        }
+                    }
+                ),
+
+                /**
+                 * 显示提示信息
+                 *
+                 * @override
+                 */
+                show: function () {
+                    if (this.helper.isInStage('DISPOSED')) {
+                        return;
+                    }
+
+                    // 如果没放到DOM中，这里放进去
+                    if (!this.main.parentElement && !this.main.parentNode) {
+                        this.appendTo(getContainer.call(this));
+                    }
+
+                    if (!this.isHidden()) {
+                        return;
+                    }
+
+                    this.$super(arguments);
+                    this.fire('show');
+                    clearTimeout(this.timer);
+                    if (!isNaN(this.duration) && this.duration !== Infinity) {
+                        this.timer = setTimeout(u.bind(this.hide, this), this.duration);
+                    }
+                },
+
+                /**
+                 * 隐藏提示信息
+                 *
+                 * @override
+                 */
+                hide: function () {
+                    if (this.isHidden()) {
+                        return;
+                    }
+                    this.$super(arguments);
+                    clearTimeout(this.timer);
+                    this.fire('hide');
+                    if (this.disposeOnHide) {
+                        this.dispose();
+                    }
+                },
+
+                /**
+                 * 销毁控件，同时移出DOM树
+                 *
+                 * @protected
+                 * @override
+                 */
+                dispose: function () {
+                    clearTimeout(this.timer);
+                    if (this.helper.isInStage('DISPOSED')) {
+                        return;
+                    }
+                    this.$super(arguments);
+                    $(this.main).remove();
                 }
             }
         );
-
-        /**
-         * 显示提示信息
-         *
-         * @override
-         */
-        Toast.prototype.show = function () {
-            if (this.helper.isInStage('DISPOSED')) {
-                return;
-            }
-
-            // 如果没放到DOM中，这里放进去
-            if (!this.main.parentElement && !this.main.parentNode) {
-                this.appendTo(getContainer.call(this));
-            }
-
-            if (!this.isHidden()) {
-                return;
-            }
-
-            Control.prototype.show.apply(this, arguments);
-            this.fire('show');
-            clearTimeout(this.timer);
-            if (!isNaN(this.duration) && this.duration !== Infinity) {
-                this.timer = setTimeout(lib.bind(this.hide, this), this.duration);
-            }
-        };
-
-        /**
-         * 隐藏提示信息
-         *
-         * @override
-         */
-        Toast.prototype.hide = function () {
-            if (this.isHidden()) {
-                return;
-            }
-            Control.prototype.hide.apply(this, arguments);
-            clearTimeout(this.timer);
-            this.fire('hide');
-            if (this.disposeOnHide) {
-                this.dispose();
-            }
-        };
-
-        /**
-         * 销毁控件，同时移出DOM树
-         *
-         * @protected
-         * @override
-         */
-        Toast.prototype.dispose = function () {
-            clearTimeout(this.timer);
-            if (this.helper.isInStage('DISPOSED')) {
-                return;
-            }
-            lib.removeNode(this.main);
-            Control.prototype.dispose.apply(this, arguments);
-        };
 
         /**
          * 获取的容器,可自行添加样式，使其呈现堆叠效果。
@@ -203,7 +208,7 @@ define(
                 if (messageType === 'show') {
                     messageType = 'normal';
                 }
-                options = lib.extend({content: content}, options);
+                options = u.extend({content: content}, options);
                 options.messageType = options.messageType || messageType;
                 var toast = new Toast(options);
                 Control.prototype.hide.apply(toast);
@@ -212,23 +217,14 @@ define(
             };
         }
 
-        /**
-         * 快捷显示信息的方法
-         *
-         * @param {string} content 显示的内容
-         * @param {Object} options 其它配置项
-         * @ignore
-         */
-        var allType = ['show', 'info', 'alert', 'error', 'success'];
-        for (var key in allType) {
-            if (allType.hasOwnProperty(key)) {
-                var messageType = allType[key];
-                Toast[messageType] = createHandler(messageType);
+        u.each(
+            ['show', 'info', 'alert', 'error', 'success'],
+            function (key) {
+                Toast[key] = createHandler(key);
             }
-        }
+        );
 
-        lib.inherits(Toast, Control);
-        require('./main').register(Toast);
+        esui.register(Toast);
         return Toast;
     }
 );

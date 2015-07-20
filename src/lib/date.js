@@ -72,6 +72,6 @@ define(
             return dateTime.toDate();
         };
 
-        return { date: date };
+        return {date: date};
     }
 );

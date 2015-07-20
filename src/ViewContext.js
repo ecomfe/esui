@@ -8,7 +8,10 @@
  */
 define(
     function (require) {
+        var eoo = require('eoo');
         var ControlCollection = require('./ControlCollection');
+        var u = require('underscore');
+        var SafeWrapper = require('./SafeWrapper');
 
         /**
          * 控件分组
@@ -26,44 +29,47 @@ define(
          * @constructor
          * @private
          */
-        function ControlGroup(name) {
-            ControlCollection.apply(this, arguments);
+        var ControlGroup = eoo.create(
+            ControlCollection,
+            {
+                constructor: function () {
+                    this.$super(arguments);
 
-            /**
-             * @property {string} name
-             *
-             * 当前控件分组的名称
-             *
-             * @readonly
-             */
-            this.name = name;
-        }
+                    /**
+                     * @property {string} name
+                     *
+                     * 当前控件分组的名称
+                     *
+                     * @readonly
+                     */
+                    this.name = name;
+                },
 
-        require('./lib').inherits(ControlGroup, ControlCollection);
+                /**
+                 * @method
+                 *
+                 * `ControlGroup`不提供此方法
+                 */
+                add: undefined,
 
-        /**
-         * @method
-         *
-         * `ControlGroup`不提供此方法
-         */
-        ControlGroup.prototype.add = undefined;
+                /**
+                 * @method
+                 *
+                 * `ControlGroup`不提供此方法
+                 */
+                remove: undefined,
 
-        /**
-         * @method
-         *
-         * `ControlGroup`不提供此方法
-         */
-        ControlGroup.prototype.remove = undefined;
-
-        /**
-         * 销毁当前实例
-         */
-        ControlGroup.prototype.disposeGroup = function () {
-            for (var i = 0; i < this.length; i++) {
-                delete this[i];
+                /**
+                 * 销毁当前实例
+                 */
+                disposeGroup: function () {
+                    for (var i = 0; i < this.length; i++) {
+                        delete this[i];
+                    }
+                    this.length = 0;
+                }
             }
-            this.length = 0;
-        };
+        );
 
         function addToGroup(control, group) {
             ControlCollection.prototype.add.call(group, control);
@@ -105,203 +111,206 @@ define(
          * @constructor
          * @param {string} id 该`ViewContext`的id
          */
-        function ViewContext(id) {
-            /**
-             * 视图环境控件集合
-             *
-             * @type {Object}
-             * @private
-             */
-            this.controls = {};
+        var ViewContext = eoo.create(
+            {
+                constructor: function (id) {
+                    /**
+                     * 视图环境控件集合
+                     *
+                     * @type {Object}
+                     * @private
+                     */
+                    this.controls = {};
 
-            /**
-             * 视图环境控件分组集合
-             *
-             * @type {Object}
-             * @private
-             */
-            this.groups = {};
+                    /**
+                     * 视图环境控件分组集合
+                     *
+                     * @type {Object}
+                     * @private
+                     */
+                    this.groups = {};
 
-            id = id || getGUID();
-            // 如果已经有同名的，就自增长一下
-            if (pool.hasOwnProperty(id)) {
-                var i = 1;
-                var prefix = id + '-';
-                while (pool.hasOwnProperty(prefix + i)) {
-                    i++;
+                    id = id || getGUID();
+                    // 如果已经有同名的，就自增长一下
+                    if (pool.hasOwnProperty(id)) {
+                        var i = 1;
+                        var prefix = id + '-';
+                        while (pool.hasOwnProperty(prefix + i)) {
+                            i++;
+                        }
+                        id = prefix + i;
+                    }
+
+                    /**
+                     * 视图环境id
+                     *
+                     * @type {string}
+                     * @readonly
+                     */
+                    this.id = id;
+
+                    // 入池
+                    pool[this.id] = this;
+                },
+
+                /**
+                 * 将控件实例添加到视图环境中
+                 *
+                 * @param {Control} control 待加控件
+                 */
+                add: function (control) {
+                    var exists = this.controls[control.id];
+
+                    // id已存在
+                    if (exists) {
+                        // 是同一控件，不做处理
+                        if (exists === control) {
+                            return;
+                        }
+
+                        // 不是同一控件，先覆盖原关联控件的viewContext
+                        exists.setViewContext(null);
+                    }
+
+                    this.controls[control.id] = control;
+
+                    var groups = getGroupNames(control);
+                    for (var i = 0; i < groups.length; i++) {
+                        var groupName = groups[i];
+
+                        if (!groupName) {
+                            continue;
+                        }
+
+                        var group = this.getGroup(groupName);
+                        addToGroup(control, group);
+                    }
+
+                    control.setViewContext(this);
+
+                },
+
+                /**
+                 * 将控件实例从视图环境中移除。
+                 *
+                 * @param {Control} control 待移除控件
+                 */
+                remove: function (control) {
+                    delete this.controls[control.id];
+
+                    var groups = getGroupNames(control);
+                    for (var i = 0; i < groups.length; i++) {
+                        var groupName = groups[i];
+
+                        if (!groupName) {
+                            continue;
+                        }
+
+                        var group = this.getGroup(groupName);
+                        removeFromGroup(control, group);
+                    }
+
+                    control.setViewContext(null);
+
+                },
+
+                /**
+                 * 通过id获取控件实例。
+                 *
+                 * @param {string} id 控件id
+                 * @return {Control} 根据id获取的控件
+                 */
+                get: function (id) {
+                    return this.controls[id];
+                },
+
+                /**
+                 * 获取viewContext内所有控件
+                 *
+                 * @return {Control[]} viewContext内所有控件
+                 */
+                getControls: function () {
+                    return u.extend({}, this.controls);
+                },
+
+                /**
+                 * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
+                 *
+                 * @param {string} id 控件id
+                 * @return {Control} 根据id获取的控件
+                 */
+                getSafely: function (id) {
+                    var control = this.get(id);
+
+                    if (!control) {
+                        control = new SafeWrapper();
+                        control.id = id;
+                        control.viewContext = this;
+                    }
+
+                    return control;
+                },
+
+                /**
+                 * 获取一个控件分组
+                 *
+                 * @param {string} name 分组名称
+                 * @return {ControlGroup}
+                 */
+                getGroup: function (name) {
+                    if (!name) {
+                        throw new Error('name is unspecified');
+                    }
+
+                    var group = this.groups[name];
+                    if (!group) {
+                        group = this.groups[name] = new ControlGroup(name);
+                    }
+                    return group;
+                },
+
+                /**
+                 * 清除视图环境中所有控件
+                 */
+                clean: function () {
+                    for (var id in this.controls) {
+                        if (this.controls.hasOwnProperty(id)) {
+                            var control = this.controls[id];
+                            control.dispose();
+                            // 如果控件销毁后“不幸”`viewContext`还在，就移除掉
+                            if (control.viewContext && control.viewContext === this) {
+                                this.remove(control);
+                            }
+                        }
+                    }
+
+                    for (var name in this.groups) {
+                        if (this.groups.hasOwnProperty(name)) {
+                            this.groups[name].disposeGroup();
+                            this.groups[name] = undefined;
+                        }
+                    }
+                },
+
+                /**
+                 * 销毁视图环境
+                 */
+                dispose: function () {
+                    this.clean();
+                    delete pool[this.id];
                 }
-                id = prefix + i;
             }
-
-            /**
-             * 视图环境id
-             *
-             * @type {string}
-             * @readonly
-             */
-            this.id = id;
-
-            // 入池
-            pool[this.id] = this;
-        }
+        );
 
         /**
          * 根据id获取视图环境
          *
          * @param {string} id 视图环境id
          * @static
+         * @return {Object|null}
          */
-        ViewContext.get = function ( id ) {
+        ViewContext.get = function (id) {
             return pool[id] || null;
-        };
-
-        /**
-         * 将控件实例添加到视图环境中
-         *
-         * @param {Control} control 待加控件
-         */
-        ViewContext.prototype.add = function (control) {
-            var exists = this.controls[control.id];
-
-            // id已存在
-            if (exists) {
-                // 是同一控件，不做处理
-                if (exists === control) {
-                    return;
-                }
-
-                // 不是同一控件，先覆盖原关联控件的viewContext
-                exists.setViewContext(null);
-            }
-
-            this.controls[control.id] = control;
-
-            var groups = getGroupNames(control);
-            for (var i = 0; i < groups.length; i++) {
-                var groupName = groups[i];
-
-                if (!groupName) {
-                    continue;
-                }
-
-                var group = this.getGroup(groupName);
-                addToGroup(control, group);
-            }
-
-            control.setViewContext(this);
-
-        };
-
-        /**
-         * 将控件实例从视图环境中移除。
-         *
-         * @param {Control} control 待移除控件
-         */
-        ViewContext.prototype.remove = function (control) {
-            delete this.controls[control.id];
-
-            var groups = getGroupNames(control);
-            for (var i = 0; i < groups.length; i++) {
-                var groupName = groups[i];
-
-                if (!groupName) {
-                    continue;
-                }
-
-                var group = this.getGroup(groupName);
-                removeFromGroup(control, group);
-            }
-
-            control.setViewContext(null);
-
-        };
-
-        /**
-         * 通过id获取控件实例。
-         *
-         * @param {string} id 控件id
-         * @return {Control} 根据id获取的控件
-         */
-        ViewContext.prototype.get = function (id) {
-            return this.controls[id];
-        };
-
-        /**
-         * 获取viewContext内所有控件
-         *
-         * @return {Control[]} viewContext内所有控件
-         */
-        ViewContext.prototype.getControls = function () {
-            return require('./lib').extend({}, this.controls);
-        };
-
-        var SafeWrapper = require('./SafeWrapper');
-
-        /**
-         * 根据id获取控件实例，如无相关实例则返回{@link SafeWrapper}
-         *
-         * @param {string} id 控件id
-         * @return {Control} 根据id获取的控件
-         */
-        ViewContext.prototype.getSafely = function (id) {
-            var control = this.get(id);
-
-            if (!control) {
-                control = new SafeWrapper();
-                control.id = id;
-                control.viewContext = this;
-            }
-
-            return control;
-        };
-
-        /**
-         * 获取一个控件分组
-         *
-         * @param {string} name 分组名称
-         * @return {ControlGroup}
-         */
-        ViewContext.prototype.getGroup = function (name) {
-            if (!name) {
-                throw new Error('name is unspecified');
-            }
-
-            var group = this.groups[name];
-            if (!group) {
-                group = this.groups[name] = new ControlGroup(name);
-            }
-            return group;
-        };
-
-        /**
-         * 清除视图环境中所有控件
-         */
-        ViewContext.prototype.clean = function () {
-            for (var id in this.controls) {
-                if (this.controls.hasOwnProperty(id)) {
-                    var control = this.controls[id];
-                    control.dispose();
-                    // 如果控件销毁后“不幸”`viewContext`还在，就移除掉
-                    if (control.viewContext && control.viewContext === this) {
-                        this.remove(control);
-                    }
-                }
-            }
-
-            for (var name in this.groups) {
-                if (this.groups.hasOwnProperty(name)) {
-                    this.groups[name].disposeGroup();
-                    this.groups[name] = undefined;
-                }
-            }
-        };
-
-        /**
-         * 销毁视图环境
-         */
-        ViewContext.prototype.dispose = function () {
-            this.clean();
-            delete pool[this.id];
         };
 
         return ViewContext;
