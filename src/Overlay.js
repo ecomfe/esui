@@ -40,7 +40,7 @@ define(
                         autoClose: true,
                         // 是否具有遮挡层
                         hasMask: false,
-                        parentSelector: 'body'
+                        appendToElement: 'body'
                     };
                     u.extend(properties, options);
                     this.$super([properties]);
@@ -51,7 +51,7 @@ define(
                  */
                 initStructure: function () {
                     var $main = $(this.main);
-                    $main.appendTo(this.parentSelector);
+                    $main.appendTo(this.appendToElement);
                     // 设置隐藏样式，如果直接隐藏可能会影响尺寸计算，所以只是移出
                     this.addState('hidden');
                     this.$super(arguments);

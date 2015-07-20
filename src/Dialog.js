@@ -80,7 +80,7 @@ define(
                         setPositionOnResize: true
                     };
 
-                    u.extend(properties, options);
+                    u.extend(properties, Dialog.defaultProperties, options);
 
                     if (properties.needFoot) {
                         if (!properties.foot) {
@@ -94,12 +94,7 @@ define(
                  * 初始化DOM结构，仅在第一次渲染时调用
                  */
                 initStructure: function () {
-                    var main = this.main;
-                    // 判断main是否在body下，如果不在，要移到body下
-                    if (main.parentNode
-                        && main.parentNode.nodeName.toLowerCase() !== 'body') {
-                        document.body.appendChild(main);
-                    }
+                    $(this.main).appendTo(this.appendToElement);
 
                     // 设置样式
                     this.addState('hidden');
@@ -485,6 +480,10 @@ define(
                 }
             }
         );
+
+        Dialog.defaultProperties = {
+            appendToElement: 'body'
+        };
 
         /**
          * 渲染控件前重绘控件

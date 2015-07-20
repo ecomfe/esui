@@ -63,7 +63,7 @@ define(
                  * 初始化DOM结构，仅在第一次渲染时调用
                  */
                 initStructure: function () {
-                    $(this.main).appendTo(this.appendToEle);
+                    $(this.main).appendTo(this.appendToElement);
                     this.addState('hidden');
                     // 不是所有的提示层都需要title
                     if (this.title || this.roles.title) {
@@ -610,7 +610,7 @@ define(
              * append到哪个元素下
              * @type {string}
              */
-            appendToEle: 'body'
+            appendToElement: 'body'
         };
 
         /**
