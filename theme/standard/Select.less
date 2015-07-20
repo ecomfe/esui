@@ -26,6 +26,10 @@
 @esui-select-compact-layer-item-select-color: @esui-palette-color;
 @esui-select-compact-layer-background: @esui-palette-white;
 
+@esui-select-bordered-color: @esui-palette-color;
+@esui-select-bordered-background: @esui-palette-white;
+@esui-select-bordered-border-color: @esui-palette-border;
+
 .esui-select-theme() {
     .esui-select-variant(
         @esui-select-background,
@@ -63,11 +67,11 @@
     line-height: @esui-select-compact-height;
 
     color: @esui-select-compact-color;
-    background: @esui-select-compact-background !important;
+    background: @esui-select-compact-background;
     .esui-border-radius(0, @esui-select-radius);
 
     .@{ui-class-prefix}-select-arrow {
-        line-height: @esui-select-compact-height !important;
+        line-height: @esui-select-compact-height;
         right: @esui-select-compact-padding;
         .opacity(70);
         &:hover {
@@ -82,8 +86,26 @@
     }
     .@{ui-class-prefix}-select-item-selected > :first-child {
         background: @esui-select-compact-layer-item-select-background;
-        color: @esui-select-compact-layer-item-select-color !important;
+        color: @esui-select-compact-layer-item-select-color;
     }
+}
+
+.esui-select-bordered-theme() {
+    color: @esui-select-bordered-color;
+    background: @esui-select-bordered-background;
+    border: 1px solid @esui-select-bordered-border-color;
+
+    .@{ui-class-prefix}-select-arrow {
+        .opacity(70);
+        &:hover {
+            .opacity(100);
+        }
+    }
+}
+
+.esui-select-item-selected-theme() {
+    background: @esui-select-item-selected-background;
+    color: @esui-select-item-selected-color !important;
 }
 
 .esui-select-variant(
@@ -112,9 +134,4 @@
     &.@{ui-state-prefix}-active {
         background: @select-active-color;
     }
-}
-
-.esui-select-item-selected-theme() {
-    background: @esui-select-item-selected-background;
-    color: @esui-select-item-selected-color !important;
 }

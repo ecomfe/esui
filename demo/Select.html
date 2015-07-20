@@ -75,6 +75,16 @@
                         <option value="3">选项</option>
                     </select>
                 </div>
+                <div class="row">
+                    <select data-ui-variants="bordered" data-ui-type="Select">
+                        <option value="1">选项 1</option>
+                        <option value="2">选项 2</option>
+                        <option value="3">选项 3</option>
+                        <option value="1" disabled>禁用的选项 4</option>
+                        <option value="2">Group</option>
+                        <option value="3">选项</option>
+                    </select>
+                </div>
             </div>
             <h2>状态</h2>
             <div class="intro">
@@ -160,7 +170,7 @@
                             data-ui-mode="text"
                             data-ui-width="auto" />
                         <div class="ui-textbox-addon">
-                            <select data-ui-type="Select">
+                            <select data-ui-type="Select" data-ui-variants="bordered">
                                 <option value="1">选项 1</option>
                                 <option value="2">选项 2</option>
                                 <option value="3">选项 3</option>

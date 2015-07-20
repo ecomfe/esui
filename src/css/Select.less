@@ -10,7 +10,7 @@
 
 
 // Select
-@esui-select-radius: 5px;
+@esui-select-radius: 0;
 @esui-select-line-height: 2.5em;
 @esui-select-horizontal-padding: 1em;
 @esui-select-text-right-padding: 2em;
@@ -30,11 +30,13 @@
 }
 
 .@{ui-class-prefix}-select-inner {
+    .box-sizing(border-box);
     padding: 0 @esui-select-horizontal-padding;
     .esui-border-radius(
         @esui-select-radius,
         @esui-select-radius
     );
+    height: @esui-select-line-height;
     line-height: @esui-select-line-height;
     .esui-transition(background-color 0.3s ease);
     .esui-select-theme();
@@ -61,7 +63,7 @@
     position: absolute;
     right: @esui-select-horizontal-padding;
     top: 0;
-    line-height: @esui-select-line-height !important;
+    line-height: @esui-select-line-height;
     width: 1em;
     text-align: center;
     .eicons-icon(caret-down);
@@ -103,6 +105,17 @@
     .esui-select-layer-compact-theme();
 }
 
+// bordered
+.@{ui-class-prefix}-select-bordered {
+    .@{ui-class-prefix}-select-inner {
+        .esui-select-bordered-theme();
+    }
+}
+
+.@{ui-class-prefix}-select-layer-bordered {
+    .esui-select-layer-bordered-theme();
+}
+
 // hooks
 .esui-select-theme() {}
 .esui-select-invalid-theme() {}
@@ -110,3 +123,5 @@
 .esui-select-compact-theme() {}
 .esui-select-layer-compact-theme() {}
 .esui-select-item-selected-theme() {}
+.esui-select-bordered-theme() {}
+.esui-select-layer-bordered-theme() {}

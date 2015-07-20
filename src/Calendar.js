@@ -43,7 +43,7 @@ define(
                             range: calendar.range
                         }
                     );
-                    monthView.on('change', syncMonthViewValue, calendar);
+                    monthView.on('change', u.bind(syncMonthViewValue, calendar));
 
                     if (calendar.autoHideLayer) {
                         monthView.on(

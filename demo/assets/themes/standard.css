@@ -635,7 +635,27 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-button-primary:active,
 .ui-button-primary.state-active {
-  background-color: #79dacd;
+  background-color: #5fb3a8;
+}
+.ui-button-primary-inverted {
+  color: #70ccc0;
+  background: none;
+  border: 1px solid #70ccc0;
+}
+.ui-button-primary-inverted:hover,
+.ui-button-primary-inverted.state-hover {
+  border-color: #79dacd;
+  color: #79dacd;
+}
+.ui-button-primary-inverted:focus,
+.ui-button-primary-inverted.state-focus {
+  border-color: #79dacd;
+  color: #79dacd;
+}
+.ui-button-primary-inverted:active,
+.ui-button-primary-inverted.state-active {
+  background: #5fb3a8;
+  color: #ffffff;
 }
 .ui-button-success {
   color: #ffffff;
@@ -717,7 +737,6 @@ input[type="search"]::-webkit-search-decoration {
  * 9. `min-height` is necessary for `input` elements in Firefox and Opera because `line-height` is not working.
  * 10. Required for `a`.
  */
-/*@esui-palette-primary-light-color: #E3F6F3;*/
 .esui-checkbox-style-base,
 .ui-checkbox-custom,
 .ui-radio-custom,
@@ -1654,7 +1673,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-navbar-nav > li:active > a,
 .ui-navbar-nav > li.ui-active > a {
-  background: #79dacd;
+  background: #5fb3a8;
   color: #ffffff;
 }
 .ui-navbar-nav > li > .ui-submenu {
@@ -2153,26 +2172,28 @@ a.ui-text-info:hover {
   margin-left: -1px;
 }
 .ui-textbox-wrapper .ui-textbox-addon:first-child .ui-button,
-.ui-textbox-wrapper .ui-textbox-addon:first-child .ui-select-inner,
-.ui-textbox-wrapper .ui-textbox:first-child input {
+.ui-textbox-wrapper .ui-textbox-addon:first-child .ui-select-inner {
   -webkit-border-top-right-radius: 0;
   -moz-border-radius-topright: 0;
   border-top-right-radius: 0;
   -webkit-border-bottom-right-radius: 0;
   -moz-border-radius-bottomright: 0;
   border-bottom-right-radius: 0;
-  border-right: 0 !important;
+}
+.ui-textbox-wrapper .ui-textbox:first-child input {
+  border-right: 0;
 }
 .ui-textbox-wrapper .ui-textbox-addon:last-child .ui-button,
-.ui-textbox-wrapper .ui-textbox-addon:last-child .ui-select-inner,
-.ui-textbox-wrapper .ui-textbox:last-child input {
+.ui-textbox-wrapper .ui-textbox-addon:last-child .ui-select-inner {
   -webkit-border-top-left-radius: 0;
   -moz-border-radius-topleft: 0;
   border-top-left-radius: 0;
   -webkit-border-bottom-left-radius: 0;
   -moz-border-radius-bottomleft: 0;
   border-bottom-left-radius: 0;
-  border-left: 0 !important;
+}
+.ui-textbox-wrapper .ui-textbox:last-child input {
+  border-left: 0;
 }
 .ui-textbox-addon {
   white-space: nowrap;
@@ -4195,10 +4216,10 @@ hr {
 }
 .ui-boxgroup-button-style-primary label:active,
 .ui-boxgroup-button-style-primary label.state-active {
-  background-color: #79dacd;
+  background-color: #5fb3a8;
 }
 .ui-boxgroup-button-style-primary .ui-boxgroup-wrapper-checked label {
-  background: #79dacd;
+  background: #5fb3a8;
 }
 .ui-boxgroup-button-style-success label {
   color: #ffffff;
@@ -4299,9 +4320,9 @@ hr {
   display: inline-block;
   cursor: pointer;
   position: relative;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -4320,12 +4341,20 @@ hr {
 .ui-calendar:hover {
   background: #fbfbfb;
 }
+.ui-calendar:focus .ui-calendar-arrow,
+.ui-calendar:hover .ui-calendar-arrow {
+  color: #70ccc0;
+}
 .ui-calendar.state-active {
   background: #fbfbfb;
 }
 .ui-calendar.state-read-only {
   color: #999999;
   background: #f6f6f6;
+}
+.ui-calendar.state-disabled .ui-calendar-arrow,
+.ui-calendar.state-read-only .ui-calendar-arrow {
+  color: #666666;
 }
 .ui-calendar-text {
   padding-right: 2em;
@@ -4504,10 +4533,14 @@ hr {
   user-select: none;
 }
 .ui-select-inner {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   padding: 0 1em;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  height: 2.5em;
   line-height: 2.5em;
   -webkit-transition: background-color 0.3s ease;
   -moz-transition: background-color 0.3s ease;
@@ -4559,7 +4592,7 @@ hr {
   position: absolute;
   right: 1em;
   top: 0;
-  line-height: 2.5em !important;
+  line-height: 2.5em;
   width: 1em;
   text-align: center;
 }
@@ -4598,20 +4631,20 @@ hr {
   background: #70ccc0;
 }
 .ui-select-primary .ui-select-inner.state-active {
-  background: #79dacd;
+  background: #5fb3a8;
 }
 .ui-select-compact .ui-select-inner {
   padding: 0 0.5em;
   height: 1.5em;
   line-height: 1.5em;
   color: #666666;
-  background: #ffffff !important;
+  background: #ffffff;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
 }
 .ui-select-compact .ui-select-inner .ui-select-arrow {
-  line-height: 1.5em !important;
+  line-height: 1.5em;
   right: 0.5em;
   opacity: 0.7;
   filter: alpha(opacity=70);
@@ -4625,7 +4658,20 @@ hr {
 }
 .ui-select-layer-compact .ui-select-item-selected > :first-child {
   background: #fbfbfb;
-  color: #666666 !important;
+  color: #666666;
+}
+.ui-select-bordered .ui-select-inner {
+  color: #666666;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+}
+.ui-select-bordered .ui-select-inner .ui-select-arrow {
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+}
+.ui-select-bordered .ui-select-inner .ui-select-arrow:hover {
+  opacity: 1;
+  filter: alpha(opacity=100);
 }
 /**
  * ESUI (Enterprise Simple UI)
@@ -5140,7 +5186,7 @@ span.ui-crumb-node {
   background: #79dacd;
 }
 .ui-schedule-shortcut-item:active {
-  background: #79dacd;
+  background: #5fb3a8;
 }
 .ui-schedule-help {
   float: right;
@@ -5647,7 +5693,6 @@ span.ui-crumb-node {
   padding: 0 1em;
   vertical-align: top;
   color: inherit;
-  background-color: #f6f6f6;
   border: 1px solid #dddddd;
 }
 .ui-textbox-placeholder {

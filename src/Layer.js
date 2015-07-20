@@ -183,6 +183,7 @@ define(
                         this.docClickHandler = null;
                     }
                     this.fire('hide');
+                    this.control.removeState('active');
                 },
 
                 /**
@@ -199,6 +200,7 @@ define(
                     $(element).show();
                     me.position();
                     me.fire('show');
+                    me.control.addState('active');
                 },
 
                 /**
