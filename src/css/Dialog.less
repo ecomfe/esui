@@ -8,7 +8,7 @@
 
 @import "Variable.less";
 
-@esui-dialog-border-radius: 5px;
+@esui-dialog-border-radius: 0;
 @esui-dialog-zIndex: @dialog-z-index;
 @esui-dialog-close-default-width: 600px;
 
@@ -25,7 +25,10 @@
 
 .@{ui-class-prefix}-dialog {
     position: absolute;
-    .border-radius(@esui-dialog-border-radius);
+    .esui-border-radius(
+        @esui-dialog-border-radius,
+        @esui-dialog-border-radius
+    );
     z-index: @esui-dialog-zIndex;
     width: @esui-dialog-close-default-width;
     display: block;
