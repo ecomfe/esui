@@ -24,9 +24,8 @@
     .esui-textline-theme();
 
     // 取出textarea focus边框
-    .ui-textbox {
-        > textarea:focus,
-        > textarea[readonly] {
+    .@{ui-class-prefix}-textbox {
+        > textarea {
             border: none;
         }
     }

@@ -118,11 +118,12 @@ define(
                  * @override
                  */
                 render: function () {
-                    if ($(this.main).is('a')) {
+                    var $main = $(this.main);
+                    if ($main.is('a')) {
                         this.$super(arguments);
                     }
                     else {
-                        alert('Invalid Tag: Only a element is allowed.');
+                        $main.html('Invalid Tag: Only a element is allowed.');
                     }
                 },
 

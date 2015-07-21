@@ -18,6 +18,7 @@
 @esui-range-calendar-main-active-background: @esui-palette-neutral-shadow-color;
 @esui-range-calendar-main-color: @esui-palette-color;
 @esui-range-calendar-main-read-only-color: @esui-palette-muted-color;
+@esui-range-calendar-main-hover-icon-color: @esui-palette-primary-color;
 
 // 浮层
 @esui-range-calendar-layer-background: @esui-palette-neutral-highlight-color;
@@ -39,15 +40,26 @@
 
     &:hover {
         background: @esui-range-calendar-main-hover-background;
+        .@{ui-class-prefix}-rangecalendar-arrow {
+            color: @esui-range-calendar-main-hover-icon-color;
+        }
     }
 
     &.@{ui-state-prefix}-active,
     &:active {
         background: @esui-range-calendar-main-active-background;
     }
-
+    &.@{ui-state-prefix}-disabled {
+        .esui-disabled();
+        .@{ui-class-prefix}-rangecalendar-arrow {
+            color: @esui-range-calendar-main-color;
+        }
+    }
     &.@{ui-state-prefix}-read-only {
         color: @esui-range-calendar-main-read-only-color;
+        .@{ui-class-prefix}-rangecalendar-arrow {
+            color: @esui-range-calendar-main-color;
+        }
     }
 }
 

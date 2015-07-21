@@ -3,12 +3,23 @@
 
 @esui-rich-calendar-background: @esui-palette-neutral-color;
 @esui-rich-calendar-general-info-total-num-color: @esui-palette-primary-color;
+@esui-rich-calendar-error-border-color: @esui-palette-danger-color;
 
 @esui-rich-calendar-layer-background: transparent;
 @esui-rich-calendar-layer-border: none;
 
 .esui-richcalendar-theme() {
     background: @esui-rich-calendar-background;
+    &.@{ui-state-prefix}-validity-invalid {
+        border: 0;
+        textarea {
+            .esui-input-color-def(
+                @esui-textbox-error-border-color,
+                @esui-textbox-error-background,
+                @esui-textbox-error-text-color
+            );
+        }
+    }
 }
 
 .esui-richcalendar-total-num-theme() {

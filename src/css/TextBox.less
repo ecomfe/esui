@@ -70,11 +70,14 @@
     }
 }
 
-.@{ui-class-prefix}-textbox-validity-invalid {
-    border: 0 !important;
+.@{ui-class-prefix}-textbox.@{ui-state-prefix}-validity-invalid {
+    border: 0;
     input, textarea {
-        border-color: @esui-textbox-error-border-color !important;
-        color: @esui-textbox-error-text-color !important;
+        .esui-input-color-def(
+            @esui-textbox-error-border-color,
+            @esui-textbox-error-background,
+            @esui-textbox-error-text-color
+        );
     }
 }
 

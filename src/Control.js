@@ -682,12 +682,7 @@ define(
              * @deprecated 将在4.0中移除，使用{@link Helper#disposeChildren}代替
              */
             disposeChildren: function () {
-                var children = this.children.slice();
-                for (var i = 0; i < children.length; i++) {
-                    children[i].dispose();
-                }
-                this.children = [];
-                this.childrenIndex = {};
+                this.helper.disposeChildren();
             },
 
             /**

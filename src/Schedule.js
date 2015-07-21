@@ -374,13 +374,13 @@ define(
 
             // 星期checkbox显示文本
             dayTexts: [
-                '星期一',
-                '星期二',
-                '星期三',
-                '星期四',
-                '星期五',
-                '星期六',
-                '星期日'
+                '周一',
+                '周二',
+                '周三',
+                '周四',
+                '周五',
+                '周六',
+                '周日'
             ],
 
             // 快捷方式配置
@@ -583,12 +583,11 @@ define(
             html.push('<div id="', dayHId, '" class="', dayHClass, '">');
 
             var dayClass = getClass(me, 'day');
-            var customCheckClass = me.helper.getPrefixClass('checkbox-custom');
             var dayTpl = ''
-                + '<div class="${dayClass}"><div class="${customCheckClass}">'
+                + '<div class="${dayClass}">'
                     + '<input type="checkbox" id="${dayId}" value="${value}">'
                     + '<label for="${dayId}">${dayWord}</label>'
-                + '</div></div>';
+                + '</div>';
 
             var dayTexts = me.dayTexts;
             for (var i = 0; i < 7; i++) {
@@ -599,8 +598,7 @@ define(
                             dayWord: dayTexts[i],
                             dayId: getId(me, 'line-state' + i),
                             value: i,
-                            dayClass: dayClass,
-                            customCheckClass: customCheckClass
+                            dayClass: dayClass
                         }
                     )
                 );

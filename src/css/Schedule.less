@@ -13,7 +13,7 @@
 @esui-schedule-help-item-right-margin: .5em;
 @esui-schedule-legend-size: 1em;
 @esui-schedule-slot-size: 2em;
-@esui-schedule-day-header-width: 5.5em;
+@esui-schedule-day-header-width: 3em;
 @esui-schedule-shortcut-item-padding: 0 1em;
 @esui-schedule-shortcut-item-right-margin: .5em;
 @esui-schedule-shortcut-item-border-radius: 0;
@@ -27,6 +27,9 @@
     display: inline-block;
     outline: 0;
     .esui-schedule-theme();
+    &.@{ui-state-prefix}-disabled {
+        .esui-disabled();
+    }
 }
 
 // 测试slot的宽度的容器
@@ -106,6 +109,12 @@
 // 日期Checkbox行高度
 .@{ui-class-prefix}-schedule-day {
     line-height: @esui-schedule-slot-size;
+    input {
+        display: none;
+    }
+    label {
+        cursor: pointer;
+    }
 }
 
 // 小时选择区域

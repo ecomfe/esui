@@ -16,6 +16,7 @@ define(
         var u = require('underscore');
         var eoo = require('eoo');
         var painters = require('./painters');
+        var $ = require('jquery');
 
         /**
          * 输入控件基类

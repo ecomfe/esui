@@ -33,6 +33,9 @@
     overflow-x: auto;
     line-height: @esui-table-line-height;
     display: block;
+    &.@{ui-state-prefix}-disabled {
+        .esui-disabled();
+    }
 }
 
 .@{ui-class-prefix}-table table {

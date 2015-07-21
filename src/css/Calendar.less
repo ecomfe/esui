@@ -29,6 +29,9 @@
     vertical-align: middle;
     .esui-transition(background-color 0.3s ease);
     .esui-calendar-theme();
+    &.@{ui-state-prefix}-disabled {
+        .esui-disabled();
+    }
 }
 
 .@{ui-class-prefix}-calendar-text {

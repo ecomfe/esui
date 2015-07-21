@@ -250,10 +250,7 @@ define(
 
                 this.layer.autoCloseExcludeElements = [mainElement];
                 mainElement.tabIndex = this.tabIndex;
-
-                var innerSelectElement = helper.createPart('inner', 'div');
-                innerSelectElement.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
-                mainElement.appendChild(innerSelectElement);
+                mainElement.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
 
                 $(helper.getPart(arrow)).addClass(helper.getIconClass());
             },
