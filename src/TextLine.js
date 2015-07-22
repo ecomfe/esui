@@ -15,6 +15,7 @@ define(
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var $ = require('jquery');
+        var painters = require('./painters');
 
         require('./TextBox');
 
@@ -48,12 +49,15 @@ define(
                     // 默认选项配置
                     var properties = {
                         width: 300,
-                        height: 200,
-                        value: ''
+                        height: 200
                     };
+                    // 从textarea获取vlaue值
                     if (lib.isInput(this.main)) {
                         this.helper.extractOptionsFromInput(this.main, properties);
                     }
+
+                    // 如果没有获取到，设一个缺省的
+                    properties.value = properties.value || '';
                     properties.placeholder = this.main.getAttribute('placeholder') || '';
                     u.extend(properties, options);
 
@@ -105,7 +109,7 @@ define(
                  * @protected
                  * @override
                  */
-                repaint: require('./painters').createRepaint(
+                repaint: painters.createRepaint(
                     InputControl.prototype.repaint,
                     {
                         /**
@@ -292,7 +296,7 @@ define(
             var textareaHTML = [
                 '<div style="width:100%;height:100%;" data-ui-child-name="input"',
                     ' data-ui-type="TextBox" data-ui-mode="textarea"',
-                    ' data-ui-width="100%" data-ui-height="100%"',
+                    ' data-ui-width="100%"',
                     ' data-ui-placeholder="${placeholder}">',
                 '</div>'
             ].join('');

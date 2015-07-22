@@ -458,9 +458,10 @@ define(
             // value要特殊处理一下，可能是通过innerHTML设置的，但是`<select>`元素在没有`value`属性时会自动选中第1个，
             // 这会影响诸如`selectedIndex`属性的效果，因此对`<select>`要特别地排除
             if (lib.hasAttribute(input, 'value')
-                || (input.nodeName.toLowerCase() !== 'select' && input.value)
+                || (!$input.is('select') && input.value)
+                || $input.is('textarea')
             ) {
-                result.value = input.value;
+                result.value = $input.val();
             }
 
             return u.defaults(options || {}, result);
