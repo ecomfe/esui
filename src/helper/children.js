@@ -29,7 +29,7 @@ define(
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
-            ui.init(wrap, options);
+            return ui.init(wrap, options);
         };
 
         /**
