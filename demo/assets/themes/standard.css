@@ -2169,9 +2169,6 @@ a.ui-text-info:hover {
   display: table-cell;
   width: 100%;
 }
-.ui-textbox-wrapper .ui-textbox-addon {
-  z-index: -1;
-}
 .ui-textbox-wrapper .ui-textbox-addon:first-child .ui-button,
 .ui-textbox-wrapper .ui-textbox-addon:first-child .ui-select {
   -webkit-border-top-right-radius: 0;
@@ -6067,9 +6064,6 @@ span.ui-crumb-node {
   width: 1.5em;
   float: left;
 }
-.ui-tree-node-empty {
-  cursor: default;
-}
 .ui-tree-item-content {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -6263,6 +6257,7 @@ span.ui-crumb-node {
 .main-container {
   margin-top: 2em;
   margin-bottom: 5em;
+  min-height: 40em;
 }
 .footer {
   padding: 1em;

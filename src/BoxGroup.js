@@ -24,10 +24,6 @@ define(
         var BoxGroup = require('eoo').create(
             InputControl,
             {
-                constructor: function () {
-                    this.$super(arguments);
-                },
-
                 /**
                  * 控件类型，始终为`"BoxGroup"`
                  *

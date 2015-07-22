@@ -19,17 +19,18 @@ define('demo',
                 var $tabContentHtml = $('<div class="ui-tab-panel" id="democodehtml' + index + '"></div>');
                 var $tabContentJs = $('<div class="ui-tab-panel" id="democodejs' + index + '"></div>');
                 $tabContent.append($tabContentHtml);
-                if ($(item).next('script').length > 0) {
+                var $item = $(item);
+                var $script = $item.next('script');
+                if ($script.length > 0) {
                     $tab.find('ul').append($tabJs);
                     $tabContent.append($tabContentJs);
                 }
-                $tab.insertAfter($(item));
+                $tab.insertAfter($item);
                 $tabContent.insertAfter($tab);
 
                 var $sample = $('<div class="highlight"><pre class="source source-markup prettyprint">'
                     + '<code class="language-markup"></code></pre></div>');
                 var $code = $sample.find('.language-markup');
-                var $item = $(item);
                 $item.nextAll('.ui-tab-content').find('#democodehtml' + index).html($sample);
                 var sampleCode = $item.html();
                 var indexOfFirstElement = sampleCode.indexOf('<');
@@ -41,32 +42,33 @@ define('demo',
                 }
                 $code.text(targetArr.join('\n'));
 
-                var $script = $item.nextAll('script:first');
-                var refId = $script.data('refid');
-                if (refId) {
-                    $script = $('#' + refId);
-                }
-                var jsText = $script.text();
-                var jsArray = jsText.split('\n');
-                var jsNewArray = [];
-                var jsIndex = 0;
-                for (var k = 0; k < jsText.length; k++) {
-                    if ((/\s/).test(jsText[k])) {
-                        jsIndex++;
+                setTimeout(function () {
+                    var refId = $script.data('refid');
+                    if (refId) {
+                        $script = $('#' + refId);
                     }
-                    else {
-                        break;
+                    var jsText = $script.text();
+                    var jsArray = jsText.split('\n');
+                    var jsNewArray = [];
+                    var jsIndex = 0;
+                    for (var k = 0; k < jsText.length; k++) {
+                        if ((/\s/).test(jsText[k])) {
+                            jsIndex++;
+                        }
+                        else {
+                            break;
+                        }
                     }
-                }
-                var jsReg = new RegExp('^\\s{' + (jsIndex - 1) + '}');
-                for (var j = 0; j < jsArray.length; j++) {
-                    jsNewArray.push(jsArray[j].replace(jsReg, ''));
-                }
-                var jsNewText = jsNewArray.join('\n');
-                var $jsSample = $('<div class="highlight"><pre class="source source-markup prettyprint">'
-                    + '<code class="language-markup"></code></pre></div>');
-                $jsSample.find('.language-markup').text(jsNewText);
-                $item.nextAll('.ui-tab-content').find('#democodejs' + index).html($jsSample);
+                    var jsReg = new RegExp('^\\s{' + (jsIndex - 1) + '}');
+                    for (var j = 0; j < jsArray.length; j++) {
+                        jsNewArray.push(jsArray[j].replace(jsReg, ''));
+                    }
+                    var jsNewText = jsNewArray.join('\n');
+                    var $jsSample = $('<div class="highlight"><pre class="source source-markup prettyprint">'
+                        + '<code class="language-markup"></code></pre></div>');
+                    $jsSample.find('.language-markup').text(jsNewText);
+                    $item.nextAll('.ui-tab-content').find('#democodejs' + index).html($jsSample);
+                }, 300);
             });
         }
         renderSample();

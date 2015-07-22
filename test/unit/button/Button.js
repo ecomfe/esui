@@ -18,6 +18,7 @@ define(function (require) {
                 expect(container.getElementsByTagName('div').length).toBe(0);
             });
         });
+
         describe('created via HTML', function () {
             var button;
             beforeEach(function () {
@@ -47,7 +48,7 @@ define(function (require) {
             });
         });
     });
-    
+
     describe('Button events', function () {
         describe('generally', function () {
             it('should change the lable of button via `setContent`', function () {
