@@ -292,7 +292,7 @@ define(
                 return;
             }
 
-            if (!$el.attr('subrowopened')) {
+            if (!$el.data('subrowopened')) {
                 var dataItem = datasource[index];
                 var eventArgs = {
                     index: index,
