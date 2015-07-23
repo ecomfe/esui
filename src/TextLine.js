@@ -195,7 +195,7 @@ define(
                             wrapperChange.call(textLine, true);
 
                             if (!searchList) {
-                                var allList = textLine.getRawValue();
+                                var allList = textLine.getValueRepeatableItems();
                                 var re = typeof query ? new RegExp(query) : query;
                                 var searchList = [];
                                 u.each(allList, function (text, index) {
@@ -316,10 +316,10 @@ define(
             }
         );
         var SEARCH_ITEM_TPL = [
-            '<div class="line">',
-                '<span class="num">${num}</span>',
-                '<span class="text">${text}</span>',
-                '<span class="clear" data-value="${text}">X</span>',
+            '<div class="${lineClass}">',
+                '<span class="${numClass}">${num}</span>',
+                '<span class="${textClass}">${text}</span>',
+                '<span class="${clearClass}" data-value="${text}"></span>',
             '</div>'
         ].join('');
         
@@ -330,14 +330,21 @@ define(
          */
         function renderSearchList(searchList) {
             var html = [];
+            var controlHelper = this.helper;
             u.each(searchList, function (val, index) {
                 var data = {
                     num: index + 1,
-                    text: val
+                    text: val,
+                    lineClass: controlHelper.getPartClassName('search-content-line'),
+                    textClass: controlHelper.getPartClassName('search-content-text'),
+                    clearClass: controlHelper.getPartClassName('search-content-clear')
+                        + ' '
+                        + controlHelper.getIconClass(),
+                    numClass: controlHelper.getPartClassName('search-content-num')
                 };
                 html.push(lib.format(SEARCH_ITEM_TPL, data));
             }, this);
-            html = html.join('') || '<div class="warning">搜索结果为空</div>';
+            html = html.join('') || '<div class="' + controlHelper.getPartClassName('empty-text') + '">搜索结果为空</div>';
             this.helper.getPart('search-content').innerHTML = html;
         }
         /**
@@ -349,13 +356,12 @@ define(
             var content = this.helper.getPart('search-content');
             this.helper.removeDOMEvent(content, 'click');
             this.helper.addDOMEvent(content, 'click', u.bind(function (e) {
-                if (e.target.className !== 'clear') {
+                if (e.target.className.indexOf('ui-textline-search-content-clear') === -1) {
                     return;
                 }
-                // content.removeChild(e.target.parentNode);
                 var val = e.target.getAttribute('data-value');
                 this.setProperties({
-                    rawValue: u.without(this.getRawValue(), val),
+                    rawValue: u.without(this.getValueRepeatableItems(), val),
                     searchList: u.without(searchList, val)
                 });
                 /**
