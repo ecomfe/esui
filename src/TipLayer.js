@@ -357,7 +357,6 @@ define(
                                 enableOutsideClickHide.call(me, handler);
                             },
 
-
                             /**
                              * 取消外部点击隐藏
                              */
@@ -522,6 +521,11 @@ define(
 
                     this.removeState('hidden');
 
+                    console.log({
+                        of: $(targetElement),
+                        at: options.targetPositionOpt.right + ' ' + options.targetPositionOpt.top,
+                        my: options.positionOpt.right + ' ' + options.positionOpt.top
+                    });
                     $(this.main).position({
                         of: $(targetElement),
                         at: options.targetPositionOpt.right + ' ' + options.targetPositionOpt.top,

@@ -12,7 +12,7 @@ define(
         var esui = require('./main');
         var u = require('underscore');
         var Control = require('./Control');
-        var lib = require('./lib');
+        var $ = require('jquery');
 
         require('./TipLayer');
 
@@ -83,13 +83,45 @@ define(
                          *
                          * 用于输出内部icon
                          */
-                        icon: 'question-circle'
+                        icon: 'question-circle',
+
+                        /**
+                         * @property {string} appendToElement
+                         *
+                         * 把目标tip加在哪个元素上
+                         */
+                        appendToElement: null,
+
+                        /**
+                         * @property {Object} selfLeft
+                         *
+                         * 定位属性
+                         */
+                        selfRight: 'right',
+                        
+                        /**
+                         * @property {Object} selfTop
+                         *
+                         * 定位属性
+                         */
+                        selfTop: 'top',
+
+                        /**
+                         * @property {Object} targetLeft
+                         *
+                         * Tip定位属性
+                         */
+                        tipRight: 'left',
+
+                        /**
+                         * @property {Object} targetLeft
+                         *
+                         * Tip定位属性
+                         */
+                        tipTop: 'top'
                     };
 
                     u.extend(properties, options);
-                    if (options.arrow === 'false') {
-                        properties.arrow = false;
-                    }
                     extractDOMProperties(this, properties);
                     this.setProperties(properties);
                 },
@@ -103,9 +135,7 @@ define(
                 initStructure: function () {
                     var main = document.createElement('div');
                     document.body.appendChild(main);
-                    if (this.inheritFont || esui.getConfig('inheritFont')) {
-                        main.style.fontSize = lib.getComputedStyle(this.main, 'fontSize');
-                    }
+
                     var tipLayer = esui.create(
                         'TipLayer',
                         {
@@ -122,7 +152,8 @@ define(
                             width: this.layerWidth || 200,
                             viewContext: this.viewContext,
                             // 添加一个类以方便区别inline tiplayer和全局tiplayer
-                            variants: 'from-tip'
+                            variants: 'from-tip',
+                            appendToElement: this.appendToElement
                         }
                     );
                     this.addChild(tipLayer);
@@ -135,7 +166,14 @@ define(
                         showMode: this.mode || this.showMode,
                         delayTime: this.delayTime,
                         targetControl: this.id,
-                        positionOpt: {top: 'top', right: 'left'}
+                        positionOpt: {
+                            right: this.tipRight,
+                            top: this.tipTop
+                        },
+                        targetPositionOpt: {
+                            right: this.selfRight,
+                            top: this.selfTop
+                        }
                     };
                     tipLayer.attachTo(attachOptions);
                 },
