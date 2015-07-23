@@ -18,6 +18,8 @@ define(
         var painters = require('./painters');
 
         require('./TextBox');
+        // 搜索提示框的高度
+        var SEARCH_INFO_HEIGHT = 24;
 
         /**
          * 带行号的输入框
@@ -100,8 +102,9 @@ define(
                     var textArea = this.getTextArea();
                     this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
                     this.helper.addDOMEvent(textArea, 'focus', inputFocus);
+                    var searchClear = this.helper.getPart('search-clear');
+                    this.helper.addDOMEvent(searchClear, 'click', u.bind(wrapperChange, this, false));
                 },
-
                 /**
                  * 重新渲染
                  *
@@ -123,6 +126,10 @@ define(
 
                             // 主体高度
                             textLine.main.style.height = height + 'px';
+                            
+                            // search wrapper高度
+                            var searchWrapper = textLine.helper.getPart('search-wrapper');
+                            searchWrapper.style.height = height - SEARCH_INFO_HEIGHT + 'px';
                         }
                     },
                     {
@@ -177,9 +184,34 @@ define(
                                 }
                             );
                         }
+                    },
+                    {
+                        name: ['query', 'searchList'],
+                        paint: function (textLine, query, searchList) {
+                            if (!query && !searchList) {
+                                wrapperChange.call(textLine, false);
+                                return;
+                            }
+                            wrapperChange.call(textLine, true);
+
+                            if (!searchList) {
+                                var allList = textLine.getRawValue();
+                                var re = typeof query ? new RegExp(query) : query;
+                                var searchList = [];
+                                u.each(allList, function (text, index) {
+                                    if (query && re.test(text)) {
+                                        searchList.push(text);
+                                    }
+                                });
+                            }
+
+                            var numCtr = textLine.helper.getPart('search-hint-text');
+                            numCtr.innerHTML = searchList.length;
+                            renderSearchList.call(textLine, searchList);
+                            bindSearchLineEvent.call(textLine, searchList);
+                        }
                     }
                 ),
-
                 /**
                  * 滚动文本输入框
                  */
@@ -283,8 +315,58 @@ define(
                 }
             }
         );
-
-
+        var SEARCH_ITEM_TPL = [
+            '<div class="line">',
+                '<span class="num">${num}</span>',
+                '<span class="text">${text}</span>',
+                '<span class="clear" data-value="${text}">X</span>',
+            '</div>'
+        ].join('');
+        
+        /**
+         * 渲染searchList
+         * @param {Array} searchList 搜索后的列表
+         * @inner 
+         */
+        function renderSearchList(searchList) {
+            var html = [];
+            u.each(searchList, function (val, index) {
+                var data = {
+                    num: index + 1,
+                    text: val
+                };
+                html.push(lib.format(SEARCH_ITEM_TPL, data));
+            }, this);
+            html = html.join('') || '<div class="warning">搜索结果为空</div>';
+            this.helper.getPart('search-content').innerHTML = html;
+        }
+        /**
+         * 绑定search list 中每行的点击事件
+         * @param {Array} searchList 搜索后的列表
+         * @inner 
+         */
+        function bindSearchLineEvent(searchList) {
+            var content = this.helper.getPart('search-content');
+            this.helper.removeDOMEvent(content, 'click');
+            this.helper.addDOMEvent(content, 'click', u.bind(function (e) {
+                if (e.target.className !== 'clear') {
+                    return;
+                }
+                // content.removeChild(e.target.parentNode);
+                var val = e.target.getAttribute('data-value');
+                this.setProperties({
+                    rawValue: u.without(this.getRawValue(), val),
+                    searchList: u.without(searchList, val)
+                });
+                /**
+                 * 触发删除事件
+                 * @Event
+                 */
+                this.fire('deleteItem', {
+                    item: val
+                });
+            }, this));
+        }
         /**
          * 获取主体的HTML
          *
@@ -309,12 +391,35 @@ define(
             );
 
             var html = [
-                textLine.helper.getPartBeginTag('num-line', 'div'),
-                '1', // 默认至少有一行
-                textLine.helper.getPartEndTag('num-line', 'div'),
-                textLine.helper.getPartBeginTag('text-container', 'div'),
-                textareaHTML,
-                textLine.helper.getPartEndTag('text-container', 'div')
+                // 控件主体
+                textLine.helper.getPartBeginTag('wrapper', 'div'),
+                    textLine.helper.getPartBeginTag('num-line', 'div'),
+                        '1', // 默认至少有一行
+                    textLine.helper.getPartEndTag('num-line', 'div'),
+                    textLine.helper.getPartBeginTag('text-container', 'div'),
+                        textareaHTML,
+                    textLine.helper.getPartEndTag('text-container', 'div'),
+                textLine.helper.getPartEndTag('wrapper', 'div'),
+                // search提示
+                textLine.helper.getPartBeginTag('search-info', 'div'),
+                    textLine.helper.getPartBeginTag('search-hint', 'div'),
+                        '共找到',
+                        textLine.helper.getPartBeginTag('search-hint-text', 'span'),
+                            '0',
+                        textLine.helper.getPartEndTag('search-hint-text', 'span'),
+                        '个',
+                    textLine.helper.getPartEndTag('search-hint', 'div'),
+                    textLine.helper.getPartBeginTag('search-clear', 'div'),
+                        '返回',
+                    textLine.helper.getPartEndTag('search-clear', 'div'),
+                textLine.helper.getPartEndTag('search-info', 'div'),
+                // search后结果面板
+                textLine.helper.getPartBeginTag('search-wrapper', 'div'),
+                    textLine.helper.getPartBeginTag('search-num-line', 'div'),
+                    textLine.helper.getPartEndTag('search-num-line', 'div'),
+                    textLine.helper.getPartBeginTag('search-content', 'div'),
+                    textLine.helper.getPartEndTag('search-content', 'div'),
+                textLine.helper.getPartEndTag('search-wrapper', 'div'),
             ];
             return html.join('');
         }
@@ -370,7 +475,29 @@ define(
             me.addState('focus');
             helper.addDOMEvent(textArea, 'blur', blurEvent);
         }
-
+        
+        /**
+         * 切换search 和 list
+         * @param {boolean} isSearch 是否是搜索状态
+         * @inner 
+         */
+        function wrapperChange(isSearch) {
+            var listWrapper = this.helper.getPart('wrapper');
+            var searchInfo = this.helper.getPart('search-info');
+            var searchWrapper = this.helper.getPart('search-wrapper');
+            if (isSearch) {
+                listWrapper.style.display = 'none';
+                searchInfo.style.display = 'block';
+                searchWrapper.style.display = 'block';
+            }
+            else {
+                this.query = '';
+                this.searchList = '';
+                listWrapper.style.display = 'block';
+                searchInfo.style.display = 'none';
+                searchWrapper.style.display = 'none';
+            }
+        }
         esui.register(TextLine);
 
         return TextLine;

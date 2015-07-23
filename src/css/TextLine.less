@@ -16,6 +16,7 @@
 .@{ui-class-prefix}-textline {
     position: relative;
     display: inline-block;
+    overflow: hidden;
 
     .esui-border-radius(
         @esui-textline-border-radius,
@@ -71,4 +72,79 @@
 
 .@{ui-class-prefix}-textline.@{ui-state-prefix}-disabled textarea {
     cursor: not-allowed;
+}
+
+.@{ui-class-prefix}-textline-search-info {
+      background: #fdfae9;
+      padding: 0 10px;
+      height: 24px;
+      line-height: 24px;
+      font-size: 0.8em;
+      font-family: '微软雅黑';
+      overflow: hidden;
+      .@{ui-class-prefix}-textline-search-hint {
+          float: left;
+      }
+      .@{ui-class-prefix}-textline-search-hint-text {
+          color: red;
+          display: inline-block;
+          margin: 2px;
+      }
+      .@{ui-class-prefix}-textline-search-clear {
+          cursor:pointer;
+          float: right;
+      }
+  }
+  
+.@{ui-class-prefix}-textline-search-wrapper {
+    position: relative;
+    height: 100%;
+    clear: both;
+    overflow-y: auto;
+    .@{ui-class-prefix}-textline-search-num-line {
+        position: absolute;
+        width: 2em;
+        height: 100%;
+        font-size: 1em;
+        background: #f6f6f6;
+        color: #666666;
+    }
+    .@{ui-class-prefix}-textline-search-content {
+        .warning {
+            color: #999;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        .line {
+            span {
+                display: inline-block;
+                line-height: 1.5;
+            }
+            .num {
+                text-align: center;
+                width: 2em;
+                font-size: 1em;
+                background: #f6f6f6;
+                color: #666666;
+                z-index: 2;
+                position: relative;
+            }
+            .text {
+                margin: 0 2px;
+            }
+            .clear {
+                display: none;
+                width: 2em;
+                font-size: 1em;
+                color: red;
+                text-align: center;
+                float: right;
+                cursor: pointer;
+            }
+            &:hover .clear {
+                display: inline-block;
+            }
+        }
+    }
 }

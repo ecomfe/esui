@@ -24,6 +24,9 @@
             <h2>展示</h2>
             <p>描述</p>
             <div class="example">
+                <h3>search</h3>
+                <div data-ui-type="SearchBox" data-ui-id="normal-search" data-ui-width="302" data-ui-button-position="right" ></div>
+                <div data-ui="type:TextLine;name:textLine;"></div>
                 <h3>Error</h3>
                 <div data-ui="type:TextLine;name:textLine;">
                 </div>
@@ -58,16 +61,31 @@ tst3</textarea>
             'esui',
             'esui/TextLine',
             'esui/Tab',
+            'esui/SearchBox',
             'demo'
         ],
         function (ui) {
             var controls = ui.init();
-            var textLine = controls[0];
-
-            textLine.setProperties({
-                value: 'value1\nvalue2\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf\nsadf'
+            var search = controls[0];
+            var box = controls[1];
+            search.on('search', function (e) {
+                var re = new RegExp('^' + e.target.getValue());
+                box.setProperties({
+                    query: re
+                });
             });
-            textLine.showValidationMessage('invalid', '错误信息！');
+            box.setProperties({
+                rawValue: [
+                    'value1',
+                    'value3434',
+                    'ssdsd',
+                    'wrddfd',
+                    'ugygu'
+                ]
+            });
+            
+            var error = controls[2];
+            error.showValidationMessage('invalid', '错误信息！');
         }
     );
     </script>
