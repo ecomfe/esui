@@ -18,8 +18,6 @@ define(
         var painters = require('./painters');
 
         require('./TextBox');
-        // 搜索提示框的高度
-        var SEARCH_INFO_HEIGHT = 24;
 
         /**
          * 带行号的输入框
@@ -61,7 +59,7 @@ define(
                     // 如果没有获取到，设一个缺省的
                     properties.value = properties.value || '';
                     properties.placeholder = this.main.getAttribute('placeholder') || '';
-                    u.extend(properties, options);
+                    u.extend(properties, TextLine.defaultProperties, options);
 
                     if (!properties.hasOwnProperty('title') && this.main.title) {
                         properties.title = this.main.title;
@@ -105,7 +103,8 @@ define(
                     var back = this.helper.getPart('search-back');
                     this.helper.addDOMEvent(back, 'click', u.bind(wrapperChange, this, false));
                     var content = this.helper.getPart('search-content');
-                    this.helper.addDOMEvent(content, 'click', u.bind(deleteItemHandler, this));
+                    var clearClass = this.helper.getPartClassName('search-content-clear');
+                    this.helper.addDOMEvent(content, 'click', '.' + clearClass, u.bind(deleteItemHandler, this));
                 },
                 /**
                  * 重新渲染
@@ -124,14 +123,9 @@ define(
                          */
                         name: 'height',
                         paint: function (textLine, height) {
-                            height = height || 300;
-
+                            height = height || textLine.height;
                             // 主体高度
                             textLine.main.style.height = height + 'px';
-
-                            // search wrapper高度
-                            var searchWrapper = textLine.helper.getPart('search-wrapper');
-                            searchWrapper.style.height = height - SEARCH_INFO_HEIGHT + 'px';
                         }
                     },
                     {
@@ -142,8 +136,7 @@ define(
                          */
                         name: 'width',
                         paint: function (textLine, width) {
-                            width = width || 300;
-
+                            width = width || textLine.width;
                             // 主体高度
                             textLine.main.style.width = width + 'px';
                         }
@@ -196,10 +189,10 @@ define(
                             }
                             wrapperChange.call(textLine, true);
                             var allList = textLine.getValueRepeatableItems();
-                            var re = typeof query ? new RegExp(query) : query;
+                            var re = u.isString(query) ? new RegExp(query) : query;
                             var searchList = [];
                             u.each(allList, function (text, index) {
-                                if (query && re.test(text)) {
+                                if (re.test(text)) {
                                     searchList.push(text);
                                 }
                             });
@@ -313,6 +306,14 @@ define(
                 }
             }
         );
+        
+        TextLine.defaultProperties = {
+            beforeNumberText: '共找到',
+            afterNumberText: '个',
+            backLinkText: '返回',
+            emptyResultText: '搜索结果为空'
+        };
+   
         var SEARCH_ITEM_TPL = [
             '<div class="${lineClass}">',
                 '<span class="${numClass}">${num}</span>',
@@ -343,8 +344,13 @@ define(
                 };
                 html.push(lib.format(SEARCH_ITEM_TPL, data));
             }, this);
-            html = html.join('') || '<div class="' + controlHelper.getPartClassName('empty-text') + '">搜索结果为空</div>';
+            html = html.join('') 
+                || '<div class="' + controlHelper.getPartClassName('empty-text') 
+                + '">' + this.emptyResultText + '</div>';
             this.helper.getPart('search-content').innerHTML = html;
+            var infoHeight = $(this.helper.getPart('search-info')).height();
+            var searchWrapper = $(this.helper.getPart('search-wrapper'));
+            searchWrapper.height(this.height - infoHeight);
         }
 
         /**
@@ -354,11 +360,7 @@ define(
          * @inner
          */
         function deleteItemHandler(e) {
-            var clearClass = this.helper.getPartClassName('search-content-clear');
-            if (!$(e.target).hasClass(clearClass)) {
-                return;
-            }
-            var val = e.target.getAttribute('data-value');
+            var val = $(e.target).attr('data-value');
             var query = this.query;
             this.query = '';
             this.setProperties({
@@ -410,14 +412,14 @@ define(
                 // search提示
                 textLine.helper.getPartBeginTag('search-info', 'div'),
                     textLine.helper.getPartBeginTag('search-hint', 'div'),
-                        '共找到',
+                        textLine.beforeNumberText,
                         textLine.helper.getPartBeginTag('search-hint-text', 'span'),
                             '0',
                         textLine.helper.getPartEndTag('search-hint-text', 'span'),
-                        '个',
+                        textLine.afterNumberText,
                     textLine.helper.getPartEndTag('search-hint', 'div'),
                     textLine.helper.getPartBeginTag('search-back', 'div'),
-                        '返回',
+                        textLine.backLinkText,
                     textLine.helper.getPartEndTag('search-back', 'div'),
                 textLine.helper.getPartEndTag('search-info', 'div'),
                 // search后结果面板

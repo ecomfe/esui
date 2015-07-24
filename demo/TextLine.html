@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
-        <link rel="stylesheet" href="assets/themes/standard.css" />
+        <link rel="stylesheet" href="assets/themes/standard.less" />
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
@@ -26,7 +26,7 @@
             <div class="example">
                 <h3>search</h3>
                 <div data-ui-type="SearchBox" data-ui-id="normal-search" data-ui-width="302" data-ui-button-position="right" ></div>
-                <div data-ui="type:TextLine;name:textLine;"></div>
+                <div data-ui="type:TextLine;name:textLine;height:300;"></div>
                 <h3>Error</h3>
                 <div data-ui="type:TextLine;name:textLine;">
                 </div>
@@ -69,7 +69,8 @@ tst3</textarea>
             var search = controls[0];
             var box = controls[1];
             search.on('search', function (e) {
-                var re = new RegExp('^' + e.target.getValue());
+                var value = e.target.getValue();
+                var re = value ? new RegExp('^' + value) : '';
                 box.setProperties({
                     query: re
                 });
