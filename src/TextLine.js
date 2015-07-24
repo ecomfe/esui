@@ -306,14 +306,14 @@ define(
                 }
             }
         );
-        
+
         TextLine.defaultProperties = {
             beforeNumberText: '共找到',
             afterNumberText: '个',
             backLinkText: '返回',
             emptyResultText: '搜索结果为空'
         };
-   
+
         var SEARCH_ITEM_TPL = [
             '<div class="${lineClass}">',
                 '<span class="${numClass}">${num}</span>',
@@ -344,8 +344,8 @@ define(
                 };
                 html.push(lib.format(SEARCH_ITEM_TPL, data));
             }, this);
-            html = html.join('') 
-                || '<div class="' + controlHelper.getPartClassName('empty-text') 
+            html = html.join('')
+                || '<div class="' + controlHelper.getPartClassName('empty-text')
                 + '">' + this.emptyResultText + '</div>';
             this.helper.getPart('search-content').innerHTML = html;
             var infoHeight = $(this.helper.getPart('search-info')).height();
@@ -402,32 +402,32 @@ define(
             var html = [
                 // 控件主体
                 textLine.helper.getPartBeginTag('wrapper', 'div'),
-                    textLine.helper.getPartBeginTag('num-line', 'div'),
-                        '1', // 默认至少有一行
-                    textLine.helper.getPartEndTag('num-line', 'div'),
-                    textLine.helper.getPartBeginTag('text-container', 'div'),
-                        textareaHTML,
-                    textLine.helper.getPartEndTag('text-container', 'div'),
+                textLine.helper.getPartBeginTag('num-line', 'div'),
+                '1', // 默认至少有一行
+                textLine.helper.getPartEndTag('num-line', 'div'),
+                textLine.helper.getPartBeginTag('text-container', 'div'),
+                textareaHTML,
+                textLine.helper.getPartEndTag('text-container', 'div'),
                 textLine.helper.getPartEndTag('wrapper', 'div'),
                 // search提示
                 textLine.helper.getPartBeginTag('search-info', 'div'),
-                    textLine.helper.getPartBeginTag('search-hint', 'div'),
-                        textLine.beforeNumberText,
-                        textLine.helper.getPartBeginTag('search-hint-text', 'span'),
-                            '0',
-                        textLine.helper.getPartEndTag('search-hint-text', 'span'),
-                        textLine.afterNumberText,
-                    textLine.helper.getPartEndTag('search-hint', 'div'),
-                    textLine.helper.getPartBeginTag('search-back', 'div'),
-                        textLine.backLinkText,
-                    textLine.helper.getPartEndTag('search-back', 'div'),
+                textLine.helper.getPartBeginTag('search-hint', 'div'),
+                textLine.beforeNumberText,
+                textLine.helper.getPartBeginTag('search-hint-text', 'span'),
+                '0',
+                textLine.helper.getPartEndTag('search-hint-text', 'span'),
+                textLine.afterNumberText,
+                textLine.helper.getPartEndTag('search-hint', 'div'),
+                textLine.helper.getPartBeginTag('search-back', 'div'),
+                textLine.backLinkText,
+                textLine.helper.getPartEndTag('search-back', 'div'),
                 textLine.helper.getPartEndTag('search-info', 'div'),
                 // search后结果面板
                 textLine.helper.getPartBeginTag('search-wrapper', 'div'),
-                    textLine.helper.getPartBeginTag('search-num-line', 'div'),
-                    textLine.helper.getPartEndTag('search-num-line', 'div'),
-                    textLine.helper.getPartBeginTag('search-content', 'div'),
-                    textLine.helper.getPartEndTag('search-content', 'div'),
+                textLine.helper.getPartBeginTag('search-num-line', 'div'),
+                textLine.helper.getPartEndTag('search-num-line', 'div'),
+                textLine.helper.getPartBeginTag('search-content', 'div'),
+                textLine.helper.getPartEndTag('search-content', 'div'),
                 textLine.helper.getPartEndTag('search-wrapper', 'div')
             ];
             return html.join('');
