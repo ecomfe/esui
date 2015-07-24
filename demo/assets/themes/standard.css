@@ -5962,11 +5962,11 @@ span.ui-crumb-node {
   float: left;
 }
 .ui-textline-search-hint-text {
-  color: red;
+  color: #ff0000;
   display: inline-block;
   margin: 2px;
 }
-.ui-textline-search-clear {
+.ui-textline-search-back {
   cursor: pointer;
   float: right;
 }
@@ -6003,7 +6003,7 @@ span.ui-crumb-node {
   text-align: center;
   float: right;
   cursor: pointer;
-  color: red;
+  color: #ff0000;
 }
 .ui-textline-search-content-line .ui-textline-search-content-clear:before {
   content: "\f00d";
