@@ -68,10 +68,10 @@ define('demo',
                         + '<code class="language-markup"></code></pre></div>');
                     $jsSample.find('.language-markup').text(jsNewText);
                     $item.nextAll('.ui-tab-content').find('#democodejs' + index).html($jsSample);
+                    window.prettyPrint();
                 }, 300);
             });
         }
         renderSample();
-        window.prettyPrint();
     }
 );
