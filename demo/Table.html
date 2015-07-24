@@ -22,8 +22,14 @@
             </div>
             <div id="main" class="ui-u-4-5">
                 <h2>Table</h2>
+                <div class="example">
+                    <div
+                        data-ui="type:Table;id:table;columnResizable:true;"></div>
+                </div>
+
+                <h2>Table</h2>
                 <p>Table</p>
-                <div class="example ui-demo-light-stage">
+                <div class="example">
                     <div data-follow-thead="myTable" class="row">
                         <button type="button" data-ui="id:disabledBtn;type:Button;">toggleDisable</button>
                         <button type="button"data-ui="id:changeWidthBtn;type:Button;">changeWidth</button>
@@ -39,14 +45,13 @@
                     <h3>Fixed Header</h3>
                     <div class="row">
                         <div
-                        data-ui="type:Table;id:myTable;data-ui-column-resizable:true;"
+                        data-ui="type:Table;id:myTable;columnResizable:true;"
                         data-ui-extension-tableedit-type="TableEdit"
                         data-ui-extension-tablesubrow-type="TableSubrow"
                         data-ui-extension-command-type="Command"
                         data-ui-extension-command-events="click mousedown mouseup"
                         data-ui-extension-auto-type="AutoSort"
-                        data-ui-extension-customdata-type="CustomData"
-                        ></div>
+                        data-ui-extension-customdata-type="CustomData"></div>
                     </div>
                     <h3>空表格</h3>
                     <div class="row">
@@ -87,7 +92,6 @@
                     'esui/extension/Command',
                     'esui/extension/AutoSort',
                     'esui/extension/CustomData',
-                    'esui/Tip',
                     'esui/Table',
                     'esui/Button',
                     'esui/TextBox',
@@ -151,6 +155,32 @@
                     var lib = require('esui/lib');
                     ui.init(document.body,{
                         properties : {
+                            table: {
+                                datasource: data,
+                                fields: [
+                                    {
+                                        title: '编号',
+                                        field: 'id' ,
+                                        content: function (item) {
+                                            return item.id;
+                                        }
+                                    },
+                                    {
+                                        title: '姓名',
+                                        field: 'name',
+                                        content: function (item) {
+                                            return item.name;
+                                        }
+                                    },
+                                    {
+                                        title: '性别',
+                                        field: 'sex' ,
+                                        content: function (item) {
+                                            return item.sex ? '男' : '女';
+                                        }
+                                    }
+                                ]
+                            },
                             myTable4: {
                                 datasource: [],
                                 fields: fields
@@ -257,6 +287,10 @@
                         }
                     });
 
+                    ui.get('table').onselect = function (e, arg ) {
+                        alert(arg.selectedIndex.toString());
+                    };
+                    
                     myTable = ui.get('myTable');
                     myTable.onsubrowopen = function (e, arg) {
                         this.setSubrowContent(

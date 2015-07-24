@@ -16,6 +16,7 @@ define(
         var $ = require('jquery');
 
         require('./behavior/Mouse');
+        require('./Tip');
 
         /**
          * 表格控件类
@@ -462,11 +463,7 @@ define(
                         // 释放表头跟随的元素引用
                         this.followDoms = null;
 
-                        var mark = lib.g(getId(this, 'drag-mark'));
-                        // 移除拖拽基准线
-                        if (mark) {
-                            document.body.removeChild(mark);
-                        }
+                        $('#' + getId(this, 'drag-mark')).remove();
                     }
 
                     this.rowBuilderList = null;
@@ -1120,20 +1117,23 @@ define(
                 table.initChildren(head);
                 table.headPanel = table.viewContext.get(headPanelId);
 
-                // 悬浮到可拖拽区域时变换鼠标指针
-                table.helper.addDOMEvent(
-                    head,
-                    'mousemove',
-                    headMoveHandler
-                );
+                if (table.columnResizable) {
+                    // 悬浮到可拖拽区域时变换鼠标指针
+                    table.helper.addDOMEvent(
+                        head,
+                        'mousemove',
+                        'th',
+                        headMoveHandler
+                    );
 
-                $(head).mouse(
-                    {
-                        start: u.partial(dragStartHandler, table),
-                        drag: u.partial(dragingHandler, table),
-                        stop: u.partial(dragEndHandler, table)
-                    }
-                );
+                    $(head).mouse(
+                        {
+                            start: u.partial(dragStartHandler, table),
+                            drag: u.partial(dragingHandler, table),
+                            stop: u.partial(dragEndHandler, table)
+                        }
+                    );
+                }
             }
 
             if (table.noHead) {
@@ -1475,7 +1475,7 @@ define(
          */
         function headMoveHandler(e) {
             var table = this;
-            if (!table.columnResizable || isDragging(table)) {
+            if (isDragging(table)) {
                 return;
             }
 
@@ -1545,10 +1545,6 @@ define(
          * @return {Function}
          */
         function dragStartHandler(table, e) {
-            if (!table.columnResizable) {
-                return false;
-            }
-
             // @DEPRECATED: 移除
             table.fire('startdrag');
             table.fire('dragstart');
@@ -1600,7 +1596,6 @@ define(
          * @return {Function}
          */
         function dragingHandler(table, e) {
-            e = e || window.event;
             showDragMark(
                 table,
                 e.pageX || e.clientX + lib.page.getScrollLeft()
