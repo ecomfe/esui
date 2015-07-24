@@ -12,16 +12,15 @@
 @esui-textline-line-height: 1.5;
 @esui-textline-number-column-width: 2em;
 @esui-textline-number-column-font-size: 1em;
-@esui-textline-search-info-height: 24px;
 @esui-textline-search-info-padding: 0 10px;
 @esui-textline-search-info-background: #fdfae9;
-@esui-textline-search-hint-text-color: red;
+@esui-textline-search-info-line-height: 2;
+@esui-textline-search-hint-number-color: #f00;
 @esui-textline-empty-text-color: #999;
-@esui-textline-empty-text-margin: 0 20px 0 0;
-@esui-textline-search-info-font-size: 0.8em;
-@esui-textline-search-content-clear-color: red;
-@esui-textline-search-content-text-margin: 0 2px;
-
+@esui-textline-empty-text-top-margin: 1em;
+@esui-textline-search-content-clear-color: #f00;
+@esui-textline-search-content-clear-width: 2em;
+@esui-textline-search-content-text-margin: 0 .2em;
 
 .@{ui-class-prefix}-textline {
     position: relative;
@@ -61,7 +60,7 @@
 
 .@{ui-class-prefix}-textline-text-container {
     position: absolute;
-    left: @esui-textline-number-column-width + .2em;
+    left: @esui-textline-number-column-width + 0.2em;
     right: 0;
     top: 0;
     bottom: 0;
@@ -87,9 +86,7 @@
 .@{ui-class-prefix}-textline-search-info {
     background: @esui-textline-search-info-background;
     padding: @esui-textline-search-info-padding;
-    height: @esui-textline-search-info-height;
-    line-height: @esui-textline-search-info-height;
-    font-size: @esui-textline-search-info-font-size;
+    line-height: @esui-textline-search-info-line-height;
     overflow: hidden;
 }
 
@@ -98,22 +95,20 @@
 }
 
 .@{ui-class-prefix}-textline-search-hint-text {
-    color: @esui-textline-search-hint-text-color;
-    display: inline-block;
-    margin: 2px;
+    color: @esui-textline-search-hint-number-color;
 }
 
-.@{ui-class-prefix}-textline-search-clear {
-    cursor:pointer;
+.@{ui-class-prefix}-textline-search-back {
+    cursor: pointer;
     float: right;
 }
-  
+
 .@{ui-class-prefix}-textline-search-wrapper {
     position: relative;
     height: 100%;
-    clear: both;
     overflow-y: auto;
 }
+
 .@{ui-class-prefix}-textline-search-num-line {
     position: absolute;
     font-size: @esui-textline-number-column-font-size;
@@ -124,34 +119,37 @@
 
 .@{ui-class-prefix}-textline-empty-text {
     color: @esui-textline-empty-text-color;
-    margin-top: @esui-textline-empty-text-margin;
+    margin-top: @esui-textline-empty-text-top-margin;
     text-align: center;
-    font-size: esui-textline-search-info-font-size;
 }
+
 .@{ui-class-prefix}-textline-search-content-line {
     span {
         display: inline-block;
-        line-height: 1.5;
+        line-height: @esui-textline-line-height;
     }
     &:hover .@{ui-class-prefix}-textline-search-content-clear {
         display: inline-block;
     }
-    .@{ui-class-prefix}-textline-search-content-clear {
-        display: none;
-        width: @esui-textline-number-column-width;
-        text-align: center;
-        float: right;
-        cursor: pointer;
-        color: @esui-textline-search-content-clear-color;
-        .eicons-icon(close);
-    }
 }
+
+.@{ui-class-prefix}-textline-search-content-clear {
+    display: none;
+    width: @esui-textline-search-content-clear-width;
+    color: @esui-textline-search-content-clear-color;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+    .eicons-icon(close);
+}
+
 .@{ui-class-prefix}-textline-search-content-num {
     text-align: center;
     width: @esui-textline-number-column-width;
     z-index: 2;
     position: relative;
 }
+
 .@{ui-class-prefix}-textline-search-content-text {
     margin: @esui-textline-search-content-text-margin;
 }

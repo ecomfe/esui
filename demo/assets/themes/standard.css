@@ -5951,29 +5951,24 @@ span.ui-crumb-node {
   cursor: not-allowed;
 }
 .ui-textline-search-info {
-  background: #fdfae9;
+  background: #fffaee;
   padding: 0 10px;
-  height: 24px;
-  line-height: 24px;
-  font-size: 0.8em;
+  line-height: 2;
   overflow: hidden;
 }
 .ui-textline-search-hint {
   float: left;
 }
 .ui-textline-search-hint-text {
-  color: red;
-  display: inline-block;
-  margin: 2px;
+  color: #f16c6c;
 }
-.ui-textline-search-clear {
+.ui-textline-search-back {
   cursor: pointer;
   float: right;
 }
 .ui-textline-search-wrapper {
   position: relative;
   height: 100%;
-  clear: both;
   overflow-y: auto;
 }
 .ui-textline-search-num-line {
@@ -5986,9 +5981,8 @@ span.ui-crumb-node {
 }
 .ui-textline-empty-text {
   color: #999999;
-  margin-top: 0 20px 0 0;
+  margin-top: 1em;
   text-align: center;
-  font-size: esui-textline-search-info-font-size;
 }
 .ui-textline-search-content-line span {
   display: inline-block;
@@ -5997,15 +5991,15 @@ span.ui-crumb-node {
 .ui-textline-search-content-line:hover .ui-textline-search-content-clear {
   display: inline-block;
 }
-.ui-textline-search-content-line .ui-textline-search-content-clear {
+.ui-textline-search-content-clear {
   display: none;
   width: 2em;
+  color: #f16c6c;
   text-align: center;
   float: right;
   cursor: pointer;
-  color: red;
 }
-.ui-textline-search-content-line .ui-textline-search-content-clear:before {
+.ui-textline-search-content-clear:before {
   content: "\f00d";
 }
 .ui-textline-search-content-num {
@@ -6015,7 +6009,7 @@ span.ui-crumb-node {
   position: relative;
 }
 .ui-textline-search-content-text {
-  margin: 0 2px;
+  margin: 0 0.2em;
 }
 /**
   * ESUI (Enterprise Simple UI)
