@@ -444,7 +444,7 @@ define(
                  * @override
                  */
                 dispose: function () {
-                    if (this.helper.isInStage(this, 'DISPOSED')) {
+                    if (this.helper.isInStage('DISPOSED')) {
                         return;
                     }
 
