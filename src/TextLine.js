@@ -102,8 +102,10 @@ define(
                     var textArea = this.getTextArea();
                     this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
                     this.helper.addDOMEvent(textArea, 'focus', inputFocus);
-                    var searchClear = this.helper.getPart('search-clear');
-                    this.helper.addDOMEvent(searchClear, 'click', u.bind(wrapperChange, this, false));
+                    var back = this.helper.getPart('search-back');
+                    this.helper.addDOMEvent(back, 'click', u.bind(wrapperChange, this, false));
+                    var content = this.helper.getPart('search-content');
+                    this.helper.addDOMEvent(content, 'click', u.bind(deleteItemHandler, this));
                 },
                 /**
                  * 重新渲染
@@ -126,7 +128,7 @@ define(
 
                             // 主体高度
                             textLine.main.style.height = height + 'px';
-                            
+
                             // search wrapper高度
                             var searchWrapper = textLine.helper.getPart('search-wrapper');
                             searchWrapper.style.height = height - SEARCH_INFO_HEIGHT + 'px';
@@ -186,32 +188,28 @@ define(
                         }
                     },
                     {
-                        name: ['query', 'searchList'],
-                        paint: function (textLine, query, searchList) {
-                            if (!query && !searchList) {
+                        name: 'query',
+                        paint: function (textLine, query) {
+                            if (!query) {
                                 wrapperChange.call(textLine, false);
                                 return;
                             }
                             wrapperChange.call(textLine, true);
-
-                            if (!searchList) {
-                                var allList = textLine.getValueRepeatableItems();
-                                var re = typeof query ? new RegExp(query) : query;
-                                var searchList = [];
-                                u.each(allList, function (text, index) {
-                                    if (query && re.test(text)) {
-                                        searchList.push(text);
-                                    }
-                                });
-                            }
-
+                            var allList = textLine.getValueRepeatableItems();
+                            var re = typeof query ? new RegExp(query) : query;
+                            var searchList = [];
+                            u.each(allList, function (text, index) {
+                                if (query && re.test(text)) {
+                                    searchList.push(text);
+                                }
+                            });
                             var numCtr = textLine.helper.getPart('search-hint-text');
                             numCtr.innerHTML = searchList.length;
                             renderSearchList.call(textLine, searchList);
-                            bindSearchLineEvent.call(textLine, searchList);
                         }
                     }
                 ),
+
                 /**
                  * 滚动文本输入框
                  */
@@ -322,11 +320,12 @@ define(
                 '<span class="${clearClass}" data-value="${text}"></span>',
             '</div>'
         ].join('');
-        
+
         /**
          * 渲染searchList
+         *
          * @param {Array} searchList 搜索后的列表
-         * @inner 
+         * @inner
          */
         function renderSearchList(searchList) {
             var html = [];
@@ -347,32 +346,34 @@ define(
             html = html.join('') || '<div class="' + controlHelper.getPartClassName('empty-text') + '">搜索结果为空</div>';
             this.helper.getPart('search-content').innerHTML = html;
         }
+
         /**
-         * 绑定search list 中每行的点击事件
-         * @param {Array} searchList 搜索后的列表
-         * @inner 
+         * 删除搜索后的每一行处理函数
+         *
+         * @param {Event} e 事件对象
+         * @inner
          */
-        function bindSearchLineEvent(searchList) {
-            var content = this.helper.getPart('search-content');
-            this.helper.removeDOMEvent(content, 'click');
-            this.helper.addDOMEvent(content, 'click', u.bind(function (e) {
-                if (e.target.className.indexOf('ui-textline-search-content-clear') === -1) {
-                    return;
-                }
-                var val = e.target.getAttribute('data-value');
-                this.setProperties({
-                    rawValue: u.without(this.getValueRepeatableItems(), val),
-                    searchList: u.without(searchList, val)
-                });
-                /**
-                 * 触发删除事件
-                 * @Event
-                 */
-                this.fire('deleteItem', {
-                    item: val
-                });
-            }, this));
+        function deleteItemHandler(e) {
+            var clearClass = this.helper.getPartClassName('search-content-clear');
+            if (!$(e.target).hasClass(clearClass)) {
+                return;
+            }
+            var val = e.target.getAttribute('data-value');
+            var query = this.query;
+            this.query = '';
+            this.setProperties({
+                rawValue: u.without(this.getValueRepeatableItems(), val),
+                query: query
+            });
+            /**
+             * 触发删除事件
+             * @Event
+             */
+            this.fire('deleteItem', {
+                item: val
+            });
         }
+
         /**
          * 获取主体的HTML
          *
@@ -415,9 +416,9 @@ define(
                         textLine.helper.getPartEndTag('search-hint-text', 'span'),
                         '个',
                     textLine.helper.getPartEndTag('search-hint', 'div'),
-                    textLine.helper.getPartBeginTag('search-clear', 'div'),
+                    textLine.helper.getPartBeginTag('search-back', 'div'),
                         '返回',
-                    textLine.helper.getPartEndTag('search-clear', 'div'),
+                    textLine.helper.getPartEndTag('search-back', 'div'),
                 textLine.helper.getPartEndTag('search-info', 'div'),
                 // search后结果面板
                 textLine.helper.getPartBeginTag('search-wrapper', 'div'),
@@ -425,7 +426,7 @@ define(
                     textLine.helper.getPartEndTag('search-num-line', 'div'),
                     textLine.helper.getPartBeginTag('search-content', 'div'),
                     textLine.helper.getPartEndTag('search-content', 'div'),
-                textLine.helper.getPartEndTag('search-wrapper', 'div'),
+                textLine.helper.getPartEndTag('search-wrapper', 'div')
             ];
             return html.join('');
         }
@@ -481,11 +482,12 @@ define(
             me.addState('focus');
             helper.addDOMEvent(textArea, 'blur', blurEvent);
         }
-        
+
         /**
          * 切换search 和 list
+         *
          * @param {boolean} isSearch 是否是搜索状态
-         * @inner 
+         * @inner
          */
         function wrapperChange(isSearch) {
             var listWrapper = this.helper.getPart('wrapper');
@@ -498,7 +500,6 @@ define(
             }
             else {
                 this.query = '';
-                this.searchList = '';
                 listWrapper.style.display = 'block';
                 searchInfo.style.display = 'none';
                 searchWrapper.style.display = 'none';
