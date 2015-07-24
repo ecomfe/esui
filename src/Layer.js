@@ -174,6 +174,7 @@ define(
 
                 /**
                  * 隐藏层
+                 * @param {boolean} [silent] 不触发hide事件
                  */
                 hide: function (silent) {
                     var element = this.getElement();
@@ -182,7 +183,9 @@ define(
                         $(document).off('mousedown', this.docClickHandler);
                         this.docClickHandler = null;
                     }
-                    this.fire('hide');
+                    if (!silent) {
+                        this.fire('hide');
+                    }
                     this.control.removeState('active');
                 },
 

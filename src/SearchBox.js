@@ -320,7 +320,7 @@ define(
             var textbox = this.getChild('text');
             var method = textbox.getValue() ? 'addState' : 'removeState';
             this[method]('searched');
-            
+
             // 即时模式下输入触发搜索
             if (me.searchMode === 'instant') {
                 me.fire('search');

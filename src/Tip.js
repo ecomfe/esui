@@ -12,7 +12,6 @@ define(
         var esui = require('./main');
         var u = require('underscore');
         var Control = require('./Control');
-        var $ = require('jquery');
 
         require('./TipLayer');
 
@@ -98,7 +97,7 @@ define(
                          * 定位属性
                          */
                         selfRight: 'right',
-                        
+
                         /**
                          * @property {Object} selfTop
                          *

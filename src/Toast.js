@@ -10,7 +10,6 @@ define(
     function (require) {
         var eoo = require('eoo');
         var esui = require('./main');
-        var lib = require('./lib');
         var Control = require('./Control');
         var u = require('underscore');
         var painters = require('./painters');

@@ -11,7 +11,6 @@ define(
         var eoo = require('eoo');
         var esui = require('./main');
         var u = require('underscore');
-        var $ = require('jquery');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var supportPlaceholder
