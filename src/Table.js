@@ -1369,9 +1369,7 @@ define(
          * @return {boolean}
          */
         function isDragging(table) {
-            var head = table.helper.getPart('head');
-            var mouse = $(head).mouse('instance');
-            return !!mouse.mouseStarted;
+            return table.tableHeadDragging;
         }
 
         /**
@@ -1561,6 +1559,7 @@ define(
             if (lib.g(getId(table, 'head')).className.indexOf(dragClass) < 0) {
                 return false;
             }
+            table.tableHeadDragging = true;
             // 获取显示区域高度
             table.htmlHeight = document.documentElement.clientHeight;
 
@@ -1764,6 +1763,7 @@ define(
             // @DEPRECATED: 移除
             table.fire('enddrag');
             table.fire('dragend');
+            table.tableHeadDragging = false;
 
             return false;
         }
