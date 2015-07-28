@@ -14,6 +14,7 @@ define(
         var $ = require('jquery');
         var painters = require('./painters');
         var esui = require('./main');
+        var eoo = require('eoo');
 
         /**
          * 单选或复选框组控件
@@ -21,7 +22,7 @@ define(
          * @extends InputControl
          * @constructor
          */
-        var BoxGroup = require('eoo').create(
+        var BoxGroup = eoo.create(
             InputControl,
             {
                 /**

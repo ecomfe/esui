@@ -21,12 +21,13 @@
             </ul>
         </div>
         <div id="main" class="ui-u-4-5">
-            <h2>CheckBox</h2>
+            <h2>状态</h2>
             <div class="intro">
-                <p>支持从已有元素生成。</p>
+                <p>默认为未选中状态，添加属性<code>data-ui-checked="checked"</code>可设置为选中状态，添加属性<code>data-ui-indeterminate="true"</code>可设置为混合状态。</p>
+                <p>添加属性<code>data-ui-disabled="disabled"</code>可设置为禁用状态。</p>
             </div>
             <div class="example ui-demo-light-stage">
-                <h3>默认样式</h3>
+                <h3>默认状态</h3>
                 <div class="row">
                     <input type="checkbox" title="未选中(Unchecked)" class="ui-checkbox-custom" data-ui-type="CheckBox" />
                 </div>
@@ -36,7 +37,7 @@
                 <div class="row">
                     <input type="checkbox" title="混合状态(Indeterminate)" data-ui-type="CheckBox" data-ui-checked="checked" data-ui-indeterminate="true" class="ui-checkbox-custom" />
                 </div>
-                <h3>Disabled样式</h3>
+                <h3>禁用状态</h3>
                 <div class="row">
                     <input type="checkbox" title="无效状态(Disabled)" data-ui-type="CheckBox" data-ui-disabled="disabled"  class="ui-checkbox-custom" />
                 </div>
@@ -46,11 +47,19 @@
                 <div class="row">
                     <input type="checkbox" title="混合状态(Indeterminate)" data-ui-type="CheckBox" data-ui-checked="checked" data-ui-disabled="disabled" data-ui-indeterminate="true"  class="ui-checkbox-custom" />
                 </div>
-                <h3>系统样式</h3>
+            </div>
+            <h2>样式</h2>
+            <div class="intro">
+                <p>为元素添加类<code>.ui-checkbox-custom</code>可以设置默认皮肤。</p>
+                <p>使用类<code>.ui-x-small</code>、<code>.ui-small</code>、<code>.ui-large</code>、<code>.ui-xx-large</code>可以获得不同尺寸的复选框。</p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <h3>皮肤</h3>
                 <div class="row">
-                    <input type="checkbox" title="没有皮肤的" data-ui-type="CheckBox" data-ui-indeterminate="true" />
+                    <input type="checkbox" title="没有皮肤的" data-ui-type="CheckBox" data-ui-indeterminate="true"/>
                 </div>
-                <h3>大小</h3>
+                <input type="checkbox" title="默认皮肤" data-ui-type="CheckBox" data-ui-indeterminate="true" class="ui-checkbox-custom" />
+                <h3>尺寸</h3>
                 <div class="row ui-x-small">
                     <input type="checkbox" title="ui-x-small" data-ui-type="CheckBox" class="ui-checkbox-custom" />
                 </div>
@@ -64,53 +73,44 @@
                     <input type="checkbox" title="ui-xx-large" data-ui-type="CheckBox" class="ui-checkbox-custom" />
                 </div>
             </div>
-            <h2>Switch</h2>
+            <h2>开关</h2>
             <div class="intro">
-                <p>可以变成开关。</p>
+                <p>为元素添加类<code>.ui-checkbox-switch</code>可获得默认开关，在此基础上添加类<code>.ui-checkbox-switch-round</code>获得圆角开关。</p>
             </div>
             <div class="example ui-demo-light-stage">
-                <h3>默认样式</h3>
+                <h3>默认开关</h3>
                 <div class="row">
-                    <input type="checkbox" title="Switch Off" data-ui-type="CheckBox" class="ui-checkbox-switch" />
-                </div>
-                <div class="row">
-                    <input type="checkbox" title="Switch On" checked data-ui-type="CheckBox" class="ui-checkbox-switch" />
-                </div>
-                <h3>Disabled样式</h3>
-                <div class="row">
-                    <input type="checkbox" title="Switch Off Disabled" checked data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-switch" />
+                    <input type="checkbox" title="关" data-ui-type="CheckBox" class="ui-checkbox-switch" />
                 </div>
                 <div class="row">
-                    <input type="checkbox" title="Switch Off Disabled" data-ui-type="CheckBox" data-ui-disabled="disabled" class="ui-checkbox-switch" />
+                    <input type="checkbox" title="开" checked data-ui-type="CheckBox" class="ui-checkbox-switch" />
                 </div>
-                <h3>圆角样式</h3>
+                <h3>圆角开关</h3>
                 <div class="row">
-                    <input type="checkbox" title="Round Switch Off" data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
-                </div>
-                <div class="row">
-                    <input type="checkbox" title="Round Switch On" checked data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
-                </div>
-                <h3>Disabled圆角样式</h3>
-                <div class="row">
-                    <input type="checkbox" title="Round Switch Off" data-ui-disabled="disabled" data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
+                    <input type="checkbox" title="关" data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
                 </div>
                 <div class="row">
-                    <input type="checkbox" title="Round Switch On" data-ui-disabled="disabled" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                </div>
-                <h3>大小</h3>
-                <div class="row ui-x-small">
-                    <input type="checkbox" title="ui-x-small" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                </div>
-                <div class="row ui-small">
-                    <input type="checkbox" title="ui-small" data-ui-type="CheckBox" checked class="ui-checkbox-switch-round" />
-                </div>
-                <div class="row ui-large">
-                    <input type="checkbox" title="ui-large" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
-                </div>
-                <div class="row ui-xx-large">
-                    <input type="checkbox" title="ui-xx-large" checked data-ui-type="CheckBox" class="ui-checkbox-switch-round" />
+                    <input type="checkbox" title="开" checked data-ui-type="CheckBox" class="ui-checkbox-switch ui-checkbox-switch-round" />
                 </div>
             </div>
+            <h2>事件</h2>
+            <div class="intro">
+                <p>事件<code>setChecked</code>可设置元素为选中状态，事件<code>updateTitle</code>可更改元素的标题，事件<code>isChecked</code>可获取元素的选中状态。</p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <div class="row">
+                    <input data-ui="type:CheckBox; id:checkbox" type="checkbox" title="未选中" data-ui-type="CheckBox"  class="ui-checkbox-custom" />
+                    <button id="setChecked" type="button" class="ui-x-small" data-ui="type:Button;variants:primary">设置选中状态</button>
+                </div>
+            </div>
+            <script type="text/sample">
+                $('#setChecked').click(function() {
+                    ui.get('checkbox').setChecked('checked');
+                    if (ui.get('checkbox').isChecked()) {
+                        ui.get('checkbox').updateTitle('已选中');
+                    }                
+                })
+            </script>
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -121,12 +121,20 @@
     require(
         [
             'esui',
+            'jquery',
             'esui/CheckBox',
+            'esui/Button',
             'esui/Tab',
             'demo'
         ],
-        function (ui) {
+        function (ui, $) {
             ui.init();
+            $('#setChecked').click(function() {
+                ui.get('checkbox').setChecked('checked');
+                if (ui.get('checkbox').isChecked()) {
+                    ui.get('checkbox').updateTitle('已选中');
+                }              
+            })
         }
     );
     </script>

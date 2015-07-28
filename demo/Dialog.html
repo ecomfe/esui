@@ -21,131 +21,160 @@
             </ul>
         </div>
         <div id="main" class="ui-u-4-5">
-            <h2>多种创建方式</h2>
-            <div class="intro">
-                <p>两种创建方式：js动态；html静态。</p>
-            </div>
+            <h2>静态HTML</h2>
             <div class="example ui-demo-light-stage">
                 <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg;closeOnHide:false;">
-                    <div data-role="title">我来自静态html</div>
+                    <div data-role="title">弹窗</div>
                     <div data-role="content">
-                        <p>第一行</p>
-                        <span data-ui="type:Button;id:springBtn;variants:info">显示文字</span>
+                        <p>我来自静态HTML</p>
                     </div>
                 </div>
-                <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg1;closeOnHide:false;">
-                    <div data-role="title">我来自静态html</div>
-                    <div data-role="content">
-                        <p>第一行</p>
-                        <span data-ui="type:Button;id:springBtn;variants:spring" class="ui-button ui-button-primary">显示文字</span>
-                    </div>
+                <button type="button" id="trigger-static" class="ui-button ui-button-primary">Dialog示例</button>
+            </div>
+            <script type="text/sample">
+                var staticDg = ui.get('staticDg');
+                document.getElementById('trigger-static').onclick = function () {
+                    if (staticDg) {
+                        staticDg.show();
+                    }
+                };
+            </script>
+            <h2>JS动态创建</h2>
+            <div class="example ui-demo-light-stage">
+                <button type="button" id="trigger-common" class="ui-button ui-button-primary">Dialog示例</button>
+            </div>
+            <script type="text/sample">
+                var main = document.createElement('div');
+                document.body.appendChild(main);
+                dialog = ui.create('Dialog', {
+                    title: 'Dialog示例',
+                    content: '我是JS动态创建的',
+                    width: 400,
+                    draggable: true,
+                    closeOnHide: false,
+                    id: 'test',
+                    childName: 'test',
+                    main: main,
+                    variants: 'shadow'
+                });
+                dialog.render();
+                var btnOk = dialog.getFoot().getChild('btnOk');
+                var btnCancel = dialog.getFoot().getChild('btnCancel');
+                btnOk.on('click', function () {
+                    alert('随便创建！');
+                    dialog.dispose();
+                });
+                btnCancel.on('click', function () {
+                    alert('不！！！！');
+                    dialog.dispose();
+                });
+                dialog.show();
+            </script>
+            <h2>警告框</h2>
+            <div class="intro">
+                <p>使用方法<code>Dialog.alert</code>创建警告框。</p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <div class="row">
+                    <button type="button" id="trigger-alert" class="ui-button ui-button-danger">Alert</button>
                 </div>
-                <h3>Dialog的创建方式</h3>
-                <table class="ui-raw-table ui-raw-table-horizontal">
-                    <thead>
-                        <th>创建方式</th>
-                        <th></th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                js动态创建
-                            </td>
-                            <td>
-                                <button type="button" id="trigger-common" class="ui-button ui-button-primary">显示 Dialog</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                tml静态创建
-                            </td>
-                            <td>
-                                <button type="button" id="trigger-static" class="ui-button ui-button-primary">显示 Dialog</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                html自定义元素静态创建
-                            </td>
-                            <td>
-                                <button type="button" id="trigger-static1" class="ui-button ui-button-primary">显示 Dialog</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            </div>
+            <script type="text/sample">
+                var dialog = Dialog.alert({
+                    title: '警告框',
+                    content: '警告你，请不要随便点我！',
+                    autoPosition: true,
+                    width: 400,
+                    onok: function () {
+                        alert('你死定了');
+                    }
+                });
+
+                dialog.on('ok', function () {
+                    alert('我不理你了');
+                });
+            </script>
+
+            <h2>确认框</h2>
+            <div class="intro">
+                <p>使用方法<code>Dialog.confirm</code>创建确认框。</p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <div class="row">
+                    <button type="button" id="trigger-confirm" class="ui-button ui-button-info">Comfirm</button>
+                </div>
+            </div>
+            <script type="text/sample">
+                var dialog = Dialog.confirm({
+                    title: '确认框',
+                    content: '你确定要点我吗？',
+                    onok: function () {
+                        alert('你死定了！');
+                    },
+                    width: 400
+                });
+                dialog.on('ok', function () {
+                    alert('你死定了！');
+                });
+                dialog.on('cancel', function () {
+                    alert('算你识相！');
+                });
+            </script>
+
+            <h2>优先级</h2>
+            <div class="intro">
+                <p>Alert和Confirm弹出框的层级优先级最高，会一直保持在最上。</p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <button type="button" id="trigger-z-index-test" class="ui-button ui-button-primary">优先级测试</button>
             </div>
             <script type="text/sample">
                 var main = document.createElement('div');
                 document.body.appendChild(main);
 
                 var dialog = ui.create('Dialog', {
-                    title: '电你',
-                    content: '随便创建随便创建随便创建',
+                    title: '我在后面',
+                    content: '我应该在后面我应该在后面我应该在后面我应该在后面我应该在后面',
                     width: 400,
-                    main: main
+                    main: main,
+                    left: 100
                 });
                 dialog.show();
                 var btnOk = dialog.getFoot().getChild('btnOk');
                 var btnCancel = dialog.getFoot().getChild('btnCancel');
-                btnOk.on('click', function(){
-                    alert('随便创建！');
+                btnOk.on('click', function () {
+                    alert('我在后面！');
                     dialog.dispose();
                 });
-                btnCancel.on('click', function(){
+                btnCancel.on('click', function () {
                     alert('不！！！！');
                     dialog.dispose();
                 });
+                document.getElementById('trigger-alert').click();
             </script>
-            <h2>两种默认框</h2>
+
+            <h2>显示和隐藏</h2>
             <div class="intro">
-                <p>两种默认框：警告框（Alert）；确认框（Confirm）</p>
+                <p>方法<code>show()</code>和<code>hide()</code>可以控制对话框的显示和隐藏。</p>
             </div>
             <div class="example ui-demo-light-stage">
-                <div class="row">
-                    <label>警告框：</label>
-                    <button type="button" id="trigger-alert" class="ui-button ui-button-danger">Alert</button>
+                <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:showDlg;closeOnHide:false;">
+                    <div data-role="title">Dialog</div>
+                    <div data-role="content">
+                        <p>点击确定，对话框会隐藏。</p>
+                    </div>
                 </div>
-                <div class="row">
-                    <label>确认框：</label>
-                    <button type="button" id="trigger-confirm" class="ui-button ui-button-info">Comfirm</button>
-                </div>
+                <button type="button" id="trigger" class="ui-button ui-button-primary">Dialog示例</button>
             </div>
             <script type="text/sample">
-                var alertDialog = Dialog.alert({
-                    title: '电你',
-                    content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
-                    width: 400,
-                    onok: function() {
-                        alert('关了2！');
-                    }
-                });
-
-                alertDialog.on('ok', function(){
-                    alert('关了！');
-                });
-
-                var confirmDialog = Dialog.confirm({
-                    title: '给你机会选择',
-                    content: '确定要点我吗？te',
-                    onok: function() {
-                        alert('你死定了2！');
-                    },
-                    width: 400
-                });
-                confirmDialog.on('ok', function(){
-                    alert('你死定了！');
-                })
-                confirmDialog.on('cancel', function(){
-                    alert('算你识相！');
-                });
+                document.getElementById('trigger').onclick = function () {
+                    var dialog = ui.get('showDlg');
+                    dialog.show();
+                    dialog.getFoot().getChild('btnOk').on('click', function() {
+                        dialog.hide();
+                    })
+                }
             </script>
-            <h2>mask优先级</h2>
-            <div class="intro">
-                <p>Alert和Confirm弹出框的层级优先级最高，会一直保持在最上。</p>
-            </div>
-            <div class="example ui-demo-light-stage">
-                <button type="button" id="trigger-z-index-test" class="ui-button ui-button-primary">看看谁在前！</button>
-            </div>
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -163,30 +192,39 @@
         ],
         function (ui, Button, Dialog) {
             var controls = ui.init();
-            var staticDg = controls[0];
-            var staticDg1 = controls[1];
+            
+            var staticDg = ui.get('staticDg');
+
+            document.getElementById('trigger').onclick = function () {
+                var dialog = ui.get('showDlg');
+                dialog.show();
+                dialog.getFoot().getChild('btnOk').on('click', function() {
+                    dialog.hide();
+                })
+            };
+
             document.getElementById('trigger-alert').onclick = function () {
                 var dialog = Dialog.alert({
-                    title: '电你',
-                    content: '请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我！请不要随便点我',
+                    title: '警告框',
+                    content: '警告你，请不要随便点我！',
                     autoPosition: true,
                     width: 400,
                     onok: function () {
-                        alert('关了2！');
+                        alert('你死定了');
                     }
                 });
 
                 dialog.on('ok', function () {
-                    alert('关了！');
+                    alert('我不理你了');
                 });
             };
 
             document.getElementById('trigger-confirm').onclick = function () {
                 var dialog = Dialog.confirm({
-                    title: '给你机会选择',
-                    content: '确定要点我吗？',
+                    title: '确认框',
+                    content: '你确定要点我吗？',
                     onok: function () {
-                        alert('你死定了2！');
+                        alert('你死定了！');
                     },
                     width: 400
                 });
@@ -202,14 +240,6 @@
                 if (staticDg) {
                     staticDg.show();
                 }
-
-            };
-
-            document.getElementById('trigger-static1').onclick = function () {
-                if (staticDg1) {
-                    staticDg1.show();
-                }
-
             };
 
             document.getElementById('trigger-common').onclick = function () {
@@ -219,8 +249,8 @@
                     var main = document.createElement('div');
                     document.body.appendChild(main);
                     dialog = ui.create('Dialog', {
-                        title: 'Script创建的Dialog',
-                        content: '随便创建随便创建随便创建',
+                        title: 'Dialog示例',
+                        content: '我是JS动态创建的',
                         width: 400,
                         draggable: true,
                         closeOnHide: false,
@@ -242,7 +272,6 @@
                     });
                 }
                 dialog.show();
-
             };
 
             document.getElementById('trigger-z-index-test').onclick = function () {

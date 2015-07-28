@@ -21,36 +21,102 @@
                 </ul>
             </div>
             <div id="main" class="ui-u-4-5">
-                <h2>绑定到DOM Button</h2>
+                <h2>绑定按钮</h2>
                 <div class="intro">
-                    <p>可以为一个Button添加一个下拉列表。</p>
+                    <p>为按钮添加一个下拉列表，使用方法<code>CommandMenu</code>创建下拉列表。</p>
                 </div>
                 <div class="example ui-demo-light-stage">
                     <div class="row">
                         <button type="button" 
-                        id="test"
+                        id="list1"
                         class="ui-button ui-button-primary">Command Menu <span class="ui-icon-caret-down"></span></button>
                     </div>
-                    <h3>Split Button</h3>
                     <div id="create-element" class="ui-button-group ui-button-group-separated">
                         <button type="button" class="ui-button ui-button-primary">Split Button</button>
                         <button type="button" 
-                        id="test2"
+                        id="list2"
                         class="ui-button ui-button-primary ui-button-icon ui-icon-caret-down"></button>
                     </div>
                 </div>
+                <script type="text/sample">
+                    var data = [
+                        {
+                            text: 'Item 1 Item 1 '
+                        },
+                        {
+                            text: 'Item 2 Item 2 ',
+                            handler: function () {
+                            }
+                        },
+                        {
+                            text: 'Item 3 Item 3 ',
+                            handler: function () {
+                            }
+                        },
+                        {
+                            text: 'Item 4 Item 4 ',
+                            handler: function () {
+                            }
+                        }
+                    ];
+                    function newMenu(id) {
+                        var options = {
+                            datasource: data,
+                            main: document.getElementById(id)
+                        };
+                        var menu = new CommandMenu(options);
+                        menu.on('select', function (e) {
+                        });
+                        menu.render();
+                    }
+                    newMenu('list1');
+                    newMenu('list2');
+                </script>
                 <h2>动态创建</h2>
                 <div class="intro">
-                    <p>从JS创建一个Command Menu。</p>
+                    <p>使用JS创建<code>CommandMenu</code>。
                 </div>
                 <div class="example ui-demo-light-stage">
-                    <h3>Use Text</h3>
                     <div id="create-element1" class="row">
+                    <span>文本类型：</span>
                     </div>
-                    <h3>Use Html</h3>
                     <div id="create-element2" class="row">
+                    <span>HTML类型：</span>
                     </div>
                 </div>
+                <script type="text/sample">
+                    var data = [
+                        {
+                            text: 'Item 1 Item 1 '
+                        },
+                        {
+                            text: 'Item 2 Item 2 ',
+                            handler: function () {
+                            }
+                        },
+                        {
+                            text: 'Item 3 Item 3 ',
+                            handler: function () {
+                            }
+                        },
+                        {
+                            text: 'Item 4 Item 4 ',
+                            handler: function () {
+                            }
+                        }
+                    ];
+                    var menuCreated = new CommandMenu({
+                        datasource: data,
+                        displayText: 'Dynamic Created'
+                    });
+                    menuCreated.appendTo(document.getElementById('create-element1'));
+
+                    var menuCreated2 = new CommandMenu({
+                        datasource: data,
+                        displayHTML: 'Dynamic Created HTML <span class="ui-icon-users"></span>'
+                    });
+                    menuCreated2.appendTo(document.getElementById('create-element2'));
+                </script>
             </div>
         </div>
         <script src="assets/loader/esl.js"></script>
@@ -97,20 +163,18 @@
                     });
                     menu.render();
                 }
-                newMenu('test');
-                newMenu('test2');
+                newMenu('list1');
+                newMenu('list2');
 
                 var menuCreated = new CommandMenu({
                     datasource: data,
                     displayText: 'Dynamic Created',
-                    // displayHTML should not work
                     displayHTML: 'Dynamic Created HTML'
                 });
                 menuCreated.appendTo(document.getElementById('create-element1'));
 
                 var menuCreated2 = new CommandMenu({
                     datasource: data,
-                    // displayHTML should work
                     displayHTML: 'Dynamic Created HTML <span class="ui-icon-users"></span>'
                 });
                 menuCreated2.appendTo(document.getElementById('create-element2'));
