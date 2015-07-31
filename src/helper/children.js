@@ -22,6 +22,7 @@ define(
          * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
          * @param {Object} [options] init参数
          * @param {Object} [options.properties] 属性集合，通过id映射
+         * @return {Array} 子控件数组
          */
         helper.initChildren = function (wrap, options) {
             wrap = wrap || this.control.main;

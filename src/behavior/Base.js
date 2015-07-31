@@ -52,7 +52,7 @@ define(
                  * @return {boolean} 是否阻止后续行为
                  */
                 trigger: function (type, event, data) {
-                    event = $.Event(event);
+                    event = new $.Event(event);
                     event.type = (this.customEventPrefix + type).toLowerCase();
                     event.target = this.element[0];
 
@@ -132,8 +132,8 @@ define(
                 /**
                  * 获取带前缀的class
                  * @param {boolean=} fullName 是否返回全称
-                 * @param {string} typeName typeName
                  * @param {string} styleType class名称
+                 * @param {string} typeName typeName
                  * @return {string}
                  */
                 getClassName: function (fullName, styleType, typeName) {
@@ -152,7 +152,6 @@ define(
 
                     styleType = styleType || '';
 
-                    var options = me.options;
                     var classes = [];
                     u.each(
                         styleType.split(/\s+/g),
@@ -171,7 +170,7 @@ define(
                                 result = [prefix, typeName].join('-');
                             }
                             if (fullName) {
-                                result = '.' + result
+                                result = '.' + result;
                             }
                             classes.push(result);
                         }

@@ -17,7 +17,7 @@ define(
         var abs = Math.abs;
         var round = Math.round;
         // 缓存jquery原position函数
-        var _position = $.fn.position;
+        var jqPosition = $.fn.position;
 
         /**
          * offset是否支持小数
@@ -175,10 +175,10 @@ define(
                     within.element.css('overflow-x');
             var overflowY = within.isWindow || within.isDocument ? '' :
                     within.element.css('overflow-y');
-            var hasOverflowX = overflowX === 'scroll' ||
-                    (overflowX === 'auto' && within.width < within.element[0].scrollWidth);
-            var hasOverflowY = overflowY === 'scroll' ||
-                    (overflowY === 'auto' && within.height < within.element[0].scrollHeight);
+            var hasOverflowX = overflowX === 'scroll'
+                    || (overflowX === 'auto' && within.width < within.element[0].scrollWidth);
+            var hasOverflowY = overflowY === 'scroll'
+                    || (overflowY === 'auto' && within.height < within.element[0].scrollHeight);
             return {
                 width: hasOverflowY ? scrollbarWidth() : 0,
                 height: hasOverflowX ? scrollbarWidth() : 0
@@ -381,7 +381,7 @@ define(
         $.fn.position = function (options, element) {
             // 如果是原生jquery position接口
             if (!options || !options.of) {
-                return _position.apply(this, arguments);
+                return jqPosition.apply(this, arguments);
             }
 
             // 如果是普通函数调用

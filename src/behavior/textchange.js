@@ -66,7 +66,7 @@ define(
             }
             activeElementValue = value;
 
-            var event = $.Event(nativeEvent);
+            var event = new $.Event(nativeEvent);
             event.type = 'textchange';
             $(activeElement).trigger(event);
         };
@@ -113,7 +113,7 @@ define(
                     // exactly what we want so fall through here and trigger the
                     // event...
                     var target = event.target;
-                    if ( true || target.nodeName !== 'TEXTAREA') {
+                    if (true || target.nodeName !== 'TEXTAREA') {
                         // ...unless it's a textarea, in which case we don't fire an
                         // event (so that we have consistency with our old-IE shim).
                         event.type = 'textchange';

@@ -128,8 +128,8 @@ define(
 
             handleObj.handler = function (event) {
                 // 对输入类控件默认不出发，除非直接绑定在该控件上
-                if (this !== event.target &&
-                    (filterInputAcceptingElements && textInputTypes.test(event.target.nodeName)
+                if (this !== event.target
+                    && (filterInputAcceptingElements && textInputTypes.test(event.target.nodeName)
                         || (filterContentEditable && $(event.target).attr('contenteditable'))
                         || (filterTextInputs && $.inArray(event.target.type, textAcceptingInputTypes) > -1)
                     )
@@ -190,14 +190,7 @@ define(
             }
         );
 
-        var filterInputAcceptingElements = true;
-        // 对input type进行过滤
-        var filterTextInputs = true;
-        // 如果元素可编辑，则不响应keyboard
-        var filterContentEditable = true;
-
         var exports = {
-
             setFilterInputAcceptingElements: function (bool) {
                 filterInputAcceptingElements = bool;
             },

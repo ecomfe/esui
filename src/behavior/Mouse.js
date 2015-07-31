@@ -14,6 +14,10 @@ define(
         var u = require('underscore');
 
         var Base = require('./Base');
+        var util = require('./util');
+        var eoo = require('eoo');
+        var bridge = require('./bridge');
+        var type = 'mouse';
 
         var mouseHandled = false;
         $(document).mouseup(
@@ -24,103 +28,168 @@ define(
 
         /**
          * 抽象鼠标行为,包括鼠标事件的捕获、开始、移动、结束等，
-         * 提供两种调用方式:
-         * 1. 类调用
-         *      var mouse = new Mouse(
-         *          {
-         *              distance: 2,
-         *              delay: 10,
-         *              ...
-         *          },
-         *          element
-         *      );
-         *      mouse.on('mousestart', function () {});
-         *      mouse.on('mousedrag', function () {});
-         *      mouse.on('mousestop', function () {});
-         *
-         * 2. jquery插件
-         *      $(element).mouse(
-         *          {
-         *              distance: 2,
-         *              delay: 10,
-         *              onMousestart: function () {},
-         *              onMousedrag: function () {},
-         *              onMousestop: function () {}
-         *          }
-         *      );
+         *     $(element).mouse(
+         *         {
+         *             distance: 2,
+         *             delay: 10,
+         *             onMousestart: function () {},
+         *             onMousedrag: function () {},
+         *             onMousestop: function () {}
+         *         }
+         *     );
          */
-        var exports = {};
+        var Mouse = eoo.create(
+            Base,
+            {
+                type: type,
 
-        exports.type = 'mouse';
+                /**
+                 * 构造函数
+                 * @param {Object} options 配置
+                 * @param {DOMElement} element DOM元素
+                 * options属性参考defaultProperties
+                 */
+                constructor: function (options, element) {
+                    options = u.extend(
+                        {
+                            // 不触发元素
+                            cancel: 'input, textarea, button, select, option',
+                            // 鼠标移动距离阈值，大于该值才触发
+                            distance: 1,
+                            // 移动延时
+                            delay: 0
+                        },
+                        options
+                    );
 
-        /**
-         * 构造函数
-         * @param {Object} options
-         * options属性参考defaultProperties
-         */
-        exports.constructor = function (options, element) {
-            options = u.extend(
-                {
-                    // 不触发元素
-                    cancel: 'input, textarea, button, select, option',
-                    // 鼠标移动距离阈值，大于该值才触发
-                    distance: 1,
-                    // 移动延时
-                    delay: 0
+                    this.$super([options, element]);
+
+                    // 记录上一次mousedown事件对象
+                    this.mouseDownEvent = null;
+                    // 是否在文档内移动过鼠标
+                    this.mouseMoved = false;
+
+                    this.customEventPrefix = 'mouse';
                 },
-                options
-            );
 
-            this.$super([options, element]);
+                /**
+                 * 初始化，主要是绑定元素的mousedown事件，作为鼠标事件起点
+                 */
+                init: function () {
+                    this.$super(arguments);
 
-            // 记录上一次mousedown事件对象
-            this.mouseDownEvent = null;
-            // 是否在文档内移动过鼠标
-            this.mouseMoved = false;
+                    var me = this;
+                    var element = $(this.element)[0];
+                    element = $(element);
 
-            this.customEventPrefix = 'mouse';
-        };
+                    element.bind(
+                        'mousedown.' + this.type,
+                        function (event) {
+                            return mouseDown.call(me, event);
+                        }
+                    ).bind(
+                        'click.' + this.type,
+                        function (event) {
+                            if (true === $.data(event.target, me.type + '.preventClickEvent')) {
+                                $.removeData(event.target, me.type + '.preventClickEvent');
+                                event.stopImmediatePropagation();
+                                return false;
+                            }
+                        }
+                    );
+                    this.started = false;
+                },
 
-        /**
-         * 初始化，主要是绑定元素的mousedown事件，作为鼠标事件起点
-         */
-        exports.init = function () {
-            this.$super(arguments);
-
-            var me = this;
-            var element = $(this.element)[0];
-            element = $(element);
-
-            element.bind(
-                'mousedown.' + this.type,
-                function (event) {
-                    return mouseDown.call(me, event);
-                }
-            ).bind(
-                'click.' + this.type,
-                function (event) {
-                    if (true === $.data(event.target, me.type + '.preventClickEvent')) {
-                        $.removeData(event.target, me.type + '.preventClickEvent');
-                        event.stopImmediatePropagation();
-                        return false;
+                /**
+                 * 销毁
+                 */
+                dispose: function () {
+                    this.element.unbind('.' + this.type);
+                    if (this.mouseMoveDelegate) {
+                        this.document
+                            .unbind('mousemove.' + this.type, this.mouseMoveDelegate)
+                            .unbind('mouseup.' + this.type, this.mouseUpDelegate);
                     }
-                }
-            );
-            this.started = false;
-        };
+                    this.$super(arguments);
+                },
 
-        /**
-         * 销毁
-         */
-        exports.dispose = function () {
-            this.element.unbind('.' + this.type);
-            if (this.mouseMoveDelegate) {
-                this.document
-                    .unbind('mousemove.' + this.type, this.mouseMoveDelegate)
-                    .unbind('mouseup.' + this.type, this.mouseUpDelegate);
+                /**
+                 * 处理mouseup事件
+                 * @param {Event} event 事件对象
+                 *
+                 * @return {boolean}
+                 */
+                mouseUp: function (event) {
+                    this.document
+                        .unbind('mousemove.' + this.type, this.mouseMoveDelegate)
+                        .unbind('mouseup.' + this.type, this.mouseUpDelegate);
+
+                    if (this.mouseStarted) {
+                        this.mouseStarted = false;
+
+                        if (event.target === this.mouseDownEvent.target) {
+                            $.data(event.target, this.type + '.preventClickEvent', true);
+                        }
+                        this.mouseStop(event);
+                    }
+
+                    mouseHandled = false;
+                    return false;
+                },
+
+                /**
+                 * 捕获事件时触发，返回false则中断后续处理
+                 * @fires mousecapture
+                 * @param {Event} event 事件对象
+                 *
+                 * @return {boolean}
+                 */
+                mouseCapture: function (event) {
+                    /**
+                     * @event mousecapture
+                     */
+                    return this.trigger('capture', event);
+                },
+
+                /**
+                 * 鼠标开始
+                 * @fires mousestart
+                 * @param {Event} event 事件对象
+                 *
+                 * @return {boolean}
+                 */
+                mouseStart: function (event) {
+                    /**
+                     * @event mousestart
+                     */
+                    return this.trigger('start', event);
+                },
+
+                /**
+                 * 鼠标移动
+                 * @fires mousedrag
+                 * @param {Event} event 事件对象
+                 */
+                mouseDrag: function (event) {
+                    /**
+                     * @event mousedrag
+                     */
+                    this.trigger('drag', event);
+                },
+
+                /**
+                 * 鼠标移动停止
+                 * @fires mousestop
+                 * @param {Event} event 事件对象
+                 */
+                mouseStop: function (event) {
+                    /**
+                     * @event mousestop
+                     */
+                    this.trigger('stop', event);
+                }
             }
-            this.$super(arguments);
-        };
+        );
 
         /**
          * 处理mousedown事件
@@ -194,9 +263,8 @@ define(
          */
         function mouseMove(event) {
             if (this.mouseMoved) {
-                var ie = !-[1,];
                 // IE < 9的情况下，如果鼠标在文档外松开，则不会触发mouseup事件,因此需要手动调用
-                if (ie && (!document.documentMode || document.documentMode < 9) && !event.button) {
+                if (util.ie && (!document.documentMode || document.documentMode < 9) && !event.button) {
                     return this.mouseUp(event);
                 }
                 else if (!event.which) {
@@ -222,30 +290,6 @@ define(
         }
 
         /**
-         * 处理mouseup事件
-         * @param {Event} event 事件对象
-         *
-         * @return {boolean}
-         */
-        exports.mouseUp = function (event) {
-            this.document
-                .unbind('mousemove.' + this.type, this.mouseMoveDelegate)
-                .unbind('mouseup.' + this.type, this.mouseUpDelegate);
-
-            if (this.mouseStarted) {
-                this.mouseStarted = false;
-
-                if (event.target === this.mouseDownEvent.target) {
-                    $.data(event.target, this.type + '.preventClickEvent', true);
-                }
-                this.mouseStop(event);
-            }
-
-            mouseHandled = false;
-            return false;
-        };
-
-        /**
          * 鼠标移动距离是否达到指定阈值
          * @param {Event} event 事件对象
          *
@@ -268,62 +312,7 @@ define(
             return this.mouseDelayMet;
         }
 
-        /**
-         * 捕获事件时触发，返回false则中断后续处理
-         * @fires mousecapture
-         * @param {Event} event 事件对象
-         *
-         * @return {boolean}
-         */
-        exports.mouseCapture = function (event) {
-            /**
-             * @event mousecapture
-             */
-            return this.trigger('capture', event);
-        };
-
-        /**
-         * 鼠标开始
-         * @fires mousestart
-         * @param {Event} event 事件对象
-         *
-         * @return {boolean}
-         */
-        exports.mouseStart = function (event) {
-            /**
-             * @event mousestart
-             */
-            return this.trigger('start', event);
-        };
-
-        /**
-         * 鼠标移动
-         * @fires mousedrag
-         * @param {Event} event 事件对象
-         */
-        exports.mouseDrag = function (event) {
-            /**
-             * @event mousedrag
-             */
-            this.trigger('drag', event);
-        };
-
-        /**
-         * 鼠标移动停止
-         * @fires mousestop
-         * @param {Event} event 事件对象
-         */
-        exports.mouseStop = function (event) {
-            /**
-             * @event mousestop
-             */
-            this.trigger('stop', event);
-        };
-
-        var Mouse = require('eoo').create(Base, exports);
-
-        require('./bridge')(exports.type, Mouse);
-
+        bridge(type, Mouse);
         return Mouse;
 
     }
