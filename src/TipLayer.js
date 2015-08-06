@@ -226,6 +226,68 @@ define(
                 },
 
                 /**
+                 * 监听一个区域 为这个区域内带有data-role属性的节点添加tip
+                 * 在该区域内部所有的DOM节点里 若要添加tip提示 需配置以下属性
+                 * 1. data-role='tip' 所有具有该属性的节点都会增加tip提示
+                 * 2. data-title='提示标题' 该节点所要显示的提示的标题内容
+                 * 3. data-content='提示内容' 该节点所要显示的提示的内容
+                 * 一旦配置过以上属性 就可以自动为该区域内所有类似的节点添加相应的tip
+                 *
+                 * @param {string} selector JQuery选择器
+                 * @param {Object=} options 绑定参数
+                 *    {string} showMode 展示触发模式
+                 *    {number} delayTime 延迟展示时间
+                 *    {number} showDuration 展示后自动隐藏的延迟时间
+                 */
+                monitor: function (selector, options) {
+                    var showMode = options.showMode || 'over';
+                    var delayTime = options.delayTime || 0;
+                    var containerElement = $(selector);
+                    var me = this;
+
+                    // 为防止delayTime时出现 tip还未hide就更改内容的情况 监听beforeshow事件 在此刻再进行更改
+                    me.on('beforeshow', function (e) {
+                        var targetElement = e.targetElement;
+                        if (targetElement) {
+                            var content = $(targetElement).attr('data-content') || this.content;
+                            var title = $(targetElement).attr('data-title') || this.title;
+                            me.setContent(content);
+                            me.setTitle(title);
+                        }
+                    });
+
+                    function showTip(event) {
+                        var targetDOM = event.target;
+                        // 检查是否具有data-attached的属性 有的话直接忽略就可以
+                        if (!$(targetDOM).attr('data-attached')) {
+                            me.attachTo({
+                                targetDOM: targetDOM,
+                                showMode: showMode,
+                                delayTime: delayTime,
+                                positionOpt: {top: 'top', right: 'left'}
+                            });
+                            // 凡是已经attachTo过之后的节点 都自动添加一个data-attached的属性 防止重复绑定
+                            $(targetDOM).attr('data-attached', '1');
+                            // 第一次绑定的时候需要手动触发一次类似事件才可以显示tip
+                            $(targetDOM).trigger(event.type);
+                        }
+                        // 阻止冒泡到父节点 以防止tipLayer自动hide掉
+                        event.stopPropagation();
+                    }
+
+                    if (!containerElement) {
+                        return;
+                    }
+
+                    if (showMode === 'over') {
+                        this.helper.addDOMEvent(containerElement, 'mouseover', '[data-role="tip"]', showTip);
+                    }
+                    else if (showMode === 'click') {
+                        this.helper.addDOMEvent(containerElement, 'mouseup', '[data-role="tip"]', showTip);
+                    }
+                },
+
+                /**
                  * 获取初始化时的行为处理器
                  *
                  * @param {Object=} options 绑定参数
@@ -328,7 +390,9 @@ define(
                                             callback();
                                         }
                                         // 阻止冒泡，防止触发document的行为事件
-                                        e.stopPropagation();
+                                        if (showEvent === 'mouseup') {
+                                            e.stopPropagation();
+                                        }
                                     }
                                 );
                             },
@@ -519,6 +583,8 @@ define(
 
                     // 动态计算layer的zIndex
                     this.main.style.zIndex = Layer.getZIndex(targetElement);
+
+                    this.fire('beforeshow', {targetElement: targetElement});
 
                     this.removeState('hidden');
 
