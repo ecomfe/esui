@@ -390,7 +390,7 @@ define(
                                             callback();
                                         }
                                         // 阻止冒泡，防止触发document的行为事件
-                                        if (showEvent === 'mouseup') {
+                                        if (options.showMode === 'click') {
                                             e.stopPropagation();
                                         }
                                     }
