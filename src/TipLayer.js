@@ -237,7 +237,6 @@ define(
                  * @param {Object=} options 绑定参数
                  *    {string} showMode 展示触发模式
                  *    {number} delayTime 延迟展示时间
-                 *    {number} showDuration 展示后自动隐藏的延迟时间
                  */
                 monitor: function (selector, options) {
                     var showMode = options.showMode || 'over';
