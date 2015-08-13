@@ -35,7 +35,7 @@
                         <button type="button" class="ui-button ui-button-primary">Split Button</button>
                         <button type="button" 
                         id="list2"
-                        class="ui-button ui-button-primary ui-button-icon ui-icon-caret-down"></button>
+                        class="ui-button ui-button-primary ui-button-icon ui-icon-caret-down"></button></div>
                     </div>
                 </div>
                 <script type="text/sample">
@@ -153,10 +153,11 @@
                         }
                     }
                 ];
-                function newMenu(id) {
+                function newMenu(id, alignTo) {
                     var options = {
                         datasource: data,
-                        main: document.getElementById(id)
+                        main: document.getElementById(id),
+                        alignToElement: alignTo
                     };
                     var menu = new CommandMenu(options);
                     menu.on('select', function (e) {
@@ -164,7 +165,7 @@
                     menu.render();
                 }
                 newMenu('list1');
-                newMenu('list2');
+                newMenu('list2', 'create-element');
 
                 var menuCreated = new CommandMenu({
                     datasource: data,

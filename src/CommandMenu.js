@@ -65,6 +65,19 @@ define(
                 },
 
                 /**
+                 * 放置层
+                 * @override
+                 */
+                position: function () {
+                    var layer = this.getElement();
+                    var alignToElement = this.control.alignToElement;
+                    if (u.isString(alignToElement)) {
+                        alignToElement = $('#' + alignToElement)[0];
+                    }
+                    Layer.attachTo(layer, alignToElement || this.control.main, this.dock);
+                },
+
+                /**
                  * 初始化层的交互行为
                  *
                  * @param {HTMLElement} element 层元素
@@ -150,6 +163,15 @@ define(
              * @type {string}
              */
             itemTemplate: '<span>${text}</span>',
+
+            /**
+             * 下拉菜单对齐元素，提供DOM元素ID或者DOMElement
+             *
+             * @type {string|DOMElement}
+             * @readonly
+             * @override
+             */
+            alignToElement: null,
 
             /**
              * 获取浮层中每一项的HTML
