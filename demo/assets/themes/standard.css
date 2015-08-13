@@ -6473,6 +6473,9 @@ p {
   display: inline-block;
   width: 120px;
 }
+.edit-form .ui-form-key {
+  width: 6em;
+}
 .ui-tab-vertical-container-left .ui-tab-vertical {
   width: 8em;
   height: 300px;
