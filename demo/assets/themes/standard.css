@@ -521,7 +521,7 @@ input[type="search"]::-webkit-search-decoration {
   box-sizing: border-box;
   text-align: center;
   vertical-align: middle;
-  font-family: 'Helvetica Neue', Helvetica, Arial, '宋体', SimSun, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
   text-decoration: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -746,9 +746,9 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round {
   position: relative;
   display: inline-block;
-  min-width: 1.1em;
-  line-height: 1.1em;
-  height: 1.1em;
+  min-width: 1em;
+  line-height: 1em;
+  height: 1em;
   vertical-align: middle;
 }
 .esui-checkbox-style-base .ui-checkbox-box,
@@ -777,8 +777,8 @@ input[type="search"]::-webkit-search-decoration {
   position: absolute;
   top: 0;
   left: 0;
-  width: 1.1em;
-  height: 1.1em;
+  width: 1em;
+  height: 1em;
   content: '';
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -889,10 +889,10 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-switch-round input:checked ~ label:after,
 .ui-checkbox-switch-round input:checked ~ .ui-checkbox-box:after {
   position: absolute;
-  top: 0.2695em;
-  left: 0.165em;
-  width: 0.77em;
-  height: 0.44em;
+  top: 0.245em;
+  left: 0.15em;
+  width: 0.7em;
+  height: 0.4em;
   border: 0.2em solid #ffffff;
   border-top: none;
   border-right: none;
@@ -965,12 +965,12 @@ input[type="search"]::-webkit-search-decoration {
 .ui-checkbox-custom input:indeterminate ~ label:after,
 .ui-checkbox-custom input:indeterminate ~ .ui-checkbox-box:after {
   border: 1px solid #70ccc0;
-  width: 1.1em;
-  height: 1.1em;
+  width: 1em;
+  height: 1em;
   background: #70ccc0;
-  -webkit-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  -moz-box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
-  box-shadow: inset 0px 0px 0px 0.2em #f6f6f6;
+  -webkit-box-shadow: inset 0 0 0 3px #f6f6f6;
+  -moz-box-shadow: inset 0 0 0 3px #f6f6f6;
+  box-shadow: inset 0 0 0 3px #f6f6f6;
   top: 0;
   left: 0;
   -webkit-transform: none;
@@ -981,7 +981,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-checkbox-custom.ui-checkbox-single label,
 .ui-radio-custom.ui-checkbox-single label {
-  padding-left: 1.1em;
+  padding-left: 1em;
 }
 .ui-checkbox-switch.ui-checkbox-single label,
 .ui-checkbox-switch-round.ui-checkbox-single label {
@@ -997,16 +997,18 @@ input[type="search"]::-webkit-search-decoration {
 .ui-radio-custom input:checked ~ .ui-checkbox-box:after {
   top: 0;
   left: 0;
-  width: 1.1em;
-  height: 1.1em;
+  width: 1em;
+  height: 1em;
   background-color: #ffffff;
-  -webkit-box-shadow: inset 0px 0px 0px 0.3em #70ccc0;
-  -moz-box-shadow: inset 0px 0px 0px 0.3em #70ccc0;
-  box-shadow: inset 0px 0px 0px 0.3em #70ccc0;
   -webkit-border-radius: 500em;
   -moz-border-radius: 500em;
   border-radius: 500em;
-  border: 0;
+  border: 0.3em solid #70ccc0;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  transform: none;
 }
 .ui-checkbox-switch .ui-checkbox-box,
 .ui-checkbox-switch-round .ui-checkbox-box,
@@ -1601,7 +1603,7 @@ input[type="search"]::-webkit-search-decoration {
 .ui-navbar {
   padding: 0;
   margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
   background: #70ccc0;
   color: #ffffff;
 }
@@ -2234,7 +2236,7 @@ html {
 }
 body {
   background: #ffffff;
-  font-family: 'Helvetica Neue', Helvetica, Arial, '宋体', SimSun, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
   font-weight: normal;
   line-height: 1.3;
   color: #666666;
@@ -2288,7 +2290,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
   font-weight: normal;
   color: #666666;
   margin: 0.67em 0;
@@ -2438,7 +2440,7 @@ hr {
   padding: 0;
   overflow: hidden;
   text-align: center;
-  font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
 }
 .ui-wizard-node {
   list-style-type: none;
@@ -4118,7 +4120,7 @@ hr {
   box-sizing: border-box;
   text-align: center;
   vertical-align: middle;
-  font-family: 'Helvetica Neue', Helvetica, Arial, '宋体', SimSun, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
   text-decoration: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -4420,7 +4422,7 @@ hr {
   background: none;
   text-align: center;
   cursor: pointer;
-  font-family: 'Helvetica Neue', Helvetica, Arial, '宋体', SimSun, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
 }
 .ui-monthview-month-item:hover {
   background: #fffaee;
@@ -5154,7 +5156,7 @@ span.ui-crumb-node {
   width: 2em;
 }
 .ui-schedule-head {
-  margin: 1em 0 0;
+  margin: 1em 2em 0 0;
 }
 .ui-schedule-shortcut {
   float: left;
@@ -6142,10 +6144,10 @@ span.ui-crumb-node {
 }
 .ui-tree-content-wrapper-selected .ui-tree-item-content label:after {
   position: absolute;
-  top: 0.2695em;
-  left: 0.165em;
-  width: 0.77em;
-  height: 0.44em;
+  top: 0.245em;
+  left: 0.15em;
+  width: 0.7em;
+  height: 0.4em;
   border: 0.2em solid #ffffff;
   border-top: none;
   border-right: none;
@@ -6371,7 +6373,7 @@ span.ui-crumb-node {
   word-spacing: normal;
   vertical-align: top;
   text-rendering: auto;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
 }
 .ui-u-1-5 {
   width: 20%;
