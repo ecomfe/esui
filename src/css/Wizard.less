@@ -15,3 +15,15 @@
 .@{ui-class-prefix}-wizard-panel-hidden {
     display: none;
 }
+
+.@{ui-class-prefix}-wizard-node-done {
+    .@{ui-class-prefix}-wizard-node-number {
+        &:before {
+            .eicons-icon-content(check);
+            .eicons-font-style();
+        }
+        span {
+            display: none;
+        }
+    }
+}

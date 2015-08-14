@@ -24,7 +24,9 @@
             <h2>HTML静态</h2>
             <div class="example ui-demo-light-stage">
                 <div id="container" class="row">
-                    <div data-ui-type="Crumb">
+                    <div data-ui-type="Crumb" 
+                        data-ui-separator=''
+                        data-ui-separator-class='ui-icon-angle-right'>
                         <a href="#1">Node1</a>
                         <a href="#2">Node2</a>
                         <a href="#3">Node3</a>
@@ -62,6 +64,8 @@
                 var crumb = new Crumb({
                     path: path,
                     variants: ['nav'],
+                    separator: '',
+                    separatorClass: 'ui-icon-angle-right'
                     main: document.getElementById('nav-container')
                 });
                 crumb.render();
@@ -91,7 +95,8 @@
 
                 var crumb2 = new Crumb({
                     path: path,
-                    separator: '|'
+                    separator: '',
+                    separatorClass: 'ui-icon-angle-left'
                 });
                 crumb2.appendTo(document.getElementById('container2'));
             </script>
@@ -129,13 +134,16 @@
             var crumb = new Crumb({
                 path: path,
                 variants: ['nav'],
-                main: document.getElementById('nav-container')
+                main: document.getElementById('nav-container'),
+                separator: '',
+                separatorClass: 'ui-icon-angle-right'
             });
             crumb.render();
 
             var crumb2 = new Crumb({
                 path: path,
-                separator: '|'
+                separator: '',
+                separatorClass: 'ui-icon-angle-right'
             });
             crumb2.appendTo(document.getElementById('container2'));
         }

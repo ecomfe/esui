@@ -88,7 +88,7 @@ define(
                          *
                          * @type {string}
                          */
-                        numberNodeTemplate: '<span class="${numberNodeClass}">${number}</span>'
+                        numberNodeTemplate: '<span class="${numberNodeClass}"><span>${number}</span></span>'
                             + '<span class="${textNodeClass}">${text}</span>'
                     };
 

@@ -59,8 +59,15 @@
     height: @esui-select-compact-height;
     line-height: @esui-select-compact-height;
 
-    color: @esui-select-compact-color;
-    background: @esui-select-compact-background;
+    .esui-select-variant(
+        @esui-select-compact-background,
+        @esui-select-compact-background,
+        @esui-select-compact-color,
+        @esui-select-compact-color,
+        @esui-select-compact-background,
+        @esui-select-compact-color,
+        @esui-select-compact-background
+    );
     .esui-border-radius(0, @esui-select-radius);
 
     .@{ui-class-prefix}-select-arrow {
@@ -84,8 +91,15 @@
 }
 
 .esui-select-bordered-theme() {
-    color: @esui-select-bordered-color;
-    background: @esui-select-bordered-background;
+    .esui-select-variant(
+        @esui-select-bordered-background,
+        @esui-select-bordered-background,
+        @esui-select-bordered-color,
+        @esui-select-bordered-color,
+        @esui-select-bordered-background,
+        @esui-select-bordered-color,
+        @esui-select-bordered-background
+    );
     border: 1px solid @esui-select-bordered-border-color;
 
     .@{ui-class-prefix}-select-arrow {

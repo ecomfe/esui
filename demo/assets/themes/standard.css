@@ -4602,11 +4602,23 @@ hr {
   padding: 0 0.5em;
   height: 1.5em;
   line-height: 1.5em;
-  color: #666666;
   background: #ffffff;
+  color: #666666;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+}
+.ui-select-compact:hover,
+.ui-select-compact:focus {
+  color: #666666;
+  background: #ffffff;
+}
+.ui-select-compact.state-read-only,
+.ui-select-compact.state-read-only:hover {
+  background: #ffffff;
+}
+.ui-select-compact.state-active {
+  background: #ffffff;
 }
 .ui-select-compact .ui-select-arrow {
   line-height: 1.5em;
@@ -4626,9 +4638,21 @@ hr {
   color: #666666;
 }
 .ui-select-bordered {
+  background: #ffffff;
+  color: #666666;
+  border: 1px solid #dddddd;
+}
+.ui-select-bordered:hover,
+.ui-select-bordered:focus {
   color: #666666;
   background: #ffffff;
-  border: 1px solid #dddddd;
+}
+.ui-select-bordered.state-read-only,
+.ui-select-bordered.state-read-only:hover {
+  background: #ffffff;
+}
+.ui-select-bordered.state-active {
+  background: #ffffff;
 }
 .ui-select-bordered .ui-select-arrow {
   opacity: 0.7;
@@ -6263,6 +6287,19 @@ span.ui-crumb-node {
   display: block;
 }
 .ui-wizard-panel-hidden {
+  display: none;
+}
+.ui-wizard-node-done .ui-wizard-node-number:before {
+  content: "\f00c";
+  font-family: FontAwesome;
+  display: inline-block;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.ui-wizard-node-done .ui-wizard-node-number span {
   display: none;
 }
 .state-validity-invalid {

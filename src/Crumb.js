@@ -122,10 +122,13 @@ define(
                  * @return {string}
                  */
                 getSeparatorHTML: function () {
+                    var separatorClass = this.separatorClass;
                     return lib.format(
                         this.separatorTemplate,
                         {
-                            classes: this.helper.getPartClassName('separator'),
+                            classes: separatorClass
+                                + ' '
+                                + this.helper.getPartClassName('separator'),
                             text: u.escape(this.separator)
                         }
                     );
@@ -152,7 +155,7 @@ define(
                          *
                          * 分隔符，默认使用{@link Crumb#defaultProperties}中的配置
                          */
-                        name: ['path', 'separator'],
+                        name: ['path', 'separator', 'separatorClass'],
                         paint: function (crumb, path) {
                             var html = u.map(path, crumb.getNodeHTML, crumb);
                             var separator = crumb.getSeparatorHTML();
@@ -174,6 +177,16 @@ define(
              * @static
              */
             separator: '>',
+
+            /**
+             * @cfg defaultProperties
+             *
+             * 默认属性值
+             *
+             * @cfg {string} [defaultProperties.separatorClass=""] 节点分要加自定义class
+             * @static
+             */
+            separatorClass: '',
             /**
              * 无链接的文字节点的内容HTML模板
              *
