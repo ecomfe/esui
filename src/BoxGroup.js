@@ -15,6 +15,7 @@ define(
         var painters = require('./painters');
         var esui = require('./main');
         var eoo = require('eoo');
+        require('./Tip');
 
         /**
          * 单选或复选框组控件
@@ -262,6 +263,34 @@ define(
                         item.title
                             = box.title || (box.value === 'on' ? box.value : '');
                     }
+                    if ($(box).nextAll('div[data-ui]').length !== 0 || $(box).nextAll('div[data-ui-type="Tip"]').length !== 0) {
+                        if ($(box).nextAll('div[data-ui]').length !== 0) {
+                            var tipItems = $(box).nextAll('div[data-ui]');
+                            $.each(tipItems, function(index, tipItem) {
+                                if ($(tipItem).attr('data-ui').indexOf('Tip') !== -1) {
+                                    var tipAttrs = $(tipItem).attr('data-ui').split(';');
+                                    item.tip = {};
+                                    for (var i = 0; i < tipAttrs.length; i++) {
+                                        if (tipAttrs[i].split('=')[0] === 'title') {
+                                            item.tip.title = tipAttrs[i].split('=')[1];
+                                        }
+                                        if (tipAttrs[i].split('=')[0] === 'content') {
+                                            item.tip.content = tipAttrs[i].split('=')[1];
+                                        }
+                                    }
+                                }
+                                
+                            });
+                        }
+                        else {
+                            var tipItem = $(box).nextAll('div[data-ui-type="Tip"]')[0];
+                            item.tip = {};
+                            item.tip.content = $(tipItem).attr('data-ui-content');
+                            item.tip.title = $(tipItem).attr('data-ui-title');
+                        }
+                    }
+                    
+
                     datasource.push(item);
 
                     // firefox下的autocomplete机制在reload页面时,
@@ -318,8 +347,9 @@ define(
             '<div title="${title}" class="${wrapperClass}">',
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
             '    <label for="${id}">${title}</label>',
-            '</div>'
         ].join('');
+
+        var itemTipTemplate = '<div class="ui-tip" data-ui-type="Tip" data-ui-content="${tipContent}" data-ui-title="${tipTitle}"></div>';
 
         /**
          * 渲染控件
@@ -330,6 +360,7 @@ define(
          * @ignore
          */
         function render(group, datasource, boxType) {
+            
             // 有些属性会触发render，要把event先去掉，然后再绑定一次。
             function bindUnbindBoxEvents(addEvent) {
                 // `change`事件不会冒泡的，所以在这里要给一个一个加上
@@ -375,12 +406,27 @@ define(
                     title: lib.trim(item.title || item.name || item.text),
                     value: item.value,
                     checked: valueIndex[item.value] ? ' checked="checked"' : ''
+
                 };
-                html += lib.format(itemTemplate, data);
+                if (item.tip) {
+                    var tip = item.tip;
+                    data.tipContent = tip.content || '';
+                    data.tipTitle = tip.title || '';
+                    html += lib.format(itemTemplate + itemTipTemplate + '</div>', data);
+                }
+                else {
+                    html += lib.format(itemTemplate + '</div>', data);
+                }
+
+
             }
 
+
             group.main.innerHTML = html;
+            group.helper.initChildren(group.main);
+
             bindUnbindBoxEvents(true);
+
         }
 
         esui.register(BoxGroup);
