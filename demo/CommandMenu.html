@@ -154,8 +154,10 @@
                             datasource: data,
                             main: document.getElementById(id),
                             alignToElement: alignTo,
-                            getCustomItemHtml: function(item) {
-                                return lib.format('<span>${text}</span>', item);
+                            getCustomItemHtml: function (item) {
+                                return lib.format('<span>${text}</span><span '
+                                    + 'style="cursor:pointer;display:block;padding:0.5em 1em;color:#B5B0B0;">'
+                                    + '${desc}</span>', item);
                             }
                         };
                         var menu = new CommandMenu(options);
@@ -217,8 +219,10 @@
                         datasource: data,
                         main: document.getElementById(id),
                         alignToElement: alignTo,
-                        getCustomItemHtml: function(item) {
-                            return lib.format('<span>${text}</span><span style="cursor:pointer;display: block;padding:0.5em 1em;color:#B5B0B0;">${desc}</span>', item);
+                        getCustomItemHtml: function (item) {
+                            return lib.format('<span>${text}</span><span '
+                                + 'style="cursor:pointer;display:block;padding:0.5em 1em;color:#B5B0B0;">'
+                                + '${desc}</span>', item);
                         }
                     };
                     var menu = new CommandMenu(options);
@@ -226,7 +230,6 @@
                 }
                 renderTest('test');
                 newMenu('list1');
-                
                 newMenu('list2', 'create-element');
 
                 var menuCreated = new CommandMenu({

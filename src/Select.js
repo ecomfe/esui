@@ -236,7 +236,7 @@ define(
                         value: u.escape(item.value)
                     };
                     return lib.format(this.displayTemplate, data);
-                }   
+                }
             },
 
             /**
