@@ -21,13 +21,13 @@
             </ul>
         </div>
         <div id="main" class="ui-u-4-5">
-            <h2>缺省样式</h2>
+            <h2>默认样式</h2>
             <div class="intro">
                 <p>把标准的Select变成一个自定义的下拉列表。</p>
             </div>
             <div class="example ui-demo-light-stage">
                 <div class="row">
-                    <select data-ui-type="Select" data-ui-id="test" data-ui-width="200" name="test" data-ui-selected-index="1">
+                    <select data-ui-type="Select" data-ui-id="test" data-ui-width="200" name="test" data-ui-selected-index="1" data-ui-appendbefore="<span>before</span>" data-ui-appendafter="<span>after</span>">
                         <option value="1">选项 1</option>
                         <option value="2">选项 2</option>
                         <option value="3">选项 3</option>
@@ -87,9 +87,6 @@
                 </div>
             </div>
             <h2>状态</h2>
-            <div class="intro">
-                <p>支持的状态。</p>
-            </div>
             <div class="example ui-demo-light-stage">
                 <h3>不可用</h3>
                 <div class="row">
@@ -202,6 +199,39 @@
                     </div>
                 </div>
             </div>
+            <h2>列表元素自定义</h2>
+            <p>在控件初始化时定义函数<code>getCustomItemHTML</code>自定义列表元素，定义函数<code>getCustomDisplayHTML</code>自定义选中列表后显示元素。函数的参数为列表的数据对象。</p>
+            <div class="example ui-demo-light-stage">
+            <div class="row">
+                <select id="select1" data-ui-type="Select" data-ui-id="custom" data-ui-width="200" data-ui-selected-index="1">
+                    <option value="1">选项 1</option>
+                    <option value="2">选项 2</option>
+                    <option value="3">选项 3</option>
+                </select>
+            </div>
+            </div>
+            <script type="text/sample">
+                ui.init(null, {
+                    properties: {
+                        custom: {
+                            getCustomItemHTML: function(item) {
+                                var data = {
+                                    text: u.escape(item.name || item.text),
+                                    value: u.escape(item.value)
+                                };
+                                return lib.format('<span>${text}</span>', data);
+                            },
+                            getCustomDisplayHTML: function(item) {
+                                var data = {
+                                    text: u.escape(item.name || item.text),
+                                    value: u.escape(item.value)
+                                };
+                                return lib.format('<span>${text}</span>', data);
+                            }
+                        }
+                    } 
+                });
+            </script>
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -213,10 +243,33 @@
         [
             'esui',
             'esui/Select',
-            'esui/TextBox'
+            'lib',
+            'underscore',
+            'esui/TextBox',
+            'esui/Tab',
+            'demo'
         ],
-        function (ui) {
-            ui.init();
+        function (ui, Select, lib, u) {
+            ui.init(null, {
+                properties: {
+                    custom: {
+                        getCustomItemHTML: function(item) {
+                            var data = {
+                                text: u.escape(item.name || item.text),
+                                value: u.escape(item.value)
+                            };
+                            return lib.format('<span>${text}</span>', data);
+                        },
+                        getCustomDisplayHTML: function(item) {
+                            var data = {
+                                text: u.escape(item.name || item.text),
+                                value: u.escape(item.value)
+                            };
+                            return lib.format('<span>${text}</span>', data);
+                        }
+                    }
+                } 
+            });
             var select = ui.get('error');
             select.showValidationMessage('invalid', 'There is an error.');
             select = ui.get('error-primary');
