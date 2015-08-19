@@ -180,8 +180,8 @@ define(
              * @return {string} 返回HTML片段
              */
             getItemHTML: function (item) {
-                if (u.isFunction(this.getCustomItemHtml)) {
-                    return this.getCustomItemHtml(item);
+                if (u.isFunction(this.getCustomItemHTML)) {
+                    return this.getCustomItemHTML(item);
                 }
                 else {
                     var data = {
