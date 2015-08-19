@@ -119,7 +119,7 @@
                 </script>
                 <h2>自定义列表元素</h2>
                 <div class="intro">
-                    <p>创建控件时加入参数<code>getCustomItemHTML</code>实现列表元素自定义。</p>
+                    <p>创建控件时加入参数<code>getCustomItemHtml</code>实现列表元素自定义。</p>
                 </div>
                 <div class="example ui-demo-light-stage">
                     <div class="row">
@@ -154,7 +154,7 @@
                             datasource: data,
                             main: document.getElementById(id),
                             alignToElement: alignTo,
-                            getCustomItemHTML: function (item) {
+                            getCustomItemHtml: function (item) {
                                 return lib.format('<span>${text}</span><span '
                                     + 'style="cursor:pointer;display:block;padding:0.5em 1em;color:#B5B0B0;">'
                                     + '${desc}</span>', item);
@@ -219,7 +219,7 @@
                         datasource: data,
                         main: document.getElementById(id),
                         alignToElement: alignTo,
-                        getCustomItemHTML: function (item) {
+                        getCustomItemHtml: function (item) {
                             return lib.format('<span>${text}</span><span '
                                 + 'style="cursor:pointer;display:block;padding:0.5em 1em;color:#B5B0B0;">'
                                 + '${desc}</span>', item);
