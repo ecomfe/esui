@@ -31,11 +31,11 @@
                         id="list1"
                         class="ui-button ui-button-primary">Command Menu <span class="ui-icon-caret-down"></span></button>
                     </div>
-                    <div id="create-element" class="ui-button-group ui-button-group-separated">
+                    <div id="create-element" class="ui-button-group">
                         <button type="button" class="ui-button ui-button-primary">Split Button</button>
                         <button type="button" 
                         id="list2"
-                        class="ui-button ui-button-primary ui-button-icon ui-icon-caret-down"></button>
+                        class="ui-button-group-separator ui-button ui-button-primary ui-button-icon ui-icon-caret-down"></button>
                     </div>
                 </div>
                 <script type="text/sample">
@@ -125,45 +125,39 @@
                     <div class="row">
                         <button type="button" 
                         id="test"
-                        class="ui-button ui-button-primary">Command Menu<span class="ui-icon-caret-down"></span></button>
+                        class="ui-button ui-button-primary">Command Menu <span class="ui-icon-caret-down"></span></button>
                     </div>
                 </div>
                 <script type="text/sample">
                     var data = [
                         {
-                            text: 'Item 1 Item 1'
+                            text: 'Item 1 Item 1 ',
+                            desc: '我是注释'
                         },
                         {
                             text: 'Item 2 Item 2 ',
-                            handler: function () {
-                            }
+                            desc: '我是注释4'
                         },
                         {
                             text: 'Item 3 Item 3 ',
-                            handler: function () {
-                            }
+                            desc: '我是注释3'
                         },
                         {
                             text: 'Item 4 Item 4 ',
-                            handler: function () {
-                            }
+                            desc: '我是注释4'
                         }
                     ];
-                    function renderTest(id, alignTo) {
-                        var options = {
-                            datasource: data,
-                            main: document.getElementById(id),
-                            alignToElement: alignTo,
-                            getCustomItemHTML: function (item) {
-                                return lib.format('<span>${text}</span><span '
-                                    + 'style="cursor:pointer;display:block;padding:0.5em 1em;color:#B5B0B0;">'
-                                    + '${desc}</span>', item);
-                            }
-                        };
-                        var menu = new CommandMenu(options);
-                        menu.render();
-                    }
-                    renderTest('test');
+                    var options = {
+                        datasource: data,
+                        main: document.getElementById('test'),
+                        getCustomItemHTML: function (item) {
+                            return lib.format('<span>${text}<span '
+                                + 'style="color:#B5B0B0;">'
+                                + '${desc}</span></span>', item);
+                        }
+                    };
+                    var menu = new CommandMenu(options);
+                    menu.render();
                 </script>
             </div>
         </div>
@@ -189,16 +183,19 @@
                     },
                     {
                         text: 'Item 2 Item 2 ',
+                        desc: '我是注释4',
                         handler: function () {
                         }
                     },
                     {
                         text: 'Item 3 Item 3 ',
+                        desc: '我是注释3',
                         handler: function () {
                         }
                     },
                     {
                         text: 'Item 4 Item 4 ',
+                        desc: '我是注释4',
                         handler: function () {
                         }
                     }
@@ -220,9 +217,9 @@
                         main: document.getElementById(id),
                         alignToElement: alignTo,
                         getCustomItemHTML: function (item) {
-                            return lib.format('<span>${text}</span><span '
-                                + 'style="cursor:pointer;display:block;padding:0.5em 1em;color:#B5B0B0;">'
-                                + '${desc}</span>', item);
+                            return lib.format('<span>${text}<div '
+                                + 'style="color:#B5B0B0;font-size: .8em">'
+                                + '${desc}</div></span>', item);
                         }
                     };
                     var menu = new CommandMenu(options);

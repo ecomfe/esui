@@ -606,11 +606,8 @@ input[type="search"]::-webkit-search-decoration {
 .ui-button-group .ui-button:first-child {
   margin-left: 0;
 }
-.ui-button-group.ui-button-group-separated .ui-button {
-  margin-left: 0;
-}
-.ui-button-group.ui-button-group-separated .ui-button:not(:last-child) {
-  border-right: 1px solid #ffffff;
+.ui-button-group .ui-button.ui-button-group-separator {
+  border-left: 1px solid #ffffff;
 }
 .ui-button-primary {
   color: #ffffff;
@@ -638,16 +635,19 @@ input[type="search"]::-webkit-search-decoration {
 .ui-button-primary-inverted.state-hover {
   border-color: #79dacd;
   color: #79dacd;
+  background: none;
 }
 .ui-button-primary-inverted:focus,
 .ui-button-primary-inverted.state-focus {
   border-color: #79dacd;
   color: #79dacd;
+  background: none;
 }
 .ui-button-primary-inverted:active,
 .ui-button-primary-inverted.state-active {
-  background: #5fb3a8;
-  color: #ffffff;
+  border-color: #5fb3a8;
+  color: #5fb3a8;
+  background: none;
 }
 .ui-button-success {
   color: #ffffff;
