@@ -229,11 +229,36 @@ define(
                  * 监听一个区域 为这个区域内带有data-role='tip'属性的节点添加tip
                  * 在该区域内部所有的DOM节点里 若要添加tip提示 需配置以下属性
                  * 1. data-role='tip' 所有具有该属性的节点都会增加tip提示
-                 * 2. data-title='提示标题' 该节点所要显示的提示的标题内容
-                 * 3. data-content='提示内容' 该节点所要显示的提示的内容
+                 * 2. data-tip-title='提示标题' 该节点所要显示的提示的标题内容
+                 * 3. data-tip-title='提示内容' 该节点所要显示的提示的内容
                  * 一旦配置过以上属性 就可以自动为该区域内所有类似的节点添加相应的tip
-                 * 另一方面 可以使用自定义的方法处理beforeshow的事件 如果无自定义的方法
-                 * 则默认使用以上属性对tip的属性进行设置
+                 *
+                 * 有时可能想要针对不同的元素对其的title或者content进行更多方面的控制
+                 * 则可以通过自定义方法实现，即传入的customBeforeShowHandler方法
+                 * 该方法默认有两个参数，title与content
+                 *
+                 * 使用方法如下所示：
+                 *
+                 * 假设DOM结构如下：
+                 * <div id="main">
+                 *      <button data-role="tip" data-tip-title="submit" data-tip-content="确认提示">确认</button>
+                 *      <button data-role="tip" data-tip-title="cancel" data-tip-content="取消提示">取消</button>
+                 * </div>
+                 *
+                 * 则JS中可按如下方式使用
+                 * var tipLayer = ui.create('TipLayer', {
+                 *   title: '最普通的提示',
+                 *   content: '提示'
+                 * });
+                 * tipLayer.monitor('#main', {showMode: 'over'}, function (title, content) {
+                 *   if (title === "submit") {
+                 *       this.setContent('确认后才可点击！');
+                 *   }
+                 *   else {
+                 *       this.setContent(content);
+                 *   }
+                 * });
+                 *
                  *
                  * @param {string} selector JQuery选择器
                  * @param {Object=} options 绑定参数
@@ -248,17 +273,14 @@ define(
 
                     // 为防止delayTime时出现 tip还未hide就更改内容的情况 监听beforeshow事件 在此刻再进行更改
                     this.on('beforeshow', function (e) {
+                        var title = e.title;
+                        var content = e.content;
                         if (typeof customBeforeShowHandler === 'function') {
-                            customBeforeShowHandler.call(this, e);
+                            customBeforeShowHandler.call(this, title, content);
                             return;
                         }
-                        var targetElement = e.targetElement;
-                        if (targetElement) {
-                            var content = $(targetElement).attr('data-content') || this.content;
-                            var title = $(targetElement).attr('data-title') || this.title;
-                            this.setContent(content);
-                            this.setTitle(title);
-                        }
+                        this.setTitle(title);
+                        this.setContent(content);
                     }, this);
 
                     function showTip(event) {
@@ -595,7 +617,10 @@ define(
                     // 动态计算layer的zIndex
                     this.main.style.zIndex = Layer.getZIndex(targetElement);
 
-                    this.fire('beforeshow', {targetElement: targetElement});
+                    this.fire('beforeshow', {
+                        title: $(targetElement).attr('data-tip-title') || this.title,
+                        content: $(targetElement).attr('data-tip-content') || this.content
+                    });
 
                     this.removeState('hidden');
 
