@@ -180,10 +180,15 @@ define(
              * @return {string} 返回HTML片段
              */
             getItemHTML: function (item) {
-                var data = {
-                    text: u.escape(item.text)
-                };
-                return lib.format(this.itemTemplate, data);
+                if (u.isFunction(this.getCustomItemHTML)) {
+                    return this.getCustomItemHTML(item);
+                }
+                else {
+                    var data = {
+                        text: u.escape(item.text)
+                    };
+                    return lib.format(this.itemTemplate, data);
+                }   
             },
 
             initStructure: function () {

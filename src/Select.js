@@ -193,11 +193,16 @@ define(
              * @return {string} 返回HTML片段
              */
             getItemHTML: function (item) {
-                var data = {
-                    text: u.escape(item.name || item.text),
-                    value: u.escape(item.value)
-                };
-                return lib.format(this.itemTemplate, data);
+                if (u.isFunction(this.getCustomItemHTML)) {
+                    return this.getCustomItemHTML(item);
+                }
+                else {
+                    var data = {
+                        text: u.escape(item.name || item.text),
+                        value: u.escape(item.value)
+                    };
+                    return lib.format(this.itemTemplate, data);
+                } 
             },
 
             /**
@@ -222,12 +227,16 @@ define(
                 if (!item) {
                     return u.escape(this.emptyText || '');
                 }
-
-                var data = {
-                    text: u.escape(item.name || item.text),
-                    value: u.escape(item.value)
-                };
-                return lib.format(this.displayTemplate, data);
+                if (u.isFunction(this.getCustomDisplayHTML)) {
+                    return this.getCustomDisplayHTML(item);
+                }
+                else {
+                    var data = {
+                        text: u.escape(item.name || item.text),
+                        value: u.escape(item.value)
+                    };
+                    return lib.format(this.displayTemplate, data);
+                }
             },
 
             /**
