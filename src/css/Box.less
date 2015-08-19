@@ -2,6 +2,7 @@
 
 @esui-boxgroup-horizontal-space: 0 1em 0 0;
 @esui-boxgroup-vertical-space: .5em 0;
+@esui-boxgroup-tip: 0 0 0 0.3em;
 
 .@{ui-class-prefix}-boxgroup-horizontal .@{ui-class-prefix}-boxgroup-wrapper {
     display: inline-block;
@@ -27,7 +28,6 @@
         }
         position: relative;
         .esui-boxgroup-button-style-border();
-        
     }
 
     .esui-boxgroup-button-style-theme();
@@ -69,6 +69,9 @@
 
 .@{ui-class-prefix}-boxgroup {
     display: block;
+    .@{ui-class-prefix}-tip {
+        margin: @esui-boxgroup-tip;
+    }
 }
 
 .esui-boxgroup-button-style-theme() {}

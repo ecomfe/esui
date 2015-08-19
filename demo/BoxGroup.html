@@ -263,6 +263,72 @@
                     );
                 }
             </script>
+            <h2>增加Tip</h2>
+            <div class="intro">
+                <p>在label元素中设置属性<code>data-tip-content</code>和<code>data-tip-title</code>。</p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <div data-ui-type="BoxGroup" data-ui-id="box-group-tipDemo" data-ui-name="frameworks2" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
+                    <div>
+                        <input type="radio" id="framework-er1" name="frameworks2" value="er">
+                        <label for="framework-er1" data-tip-content="content" data-tip-title="title">ER</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="framework-esui1" name="frameworks2" value="esui" checked>
+                        <label for="framework-esui1">ESUI</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="framework-ef1" name="frameworks2" value="ef">
+                        <label for="framework-ef1">EF</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="framework-tangram1" name="frameworks2" value="tangram">
+                        <label for="framework-tangram1">Tangram</label>
+                    </div>
+                </div>
+            </div>
+            <h2>动态配置Tip</h2>
+            <div class="intro">
+                <p>动态创建BoxGroup时为元素添加Tip：datasource添加对象tip,tip具有属性<code>content</code>和<code>title</code></p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <div id="tipConfig"></div>
+            </div>
+            <script type="text/sample">
+                var options = {
+                    datasource: [
+                        {
+                            title: 'ER',
+                            value: 'ER',
+                            tip: {
+                                content: '<a href="http://baidu.com" target="blank">我是FE</a>',
+                                title: 'title'
+                            }
+                        },
+                        {
+                            title: 'ESUI',
+                            value: 'ESUI',
+                            tip: {
+                                content: 'ESUI',
+                                title: 'title'
+                            }
+                        },
+                        {
+                            title: 'ESF',
+                            value: 'ESUI',
+                            tip: {
+                                content: 'ESUI',
+                                title: 'title'
+                            }
+                        }
+                    ],
+                    main: document.getElementById('tipConfig'),
+                    boxClass: 'ui-radio-custom'
+                }
+                var tipTest = new BoxGroup(options);
+                tipTest.render();
+            </script>
+            
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -278,7 +344,7 @@
             'esui/Tab',
             'demo'
         ],
-        function (ui, $) {
+        function (ui, $, BoxGroup) {
             ui.init();
             ui.get('box-group-button2').on(
                 'change',
@@ -286,6 +352,38 @@
                     $('#box-group-change-log').text('已选值：' + this.getValue());
                 }
             );
+            var options = {
+                datasource: [
+                    {
+                        title: 'ER',
+                        value: 'ER',
+                        tip: {
+                            content: '<a href="http://baidu.com" target="blank">我是FE</a>',
+                            title: 'title'
+                        }
+                    },
+                    {
+                        title: 'ESUI',
+                        value: 'ESUI',
+                        tip: {
+                            content: 'ESUI',
+                            title: 'title'
+                        }
+                    },
+                    {
+                        title: 'ESF',
+                        value: 'ESUI',
+                        tip: {
+                            content: 'ESUI',
+                            title: 'title'
+                        }
+                    }
+                ],
+                main: document.getElementById('tipConfig'),
+                boxClass: 'ui-radio-custom'
+            }
+            var tipTest = new BoxGroup(options);
+            tipTest.render();
         }
     );
     </script>

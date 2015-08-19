@@ -219,14 +219,14 @@
                                     text: u.escape(item.name || item.text),
                                     value: u.escape(item.value)
                                 };
-                                return lib.format('<span>${text}</span>', data);
+                                return lib.format('<span>${text}=>value=${value}</span>', data);
                             },
                             getCustomDisplayHTML: function(item) {
                                 var data = {
                                     text: u.escape(item.name || item.text),
                                     value: u.escape(item.value)
                                 };
-                                return lib.format('<span>${text}</span>', data);
+                                return lib.format('<span>${text}=>value=${value}</span>', data);
                             }
                         }
                     } 
@@ -258,14 +258,14 @@
                                 text: u.escape(item.name || item.text),
                                 value: u.escape(item.value)
                             };
-                            return lib.format('<span>${text}</span>', data);
+                            return lib.format('<span>${text}=>value=${value}</span>', data);
                         },
                         getCustomDisplayHTML: function(item) {
                             var data = {
                                 text: u.escape(item.name || item.text),
                                 value: u.escape(item.value)
                             };
-                            return lib.format('<span>${text}</span>', data);
+                            return lib.format('<span>${text}=>value=${value}</span>', data);
                         }
                     }
                 } 
