@@ -232,43 +232,53 @@ define(
                  * 2. data-title='提示标题' 该节点所要显示的提示的标题内容
                  * 3. data-content='提示内容' 该节点所要显示的提示的内容
                  * 一旦配置过以上属性 就可以自动为该区域内所有类似的节点添加相应的tip
+                 * 另一方面 可以使用自定义的方法处理beforeshow的事件 如果无自定义的方法
+                 * 则默认使用以上属性对tip的属性进行设置
                  *
                  * @param {string} selector JQuery选择器
                  * @param {Object=} options 绑定参数
                  *    {string} showMode 展示触发模式
                  *    {number} delayTime 延迟展示时间
+                 * @param {Function} customBeforeShowHandler beforeShow的自定义处理方法
                  */
-                monitor: function (selector, options) {
+                monitor: function (selector, options, customBeforeShowHandler) {
                     var showMode = options.showMode || 'over';
                     var delayTime = options.delayTime || 0;
                     var containerElement = $(selector);
-                    var me = this;
 
                     // 为防止delayTime时出现 tip还未hide就更改内容的情况 监听beforeshow事件 在此刻再进行更改
-                    me.on('beforeshow', function (e) {
+                    this.on('beforeshow', function (e) {
+                        if (typeof customBeforeShowHandler === 'function') {
+                            customBeforeShowHandler.call(this, e);
+                            return;
+                        }
                         var targetElement = e.targetElement;
                         if (targetElement) {
                             var content = $(targetElement).attr('data-content') || this.content;
                             var title = $(targetElement).attr('data-title') || this.title;
-                            me.setContent(content);
-                            me.setTitle(title);
+                            this.setContent(content);
+                            this.setTitle(title);
                         }
-                    });
+                    }, this);
 
                     function showTip(event) {
-                        var targetDOM = event.target;
+                        var targetDOM = $(event.target);
                         // 检查是否具有data-attached的属性 有的话直接忽略就可以
-                        if (!$(targetDOM).attr('data-attached')) {
-                            me.attachTo({
+                        if (!targetDOM.data('data-attached')) {
+                            this.attachTo({
                                 targetDOM: targetDOM,
                                 showMode: showMode,
                                 delayTime: delayTime,
                                 positionOpt: {top: 'top', right: 'left'}
                             });
                             // 凡是已经attachTo过之后的节点 都自动添加一个data-attached的属性 防止重复绑定
-                            $(targetDOM).attr('data-attached', '1');
-                            // 第一次绑定的时候需要手动触发一次类似事件才可以显示tip
-                            $(targetDOM).trigger(event.type);
+                            targetDOM.data('data-attached', true);
+                            // 第一次绑定的时候需要手动show一下才可以显示tip
+                            // targetDOM.trigger(event.type);
+                            delayShow(this, delayTime, targetDOM, {
+                                targetPositionOpt: {top: 'top', right: 'right'},
+                                positionOpt: {top: 'top', right: 'left'}
+                            });
                         }
                         // 阻止冒泡到父节点 以防止tipLayer自动hide掉
                         event.stopPropagation();
@@ -279,10 +289,12 @@ define(
                     }
 
                     if (showMode === 'over') {
-                        this.helper.addDOMEvent(containerElement, 'mouseover', '[data-role="tip"]', showTip);
+                        this.helper.addDOMEvent(containerElement,
+                            'mouseover', '[data-role="tip"]', u.bind(showTip, this));
                     }
                     else if (showMode === 'click') {
-                        this.helper.addDOMEvent(containerElement, 'mouseup', '[data-role="tip"]', showTip);
+                        this.helper.addDOMEvent(containerElement,
+                            'mouseup', '[data-role="tip"]', u.bind(showTip, this));
                     }
                 },
 
