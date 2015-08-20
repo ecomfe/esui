@@ -15,6 +15,7 @@ define(
         var painters = require('./painters');
         var esui = require('./main');
         var eoo = require('eoo');
+        require('./Tip');
 
         /**
          * 单选或复选框组控件
@@ -240,10 +241,14 @@ define(
             // 先建个索引方便取值
             var labelIndex = {};
             for (var i = labels.length - 1; i >= 0; i--) {
-                var label = labels[i];
-                var forAttribute = lib.getAttribute(label, 'for');
+                var label = $(labels[i]);
+                var forAttribute = label.attr('for');
                 if (forAttribute) {
-                    labelIndex[forAttribute] = label;
+                    labelIndex[forAttribute] = {
+                        title: label ? label.text() : '',
+                        tipContent: label.attr('data-tip-content'),
+                        tipTitle: label.attr('ddata-tip-title')
+                    }
                 }
             }
 
@@ -254,13 +259,19 @@ define(
                 if (box.type === options.boxType
                     && (options.name || '') === box.name // DOM的`name`是字符串
                 ) {
-                    // 提取`value`和`title`
+                    // 提取`value`和`title`和'tip'
                     var item = {value: box.value};
-                    var label2 = box.id && labelIndex[box.id];
-                    item.title = label2 ? $(label2).text() : '';
+                    var labelAttr = box.id && labelIndex[box.id];
+                    item.title = labelAttr.title;
                     if (!item.title) {
                         item.title
                             = box.title || (box.value === 'on' ? box.value : '');
+                    }
+                    if (labelAttr.tipTitle || labelAttr.tipContent) {
+                        item.tip = {
+                            title: labelAttr.tipTitle || '',
+                            content: labelAttr.tipContent || ''
+                        };
                     }
                     datasource.push(item);
 
@@ -318,8 +329,9 @@ define(
             '<div title="${title}" class="${wrapperClass}">',
             '    <input type="${type}" name="${name}" id="${id}" title="${title}" value="${value}"${checked} />',
             '    <label for="${id}">${title}</label>',
-            '</div>'
         ].join('');
+
+        var itemTipTemplate = "<div data-ui-type=Tip data-ui-content='${tipContent}' data-ui-title='${tipTitle}'></div>";
 
         /**
          * 渲染控件
@@ -330,6 +342,7 @@ define(
          * @ignore
          */
         function render(group, datasource, boxType) {
+            
             // 有些属性会触发render，要把event先去掉，然后再绑定一次。
             function bindUnbindBoxEvents(addEvent) {
                 // `change`事件不会冒泡的，所以在这里要给一个一个加上
@@ -342,6 +355,7 @@ define(
                 );
             }
             bindUnbindBoxEvents(false);
+            group.helper.disposeChildren();
             var html = '';
 
             var classes = [].concat(
@@ -375,12 +389,24 @@ define(
                     title: lib.trim(item.title || item.name || item.text),
                     value: item.value,
                     checked: valueIndex[item.value] ? ' checked="checked"' : ''
+
                 };
-                html += lib.format(itemTemplate, data);
+                if (item.tip) {
+                    var tip = item.tip;
+                    data.tipContent = tip.content || '';
+                    data.tipTitle = tip.title || '';
+                    html += lib.format(itemTemplate + itemTipTemplate + '</div>', data);
+                }
+                else {
+                    html += lib.format(itemTemplate + '</div>', data);
+                }
             }
 
+
             group.main.innerHTML = html;
+            group.helper.initChildren(group.main.parentNode);
             bindUnbindBoxEvents(true);
+
         }
 
         esui.register(BoxGroup);
