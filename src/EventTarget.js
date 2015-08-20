@@ -99,7 +99,7 @@ define(
                  */
                 un: function (type, fn) {
                     var namespace = getNamespace.call(this);
-                    $(this).off(eventPrefix + type + namespace, handler);
+                    $(this).off(eventPrefix + type + namespace, fn);
                 },
 
                 /**
