@@ -56,10 +56,18 @@ define(
                  *
                  * @param {string} type 事件的类型
                  * @param {Function} fn 事件的处理函数
+                 * @param {Object} thisObject fn的this作用域
                  */
-                on: function (type, fn) {
+                on: function (type, fn, thisObject) {
                     var namespace = getNamespace.call(this);
-                    $(this).on(eventPrefix + type + namespace, fn);
+                    var fnProxy;
+
+                    fn.guid = fn.guid || $.guid++;
+                    if (thisObject) {
+                        fnProxy = u.bind(fn, thisObject);
+                        fnProxy.guid = fn.guid;
+                    }
+                    $(this).on(eventPrefix + type + namespace, fnProxy || fn);
                 },
 
                 /**
@@ -67,9 +75,18 @@ define(
                  *
                  * @param {string} type 事件的类型
                  * @param {Function} fn 事件的处理函数
+                 * @param {Object} thisObject fn的this作用域
                  */
-                once: function (type, fn) {
-                    $(this).one(eventPrefix + type, fn);
+                once: function (type, fn, thisObject) {
+                    var namespace = getNamespace.call(this);
+                    var fnProxy;
+
+                    fn.guid = fn.guid || $.guid++;
+                    if (thisObject) {
+                        fnProxy = u.bind(fn, thisObject);
+                        fnProxy.guid = fn.guid;
+                    }
+                    $(this).one(eventPrefix + type + namespace, fnProxy || fn);
                 },
 
                 /**
@@ -77,10 +94,10 @@ define(
                  *
                  * @param {string} type 事件的类型，
                  * 如果值为`*`仅会注销通过`*`为类型注册的事件，并不会将所有事件注销
-                 * @param {Function} [handler] 事件的处理函数，
+                 * @param {Function} [fn] 事件的处理函数，
                  * 无此参数则注销`type`指定类型的所有事件处理函数
                  */
-                un: function (type, handler) {
+                un: function (type, fn) {
                     var namespace = getNamespace.call(this);
                     $(this).off(eventPrefix + type + namespace, handler);
                 },
