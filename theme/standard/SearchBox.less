@@ -1,25 +1,25 @@
 @import "../../src/css/SearchBox.less";
 
-@esui-search-box-clear-icon-color:  @esui-palette-border;
+@esui-search-box-clear-icon-color: @esui-palette-border;
 @esui-search-box-clear-icon-active-color: @esui-palette-color;
 
 .esui-search-box-theme() {
     .@{ui-class-prefix}-textbox-icon {
         cursor: pointer;
-        .esui-transition(all 0.2s linear);
         text-indent: @esui-textbox-height;
         overflow: hidden;
         visibility: hidden;
+    }
+    .@{ui-class-prefix}-textbox-icon,
+    .@{ui-class-prefix}-button-bordered {
         color: @esui-search-box-clear-icon-color;
-        &:hover,
-        &:active {
-            color: @esui-search-box-clear-icon-active-color;
-        }
+        .esui-transition(all 0.2s linear);
     }
 }
 
 .esui-search-box-focus-theme() {
-    .@{ui-class-prefix}-textbox-icon {
+    .@{ui-class-prefix}-textbox-icon,
+    .@{ui-class-prefix}-button-bordered {
         color: @esui-search-box-clear-icon-active-color;
     }
 }

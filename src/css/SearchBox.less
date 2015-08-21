@@ -13,6 +13,28 @@
     .esui-search-box-searched-theme();
 }
 
+.@{ui-class-prefix}-searchbox-hide-searched-button.@{ui-state-prefix}-searched {
+    .@{ui-class-prefix}-textbox-addon .@{ui-class-prefix}-button {
+        display: none;
+    }
+}
+
+.@{ui-class-prefix}-searchbox-clear-border {
+    .@{ui-class-prefix}-textbox-addon:first-child .@{ui-class-prefix}-button,
+    .@{ui-class-prefix}-textbox:first-child input {
+        border-right-width: 0;
+    }
+    .@{ui-class-prefix}-textbox-addon:last-child .@{ui-class-prefix}-button,
+    .@{ui-class-prefix}-textbox:last-child input {
+        border-left-width: 0;
+    }
+    &.@{ui-class-prefix}-searchbox-hide-searched-button.@{ui-state-prefix}-searched {
+        .@{ui-class-prefix}-textbox input {
+            border-width: 1px;
+        }
+    }
+}
+
 .esui-search-box-theme() {}
 .esui-search-box-focus-theme() {}
-.esui-search-box-searched-theme();
+.esui-search-box-searched-theme() {}
