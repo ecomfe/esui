@@ -70,24 +70,21 @@
  */
 .@{ui-class-prefix}-pager-item, .@{ui-class-prefix}-pager-item-extend {
     .linear-gradient-background (top, #ffffff, #f6f6f6, #ffffff);
-    width: 23px;
+    min-width: 23px;
     height: 23px;
     border: 1px #ccc solid;
     .interactive-cursor ();
     .border-radius(2px, 2px, 2px, 2px);
     .box-sizing(content-box);
+    text-align: center;
 }
 
-.@{ui-class-prefix}-pager-item a {
-    width: 23px;
-}
-
-.@{ui-class-prefix}-pager-item-extend, .@{ui-class-prefix}-pager-item-extend a {
-    width: 50px;
+.@{ui-class-prefix}-pager-item-extend {
+    min-width: 50px;
 }
 
 .@{ui-class-prefix}-pager-item-current, .@{ui-class-prefix}-pager-item-omit {
-    width: 25px;
+    min-width: 25px;
     height: 25px;
 }
 

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Button - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <script src="demo.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+    </head>
+    <body>
+    <h1>Tip</h1>
+    <div id="page">
+        <ul id="navigator">
+        </ul>
+        <div id="main">
+            <h2>Tip</h2>
+            <div id="container" class="container" >
+            <div data-ui="type:Tip;id:tip;title:写这里优先级高;content:我是内容;arrow:1" title="也可以写在这里">content也可以写在这里</div>
+
+            <br>
+            <label id="tip-layer-label">
+                一行字也可以绑定提示
+            </label>
+            <br>
+            <br>
+            <br>
+            <br>
+            <Button data-ui-id="control-tip" data-ui-type="Button">
+                划过展示弹层
+            </Button>
+            <br>
+            <br>
+            <Button data-ui-id="control-tip-2" data-ui-type="Button">
+                点击展示弹层
+            </Button>
+            <br>
+            <br>
+            <Button data-ui-id="control-tip-3" data-ui-type="Button">
+                自动展示弹层
+            </Button>
+            <br>
+            <br>
+            <Button data-ui-id="control-tip-4" data-ui-type="Button">
+                定制展示弹层
+            </Button>
+            <br>
+            <br>
+            <p>TipLayer支持多个元素共享，但不适用showMode为auto的绑定</p>
+            <Button data-ui-id="control-tip-3-1" data-ui-type="Button">
+                我们跟第三个按钮共享一个tip
+            </Button>
+        </div>
+        </div>
+    </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/Tip',
+                'esui/TipLayer',
+                'esui/Label'
+            ],
+            function (ui, Tip, TipLayer) {
+                var controls = ui.init();
+                /**
+                 * 场景1：over
+                 */
+                var tipLayer1 = ui.create('TipLayer', {
+                    title: 'over模式弹层',
+                    content: 'over模式下的交互是：<br>'
+                        + '鼠标划过目标元素，弹层出现；鼠标脱离目标元素弹层消失'
+                });
+                tipLayer1.appendTo(document.body)
+                tipLayer1.render();
+
+                tipLayer1.attachTo({
+                    targetControl: 'control-tip',
+                    showMode: 'over',
+                    delayTime: 800,
+                    positionOpt: {top: 'top', right: 'left'}
+                });
+
+
+                /**
+                 * 场景2：click
+                 */
+                var tipLayer2 = ui.create('TipLayer', {
+                    title: 'click模式弹层',
+                    content: 'click模式下的交互是：<br>'
+                        + '点击目标元素，弹层出现；点击layer及目标元素以外区域，弹层消失'
+                });
+                tipLayer2.appendTo(document.body)
+                tipLayer2.render();
+
+                tipLayer2.attachTo({
+                    targetControl: 'control-tip-2',
+                    showMode: 'click',
+                    delayTime: 300,
+                    positionOpt: { top: 'top', right: 'left' }
+                });
+
+
+                /**
+                 * 场景3：auto
+                 */
+                var tipLayer3 = ui.create('TipLayer', {
+                    title: 'auto模式弹层',
+                    content: 'auto模式下的交互是：<br>'
+                        + '弹层自动出现；并根据用户配置的showDuration决定：<br>'
+                        + '1. 经过showDuration的时间后自动关闭<br>'
+                        + '2. 点击外部执行关闭 '
+                        + '之后，点击目标元素，展示弹层'
+                });
+                tipLayer3.appendTo(document.body)
+                tipLayer3.render();
+
+                tipLayer3.attachTo({
+                    targetControl: 'control-tip-3',
+                    showMode: 'over',
+                    // showDuration: 3600,
+                    positionOpt: {top: 'top', right: 'left'}
+                });
+
+                /**
+                 * 场景4：把一个已经生成的TipLayer共享给另一个元素
+                 */
+                tipLayer3.attachTo({
+                    targetControl: 'control-tip-3-1',
+                    showMode: 'over',
+                    positionOpt: {top: 'top', right: 'left'}
+                });
+
+                // 共享给好多好多元素
+                var container = document.getElementById('container');
+                var i = 20;
+                while (i > 0) {
+                    var dom = document.createElement('div');
+                    dom.id = i;
+                    dom.setAttribute('class', 'ui-button');
+                    container.appendChild(dom);
+                    tipLayer3.attachTo({
+                        targetDOM: dom,
+                        showMode: 'over',
+                        delayTime: 800,
+                        positionOpt: {top: 'top', right: 'left'}
+                    });
+                    i--;
+                }
+
+                /**
+                 * 场景4：manual
+                 */
+                var tipLayer4 = ui.create('TipLayer', {
+                    title: 'manual模式弹层',
+                    content: 'manual模式下的交互是：随你自己搞'
+                });
+                tipLayer4.appendTo(document.body)
+                tipLayer4.render();
+
+                ui.get('control-tip-4').on(
+                    'click',
+                    function () {
+                       tipLayer4.show(this.main, {top: 'top', right: 'left'});
+                    }
+                );
+
+                tipLayer4.helper.addDOMEvent(
+                    ui.get('control-tip-4').main,
+                    'mouseout',
+                    function () {
+                       this.hide();
+                    }
+                );
+
+                var tip = controls[0];
+
+
+                var onceNotice = TipLayer.onceNotice({
+                    content: '你知道了吗知道了吗知道了吗？',
+                    targetDOM: 'tip-layer-label'
+                });
+            }
+        )
+        </script>
+    </body>
+</html>

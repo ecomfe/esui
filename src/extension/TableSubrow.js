@@ -359,7 +359,7 @@ define(
         function getSubrowContainer(table, index) {
             var subrowWrapper = getSubrow(table, index);
             var subrowPanelId = getId(table, 'subrow-panel-' + index);
-            var subrowPanel = table.viewContext.get(subrowPanelId);
+            var subrowPanel = table.bodyPanel.getChild(subrowPanelId);
 
             if (!subrowPanel) {
                 subrowWrapper.innerHTML = lib.format(
@@ -372,7 +372,7 @@ define(
 
                 table.initChildren(subrowWrapper);
                 subrowPanel = table.viewContext.get(subrowPanelId);
-                table.addChild(subrowPanel);
+                table.bodyPanel.addChild(subrowPanel, subrowPanelId);
             }
 
             return subrowPanel;
@@ -483,6 +483,24 @@ define(
              */
             target.getSubrowContainer = function(index){
                 return getSubrowContainer(this, index);
+            };
+            /**
+             * 打开子行
+             * @public
+             * @param {number} index 子行的序号
+             */
+            target.openSubrow = function (index) {
+                var entry = lib.g(getSubentryId(this, index));
+                openSubrow(this, index, entry);
+            };
+            /**
+             * 关闭子行
+             * @public
+             * @param {number} index 子行的序号
+             */
+            target.closeSubrow = function (index) {
+                var entry = lib.g(getSubentryId(this, index));
+                closeSubrow(this, index, entry);
             };
 
             Extension.prototype.activate.apply(this, arguments);

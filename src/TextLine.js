@@ -37,7 +37,7 @@ define(
             var textareaHTML = ''
                 + '<textarea wrap="off" '
                 + 'id="'+ textLine.helper.getId('text') + '"'
-                + '</textarea>';
+                + '></textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                     '1', // 默认至少有一行
@@ -60,7 +60,6 @@ define(
                 refreshLineNum.call(this);
             }
         }
-
 
         /**
          * 重置行号，增加内容和`keyup`时可调用
@@ -174,11 +173,6 @@ define(
                     name: 'height',
                     paint: function (textLine, height) {
                         height = height || 300;
-
-                        // 渲染行号区高度
-                        var lineNumDiv = textLine.helper.getPart('num-line');
-                        lineNumDiv.style.height = height + 'px';
-
                         // 主体高度
                         textLine.main.style.height = height + 'px';
                     }
@@ -249,7 +243,7 @@ define(
                 var textArea = this.helper.getPart('text');
                 var lineNumber = this.helper.getPart('num-line');
                 // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
-                lineNumber.style.height = textArea.clientHeight + 'px';
+                //lineNumber.style.height = textArea.clientHeight + 'px';
                 lineNumber.scrollTop = textArea.scrollTop;
             },
 

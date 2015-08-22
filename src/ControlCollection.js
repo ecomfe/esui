@@ -109,7 +109,10 @@ define(
          * @return {Mixed[]} 返回一个数组，依次包含每个控件调用方法的结果
          */
         ControlCollection.prototype.invoke = function (methodName) {
-            var args = [this];
+            // methodName可能会修改ControlCollection，如从中删掉一个元素，
+            // 这样直接循环ControlCollection会造成遍历错误，
+            // 复制一份以供循环
+            var args = u.clone([this]);
             args.push.apply(args, arguments);
             return u.invoke.apply(u, args);
         };

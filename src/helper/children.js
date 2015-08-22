@@ -18,7 +18,7 @@ define(
 
         /**
          * 批量初始化子控件
-         * 
+         *
          * @param {HTMLElement} [wrap] 容器DOM元素，默认为主元素
          * @param {Object} [options] init参数
          * @param {Object} [options.properties] 属性集合，通过id映射
@@ -29,7 +29,7 @@ define(
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
-            ui.init(wrap, options);
+            return ui.init(wrap, options);
         };
 
         /**
@@ -43,8 +43,8 @@ define(
                     child.dispose();
                 }
             );
-            this.children = [];
-            this.childrenIndex = {};
+            this.control.children = [];
+            this.control.childrenIndex = {};
         };
 
         /**
@@ -54,7 +54,7 @@ define(
             u.each(
                 this.control.children,
                 function (child) {
-                    child.dispose();
+                    child.disable();
                 }
             );
         };

@@ -119,7 +119,7 @@ define(
          */
         Layer.prototype.addCustomClasses = function (layerClassNames) {
            var element = this.getElement();
-            lib.addClasses(element, layerClassNames);
+           lib.addClasses(element, layerClassNames);
         };
 
         /**
@@ -145,6 +145,7 @@ define(
          */
         Layer.prototype.repaint = function () {
             var element = this.getElement(false);
+
             if (element) {
                 this.render(element);
             }

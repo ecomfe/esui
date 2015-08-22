@@ -103,6 +103,18 @@ define(
                     'click',
                     u.bind(calendar.layer.hide, calendar.layer)
                 );
+                // 关闭layer的时候关闭select的layer
+                // https://github.com/ecomfe/esui/issues/462
+                // 当select layer可以嵌套到主元素之后可以把这个移除
+                calendar.layer.on('hide', function (e) {
+                    function hideSelectLayer(monthView) {
+                        monthView.getChild('yearSel').layer.hide();
+                        monthView.getChild('monthSel').layer.hide();
+                    };
+                    var tar = e.target.control;
+                    hideSelectLayer(tar.getChild('beginCal'));
+                    hideSelectLayer(tar.getChild('endCal'));
+                });
             }
             else {
                 calendar.view.begin = value.begin;
@@ -842,38 +854,36 @@ define(
 
             // 设置了value，以value为准
             if (options.value) {
-                options.rawValue = this.convertToRaw(options.value);
-                options.view = {
-                    begin: options.rawValue.begin,
-                    end: options.rawValue.end
+                properties.rawValue = this.convertToRaw(options.value);
+                properties.view = {
+                    begin: properties.rawValue.begin,
+                    end: properties.rawValue.end
                 };
-                options.miniMode = null;
+                properties.miniMode = null;
             }
             // 设置了rawValue，以rawValue为准，外部设置的miniMode先清空
             else if (options.rawValue) {
-                options.miniMode = null;
+                properties.miniMode = null;
             }
             // 没有设置rawValue，设置了‘miniMode’，rawValue按照miniMode计算
             else if (!options.rawValue && options.miniMode != null) {
-                var shortcutItem =
-                    properties.shortCutItems[options.miniMode];
+                var shortcutItem = properties.shortCutItems[properties.miniMode];
                 if (shortcutItem) {
-                    options.rawValue =
-                        shortcutItem.getValue.call(this, this.now);
-                    options.miniMode = parseInt(options.miniMode, 10);
+                    properties.rawValue = shortcutItem.getValue.call(this, this.now);
+                    properties.miniMode = parseInt(properties.miniMode, 10);
                 }
                 else {
-                    options.miniMode = null;
+                    properties.miniMode = null;
                 }
             }
 
             lib.extend(properties, options);
 
-            if (properties.range && typeof properties.range === 'string') {
+            if (options.range && typeof options.range === 'string') {
                 properties.range = this.convertToRaw(properties.range);
             }
 
-            if (properties.endlessCheck === 'false') {
+            if (options.endlessCheck === 'false') {
                 properties.endlessCheck = false;
             }
 
@@ -894,10 +904,7 @@ define(
                 properties.endlessCheck = true;
                 properties.rawValue.end = null;
                 properties.view.end = null;
-                properties.view.value = this.convertToParam({
-                    begin: now,
-                    end: null
-                });
+                properties.view.value = this.convertToParam({begin: now, end: null});
             }
             this.setProperties(properties);
         };

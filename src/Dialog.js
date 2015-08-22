@@ -447,23 +447,23 @@ define(
                     roles: {}
                 };
 
+                lib.extend(properties, options);
+
                 if (options.closeOnHide === 'false') {
-                    options.closeOnHide = false;
+                    properties.closeOnHide = false;
                 }
 
                 if (options.closeButton === 'false') {
-                    options.closeButton = false;
+                    properties.closeButton = false;
                 }
 
                 if (options.mask === 'false') {
-                    options.mask = false;
+                    properties.mask = false;
                 }
 
                 if (options.needFoot === 'false') {
-                    options.needFoot = false;
+                    properties.needFoot = false;
                 }
-
-                lib.extend(properties, options);
 
                 if (properties.needFoot) {
                     if (!properties.foot) {
@@ -763,9 +763,12 @@ define(
                     showMask(this, zIndex - 1);
                 }
 
-                this.fire('show');
-                this.isShow = true;
+                if (this.isShow) {
+                    return;
+                }
 
+                this.isShow = true;
+                this.fire('show');
             },
 
             /**
@@ -773,21 +776,21 @@ define(
              *
              */
             hide: function () {
-                if (this.isShow) {
-                    helper.removeDOMEvent(
-                        this, window, 'resize', resizeHandler
-                    );
-                    var mask = this.mask;
+                if (!this.isShow) {
+                    return;
+                }
 
-                    this.addState('hidden');
+                this.isShow = false;
 
-                    if (mask) {
-                        hideMask(this);
-                    }
+                helper.removeDOMEvent(this, window, 'resize', resizeHandler);
+
+                this.addState('hidden');
+
+                if (this.mask) {
+                    hideMask(this);
                 }
 
                 this.fire('hide');
-                this.isShow = false;
             },
 
 

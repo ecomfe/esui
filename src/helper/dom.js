@@ -34,6 +34,7 @@ define(
         var u = require('underscore');
         var lib = require('../lib');
         var ui = require('../main');
+        var uiClassPrefix = 'uiClassPrefix';
 
         /**
          * @override Helper
@@ -69,7 +70,7 @@ define(
 
             var type = getControlClassType(this.control);
             var skin = this.control.skin;
-            var prefix = ui.getConfig('uiClassPrefix');
+            var prefix = ui.getConfig(uiClassPrefix);
             var skinPrefix = ui.getConfig('skinClassPrefix');
             var classes = [];
 
@@ -82,9 +83,9 @@ define(
                 // 缓存起来
                 if (!this.partClassCache) {
                     this.partClassCache = {};
-                    // 还是得复制一份，不然这个返回回去就可能被修改了
-                    this.partClassCache[part] = classes.slice();
                 }
+                // 还是得复制一份，不然这个返回回去就可能被修改了
+                this.partClassCache[part] = classes.slice();
             }
             else {
                 classes.push(joinByStrike(prefix, 'ctrl'));
@@ -128,10 +129,10 @@ define(
             var type = getControlClassType(this.control);
 
             if (part) {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type, part);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type, part);
             }
             else {
-                return joinByStrike(ui.getConfig('uiClassPrefix'), type);
+                return joinByStrike(ui.getConfig(uiClassPrefix), type);
             }
         };
 
@@ -199,7 +200,7 @@ define(
             var type = getControlClassType(this.control);
             var getConf = ui.getConfig;
             var classes = [
-                joinByStrike(getConf('uiClassPrefix'), type, state),
+                joinByStrike(getConf(uiClassPrefix), type, state),
                 joinByStrike(getConf('stateClassPrefix'), state)
             ];
 
@@ -346,6 +347,12 @@ define(
                     && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
                 ) {
                     lib.setAttribute(main, name, attribute.value);
+
+                    // 原主元素的ui属性需要移除，否则若再次init会重复处理
+                    if (name.indexOf(ui.getConfig('uiPrefix')) === 0) {
+                        initialMain.removeAttribute(name);
+                        i--;
+                    }
                 }
             }
 

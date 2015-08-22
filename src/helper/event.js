@@ -1,7 +1,7 @@
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
- * 
+ *
  * @ignore
  * @file DOM事件相关辅助方法
  * @author otakustay
@@ -57,7 +57,9 @@ define(
             u.each(
                 queue,
                 function (control) {
-                    triggerDOMEvent(control, element, e);
+                    if (control) {
+                        triggerDOMEvent(control, element, e);
+                    }
                 }
             );
         }
@@ -125,12 +127,18 @@ define(
             var controls = pool[type];
             for (var i = 0; i < controls.length; i++) {
                 if (controls[i] === control) {
-                    controls.splice(i, 1);
+                    controls[i] = null;
                     break;
                 }
             }
             // 尽早移除事件
-            if (!controls.length) {
+            var isQueueEmpty = u.all(
+                controls,
+                function (control) {
+                    return control == null;
+                }
+            );
+            if (isQueueEmpty) {
                 var handler = controls.handler;
                 lib.un(element, type, handler);
                 pool[type] = null;
@@ -169,7 +177,7 @@ define(
                     e.cancelBubble = true;
                 };
             }
-            var queue = 
+            var queue =
                 control.domEvents[e.currentTarget[DOM_EVENTS_KEY]][e.type];
 
             if (!queue) {
@@ -223,7 +231,7 @@ define(
                     // 无论注册多少个处理函数，其实在DOM元素上只有一个函数，
                     // 这个函数负责执行队列中的所有函数，
                     // 这样能保证执行的顺序，移除注册时也很方便
-                    queue.handler = 
+                    queue.handler =
                         u.partial(triggerDOMEvent, this.control, element);
                     lib.on(element, type, queue.handler);
                 }
@@ -257,7 +265,7 @@ define(
         };
 
         /**
-         * 为控件管理的DOM元素添加DOM事件
+         * 为控件管理的DOM元素移除DOM事件
          *
          * @param {HTMLElement | string} element 需要添加事件的DOM元素或部件名称
          * @param {string} type 事件的类型
@@ -271,7 +279,7 @@ define(
             if (!this.control.domEvents) {
                 return;
             }
-            
+
             var guid = element[DOM_EVENTS_KEY];
             var events = this.control.domEvents[guid];
 
@@ -333,7 +341,7 @@ define(
                 events,
                 function (queue, type) {
                     // 全局事件只要清掉在`globalEvents`那边的注册关系
-                    var isGlobal = 
+                    var isGlobal =
                         removeGlobalDOMEvent(this.control, type, element);
                     if (!isGlobal) {
                         var handler = queue.handler;

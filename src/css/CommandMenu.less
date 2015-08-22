@@ -11,13 +11,13 @@
     .linear-gradient-background-with-image (
         top, #ffffff, #f6f6f6, "../img/esui-combo-arrow.png", right, -6px, #fff);
     border: 1px solid #D8D8D8;
-    border-radius: 3px 3px 3px 3px;
+    border-radius: 2px;
     .interactive-cursor ();
     .inline-block ();
     font-size: 12px;
-    height: 17px;
-    line-height: 17px;
-    padding: 3px 3px 3px 5px;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 5px;
     width: 100px;
 
     &:hover,
@@ -54,24 +54,28 @@
     position: absolute;
     text-align: left;
     z-index: 1002;
+}
 
-	span {
-	    display: block;
-	}
+.@{ui-class-prefix}-commandmenu-node {
+    color: #333333;
+    .interactive-cursor ();
+    height: 22px;
+    line-height: 22px;
+    margin: 0 0 1px;
+    padding: 0 4px;
+    overflow: hidden;
 
-    li {
-	    color: #333333;
-	    .interactive-cursor ();
-	    height: 22px;
-	    line-height: 22px;
-	    margin: 0 0 1px;
-	    padding: 0 4px;
-	    overflow: hidden;
+    span {
+        display: block;        
+    }
 
-	    &:hover {
-		    background-color: #F1F1F1;
-		}
-	}
+    &:hover {
+        background-color: #F1F1F1;
+    }    
+}
+
+.@{ui-class-prefix}-commandmenu-node-disabled {
+    color: #999;
 }
 
 .@{ui-class-prefix}-commandmenu-layer-selected {

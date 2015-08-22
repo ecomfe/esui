@@ -11,6 +11,8 @@ define(
         var u  = require('underscore');
         var lib = require('./lib');
         var Control = require('./Control');
+        var strAddPartClasses = 'addPartClasses';
+        var strRemovePartClasses = 'removePartClasses';
 
         /**
          * 多步骤导航控件
@@ -68,7 +70,7 @@ define(
                 properties.steps = u.map(
                     children,
                     function (node) {
-                        var config = { text: lib.getText(node) };
+                        var config = {text: lib.getText(node)};
                         var panel = node.getAttribute('data-for');
                         if (panel) {
                             config.panel = panel;
@@ -99,10 +101,17 @@ define(
             var panel = config && config.panel && lib.g(config.panel);
 
             if (!panel) {
-                return;
+                var control = wizard.viewContext.get(config.panel);
+                if (control) {
+                    isActive ? control.show() : control.hide();
+                    panel = control.main;
+                }
+                else {
+                    return;
+                }
             }
 
-            var method = isActive ? 'removePartClasses' : 'addPartClasses';
+            var method = isActive ? strRemovePartClasses : strAddPartClasses;
             wizard.helper[method]('panel-hidden', panel);
         }
 
@@ -197,7 +206,7 @@ define(
             }
 
             if (wizard.finishText) {
-                var classes = [].concat(
+                var classes2 = [].concat(
                     wizard.helper.getPartClasses('node'),
                     wizard.helper.getPartClasses('node-last'),
                     wizard.helper.getPartClasses('node-finish'),
@@ -205,7 +214,7 @@ define(
                         ? wizard.helper.getPartClasses('node-active')
                         : []
                 );
-                html += '<li class="' + classes.join(' ') + '">';
+                html += '<li class="' + classes2.join(' ') + '">';
                 html += '<span>' + wizard.finishText + '</span>';
                 html += '</li>';
             }
@@ -248,37 +257,44 @@ define(
                  */
                 name: 'activeIndex',
                 paint: function (wizard, value) {
+                    var controlHelper = wizard.helper;
                     // 初始化时`steps`的渲染器会处理掉`activeIndex`，不需要这里
-                    if (!wizard.helper.isInStage('RENDERED')) {
+                    if (!controlHelper.isInStage('RENDERED')) {
                         return;
                     }
 
                     var nodes = wizard.main.getElementsByTagName('li');
+                    var method;
+                    var node;
+                    var isActive;
+                    var isDone;
+                    var isCurPrev;
+
                     for (var i = nodes.length - 1; i >= 0; i--) {
-                        var isActive = i === wizard.activeIndex;
+                        isActive = i === wizard.activeIndex;
                         togglePanel(wizard, wizard.steps[i], isActive);
 
-                        var node = nodes[i];
-                        var method = isActive
-                            ? 'addPartClasses'
-                            : 'removePartClasses';
+                        node = nodes[i];
+                        method = isActive
+                            ? strAddPartClasses
+                            : strRemovePartClasses;
                         wizard.helper[method]('node-active', node);
 
                         if (i === wizard.steps.length - 1) {
-                            wizard.helper[method]('node-last-active', node);
+                            controlHelper[method]('node-last-active', node);
                         }
 
-                        var isDone = i <= (wizard.activeIndex - 1);
-                        var method = isDone
-                            ? 'addPartClasses'
-                            : 'removePartClasses';
-                        wizard.helper[method]('node-done', node);
+                        isDone = i <= (wizard.activeIndex - 1);
+                        method = isDone
+                            ? strAddPartClasses
+                            : strRemovePartClasses;
+                        controlHelper[method]('node-done', node);
 
-                        var isCurPrev = i === (wizard.activeIndex - 1);
-                        var method = isCurPrev
-                            ? 'addPartClasses'
-                            : 'removePartClasses';
-                        wizard.helper[method]('node-active-prev', node);
+                        isCurPrev = i === (wizard.activeIndex - 1);
+                        method = isCurPrev
+                            ? strAddPartClasses
+                            : strRemovePartClasses;
+                        controlHelper[method]('node-active-prev', node);
                     }
                 }
             }
@@ -288,7 +304,6 @@ define(
          * 批量设置控件的属性值
          *
          * @param {Object} properties 属性值集合
-         * @return {Object} `properties`参数中确实变更了的那些属性
          * @fires enter
          */
         Wizard.prototype.setProperties = function (properties) {
@@ -353,7 +368,7 @@ define(
          */
         Wizard.prototype.stepPrevious = function () {
             if (this.activeIndex > 0) {
-                this.set('activeIndex',this.activeIndex - 1);
+                this.set('activeIndex', this.activeIndex - 1);
             }
         };
 

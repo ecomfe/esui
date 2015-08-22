@@ -11,6 +11,7 @@ define(
         var lib     = require('./lib');
         var InputControl = require('./InputControl');
         var helper  = require('./controlHelper');
+        var Layer = require('./Layer');
         /**
          * Schedule控件
          *
@@ -20,7 +21,6 @@ define(
         function Schedule(options) {
             InputControl.apply(this, arguments);
         }
-
 
         /**
          * 挂接到Schedule上以便进行全局替换
@@ -55,11 +55,8 @@ define(
 
                 var value = [];
                 for (var i = 0; i < 7 && i < dayStates.length; i++) {
-
                     value[i] = [];
-
                     for (var j = 0; j < 24; j++) {
-
                         value[i][j] = dayStates[i];
                     }
                 }
@@ -103,7 +100,6 @@ define(
                 value.push(lineValue);
 
                 for (var j = 0; j < 24; j++) {
-
                     lineValue.push(0);
                 }
             }
@@ -117,7 +113,6 @@ define(
          * @inner
          */
         function getClass(schedule, part) {
-
             return helper.getPartClasses(schedule, part).join(' ');
         }
 
@@ -127,7 +122,6 @@ define(
          * @inner
          */
         function getId(schedule, part) {
-
             return helper.getId(schedule, part);
         }
 
@@ -204,7 +198,7 @@ define(
                     '<div class="', timeHClass,
                     '" data-time="', i, '" ',
                     'id="', getId(me, 'time-head' + i), '">',
-                     i + ':00',
+                     i,
                      '</div>'
                 );
             }
@@ -367,7 +361,7 @@ define(
             checkInput.checked = false;
 
             //对于连续选中大于3天的进行遮罩处理
-            var patt = /1{3,}/g;
+            var patt = /1{1,}/g;
             var statusStr = arr.join('');
             var result;
             var coverClass = getClass(me, 'continue-covertimes');
@@ -394,16 +388,18 @@ define(
                 coverDiv.className = coverClass;
                 coverDiv.style.cssText += cssStyle;
 
-                coverDiv.innerHTML = lib.format(
-                    coverTpl,
-                    {
-                        start: start,
-                        end: end,
-                        text: length === 24
-                            ? '全天投放' : start + '.00-' + end + '.00',
-                        coverClass: getClass(me, 'covertimes-tip')
-                    }
-                );
+                if (length > 2) {
+                    coverDiv.innerHTML = lib.format(
+                        coverTpl,
+                        {
+                            start: start,
+                            end: end,
+                            text: length === 24
+                                ? '全天投放' : start + ':00-' + end + ':00',
+                            coverClass: getClass(me, 'covertimes-tip')
+                        }
+                    );
+                }
 
                 parent.appendChild(coverDiv);
 
@@ -412,7 +408,7 @@ define(
                     me,
                     coverDiv,
                     'mouseover',
-                    lib.curry(coverTipOverHandler, coverDiv)
+                    lib.curry(coverTipOverHandler, coverDiv, me)
                 );
             }
         }
@@ -422,9 +418,14 @@ define(
          * 遮罩的hover 事件句柄
          *
          */
-        function coverTipOverHandler(element) {
-
-            element.style.display = 'none';
+        function coverTipOverHandler(element, schedule) {
+            clearTimeout(schedule.coverOvierTimer);
+            schedule.coverOvierTimer = setTimeout(
+                function () {
+                    element.style.display = 'none';
+                },
+                100
+            );
         }
 
         /**
@@ -469,8 +470,9 @@ define(
             }
             else {
                 var cssStyle = ''
-                    + ';position:absolute;z-index:50;background:#fff6bd;top:'
-                    + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;';
+                    + ';position:absolute;background:#fff6bd;top:'
+                    + mousepos.y + 'px;left:' + mousepos.x + 'px;display:none;'
+                    + 'z-index:' + Layer.getZIndex(me.main) + ';';
 
                 var tipClass = getClass(me, 'shortcut-item-tip');
 
@@ -488,7 +490,6 @@ define(
 
             //添加setTimeout,防止拖动的时候闪耀
             me.tipElementTime = setTimeout(function () {
-
                 tipElement.style.display = 'block';
             }, 100);
 
@@ -689,13 +690,11 @@ define(
             mousepos.y = e.pageY + 20;
             mousepos.x = e.pageX + 10;
 
-
             var me = this;
 
             //获取当前元素所代表的时间
             var time = parseInt(element.getAttribute('data-time'), 10);
             var day  = parseInt(element.getAttribute('data-day'), 10);
-
 
             //创立并显示提示tip
             var tipText = lib.format(timeTipTpl,
@@ -713,30 +712,40 @@ define(
             var tipId = getId(me, 'timeitem-tip');
 
             showPromptTip(me, tipId, mousepos, tipText);
+            repaintCovers.call(this, day, time);
+        }
 
-
+        function repaintCovers(day, time, all) {
             //重新计算所有遮罩层的显示
-            var timebody = lib.g(getId(me, 'time-body'));
-            var timeCovers = timebody.getElementsByTagName('aside');
+            var me = this;
+            clearTimeout(me.repaintCoverTimer);
+            me.repaintCoverTimer = setTimeout(
+                function () {
+                    var timebody = lib.g(getId(me, 'time-body'));
+                    var timeCovers = timebody.getElementsByTagName('aside');
 
-            for (var i = 0, len = timeCovers.length; i < len; i++) {
-                var item = timeCovers[i];
-                var startCT =
-                    parseInt(item.getAttribute('data-start-time'), 10);
-                var endCT =
-                    parseInt(item.getAttribute('data-end-time'), 10);
-                var coverDay =
-                    parseInt(item.getAttribute('data-day'), 10);
+                    for (var i = 0, len = timeCovers.length; i < len; i++) {
+                        var item = timeCovers[i];
+                        var startCT =
+                            parseInt(item.getAttribute('data-start-time'), 10);
+                        var endCT =
+                            parseInt(item.getAttribute('data-end-time'), 10);
+                        var coverDay =
+                            parseInt(item.getAttribute('data-day'), 10);
 
-                if (time >= startCT
-                    && time < endCT
-                    && day === coverDay) {
-                    item.style.display = 'none';
-                }
-                else {
-                    item.style.display = 'block';
-                }
-            }
+                        if (!all && time >= startCT
+                            && time < endCT
+                            && day === coverDay) {
+                            item.style.display = 'none';
+                        }
+                        else {
+                            item.style.display = 'block';
+                        }
+                    }
+                },
+                100
+            );
+            
         }
 
         /**
@@ -745,22 +754,29 @@ define(
          *
          */
         function timeOutHandler(e) {
-
             var target = lib.event.getTarget(e);
-
+            var me = this;
+            var related = e.relatedTarget;
+            var current = e.currentTarget;
+            if (!(related === false ||
+                current == related ||
+                (related && (related.prefix == 'xul' ||
+                lib.dom.contains(current, related)))
+                )) {
+                repaintCovers.call(me, 0, 0, true);
+            }
             if (!target || !target.getAttribute('data-time-item')) {
-
                 return;
             }
 
             //移除hover效果
             lib.removeClasses(
                 target,
-                helper.getPartClasses(this, 'time-hover')
+                helper.getPartClasses(me, 'time-hover')
             );
 
             //隐藏tip
-            hidePromptTip(this, getId(this, 'timeitem-tip'));
+            hidePromptTip(me, getId(me, 'timeitem-tip'));
         }
 
         var getTimeBodyMoveHandler; //drag mousemove的句柄
@@ -1179,7 +1195,6 @@ define(
                 var me = this;
 
                 this.main.tabIndex = 0;
-
                 var tpl = ''
                     + '<input type="hidden" name="${name}" id="${inputId}"/>'
                     + '<div class="${bodyClass}" id="${bodyId}"></div>'
@@ -1297,17 +1312,9 @@ define(
                     }
                 },
                 {
-                    name: 'disabled',
-                    paint: function (schedule, value) {
-
-                        setDayCheckboxState(schedule, 'disabled', value);
-                    }
-                },
-                {
-                    name: 'readonly',
-                    paint: function (schedule, value) {
-
-                        setDayCheckboxState(schedule, 'readonly', value);
+                    name: ['disabled','readOnly'],
+                    paint: function (schedule, disabled, readOnly) {
+                        setDayCheckboxState(schedule, 'disabled', disabled || readOnly);
                     }
                 }
             ),

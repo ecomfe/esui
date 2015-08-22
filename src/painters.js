@@ -50,22 +50,40 @@ define(
          *     // 可以选择关联到不同的DOM属性
          *     var painter = painters.attribute('link', 'href');
          *
-         *     // 可以指定DOM属性的值
-         *     var painter = painters.attribute('active', 'checked', true);
+         *     // 可以指定DOM属性的默认值
+         *     var painter = painters.attribute('active', 'title', '');
+         *
+         *     // 可以指定DOM属性的默认值配置
+         *     var painter = painters.attribute('active', 'checked', options)
          *
          * @param {string} name 指定负责的属性名
          * @param {string} [attribute] 对应DOM属性的名称，默认与`name`相同
-         * @param {Mixed} [value] 固定DOM属性的值，默认与更新的值相同
+         * @param {Mixed | Object} [value] 默认的DOM属性值，或者默认值配置
+         * @param {Mixed} value.defaultValue 默认值
+         * @param {boolean} value.forceRemove 当属性值为false时，是否移除属性
          * @return {Object} 一个渲染器配置
          */
         painters.attribute = function (name, attribute, value) {
             return {
                 name: name,
-                attribute: attribute || name, 
+                attribute: attribute || name,
                 value: value,
                 paint: function (control, value) {
-                    value = this.value == null ? value : this.value;
-                    control.main.setAttribute(this.attribute, value);
+                    // 将“默认值”组装为“默认值配置”
+                    var options = (this.value != null && typeof this.value === 'object')
+                        ? this.value
+                        : {defaultValue: this.value};
+                    // 传入的参数为空时，取默认值
+                    value = value == null ? options.defaultValue : value;
+                    // 将null和undefined用空字符串替代
+                    value = value == null ? '' : value;
+                    // this.value.forceRemove为true，并且value为false时，移除属性
+                    if (options.forceRemove && value === false) {
+                        control.main.removeAttribute(this.attribute);
+                    }
+                    else {
+                        control.main.setAttribute(this.attribute, value);
+                    }
                 }
             };
         };
@@ -80,7 +98,7 @@ define(
             left: true,
             fontSize: true,
             padding: true,
-            paddingTop: true, 
+            paddingTop: true,
             paddingRight: true,
             paddingBottom: true,
             paddingLeft: true,
@@ -251,7 +269,7 @@ define(
                     var propertyNames = [].concat(painter.name);
 
                     // 以下2种情况下要调用：
-                    // 
+                    //
                     // - 第一次重会（没有`changes`）
                     // - `changesIndex`有任何一个负责的属性的变化
                     var shouldPaint = !changes;
@@ -274,14 +292,14 @@ define(
                         var name = propertyNames[j];
                         properties.push(this[name]);
                         // 从索引中删除，为了后续构建`unpainted`数组
-                        delete index[name]; 
+                        delete index[name];
                     }
                     // 绘制
                     try {
                         painter.paint.apply(painter, properties);
                     }
                     catch (ex) {
-                        var paintingPropertyNames = 
+                        var paintingPropertyNames =
                             '"' + propertyNames.join('", "') + '"';
                         var error = new Error(
                             'Failed to paint [' + paintingPropertyNames + '] '
@@ -289,7 +307,7 @@ define(
                             + 'of type ' + this.type + ' '
                             + 'because: ' + ex.message
                         );
-                        error.actualError = error;
+                        error.actualError = ex;
                         throw error;
                     }
 

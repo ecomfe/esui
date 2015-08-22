@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>CommandMenu - ESUI Demo</title>
+        <script src="loader/esl.js"></script>
+        <script src="../src/customShim.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="demo.css" />
+        <link rel="stylesheet" href="../src/css/main.css" />
+        <script src="demo.js"></script>
+    </head>
+    <body>
+        <h1>CommandMenu</h1>
+        <div id="page">
+            <ul id="navigator">
+            </ul>
+            <div id="main">
+                <h2>Button</h2>
+                <section class="intro">
+                    <p>Button</p>
+                </section>
+                <section class="view">
+                    <ul class="viewer">
+                        <li class="view-markup">结构</li>
+                    </ul>
+                    <div id="container" class="container">
+                        <button data-ui="type:Button">我是个Button</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <script>
+        require(
+            [
+                'esui',
+                'esui/CommandMenu',
+                'esui/Button'
+            ],
+            function (ui, CommandMenu) {
+                ui.init();
+                var options = {
+                    displayText: '我是个命令菜单',
+                    datasource: [
+                        { text: 'a' },
+                        { text: 'b', handler: function () { console.log('b'); } },
+                        { text: 'c', handler: function () { console.log('c'); } },
+                        { text: 'd', handler: function () { this.hide(); } }
+                    ]
+                };
+                var menu = new CommandMenu(options);
+                menu.on('select', function (e) { console.log(e.item, e.index); });
+                menu.appendTo(document.getElementById('container'));
+            }
+        )
+        </script>
+    </body>
+</html>

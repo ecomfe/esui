@@ -126,7 +126,7 @@ define(
              * @param {Mixed} rawValue 输入控件的原始值
              */
             setRawValue: function (rawValue) {
-                this.setProperties({ rawValue: rawValue });
+                this.setProperties({rawValue: rawValue});
             },
 
             /**
@@ -199,20 +199,14 @@ define(
                         // 需要同步验证信息的样式
                         var validityLabel = control.getValidityLabel(true);
                         if (validityLabel) {
-                            var classPrefix = main.getConfig('uiClassPrefix');
-                            var classes = [].concat(
-                                classPrefix + '-hidden',
-                                classPrefix + '-validity-hidden',
-                                helper.getPartClasses(
-                                    control, 'validity-hidden')
-                            );
-                            var method = control.isHidden()
-                                ? 'addClasses'
-                                : 'removeClasses';
-                            lib[method](validityLabel, classes);
+                            if (hidden) {
+                                validityLabel.hide();
+                            }
+                            else {
+                                validityLabel.show();
+                            }
                         }
                     }
-
                 }
             ),
 
@@ -379,7 +373,7 @@ define(
                 }
 
                 // Adjacent sibling selector not working with dynamically added class in IE7/8
-                // Put the class on a parent to force repainting 
+                // Put the class on a parent to force repainting
                 if ((lib.ie === 8 || lib.ie === 7) && label) {
                     // otakustay赐名
                     lib.toggleClass(label.main.parentNode, 'fuck-the-ie');
@@ -413,6 +407,14 @@ define(
                     validity: validity
                 };
                 label.setProperties(properties);
+            },
+
+            /**
+             * 隐藏验证信息
+             */
+            hideValidity: function () {
+                var validity = new Validity();
+                this.showValidity(validity);
             },
 
             /**

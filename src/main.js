@@ -25,7 +25,7 @@ define(
          * @type {string}
          * @readonly
          */
-        main.version = '3.1.0-beta.3';
+        main.version = '3.1.0';
 
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
@@ -565,7 +565,7 @@ define(
         main.createGlobalExtensions = function () {
             var options = globalExtensionOptions;
             var extensions = [];
-            for (type in globalExtensionOptions) {
+            for (var type in globalExtensionOptions) {
                 if (globalExtensionOptions.hasOwnProperty(type)) {
                     var extension = main.createExtension(type, globalExtensionOptions[type]);
                     extension && extensions.push(extension);

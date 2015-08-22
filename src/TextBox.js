@@ -28,6 +28,25 @@ define(
             InputControl.apply(this, arguments);
         }
 
+        function extractInputOptions(input, props) {
+            var nodeName = input.nodeName.toLowerCase();
+
+            if (nodeName === 'textarea') {
+                props.mode = 'textarea';
+            }
+            else {
+                var type = input.type;
+                props.mode = type === 'password' ? 'password' : 'text';
+            }
+
+            if (!props.placeholder) {
+                props.placeholder =
+                    input.getAttribute('placeholder');
+            }
+
+            this.helper.extractOptionsFromInput(input, props);
+        }
+
         /**
          * @cfg defaultProperties
          *
@@ -92,43 +111,23 @@ define(
                  *
                  * 指定文本框获得焦点时是否自动全选
                  */
-                autoSelect: false,
-                /**
-                 * @property {string} [icon=null]
-                 *
-                 * 指定文本框的图标选择器名称, 目前组件创建后不支持动态修改。
-                 */
-                icon: null,
-                /**
-                 * @property {string} [iconPosition='left']
-                 *
-                 * 指定文本框的图标位置选择器名称, 目前组件创建后不支持动态修改。
-                 */
-                iconPosition: 'left'
+                autoSelect: false
             };
             u.extend(properties, TextBox.defaultProperties);
 
-            if (!properties.name) {
-                properties.name = this.main.getAttribute('name');
+            properties.name = this.main.getAttribute('name');
+
+            var inputElement;
+            if (lib.isInput(this.main)) {
+                inputElement = this.main;
+            }
+            else if (this.main.children.length > 0) {
+                this.innerInput = true;
+                inputElement = this.main.children[0];
             }
 
-            if (lib.isInput(this.main)) {
-                var nodeName = this.main.nodeName.toLowerCase();
-
-                if (nodeName === 'textarea') {
-                    properties.mode = 'textarea';
-                }
-                else {
-                    var type = this.main.type;
-                    properties.mode = type === 'password' ? 'password' : 'text';
-                }
-
-                if (!properties.placeholder) {
-                    properties.placeholder =
-                        this.main.getAttribute('placeholder');
-                }
-
-                this.helper.extractOptionsFromInput(this.main, properties);
+            if (inputElement) {
+                extractInputOptions.call(this, inputElement, properties);
             }
 
             u.extend(properties, options);
@@ -285,22 +284,6 @@ define(
         }
 
         /**
-         * 图标点击事件
-         *
-         * @param {Event} e DOM事件对象
-         * @ignore
-         */
-        function iconClick(e) {
-            /**
-             * @event iconclick
-             *
-             * 图标被点击时触发
-             *
-             * @member TextBox
-             */
-            this.fire('iconclick');
-        }
-        /**
          * 初始化DOM结构
          *
          * @protected
@@ -333,6 +316,10 @@ define(
                 // 把原来的`<input>`或`<textarea>`放进去
                 this.main.appendChild(input);
             }
+            else if (this.innerInput) {
+                this.inputId = this.helper.getId('input');
+                this.main.children[0].id = this.inputId;
+            }
             else {
                 this.inputId = this.helper.getId('input');
                 var html = this.mode === 'textarea'
@@ -349,20 +336,8 @@ define(
                 this.main.innerHTML = html;
             }
 
-            var input = lib.g(this.inputId);
-            var icon = this.icon;
-            if (icon) {
-                var iconElement = document.createElement('span');
-                iconElement.className = icon + ' ' + this.helper.getPartClasses('icon');
-                lib.insertBefore(iconElement, input);
-                var iconPos = this.iconPosition;
-                if (iconPos) {
-                    this.helper.addPartClasses(iconPos, iconElement);
-                }
-            }
-
             if (!supportPlaceholder) {
-                
+                var input = lib.g(this.inputId);
                 var placeholder = document.createElement('label');
                 placeholder.id = this.helper.getId('placeholder');
                 lib.setAttribute(placeholder, 'for', input.id);
@@ -387,9 +362,6 @@ define(
                 : 'propertychange';
             this.helper.addDOMEvent(input, inputEventName, dispatchInputEvent);
             this.helper.delegateDOMEvent(input, 'change');
-            if (this.icon) {
-                this.helper.addDOMEvent(this.main.firstChild, 'click', iconClick);
-            }
         };
 
         /**
@@ -408,7 +380,8 @@ define(
                     var eventName =
                         ('oninput' in input) ? 'input' : 'propertychange';
                     // 由于`propertychange`事件容易进入死循环，因此先要移掉原来的事件
-                    textbox.helper.removeDOMEvent(input, eventName);
+                    // **仅仅去除自己绑定的
+                    textbox.helper.removeDOMEvent(input, eventName, dispatchInputEvent);
                     input.value = textbox.stringifyValue(rawValue);
                     textbox.helper.addDOMEvent(
                         input, eventName, dispatchInputEvent);
