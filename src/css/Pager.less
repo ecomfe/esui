@@ -7,8 +7,6 @@
 */
 @import "Variable.less";
 
-@esui-pager-select-label-font-family: "Heiti SC Light", "Heiti SC";
-
 @esui-pager-item-margin: 0 0 0 .5em;
 @esui-pager-item-padding: 0 .2em;
 @esui-pager-item-min-width: 1.2em;
@@ -24,12 +22,8 @@
 
 .@{ui-class-prefix}-pager-label {
     display: inline-block;
-    font-family: @esui-pager-select-label-font-family;
-
     .esui-pager-label-theme();
 }
-
-.esui-pager-label-theme() {}
 
 .@{ui-class-prefix}-pager-main {
     margin: 0;
@@ -97,6 +91,8 @@
 }
 
 .esui-pager-item-theme() {}
+
+.esui-pager-label-theme() {}
 
 .esui-pager-item-link-theme() {}
 
