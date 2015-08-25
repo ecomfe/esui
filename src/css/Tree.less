@@ -9,8 +9,9 @@
 @import "Variable.less";
 
 @esui-tree-line-height: 2;
-@esui-tree-selected-node-font-weight: bold;
+@esui-tree-selected-node-font-weight: normal;
 @esui-tree-node-indent: 1.5em;
+@esui-tree-selected-node-color: #333333;
 
 .@{ui-class-prefix}-tree {
     ul, li {
@@ -44,6 +45,7 @@
 .@{ui-class-prefix}-tree-content-wrapper-selected {
     .@{ui-class-prefix}-tree-item-content {
         font-weight: @esui-tree-selected-node-font-weight;
+        color: @esui-tree-selected-node-color;
         label {
             .esui-checkbox-virtual-box-checked-theme();
         }

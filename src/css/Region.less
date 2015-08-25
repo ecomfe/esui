@@ -22,8 +22,8 @@
 @esui-region-city-number-border-radius: 0;
 
 @esui-region-city-number-line-height: 1.2;
-@esui-region-city-box-padding: .5em;
-@esui-region-city-padding: .1em .5em;
+@esui-region-city-box-padding: .5em .5em 0 .5em;
+@esui-region-city-padding: 0 .5em .5em;
 
 .@{ui-class-prefix}-region {
     display: inline-block;
@@ -32,10 +32,6 @@
     .user-select(none);
 
     .esui-region-theme();
-}
-
-.@{ui-class-prefix}-region-shadow {
-    .esui-region-shadow-theme();
 }
 
 .@{ui-class-prefix}-region-country-box {

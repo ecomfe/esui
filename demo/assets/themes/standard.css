@@ -532,7 +532,7 @@ input[type="search"]::-webkit-search-decoration {
   height: 2.5em;
   padding: 0 1em;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: normal;
   -webkit-transition: background-color 0.3s ease-out, -webkit-box-shadow 0.2s ease, border-color 0.2s ease;
   -moz-transition: background-color 0.3s ease-out, -moz-box-shadow 0.2s ease, border-color 0.2s ease;
   -ms-transition: background-color 0.3s ease-out, -ms-box-shadow 0.2s ease, border-color 0.2s ease;
@@ -560,7 +560,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-button:active,
 .ui-button.state-active {
-  background-color: #fbfbfb;
+  background-color: #ebebeb;
 }
 .ui-button:disabled,
 .ui-button.state-disabled {
@@ -664,7 +664,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-button-success:active,
 .ui-button-success.state-active {
-  background-color: #85e6a8;
+  background-color: #5fca86;
 }
 .ui-button-info {
   color: #ffffff;
@@ -681,7 +681,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-button-info:active,
 .ui-button-info.state-active {
-  background-color: #72dff6;
+  background-color: #40bdd8;
 }
 .ui-button-warning {
   color: #ffffff;
@@ -698,7 +698,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-button-warning:active,
 .ui-button-warning.state-active {
-  background-color: #fdb652;
+  background-color: #eb911e;
 }
 .ui-button-danger {
   color: #ffffff;
@@ -715,7 +715,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-button-danger:active,
 .ui-button-danger.state-active {
-  background-color: #f77c7c;
+  background-color: #d54648;
 }
 .ui-button-bordered {
   border: 1px solid #dddddd;
@@ -726,6 +726,14 @@ input[type="search"]::-webkit-search-decoration {
   border: 1px solid #70ccc0;
   background: #ffffff;
   color: #666666;
+}
+.ui-button-bordered:hover,
+.ui-button-bordered:active,
+.ui-button-bordered:focus {
+  background: none;
+}
+.ui-button-wide {
+  padding: 0 2em;
 }
 /*
  * 1. Correct inability to style clickable `input` types in iOS.
@@ -933,7 +941,7 @@ input[type="search"]::-webkit-search-decoration {
   -ms-transition: color 0.2s ease;
   -o-transition: color 0.2s ease;
   transition: color 0.2s ease;
-  color: rgba(102, 102, 102, 0.9);
+  color: #666666;
 }
 .esui-checkbox-style-base label:hover,
 .esui-checkbox-style-base ~ label:hover,
@@ -1130,7 +1138,7 @@ input[type="search"]::-webkit-search-decoration {
 }
 .ui-dropdown > li:hover > :first-child {
   color: #666666;
-  background: #fffaee;
+  background: #fef8e9;
 }
 .ui-dropdown-separator-top {
   border-top: 1px solid #dddddd;
@@ -1930,7 +1938,7 @@ x:-o-prefocus,
 }
 .ui-submenu > li:hover > :first-child {
   color: #666666;
-  background: #fbfbfb;
+  background: #fef8e9;
 }
 .ui-submenu > li:hover > .ui-submenu {
   display: block;
@@ -2071,23 +2079,23 @@ a.ui-text-info:hover {
 .ui-textbox.state-validity-invalid > input {
   border: 1px solid #f16c6c;
   background: #ffffff;
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textbox.state-error > input:-moz-placeholder,
 .ui-textbox.state-validity-invalid > input:-moz-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textbox.state-error > input::-moz-placeholder,
 .ui-textbox.state-validity-invalid > input::-moz-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textbox.state-error > input::-webkit-input-placeholder,
 .ui-textbox.state-validity-invalid > input::-webkit-input-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textbox.state-error > input:-ms-input-placeholder,
 .ui-textbox.state-validity-invalid > input:-ms-input-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textbox > input[readonly],
 .ui-textbox > textarea[readonly] {
@@ -4131,7 +4139,7 @@ hr {
   height: 2.5em;
   padding: 0 1em;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: normal;
   -webkit-transition: background-color 0.3s ease-out, -webkit-box-shadow 0.2s ease, border-color 0.2s ease;
   -moz-transition: background-color 0.3s ease-out, -moz-box-shadow 0.2s ease, border-color 0.2s ease;
   -ms-transition: background-color 0.3s ease-out, -ms-box-shadow 0.2s ease, border-color 0.2s ease;
@@ -4159,10 +4167,10 @@ hr {
 }
 .ui-boxgroup-button-style label:active,
 .ui-boxgroup-button-style label.state-active {
-  background-color: #fbfbfb;
+  background-color: #ebebeb;
 }
 .ui-boxgroup-button-style .ui-boxgroup-wrapper-checked label {
-  background: #fbfbfb;
+  background: #ebebeb;
 }
 .ui-boxgroup-button-style-primary label {
   color: #ffffff;
@@ -4199,10 +4207,10 @@ hr {
 }
 .ui-boxgroup-button-style-success label:active,
 .ui-boxgroup-button-style-success label.state-active {
-  background-color: #85e6a8;
+  background-color: #5fca86;
 }
 .ui-boxgroup-button-style-success .ui-boxgroup-wrapper-checked label {
-  background: #85e6a8;
+  background: #5fca86;
 }
 .ui-boxgroup-button-style-info label {
   color: #ffffff;
@@ -4219,10 +4227,10 @@ hr {
 }
 .ui-boxgroup-button-style-info label:active,
 .ui-boxgroup-button-style-info label.state-active {
-  background-color: #72dff6;
+  background-color: #40bdd8;
 }
 .ui-boxgroup-button-style-info .ui-boxgroup-wrapper-checked label {
-  background: #72dff6;
+  background: #40bdd8;
 }
 .ui-boxgroup-button-style-warning label {
   color: #ffffff;
@@ -4239,10 +4247,10 @@ hr {
 }
 .ui-boxgroup-button-style-warning label:active,
 .ui-boxgroup-button-style-warning label.state-active {
-  background-color: #fdb652;
+  background-color: #eb911e;
 }
 .ui-boxgroup-button-style-warning .ui-boxgroup-wrapper-checked label {
-  background: #fdb652;
+  background: #eb911e;
 }
 .ui-boxgroup-button-style-danger label {
   color: #ffffff;
@@ -4259,10 +4267,10 @@ hr {
 }
 .ui-boxgroup-button-style-danger label:active,
 .ui-boxgroup-button-style-danger label.state-active {
-  background-color: #f77c7c;
+  background-color: #d54648;
 }
 .ui-boxgroup-button-style-danger .ui-boxgroup-wrapper-checked label {
-  background: #f77c7c;
+  background: #d54648;
 }
 .ui-boxgroup {
   display: block;
@@ -4309,7 +4317,7 @@ hr {
   color: #70ccc0;
 }
 .ui-calendar.state-active {
-  background: #fbfbfb;
+  background: #ebebeb;
 }
 .ui-calendar.state-read-only {
   color: #999999;
@@ -4419,9 +4427,9 @@ span.ui-crumb-node {
   display: block;
   background: #ffffff;
   border: none;
-  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0px 6px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 6px rgba(0, 0, 0, 0.2);
 }
 .ui-dialog-head {
   -webkit-user-select: none;
@@ -4433,7 +4441,7 @@ span.ui-crumb-node {
 }
 .ui-dialog-close-icon {
   position: absolute;
-  right: 0.5em;
+  right: 1em;
   top: 0.75em;
   cursor: pointer;
   color: #999999;
@@ -4443,13 +4451,13 @@ span.ui-crumb-node {
 }
 .ui-dialog-title {
   line-height: 2.5em;
-  padding: 0 0.5em;
+  padding: 0 1em;
 }
 .ui-dialog-body {
-  padding: 0.5em;
+  padding: 0.5em 1em;
 }
 .ui-dialog-foot-panel {
-  padding: 0.5em;
+  padding: 1em;
   margin: 0;
   border-top: none;
 }
@@ -4552,7 +4560,7 @@ span.ui-crumb-node {
   text-align: center;
 }
 .ui-monthview-month-title-selected {
-  background: #fbfbfb;
+  background: #ebebeb;
 }
 .ui-monthview-month-item {
   width: 2.5em;
@@ -4566,7 +4574,7 @@ span.ui-crumb-node {
   font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
 }
 .ui-monthview-month-item:hover {
-  background: #fffaee;
+  background: #fef8e9;
 }
 .ui-monthview-month-item-today {
   color: #70ccc0;
@@ -4639,7 +4647,6 @@ span.ui-crumb-node {
 }
 .ui-pager-label {
   display: inline-block;
-  font-family: "Heiti SC Light", "Heiti SC";
   color: #666666;
   text-align: center;
 }
@@ -4729,7 +4736,7 @@ span.ui-crumb-node {
 }
 .ui-rangecalendar.state-active,
 .ui-rangecalendar:active {
-  background: #fbfbfb;
+  background: #ebebeb;
 }
 .ui-rangecalendar.state-disabled {
   opacity: 0.5;
@@ -4758,7 +4765,7 @@ span.ui-crumb-node {
 .ui-rangecalendar-layer {
   position: absolute;
   background: #fbfbfb;
-  border-top: 3px solid #fbfbfb;
+  border-top: 3px solid #ebebeb;
   border-bottom: none;
   border-left: none;
   border-right: none;
@@ -4842,11 +4849,6 @@ span.ui-crumb-node {
   -ms-user-select: none;
   user-select: none;
 }
-.ui-region-shadow {
-  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
 .ui-region-country-check {
   padding: 0.5em;
   background: #f6f6f6;
@@ -4873,7 +4875,7 @@ span.ui-crumb-node {
   float: left;
 }
 .ui-region-text-over {
-  background: #fffaee;
+  background: #fef8e9;
   -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
@@ -4901,9 +4903,9 @@ span.ui-crumb-node {
 }
 .ui-region-city-box {
   position: absolute;
-  padding: 0.5em;
+  padding: 0.5em 0.5em 0 0.5em;
   z-index: 998;
-  background: #fffaee;
+  background: #fef8e9;
   -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
@@ -4912,7 +4914,7 @@ span.ui-crumb-node {
   white-space: nowrap;
 }
 .ui-region-city {
-  padding: 0.1em 0.5em;
+  padding: 0 0.5em 0.5em;
 }
 .ui-region-single {
   margin: 0;
@@ -4942,7 +4944,7 @@ span.ui-crumb-node {
 .ui-richcalendar.state-validity-invalid textarea {
   border: 1px solid #f16c6c;
   background: #ffffff;
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-richcalendar .ui-button-link {
   padding: 0;
@@ -5021,7 +5023,7 @@ span.ui-crumb-node {
   background: #f6f6f6;
 }
 .ui-select.state-active {
-  background: #fbfbfb;
+  background: #ebebeb;
 }
 .ui-select.state-disabled {
   opacity: 0.5;
@@ -5229,6 +5231,10 @@ span.ui-crumb-node {
   text-align: center;
   float: left;
 }
+.ui-schedule-time-head:last-child {
+  width: auto;
+  margin-left: 1em;
+}
 .ui-schedule-day-head {
   float: left;
   width: 3em;
@@ -5273,7 +5279,7 @@ span.ui-crumb-node {
 }
 .ui-schedule-time-hover {
   border: 1px solid #dddddd;
-  background: #fffaee;
+  background: #fef8e9;
 }
 .ui-schedule-shortcut-item-tip,
 .ui-schedule-timeitem-tip {
@@ -5292,8 +5298,8 @@ span.ui-crumb-node {
   left: 0px;
   display: none;
   z-index: 49;
-  border: 1px dotted #ffdc88;
-  background: #fffaee;
+  border: 1px dotted #fad987;
+  background: #fef8e9;
 }
 .ui-schedule-continue-covertimes {
   height: 2em;
@@ -5566,7 +5572,7 @@ span.ui-crumb-node {
 }
 .ui-table-hcell-sort-hover {
   cursor: pointer;
-  background: #fffaee;
+  background: #fef8e9;
 }
 .ui-table-hsort {
   margin: 0 0 0 0.5em;
@@ -5592,7 +5598,7 @@ span.ui-crumb-node {
   border-width: 0 0 1px;
 }
 .ui-table-row-hover {
-  background: #fffaee;
+  background: #fef8e9;
 }
 .ui-table-row-hover .ui-table-cell-editable {
   position: relative;
@@ -5764,7 +5770,7 @@ span.ui-crumb-node {
 .ui-textbox.state-validity-invalid textarea {
   border: 1px solid #f16c6c;
   background: #ffffff;
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textbox-placeholder-hidden {
   display: none;
@@ -5819,19 +5825,19 @@ span.ui-crumb-node {
 }
 .ui-textline.state-validity-invalid textarea {
   background: #ffffff;
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textline.state-validity-invalid textarea:-moz-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textline.state-validity-invalid textarea::-moz-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textline.state-validity-invalid textarea::-webkit-input-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textline.state-validity-invalid textarea:-ms-input-placeholder {
-  color: #f77c7c;
+  color: #d54648;
 }
 .ui-textline.state-read-only {
   border: 1px solid #dddddd;
@@ -5948,7 +5954,7 @@ span.ui-crumb-node {
   cursor: not-allowed;
 }
 .ui-textline-search-info {
-  background: #fffaee;
+  background: #fef8e9;
   padding: 0 10px;
   line-height: 2;
   overflow: hidden;
@@ -6170,7 +6176,8 @@ span.ui-crumb-node {
   color: #666666;
 }
 .ui-tree-content-wrapper-selected .ui-tree-item-content {
-  font-weight: bold;
+  font-weight: normal;
+  color: #333333;
 }
 .ui-tree-content-wrapper-selected .ui-tree-item-content label:before {
   background: #70ccc0;
@@ -6253,7 +6260,7 @@ span.ui-crumb-node {
   content: '';
 }
 .ui-tree-hoverable .ui-tree-content-wrapper:hover {
-  background: #fffaee;
+  background: #fef8e9;
 }
 /**
  * ESUI (Enterprise Simple UI)
@@ -6382,7 +6389,7 @@ span.ui-crumb-node {
 }
 .ui-nav .ui-nav-item-header {
   padding: .3em 2em;
-  color: #ACB6C0;
+  color: #333;
 }
 .ui-nav a {
   padding: .3em 3em;

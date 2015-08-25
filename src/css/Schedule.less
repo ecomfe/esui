@@ -9,7 +9,7 @@
 @import "Variable.less";
 
 @esui-schedule-padding: 1em;
-@esui-schedule-head-margin: 1em 2em 0 0;
+@esui-schedule-head-margin: 1em 0 0 0;
 @esui-schedule-help-item-right-margin: .5em;
 @esui-schedule-legend-size: 1em;
 @esui-schedule-slot-size: 2em;
@@ -98,6 +98,11 @@
     width: @esui-schedule-slot-size * 2;
     text-align: center;
     float: left;
+}
+
+.@{ui-class-prefix}-schedule-time-head:last-child {
+    width: auto;
+    margin-left: @esui-schedule-slot-size/2;
 }
 
 // 主区域日期列

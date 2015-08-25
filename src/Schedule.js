@@ -63,7 +63,6 @@ define(
 
                     // 检测是否初始化rawValue值，没有则设置为默认
                     if (this.rawValue == null) {
-
                         this.setRawValue(initValue());
                     }
 

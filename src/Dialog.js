@@ -66,12 +66,12 @@ define(
                             + 'class="'
                             + this.helper.getPartClassName('ok-btn')
                             + '" data-ui="type:Button;id:btnFootOk;'
-                            + 'childName:btnOk;variants:primary;">确定</div> '
+                            + 'childName:btnOk;variants:primary wide;">确定</div> '
                             + '<div '
                             + 'class="'
                             + this.helper.getPartClassName('cancel-btn')
                             + '" data-ui="type:Button;'
-                            + 'id:btnFootCancel;childName:btnCancel;variants:link">取消</div>',
+                            + 'id:btnFootCancel;childName:btnCancel;variants:link wide">取消</div>',
                         needFoot: true,
                         roles: {},
                         // 是否跟随滚动条
