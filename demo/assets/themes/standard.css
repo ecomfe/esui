@@ -730,7 +730,7 @@ input[type="search"]::-webkit-search-decoration {
 .ui-button-bordered:hover,
 .ui-button-bordered:active,
 .ui-button-bordered:focus {
-  background: none;
+  background: #ffffff;
 }
 .ui-button-wide {
   padding: 0 2em;
@@ -5182,7 +5182,7 @@ span.ui-crumb-node {
   width: 2em;
 }
 .ui-schedule-head {
-  margin: 1em 2em 0 0;
+  margin: 1em 0 0 0;
 }
 .ui-schedule-shortcut {
   float: left;
@@ -5554,8 +5554,8 @@ span.ui-crumb-node {
   font-family: 'Helvetica Neue', Helvetica, Arial, '微软雅黑', 'Microsoft YaHei', '黑体', SimHei, sans-serif;
   border-color: #dddddd;
   border-style: solid;
-  font-weight: bold;
-  color: #666666;
+  font-weight: normal;
+  color: #333333;
   border-width: 0;
 }
 .ui-table-hcell-text {
@@ -5633,7 +5633,8 @@ span.ui-crumb-node {
 .ui-table-fcell {
   border-color: #dddddd;
   border-style: solid;
-  font-weight: bold;
+  font-weight: normal;
+  color: #333333;
   border-width: 0;
 }
 .ui-table-fcell-text {
@@ -6386,6 +6387,7 @@ span.ui-crumb-node {
   padding: 0;
   margin: 0;
   list-style: none;
+  font-size: 16px;
 }
 .ui-nav .ui-nav-item-header {
   padding: .3em 2em;
@@ -6531,6 +6533,9 @@ p {
 }
 .edit-form .ui-form-key {
   width: 6em;
+}
+html {
+  font-size: 14px;
 }
 .ui-tab-vertical-container-left .ui-tab-vertical {
   width: 8em;
