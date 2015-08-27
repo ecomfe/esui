@@ -4273,7 +4273,7 @@ hr {
   background: #d54648;
 }
 .ui-boxgroup {
-  display: block;
+  display: inline-block;
 }
 .ui-boxgroup-button-style-separated .ui-boxgroup-wrapper:not(:last-child) label {
   border-right: 1px solid #ffffff;
@@ -6391,7 +6391,7 @@ span.ui-crumb-node {
 }
 .ui-nav .ui-nav-item-header {
   padding: .3em 2em;
-  color: #333;
+  color: #2D3E4F;
 }
 .ui-nav a {
   padding: .3em 3em;
@@ -6400,10 +6400,10 @@ span.ui-crumb-node {
   text-decoration: none !important;
 }
 .ui-nav a:hover {
-  background: #f5f5f5;
+  background: #ACBC0;
 }
 .ui-nav li.ui-nav-item-active a {
-  color: #333;
+  color: #74CCC0;
 }
 .ui-g {
   letter-spacing: -0.31em;

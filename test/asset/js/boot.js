@@ -31,7 +31,7 @@ require.config({
         {
             'name': 'eoo',
             'location': '../dep/eoo/0.1.4/src',
-            'main': 'src/main'
+            'main': 'main'
         },
         {
             'name': 'jquery',
@@ -45,7 +45,7 @@ require.config({
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-rc.1/src'
+            'location': '../dep/esf/1.0.0-rc.2/src'
         },
         {
             'name': 'est',

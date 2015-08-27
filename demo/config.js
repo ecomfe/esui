@@ -33,7 +33,7 @@ require.config({
         },
         {
             'name': 'esf',
-            'location': '../dep/esf/1.0.0-rc.1/src'
+            'location': '../dep/esf/1.0.0-rc.2/src'
         },
         {
             'name': 'est',
