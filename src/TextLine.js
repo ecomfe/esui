@@ -6,13 +6,14 @@
  * @file 多行带行码输入框
  * @author dbear, otakustay
  */
-
 define(
     function (require) {
         var u = require('underscore');
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var ui = require('./main');
+
+        var supportPlaceholder = ('placeholder' in document.createElement('input'));
 
         require('./TextBox');
 
@@ -23,7 +24,7 @@ define(
          * @requires TextBox
          * @constructor
          */
-        function TextLine(options) {
+        function TextLine() {
             InputControl.apply(this, arguments);
         }
 
@@ -31,13 +32,15 @@ define(
          * 获取主体的HTML
          *
          * @param {TextLine} textLine 控件实例
+         * @return {string} 主体html
          * @ignore
          */
         function getMainHTML(textLine) {
             var textareaHTML = ''
                 + '<textarea wrap="off" '
-                + 'id="'+ textLine.helper.getId('text') + '"'
-                + '></textarea>';
+                + 'placeholder="' + (textLine.placeholder || '') + '" '
+                + 'id="' + textLine.helper.getId('text') + '">'
+                + '</textarea>';
             var html = [
                 textLine.helper.getPartBeginTag('num-line', 'div'),
                     '1', // 默认至少有一行
@@ -50,6 +53,44 @@ define(
         }
 
         /**
+         * 获得焦点的逻辑
+         *
+         * @param {Event} e DOM事件对象
+         * @ignore
+         */
+        function focus(e) {
+            togglePlaceholder(this, true);
+
+            /**
+             * @event focus
+             *
+             * 文本框获得焦点时触发
+             *
+             * @member TextBox
+             */
+            this.fire('focus');
+        }
+
+        /**
+         * 失去焦点的逻辑
+         *
+         * @param {Event} e DOM事件对象
+         * @ignore
+         */
+        function blur(e) {
+            togglePlaceholder(this, false);
+
+            /**
+             * @event blur
+             *
+             * 文本框失去焦点时触发
+             *
+             * @member TextBox
+             */
+            this.fire('blur');
+        }
+
+        /**
          * 输入时刷新其它部件
          *
          * @param {Event} e DOM事件对象
@@ -57,9 +98,11 @@ define(
          */
         function refreshOnInput(e) {
             if (e.type === 'input' || e.propertyName === 'value') {
+                togglePlaceholder(this);
                 refreshLineNum.call(this);
             }
         }
+
 
         /**
          * 重置行号，增加内容和`keyup`时可调用
@@ -84,6 +127,30 @@ define(
             this.fire('change');
         }
 
+        /**
+         * 控制placeholder的显示与隐藏
+         *
+         * @param {TextLine} textLine 控件实例
+         * @param {boolean} [focused] 额外指定文本框是否聚集
+         * @ignore
+         */
+        function togglePlaceholder(textLine, focused) {
+            var input = lib.g(textLine.helper.getId('text'));
+
+            if (!supportPlaceholder) {
+                var placeholder = textLine.helper.getPart('placeholder');
+                if (typeof focused !== 'boolean') {
+                    focused = document.activeElement === input;
+                }
+                // 只有没焦点且没值的时候才显示placeholder
+                if (!focused && !textLine.getRawValue().length) {
+                    textLine.helper.removePartClasses('placeholder-hidden', placeholder);
+                }
+                else {
+                    textLine.helper.addPartClasses('placeholder-hidden', placeholder);
+                }
+            }
+        }
 
         TextLine.prototype = {
             /**
@@ -135,6 +202,17 @@ define(
                 }
 
                 this.main.innerHTML = getMainHTML(this);
+
+                if (!supportPlaceholder) {
+                    var inputId = this.helper.getId('text');
+                    var input = lib.g(inputId);
+                    var placeholder = document.createElement('label');
+                    placeholder.id = this.helper.getId('placeholder');
+                    lib.setAttribute(placeholder, 'for', inputId);
+                    this.helper.addPartClasses('placeholder', placeholder);
+                    lib.insertAfter(placeholder, input);
+                }
+
                 // 创建控件树
                 this.helper.initChildren();
             },
@@ -153,6 +231,8 @@ define(
                     : 'propertychange';
                 this.helper.addDOMEvent(textArea, inputEvent, refreshOnInput);
                 this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
+                this.helper.addDOMEvent(textArea, 'focus', focus);
+                this.helper.addDOMEvent(textArea, 'blur', blur);
             },
 
             /**
@@ -173,6 +253,11 @@ define(
                     name: 'height',
                     paint: function (textLine, height) {
                         height = height || 300;
+
+                        // 渲染行号区高度
+                        var lineNumDiv = textLine.helper.getPart('num-line');
+                        lineNumDiv.style.height = height + 'px';
+
                         // 主体高度
                         textLine.main.style.height = height + 'px';
                     }
@@ -233,6 +318,25 @@ define(
                         textArea.disabled = !!disabled;
                         textArea.readOnly = !!readOnly;
                     }
+                },
+                {
+                    name: 'placeholder',
+                    paint: function (textLine, placeholder) {
+                        var textArea = textLine.helper.getPart('text');
+                        if (supportPlaceholder) {
+                            if (placeholder) {
+                                lib.setAttribute(textArea, 'placeholder', placeholder);
+                            }
+                            else {
+                                lib.removeAttribute(textArea, 'placeholder');
+                            }
+                        }
+                        else {
+                            var label = textLine.helper.getPart('placeholder');
+                            label.innerHTML = u.escape(placeholder || '');
+                        }
+                        togglePlaceholder(textLine);
+                    }
                 }
             ),
 
@@ -243,7 +347,7 @@ define(
                 var textArea = this.helper.getPart('text');
                 var lineNumber = this.helper.getPart('num-line');
                 // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
-                //lineNumber.style.height = textArea.clientHeight + 'px';
+                lineNumber.style.height = textArea.clientHeight + 'px';
                 lineNumber.scrollTop = textArea.scrollTop;
             },
 
@@ -277,7 +381,7 @@ define(
              * @return {string[]}
              * @override
              */
-            getRawValue: function() {
+            getRawValue: function () {
                 return u.unique(this.getValueRepeatableItems());
             },
 
@@ -286,7 +390,7 @@ define(
              *
              * @return {string[]}
              */
-            getValueRepeatableItems: function() {
+            getValueRepeatableItems: function () {
                 var text = this.helper.getPart('text').value;
                 var items = text.split('\n');
 
@@ -298,9 +402,9 @@ define(
              *
              * @return {number}
              */
-            getRowsNumber: function() {
-               var items = this.getValue().split('\n');
-               return items.length;
+            getRowsNumber: function () {
+                var items = this.getValue().split('\n');
+                return items.length;
             },
 
             /**
@@ -308,7 +412,7 @@ define(
              *
              * @param {string[]} lines 需添加的行
              */
-            addLines: function(lines) {
+            addLines: function (lines) {
                 var content = lines.join('\n');
                 var value = this.getValue();
 

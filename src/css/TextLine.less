@@ -28,7 +28,6 @@
     position: absolute;
     left: 0;
     top: 0;
-    height: 100%;
 }
 
 .@{ui-class-prefix}-textline-text-container {
@@ -50,6 +49,19 @@
         border: 0 none;
         outline: none;
         resize: none;
+    }
+
+    .@{ui-class-prefix}-textline-placeholder {
+        color: #999;
+        position: absolute;
+        height: 21px;
+        line-height: 21px;
+        left: 3px;
+        top: 0;
+    }
+
+    .@{ui-class-prefix}-textline-placeholder-hidden {
+        display: none;
     }
 }
 
