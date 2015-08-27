@@ -226,6 +226,101 @@ define(
                 },
 
                 /**
+                 * 监听一个区域 为这个区域内带有data-role='tip'属性的节点添加tip
+                 * 在该区域内部所有的DOM节点里 若要添加tip提示 需配置以下属性
+                 * 1. data-role='tip' 所有具有该属性的节点都会增加tip提示
+                 * 2. data-tip-title='提示标题' 该节点所要显示的提示的标题内容
+                 * 3. data-tip-title='提示内容' 该节点所要显示的提示的内容
+                 * 一旦配置过以上属性 就可以自动为该区域内所有类似的节点添加相应的tip
+                 *
+                 * 有时可能想要针对不同的元素对其的title或者content进行更多方面的控制
+                 * 则可以通过自定义方法实现，即传入的customBeforeShowHandler方法
+                 * 该方法默认有两个参数，title与content
+                 *
+                 * 使用方法如下所示：
+                 *
+                 * 假设DOM结构如下：
+                 * <div id="main">
+                 *      <button data-role="tip" data-tip-title="submit" data-tip-content="确认提示">确认</button>
+                 *      <button data-role="tip" data-tip-title="cancel" data-tip-content="取消提示">取消</button>
+                 * </div>
+                 *
+                 * 则JS中可按如下方式使用
+                 * var tipLayer = ui.create('TipLayer', {
+                 *   title: '最普通的提示',
+                 *   content: '提示'
+                 * });
+                 * tipLayer.monitor('#main', {showMode: 'over'}, function (title, content) {
+                 *   if (title === "submit") {
+                 *       this.setContent('确认后才可点击！');
+                 *   }
+                 *   else {
+                 *       this.setContent(content);
+                 *   }
+                 * });
+                 *
+                 *
+                 * @param {string} selector JQuery选择器
+                 * @param {Object=} options 绑定参数
+                 *    {string} showMode 展示触发模式
+                 *    {number} delayTime 延迟展示时间
+                 * @param {Function} customBeforeShowHandler beforeShow的自定义处理方法
+                 */
+                monitor: function (selector, options, customBeforeShowHandler) {
+                    var showMode = options.showMode || 'over';
+                    var delayTime = options.delayTime || 0;
+                    var containerElement = $(selector);
+
+                    // 为防止delayTime时出现 tip还未hide就更改内容的情况 监听beforeshow事件 在此刻再进行更改
+                    this.on('beforeshow', function (e) {
+                        var title = e.title;
+                        var content = e.content;
+                        if (typeof customBeforeShowHandler === 'function') {
+                            customBeforeShowHandler.call(this, title, content);
+                            return;
+                        }
+                        this.setTitle(title);
+                        this.setContent(content);
+                    }, this);
+
+                    function showTip(event) {
+                        var targetDOM = $(event.target);
+                        // 检查是否具有data-attached的属性 有的话直接忽略就可以
+                        if (!targetDOM.data('data-attached')) {
+                            this.attachTo({
+                                targetDOM: targetDOM,
+                                showMode: showMode,
+                                delayTime: delayTime,
+                                positionOpt: {top: 'top', right: 'left'}
+                            });
+                            // 凡是已经attachTo过之后的节点 都自动添加一个data-attached的属性 防止重复绑定
+                            targetDOM.data('data-attached', true);
+                            // 第一次绑定的时候需要手动show一下才可以显示tip
+                            // targetDOM.trigger(event.type);
+                            delayShow(this, delayTime, targetDOM, {
+                                targetPositionOpt: {top: 'top', right: 'right'},
+                                positionOpt: {top: 'top', right: 'left'}
+                            });
+                        }
+                        // 阻止冒泡到父节点 以防止tipLayer自动hide掉
+                        event.stopPropagation();
+                    }
+
+                    if (!containerElement) {
+                        return;
+                    }
+
+                    if (showMode === 'over') {
+                        this.helper.addDOMEvent(containerElement,
+                            'mouseover', '[data-role="tip"]', u.bind(showTip, this));
+                    }
+                    else if (showMode === 'click') {
+                        this.helper.addDOMEvent(containerElement,
+                            'mouseup', '[data-role="tip"]', u.bind(showTip, this));
+                    }
+                },
+
+                /**
                  * 获取初始化时的行为处理器
                  *
                  * @param {Object=} options 绑定参数
@@ -328,7 +423,9 @@ define(
                                             callback();
                                         }
                                         // 阻止冒泡，防止触发document的行为事件
-                                        e.stopPropagation();
+                                        if (options.showMode === 'click') {
+                                            e.stopPropagation();
+                                        }
                                     }
                                 );
                             },
@@ -518,6 +615,11 @@ define(
 
                     // 动态计算layer的zIndex
                     this.main.style.zIndex = Layer.getZIndex(targetElement);
+
+                    this.fire('beforeshow', {
+                        title: $(targetElement).attr('data-tip-title') || this.title,
+                        content: $(targetElement).attr('data-tip-content') || this.content
+                    });
 
                     this.removeState('hidden');
 
