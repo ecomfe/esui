@@ -13,7 +13,7 @@ define(
         var lib = require('./lib');
         var esui = require('./main');
         var eoo = require('eoo');
-        var EventTarget = require('./EventTarget');
+        var EventTarget = require('mini-event/EventTarget');
         var $ = require('jquery');
         require('./behavior/position');
 

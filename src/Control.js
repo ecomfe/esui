@@ -13,7 +13,7 @@ define(
         var ui = require('./main');
         var Helper = require('./Helper');
         var eoo = require('eoo');
-        var EventTarget = require('./EventTarget');
+        var EventTarget = require('mini-event/EventTarget');
         var $ = require('jquery');
 
         /**

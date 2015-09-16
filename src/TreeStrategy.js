@@ -123,15 +123,15 @@ define(
                 enableToggleStrategy: function (tree) {
                     tree.on(
                         'expand',
-                        function (e, data) {
+                        function (e) {
                             // 默认的方案是同步更新数据的，所以不提示loading了
-                            this.expandNode(data.node.id);
+                            this.expandNode(e.node.id);
                         }
                     );
                     tree.on(
                         'collapse',
-                        function (e, data) {
-                            this.collapseNode(data.node.id, false);
+                        function (e) {
+                            this.collapseNode(e.node.id, false);
                         }
                     );
                 },
@@ -145,15 +145,15 @@ define(
                 enableSelectStrategy: function (tree) {
                     tree.on(
                         'select',
-                        function (e, data) {
-                            this.selectNode(data.node.id);
+                        function (e) {
+                            this.selectNode(e.node.id);
                         }
                     );
                     tree.on(
                         'unselect',
-                        function (e, data) {
+                        function (e) {
                             if (tree.get('allowUnselectNode')) {
-                                tree.unselectNode(data.node.id);
+                                tree.unselectNode(e.node.id);
                             }
                         }
                     );

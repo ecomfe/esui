@@ -10,6 +10,7 @@ define(
     function (require) {
         var $ = require('jquery');
         var u = require('underscore');
+        var miniEvent = require('mini-event');
 
         /**
          * @override Helper
@@ -131,7 +132,16 @@ define(
          */
         helper.delegateDOMEvent = function (element, type, newType) {
             var handler = function (e) {
-                this.fire(newType || e.type, {}, e);
+                var event = miniEvent.fromDOMEvent(e);
+                this.fire(newType || e.type, event);
+
+                if (event.isDefaultPrevented()) {
+                    e.preventDefault();
+                }
+
+                if (event.isPropagationStopped()) {
+                    e.stopPropagation();
+                }
             };
 
             this.addDOMEvent(element, type, handler);

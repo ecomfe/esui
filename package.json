@@ -46,7 +46,8 @@
             "esf": "~1.0.0-rc",
             "eicons": "~1.0.0-beta",
             "eoo": "0.1.x",
-            "jquery": "1.x"
+            "jquery": "1.x",
+            "mini-event": "1.x"
         }
     }
 }
