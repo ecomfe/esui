@@ -57,6 +57,8 @@ define(
 
                     u.extend(properties, TipLayer.defaultProperties, options);
                     this.setProperties(properties);
+                    // 附上一个标志位 用来标志TipLayer的show方法中是否已经为window挂上resize事件的处理方法
+                    this.hasAddResizeHandler = false;
                 },
 
                 /**
@@ -331,9 +333,7 @@ define(
                                             callback();
                                         }
                                         // 阻止冒泡，防止触发document的行为事件
-                                        if (options.showMode === 'click') {
-                                            e.stopPropagation();
-                                        }
+                                        e.stopPropagation();
                                     }
                                 );
                             },
@@ -516,14 +516,14 @@ define(
 
                     clearTimeout(this.hideTimeout);
 
-                    // 为了避免重复监听'resize'事件 因此每次添加之前都先remove掉
-                    helper.removeDOMEvent(window, 'resize');
-
-                    helper.addDOMEvent(
-                        window,
-                        'resize',
-                        u.partial(resizeHandler, this, targetElement, options)
-                    );
+                    if (!this.hasAddResizeHandler) {
+                        helper.addDOMEvent(
+                            window,
+                            'resize',
+                            u.partial(resizeHandler, this, targetElement, options)
+                        );
+                        this.hasAddResizeHandler = true;
+                    }
 
                     // 动态计算layer的zIndex
                     this.main.style.zIndex = Layer.getZIndex(targetElement);

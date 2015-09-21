@@ -98,19 +98,19 @@ define(
                         title: '这是提示标题',
                         content: '这是提示内容'
                     });
+                    this.tipLayer = tipLayer;
+
+                    // 默认监听mouseover事件
+                    var eventType = 'mouseover';
                     tipLayer.showMode = target.showMode || 'over';
                     tipLayer.delayTime = +target.delayTime || tipLayer.delayTime;
 
-                    this.tipLayer = tipLayer;
+                    if (tipLayer.showMode === 'click') {
+                        eventType = 'mouseup';
+                    }
 
-                    if (tipLayer.showMode === 'over') {
-                        tipLayer.helper.addDOMEvent(containerElement,
-                            'mouseover', '[data-role="tip"]', u.bind(showTip, tipLayer));
-                    }
-                    else if (tipLayer.showMode === 'click') {
-                        tipLayer.helper.addDOMEvent(containerElement,
-                            'mouseup', '[data-role="tip"]', u.bind(showTip, tipLayer));
-                    }
+                    tipLayer.helper.addDOMEvent(containerElement,
+                            eventType, '[data-role="tip"]', u.bind(showTip, tipLayer));
 
                     // 为防止delayTime时出现 tip还未hide就更改内容的情况 监听beforeshow事件 在此刻再进行更改
                     tipLayer.on('beforeshow', function (e) {
