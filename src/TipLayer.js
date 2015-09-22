@@ -57,6 +57,8 @@ define(
 
                     u.extend(properties, TipLayer.defaultProperties, options);
                     this.setProperties(properties);
+                    // 附上一个标志位 用来标志TipLayer的show方法中是否已经为window挂上resize事件的处理方法
+                    this.hasAddResizeHandler = false;
                 },
 
                 /**
@@ -199,6 +201,7 @@ define(
                  *    {number} delayTime 延迟展示时间
                  *    {Object=} positionOpt 层布局参数
                  *    {Object=} targetPositionOpt 参照物对象的层布局参数
+                 * @return {Object}
                  */
                 attachTo: function (options) {
                     // 根据参数获取行为处理器
@@ -223,6 +226,8 @@ define(
                         case 'manual':
                             break;
                     }
+
+                    return handler;
                 },
 
                 /**
@@ -356,6 +361,7 @@ define(
                             enableOutsideClickHide: function () {
                                 enableOutsideClickHide.call(me, handler);
                             },
+
 
                             /**
                              * 取消外部点击隐藏
@@ -510,14 +516,19 @@ define(
 
                     clearTimeout(this.hideTimeout);
 
-                    helper.addDOMEvent(
-                        window,
-                        'resize',
-                        u.partial(resizeHandler, this, targetElement, options)
-                    );
+                    if (!this.hasAddResizeHandler) {
+                        helper.addDOMEvent(
+                            window,
+                            'resize',
+                            u.partial(resizeHandler, this, targetElement, options)
+                        );
+                        this.hasAddResizeHandler = true;
+                    }
 
                     // 动态计算layer的zIndex
                     this.main.style.zIndex = Layer.getZIndex(targetElement);
+
+                    this.fire('beforeshow', {targetElement: targetElement});
 
                     this.removeState('hidden');
 
