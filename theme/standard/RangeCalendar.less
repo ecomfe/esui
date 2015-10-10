@@ -2,15 +2,7 @@
 @import "../../src/css/RangeCalendar.less";
 
 // core variables
-@esui-range-calendar-height: 2.4em;
-@esui-range-calendar-padding: 1em;
-@esui-range-calendar-border-radius: 0;
-
-@esui-range-calendar-start-date-label-padding: 1em 0;
-@esui-range-calendar-start-date-label-font-size: 1em;
-@esui-range-calendar-spacing: 1em;
-@esui-range-calendar-shortcut-item-spacing: .5em;
-@esui-range-calendar-footer-padding: 1em 0 0 0;
+@esui-range-calendar-height: @esui-single-line-control-height;
 
 // theme variables
 @esui-range-calendar-main-background: @esui-palette-neutral-color;
@@ -26,7 +18,6 @@
 @esui-range-calendar-layer-border-bottom: none;
 @esui-range-calendar-layer-border-left: none;
 @esui-range-calendar-layer-border-right: none;
-@esui-range-calendar-layer-padding: 1em;
 
 // 快捷按钮
 @esui-range-calendar-shortcut-item-color: @esui-palette-primary-color;
@@ -69,7 +60,6 @@
     border-bottom: @esui-range-calendar-layer-border-bottom;
     border-left: @esui-range-calendar-layer-border-left;
     border-right: @esui-range-calendar-layer-border-right;
-    padding: @esui-range-calendar-layer-padding;
 }
 
 .esui-rangecalendar-shortcut-item-theme() {

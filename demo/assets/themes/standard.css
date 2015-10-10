@@ -4708,8 +4708,8 @@ span.ui-crumb-node {
  * @author dbear
  */
 .ui-rangecalendar {
-  height: 2.4em;
-  line-height: 2.4em;
+  height: 2.5em;
+  line-height: 2.5em;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -4764,12 +4764,13 @@ span.ui-crumb-node {
 }
 .ui-rangecalendar-layer {
   position: absolute;
+  padding: 1em;
+  width: 36.5em;
   background: #fbfbfb;
   border-top: 3px solid #ebebeb;
   border-bottom: none;
   border-left: none;
   border-right: none;
-  padding: 1em;
 }
 .ui-rangecalendar-body:before,
 .ui-rangecalendar-body:after {
@@ -4801,9 +4802,11 @@ span.ui-crumb-node {
 .ui-rangecalendar-label .ui-checkbox {
   float: right;
 }
-.ui-rangecalendar-begin,
-.ui-rangecalendar-end {
+.ui-rangecalendar-begin {
   float: left;
+}
+.ui-rangecalendar-end {
+  float: right;
 }
 .ui-rangecalendar-begin {
   margin-right: 1em;

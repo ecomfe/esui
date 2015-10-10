@@ -8,8 +8,7 @@
 
 @import "Variable.less";
 
-
-@esui-range-calendar-height: 2.4em;
+@esui-range-calendar-height: 2.5em;
 @esui-range-calendar-padding: 1em;
 @esui-range-calendar-border-radius: 0;
 
@@ -18,6 +17,9 @@
 @esui-range-calendar-spacing: 1em;
 @esui-range-calendar-shortcut-item-spacing: .5em;
 @esui-range-calendar-footer-padding: 1em 0 0 0;
+
+@esui-range-calendar-layer-padding: 1em;
+@esui-range-calendar-layer-width: 36.5em;
 
 .@{ui-class-prefix}-rangecalendar {
     height: @esui-range-calendar-height;
@@ -50,6 +52,8 @@
 
 .@{ui-class-prefix}-rangecalendar-layer {
     position: absolute;
+    padding: @esui-range-calendar-layer-padding;
+    width: @esui-range-calendar-layer-width;
     .esui-rangecalendar-layer-theme();
 }
 
@@ -84,9 +88,13 @@
     }
 }
 
-.@{ui-class-prefix}-rangecalendar-begin,
-.@{ui-class-prefix}-rangecalendar-end {
+.@{ui-class-prefix}-rangecalendar-begin
+ {
     float: left;
+}
+
+.@{ui-class-prefix}-rangecalendar-end {
+    float: right;
 }
 
 .@{ui-class-prefix}-rangecalendar-begin {
