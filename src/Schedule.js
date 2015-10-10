@@ -186,7 +186,7 @@ define(
             var html = [];
 
             var timelineClass = getClass(me, 'time-line');
-            var bodyHeadId    = getId('body-head');
+            var bodyHeadId    = getId(me, 'body-head');
             html.push(
                 '<div class="', timelineClass, '" id="',
                 bodyHeadId + '">'
