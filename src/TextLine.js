@@ -193,6 +193,18 @@ define(
                     properties.title = this.main.title;
                 }
 
+                if (properties.unique === 'false') {
+                    properties.unique = false;
+                }
+
+                if (properties.trim === 'false') {
+                    properties.trim = false;
+                }
+
+                if (properties.withoutBlankLine === 'false') {
+                    properties.withoutBlankLine = false;
+                }
+
                 this.setProperties(properties);
             },
 
@@ -254,7 +266,7 @@ define(
                     var rawValue = properties.rawValue;
                     // 好怕怕有一个人直接设置了字符串
                     if (typeof rawValue === 'string') {
-                        properties.rawValue = [u.unescape(rawValue)];
+                        properties.rawValue = [rawValue];
                     }
                     // 如果不是字符串也不是数组，那你想干啥？不理了！
                     if (!u.isArray(rawValue)) {
@@ -388,7 +400,7 @@ define(
              * @override
              */
             stringifyValue: function (rawValue) {
-                return u.unescape(rawValue.join('\n'));
+                return rawValue.join('\n');
             },
 
             /**
@@ -481,7 +493,7 @@ define(
                     content = u.union(value, lines);
                 }
                 else {
-                    content = value.contact(lines);
+                    content = value.concat(lines);
                 }
                 this.setRawValue(content);
             }
