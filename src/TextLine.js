@@ -262,23 +262,24 @@ define(
              * @override
              */
             setProperties: function (properties) {
-                if (properties.hasOwnProperty('rawValue')) {
-                    var rawValue = properties.rawValue;
+                var copyProperties = lib.deepClone(properties);
+                if (copyProperties.hasOwnProperty('rawValue')) {
+                    var rawValue = copyProperties.rawValue;
                     // 好怕怕有一个人直接设置了字符串
                     if (typeof rawValue === 'string') {
-                        properties.rawValue = [rawValue];
+                        copyProperties.rawValue = [rawValue];
                     }
                     // 如果不是字符串也不是数组，那你想干啥？不理了！
                     if (!u.isArray(rawValue)) {
-                        delete properties.rawValue;
+                        delete copyProperties.rawValue;
                     }
                     else {
                         // 根据属性修正一下
-                        properties.rawValue = this.reviseRawValue(properties.rawValue);
+                        copyProperties.rawValue = this.reviseRawValue(copyProperties.rawValue);
                     }
                 }
 
-                return InputControl.prototype.setProperties.call(this, properties);
+                return InputControl.prototype.setProperties.call(this, copyProperties);
             },
 
             /**
@@ -336,8 +337,7 @@ define(
                         var textArea = textLine.helper.getPart('text');
 
                         if (rawValue) {
-                            textLine.value = textLine.stringifyValue(rawValue);
-                            textArea.value = textLine.value;
+                            textArea.value = textLine.stringifyValue(rawValue);
                             refreshLineNum.call(textLine);
 
                             /**
@@ -464,7 +464,8 @@ define(
             /**
              * 获取内容数组形式,并去除空串内容（不去重）
              * 理论上有了配置，这个接口没用了，但为了保证向前兼容，暂时放在这里
-             *
+             * 
+             * @deprecated
              * @return {string[]}
              */
             getValueRepeatableItems: function () {
@@ -487,14 +488,8 @@ define(
              * @param {string[]} lines 需添加的行
              */
             addLines: function (lines) {
-                var content;
                 var value = this.getRawValue();
-                if (this.unique) {
-                    content = u.union(value, lines);
-                }
-                else {
-                    content = value.concat(lines);
-                }
+                var content = this.unique ? u.union(value, lines) : value.concat(lines);
                 this.setRawValue(content);
             }
 
