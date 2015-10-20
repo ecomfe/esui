@@ -45,6 +45,33 @@
                     </div>
                 </div>
             </div>
+            <h2>Radio Group 带箭头</h2>
+            <div class="intro">
+                <p>在父元素添加<code>.ui-boxgroup-arrow</code>以在选中radio下方出现箭头，</p>
+                <p>如果要禁用某个radio的箭头，在对应input元素添加<code>.ui-boxgroup-arrow-hidden</code>,</p>
+                <p>对应panel需添加class<code>.ui-panel-boxgroup-border</code></p>
+            </div>
+            <div class="example ui-demo-light-stage">
+                <div class="ui-boxgroup-arrow" data-ui-type="BoxGroup" data-ui-id="box-group-horizontal-arrow" data-ui-name="frameworks-arrow" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
+                    <div>
+                        <input type="radio" id="framework-er-arrow" name="frameworks-arrow" value="er">
+                        <label for="framework-er-arrow">ER</label>
+                    </div>
+                    <div>
+                        <input class="ui-boxgroup-arrow-hidden" type="radio" id="framework-esui-arrow" name="frameworks-arrow" value="esui">
+                        <label for="framework-esui-arrow">ESUI</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="framework-ef-arrow" name="frameworks-arrow" value="ef" checked>
+                        <label for="framework-ef-arrow">EF</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="framework-tangram-arrow" name="frameworks-arrow" value="tangram">
+                        <label for="framework-tangram-arrow">Tangram</label>
+                    </div>
+                </div>
+                <div class="ui-panel-boxgroup-border"></div>
+            </div>
             <h2>Checkbox Group</h2>
             <div class="intro">
                 <p>创建多个多选框，在包裹着多选框的<code>div</code>元素中添加属性<code>data-ui-type="BoxGroup" data-ui-box-type="checkbox"</code>即可创建多选按钮组。</p>

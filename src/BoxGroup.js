@@ -262,6 +262,7 @@ define(
                         item.title
                             = box.title || (box.value === 'on' ? box.value : '');
                     }
+                    item.customClasses = box.className || '';
                     datasource.push(item);
 
                     // firefox下的autocomplete机制在reload页面时,
@@ -364,6 +365,9 @@ define(
             for (var i = 0; i < datasource.length; i++) {
                 var item = datasource[i];
                 var wrapperClass = '';
+                if (item.customClasses) {
+                    wrapperClass += ' ' + item.customClasses;
+                }
                 if (valueIndex[item.value]) {
                     wrapperClass += ' ' + group.helper.getPartClassName('wrapper-checked');
                 }
