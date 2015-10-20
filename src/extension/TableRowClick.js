@@ -15,36 +15,45 @@ define(
         var u = require('underscore');
 
         /**
+         * 校验元素是否是非法元素
+         * 如果是控件、带有扩展功能的元素、本身可点击的元素，都是非法元素
+         *
+         * @param {HTMLElement} node 要校验的元素
+         * @return {boolean} 是否非法
+         */
+        function checkNodeInvalid(node) {
+            var uiPrefix = main.getConfig('uiPrefix');
+            var commandPrefix = 'data-command';
+            var attributes = node.attributes;
+            var tagName = node.tagName.toLowerCase();
+            var clickableTags = ['a', 'button', 'select', 'input'];
+
+            if (u.indexOf(clickableTags, tagName) !== -1) {
+                return true;
+            }
+
+            return u.any(
+                attributes,
+                function (attribute) {
+                    var name = attribute.name;
+                    return name.indexOf(uiPrefix) !== -1 || name.indexOf(commandPrefix) !== -1;
+                }
+            );
+        }
+
+        /**
          * 表格行鼠标点击的事件handler
          *
-         * @param {HTMLElement} element 事件原始触发元素
+         * @param {HTMLElement} element row元素
          * @param {miniEvent.event} e 事件对象
          */
         function rowClickHandler(element, e) {
-            var uiPrefix = main.getConfig('uiPrefix');
-            var extPrefix = main.getConfig('extensionPrefix');
-            var commandPrefix = 'data-command';
-
             var rowClassName = this.helper.getPartClasses('row')[0];
             var target = e.target;
             var index = lib.getAttribute(element, 'data-index');
-
-            function checkNodeInValid(node) {
-                var attributes = node.attributes;
-                return u.any(
-                    attributes,
-                    function (attribute) {
-                        var name = attribute.name;
-                        return name.indexOf(extPrefix) !== -1
-                            || name.indexOf(uiPrefix) !== -1
-                            || name.indexOf(commandPrefix) !== -1;
-                    }
-                );
-            }
-
             while (target.nodeType === 1 && !lib.hasClass(target, rowClassName)) {
                 // 遇到不合法元素即返回
-                if (checkNodeInValid(target)) {
+                if (checkNodeInvalid(target)) {
                     return;
                 }
                 target = target.parentNode;
