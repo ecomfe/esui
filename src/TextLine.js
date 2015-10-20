@@ -262,24 +262,23 @@ define(
              * @override
              */
             setProperties: function (properties) {
-                var copyProperties = lib.deepClone(properties);
-                if (copyProperties.hasOwnProperty('rawValue')) {
-                    var rawValue = copyProperties.rawValue;
+                if (properties.hasOwnProperty('rawValue')) {
+                    var rawValue = properties.rawValue;
                     // 好怕怕有一个人直接设置了字符串
                     if (typeof rawValue === 'string') {
-                        copyProperties.rawValue = [rawValue];
+                        properties.rawValue = [rawValue];
                     }
                     // 如果不是字符串也不是数组，那你想干啥？不理了！
                     if (!u.isArray(rawValue)) {
-                        delete copyProperties.rawValue;
+                        delete properties.rawValue;
                     }
                     else {
                         // 根据属性修正一下
-                        copyProperties.rawValue = this.reviseRawValue(copyProperties.rawValue);
+                        var copyRawValue = lib.deepClone(properties.rawValue);
+                        properties.rawValue = this.reviseRawValue(copyRawValue);
                     }
                 }
-
-                return InputControl.prototype.setProperties.call(this, copyProperties);
+                return InputControl.prototype.setProperties.call(this, properties);
             },
 
             /**
@@ -412,7 +411,9 @@ define(
              * @override
              */
             parseValue: function (value) {
-                return this.reviseRawValue(value.split('\n'));
+                // 要区分开一开始的空白状态和已经输入一个空行的状态
+                var rawValue = value === '' ? [] : value.split('\n');
+                return this.reviseRawValue(rawValue);
             },
 
             /**
@@ -464,7 +465,7 @@ define(
             /**
              * 获取内容数组形式,并去除空串内容（不去重）
              * 理论上有了配置，这个接口没用了，但为了保证向前兼容，暂时放在这里
-             * 
+             *
              * @deprecated
              * @return {string[]}
              */
