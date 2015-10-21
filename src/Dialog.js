@@ -616,7 +616,8 @@ define(
                 {
                     of: window,
                     at: 'center',
-                    my: 'center'
+                    my: 'center',
+                    collision: 'fit'
                 }
             );
         }
