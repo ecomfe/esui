@@ -710,7 +710,13 @@ define(
         /**
          * 确认提示框
          *
-         * @param {Object} args 参数
+         * @param {Object} args 提示框参数
+         * @param {string=} args.title 提示框标题文本
+         * @param {string=} args.content 提示框内容文本
+         * @param {string=} args.rawTitle 提示框标题HTML，覆盖title
+         * @param {string=} args.rawContent 提示框内容HTML，覆盖content
+         * @param {string=} args.okText 确认按钮文本
+         * @param {string=} args.cancelText 取消按钮文本
          * @return {ui.Dialog} 窗口实例
          */
         Dialog.confirm = function (args) {
@@ -729,8 +735,8 @@ define(
                 dialog.dispose();
             }
 
-            var title = u.escape(args.title) || '';
-            var content = u.escape(args.content) || '';
+            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
+            var content = args.rawContent || lib.encodeHTML(args.content) || '';
             var okText = u.escape(args.okText) || Dialog.OK_TEXT;
             var cancelText = u.escape(args.cancelText) || Dialog.CANCEL_TEXT;
 
@@ -803,6 +809,16 @@ define(
 
         };
 
+        /**
+         * 警告提示框
+         *
+         * @param {Object} args 提示框参数
+         * @param {string=} args.title 提示框标题文本
+         * @param {string=} args.content 提示框内容文本
+         * @param {string=} args.rawTitle 提示框标题HTML，覆盖title
+         * @param {string=} args.rawContent 提示框内容HTML，覆盖content
+         * @param {string=} args.okText 确认按钮文本
+         */
         Dialog.alert = function (args) {
             var dialogPrefix = 'dialog-alert';
             var okPrefix = 'dialog-alert-ok';
@@ -821,8 +837,8 @@ define(
                 dialog.dispose();
             }
 
-            var title = u.escape(args.title) || '';
-            var content = u.escape(args.content) || '';
+            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
+            var content = args.rawContent || lib.encodeHTML(args.content) || '';
             var okText = u.escape(args.okText) || Dialog.OK_TEXT;
 
             var properties = {

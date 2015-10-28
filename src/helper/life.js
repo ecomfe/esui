@@ -23,6 +23,7 @@ define(
 
         var u = require('underscore');
         var ui = require('../main');
+        var $ = require('jquery');
 
         /**
          * @override Helper

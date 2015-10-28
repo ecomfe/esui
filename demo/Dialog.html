@@ -22,7 +22,7 @@
         </div>
         <div id="main" class="ui-u-4-5">
             <h2>静态HTML</h2>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:staticDg;closeOnHide:false;">
                     <div data-role="title">弹窗</div>
                     <div data-role="content">
@@ -40,7 +40,7 @@
                 };
             </script>
             <h2>JS动态创建</h2>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <button type="button" id="trigger-common" class="ui-button ui-button-primary">Dialog示例</button>
             </div>
             <script type="text/sample">
@@ -61,45 +61,69 @@
                 var btnOk = dialog.getFoot().getChild('btnOk');
                 var btnCancel = dialog.getFoot().getChild('btnCancel');
                 btnOk.on('click', function () {
-                    alert('随便创建！');
+                    Toast.alert('随便创建！').show();
                     dialog.dispose();
                 });
                 btnCancel.on('click', function () {
-                    alert('不！！！！');
+                    Toast.alert('不！！！！').show();
                     dialog.dispose();
                 });
                 dialog.show();
             </script>
+
             <h2>警告框</h2>
             <div class="intro">
                 <p>使用方法<code>Dialog.alert</code>创建警告框。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div class="row">
                     <button type="button" id="trigger-alert" class="ui-button ui-button-danger">Alert</button>
                 </div>
             </div>
             <script type="text/sample">
+            var dialog = Dialog.alert({
+                title: '警告框',
+                content: '警告你，请不要随便点我！',
+                autoPosition: true,
+                width: 400,
+                onok: function () {
+                    Toast.alert('你死定了').show();
+                }
+            });
+
+            dialog.on('ok', function () {
+                Toast.alert('我不理你了').show();
+            });
+            </script>
+
+            <h2>警告框 - HTML Title &amp; Content</h2>
+            <p>使用方法<code>Dialog.alert</code>创建警告框。</p>
+            <div class="example">
+                <div class="row">
+                    <button type="button" id="trigger-alert2" class="ui-button ui-button-danger">Alert 2</button>
+                </div>
+            </div>
+            <script type="text/sample">
+            document.getElementById('trigger-alert2').onclick = function () {
                 var dialog = Dialog.alert({
-                    title: '警告框',
-                    content: '警告你，请不要随便点我！',
+                    rawTitle: '<span class="ui-icon-exclamation-triangle ui-text-warning"></span> 警告框',
+                    rawContent: '<div class="ui-text-warning">警告你，请不要随便点我！</div>',
                     autoPosition: true,
                     width: 400,
                     onok: function () {
-                        alert('你死定了');
+                        Toast.alert('你死定了').show();
                     }
                 });
 
                 dialog.on('ok', function () {
-                    alert('我不理你了');
+                    Toast.alert('我不理你了').show();
                 });
+            };
             </script>
 
             <h2>确认框</h2>
-            <div class="intro">
-                <p>使用方法<code>Dialog.confirm</code>创建确认框。</p>
-            </div>
-            <div class="example ui-demo-light-stage">
+            <p>使用方法<code>Dialog.confirm</code>创建确认框。</p>
+            <div class="example">
                 <div class="row">
                     <button type="button" id="trigger-confirm" class="ui-button ui-button-info">Comfirm</button>
                 </div>
@@ -109,23 +133,49 @@
                     title: '确认框',
                     content: '你确定要点我吗？',
                     onok: function () {
-                        alert('你死定了！');
+                        Toast.alert('你死定了！').show();
                     },
                     width: 400
                 });
                 dialog.on('ok', function () {
-                    alert('你死定了！');
+                    Toast.alert('你死定了！').show();
                 });
                 dialog.on('cancel', function () {
-                    alert('算你识相！');
+                    Toast.alert('算你识相！').show();
                 });
+            </script>
+
+            <h2>确认框  HTML Title &amp; Content</h2>
+            <p>使用方法<code>Dialog.confirm</code>创建确认框。</p>
+            <div class="example">
+                <div class="row">
+                    <button type="button" id="trigger-confirm2" class="ui-button ui-button-info">Comfirm 2</button>
+                </div>
+            </div>
+            <script type="text/sample">
+            document.getElementById('trigger-confirm2').onclick = function () {
+                var dialog = Dialog.confirm({
+                    rawTitle: '<span class="ui-icon-exclamation-triangle ui-text-warning"></span> 确认框',
+                    rawContent: '<div class="ui-text-warning">你确定要点我吗？</div>',
+                    onok: function () {
+                        Toast.alert('你死定了！').show();
+                    },
+                    width: 400
+                });
+                dialog.on('ok', function () {
+                    Toast.alert('你死定了！').show();
+                });
+                dialog.on('cancel', function () {
+                    Toast.alert('算你识相！').show();
+                });
+            };
             </script>
 
             <h2>优先级</h2>
             <div class="intro">
                 <p>Alert和Confirm弹出框的层级优先级最高，会一直保持在最上。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <button type="button" id="trigger-z-index-test" class="ui-button ui-button-primary">优先级测试</button>
             </div>
             <script type="text/sample">
@@ -143,11 +193,11 @@
                 var btnOk = dialog.getFoot().getChild('btnOk');
                 var btnCancel = dialog.getFoot().getChild('btnCancel');
                 btnOk.on('click', function () {
-                    alert('我在后面！');
+                    Toast.alert('我在后面！').show();
                     dialog.dispose();
                 });
                 btnCancel.on('click', function () {
-                    alert('不！！！！');
+                    Toast.alert('不！！！！').show();
                     dialog.dispose();
                 });
                 document.getElementById('trigger-alert').click();
@@ -157,7 +207,7 @@
             <div class="intro">
                 <p>方法<code>show()</code>和<code>hide()</code>可以控制对话框的显示和隐藏。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div data-ui="type:Dialog;width:400;draggable:true;mask:true;id:showDlg;closeOnHide:false;">
                     <div data-role="title">Dialog</div>
                     <div data-role="content">
@@ -187,10 +237,11 @@
             'esui',
             'esui/Button',
             'esui/Dialog',
+            'esui/Toast',
             'esui/Tab',
             'demo'
         ],
-        function (ui, Button, Dialog) {
+        function (ui, Button, Dialog, Toast) {
             var controls = ui.init();
             
             var staticDg = ui.get('staticDg');
@@ -210,12 +261,28 @@
                     autoPosition: true,
                     width: 400,
                     onok: function () {
-                        alert('你死定了');
+                        Toast.alert('你死定了').show();
                     }
                 });
 
                 dialog.on('ok', function () {
-                    alert('我不理你了');
+                    Toast.alert('我不理你了').show();
+                });
+            };
+
+            document.getElementById('trigger-alert2').onclick = function () {
+                var dialog = Dialog.alert({
+                    rawTitle: '<span class="ui-icon-exclamation-triangle ui-text-warning"></span> 警告框',
+                    rawContent: '<div class="ui-text-warning">警告你，请不要随便点我！</div>',
+                    autoPosition: true,
+                    width: 400,
+                    onok: function () {
+                        Toast.alert('你死定了').show();
+                    }
+                });
+
+                dialog.on('ok', function () {
+                    Toast.alert('我不理你了').show();
                 });
             };
 
@@ -224,15 +291,32 @@
                     title: '确认框',
                     content: '你确定要点我吗？',
                     onok: function () {
-                        alert('你死定了！');
+                        Toast.alert('你死定了！').show();
                     },
                     width: 400
                 });
                 dialog.on('ok', function () {
-                    alert('你死定了！');
+                    Toast.alert('你死定了！').show();
                 });
                 dialog.on('cancel', function () {
-                    alert('算你识相！');
+                    Toast.alert('算你识相！').show();
+                });
+            };
+
+            document.getElementById('trigger-confirm2').onclick = function () {
+                var dialog = Dialog.confirm({
+                    rawTitle: '<span class="ui-icon-exclamation-triangle ui-text-warning"></span> 确认框',
+                    rawContent: '<div class="ui-text-warning">你确定要点我吗？</div>',
+                    onok: function () {
+                        Toast.alert('你死定了！').show();
+                    },
+                    width: 400
+                });
+                dialog.on('ok', function () {
+                    Toast.alert('你死定了！').show();
+                });
+                dialog.on('cancel', function () {
+                    Toast.alert('算你识相！').show();
                 });
             };
 
@@ -263,11 +347,11 @@
                     var btnOk = dialog.getFoot().getChild('btnOk');
                     var btnCancel = dialog.getFoot().getChild('btnCancel');
                     btnOk.on('click', function () {
-                        alert('随便创建！');
+                        Toast.alert('随便创建！').show();
                         dialog.dispose();
                     });
                     btnCancel.on('click', function () {
-                        alert('不！！！！');
+                        Toast.alert('不！！！！').show();
                         dialog.dispose();
                     });
                 }
@@ -290,11 +374,11 @@
                 var btnOk = dialog.getFoot().getChild('btnOk');
                 var btnCancel = dialog.getFoot().getChild('btnCancel');
                 btnOk.on('click', function () {
-                    alert('我在后面！');
+                    Toast.alert('我在后面！').show();
                     dialog.dispose();
                 });
                 btnCancel.on('click', function () {
-                    alert('不！！！！');
+                    Toast.alert('不！！！！').show();
                     dialog.dispose();
                 });
                 document.getElementById('trigger-alert').click();
