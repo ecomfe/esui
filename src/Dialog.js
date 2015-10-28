@@ -867,6 +867,13 @@ define(
         /**
          * 确认提示框
          *
+         * @param {Object} args 提示框参数
+         * @param {string=} args.title 提示框标题文本
+         * @param {string=} args.content 提示框内容文本
+         * @param {string=} args.rawTitle 提示框标题HTML，覆盖title
+         * @param {string=} args.rawContent 提示框内容HTML，覆盖content
+         * @param {string=} args.okText 确认按钮文本
+         * @param {string=} args.cancelText 取消按钮文本
          */
         Dialog.confirm = function (args) {
             var dialogPrefix = 'dialog-confirm';
@@ -884,8 +891,8 @@ define(
                 dialog.dispose();
             }
 
-            var title = lib.encodeHTML(args.title) || '';
-            var content = lib.encodeHTML(args.content) || '';
+            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
+            var content = args.rawContent || lib.encodeHTML(args.content) || '';
             var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
             var cancelText = lib.encodeHTML(args.cancelText) || Dialog.CANCEL_TEXT;
 
@@ -957,7 +964,16 @@ define(
 
         };
 
-
+        /**
+         * 警告提示框
+         *
+         * @param {Object} args 提示框参数
+         * @param {string=} args.title 提示框标题文本
+         * @param {string=} args.content 提示框内容文本
+         * @param {string=} args.rawTitle 提示框标题HTML，覆盖title
+         * @param {string=} args.rawContent 提示框内容HTML，覆盖content
+         * @param {string=} args.okText 确认按钮文本
+         */
         Dialog.alert = function (args) {
             var dialogPrefix = 'dialog-alert';
             var okPrefix = 'dialog-alert-ok';
@@ -976,8 +992,8 @@ define(
                 dialog.dispose();
             }
 
-            var title = lib.encodeHTML(args.title) || '';
-            var content = lib.encodeHTML(args.content) || '';
+            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
+            var content = args.rawContent || lib.encodeHTML(args.content) || '';
             var okText = lib.encodeHTML(args.okText) || Dialog.OK_TEXT;
 
             var properties = {
