@@ -24,7 +24,7 @@
                 <h2>Table</h2>
                 <div class="example">
                     <div
-                        data-ui="type:Table;id:table;columnResizable:true;"></div>
+                        data-ui="type:Table;id:table;columnResizable:true;variants:striped"></div>
                 </div>
 
                 <h2>Table</h2>
@@ -127,7 +127,7 @@
                             tip :'姓名',
                             align: 'right',
                             editable: 1,
-                            comparer : function( a,b ){
+                            comparer : function(a, b){
                                 return a.name.localeCompare( b.name );
                             },
                             sortable: true,
@@ -141,7 +141,7 @@
                             title: '性别',
                             field: 'sex' ,
                             tip :'性别',
-                            comparer : function( a,b ){
+                            comparer : function(a, b){
                                 return a.sex - b.sex;
                             },
                             sortable: true,
@@ -287,27 +287,27 @@
                         }
                     });
 
-                    ui.get('table').onselect = function (e, arg ) {
-                        alert(arg.selectedIndex.toString());
+                    ui.get('table').onselect = function (e) {
+                        alert(e.selectedIndex.toString());
                     };
                     
                     myTable = ui.get('myTable');
-                    myTable.onsubrowopen = function (e, arg) {
+                    myTable.onsubrowopen = function (e) {
                         this.setSubrowContent(
-                            '<span style="line-height:30px;">Hello ' + arg.item.name + '</span>',
-                            arg.index
+                            '<span style="line-height:30px;">Hello ' + e.item.name + '</span>',
+                            e.index
                         );
                     };
 
-                    myTable.onsubrowclose = function (e, arg ) {
-                        this.getSubrowContainer(arg.index).setContent('');
+                    myTable.onsubrowclose = function (e) {
+                        this.getSubrowContainer(e.index).setContent('');
                     };
 
-                    myTable.onselect = function (e, arg ) {
-                        alert(arg.selectedIndex.toString());
+                    myTable.onselect = function (e) {
+                        alert(e.selectedIndex.toString());
                     };
 
-                    myTable.onresize = function (e, arg ) {
+                    myTable.onresize = function (e) {
                        myTable.set('tableHeight', myTable.tableHeight + 100);
                     };
 
