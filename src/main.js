@@ -333,7 +333,7 @@ define(
                 else if (coreNumber.test(value)) {
                     value = +value;
                 }
-                else if (/^'.+?'$/.test(value)) {
+                else if (/^['"].+?['"]$/.test(value)) {
                     value = value.slice(1, -1);
                 }
                 return value;
