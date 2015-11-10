@@ -2129,7 +2129,7 @@ define(
             };
         }
 
-        var baseColTextTpl = '<span id="${colTextId}">${content}</span>';
+        var baseColTextTpl = '<div id="${colTextId}">${content}</div>';
 
         /**
          * base列
