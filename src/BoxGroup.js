@@ -128,15 +128,36 @@ define(
                         paint: render
                     },
                     {
-                        name: ['disabled', 'readOnly'],
-                        paint: function (group, disabled, readOnly) {
-                            u.each(
-                                group.getBoxElements(),
-                                function (box) {
-                                    box.disabled = disabled;
-                                    box.readOnly = readOnly;
-                                }
-                            );
+                        /**
+                         * @property {boolean} disabled
+                         *
+                         * 表示是否禁用当前所有checkbox。
+                         */
+
+                        /**
+                         * @property {string} disabledItems
+                         *
+                         * 逗号分隔的要禁用的选项value。
+                         */
+                        name: ['disabled', 'disabledItems'],
+                        paint: function (group, disabled, disabledItems) {
+                            if (u.isBoolean(disabled)) {
+                                u.each(
+                                    group.getBoxElements(),
+                                    function (box) {
+                                        box.disabled = disabled;
+                                    }
+                                );
+                            }
+                            else if (u.isString(disabledItems)) {
+                                var ids = disabledItems.split(',');
+                                u.each(
+                                    group.getBoxElements(),
+                                    function (box) {
+                                        box.disabled = u.contains(ids, '' + box.value);
+                                    }
+                                );
+                            }
                         }
                     },
                     {
@@ -350,13 +371,10 @@ define(
                 group.helper.getPartClasses('wrapper')
             );
 
-            var classList = [];
             var boxClass = group.boxClass;
             if (boxClass) {
-                classList.push(boxClass);
+                classes.push(boxClass);
             }
-
-            classes = classes.concat(classList);
 
             var valueIndex = lib.toDictionary(group.rawValue);
 
