@@ -210,6 +210,9 @@ define(
                 }
                 esui.init(main, options);
             });
+
+            // 直接追加到content属性，以防setContent时判断oldValue出现问题
+            this.content = isPrepend ? html + this.content : this.content + html;
         }
 
         /**
