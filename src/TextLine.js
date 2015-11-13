@@ -12,13 +12,16 @@ define(
         var lib = require('./lib');
         var InputControl = require('./InputControl');
         var ui = require('./main');
-
         var supportPlaceholder = ('placeholder' in document.createElement('input'));
 
         require('./TextBox');
 
         /**
          * 带行号的输入框
+         *
+         * 输入：数组（rawValue) or 字符串(value)
+         * 中间处理：会根据用户配置，做去重、去前后空格、去空行处理
+         * 输出：处理后的数组（rawValue）or 字符串（value）
          *
          * @extends InputControl
          * @requires TextBox
@@ -31,9 +34,9 @@ define(
         /**
          * 获取主体的HTML
          *
-         * @param {TextLine} textLine 控件实例
-         * @return {string} 主体html
          * @ignore
+         * @param {TextLine} textLine 控件实例
+         * @return {string} 主体的HTML
          */
         function getMainHTML(textLine) {
             var textareaHTML = ''
@@ -89,7 +92,6 @@ define(
              */
             this.fire('blur');
         }
-
         /**
          * 输入时刷新其它部件
          *
@@ -99,10 +101,18 @@ define(
         function refreshOnInput(e) {
             if (e.type === 'input' || e.propertyName === 'value') {
                 togglePlaceholder(this);
+                this.rawValue = this.getRawValue();
                 refreshLineNum.call(this);
+                /**
+                 * @event change
+                 *
+                 * 当值变化时触发
+                 *
+                 * @member TextLine
+                 */
+                this.fire('change');
             }
         }
-
 
         /**
          * 重置行号，增加内容和`keyup`时可调用
@@ -110,21 +120,13 @@ define(
          * @ignore
          */
         function refreshLineNum() {
-            var num = this.helper.getPart('text').value.split('\n').length;
+            var num = this.getRawValueOfTextarea().split('\n').length;
             if (num !== this.number) {
                 this.number = num;
                 var numLine = this.helper.getPart('num-line');
                 numLine.innerHTML = u.range(1, num + 1).join('<br />');
             }
             this.resetScroll();
-            /**
-             * @event change
-             *
-             * 当值变化时触发
-             *
-             * @member TextLine
-             */
-            this.fire('change');
         }
 
         /**
@@ -172,6 +174,12 @@ define(
             initOptions: function (options) {
                 // 默认选项配置
                 var properties = {
+                    // 是否要去重，true去重，false不去重
+                    unique: true,
+                    // 是否去前后空格
+                    trim: true,
+                    // 是否包含空行，true不包含空行，false包含空行
+                    withoutBlankLine: true,
                     width: 300,
                     height: 200,
                     value: ''
@@ -183,6 +191,18 @@ define(
 
                 if (!properties.hasOwnProperty('title') && this.main.title) {
                     properties.title = this.main.title;
+                }
+
+                if (properties.unique === 'false') {
+                    properties.unique = false;
+                }
+
+                if (properties.trim === 'false') {
+                    properties.trim = false;
+                }
+
+                if (properties.withoutBlankLine === 'false') {
+                    properties.withoutBlankLine = false;
                 }
 
                 this.setProperties(properties);
@@ -236,6 +256,32 @@ define(
             },
 
             /**
+             * 批量设置控件的属性值
+             *
+             * @param {Object} properties 属性值集合
+             * @override
+             */
+            setProperties: function (properties) {
+                if (properties.hasOwnProperty('rawValue')) {
+                    var rawValue = properties.rawValue;
+                    // 好怕怕有一个人直接设置了字符串
+                    if (typeof rawValue === 'string') {
+                        properties.rawValue = [rawValue];
+                    }
+                    // 如果不是字符串也不是数组，那你想干啥？不理了！
+                    if (!u.isArray(rawValue)) {
+                        delete properties.rawValue;
+                    }
+                    else {
+                        // 根据属性修正一下
+                        var copyRawValue = lib.deepClone(properties.rawValue);
+                        properties.rawValue = this.reviseRawValue(copyRawValue);
+                    }
+                }
+                return InputControl.prototype.setProperties.call(this, properties);
+            },
+
+            /**
              * 重新渲染
              *
              * @method
@@ -285,29 +331,22 @@ define(
                      * @override
                      */
                     name: 'rawValue',
-                    paint: function (textLine, value) {
+                    paint: function (textLine, rawValue) {
                         // 输入区
                         var textArea = textLine.helper.getPart('text');
 
-                        if (value) {
-                            if (u.isArray(value)) {
-                                textLine.value = u.unescape(value.join('\n'));
-                            }
-                            // 好怕怕有一个人直接设置了字符串
-                            else if (typeof value === 'string') {
-                                textLine.value = u.unescape(value);
-                            }
-
-                            var inputEvent = 'oninput' in textArea
-                                ? 'input'
-                                : 'propertychange';
-                            textLine.helper.removeDOMEvent(
-                                textArea, inputEvent, refreshOnInput);
-                            textArea.value = textLine.value;
-                            textLine.helper.addDOMEvent(
-                                textArea, inputEvent, refreshOnInput);
-
+                        if (rawValue) {
+                            textArea.value = textLine.stringifyValue(rawValue);
                             refreshLineNum.call(textLine);
+
+                            /**
+                             * @event change
+                             *
+                             * 当值变化时触发
+                             *
+                             * @member TextLine
+                             */
+                            textLine.fire('change');
                         }
                     }
                 },
@@ -372,29 +411,67 @@ define(
              * @override
              */
             parseValue: function (value) {
-                return lib.trim(value.replace(/\n{2,}/g, '\n')).split('\n');
+                // 要区分开一开始的空白状态和已经输入一个空行的状态
+                var rawValue = value === '' ? [] : value.split('\n');
+                return this.reviseRawValue(rawValue);
             },
 
             /**
-             * 获取内容数组形式（去重，去空行）
+             * 根据配置修正rawValue
+             *
+             * @param {Array} value 数组值
+             * @return {string[]}
+             */
+            reviseRawValue: function (value) {
+                // 如果要去空行
+                if (this.withoutBlankLine) {
+                    // 去掉数组中空值
+                    value = u.compact(value);
+                }
+
+                // 如果要去前后空格
+                if (this.trim) {
+                    value = u.map(value, lib.trim);
+                }
+
+                // 如果要去重
+                if (this.unique) {
+                    value = u.unique(value);
+                }
+                return value;
+            },
+
+            /**
+             * 获取内容数组形式（根据配置选择去重，去空行以及去单行前后空格）
              *
              * @return {string[]}
              * @override
              */
             getRawValue: function () {
-                return u.unique(this.getValueRepeatableItems());
+                return this.parseValue(this.getRawValueOfTextarea());
+            },
+
+
+            /**
+             * 从textarea中获取原始值
+             *
+             * @public
+             * @return {string}
+             */
+            getRawValueOfTextarea: function () {
+                return this.helper.getPart('text').value;
             },
 
             /**
              * 获取内容数组形式,并去除空串内容（不去重）
+             * 理论上有了配置，这个接口没用了，但为了保证向前兼容，暂时放在这里
              *
+             * @deprecated
              * @return {string[]}
              */
             getValueRepeatableItems: function () {
-                var text = this.helper.getPart('text').value;
-                var items = text.split('\n');
-
-                return u.chain(items).map(lib.trim).compact().value();
+                var value = this.getRawValueOfTextarea().split('\n');
+                return u.chain(value).map(lib.trim).compact().value();
             },
 
             /**
@@ -403,8 +480,7 @@ define(
              * @return {number}
              */
             getRowsNumber: function () {
-                var items = this.getValue().split('\n');
-                return items.length;
+                return this.getRawValue().length;
             },
 
             /**
@@ -413,13 +489,8 @@ define(
              * @param {string[]} lines 需添加的行
              */
             addLines: function (lines) {
-                var content = lines.join('\n');
-                var value = this.getValue();
-
-                if (value.length > 0) {
-                    content = value + '\n' + content;
-                }
-
+                var value = this.getRawValue();
+                var content = this.unique ? u.union(value, lines) : value.concat(lines);
                 this.setRawValue(content);
             }
 
