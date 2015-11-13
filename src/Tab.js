@@ -432,6 +432,17 @@ define(
                  */
                 getActiveTab: function () {
                     return this.get('tabs')[this.get('activeIndex')];
+                },
+
+                /**
+                 * 修改指定Tab标题
+                 *
+                 * @param {string} panelId tab对应的panelId
+                 * @param {string} title 新标题
+                 */
+                updateTabTitle: function (panelId, title) {
+                    var tabTitle = getTabTitle.call(this, panelId);
+                    tabTitle.innerHTML = this.getContentHTML({title: title}, this.allowClose);
                 }
             }
         );
@@ -514,9 +525,22 @@ define(
                 tab.helper.addPartClasses('item-active', element);
             }
 
+            element.id = tab.helper.getId('tab-title-for-panel-' + config.panel);
+
             element.innerHTML = tab.getContentHTML(config, allowClose);
 
             return element;
+        }
+
+        /**
+         * 获取指定的tab标题元素
+         *
+         * @param {string} panelId 指定的panelId
+         * @return {Element}
+         * @ignore
+         */
+        function getTabTitle(panelId) {
+            return lib.g(this.helper.getId('tab-title-for-panel-' + panelId));
         }
 
         /**
