@@ -48,6 +48,7 @@ define(
                 initOptions: function (options) {
                     // 默认选项配置
                     var properties = {
+                        unique: true,
                         width: 300,
                         height: 200
                     };
@@ -244,7 +245,11 @@ define(
                  * @override
                  */
                 getRawValue: function () {
-                    return u.unique(this.getValueRepeatableItems());
+                    var value = this.getValueRepeatableItems();
+                    if (this.unique) {
+                        return u.unique(value);
+                    }
+                    return value;
                 },
 
                 /**
@@ -266,8 +271,7 @@ define(
                  * @return {number}
                  */
                 getRowsNumber: function () {
-                    var items = this.getValue().split('\n');
-                    return items.length;
+                    return this.getRawValue().length;
                 },
 
                 /**
@@ -276,11 +280,13 @@ define(
                  * @param {string[]} lines 需添加的行
                  */
                 addLines: function (lines) {
-                    var content = lines.join('\n');
-                    var value = this.getValue();
-
-                    if (value.length > 0) {
-                        content = value + '\n' + content;
+                    var content;
+                    var value = this.getRawValue();
+                    if (this.unique) {
+                        content = u.union(value, lines);
+                    }
+                    else {
+                        content = value.contact(lines);
                     }
 
                     this.setRawValue(content);
@@ -440,6 +446,7 @@ define(
          * @ignore
          */
         function onInput(e) {
+            this.rawValue = this.getValueRepeatableItems();
             refreshLineNum.call(this);
             this.fire('input');
         }
