@@ -271,9 +271,8 @@ define(
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (box, disabled, readOnly) {
-                        var box1 = lib.g(box.boxId);
-                        box1.disabled = disabled;
-                        box1.readOnly = readOnly;
+                        var boxElement = lib.g(box.boxId);
+                        boxElement.disabled = disabled || readOnly;
                     }
                 },
                 {

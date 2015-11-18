@@ -139,13 +139,13 @@ define(
                          *
                          * 逗号分隔的要禁用的选项value。
                          */
-                        name: ['disabled', 'disabledItems'],
-                        paint: function (group, disabled, disabledItems) {
-                            if (u.isBoolean(disabled)) {
+                        name: ['disabled', 'readOnly', 'disabledItems'],
+                        paint: function (group, disabled, readOnly, disabledItems) {
+                            if (u.isBoolean(disabled) || u.isBoolean(readOnly)) {
                                 u.each(
                                     group.getBoxElements(),
                                     function (box) {
-                                        box.disabled = disabled;
+                                        box.disabled = disabled || readOnly;
                                     }
                                 );
                             }
