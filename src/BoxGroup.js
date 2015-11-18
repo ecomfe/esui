@@ -307,8 +307,7 @@ define(
                     u.each(
                         group.getBoxElements(),
                         function (box) {
-                            box.disabled = disabled;
-                            box.readOnly = readOnly;
+                            box.disabled = disabled || readOnly;
                         }
                     );
                 }

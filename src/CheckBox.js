@@ -274,8 +274,7 @@ define(
                     name: ['disabled', 'readOnly'],
                     paint: function (box, disabled, readOnly) {
                         var box = lib.g(box.boxId);
-                        box.disabled = disabled;
-                        box.readOnly = readOnly;
+                        box.disabled = disabled || readOnly;
                     }
                 },
                 {
