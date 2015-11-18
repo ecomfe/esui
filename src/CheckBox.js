@@ -20,7 +20,7 @@ define(
          */
         function syncChecked(e) {
             var checked = lib.g(this.boxId).checked;
-            this.setProperties({ checked: checked });
+            this.setProperties({checked: checked});
         }
 
         /**
@@ -111,8 +111,7 @@ define(
 
                 u.extend(properties, options);
 
-                properties.name =
-                    properties.name || this.main.getAttribute('name');
+                properties.name = properties.name || this.main.getAttribute('name');
 
                 var datasource = properties.datasource;
                 delete properties.datasource;
@@ -121,20 +120,22 @@ define(
                 // 而这个处理在`InputControl.prototype.setProperties`里，
                 // 因此要先用一下，然后再管`datasource`
                 this.setProperties(properties);
+                /* eslint-disable eqeqeq */
                 if (datasource != null) {
                     if (u.isArray(datasource)) {
                         this.checked = u.any(
                             datasource,
                             function (item) {
-                                return item.value == this.value;    // jshint ignore:line
+                                return item.value == this.value;
                             },
                             this
                         );
                     }
-                    else if (this.rawValue == datasource) {         // jshint ignore:line
+                    else if (this.rawValue == datasource) {
                         this.checked = true;
                     }
                 }
+                /* eslint-enable eqeqeq */
 
                 if (!this.title) {
                     this.title = this.main.title
@@ -208,8 +209,7 @@ define(
              * @fires change
              */
             setProperties: function (properties) {
-                var changes =
-                    InputControl.prototype.setProperties.apply(this, arguments);
+                var changes = InputControl.prototype.setProperties.apply(this, arguments);
                 if (changes.hasOwnProperty('checked')) {
                     /**
                      * @event change
@@ -265,16 +265,16 @@ define(
                     name: ['rawValue', 'checked'],
                     paint: function (box, rawValue, checked) {
                         var value = box.stringifyValue(rawValue);
-                        var box = lib.g(box.boxId);
-                        box.value = value;
-                        box.checked = checked;
+                        var boxElement = lib.g(box.boxId);
+                        boxElement.value = value;
+                        boxElement.checked = checked;
                     }
                 },
                 {
                     name: ['disabled', 'readOnly'],
                     paint: function (box, disabled, readOnly) {
-                        var box = lib.g(box.boxId);
-                        box.disabled = disabled || readOnly;
+                        var boxElement = lib.g(box.boxId);
+                        boxElement.disabled = disabled || readOnly;
                     }
                 },
                 {
@@ -295,8 +295,8 @@ define(
              *
              * @param {boolean} checked 状态
              */
-            setChecked: function ( checked ) {
-                this.setProperties({ checked: checked });
+            setChecked: function (checked) {
+                this.setProperties({checked: checked});
             },
 
             /**
@@ -309,13 +309,11 @@ define(
                     var box = lib.g(this.boxId);
                     return box.checked;
                 }
-                else {
-                    return this.checked;
-                }
+                return this.checked;
             }
         };
 
-        lib.inherits( CheckBox, InputControl );
+        lib.inherits(CheckBox, InputControl);
         require('./main').register(CheckBox);
         return CheckBox;
     }

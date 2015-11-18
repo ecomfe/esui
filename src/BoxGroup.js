@@ -74,12 +74,11 @@ define(
                     && (options.name || '') === box.name // DOM的`name`是字符串
                 ) {
                     // 提取`value`和`title`
-                    var item = { value: box.value };
+                    var item = {value: box.value};
                     var label = box.id && labelIndex[box.id];
                     item.title = label ? lib.getText(label) : '';
                     if (!item.title) {
-                        item.title =
-                            box.title || (box.value === 'on' ? box.value : '');
+                        item.title = box.title || (box.value === 'on' ? box.value : '');
                     }
                     datasource.push(item);
 
@@ -145,6 +144,8 @@ define(
         /**
          * 同步选择状态
          *
+         * @param {HTMLElement} element 需要同步状态的元素
+         *
          * @ignore
          */
         function syncCheckedState(element) {
@@ -169,7 +170,7 @@ define(
 
             // 同步值
             var result = u.chain(this.getBoxElements())
-                .where({ checked: true })
+                .where({checked: true})
                 .pluck('value')
                 .value();
 
@@ -265,8 +266,7 @@ define(
                 properties.rawValue = [];
             }
 
-            var changes =
-                InputControl.prototype.setProperties.apply(this, arguments);
+            var changes = InputControl.prototype.setProperties.apply(this, arguments);
             if (changes.hasOwnProperty('rawValue')) {
                 /**
                  * @event change
@@ -384,7 +384,7 @@ define(
         BoxGroup.prototype.getBoxElements = function () {
             return u.where(
                 this.main.getElementsByTagName('input'),
-                { type: this.boxType }
+                {type: this.boxType}
             );
         };
 
