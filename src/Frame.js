@@ -120,6 +120,30 @@ define(
         );
 
         /**
+         * load完毕获取content的高宽的方法
+         *
+         * @return {Object}    iframe文档的各类尺寸
+         * @throws {Error}     内容窗口还未加载完毕无法使用
+         */
+        Frame.prototype.getContentSize = function () {
+            var contentWindow = this.main.contentWindow;
+
+            if (!contentWindow) {
+                throw new Error('No content window on this iframe');
+            }
+
+            var baseElement = contentWindow.document.documentElement || contentWindow.document.body;
+            return {
+                clientWidth: baseElement.clientWidth || 0,
+                clientHeight: baseElement.clientHeight || 0,
+                offsetWidth: baseElement.offsetWidth || 0,
+                offsetHeight: baseElement.offsetHeight || 0,
+                scrollWidth: baseElement.scrollWidth || 0,
+                scrollHeight: baseElement.scrollHeight || 0
+            };
+        };
+
+        /**
          * 调用iframe内容窗口的方法
          *
          * @param {string} methodName 方法名称
