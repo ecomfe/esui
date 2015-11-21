@@ -132,7 +132,15 @@ define(
                 throw new Error('No content window on this iframe');
             }
 
-            var baseElement = contentWindow.document.documentElement || contentWindow.document.body;
+            try {
+                var baseElement = contentWindow.document.documentElement || contentWindow.document.body;
+            }
+            catch (e) {
+                var err = new Error('Content document can not be accessed');
+                err.name = 'CrossOriginError';
+                throw err;
+            }
+
             return {
                 clientWidth: baseElement.clientWidth || 0,
                 clientHeight: baseElement.clientHeight || 0,
