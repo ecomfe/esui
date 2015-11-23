@@ -142,12 +142,12 @@ define(
             }
 
             return {
-                clientWidth: baseElement.clientWidth || 0,
-                clientHeight: baseElement.clientHeight || 0,
-                offsetWidth: baseElement.offsetWidth || 0,
-                offsetHeight: baseElement.offsetHeight || 0,
-                scrollWidth: baseElement.scrollWidth || 0,
-                scrollHeight: baseElement.scrollHeight || 0
+                clientWidth: baseElement.clientWidth,
+                clientHeight: baseElement.clientHeight,
+                offsetWidth: baseElement.offsetWidth,
+                offsetHeight: baseElement.offsetHeight,
+                scrollWidth: baseElement.scrollWidth,
+                scrollHeight: baseElement.scrollHeight
             };
         };
 
