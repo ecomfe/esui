@@ -69,7 +69,7 @@ define(
         Frame.prototype.initStructure = function () {
             this.main.frameborder = 'no';
             this.main.marginHeight = '0';
-            this.main.marginWeight = '0';
+            this.main.marginWidth = '0';
 
         };
 
