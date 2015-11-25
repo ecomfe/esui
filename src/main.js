@@ -157,9 +157,9 @@ define(
                 // 但是会遇上`key:`这样的串，即只有键没有值，
                 // 这时我们就认为值是个空字符串了
                 var value = lib.trim(source.slice(lastStop, cursor));
-                value = valueParser ? valueParser(value) : value;
+                value = valueReplacer ? valueReplacer(value) : value;
                 // 加入到结果中
-                result[key] = valueReplacer ? valueReplacer(value) : value;
+                result[key] = valueParser ? valueParser(value) : value;
                 // 再往前进一格，开始下一次查找
                 cursor++;
                 lastStop = cursor;
@@ -393,7 +393,7 @@ define(
                     );
                 }
                 else {
-                    optionObject[joinCamelCase(terms)] = valueReplacer(valueParser(value));
+                    optionObject[joinCamelCase(terms)] = valueParser(valueReplacer(value));
                 }
             }
 
