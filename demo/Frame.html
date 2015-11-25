@@ -23,16 +23,21 @@
             <div id="main" class="ui-u-4-5">
                 <h2>Form</h2>
                 <div class="intro">
-                    <p>基本Form。</p>
+                    <p>基本Form。可以获取同域的window的尺寸。</p>
                 </div>
-                <div class="example ui-demo-light-stage">
-                    <iframe class="edit-form"
-                    data-ui-type="Frame"
-                    data-ui-src="http://www.baidu.com"
-                    data-ui-width="1000"
-                    data-ui-height="500"
-                    data-ui-id="form">
-                    </iframe>
+                <div class="example">
+                    <div class="row">
+                        <button class="ui-button ui-button-primary" id="getFrameWindowDimension" type="button">获取尺寸</button>
+                    </div>
+                    <div class="row">
+                        <iframe
+                            data-ui-type="Frame"
+                            data-ui-src="Button.html"
+                            data-ui-width="1000"
+                            data-ui-height="500"
+                            data-ui-id="form">
+                        </iframe>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,10 +49,14 @@
         require(
             [
                 'esui',
+                'jquery',
                 'esui/Frame'
             ],
-            function (ui) {
+            function (ui, $) {
                 ui.init();
+                $('#getFrameWindowDimension').on('click', function () {
+                    console.log(ui.get('form').getContentSize());
+                });
             }
         );
         </script>
