@@ -97,10 +97,9 @@ define(
          *
          * @param {string} source 属性值源字符串
          * @param {Function} valueReplacer 替换值的处理函数，每个值都将经过此函数
-         * @param {Function} valueParser 分两步处理value，为了兼容已经重写过的valueReplacer
          * @return {Object}
          */
-        main.parseAttribute = function (source, valueReplacer, valueParser) {
+        main.parseAttribute = function (source, valueReplacer) {
             if (!source) {
                 return {};
             }
@@ -157,9 +156,8 @@ define(
                 // 但是会遇上`key:`这样的串，即只有键没有值，
                 // 这时我们就认为值是个空字符串了
                 var value = lib.trim(source.slice(lastStop, cursor));
-                value = valueReplacer ? valueReplacer(value) : value;
-                // 加入到结果中
-                result[key] = valueParser ? valueParser(value) : value;
+                result[key] = valueReplacer ? valueReplacer(value) : value;
+
                 // 再往前进一格，开始下一次查找
                 cursor++;
                 lastStop = cursor;
@@ -302,6 +300,34 @@ define(
             return collection;
         };
 
+        /**
+         * 对html属性上声明数字和boolean的参数进行类型转换。
+         *
+         * 类型转化如下：
+         * 缺省的value parser这里会处理几种特殊情况：
+         *     1. 字符串true,false --> bool
+         *     2. 全部为数字的字符串 --> number
+         *     3. 使用'false' / 'number'这一类不进行类型转换，但是去掉'(trim)
+         *
+         * @param {string} value 模板上声明的值
+         * @return {string|boolean|number} 转换后的值
+         */
+        main.defaultValueReplacer = function (value) {
+            var coreNumber = /^[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)$/;
+            if (value === 'true') {
+                value = true;
+            }
+            else if (value === 'false') {
+                value = false;
+            }
+            else if (coreNumber.test(value)) {
+                value = +value;
+            }
+            else if (/^['"].+?['"]$/.test(value)) {
+                value = value.slice(1, -1);
+            }
+            return value;
+        };
 
         /**
          * 从容器DOM元素批量初始化内部的控件渲染
@@ -310,11 +336,6 @@ define(
          * @param {Object} [options] init参数
          * @param {Object} [options.viewContext] 视图环境
          * @param {Object} [options.properties] 属性集合，通过id映射
-         * @param {Function} [options.valueParser] 在parse element attribute的时候调用
-         *      缺省的value parser这里会处理几种特殊情况：
-         *          1. 字符串true,false --> bool
-         *          2. 全部为数字的字符串 --> number
-         *          3. 使用'false' / 'number'这一类不进行类型转换，但是去掉'(trim)
          * @param {Function} [options.valueReplacer] 属性值替换函数
          * @return {Control[]} 初始化的控件对象集合
          */
@@ -322,26 +343,8 @@ define(
             wrap = wrap || document.body;
             options = options || {};
 
-            var defaultValueParser = function (value) {
-                var coreNumber = /^[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)$/;
-                if (value === 'true') {
-                    value = true;
-                }
-                else if (value === 'false') {
-                    value = false;
-                }
-                else if (coreNumber.test(value)) {
-                    value = +value;
-                }
-                else if (/^['"].+?['"]$/.test(value)) {
-                    value = value.slice(1, -1);
-                }
-                return value;
-            };
-            var valueParser = options.valueParser || defaultValueParser;
-            var valueReplacer = options.valueReplacer || function (value) {
-                return value;
-            };
+            var valueReplacer = options.valueReplacer
+                || this.defaultValueReplacer;
 
             /**
              * 将字符串数组join成驼峰形式
@@ -389,11 +392,11 @@ define(
                 if (terms.length === 0) {
                     noOverrideExtend(
                         optionObject,
-                        main.parseAttribute(value, valueReplacer, valueParser)
+                        main.parseAttribute(value, valueReplacer)
                     );
                 }
                 else {
-                    optionObject[joinCamelCase(terms)] = valueParser(valueReplacer(value));
+                    optionObject[joinCamelCase(terms)] = valueReplacer(value);
                 }
             }
 
