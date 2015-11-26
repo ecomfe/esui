@@ -33,9 +33,18 @@
                             <a data-ui-id="lnkTestChild" href="#" data-ui-type="Link">Child link control</a>
                         </div>
                     </div>
-                    <button data-ui-id="btnSetContent" data-ui-type="Button" type="button">set Content</button>
-                    <button data-ui-id="btnHide" data-ui-type="Button" type="button">Hide</button>
-                    <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
+                    <p>
+                        <button data-ui-id="btnSetContent" data-ui-type="Button" type="button">set Content</button>
+                        <button data-ui-id="btnHide" data-ui-type="Button" type="button">Hide</button>
+                        <button data-ui-id="btnShow" data-ui-type="Button" type="button">Show</button>
+                    </p>
+                    <p>
+                        <esui-text-box data-ui="id:content;mode:textarea;height:100;"></esui-text-box>
+                    </p>
+                    <p>
+                        <esui-button data-ui-id="btnPrepend">Prepend</esui-button>
+                        <esui-button data-ui-id="btnAppend">Append</esui-button>
+                    </p>
                 </div>
                 <h2>自定义Panel样式</h2>
                 <div class="intro">
@@ -79,7 +88,8 @@
                 'esui',
                 'esui/Panel',
                 'esui/Link',
-                'esui/Button'
+                'esui/Button',
+                'esui/TextBox'
             ],
             function (ui) {
                 ui.init();
@@ -92,6 +102,13 @@
                 };
                 ui.get('btnShow').onclick = function () {
                     p.show();
+                };
+                var c = ui.get('content');
+                ui.get('btnPrepend').onclick = function () {
+                    p.prependContent(c.getValue());
+                };
+                ui.get('btnAppend').onclick = function () {
+                    p.appendContent(c.getValue());
                 };
             }
         );

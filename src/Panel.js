@@ -198,7 +198,12 @@ define(
             var childNodes = container.childNodes;
             var children = [];
             for (var i = 0; i < childNodes.length; i++) {
-                children.push(childNodes[i]);
+                if (isPrepend) {
+                    children.unshift(childNodes[i]);
+                }
+                else {
+                    children.push(childNodes[i]);
+                }
             }
 
             u.each(children, function (child) {
