@@ -94,10 +94,7 @@ define(
                         return;
                     }
 
-                    var tipLayer = esui.create('TipLayer', {
-                        title: '这是提示标题',
-                        content: '这是提示内容'
-                    });
+                    var tipLayer = esui.create('TipLayer', {});
                     this.tipLayer = tipLayer;
 
                     // 默认监听mouseover事件
@@ -115,12 +112,13 @@ define(
                     // 为防止delayTime时出现 tip还未hide就更改内容的情况 监听beforeshow事件 在此刻再进行更改
                     tipLayer.on('beforeshow', function (e) {
                         var targetElement = $(e.targetElement);
-                        var title = targetElement.attr('data-tip-title') || tipLayer.title;
-                        var content = targetElement.attr('data-tip-content') || tipLayer.content;
+                        var title = targetElement.attr('data-tip-title');
+                        var content = targetElement.attr('data-tip-content');
                         var event = target.fire('tipbeforeshow', {
                             tipLayer: tipLayer,
                             title: title,
-                            content: content
+                            content: content,
+                            targetElement: targetElement
                         });
                         if (!event.isDefaultPrevented()) {
                             tipLayer.setTitle(title);
