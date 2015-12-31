@@ -4117,7 +4117,10 @@ hr {
 }
 .ui-panel-boxgroup-border {
   border-top: 0.3em solid #ebebeb;
+}
+.ui-panel-boxgroup-border-top {
   margin-top: 0.7em;
+  border-top: 0.3em solid #ebebeb;
 }
 .ui-boxgroup-vertical .ui-boxgroup-wrapper {
   display: block;
@@ -6051,7 +6054,7 @@ span.ui-crumb-node {
   */
 .ui-tiplayer {
   padding: 0.5em;
-  z-index: 1002;
+  z-index: 1002 !important;
   position: absolute;
   display: block;
   -webkit-border-radius: 0;

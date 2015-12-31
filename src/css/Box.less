@@ -4,7 +4,6 @@
 @esui-boxgroup-vertical-space: .5em 0;
 
 @esui-boxgroup-arrow-size: 0.5em;
-@esui-boxgroup-arrow-margin: 0.2em;
 @esui-boxgroup-arrow-color: #DFDFDF;
 
 @esui-panel-boxgroup-border-width: 0.3em;
@@ -28,8 +27,7 @@
             border-bottom: @esui-boxgroup-arrow-size solid @esui-boxgroup-arrow-color;
             border-left: @esui-boxgroup-arrow-size solid transparent;
             content: '';
-            // 0.1em是由于子容器vertical-align非bottom，未紧贴父容器造成的偏差 
-            margin-bottom: -@esui-boxgroup-arrow-size - @esui-boxgroup-arrow-margin - 0.1em;
+            margin-bottom: -@esui-boxgroup-arrow-size - 0.3em;
         }
     }
 
@@ -43,7 +41,11 @@
 // 这个class加在对应的panel上，一般与arrow class一起使用，暂时放在这里
 .@{ui-class-prefix}-panel-boxgroup-border {
     border-top: @esui-panel-boxgroup-border-width solid @esui-boxgroup-arrow-color;
-    margin-top: @esui-boxgroup-arrow-size + @esui-boxgroup-arrow-margin;
+}
+
+.@{ui-class-prefix}-panel-boxgroup-border-top {
+    margin-top: @esui-boxgroup-arrow-size + .2em;
+    border-top: @esui-panel-boxgroup-border-width solid @esui-boxgroup-arrow-color;
 }
 
 .@{ui-class-prefix}-boxgroup-vertical .@{ui-class-prefix}-boxgroup-wrapper {
