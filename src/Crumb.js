@@ -234,7 +234,7 @@ define(
             var dataIndex = $node.attr('data-index');
 
             dataIndex = parseInt(dataIndex, 10) || ($node.prevAll().size() / 2);
-            var returnedEvent = this.fire('click', {item: this.path[dataIndex]});
+            var returnedEvent = this.fire('click', {item: this.path[dataIndex], index: dataIndex});
             returnedEvent.isDefaultPrevented() && e.preventDefault();
             returnedEvent.isPropagationStopped() && e.stopPropagation();
         }
