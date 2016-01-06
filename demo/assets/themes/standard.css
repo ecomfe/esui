@@ -6353,6 +6353,9 @@ span.ui-crumb-node {
 .state-validity-invalid {
   border: 1px solid #f16c6c;
 }
+.state-validity-invalid.ui-checkbox {
+  border: none;
+}
 .ui-validity {
   display: inline-block;
   color: #f16c6c;

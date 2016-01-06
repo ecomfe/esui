@@ -8,7 +8,10 @@
 @esui-common-invalid-message-color: @esui-palette-danger-color;
 
 .esui-common-invalid-control-theme() {
-     border: @esui-common-invalid-control-border;
+    border: @esui-common-invalid-control-border;
+    &.@{ui-class-prefix}-checkbox {
+        border: none;
+    }
 }
 
 .esui-common-invalid-message-theme() {
