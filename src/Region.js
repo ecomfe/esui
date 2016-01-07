@@ -724,6 +724,7 @@ define(
                 }
 
                 for (i = 0; i < len; i++) {
+                    data[i].id = data[i].id || data[i].value;
                     item = u.clone(data[i]);
                     item.parent = parent;
                     properties.regionDataIndex[item.id] = item;
@@ -911,6 +912,7 @@ define(
             walker({children: properties.regionData});
 
             function walker(data) {
+                data.id = data.id || data.value;
                 var children = data.children;
                 var hasChild = !!children;
                 if (data.id) {
