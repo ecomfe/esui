@@ -357,9 +357,11 @@ define(
         function updateDisplayText(calendar) {
             // 更新主显示
             var textHolder = calendar.helper.getPart('text');
-            textHolder.innerHTML = u.escape(
-                moment(calendar.getRawValue()).format(calendar.displayFormat)
-            );
+            if (textHolder) {
+                textHolder.innerHTML = u.escape(
+                    moment(calendar.getRawValue()).format(calendar.displayFormat)
+                );
+            }
         }
 
         esui.register(Calendar);
