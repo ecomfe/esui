@@ -615,7 +615,8 @@ define(
 
             textHolder.innerHTML = text;
             // to show hidden text as tool tip.
-            textHolder.title = text;
+            textHolder.title = selectedItem ?
+                (selectedItem.name || selectedItem.text) : select.emptyText;
 
             var layerElement = select.layer.getElement(false);
             if (layerElement) {
