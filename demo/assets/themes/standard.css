@@ -4849,7 +4849,6 @@ span.ui-crumb-node {
   padding-left: 0;
 }
 .ui-rangecalendar-shortcut-item-selected {
-  cursor: default;
   color: #666666;
   font-weight: bold;
   text-decoration: none;
@@ -5185,6 +5184,10 @@ span.ui-crumb-node {
 .ui-select-bordered .ui-select-arrow:hover {
   opacity: 1;
   filter: alpha(opacity=100);
+}
+.ui-select-layer-bordered {
+  border: 1px solid #dddddd;
+  background: #ffffff;
 }
 /**
   * ESUI (Enterprise Simple UI)
