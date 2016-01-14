@@ -244,6 +244,7 @@ define(
                 dispose: function () {
                     var element = this.getElement(false);
                     this.autoCloseExcludeElements = [];
+                    $(document).off('mousedown', this.docClickHandler);
                     if (element) {
                         $(element).remove();
                     }
