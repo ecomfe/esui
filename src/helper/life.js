@@ -121,7 +121,7 @@ define(
 
             // 移除自身行为
             u.each(ctrl.domEvents, function ($ele) {
-                me.removeDOMEvent($ele, '.' + ctrl.type);
+                me.removeDOMEvent($ele, '.' + ctrl.getUniqueId());
             });
             ctrl.domEvents = [];
 

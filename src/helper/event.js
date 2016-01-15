@@ -86,7 +86,7 @@ define(
                     .apply(ctrl, arguments);
             }
             // 绑定事件，并未其添加type命名空间。
-            var types = formatEventType(type, ctrl.type);
+            var types = formatEventType(type, ctrl.getUniqueId());
             if (option.once) {
                 $element.one(types, selector, data, handlerProxy);
             }
