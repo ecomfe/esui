@@ -5062,11 +5062,6 @@ span.ui-crumb-node {
   -ms-transform: rotate(180deg);
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
-  -webkit-transition: -webkit-transform 0.3s ease;
-  -moz-transition: -moz-transform 0.3s ease;
-  -ms-transition: -ms-transform 0.3s ease;
-  -o-transition: -o-transform 0.3s ease;
-  transition: transform 0.3s ease;
 }
 .ui-select-text {
   padding-right: 2em;
@@ -5552,7 +5547,6 @@ span.ui-crumb-node {
  */
 .ui-table {
   overflow-x: auto;
-  line-height: 1.4;
   display: block;
 }
 .ui-table.state-disabled {
@@ -5566,14 +5560,14 @@ span.ui-crumb-node {
 }
 .ui-table-body-nodata {
   text-align: center;
-  padding: 0.5em;
+  padding: 1em;
   border-color: #dddddd;
   border-style: solid;
   border-width: 0;
 }
 .ui-table-head {
-  z-index: 1000;
-  background: #f6f6f6;
+  z-index: 10;
+  background: #e3f6f3;
 }
 .ui-table-head table {
   border-color: #dddddd;
@@ -5590,7 +5584,7 @@ span.ui-crumb-node {
 }
 .ui-table-hcell-text {
   overflow: hidden;
-  padding: 0.5em;
+  padding: 1em;
   text-align: left;
 }
 .ui-table-hcell-sel {
@@ -5648,7 +5642,7 @@ span.ui-crumb-node {
   border-width: 0;
 }
 .ui-table-cell-text {
-  padding: 0.5em;
+  padding: 1em;
   text-align: left;
 }
 .ui-table-cell-sel {
@@ -5672,7 +5666,7 @@ span.ui-crumb-node {
 }
 .ui-table-fcell-text {
   text-align: left;
-  padding: 0.5em;
+  padding: 1em;
 }
 .ui-table-cell-align-left .ui-table-cell-text,
 .ui-table-cell-align-left .ui-table-hcell-text {

@@ -1793,12 +1793,12 @@ define(
                 table.bodyPanel = table.viewContext.get(tBodyPanelId);
             }
 
-            var style = tBody.style;
-            style.overflowX = 'auto';
-            style.overflowY = 'auto';
-            if (table.bodyWidth) {
-                style.width = table.bodyWidth + 'px';
-            }
+            // var style = tBody.style;
+            // style.overflowX = 'auto';
+            // style.overflowY = 'auto';
+            // if (table.bodyWidth) {
+                // style.width = table.bodyWidth + 'px';
+            // }
 
             table.bodyPanel.disposeChildren();
             lib.g(tBodyPanelId).innerHTML = getBodyHtml(table);
