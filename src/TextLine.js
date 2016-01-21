@@ -386,7 +386,7 @@ define(
                 var textArea = this.helper.getPart('text');
                 var lineNumber = this.helper.getPart('num-line');
                 // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
-                lineNumber.style.height = textArea.clientHeight + 'px';
+                lineNumber.style.height = Math.max(textArea.clientHeight, this.height) + 'px';
                 lineNumber.scrollTop = textArea.scrollTop;
             },
 
