@@ -5405,15 +5405,13 @@ span.ui-crumb-node {
   background: #ffffff;
   color: #70ccc0;
   line-height: 1.2em;
-  padding: 0.75em 1em 0.75em 1em;
+  padding: 0.75em 1em;
   min-width: 8em;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.ui-tab-item:hover,
-.ui-tab-item:focus {
-  border-color: #70ccc0;
+.ui-tab-item:hover {
   background: #e3f6f3;
   color: #70ccc0;
 }
@@ -5475,17 +5473,23 @@ span.ui-crumb-node {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+.ui-tab-content-border-slim {
+  border-width: 1px !important;
+}
+.ui-tab-content-border {
+  border: 2px solid #70ccc0;
+}
 .ui-tab-content-top-border {
-  border-top: 3px solid #70ccc0;
+  border-top: 2px solid #70ccc0;
 }
 .ui-tab-content-bottom-border {
-  border-bottom: 3px solid #70ccc0;
+  border-bottom: 2px solid #70ccc0;
 }
 .ui-tab-content-left-border {
-  border-left: 3px solid #70ccc0;
+  border-left: 2px solid #70ccc0;
 }
 .ui-tab-content-right-border {
-  border-right: 3px solid #70ccc0;
+  border-right: 2px solid #70ccc0;
 }
 .ui-tab-vertical {
   float: left;
@@ -5536,6 +5540,29 @@ span.ui-crumb-node {
 .ui-tab-vertical-flip .ui-tab-item-active {
   border-right: 1px solid #70ccc0;
 }
+.ui-tab-invert .ui-tab-navigator {
+  padding: 0;
+}
+.ui-tab-invert .ui-tab-item {
+  background: #e3f6f3;
+  color: #70ccc0;
+  border-bottom: 1px solid #70ccc0;
+}
+.ui-tab-invert .ui-tab-item:hover {
+  background: #e3f6f3;
+  color: #70ccc0;
+}
+.ui-tab-invert .ui-tab-item-active {
+  border-bottom: 1px solid #ffffff;
+  background: #ffffff !important;
+  color: #70ccc0;
+  -webkit-box-shadow: inset 0px 3px 0px 0px #70ccc0;
+  -moz-box-shadow: inset 0px 3px 0px 0px #70ccc0;
+  box-shadow: inset 0px 3px 0px 0px #70ccc0;
+}
+.ui-tab-invert ~ .ui-tab-content-border-slim {
+  margin-top: -1px;
+}
 /*
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
@@ -5567,9 +5594,9 @@ span.ui-crumb-node {
 }
 .ui-table-head {
   z-index: 10;
-  background: #e3f6f3;
 }
 .ui-table-head table {
+  background: #f6f6f6;
   border-color: #dddddd;
   border-style: solid;
   border-width: 0;
