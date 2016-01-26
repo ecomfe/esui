@@ -677,10 +677,11 @@ define(
         var tplSortIcon = '<div class="${className}"></div>';
 
         //表格头提示信息模版
-        var tplTitleTip = '<div id="${id}" '
-                        + 'class="${className}" '
-                        + 'data-ui="type:Tip;id:${id};content:${content}">'
-                        + '</div>';
+        var tplTitleTip = ''
+            + '<div id="${id}" class="${className}"'
+            +     'data-ui-type="Tip" data-ui-id="${id}">'
+            +     '${content}'
+            + '</div>';
 
         /**
          * 获取表格头的html
@@ -2216,9 +2217,9 @@ define(
                 var input = lib.g(getId(table, 'single-select') + index);
                 if (input) {
                     hasValue(isSelected) && (input.checked = isSelected);
-    
+
                     table.fire('select', {selectedIndex: index});
-    
+
                     if (selectedIndex && selectedIndex.length) {
                         helper.removePartClasses(
                             table, 'row-selected', getRow(table, selectedIndex[0]));
