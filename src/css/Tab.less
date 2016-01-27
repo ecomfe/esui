@@ -1,7 +1,7 @@
 @import "Variable.less";
 
 @esui-tab-radius: 0;
-@esui-tab-item-height: 1.2em;
+@esui-tab-item-height: 2.8em;
 
 @esui-tab-item-color: #666666;
 @esui-tab-item-background: #F2F2F2;
@@ -11,13 +11,13 @@
 @esui-tab-item-hover-color: #000000;
 @esui-tab-item-hover-background: @esui-tab-item-background;
 
-@esui-tab-item-active-color: #333333;
+@esui-tab-item-active-color: #ffffff;
 @esui-tab-item-active-background: #FEFDFA;
 
 @esui-tab-padding-horizontal: 0 1em;
 @esui-tab-padding-vertical: 1em 0;
 
-@esui-tab-item-padding: 0.75em 1em;
+@esui-tab-item-padding: 0 1em;
 
 @esui-tab-item-min-width: 8em;
 @esui-tab-item-space: .4em;
@@ -42,7 +42,6 @@
     background: @esui-tab-item-background;
     color: @esui-tab-item-color;
     line-height: @esui-tab-item-height;
-    padding: @esui-tab-item-padding;
     min-width: @esui-tab-item-min-width;
     .box-sizing(border-box);
 
@@ -50,12 +49,23 @@
         background: @esui-tab-item-hover-background;
         color: @esui-tab-item-hover-color;
     }
+
+    > span, > a {
+        display: block;
+        line-height: @esui-tab-item-height;
+        height: @esui-tab-item-height;
+        text-decoration: none;
+        padding: @esui-tab-item-padding;
+    }
 }
 
 .@{ui-class-prefix}-tab-item-active {
     cursor: default;
     background: @esui-tab-item-active-background;
     color: @esui-tab-item-active-color;
+    > a {
+        color: @esui-tab-item-active-color;
+    }
 }
 
 // 横向tab
