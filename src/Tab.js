@@ -163,10 +163,18 @@ define(
                  * @return {string} 返回HTML片段
                  */
                 getContentHTML: function (config, allowClose) {
+                    var contentHtml = '';
+                    if (config.url) {
+                        contentHtml = '<a href="${url}">' + this.contentTemplate + '</a>';
+                    }
+                    else {
+                        contentHtml = this.contentTemplate;
+                    }
                     var html = lib.format(
-                        this.contentTemplate,
+                        contentHtml,
                         {
-                            title: u.escape(config.title)
+                            title: u.escape(config.title),
+                            url: u.escape(config.url)
                         }
                     );
                     if (allowClose) {
@@ -468,7 +476,8 @@ define(
                 var tab = children[i];
                 var config = {
                     title: $(tab).text(),
-                    panel: $(tab).attr('data-for')
+                    panel: $(tab).attr('data-for'),
+                    url: $(tab).attr('data-url')
                 };
 
                 if (tab.className) {
