@@ -6267,7 +6267,6 @@ span.ui-crumb-node {
   background: #ffffff;
   color: #70ccc0;
   line-height: 2.8em;
-  padding: 0;
   min-width: 8em;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -6283,6 +6282,7 @@ span.ui-crumb-node {
   line-height: 2.8em;
   height: 2.8em;
   text-decoration: none;
+  padding: 0 1em;
 }
 .ui-tab-item-active {
   cursor: default;
