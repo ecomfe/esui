@@ -240,6 +240,9 @@ define(
                             body.setContent(
                                 lib.format(bfTpl, data)
                             );
+                            if (dialog.isShow) {
+                                resizeHandler.apply(dialog);
+                            }
                         }
                     },
                     {
