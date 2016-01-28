@@ -223,6 +223,9 @@
         background: @esui-tab-item-background !important;
         color: @esui-tab-item-color;
         .box-shadow(inset 0px 3px 0px 0px @esui-tab-item-border-color);
+        > a {
+            color: @esui-tab-item-color;
+        }
     }
     ~ .@{ui-class-prefix}-tab-content-border-slim {
         margin-top: -1px;
