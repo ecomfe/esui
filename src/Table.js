@@ -19,6 +19,14 @@ define(
         require('./Tip');
 
         /**
+         * dom表格起始的html模板
+         */
+        var tplTablePrefix = '<table cellpadding="0" cellspacing="0" '
+            + 'width="${width}" data-control-table="${controlTableId}">';
+
+        var tplRowPrefix = '<div id="${id}" class="${className}" data-index="${index}" ${attr}>';
+
+        /**
          * 表格控件类
          *
          * @constructor
@@ -155,6 +163,12 @@ define(
                     }
                     if (fieldsChanged
                         || colsWidthChanged
+                        || allProperities.neck
+                    ) {
+                        renderNeck(table);
+                    }
+                    if (fieldsChanged
+                        || colsWidthChanged
                         || allProperities.encode
                         || allProperities.noDataHtml
                         || allProperities.datasource
@@ -275,6 +289,170 @@ define(
                 },
 
                 /**
+                 * 获取表格行的html
+                 *
+                 * @private
+                 * @param {ui.Table} table table控件实例
+                 * @param {Object} data 当前行的数据
+                 * @param {number} index 当前行的序号
+                 * @param {Array} builderList rowBuilder数组
+                 * @return {string}
+                 */
+                getRowHtml: function (table, data, index, builderList) {
+                    var html = [];
+                    var fields = table.realFields;
+                    var rowWidthOffset = table.rowWidthOffset;
+
+                    var extraArgsList = [];
+                    var rowClass = [];
+                    var rowAttr = [];
+
+                    for (var i = 0, l = builderList.length; i < l; i++) {
+                        var builder = builderList[i];
+                        var rowArgs = builder.getRowArgs
+                                    ? builder.getRowArgs(table, index) || {}
+                                    : {};
+
+                        extraArgsList.push(rowArgs);
+
+                        (rowArgs.rowClass) && (rowClass.push(rowArgs.rowClass));
+                        (rowArgs.rowAttr) && (rowAttr.push(rowArgs.rowAttr));
+                    }
+
+                    function sortByIndex(a, b) {
+                        return a.index - b.index;
+                    }
+
+                    u.each(fields, function (field, i) {
+                        var colWidth = table.colsWidth[i];
+                        var colClass = [];
+                        var textClass = [];
+                        var colAttr = [];
+                        var textAttr = [];
+                        var textHtml = [];
+                        var allHtml = [];
+                        var textStartIndex = -1;
+
+                        for (var s = 0, t = builderList.length; s < t; s++) {
+                            var colResult = builderList[s].getColHtml(
+                                table, data, field, index, i, extraArgsList[s]
+                            );
+                            if (!colResult) {
+                                continue;
+                            }
+
+                            var colHtml = colResult.html;
+                            if (colResult.colClass) {
+                                colClass.push(colResult.colClass);
+                            }
+                            if (colResult.textClass) {
+                                textClass.push(colResult.textClass);
+                            }
+                            if (colResult.colAttr) {
+                                colAttr.push(colResult.colAttr);
+                            }
+                            if (colResult.textAttr) {
+                                textAttr.push(colResult.textAttr);
+                            }
+
+                            if (hasValue(colHtml)) {
+                                if (colResult.notInText) {
+                                    colResult.index = s;
+                                    allHtml.push(colResult);
+                                }
+                                else {
+                                    textHtml.push(colHtml);
+                                    (textStartIndex < 0) && (textStartIndex = s);
+                                }
+                            }
+                        }
+
+                        var contentHtml;
+                        textHtml = [
+                            '<div class="' + textClass.join(' ') + '" ',
+                            textAttr.join(' ') + '>',
+                                textHtml.join(''),
+                            '</div>'
+                        ].join('');
+
+                        allHtml.push({html: textHtml, index: textStartIndex});
+                        allHtml.sort(sortByIndex);
+
+                        if (allHtml.length > 1) {
+                            contentHtml = [
+                                '<table width="100%" cellpadding="0" cellspacing="0">',
+                                    '<tr>'
+                            ];
+
+                            for (s = 0, t = allHtml.length; s < t; s++) {
+                                var aHtml = allHtml[s];
+                                contentHtml.push(
+                                    '<td ',
+                                        hasValue(aHtml.width)
+                                        ? ' width="' + aHtml.width + '" '
+                                        : '',
+                                        aHtml.align
+                                        ? ' align="' + aHtml.align + '">'
+                                        : '>',
+                                            aHtml.html,
+                                    '</td>'
+                                );
+                            }
+
+                            contentHtml.push('</tr></table>');
+
+                            contentHtml = contentHtml.join('');
+                        }
+                        else {
+                            contentHtml = textHtml;
+                        }
+
+                        html.push(
+                            '<td id="' + getBodyCellId(table, index, i) + '" ',
+                            'class="' + colClass.join(' ')  + '" ',
+                            colAttr.join(' ') + ' ',
+                            'style="width:' + (colWidth + rowWidthOffset) + 'px;',
+                            (colWidth ? '' : 'display:none') + '" ',
+                            'data-control-table="' + table.id + '" ',
+                            'data-row="' + index + '" data-col="' + i + '">',
+                            contentHtml,
+                            '</td>'
+                        );
+                    });
+
+                    html.unshift(
+                        lib.format(
+                            tplRowPrefix,
+                            {
+                                id: getId(table, 'row') + index,
+                                className: rowClass.join(' '),
+                                attr: rowAttr.join(' '),
+                                index: index
+                            }
+                        ),
+                        lib.format(
+                            tplTablePrefix,
+                            {width: '100%', controlTableId: table.id}
+                        )
+                    );
+
+                    html.push('</tr></table></div>');
+
+                    if (table.hasSubrow) {
+                        for (i = 0, l = builderList.length; i < l; i++) {
+                            var subrowBuilder = builderList[i].getSubrowHtml;
+                            if (subrowBuilder) {
+                                html.push(
+                                    subrowBuilder(table, index, extraArgsList[i])
+                                );
+                            }
+                        }
+                    }
+
+                    return html.join('');
+                },
+
+                /**
                  * 添加表格插件
                  *
                  * @protected
@@ -362,7 +540,7 @@ define(
                         );
 
                         var container = document.createElement('div');
-                        container.innerHTML = getRowHtml(
+                        container.innerHTML = this.getRowHtml(
                             this, data, index, this.rowBuilderList
                         );
                         var newRowEl = container.children[0];
@@ -607,6 +785,31 @@ define(
         }
 
         /**
+         * 获取列表首容器元素
+         *
+         * @public
+         * @param {ui.Table} table table控件实例
+         * @return {Element}
+         */
+        function getNeck(table) {
+            var neck = lib.g(getId(table, 'neck'));
+            if (!(table.neck instanceof Array)) {
+                neck && (neck.style.display = 'none');
+                return null;
+            }
+
+            if (!neck) {
+                neck = document.createElement('div');
+                neck.id = getId(table, 'neck');
+                neck.className = getClass(table, 'neck');
+                setAttr(neck, 'control-table', table.id);
+
+                table.main.appendChild(neck);
+            }
+            return neck;
+        }
+
+        /**
          * 获取列表体容器素
          *
          * @public
@@ -625,7 +828,21 @@ define(
          * @return {Element}
          */
         function getFoot(table) {
-            return lib.g(getId(table, 'foot'));
+            var foot = lib.g(getId(table, 'foot'));
+            if (!(table.foot instanceof Array)) {
+                foot && (foot.style.display = 'none');
+                return null;
+            }
+
+            if (!foot) {
+                foot = document.createElement('div');
+                foot.id = getId(table, 'foot');
+                foot.className = getClass(table, 'foot');
+                setAttr(foot, 'control-table', table.id);
+
+                table.main.appendChild(foot);
+            }
+            return foot;
         }
 
         /**
@@ -761,11 +978,6 @@ define(
             }
         }
 
-        /**
-         * dom表格起始的html模板
-         */
-        var tplTablePrefix = '<table cellpadding="0" cellspacing="0" '
-            + 'width="${width}" data-control-table="${controlTableId}">';
 
         /**
          * 初始化FollowHead
@@ -1009,37 +1221,44 @@ define(
         function renderFoot(table) {
             var foot = getFoot(table);
 
-            if (!(table.foot instanceof Array)) {
-                foot && (foot.style.display = 'none');
-            }
-            else {
-                if (!foot) {
-                    foot = document.createElement('div');
-                    foot.id = getId(table, 'foot');
-                    foot.className = getClass(table, 'foot');
-                    setAttr(foot, 'control-table', table.id);
-
-                    table.main.appendChild(foot);
-                }
-
+            if (foot) {
                 foot.style.display = '';
                 if (table.realWidth) {
                     foot.style.width = table.realWidth + 'px';
                 }
-                foot.innerHTML = getFootHtml(table);
+                foot.innerHTML = getNeckFootHtml(table, table.foot, 'foot');
             }
         }
 
         /**
-         * 获取表格尾的html
+         * 绘制表格首部自定义行
          *
          * @private
          * @param {ui.Table} table table控件实例
+         */
+        function renderNeck(table) {
+            var neck = getNeck(table);
+
+            if (neck) {
+                neck.style.display = '';
+                if (table.realWidth) {
+                    neck.style.width = table.realWidth + 'px';
+                }
+                neck.innerHTML = getNeckFootHtml(table, table.neck, 'neck');
+            }
+        }
+
+        /**
+         * 获取表格首尾的html
+         *
+         * @private
+         * @param {ui.Table} table table控件实例
+         * @param {Array} rowArray fields数组
+         * @param {string} neckFoot neckFoot标识
          * @return {string}
          */
-        function getFootHtml(table) {
+        function getNeckFootHtml(table, rowArray, neckFoot) {
             var html = [];
-            var footArray = table.foot;
             var fieldIndex = 0;
             var colsWidth = table.colsWidth;
             var thCellClass = getClass(table, 'fcell');
@@ -1053,12 +1272,12 @@ define(
                 '<tr>'
             );
 
-            for (var i = 0, len = footArray.length; i < len; i++) {
-                var footInfo = footArray[i];
+            for (var i = 0, len = rowArray.length; i < len; i++) {
+                var rowInfo = rowArray[i];
                 var colWidth = colsWidth[fieldIndex];
-                var colspan = footInfo.colspan || 1;
+                var colspan = rowInfo.colspan || 1;
                 var thClass = [thCellClass];
-                var contentHtml = footInfo.content;
+                var contentHtml = rowInfo.content;
 
                 if ('function' === typeof contentHtml) {
                     contentHtml = contentHtml.call(table);
@@ -1072,15 +1291,15 @@ define(
                 }
 
                 fieldIndex += colspan;
-                if (footInfo.align) {
+                if (rowInfo.align) {
                     thClass.push(
-                        getClass(table, 'cell-align-' + footInfo.align));
+                        getClass(table, 'cell-align-' + rowInfo.align));
                 }
 
                 colWidth += rowWidthOffset;
                 (colWidth < 0) && (colWidth = 0);
                 html.push(
-                    '<th id="' + getFootCellId(table, i) + '" '
+                    '<th id="' + getNeckFootCellId(table, i, neckFoot) + '" '
                         + 'class="' + thClass.join(' ') + '"',
                     ' style="width:' + colWidth + 'px;',
                     (colWidth ? '' : 'display:none;') + '">',
@@ -1356,10 +1575,11 @@ define(
          * @private
          * @param {Object} table table控件
          * @param {number} index 单元格的序号
+         * @param {string} neckFoot headFoot标识
          * @return {string}
          */
-        function getFootCellId(table, index) {
-            return getId(table, 'foot-cell') + index;
+        function getNeckFootCellId(table, index, neckFoot) {
+            return getId(table, neckFoot + '-cell') + index;
         }
 
         /**
@@ -1863,7 +2083,7 @@ define(
 
             for (var i = 0; i < dataLen; i++) {
                 var item = data[i];
-                html.push(getRowHtml(table, item, i, rowBuilderList));
+                html.push(table.getRowHtml(table, item, i, rowBuilderList));
             }
 
             return html.join('');
@@ -1881,8 +2101,6 @@ define(
         function getBodyCellId(table, rowIndex, fieldIndex) {
             return getId(table, 'cell') + rowIndex + '-' + fieldIndex;
         }
-
-        var tplRowPrefix = '<div id="${id}" class="${className}" data-index="${index}" ${attr}>';
 
          /**
          * 批量添加rowBuilder
@@ -1937,169 +2155,7 @@ define(
             );
         }
 
-        /**
-         * 获取表格行的html
-         *
-         * @private
-         * @param {ui.Table} table table控件实例
-         * @param {Object} data 当前行的数据
-         * @param {number} index 当前行的序号
-         * @param {Array} builderList rowBuilder数组
-         * @return {string}
-         */
-        function getRowHtml(table, data, index, builderList) {
-            var html = [];
-            var fields = table.realFields;
-            var rowWidthOffset = table.rowWidthOffset;
-
-            var extraArgsList = [];
-            var rowClass = [];
-            var rowAttr = [];
-
-            for (var i = 0, l = builderList.length; i < l; i++) {
-                var builder = builderList[i];
-                var rowArgs = builder.getRowArgs
-                            ? builder.getRowArgs(table, index) || {}
-                            : {};
-
-                extraArgsList.push(rowArgs);
-
-                (rowArgs.rowClass) && (rowClass.push(rowArgs.rowClass));
-                (rowArgs.rowAttr) && (rowAttr.push(rowArgs.rowAttr));
-            }
-
-            function sortByIndex(a, b) {
-                return a.index - b.index;
-            }
-
-            u.each(fields, function (field, i) {
-                var colWidth = table.colsWidth[i];
-                var colClass = [];
-                var textClass = [];
-                var colAttr = [];
-                var textAttr = [];
-                var textHtml = [];
-                var allHtml = [];
-                var textStartIndex = -1;
-
-                for (var s = 0, t = builderList.length; s < t; s++) {
-                    var colResult = builderList[s].getColHtml(
-                        table, data, field, index, i, extraArgsList[s]
-                    );
-                    if (!colResult) {
-                        continue;
-                    }
-
-                    var colHtml = colResult.html;
-                    if (colResult.colClass) {
-                        colClass.push(colResult.colClass);
-                    }
-                    if (colResult.textClass) {
-                        textClass.push(colResult.textClass);
-                    }
-                    if (colResult.colAttr) {
-                        colAttr.push(colResult.colAttr);
-                    }
-                    if (colResult.textAttr) {
-                        textAttr.push(colResult.textAttr);
-                    }
-
-                    if (hasValue(colHtml)) {
-                        if (colResult.notInText) {
-                            colResult.index = s;
-                            allHtml.push(colResult);
-                        }
-                        else {
-                            textHtml.push(colHtml);
-                            (textStartIndex < 0) && (textStartIndex = s);
-                        }
-                    }
-                }
-
-                var contentHtml;
-                textHtml = [
-                    '<div class="' + textClass.join(' ') + '" ',
-                    textAttr.join(' ') + '>',
-                        textHtml.join(''),
-                    '</div>'
-                ].join('');
-
-                allHtml.push({html: textHtml, index: textStartIndex});
-                allHtml.sort(sortByIndex);
-
-                if (allHtml.length > 1) {
-                    contentHtml = [
-                        '<table width="100%" cellpadding="0" cellspacing="0">',
-                            '<tr>'
-                    ];
-
-                    for (s = 0, t = allHtml.length; s < t; s++) {
-                        var aHtml = allHtml[s];
-                        contentHtml.push(
-                            '<td ',
-                                hasValue(aHtml.width)
-                                ? ' width="' + aHtml.width + '" '
-                                : '',
-                                aHtml.align
-                                ? ' align="' + aHtml.align + '">'
-                                : '>',
-                                    aHtml.html,
-                            '</td>'
-                        );
-                    }
-
-                    contentHtml.push('</tr></table>');
-
-                    contentHtml = contentHtml.join('');
-                }
-                else {
-                    contentHtml = textHtml;
-                }
-
-                html.push(
-                    '<td id="' + getBodyCellId(table, index, i) + '" ',
-                    'class="' + colClass.join(' ')  + '" ',
-                    colAttr.join(' ') + ' ',
-                    'style="width:' + (colWidth + rowWidthOffset) + 'px;',
-                    (colWidth ? '' : 'display:none') + '" ',
-                    'data-control-table="' + table.id + '" ',
-                    'data-row="' + index + '" data-col="' + i + '">',
-                    contentHtml,
-                    '</td>'
-                );
-            });
-
-            html.unshift(
-                lib.format(
-                    tplRowPrefix,
-                    {
-                        id: getId(table, 'row') + index,
-                        className: rowClass.join(' '),
-                        attr: rowAttr.join(' '),
-                        index: index
-                    }
-                ),
-                lib.format(
-                    tplTablePrefix,
-                    {width: '100%', controlTableId: table.id}
-                )
-            );
-
-            html.push('</tr></table></div>');
-
-            if (table.hasSubrow) {
-                for (i = 0, l = builderList.length; i < l; i++) {
-                    var subrowBuilder = builderList[i].getSubrowHtml;
-                    if (subrowBuilder) {
-                        html.push(
-                            subrowBuilder(table, index, extraArgsList[i])
-                        );
-                    }
-                }
-            }
-
-            return html.join('');
-        }
+        
 
         /**
          * base行绘制每行基本参数
@@ -2471,9 +2527,9 @@ define(
          */
         function resetColumns(table) {
             var colsWidth = table.colsWidth;
+            var neck = table.neck;
             var foot = table.foot;
             var id = table.id;
-            var len = foot instanceof Array && foot.length;
             var tds = getBody(table).getElementsByTagName('td');
             var tdsLen = tds.length;
             var rowWidthOffset = table.rowWidthOffset;
@@ -2482,20 +2538,44 @@ define(
             var j;
             var width;
             var td;
-            // 重新设置表格尾的每列宽度
+            var colIndex = 0;
+            var item;
+            var colspan;
+            var len = neck instanceof Array && neck.length;
+            // 重新设置表格颈的每列宽度
             if (len) {
-                var colIndex = 0;
                 for (i = 0; i < len; i++) {
-                    var item = foot[i];
+                    item = neck[i];
                     width = colsWidth[colIndex];
-                    var colspan = item.colspan || 1;
+                    colspan = item.colspan || 1;
 
                     for (j = 1; j < colspan; j++) {
                         width += colsWidth[colIndex + j];
                     }
                     colIndex += colspan;
 
-                    td = lib.g(getFootCellId(table, i));
+                    td = lib.g(getNeckFootCellId(table, i, 'neck'));
+                    width = Math.max(width + rowWidthOffset, 0);
+
+                    td.style.width = width + 'px';
+                    td.style.display = width ? '' : 'none';
+                }
+            }
+            // 重新设置表格尾的每列宽度
+            colIndex = 0;
+            len = foot instanceof Array && foot.length;
+            if (len) {
+                for (i = 0; i < len; i++) {
+                    item = foot[i];
+                    width = colsWidth[colIndex];
+                    colspan = item.colspan || 1;
+
+                    for (j = 1; j < colspan; j++) {
+                        width += colsWidth[colIndex + j];
+                    }
+                    colIndex += colspan;
+
+                    td = lib.g(getNeckFootCellId(table, i, 'foot'));
                     width = Math.max(width + rowWidthOffset, 0);
 
                     td.style.width = width + 'px';
