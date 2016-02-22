@@ -10,7 +10,7 @@
 @esui-table-row-background: @esui-palette-white;
 @esui-table-row-hover-background: @esui-palette-light-bg-hightlight-color;
 @esui-table-row-selected-background: @esui-palette-neutral-highlight-color;
-@esui-table-striped-row-background: @esui-palette-neutral-highlight-color;
+@esui-table-row-striped-background: @esui-palette-neutral-highlight-color;
 
 @esui-table-head-table-cell-color: @esui-palette-dark-color;
 @esui-table-head-table-cell-font-weight: normal;
@@ -83,26 +83,36 @@
 }
 
 .esui-table-row-theme() {
-    border-color: @esui-table-head-table-border-color;
-    border-style: @esui-table-head-table-border-style;
-    background: @esui-table-row-background;
-    border-width: 0 0 1px;
+    >table {
+        border-color: @esui-table-head-table-border-color;
+        border-style: @esui-table-head-table-border-style;
+        background: @esui-table-row-background;
+        border-width: 0 0 1px;
+    }
 }
 
 .esui-table-row-hover-theme() {
-    background: @esui-table-row-hover-background;
+    >table {
+        background: @esui-table-row-hover-background;
+    }
 }
 
 .esui-table-row-selected-theme() {
-    background: @esui-table-row-selected-background;
+    >table {
+        background: @esui-table-row-selected-background;
+    }
 }
 
-.esui-table-striped-row-theme() {
-    background: @esui-table-striped-row-background;
+.esui-table-row-striped-theme() {
+    >table {
+        background: @esui-table-row-striped-background;
+    }
 }
 
 .esui-table-row-unfolded-theme() {
-    background: @esui-table-row-selected-background;
+    >table {
+        background: @esui-table-row-selected-background;
+    }
 }
 
 .esui-table-body-nodata-theme() {
