@@ -25,7 +25,7 @@ define(
          * @type {string}
          * @readonly
          */
-        main.version = '3.1.0';
+        main.version = '3.1.1';
 
         var ViewContext = require('./ViewContext');
         var defaultViewContext = new ViewContext('default');
