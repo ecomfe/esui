@@ -19,7 +19,7 @@
 @import "site.less";
 
 // demo page
-.ui-tab-vertical-container-left {
+.@{ui-class-prefix}-tab-vertical-container-left {
    .esui-vertical-tab-def(
        8em,
        300px,
@@ -27,12 +27,39 @@
    );
 }
 
-.ui-tab-vertical-container-right {
+.@{ui-class-prefix}-tab-vertical-container-right {
    .esui-vertical-tab-def(
        8em,
        300px,
        right
    );
+}
+
+@esui-tab-content-border: 2px solid @esui-tab-item-border-color;
+
+.@{ui-class-prefix}-tab-content-border {
+    border: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-top-border {
+    border-top: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-bottom-border {
+    border-bottom: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-left-border {
+    border-left: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-content-right-border {
+    border-right: @esui-tab-content-border;
+}
+
+.@{ui-class-prefix}-tab-invert-content-top-border {
+    border-top: 1px solid @esui-tab-invert-item-border-color;
+    margin-top: -1px;
 }
 
 // form.html

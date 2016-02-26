@@ -5401,33 +5401,34 @@ span.ui-crumb-node {
 .ui-tab-item {
   cursor: pointer;
   text-align: center;
-  border: 1px solid #70ccc0;
-  background: #ffffff;
-  color: #70ccc0;
   line-height: 2.8em;
   min-width: 8em;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  border: 1px solid #70ccc0;
+  background: #ffffff;
 }
 .ui-tab-item:hover {
   background: #e3f6f3;
-  color: #70ccc0;
 }
-.ui-tab-item > span,
-.ui-tab-item > a {
+.ui-tab-item:hover > * {
+  color: #70ccc0;
+  text-decoration: none;
+}
+.ui-tab-item > * {
   display: block;
   line-height: 2.8em;
   height: 2.8em;
   text-decoration: none;
   padding: 0 1em;
+  color: #70ccc0;
 }
 .ui-tab-item-active {
   cursor: default;
   background: #70ccc0;
-  color: #ffffff;
 }
-.ui-tab-item-active > a {
+.ui-tab-item-active > * {
   color: #ffffff;
 }
 .ui-tab-horizontal .ui-tab-navigator {
@@ -5446,8 +5447,6 @@ span.ui-crumb-node {
 }
 .ui-tab-horizontal .ui-tab-item-active {
   cursor: default;
-  background: #70ccc0;
-  color: #ffffff;
 }
 .ui-tab-horizontal-flip .ui-tab-item {
   -webkit-border-top-left-radius: 0;
@@ -5465,10 +5464,6 @@ span.ui-crumb-node {
   border-top: none;
   border-bottom: 1px solid #70ccc0;
 }
-.ui-tab-horizontal-flip .ui-tab-item-active {
-  cursor: default;
-  background: #70ccc0;
-}
 .ui-tab-align-left .ui-tab-navigator {
   text-align: left;
 }
@@ -5483,27 +5478,8 @@ span.ui-crumb-node {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.ui-tab-content-border-slim {
-  border-width: 1px !important;
-}
-.ui-tab-content-border {
-  border: 2px solid #70ccc0;
-}
-.ui-tab-content-top-border {
-  border-top: 2px solid #70ccc0;
-}
-.ui-tab-content-bottom-border {
-  border-bottom: 2px solid #70ccc0;
-}
-.ui-tab-content-left-border {
-  border-left: 2px solid #70ccc0;
-}
-.ui-tab-content-right-border {
-  border-right: 2px solid #70ccc0;
-}
 .ui-tab-vertical {
   float: left;
-  border-right: 1px solid #70ccc0;
 }
 .ui-tab-vertical .ui-tab-navigator {
   padding: 1em 0;
@@ -5525,38 +5501,14 @@ span.ui-crumb-node {
   margin-bottom: 0.4em;
   border-right: none;
 }
-.ui-tab-vertical-flip {
-  float: right;
-  border-right: 0;
-  border-left: 1px solid #70ccc0;
-}
-.ui-tab-vertical-flip .ui-tab-item {
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-left-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  border-bottom-left-radius: 0;
-  -webkit-border-top-right-radius: 0;
-  -moz-border-radius-topright: 0;
-  border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  border-bottom-right-radius: 0;
-  margin-right: 0;
-  border-right: 1px solid #70ccc0;
-  border-left: none;
-}
-.ui-tab-vertical-flip .ui-tab-item-active {
-  border-right: 1px solid #70ccc0;
-}
 .ui-tab-invert .ui-tab-navigator {
   padding: 0;
 }
 .ui-tab-invert .ui-tab-item {
   background: #e3f6f3;
   color: #70ccc0;
-  border-bottom: 1px solid #70ccc0;
+  border: 1px solid #bfeff3;
+  border-bottom-color: #e3f6f3;
 }
 .ui-tab-invert .ui-tab-item:hover {
   background: #e3f6f3;
@@ -5565,16 +5517,12 @@ span.ui-crumb-node {
 .ui-tab-invert .ui-tab-item-active {
   border-bottom: 1px solid #ffffff;
   background: #ffffff !important;
-  color: #70ccc0;
   -webkit-box-shadow: inset 0px 3px 0px 0px #70ccc0;
   -moz-box-shadow: inset 0px 3px 0px 0px #70ccc0;
   box-shadow: inset 0px 3px 0px 0px #70ccc0;
 }
-.ui-tab-invert .ui-tab-item-active > a {
+.ui-tab-invert .ui-tab-item-active > * {
   color: #70ccc0;
-}
-.ui-tab-invert ~ .ui-tab-content-border-slim {
-  margin-top: -1px;
 }
 /*
  * ESUI (Enterprise Simple UI)
@@ -6620,7 +6568,26 @@ html {
 }
 .ui-tab-vertical-container-right .ui-tab-content {
   height: 300px;
-  margin-right: 8em;
+  margin-left: 8em;
+}
+.ui-tab-content-border {
+  border: 2px solid #70ccc0;
+}
+.ui-tab-content-top-border {
+  border-top: 2px solid #70ccc0;
+}
+.ui-tab-content-bottom-border {
+  border-bottom: 2px solid #70ccc0;
+}
+.ui-tab-content-left-border {
+  border-left: 2px solid #70ccc0;
+}
+.ui-tab-content-right-border {
+  border-right: 2px solid #70ccc0;
+}
+.ui-tab-invert-content-top-border {
+  border-top: 1px solid #bfeff3;
+  margin-top: -1px;
 }
 .edit-form .ui-form-key {
   width: 8em;

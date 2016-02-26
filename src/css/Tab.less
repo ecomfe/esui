@@ -1,28 +1,13 @@
 @import "Variable.less";
 
 @esui-tab-radius: 0;
-@esui-tab-item-height: 2.8em;
-
-@esui-tab-item-color: #666666;
-@esui-tab-item-background: #F2F2F2;
-@esui-tab-item-border-color: #ddd;
-@esui-tab-item-border: 1px solid @esui-tab-item-border-color;
-
-@esui-tab-item-hover-color: #000000;
-@esui-tab-item-hover-background: @esui-tab-item-background;
-
-@esui-tab-item-active-color: #ffffff;
-@esui-tab-item-active-background: #FEFDFA;
-
 @esui-tab-padding-horizontal: 0 1em;
 @esui-tab-padding-vertical: 1em 0;
 
+@esui-tab-item-height: 2.8em;
 @esui-tab-item-padding: 0 1em;
-
 @esui-tab-item-min-width: 8em;
 @esui-tab-item-space: .4em;
-
-@esui-tab-content-border: 2px solid @esui-tab-item-border-color;
 
 .@{ui-class-prefix}-tab {
     display: block;
@@ -38,34 +23,16 @@
 .@{ui-class-prefix}-tab-item {
     cursor: pointer;
     text-align: center;
-    border: @esui-tab-item-border;
-    background: @esui-tab-item-background;
-    color: @esui-tab-item-color;
     line-height: @esui-tab-item-height;
     min-width: @esui-tab-item-min-width;
     .box-sizing(border-box);
 
-    &:hover {
-        background: @esui-tab-item-hover-background;
-        color: @esui-tab-item-hover-color;
-    }
-
-    > span, > a {
-        display: block;
-        line-height: @esui-tab-item-height;
-        height: @esui-tab-item-height;
-        text-decoration: none;
-        padding: @esui-tab-item-padding;
-    }
+    .esui-tab-item-theme();
 }
 
 .@{ui-class-prefix}-tab-item-active {
     cursor: default;
-    background: @esui-tab-item-active-background;
-    color: @esui-tab-item-active-color;
-    > a {
-        color: @esui-tab-item-active-color;
-    }
+    .esui-tab-item-active-theme();
 }
 
 // 横向tab
@@ -83,8 +50,6 @@
 
     .@{ui-class-prefix}-tab-item-active {
         cursor: default;
-        background: @esui-tab-item-active-background;
-        color: @esui-tab-item-active-color;
     }
 }
 
@@ -92,13 +57,7 @@
     .@{ui-class-prefix}-tab-item {
         .esui-border-top-radius(0, @esui-tab-radius);
         .esui-border-bottom-radius(@esui-tab-radius, @esui-tab-radius);
-        border-top: none;
-        border-bottom: @esui-tab-item-border;
-    }
-
-    .@{ui-class-prefix}-tab-item-active {
-        cursor: default;
-        background: @esui-tab-item-active-background;
+        .esui-tab-horizontal-flip-item-theme();
     }
 }
 
@@ -124,30 +83,6 @@
     .box-sizing(border-box);
 }
 
-.@{ui-class-prefix}-tab-content-border-slim {
-    border-width: 1px !important;
-}
-
-.@{ui-class-prefix}-tab-content-border {
-    border: @esui-tab-content-border;
-}
-
-.@{ui-class-prefix}-tab-content-top-border {
-    border-top: @esui-tab-content-border;
-}
-
-.@{ui-class-prefix}-tab-content-bottom-border {
-    border-bottom: @esui-tab-content-border;
-}
-
-.@{ui-class-prefix}-tab-content-left-border {
-    border-left: @esui-tab-content-border;
-}
-
-.@{ui-class-prefix}-tab-content-right-border {
-    border-right: @esui-tab-content-border;
-}
-
 // 暴露给外部调用的mixin
 .esui-vertical-tab-def(@tabWidth, @areaHeight, @align) {
     .@{ui-class-prefix}-tab-vertical {
@@ -157,22 +92,13 @@
 
     .@{ui-class-prefix}-tab-content {
         height: @areaHeight;
-        .tab-content(@align);
-    }
-
-    .tab-content(@align) when (@align = left) {
         margin-left: @tabWidth;
-    }
-
-    .tab-content(@align) when (@align = right) {
-        margin-right: @tabWidth;
     }
 }
 
 // 纵向tab
 .@{ui-class-prefix}-tab-vertical {
     float: left;
-    border-right: @esui-tab-item-border;
     .@{ui-class-prefix}-tab-navigator {
         padding: @esui-tab-padding-vertical;
     }
@@ -185,49 +111,21 @@
     }
 }
 
-.@{ui-class-prefix}-tab-vertical-flip {
-    float: right;
-    border-right: 0;
-    border-left: @esui-tab-item-border;
-
-    .@{ui-class-prefix}-tab-item {
-        .esui-border-left-radius(0, @esui-tab-radius);
-        .esui-border-right-radius(@esui-tab-radius, @esui-tab-radius);
-        margin-right: 0;
-        border-right: @esui-tab-item-border;
-        border-left: none;
-    }
-
-    .@{ui-class-prefix}-tab-item-active {
-        border-right: @esui-tab-item-border;
-    }
-}
-
 .@{ui-class-prefix}-tab-invert {
     .@{ui-class-prefix}-tab-navigator {
         padding: 0;
     }
     .@{ui-class-prefix}-tab-item {
-        background: @esui-tab-item-hover-background;
-        color: @esui-tab-item-color;
-        border-bottom: @esui-tab-item-border;
-
-        &:hover {
-            background: @esui-tab-item-hover-background;
-            color: @esui-tab-item-color;
-        }
+        .esui-tab-invert-item-theme();
     }
 
     .@{ui-class-prefix}-tab-item-active {
-        border-bottom: 1px solid @esui-tab-item-background;
-        background: @esui-tab-item-background !important;
-        color: @esui-tab-item-color;
-        .box-shadow(inset 0px 3px 0px 0px @esui-tab-item-border-color);
-        > a {
-            color: @esui-tab-item-color;
-        }
-    }
-    ~ .@{ui-class-prefix}-tab-content-border-slim {
-        margin-top: -1px;
+        .esui-tab-invert-item-active-theme();
     }
 }
+
+.esui-tab-item-theme() {}
+.esui-tab-item-active-theme() {}
+.esui-tab-horizontal-flip-item-theme() {}
+.esui-tab-invert-item-theme() {}
+.esui-tab-invert-item-active-theme() {}

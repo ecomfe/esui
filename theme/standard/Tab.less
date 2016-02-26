@@ -2,6 +2,7 @@
 
 @esui-tab-item-color: @esui-palette-primary-color;
 @esui-tab-item-border-color: @esui-palette-primary-color;
+@esui-tab-item-border: 1px solid @esui-tab-item-border-color;
 @esui-tab-item-background: @esui-palette-white;
 
 @esui-tab-item-hover-background: @esui-palette-primary-highlight-l10-color;
@@ -9,3 +10,69 @@
 
 @esui-tab-item-active-background: @esui-palette-primary-color;
 @esui-tab-item-active-color: @esui-palette-white;
+
+@esui-tab-invert-item-background: @esui-palette-primary-highlight-l10-color;
+@esui-tab-invert-item-color: @esui-palette-primary-color;
+@esui-tab-invert-item-border-color: @esui-palette-primary-highlight-l5-color;
+
+@esui-tab-invert-item-hover-background: @esui-palette-primary-highlight-l10-color;
+@esui-tab-invert-item-hover-color: @esui-palette-primary-color;
+
+@esui-tab-invert-item-active-border-color: @esui-palette-primary-color;
+@esui-tab-invert-item-active-background: @esui-palette-white;
+@esui-tab-invert-item-active-color: @esui-palette-primary-color;
+@esui-tab-invert-item-active-top-shadow-color: @esui-palette-primary-color;
+
+.esui-tab-item-theme() {
+    &:hover {
+        background: @esui-tab-item-hover-background;
+        > * {
+            color: @esui-tab-item-hover-color;
+            text-decoration: none;
+        }
+    }
+
+    border: @esui-tab-item-border;
+    background: @esui-tab-item-background;
+    > * {
+        display: block;
+        line-height: @esui-tab-item-height;
+        height: @esui-tab-item-height;
+        text-decoration: none;
+        padding: @esui-tab-item-padding;
+        color: @esui-tab-item-color;
+    }
+}
+
+.esui-tab-horizontal-flip-item-theme() {
+    border-top: none;
+    border-bottom: @esui-tab-item-border;
+}
+
+.esui-tab-item-active-theme() {
+    background: @esui-tab-item-active-background;
+    > * {
+        color: @esui-tab-item-active-color;
+    }
+}
+
+.esui-tab-invert-item-theme() {
+    background: @esui-tab-invert-item-background;
+    color: @esui-tab-invert-item-color;
+    border: 1px solid @esui-tab-invert-item-border-color;
+    border-bottom-color: @esui-tab-invert-item-background;
+
+    &:hover {
+        background: @esui-tab-invert-item-hover-background;
+        color: @esui-tab-invert-item-hover-color;
+    }
+}
+
+.esui-tab-invert-item-active-theme() {
+    border-bottom: 1px solid @esui-tab-invert-item-active-background;
+    background: @esui-tab-invert-item-active-background !important;
+    .box-shadow(inset 0px 3px 0px 0px @esui-tab-invert-item-active-top-shadow-color);
+    > * {
+        color: @esui-tab-invert-item-active-color;
+    }
+}

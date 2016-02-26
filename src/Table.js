@@ -1287,7 +1287,7 @@ define(
                 }
 
                 for (var j = 1; j < colspan; j++) {
-                    colWidth += colsWidth[fieldIndex + j];
+                    colWidth += colsWidth[fieldIndex + j] + rowWidthOffset;
                 }
 
                 fieldIndex += colspan;
@@ -2358,6 +2358,7 @@ define(
         function handleResize(table) {
             var head = getHead(table);
             var foot = getFoot(table);
+            var neck = getNeck(table);
             table.realWidth = getWidth(table);
             var widthStr = table.realWidth + 'px';
 
@@ -2376,6 +2377,7 @@ define(
                 getBody(table).style.width = bodyWidthStr;
                 head && (head.style.width = bodyWidthStr);
                 foot && (foot.style.width = widthStr);
+                neck && (neck.style.width = widthStr);
             }
 
             if (table.followHead) {
@@ -2550,7 +2552,7 @@ define(
                     colspan = item.colspan || 1;
 
                     for (j = 1; j < colspan; j++) {
-                        width += colsWidth[colIndex + j];
+                        width += colsWidth[colIndex + j] + rowWidthOffset;
                     }
                     colIndex += colspan;
 
@@ -2571,7 +2573,7 @@ define(
                     colspan = item.colspan || 1;
 
                     for (j = 1; j < colspan; j++) {
-                        width += colsWidth[colIndex + j];
+                        width += colsWidth[colIndex + j] + rowWidthOffset;
                     }
                     colIndex += colspan;
 
