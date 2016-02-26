@@ -4859,6 +4859,17 @@ span.ui-crumb-node {
   color: #999999;
   text-decoration: none;
 }
+.ui-rangecalendar-border {
+  background: #ffffff;
+  border: 1px solid #dddddd;
+}
+.ui-rangecalendar-border:hover {
+  background: #ffffff;
+}
+.ui-rangecalendar-border.state-active,
+.ui-rangecalendar-border:active {
+  background: #ffffff;
+}
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
