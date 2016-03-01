@@ -30,6 +30,48 @@ define(
             return String(source).replace(WHITESPACE, '');
         };
 
+        function format(template, data, prefix) {
+            if (!template) {
+                return '';
+            }
+
+            if (data == null) {
+                return template;
+            }
+
+            if (u.isUndefined(prefix)) {
+                prefix = '\\$';
+            }
+
+            return template.replace(
+                new RegExp(prefix + '\\{(.+?)\\}', 'g'),
+                function (match, key) {
+                    var replacer = data[key];
+                    if (typeof replacer === 'function') {
+                        replacer = replacer(key);
+                    }
+
+                    return replacer == null ? '' : replacer;
+                }
+            );
+        }
+
+        var langFormatter = function (template, data) {
+            return format(template, data, '');
+        };
+
+        /**
+         * 设置国际化格式函数，默认中文实现仅替换变量
+         * 英文等其他语言存在单复数替换需求，需外部提供实现
+         *
+         * @param {Function} formatter 外部格式化实现
+         */
+        lib.setLangFormatter = function (formatter) {
+            if (u.isFunction(formatter)) {
+                langFormatter = formatter;
+            }
+        };
+
         /**
          * 字符串格式化
          *
@@ -40,25 +82,19 @@ define(
          * @return {string} 格式化后的字符串
          */
         lib.format = function (template, data) {
-            if (!template) {
-                return '';
-            }
+            return format.apply(null, arguments);
+        };
 
-            if (data == null) {
-                return template;
-            }
-
-            return template.replace(
-                /\$\{(.+?)\}/g,
-                function (match, key) {
-                    var replacer = data[key];
-                    if (typeof replacer === 'function') {
-                        replacer = replacer(key);
-                    }
-
-                    return replacer == null ? '' : replacer;
-                }
-            );
+        /**
+         * i18n国际化 + 格式化
+         * 包括变量替换以及单复数处理等，具体实现可由外部替换
+         *
+         * @param {string} template 原字符串
+         * @param {Object} data 用于模板替换的数据
+         * @return {string} 格式化后的字符串
+         */
+        lib.langFormat = function (template, data) {
+            return langFormatter(template, data, '');
         };
 
         /**

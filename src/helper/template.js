@@ -9,18 +9,19 @@
 define(
     function (require) {
         var u = require('underscore');
+        var etpl = require('etpl');
 
         var FILTERS = {
-            'id': function (part, instance) {
-                return instance.helper.getId(part);
+            'id': function (part) {
+                return this.helper.getId(part);
             },
 
-            'class': function (part, instance) {
-                return instance.helper.getPartClassName(part);
+            'class': function (part) {
+                return this.helper.getPartClassName(part);
             },
 
-            'part': function (part, nodeName, instance) {
-                return instance.helper.getPartHTML(part, nodeName);
+            'part': function (part, nodeName) {
+                return this.helper.getPartHTML(part, nodeName);
             }
         };
 
@@ -48,14 +49,52 @@ define(
          * @protected
          */
         helper.initializeTemplateEngineExtension = function () {
+            var me = this;
             u.each(
                 FILTERS,
                 function (filter, name) {
+                    filter = u.bind(filter, me.control);
                     this.addFilter(name, filter);
                 },
                 this.templateEngine
             );
         };
+
+        /**
+         * 生成模板替换的数据
+         */
+        function getTemplateData(data) {
+            var templateData = {
+                get: function (name) {
+
+                    if (typeof data.get === 'function') {
+                        return data.get(name);
+                    }
+
+                    var propertyName = name;
+                    var filter = null;
+
+                    var indexOfDot = name.lastIndexOf('.');
+                    if (indexOfDot > 0) {
+                        propertyName = name.substring(0, indexOfDot);
+                        var filterName = name.substring(indexOfDot + 1);
+                        if (filterName && FILTERS.hasOwnProperty(filterName)) {
+                            filter = FILTERS[filterName];
+                        }
+                    }
+
+                    var value = data.hasOwnProperty(propertyName)
+                        ? data[propertyName]
+                        : propertyName;
+                    if (filter) {
+                        value = filter(value, helper.control);
+                    }
+
+                    return value;
+                }
+            };
+            return templateData;
+        }
 
         /**
          * 通过模板引擎渲染得到字符串
@@ -116,7 +155,6 @@ define(
          * 需要注意，使用此方法时，仅满足以下所有条件时，才可以使用内置的过滤器：
          *
          * - `data`对象仅一层属性，即不能使用`${user.name}`这一形式访问深层的属性
-         * - `data`对象不能包含名为`instance`的属性，此属性会强制失效
          *
          * 另外此方法存在微小的几乎可忽略不计的性能损失，
          * 但如果需要大量使用模板同时又不需要内置的过滤器，可以使用以下代码代替：
@@ -131,44 +169,30 @@ define(
             var helper = this;
             data = data || {};
 
-            var templateData = {
-                get: function (name) {
-                    if (name === 'instance') {
-                        return helper.control;
-                    }
-
-                    if (typeof data.get === 'function') {
-                        return data.get(name);
-                    }
-
-                    var propertyName = name;
-                    var filter = null;
-
-                    var indexOfDot = name.lastIndexOf('.');
-                    if (indexOfDot > 0) {
-                        propertyName = name.substring(0, indexOfDot);
-                        var filterName = name.substring(indexOfDot + 1);
-                        if (filterName && FILTERS.hasOwnProperty(filterName)) {
-                            filter = FILTERS[filterName];
-                        }
-                    }
-
-                    var value = data.hasOwnProperty(propertyName)
-                        ? data[propertyName]
-                        : propertyName;
-                    if (filter) {
-                        value = filter(value, helper.control);
-                    }
-
-                    return value;
-                }
-            };
-
             if (!this.templateEngine) {
-                throw new Error('No template engine attached to this control');
+                this.setTemplateEngine(new etpl.Engine);
             }
 
-            return this.templateEngine.render(target, templateData);
+            return this.templateEngine.render(target, getTemplateData(data));
+        };
+
+        /*
+         * 渲染模板内容
+         *
+         * @param {string} content 模板内容
+         * @param {Object} [data] 用于模板渲染的数据
+         * @return {string}
+         */
+        helper.render = function (content, data) {
+            var helper = this;
+            data = data || {};
+
+            if (!this.templateEngine) {
+                this.setTemplateEngine(new etpl.Engine);
+            }
+
+            var renderer = this.templateEngine.compile(content);
+            return renderer(getTemplateData(data));
         };
 
         return helper;

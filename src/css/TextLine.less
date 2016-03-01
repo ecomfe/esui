@@ -98,9 +98,14 @@
     color: @esui-textline-search-hint-number-color;
 }
 
+.@{ui-class-prefix}-textline-search-clear-link,
 .@{ui-class-prefix}-textline-search-back {
     cursor: pointer;
     float: right;
+}
+
+.@{ui-class-prefix}-textline-search-clear-link {
+    margin-right: 1em;
 }
 
 .@{ui-class-prefix}-textline-search-wrapper {
@@ -128,12 +133,12 @@
         display: inline-block;
         line-height: @esui-textline-line-height;
     }
-    &:hover .@{ui-class-prefix}-textline-search-content-clear {
+    &:hover .@{ui-class-prefix}-textline-search-content-remove {
         display: inline-block;
     }
 }
 
-.@{ui-class-prefix}-textline-search-content-clear {
+.@{ui-class-prefix}-textline-search-content-remove {
     display: none;
     width: @esui-textline-search-content-clear-width;
     color: @esui-textline-search-content-clear-color;
