@@ -93,6 +93,28 @@ define(
             strictWidth: true
         };
 
+        SelectLayer.prototype.show = function () {
+            Layer.prototype.show.apply(this, arguments);
+
+            focusItem.call(this, this.control.selectedIndex);
+        };
+
+        /**
+         * 浮层展开时，将选中项尽可能定位到layer中间位置
+         *
+         * @param {number} index 想要focus到浮层中央的选项索引
+         */
+        function focusItem(index) {
+            var layer = this.getElement();
+            var selectedElement = layer.querySelector('li[data-index="' + index + '"]');
+            if (selectedElement) {
+                var selectedElementOffset = lib.getOffset(selectedElement);
+                var itemHeight = selectedElementOffset.height;
+                var expectedScrollTop = index * itemHeight - (layer.clientHeight - itemHeight) / 2;
+                layer.scrollTop = expectedScrollTop;
+            }
+        }
+
         /**
          * 下拉选择控件
          *
