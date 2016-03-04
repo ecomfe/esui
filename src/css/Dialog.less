@@ -92,24 +92,31 @@
     .esui-dialog-mask-theme();
 }
 
-// 警告和确认框
-.@{ui-class-prefix}-dialog-text {
-    min-height: 4em;
-}
-
-.@{ui-class-prefix}-dialog-alert,
-.@{ui-class-prefix}-dialog-confirm {
-    .@{ui-class-prefix}-dialog-body {
-        overflow: auto;
+.@{ui-class-prefix}-dialog-alert,       
+.@{ui-class-prefix}-dialog-confirm {        
+    .@{ui-class-prefix}-dialog-body {       
+        display: table;
+        padding: 0;
+        width: 100%;
     }
 }
 
 .@{ui-class-prefix}-dialog-icon {
-    float: left;
+    display: table-cell;
+    vertical-align: middle;
     span {
         font-size: 4em;
     }
-    margin-right: 1em;
+    padding: @esui-dialog-body-padding;
+    padding-right: 0;
+    width: 1%;
+    // 警告和确认框
+    & + .@{ui-class-prefix}-dialog-text {
+        width: 100%;
+        display: table-cell;
+        vertical-align: middle;
+        padding: @esui-dialog-body-padding;
+    }
 }
 
 .@{ui-class-prefix}-dialog-icon-warning {
@@ -140,7 +147,5 @@
 .esui-dialog-dragging-theme() {}
 
 .esui-dialog-mask-theme() {}
-
-.esui-dialog-warning-icon-theme() {}
 
 .esui-dialog-warning-icon-theme() {}

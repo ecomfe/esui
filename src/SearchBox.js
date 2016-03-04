@@ -15,6 +15,7 @@ define(
         var painters = require('./painters');
         var u = require('underscore');
         var $ = require('jquery');
+        var Event = require('mini-event/Event');
 
         require('./TextBox');
         require('./Button');
@@ -162,9 +163,10 @@ define(
 
                     var searchButton = me.getChild('search');
                     if (searchButton) {
-                        searchButton.on('click', function () {
-                            me.fire('search');
-                        });
+                        // 委托时设置状态同步
+                        // 必要时可在外部使用e.preventDefault()
+                        // 典型场景是防止触发所在表单提交
+                        Event.delegate(searchButton, 'click', this, 'search', {syncState: true});
                     }
                 },
 
