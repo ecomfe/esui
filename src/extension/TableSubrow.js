@@ -328,7 +328,9 @@ define(
 
             if (!eventArgs.isDefaultPrevented()) {
                 entryOut(table, entry);
-                table.subrowIndex = null;
+                if (table.subrowMutex) {
+                    table.subrowIndex = null;
+                }
 
                 table.helper.removePartClasses(
                     'subentry-opened',
@@ -361,7 +363,7 @@ define(
             var currentIndex = table.subrowIndex;
             var closeSuccess = 1;
 
-            if (hasValue(currentIndex)) {
+            if (table.subrowMutex && hasValue(currentIndex)) {
                 closeSuccess = closeSubrow(
                     table,
                     currentIndex,
@@ -369,7 +371,7 @@ define(
                 );
             }
 
-            if (!closeSuccess) {
+            if (table.subrowMutex && !closeSuccess) {
                 return;
             }
 
