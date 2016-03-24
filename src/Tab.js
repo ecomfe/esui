@@ -165,7 +165,7 @@ define(
                 getContentHTML: function (config, allowClose) {
                     var contentHtml = '';
                     if (config.url) {
-                        contentHtml = '<a href="${url}">' + this.contentTemplate + '</a>';
+                        contentHtml = '<a href="${url}">${title}</a>';
                     }
                     else {
                         contentHtml = this.contentTemplate;

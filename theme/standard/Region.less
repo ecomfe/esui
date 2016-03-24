@@ -1,6 +1,6 @@
 @import "../../src/css/Region.less";
 
-@esui-region-border: none;
+@esui-region-background: @esui-palette-white;
 
 @esui-region-country-check-background: @esui-palette-neutral-color;
 @esui-region-country-check-color: @esui-palette-color;
@@ -12,6 +12,10 @@
 @esui-region-city-number-color: @esui-palette-contrast-color;
 
 @esui-region-region-box1-background: @esui-palette-neutral-highlight-color;
+
+.esui-region-theme() {
+    background: @esui-region-background;
+}
 
 .esui-region-country-check-theme() {
     background: @esui-region-country-check-background;

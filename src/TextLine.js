@@ -155,9 +155,7 @@ define(
                          */
                         name: 'width',
                         paint: function (textLine, width) {
-                            width = width || textLine.width;
-                            // 主体高度
-                            textLine.main.style.width = width + 'px';
+                            $(textLine.main).css('width', width || textLine.width);
                         }
                     },
                     {
