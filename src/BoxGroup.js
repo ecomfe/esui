@@ -302,14 +302,36 @@ define(
                 paint: render
             },
             {
-                name: ['disabled', 'readOnly'],
-                paint: function (group, disabled, readOnly) {
-                    u.each(
-                        group.getBoxElements(),
-                        function (box) {
-                            box.disabled = disabled || readOnly;
-                        }
-                    );
+                /**
+                 * @property {boolean} disabled
+                 *
+                 * 表示是否禁用当前所有checkbox。
+                 */
+
+                /**
+                 * @property {string} disabledItems
+                 *
+                 * 逗号分隔的要禁用的选项value。
+                 */
+                name: ['disabled', 'readOnly', 'disabledItems'],
+                paint: function (group, disabled, readOnly, disabledItems) {
+                    if (u.isBoolean(disabled) || u.isBoolean(readOnly)) {
+                        u.each(
+                            group.getBoxElements(),
+                            function (box) {
+                                box.disabled = disabled || readOnly;
+                            }
+                        );
+                    }
+                    else if (u.isString(disabledItems)) {
+                        var ids = disabledItems.split(',');
+                        u.each(
+                            group.getBoxElements(),
+                            function (box) {
+                                box.disabled = u.contains(ids, '' + box.value);
+                            }
+                        );
+                    }
                 }
             },
             {
