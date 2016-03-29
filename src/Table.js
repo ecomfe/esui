@@ -2501,6 +2501,7 @@ define(
                             setPos(followDoms[i], posStyle, fhArr[i], curLeft);
                         }
                         setPos(domHead, posStyle, fhArr[fhLen - 1], curLeft);
+                        resetFixedHeadLeft(table);
                     }
                 }
                 else {
@@ -2519,6 +2520,29 @@ define(
             };
 
             table.helper.addDOMEvent(window, 'scroll', table.topReseter);
+            table.helper.addDOMEvent(table.main, 'scroll', function (e) {
+                table.fire('scroll');
+                resetFixedHeadLeft(table);
+            });
+        }
+
+        /**
+         * 重置fixed的表头的left值
+         *
+         * @private
+         * @param {ui.Table} table table控件实例
+         */
+        function resetFixedHeadLeft(table) {
+            var tableScrollLeft = table.main.scrollLeft;
+            var domHead = getHead(table);
+            var posStyle = $(domHead).css('position');
+            if (posStyle === 'fixed') {
+                var scrollLeft = lib.page.getScrollLeft();
+
+                initTableOffset(table);
+                var curLeft = table.left - scrollLeft;
+                $(domHead).css('left', curLeft - scrollLeft - tableScrollLeft);
+            }
         }
 
         /**
