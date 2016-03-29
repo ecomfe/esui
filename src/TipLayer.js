@@ -94,7 +94,7 @@ define(
                         paint: function (tipLayer, value) {
                             // 取消了title
                             var head = tipLayer.getHead();
-                            if (value == null) {
+                            if (!value) {
                                 if (head) {
                                     tipLayer.removeChild(head);
                                     head.dispose();
