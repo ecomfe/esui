@@ -8,12 +8,12 @@
         cursor: pointer;
         text-indent: @esui-textbox-height;
         overflow: hidden;
-        visibility: hidden;
+        .esui-transition(text-indent 0.2s linear);
     }
     .@{ui-class-prefix}-textbox-icon,
     .@{ui-class-prefix}-button-bordered {
         color: @esui-search-box-clear-icon-color;
-        .esui-transition(all 0.2s linear);
+        
     }
 }
 
@@ -27,6 +27,5 @@
 .esui-search-box-searched-theme() {
     .@{ui-class-prefix}-textbox-icon {
         text-indent: 0;
-        visibility: visible;
     }
 }
