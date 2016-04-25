@@ -347,7 +347,8 @@ define(
                     {
                         my: 'left top',
                         of: target,
-                        at: 'left bottom'
+                        at: 'left bottom',
+                        collision: 'flipfit'
                     },
                     options
                 )
