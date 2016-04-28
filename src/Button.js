@@ -6,6 +6,7 @@
  * @file 按钮
  * @author dbear, otakustay
  */
+
 define(
     function (require) {
         var u = require('underscore');
@@ -24,10 +25,6 @@ define(
         var Button = eoo.create(
             Control,
             {
-                constructor: function () {
-                    this.$super(arguments);
-                },
-
                 /**
                  * 控件类型，始终为`"Button"`
                  *

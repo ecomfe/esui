@@ -17,7 +17,7 @@ define(
         var u = require('underscore');
         var painters = require('./painters');
 
-        require('esui/behavior/Selectable');
+        require('./behavior/Selectable');
 
         /**
          * Schedule控件
