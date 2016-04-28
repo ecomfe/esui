@@ -15,7 +15,7 @@ define(
         var eoo = require('eoo');
         var EventTarget = require('mini-event/EventTarget');
         var $ = require('jquery');
-        require('./behavior/position');
+        require('./behavior/jquery-ui');
 
         /**
          * 浮层基类

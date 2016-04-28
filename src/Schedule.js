@@ -17,7 +17,7 @@ define(
         var u = require('underscore');
         var painters = require('./painters');
 
-        require('./behavior/Selectable');
+        require('./behavior/jquery-ui');
 
         /**
          * Schedule控件

@@ -10,8 +10,7 @@ define(
     function (require) {
         require('./Button');
         require('./Panel');
-        require('./behavior/Draggable');
-        require('./behavior/position');
+        require('./behavior/jquery-ui');
 
         var lib = require('./lib');
         var Control = require('./Control');

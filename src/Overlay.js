@@ -15,7 +15,7 @@ define(
         var eoo = require('eoo');
         var painters = require('./painters');
 
-        require('./behavior/position');
+        require('./behavior/jquery-ui');
 
         /**
          * 浮层控件类

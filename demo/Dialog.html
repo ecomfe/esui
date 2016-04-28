@@ -248,6 +248,7 @@
 
             document.getElementById('trigger').onclick = function () {
                 var dialog = ui.get('showDlg');
+                debugger;
                 dialog.show();
                 dialog.getFoot().getChild('btnOk').on('click', function() {
                     dialog.hide();

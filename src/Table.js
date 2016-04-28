@@ -15,7 +15,7 @@ define(
         var painters = require('./painters');
         var $ = require('jquery');
 
-        require('./behavior/Mouse');
+        require('./behavior/jquery-ui');
         require('./Tip');
 
         /**

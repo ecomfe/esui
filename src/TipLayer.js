@@ -13,7 +13,7 @@ define(
         require('./Panel');
 
         var $ = require('jquery');
-        require('./behavior/position');
+        require('./behavior/jquery-ui');
         var eoo = require('eoo');
         var esui = require('./main');
         var u = require('underscore');
