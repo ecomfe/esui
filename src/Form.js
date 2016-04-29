@@ -53,7 +53,7 @@ define(
                     continue;
                 }
 
-                 // 不需要禁用了的控件的值
+                // 不需要禁用了的控件的值
                 if (control.isDisabled()) {
                     continue;
                 }
@@ -83,6 +83,49 @@ define(
                     return control.getRawValue();
                 }
             );
+        };
+
+        /**
+         * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
+         * 如果有同`name的多个控件，则值为数组, 且不打平每个控件的数组值
+         *
+         * @return {Object} 表单的数据
+         */
+        InputCollection.prototype.getDataWithoutFlatternArrayValues = function () {
+            var store = {};
+            var inputs = this;
+            for (var i = 0; i < inputs.length; i++) {
+                var control = inputs[i];
+
+                // 排除未选中的选择框控件
+                if (control.getCategory() === 'check' && !control.isChecked()) {
+                    continue;
+                }
+
+                // 不需要禁用了的控件的值
+                if (control.isDisabled()) {
+                    continue;
+                }
+
+                var name = control.get('name');
+                var value = control.getRawValue();
+                if (store.hasOwnProperty(name)) {
+                    store[name].push(value);
+                }
+                else {
+                    // 统一用数组存放
+                    store[name] = [value];
+                }
+            }
+
+            for (var key in store) {
+                // 只有1项说明该 name 没有重复,直接放出去
+                if (store[key].length === 1) {
+                    store[key] = store[key][0];
+                }
+            }
+
+            return store;
         };
 
         /**
@@ -439,6 +482,18 @@ define(
                 },
 
                 /**
+                 * 获取表单数据，形成以`name`为键，`rawValue`为值的对象，
+                 * 如果有同`name`的多个控件，则值为数组,
+                 * 修复了 Form#getData 在 rawValue 为数组时会打平的 bug
+                 *
+                 * @return {Object} 表单的数据
+                 */
+                getDataWithoutFlatternArrayValues: function () {
+                    var inputs = this.getInputControls();
+                    return inputs.getDataWithoutFlatternArrayValues();
+                },
+
+                /**
                  * 获取提交的字符串数据
                  *
                  * @return {string} 返回URL编码的一个字符串
@@ -461,7 +516,7 @@ define(
                     var result = true;
                     for (var i = 0; i < inputs.length; i++) {
                         var control = inputs[i];
-                         // 不对disabled的控件进行验证
+                        // 不对disabled的控件进行验证
                         if (control.isDisabled()) {
                             continue;
                         }
