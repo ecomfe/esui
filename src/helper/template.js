@@ -5,10 +5,12 @@
  * @ignore
  * @file 模板相关辅助方法
  * @author otakustay
+ *         homfen
  */
 define(
     function (require) {
         var u = require('underscore');
+        var etpl = require('etpl');
 
         var FILTERS = {
             'id': function (part, instance) {
@@ -27,7 +29,9 @@ define(
         /**
          * @override Helper
          */
-        var helper = {};
+        var helper = {
+            templateEngine: new etpl.Engine()
+        };
 
         /**
          * 设置模板引擎实例
@@ -48,14 +52,55 @@ define(
          * @protected
          */
         helper.initializeTemplateEngineExtension = function () {
+            var me = this;
             u.each(
                 FILTERS,
                 function (filter, name) {
+                    filter = u.bind(filter, me.control);
                     this.addFilter(name, filter);
                 },
                 this.templateEngine
             );
         };
+
+        /**
+         * 生成模板替换的数据
+         *
+         * @param {Object} data 数据
+         * @return {Object} templateData
+         */
+        function getTemplateData(data) {
+            var templateData = {
+                get: function (name) {
+
+                    if (typeof data.get === 'function') {
+                        return data.get(name);
+                    }
+
+                    var propertyName = name;
+                    var filter = null;
+
+                    var indexOfDot = name.lastIndexOf('.');
+                    if (indexOfDot > 0) {
+                        propertyName = name.substring(0, indexOfDot);
+                        var filterName = name.substring(indexOfDot + 1);
+                        if (filterName && FILTERS.hasOwnProperty(filterName)) {
+                            filter = FILTERS[filterName];
+                        }
+                    }
+
+                    var value = data.hasOwnProperty(propertyName)
+                        ? data[propertyName]
+                        : propertyName;
+                    if (filter) {
+                        value = filter(value, helper.control);
+                    }
+
+                    return value;
+                }
+            };
+            return templateData;
+        }
 
         /**
          * 通过模板引擎渲染得到字符串
@@ -128,47 +173,46 @@ define(
          * @return {string}
          */
         helper.renderTemplate = function (target, data) {
-            var helper = this;
             data = data || {};
 
-            var templateData = {
-                get: function (name) {
-                    if (name === 'instance') {
-                        return helper.control;
-                    }
-
-                    if (typeof data.get === 'function') {
-                        return data.get(name);
-                    }
-
-                    var propertyName = name;
-                    var filter = null;
-
-                    var indexOfDot = name.lastIndexOf('.');
-                    if (indexOfDot > 0) {
-                        propertyName = name.substring(0, indexOfDot);
-                        var filterName = name.substring(indexOfDot + 1);
-                        if (filterName && FILTERS.hasOwnProperty(filterName)) {
-                            filter = FILTERS[filterName];
-                        }
-                    }
-
-                    var value = data.hasOwnProperty(propertyName)
-                        ? data[propertyName]
-                        : propertyName;
-                    if (filter) {
-                        value = filter(value, helper.control);
-                    }
-
-                    return value;
-                }
-            };
-
             if (!this.templateEngine) {
-                throw new Error('No template engine attached to this control');
+                this.setTemplateEngine(new etpl.Engine());
             }
 
-            return this.templateEngine.render(target, templateData);
+            return this.templateEngine.render(target, getTemplateData(data));
+
+        };
+
+        /**
+         * 渲染模板内容
+         *
+         * @param {string} content 模板内容
+         * @param {Object} [data] 用于模板渲染的数据
+         * @return {string}
+         */
+        helper.render = function (content, data) {
+            data = data || {};
+
+            if (!this.templateEngine) {
+                this.setTemplateEngine(new etpl.Engine());
+            }
+
+            var renderer = this.templateEngine.compile(content);
+            return renderer(getTemplateData(data));
+        };
+
+        /**
+         * 编译模板，返回第一个target的renderer函数
+         *
+         * @param {string} content 模板字符串
+         * @return {Function} renderer函数
+         */
+        helper.compile = function (content) {
+            if (!this.templateEngine) {
+                this.setTemplateEngine(new etpl.Engine());
+            }
+
+            return this.templateEngine.compile(content);
         };
 
         return helper;
