@@ -6,6 +6,7 @@
  * @file 渲染器模块
  * @author otakustay
  */
+
 define(
     function (require) {
         var u = require('underscore');

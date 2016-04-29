@@ -26,26 +26,26 @@
                 <p>使用属性<code>variants</code>可以快速创建一个带有预定义样式的按钮。</p>
             </div>
             <div class="example">
-                <button type="button" data-ui="type:Button;">Button</button>
-                <button type="button" data-ui="type:Button;variants:primary">Primary</button>
-                <button type="button" data-ui="type:Button;variants:success">Success</button>
-                <button type="button" data-ui="type:Button;variants:info">info</button>
-                <button type="button" data-ui="type:Button;variants:warning">warning</button>
-                <button type="button" data-ui="type:Button;variants:danger">danger</button>
-                <button type="button" data-ui="type:Button;variants:link">link</button>
+                <button type="button" class="ui-button" data-ui="type:Button;">Button</button>
+                <button type="button" class="ui-button ui-button-primary" data-ui="type:Button;variants:primary">Primary</button>
+                <button type="button" class="ui-button ui-button-success" data-ui="type:Button;variants:success">Success</button>
+                <button type="button" class="ui-button ui-button-info" data-ui="type:Button;variants:info">info</button>
+                <button type="button" class="ui-button ui-button-warning" data-ui="type:Button;variants:warning">warning</button>
+                <button type="button" class="ui-button ui-button-danger" data-ui="type:Button;variants:danger">danger</button>
+                <button type="button" class="ui-button ui-button-link" data-ui="type:Button;variants:link">link</button>
             </div>
             <h2>尺寸</h2>
             <div class="intro">
                 <p>使用类<code>.ui-x-small</code>、<code>.ui-small</code>、<code>.ui-large</code>、<code>.ui-x-large</code>、<code>.ui-xx-large</code>、<code>.ui-xxx-large</code>可以获得不同尺寸的按钮。</p>
             </div>
             <div class="example">
-                <button type="button" data-ui="type:Button" class="ui-x-small">ui-x-small</button>
-                <button type="button" data-ui="type:Button" class="ui-small">ui-x-small</button>
-                <button type="button" data-ui="type:Button">medium</button>
-                <button type="button" data-ui="type:Button" class="ui-large">ui-large</button>
-                <button type="button" data-ui="type:Button" class="ui-x-large">ui-x-large</button>
-                <button type="button" data-ui="type:Button" class="ui-xx-large">ui-xx-large</button>
-                <button type="button" data-ui="type:Button" class="ui-xxx-large">ui-xxx-large</button>
+                <button type="button" data-ui="type:Button" class="ui-button ui-x-small">ui-x-small</button>
+                <button type="button" data-ui="type:Button" class="ui-button ui-small">ui-x-small</button>
+                <button type="button" data-ui="type:Button" class="ui-button">medium</button>
+                <button type="button" data-ui="type:Button" class="ui-button ui-large">ui-large</button>
+                <button type="button" data-ui="type:Button" class="ui-button ui-x-large">ui-x-large</button>
+                <button type="button" data-ui="type:Button" class="ui-button ui-xx-large">ui-xx-large</button>
+                <button type="button" data-ui="type:Button" class="ui-button ui-xxx-large">ui-xxx-large</button>
             </div>
             
             <h2>状态</h2>
@@ -53,10 +53,10 @@
                 <p>使用类<code>.state-hover</code>、<code>.state-active</code>可以获得鼠标悬浮和激活状态的按钮，也可通过属性<code>disabled</code>设置按钮为不可用状态。</p>
             </div>
             <div class="example">
-                <div data-ui="type:Button;variants:primary">Normal</div>
-                <div data-ui="type:Button;variants:primary" class="state-hover">Hover</div>
-                <div data-ui="type:Button;variants:primary" class="state-active">Active</div>
-                <div data-ui="type:Button;variants:primary;disabled:1">Disabled</div>
+                <div data-ui="type:Button;variants:primary" class="ui-button ui-button-primary">Normal</div>
+                <div data-ui="type:Button;variants:primary" class="ui-button ui-button-primary state-hover">Hover</div>
+                <div data-ui="type:Button;variants:primary" class="ui-button ui-button-primary state-active">Active</div>
+                <div data-ui="type:Button;variants:primary;disabled:1" class="ui-button ui-button-primary">Disabled</div>
             </div>
             <h2>按钮组</h2>
             <div class="intro">
@@ -82,7 +82,7 @@
                 <div data-ui="type:Button;" class="ui-button-primary"><span class="ui-icon-user"></span> Icon</div>
                 <div data-ui="type:Button;" class="ui-button-primary">Icon <span class="ui-icon-user"></span></div>
             </div>
-            <h2>设置宽度</h2>
+            <h2>设置宽度、高度</h2>
             <div class="intro">
                 <p>使用属性<code>width</code>可以设置按钮的宽度，也可通过<code>.ui-button-fluid</code>或属性<code>fluid</code>设置全宽。</p>
             </div>
@@ -91,7 +91,13 @@
                     <div data-ui="type:Button;variants:primary;width:100">100px</div>
                 </div>
                 <div class="row">
-                    <div data-ui="type:Button;variants:primary;width:300">300px</div>
+                    <div data-ui="type:Button;variants:primary;width:5em">5em</div>
+                </div>
+                <div class="row">
+                    <div data-ui="type:Button;variants:danger;height:50px">50px</div>
+                </div>
+                <div class="row">
+                    <div data-ui="type:Button;variants:danger;height:3.3em">height 3.3em</div>
                 </div>
                 <div class="row">
                     <div data-ui="type:Button;variants:success" class="ui-button-fluid">全宽</div>
@@ -105,7 +111,7 @@
                 <p>使用<code>setContent</code>方法可以设置按钮的内容。</p>
             </div>
             <div class="example">
-                <div data-ui="type:Button; id:content" class="ui-button-primary" id="setcontent">点击改变按钮的内容</div>
+                <div data-ui="type:Button;id:content" class="ui-button-primary" id="setcontent">点击改变按钮的内容</div>
             </div>
             <script type="text/sample">
                 ui.get('content').on('click', function() {

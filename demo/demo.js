@@ -9,13 +9,13 @@ define('demo',
         function renderSample() {
             $('.example').each(function (index, item) {
                 var $tab = $('<div data-ui-type="Tab" data-ui-id="democode' + index
-                           + '"data-ui-variants="align-right-democode">'
+                           + '"data-ui-variants="invert">'
                            + '<ul data-role="navigator" id="ctrl-default-democode'
                            + index + '-navigator" class="ui-tab-navigator"></ul></div>');
                 var $tabHtml = $('<li data-for="democodehtml' + index + '"><span>HTML</span></li>');
                 var $tabJs = $('<li data-for="democodejs' + index + '"><span>JS</span></li>');
                 $tab.find('ul').append($tabHtml);
-                var $tabContent = $('<div class="ui-tab-content ui-tab-content-democode-border"></div>');
+                var $tabContent = $('<div class="ui-tab-content ui-tab-invert-content-top-border"></div>');
                 var $tabContentHtml = $('<div class="ui-tab-panel" id="democodehtml' + index + '"></div>');
                 var $tabContentJs = $('<div class="ui-tab-panel" id="democodejs' + index + '"></div>');
                 $tabContent.append($tabContentHtml);

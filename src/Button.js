@@ -46,16 +46,13 @@ define(
                      * 默认选项配置
                      */
                     var properties = {
-                        content: '', // 按钮的显示文字
-                        disabled: false // 控件是否禁用
+                        width: null,
+                        height: null,
+                        content: null,
+                        disabled: false
                     };
                     u.extend(properties, options);
-                    properties.tagName = this.main.nodeName.toLowerCase();
-                    var innerDiv = this.main.firstChild;
-                    if (!properties.content
-                        && innerDiv
-                        && innerDiv.nodeName.toLowerCase() !== 'div'
-                    ) {
+                    if (!properties.content) {
                         properties.content = this.main.innerHTML;
                     }
 
@@ -86,12 +83,21 @@ define(
                  */
                 repaint: painters.createRepaint(
                     Control.prototype.repaint,
-                    /**
-                     * @property {number} width
-                     *
-                     * 宽度
-                     */
-                    painters.style('width'),
+                    {
+                        /**
+                         * @property {number} width
+                         *
+                         * 宽度
+                         */
+                        name: 'width',
+                        paint: function (button, value) {
+                            if (!value) {
+                                return;
+                            }
+                            var $main = $(button.main);
+                            $main.css('width', value);
+                        }
+                    },
                     {
                         /**
                          * @property {number} height
@@ -107,27 +113,30 @@ define(
                             $main.css(
                                 {
                                     height: value,
-                                    lineHeight: value + 'px'
+                                    lineHeight: value
                                 }
                             );
-
-                            var offsetHeight = $main.height();
-                            // 说明是border-box模式
-                            if (offsetHeight === value) {
-                                var newHeight = value
-                                    + parseInt($main.css('borderTopWidth'), 10)
-                                    + parseInt($main.css('borderBottomWidth'), 10);
-                                $main.css('height', newHeight);
-                            }
                         }
                     },
-
                     /**
-                     * @property {string} [content=""]
+                     * @property {string} content
                      *
                      * 按钮的文本内容，不作HTML转义
                      */
-                    painters.html('content'),
+                    {
+                        name: 'content',
+                        paint: function (button, content) {
+                            var jqEle = $(button.main);
+                            if (content !== jqEle.html()) {
+                                jqEle.html(content);
+                            }
+                        }
+                    },
+                    /**
+                     * @property {Boolean} [disabled=false]
+                     *
+                     * 按钮的文本内容，不作HTML转义
+                     */
                     {
                         name: 'disabled',
                         paint: function (button, disabled) {
