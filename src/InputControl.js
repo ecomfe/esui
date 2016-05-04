@@ -6,6 +6,7 @@
  * @file 输入控件基类模块
  * @author erik, otakustay
  */
+
 define(
     function (require) {
         var lib = require('./lib');

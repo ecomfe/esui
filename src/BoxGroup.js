@@ -6,6 +6,7 @@
  * @file 选择框组
  * @author otakustay
  */
+
 define(
     function (require) {
         var u = require('underscore');
@@ -55,6 +56,11 @@ define(
                         boxClass: ''
                     };
                     u.extend(properties, options);
+                    // 使用默认的样式
+                    if (!properties.boxClass) {
+                        properties.boxClass
+                            = this.helper.getPrefixClass(properties.boxType + '-custom');
+                    }
 
                     var datasource = properties.datasource;
                     if (!datasource.length) {
@@ -118,13 +124,7 @@ define(
                          *
                          * 数据源
                          */
-
-                        /**
-                         * @property {string} boxType
-                         *
-                         * 选框类型，可以为`radio`表示单选，或`checkbox`表示复选
-                         */
-                        name: ['datasource', 'boxType'],
+                        name: ['datasource'],
                         paint: render
                     },
                     {

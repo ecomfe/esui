@@ -31,6 +31,18 @@ define(
         var helper = {};
 
         /**
+         * 获取模板引擎实例
+         *
+         * @return {etpl.Engine} engine 模板引擎实例
+         */
+        helper.getTemplateEngine = function () {
+            if (!this.templateEngine) {
+                this.setTemplateEngine(new etpl.Engine());
+            }
+            return this.templateEngine;
+        };
+
+        /**
          * 设置模板引擎实例
          *
          * @param {etpl.Engine} engine 模板引擎实例
@@ -62,6 +74,9 @@ define(
 
         /**
          * 生成模板替换的数据
+         *
+         * @param {Object} data 数据
+         * @return {Object} 处理过的数据
          */
         function getTemplateData(data) {
             var templateData = {
@@ -166,14 +181,9 @@ define(
          * @return {string}
          */
         helper.renderTemplate = function (target, data) {
-            var helper = this;
             data = data || {};
-
-            if (!this.templateEngine) {
-                this.setTemplateEngine(new etpl.Engine);
-            }
-
-            return this.templateEngine.render(target, getTemplateData(data));
+            var engine = this.getTemplateEngine();
+            return engine.render(target, getTemplateData(data));
         };
 
         /*
@@ -184,14 +194,9 @@ define(
          * @return {string}
          */
         helper.render = function (content, data) {
-            var helper = this;
             data = data || {};
-
-            if (!this.templateEngine) {
-                this.setTemplateEngine(new etpl.Engine);
-            }
-
-            var renderer = this.templateEngine.compile(content);
+            var engine = this.getTemplateEngine();
+            var renderer = engine.compile(content);
             return renderer(getTemplateData(data));
         };
 
