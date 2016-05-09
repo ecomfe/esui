@@ -351,7 +351,7 @@ define(
          * @param {string} boxType 选择框的类型
          * @ignore
          */
-        function render(group, datasource, boxType) {
+        function render(group, datasource) {
             // 有些属性会触发render，要把event先去掉，然后再绑定一次。
             function bindUnbindBoxEvents(addEvent) {
                 // `change`事件不会冒泡的，所以在这里要给一个一个加上
@@ -365,6 +365,7 @@ define(
             }
             bindUnbindBoxEvents(false);
             var html = '';
+            var boxType = group.boxType;
 
             var classes = [].concat(
                 group.helper.getPartClasses(boxType),
