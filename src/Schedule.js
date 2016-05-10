@@ -132,15 +132,20 @@ define(
                     var me = this;
                     var timebody = lib.g(getId(this, 'time-body'));
 
-                    // 记录shift键是否被按下
-                    // shift键影响鼠标拖拽时是否反选
-                    var isShiftKeyPressed = false;
+                    // 使用鼠标拖拽选择：
+                    // 1. 默认反选
+                    // 2. +shift: 增加选择区域
+                    // 3. +ctrl: 缩小选择区域
+                    var shiftCtrlTag = 0;
                     this.helper.addDOMEvent(
                         document.body,
                         'keydown',
                         function (e) {
                             if (e.keyCode === keyboard.SHIFT) {
-                                isShiftKeyPressed = true;
+                                shiftCtrlTag |= 1;
+                            }
+                            if (e.keyCode === keyboard.CTRL || e.keyCode === keyboard.COMMAND) {
+                                shiftCtrlTag |= 2;
                             }
                         }
                     );
@@ -149,7 +154,10 @@ define(
                         'keyup',
                         function (e) {
                             if (e.keyCode === keyboard.SHIFT) {
-                                isShiftKeyPressed = false;
+                                shiftCtrlTag &= 2;
+                            }
+                            if (e.keyCode === keyboard.CTRL || e.keyCode === keyboard.COMMAND) {
+                                shiftCtrlTag &= 1;
                             }
                         }
                     );
@@ -195,7 +203,7 @@ define(
                                 // hack ie8下重新渲染遮罩层的时候会跳动，发现是setCapture的原因
                                 // 此处使用setTimeout，使其跳出setCapture的范围
                                 setTimeout(function () {
-                                    setSelectedAreaValue(me, cellPos, isShiftKeyPressed);
+                                    setSelectedAreaValue(me, cellPos, shiftCtrlTag);
                                 }, 10);
                             }
                         }
@@ -1175,9 +1183,9 @@ define(
          *
          * @param {Schedule} schedule Schedule实例
          * @param {Object} cellPos 选择区域的开始和结束配置
-         * @param {boolean} isShiftKeyPressed 是否按下shift键, 如果有按下，则执行反选
+         * @param {boolean} shiftCtrlTag 是否按下shift / ctrl键
          */
-        function setSelectedAreaValue(schedule, cellPos, isShiftKeyPressed) {
+        function setSelectedAreaValue(schedule, cellPos, shiftCtrlTag) {
 
             var me = schedule;
 
@@ -1194,16 +1202,19 @@ define(
             for (var i = minYCell; i <= maxYCell; i++) {
                 for (var j = minXCell; j <= maxXCell; j++) {
 
-                    if (isShiftKeyPressed) {
+                    if (shiftCtrlTag === 1) {
+                        rawValueCopy[i][j] = 1;
+                    }
+                    else if (shiftCtrlTag === 2) {
+                        rawValueCopy[i][j] = 0;
+                    }
+                    else {
                         if (rawValueCopy[i][j]) {
                             rawValueCopy[i][j] = 0;
                         }
                         else {
                             rawValueCopy[i][j] = 1;
                         }
-                    }
-                    else {
-                        rawValueCopy[i][j] = 1;
                     }
                 }
             }
