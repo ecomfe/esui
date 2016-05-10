@@ -331,6 +331,7 @@ define(
                 + '</div>');
 
             var arrowClasses = helper.getPartClasses('minibar-arrow');
+            arrowClasses.push(helper.getIconClass('caret-right'));
             html.push(''
                 + '<div class="'
                     + arrowClasses.join(' ') + '">'
@@ -341,7 +342,7 @@ define(
             div.innerHTML   = html.join('');
             div.id          = helper.getId('minibar');
             div.className   = helper.getPartClasses('minibar').join(' ');
-
+            
             // 挂载行为
             helper.addDOMEvent(div, 'mouseover',
                 u.bind(miniOverHandler, null, me, div));
@@ -363,11 +364,13 @@ define(
             require('./Button');
             var btnAutoHide = esui.create('Button', {
                 id: me.helper.getId('autohide'),
-                skin: 'autohide'
+                skin: 'autohide',
+                content: '<span class="ui-icon-angle-double-left"></span>'
             });
             var btnFixed    = esui.create('Button', {
                 id: me.helper.getId('fixed'),
-                skin: 'fixed'
+                skin: 'fixed',
+                content: '<span class="ui-icon-angle-double-right"></span>'
             });
 
             // 将按钮append到sidebarbar
@@ -399,9 +402,9 @@ define(
             var mat         = getMat(me);
             var mini        = getMiniBar(me);
 
-            main.style.top  = curTop + 'px';
-            mini.style.top  = curTop + 'px';
-            mat.style.top   = curTop - marginTop + 'px';
+            main.style.top  = positionFormat(curTop);
+            mini.style.top  = positionFormat(curTop);
+            mat.style.top   = positionFormat(curTop - marginTop);
         }
 
         /**
@@ -416,22 +419,18 @@ define(
             // var head = me.headEl;
             // head.style.height = me.headHeight ? me.headHeight + 'px' : 0;
 
-            // 计算main位置
-            var main = me.main;
-            main.style.cssText += ';'
-                + 'left: '
-                    + (me.marginLeft ? me.marginLeft + 'px' : 0) + ';'
-                + 'bottom:'
-                    + (me.marginBottom ? me.marginBottom + 'px' : 0) + ';';
-
             // 计算body位置
             var body = me.bodyEl;
-            body.style.top = me.headHeight ? me.headHeight + 'px' : 0;
-
-            // 计算minibar的位置
-            var minibar = getMiniBar(me);
-            minibar.style.bottom = me.marginBottom ? me.marginBottom + 'px' : 0;
-
+            body.style.top = me.headHeight ? positionFormat(me.headHeight) : 0;
+            
+            // 计算main, minibar, mat的位置
+            u.each([me.main, getMiniBar(me), getMat(me)], function(ele) {
+                ele.style.cssText += ';'
+                + 'left: '
+                    + (sidebar.marginLeft ? positionFormat(sidebar.marginLeft) : 0) + ';'
+                + 'bottom:'
+                    + (sidebar.marginBottom ? positionFormat(sidebar.marginBottom) : 0) + ';';
+            })
 
             // 初始化top
             resetTop(me);
@@ -587,6 +586,23 @@ define(
                         me.autoDelay
                     );
                 }
+            }
+        }
+
+        /**
+         * 元素定位数据格式化
+         * @param  {string} 位置
+         * @param  {Event} event 事件对象
+         * @inner
+         */
+        function positionFormat(position) {
+            position += '';
+            if (position.indexOf('%') > 0 || position.indexOf('em') > 0
+                || position.indexOf('px') > 0) {
+                return position;
+            }
+            else {
+                return position + 'px';
             }
         }
 

@@ -1,0 +1,111 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file sidebar样式
+ * @author miaojian
+ */
+
+@import "Variable.less";
+
+@esui-sidebar-width: 15em;
+@esui-sidebar-background-color: #fff;
+@esui-sidebar-border: 1px solid #ccc;
+.esui-sidebar-border-radius() {
+    border-radius: 0 5px 5px 0;
+}
+
+@esui-sidebar-mat-width: @esui-sidebar-width + 0.5em;
+
+@esui-sidebar-minibar-background: #eaeaea;
+@esui-sidebar-minibar-width: 2em;
+@esui-sidebar-minibar-text-padding-top: 1em;
+@esui-sidebar-minibar-hover-color: #03c;
+@esui-sidebar-minibar-padding: 0 0 0 6px;
+
+@esui-sidebar-head-height: 2.5em;
+@esui-sidebar-head-padding-left: 1em;
+
+@esui-sidebar-autohide-button-top: 0.3em;
+@esui-sidebar-autohide-button-right: 0.6em;
+@esui-sidebar-autohide-button-height: 2em;
+@esui-sidebar-autohide-button-width: 2em;
+
+
+.@{ui-class-prefix}-sidebar {
+    width: @esui-sidebar-width;
+    border: @esui-sidebar-border;
+    background: @esui-sidebar-background-color;
+    position: fixed;
+    z-index: 100;
+    overflow: hidden;
+    .esui-sidebar-border-radius();
+}
+
+.@{ui-class-prefix}-sidebar-mat {
+    position: fixed;
+    width: @esui-sidebar-mat-width;
+    z-index: 50;
+    background: @esui-sidebar-background-color;
+    bottom: 0;
+    border-right: @esui-sidebar-border;
+}
+
+.@{ui-class-prefix}-sidebar-minibar {
+    position: fixed;
+    background: @esui-sidebar-minibar-background;
+    border: @esui-sidebar-border;
+    border-left: 0;
+    width: @esui-sidebar-minibar-width;
+    padding: @esui-sidebar-minibar-padding;
+    cursor: pointer;
+    .esui-sidebar-border-radius();
+}
+
+.@{ui-class-prefix}-sidebar-minibar-text {
+    padding: @esui-sidebar-minibar-text-padding-top 0;
+    width: @esui-sidebar-minibar-width/2;
+}
+
+.@{ui-class-prefix}-sidebar-minibar-arrow {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+}
+
+.@{ui-class-prefix}-sidebar-minibar-hover .@{ui-class-prefix}-sidebar-minibar-text {
+    color: @esui-sidebar-minibar-hover-color;
+}
+
+.@{ui-class-prefix}-sidebar-head {
+    border-bottom: @esui-sidebar-border;
+    line-height: @esui-sidebar-head-height;
+    padding-left: @esui-sidebar-head-padding-left;
+    height: @esui-sidebar-head-height;
+}
+
+.@{ui-class-prefix}-sidebar-body {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: auto;
+    bottom: 0;
+    width: 100%;
+}
+
+.skin-autohide-button,
+.skin-fixed-button {
+    border: 0;
+    position: absolute;
+    top: @esui-sidebar-autohide-button-top;
+    right: @esui-sidebar-autohide-button-right;
+    padding: 0;
+    min-height: @esui-sidebar-autohide-button-height !important;
+    width: @esui-sidebar-autohide-button-width;
+    height: @esui-sidebar-autohide-button-height;
+    line-height: @esui-sidebar-autohide-button-height;
+    background: none;
+    &:hover {
+        background: none;
+    }
+}
+
