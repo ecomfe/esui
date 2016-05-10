@@ -22,7 +22,7 @@ function genNavigator() {
         + '<li><a href="Region.html">Region</a></li>'
         + '<li><a href="Schedule.html">Schedule</a></li>'
         + '<li><a href="Select.html">Select</a></li>'
-        // '<li><a href="Sidebar.html">Sidebar</a></li>' +
+        + '<li><a href="Sidebar.html">Sidebar</a></li>'
         + '<li><a href="SearchBox.html">SearchBox</a></li>'
         + '<li><a href="Tab.html">Tab</a></li>'
         + '<li><a href="Table.html">Table</a></li>'
