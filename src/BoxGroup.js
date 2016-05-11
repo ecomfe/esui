@@ -53,7 +53,13 @@ define(
                          * 附加在boxgroup-wrapper上的css selector 名称。
                          * 做自定义boxgroup的时候用到。加在这里主要是想复用checkbox现成的样式。
                          */
-                        boxClass: ''
+                        boxClass: '',
+                        /**
+                         * @property {boolean} backwardCompatible
+                         *
+                         * 向后兼容(为true时，boxType为radio时rawValue为数组，setProperties fire change事件)
+                         */
+                        backwardCompatible: false
                     };
                     u.extend(properties, options);
                     // 使用默认的样式
@@ -80,6 +86,19 @@ define(
                 },
 
                 /**
+                 * 初始化事件
+                 *
+                 * @override
+                 */
+                initEvents: function () {
+                    var me = this;
+                    var wrapperClass = this.helper.getPartClasses('wrapper');
+                    $(this.main).on('click', '> .' + wrapperClass + ' > input', function (e) {
+                        syncValue.call(me);
+                    });
+                },
+
+                /**
                  * 批量更新属性并重绘
                  *
                  * @param {Object} properties 需更新的属性
@@ -97,9 +116,9 @@ define(
                         properties.rawValue = [];
                     }
 
-                    var changes
-                        = this.$super([properties]);
-                    if (changes.hasOwnProperty('rawValue')) {
+                    var changes = this.$super([properties]);
+                    // 需要向后兼容时才fire事件
+                    if (changes.hasOwnProperty('rawValue') && this.backwardCompatible) {
                         /**
                          * @event change
                          *
@@ -172,9 +191,15 @@ define(
                          */
                         name: 'rawValue',
                         paint: function (group, rawValue) {
-                            rawValue = rawValue || [];
+                            if (group.boxType === 'radio' && rawValue && group.backwardCompatible) {
+                                group.rawValue = rawValue;
+                                rawValue = [rawValue];
+                            }
+                            else {
+                                rawValue = rawValue || [];
+                                group.rawValue = rawValue;
+                            }
                             // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
-                            group.rawValue = rawValue;
                             var map = {};
                             for (var i = 0; i < rawValue.length; i++) {
                                 map[rawValue[i]] = true;
@@ -218,7 +243,15 @@ define(
                      *
                      * `BoxGroup`的字符串形式的值为逗号分隔的多个值
                      */
-                    return value.split(',');
+                    if (this.boxType === 'radio' && !this.backwardCompatible) {
+                        return value;
+                    }
+                    if (value) {
+                        return typeof value === 'string'
+                            ? value.split(',')
+                            : [value];
+                    }
+                    return [];
                 },
 
                 /**
@@ -348,23 +381,11 @@ define(
          *
          * @param {BoxGroup} group 控件实例
          * @param {Object[]} datasource 数据源对象
-         * @param {string} boxType 选择框的类型
          * @ignore
          */
-        function render(group, datasource, boxType) {
-            // 有些属性会触发render，要把event先去掉，然后再绑定一次。
-            function bindUnbindBoxEvents(addEvent) {
-                // `change`事件不会冒泡的，所以在这里要给一个一个加上
-                var eventName = group.main.addEventListener ? 'change' : 'click';
-                u.each(
-                    group.getBoxElements(),
-                    function (box) {
-                        group.helper[addEvent ? 'addDOMEvent' : 'removeDOMEvent'](box, eventName, syncValue);
-                    }
-                );
-            }
-            bindUnbindBoxEvents(false);
+        function render(group, datasource) {
             var html = '';
+            var boxType = group.boxType;
 
             var classes = [].concat(
                 group.helper.getPartClasses(boxType),
@@ -402,7 +423,6 @@ define(
             }
 
             group.main.innerHTML = html;
-            bindUnbindBoxEvents(true);
         }
 
         esui.register(BoxGroup);
