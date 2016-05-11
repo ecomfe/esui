@@ -16,6 +16,7 @@ define(
         var $ = require('jquery');
         var u = require('underscore');
         var painters = require('./painters');
+        var keyboard = require('esui/behavior/keyboard');
 
         require('./behavior/jquery-ui');
 
@@ -130,6 +131,37 @@ define(
                 initEvents: function () {
                     var me = this;
                     var timebody = lib.g(getId(this, 'time-body'));
+
+                    // 使用鼠标拖拽选择：
+                    // 1. 默认反选
+                    // 2. +shift: 增加选择区域
+                    // 3. +ctrl: 缩小选择区域
+                    var shiftCtrlTag = 0;
+                    this.helper.addDOMEvent(
+                        document.body,
+                        'keydown',
+                        function (e) {
+                            if (e.keyCode === keyboard.SHIFT) {
+                                shiftCtrlTag |= 1;
+                            }
+                            if (e.keyCode === keyboard.CTRL || e.keyCode === keyboard.COMMAND) {
+                                shiftCtrlTag |= 2;
+                            }
+                        }
+                    );
+                    this.helper.addDOMEvent(
+                        document.body,
+                        'keyup',
+                        function (e) {
+                            if (e.keyCode === keyboard.SHIFT) {
+                                shiftCtrlTag &= 2;
+                            }
+                            if (e.keyCode === keyboard.CTRL || e.keyCode === keyboard.COMMAND) {
+                                shiftCtrlTag &= 1;
+                            }
+                        }
+                    );
+
                     // 绑定拖动drag事件
                     $(timebody).selectable(
                         {
@@ -171,7 +203,7 @@ define(
                                 // hack ie8下重新渲染遮罩层的时候会跳动，发现是setCapture的原因
                                 // 此处使用setTimeout，使其跳出setCapture的范围
                                 setTimeout(function () {
-                                    setSelectedAreaValue(me, cellPos);
+                                    setSelectedAreaValue(me, cellPos, shiftCtrlTag);
                                 }, 10);
                             }
                         }
@@ -1151,8 +1183,9 @@ define(
          *
          * @param {Schedule} schedule Schedule实例
          * @param {Object} cellPos 选择区域的开始和结束配置
+         * @param {boolean} shiftCtrlTag 是否按下shift / ctrl键
          */
-        function setSelectedAreaValue(schedule, cellPos) {
+        function setSelectedAreaValue(schedule, cellPos, shiftCtrlTag) {
 
             var me = schedule;
 
@@ -1169,13 +1202,20 @@ define(
             for (var i = minYCell; i <= maxYCell; i++) {
                 for (var j = minXCell; j <= maxXCell; j++) {
 
-                    if (rawValueCopy[i][j]) {
+                    if (shiftCtrlTag === 1) {
+                        rawValueCopy[i][j] = 1;
+                    }
+                    else if (shiftCtrlTag === 2) {
                         rawValueCopy[i][j] = 0;
                     }
                     else {
-                        rawValueCopy[i][j] = 1;
+                        if (rawValueCopy[i][j]) {
+                            rawValueCopy[i][j] = 0;
+                        }
+                        else {
+                            rawValueCopy[i][j] = 1;
+                        }
                     }
-
                 }
             }
 
