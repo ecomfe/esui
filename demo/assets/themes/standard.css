@@ -4546,8 +4546,8 @@ hr.ui-divider-dashed {
 }
 @font-face {
   font-family: 'EIcons';
-  src: url('../../fonts//font-eicon/eicons-webfont.eot?v=1.0.0');
-  src: url('../../fonts//font-eicon/eicons-webfont.eot?#iefix&v=1.0.0') format('embedded-opentype'), url('../../fonts//font-eicon/eicons-webfont.woff?v=1.0.0') format('woff'), url('../../fonts//font-eicon/eicons-webfont.ttf?v=1.0.0') format('truetype'), url('../../fonts//font-eicon/eicons-webfont.svg?v=1.0.0#fontawesomeregular') format('svg');
+  src: url('../../../dep/eicons/1.0.0/fonts/font-eicon/eicons-webfont.eot?v=1.0.0');
+  src: url('../../../dep/eicons/1.0.0/fonts/font-eicon/eicons-webfont.eot?#iefix&v=1.0.0') format('embedded-opentype'), url('../../../dep/eicons/1.0.0/fonts/font-eicon/eicons-webfont.woff?v=1.0.0') format('woff'), url('../../../dep/eicons/1.0.0/fonts/font-eicon/eicons-webfont.ttf?v=1.0.0') format('truetype'), url('../../../dep/eicons/1.0.0/fonts/font-eicon/eicons-webfont.svg?v=1.0.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }

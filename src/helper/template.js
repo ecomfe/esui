@@ -29,6 +29,8 @@ define(
          * @override Helper
          */
         var helper = {};
+        
+        var templateEngine;
 
         /**
          * 获取模板引擎实例
@@ -36,10 +38,10 @@ define(
          * @return {etpl.Engine} engine 模板引擎实例
          */
         helper.getTemplateEngine = function () {
-            if (!this.templateEngine) {
+            if (!templateEngine) {
                 this.setTemplateEngine(new etpl.Engine());
             }
-            return this.templateEngine;
+            return templateEngine;
         };
 
         /**
@@ -48,7 +50,7 @@ define(
          * @param {etpl.Engine} engine 模板引擎实例
          */
         helper.setTemplateEngine = function (engine) {
-            this.templateEngine = engine;
+            templateEngine = engine;
 
             if (!engine.esui) {
                 this.initializeTemplateEngineExtension();
@@ -68,7 +70,7 @@ define(
                     filter = u.bind(filter, me.control);
                     this.addFilter(name, filter);
                 },
-                this.templateEngine
+                templateEngine
             );
         };
 
