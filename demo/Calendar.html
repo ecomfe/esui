@@ -30,6 +30,9 @@
                         <span class="cal-desc">默认样式：</span><input data-ui="type:Calendar" />
                     </div>
                     <div class="row">
+                        <span class="cal-desc">两个：</span><input data-ui="type:Calendar;id:twoMonths;twoMonths:true;" />
+                    </div>
+                    <div class="row">
                         <span class="cal-desc">不可用：</span><input data-ui="type:Calendar;disabled:1" />
                     </div>
                     <div class="row">
@@ -88,6 +91,10 @@
             ],
             function (ui) {
                 ui.init();
+                ui.get('twoMonths').setRange({
+                    begin: new Date(2015, 6, 3),
+                    end: new Date(2016, 6, 7)
+                });
                 ui.get('error').showValidationMessage('invalid', '时间错误！');
                 ui.get('range').setRange({
                     begin: new Date(2015, 6, 3),

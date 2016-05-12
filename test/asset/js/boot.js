@@ -35,8 +35,8 @@ require.config({
         },
         {
             'name': 'jquery',
-            'location': '../dep/jquery/1.9.1/src',
-            'main': 'jquery.min'
+            'location': '../dep/jquery/1.11.1/src',
+            'main': 'jquery'
         },
         {
             'name': 'eicons',

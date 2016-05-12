@@ -30,23 +30,36 @@ define(
                 },
 
                 render: function (element) {
-                    element.innerHTML = '<div data-ui-type="MonthView" '
-                        + 'data-ui-child-name="monthView"></div>';
+                    var html = '<div data-ui-type="MonthView" '
+                        + 'data-ui-child-name="prevMonthView"></div>';
 
                     var calendar = this.control;
+                    var twoMonths = calendar.twoMonths;
+                    if (twoMonths) {
+                        html += ' <div data-ui-type="MonthView" '
+                        + 'data-ui-child-name="nextMonthView"></div>';
+                    }
+                    element.innerHTML = html;
                     calendar.helper.initChildren(element);
+                    paintLayer(calendar, calendar.rawValue);
+                },
 
-                    var monthView = calendar.getChild('monthView');
-                    monthView.setProperties(
-                        {
-                            rawValue: calendar.rawValue,
-                            range: calendar.range
-                        }
-                    );
-                    monthView.on('change', u.bind(syncMonthViewValue, calendar));
+                initBehavior: function () {
+                    var calendar = this.control;
+                    var prevMonthView = calendar.getChild('prevMonthView');
+                    var nextMonthView = calendar.getChild('nextMonthView');
+                    prevMonthView.on('change', u.bind(syncMonthView, calendar));
+                    prevMonthView.on('changemonth', u.bind(changePrevMonth, calendar));
+                    nextMonthView && nextMonthView.on('change', u.bind(syncMonthView, calendar));
+                    nextMonthView && nextMonthView.on('changemonth', u.bind(changeNextMonth, calendar));
 
                     if (calendar.autoHideLayer) {
-                        monthView.on(
+                        prevMonthView.on(
+                            'itemclick',
+                            u.bind(calendar.layer.toggle, calendar.layer)
+                        );
+
+                        nextMonthView && nextMonthView.on(
                             'itemclick',
                             u.bind(calendar.layer.toggle, calendar.layer)
                         );
@@ -60,8 +73,8 @@ define(
                     ) {
                         // 展示之前先跟main同步
                         var calendar = this.control;
-                        var monthView = calendar.getChild('monthView');
-                        monthView.setProperties(
+                        var prevMonthView = calendar.getChild('prevMonthView');
+                        prevMonthView.setProperties(
                             {
                                 rawValue: calendar.rawValue,
                                 range: calendar.range
@@ -122,7 +135,9 @@ define(
                          */
                         rawValue: now,
                         // 是否点击自动关闭弹层
-                        autoHideLayer: false
+                        autoHideLayer: false,
+                        // 是否显示两个MonthView
+                        twoMonths: false
                     };
 
                     u.extend(properties, Calendar.defaultProperties, options);
@@ -208,14 +223,18 @@ define(
                          */
                         name: ['rawValue', 'range'],
                         paint: function (calendar, rawValue, range) {
-                            updateDisplayText(calendar);
+                            if (range) {
+                                range = calendar.convertToRaw(range, calendar.range);
+                                calendar.range = range;
+                            }
 
-                            var monthView = calendar.getChild('monthView');
-                            if (monthView) {
-                                monthView.setProperties({
-                                    rawValue: rawValue,
-                                    range: range
-                                });
+                            if (rawValue) {
+                                calendar.rawValue = rawValue;
+                                updateDisplayText(calendar);
+                            }
+
+                            if (calendar.layer) {
+                                paintLayer(calendar, calendar.rawValue);
                             }
                         }
                     },
@@ -248,6 +267,29 @@ define(
                  */
                 stringifyValue: function (rawValue) {
                     return moment(rawValue).format(this.dateFormat) || '';
+                },
+
+                /**
+                 * 将字符串转换成对象型rawValue, * 可重写
+                 *
+                 * @inner
+                 * @param {string} value 目标日期字符串 ‘YYYY-MM-DD,YYYY-MM-DD’
+                 * @param {Object} defaultRange 默认标准化range
+                 * @return {Object} {begin:Date,end:Date}
+                 */
+                convertToRaw: function (value, defaultRange) {
+                    var format = this.paramFormat;
+                    if (u.isString(value)) {
+                        var strDates = value.split(',');
+                        return {
+                            begin: strDates[0] ? moment(strDates[0], format).toDate() : defaultRange.begin,
+                            end: strDates[1] ? moment(strDates[1], format).toDate() : defaultRange.end
+                        };
+                    }
+                    return {
+                        begin: value.begin ? value.begin : defaultRange.begin,
+                        end: value.end ? value.end : defaultRange.end
+                    };
                 },
 
                 /**
@@ -324,12 +366,15 @@ define(
         /**
          * 更新显示
          *
-         * @param {MonthView} monthView MonthView控件实例
+         * @event
+         * @fires MultiCalendar#change
+         * @param {Object} e 事件对象
+         * @param {MonthView} e.target 当前改变值的MonthView控件
          * @ignore
          */
-        function syncMonthViewValue() {
-            var monthView = this.getChild('monthView');
-            var date = monthView.getRawValue();
+        function syncMonthView(e) {
+            var currMonthView = e.target;
+            var date = currMonthView.getRawValue();
 
             if (!date) {
                 return;
@@ -343,9 +388,137 @@ define(
              *
              * 值发生变化时触发
              *
-             * @member Calendar
+             * @member MultiCalendar
              */
             this.fire('change');
+        }
+
+        /**
+         * 重绘双日历浮层
+         *
+         * @param  {MultiCalendar} calendar 控件实例
+         * @param  {Date} rawValue 控件当前选取日期
+         * @inner
+         */
+        function paintLayer(calendar, rawValue) {
+
+            var prevMonthView = calendar.getChild('prevMonthView');
+            var nextMonthView = calendar.getChild('nextMonthView');
+            var range = calendar.range;
+            var monthViewRanges = getMonthViewRange(range);
+
+            var nextMonthRawValue = moment(calendar.rawValue).add(1, 'month');
+            var nextMonth = nextMonthRawValue.month() + 1;
+            var nextYear = nextMonthRawValue.year();
+
+            // 当前值是否在日历范围最后一个月
+            var inLastMonth = moment(rawValue).format('YYYY-MM')
+                              === moment(monthViewRanges.nextRange.end).format('YYYY-MM');
+
+            if (!inLastMonth) {
+                // 如果不在，那么左边日历赋当前值，右边日历需要加一个月
+
+                nextMonthView && nextMonthView.setProperties({
+                    range: monthViewRanges.nextRange,
+                    month: nextMonth,
+                    year: nextYear
+                });
+
+                prevMonthView && prevMonthView.setProperties({
+                    rawValue: rawValue,
+                    range: monthViewRanges.prevRange
+                });
+            }
+            else {
+                // 如果在，那么左边日历保持不变，右边日历赋当前值
+
+                nextMonthView && nextMonthView.setProperties({
+                    range: monthViewRanges.nextRange,
+                    rawValue: rawValue
+                });
+
+                prevMonthView && prevMonthView.setProperties({
+                    rawValue: rawValue,
+                    year: moment(calendar.rawValue).year(),
+                    month: moment(calendar.rawValue).month()
+                });
+            }
+
+        }
+
+        /**
+         * 获取双日历两个日历的日历范围
+         *
+         * @param  {{begin:Date,end:Date}} range 初始日历范围
+         * @return {{prevRange:Object,nextRange:Object}} 包含两个日历范围的对象
+         * @inner
+         */
+        function getMonthViewRange(range) {
+            var ranges = {};
+            var startDate = moment(range.begin).endOf('month').toDate();
+            startDate.setDate(startDate.getDate() + 1);
+
+            var endDate = moment(range.end).startOf('month').toDate();
+            endDate.setDate(endDate.getDate() - 1);
+
+            var prevRange = {
+                begin: range.begin,
+                end: endDate
+            };
+
+            var nextRange = {
+                begin: startDate,
+                end: range.end
+            };
+
+            ranges.prevRange = prevRange;
+            ranges.nextRange = nextRange;
+            return ranges;
+        }
+
+        /**
+         * 改变左侧日历的月份
+         *
+         * @event
+         * @param {Object} e 事件对象
+         * @param {MonthView} e.target 当前改变月份MonthView对象
+         * @ignore
+         */
+        function changePrevMonth(e) {
+
+            var multiCalendar = this;
+            var prevMonthView = e.target;
+            var nextMonthView = multiCalendar.getChild('nextMonthView');
+
+            var year = prevMonthView.year;
+            var month = prevMonthView.month + 1;
+            var m = moment(year + '-' + month, 'YYYY-MM').add(1, 'month');
+
+            nextMonthView && nextMonthView.setProperties({
+                year: m.year(),
+                month: m.month() + 1
+            });
+        }
+
+        /**
+         * 改变右侧日历的月份
+         *
+         * @event
+         * @param {Object} e 事件对象
+         * @param {MonthView} e.target 当前改变月份MonthView对象
+         * @ignore
+         */
+        function changeNextMonth(e) {
+
+            var multiCalendar = this;
+            var nextMonthView = e.target;
+            var prevMonthView = multiCalendar.getChild('prevMonthView');
+            var m = moment(nextMonthView.year + '-' + nextMonthView.month, 'YYYY-MM');
+
+            prevMonthView.setProperties({
+                year: m.year(),
+                month: m.month() + 1
+            });
         }
 
         /**
