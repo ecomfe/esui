@@ -5066,185 +5066,20 @@ hr.ui-divider-dashed {
   display: block;
   margin: 0.5em 0;
 }
-.ui-boxgroup-button-style .ui-boxgroup-wrapper {
-  margin: 0;
-  position: relative;
-}
-.ui-boxgroup-button-style .ui-boxgroup-wrapper input[type="radio"],
-.ui-boxgroup-button-style .ui-boxgroup-wrapper input[type="checkbox"] {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  filter: alpha(opacity=0);
-  outline: none;
-}
-.ui-boxgroup-button-style .ui-boxgroup-wrapper label:before,
-.ui-boxgroup-button-style .ui-boxgroup-wrapper label:after {
-  display: none;
-}
-.ui-boxgroup-button-style label {
-  -webkit-appearance: none;
-  margin: 0;
-  border: none;
-  overflow: visible;
-  font: inherit;
-  text-transform: none;
-  display: inline-block;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: middle;
-  font-family: Arial, '微软雅黑', 'Microsoft YaHei', '华文细黑', STXihei, sans-serif;
-  text-decoration: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  line-height: 2.5em;
-  min-height: 2.5em;
-  height: 2.5em;
-  padding: 0 1em;
-  cursor: pointer;
-  font-weight: normal;
-  -webkit-transition: background-color 0.3s ease-out, -webkit-box-shadow 0.2s ease, border-color 0.2s ease;
-  -moz-transition: background-color 0.3s ease-out, -moz-box-shadow 0.2s ease, border-color 0.2s ease;
-  -ms-transition: background-color 0.3s ease-out, -ms-box-shadow 0.2s ease, border-color 0.2s ease;
-  -o-transition: background-color 0.3s ease-out, -o-box-shadow 0.2s ease, border-color 0.2s ease;
-  transition: background-color 0.3s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-  color: #666666;
-  background-color: #f6f6f6;
-}
-.ui-boxgroup-button-style label:hover,
-.ui-boxgroup-button-style label:focus {
-  text-decoration: none;
-  outline: 0;
-}
-.ui-boxgroup-button-style label:hover,
-.ui-boxgroup-button-style label.state-hover {
-  background-color: #fbfbfb;
-  color: #666666;
-}
-.ui-boxgroup-button-style label:focus,
-.ui-boxgroup-button-style label.state-focus {
-  background-color: #fbfbfb;
-}
-.ui-boxgroup-button-style label:active,
-.ui-boxgroup-button-style label.state-active {
-  background-color: #ebebeb;
-}
-.ui-boxgroup-button-style .ui-boxgroup-wrapper-checked label {
-  background: #ebebeb;
-}
-.ui-boxgroup-button-style-primary label {
-  color: #ffffff;
-  background-color: #70ccc0;
-}
-.ui-boxgroup-button-style-primary label:hover,
-.ui-boxgroup-button-style-primary label.state-hover {
-  background-color: #79dacd;
-  color: #ffffff;
-}
-.ui-boxgroup-button-style-primary label:focus,
-.ui-boxgroup-button-style-primary label.state-focus {
-  background-color: #79dacd;
-}
-.ui-boxgroup-button-style-primary label:active,
-.ui-boxgroup-button-style-primary label.state-active {
-  background-color: #5fb3a8;
-}
-.ui-boxgroup-button-style-primary .ui-boxgroup-wrapper-checked label {
-  background: #5fb3a8;
-}
-.ui-boxgroup-button-style-success label {
-  color: #ffffff;
-  background-color: #80dda1;
-}
-.ui-boxgroup-button-style-success label:hover,
-.ui-boxgroup-button-style-success label.state-hover {
-  background-color: #85e6a8;
-  color: #ffffff;
-}
-.ui-boxgroup-button-style-success label:focus,
-.ui-boxgroup-button-style-success label.state-focus {
-  background-color: #85e6a8;
-}
-.ui-boxgroup-button-style-success label:active,
-.ui-boxgroup-button-style-success label.state-active {
-  background-color: #5fca86;
-}
-.ui-boxgroup-button-style-success .ui-boxgroup-wrapper-checked label {
-  background: #5fca86;
-}
-.ui-boxgroup-button-style-info label {
-  color: #ffffff;
-  background-color: #6bd5ec;
-}
-.ui-boxgroup-button-style-info label:hover,
-.ui-boxgroup-button-style-info label.state-hover {
-  background-color: #72dff6;
-  color: #ffffff;
-}
-.ui-boxgroup-button-style-info label:focus,
-.ui-boxgroup-button-style-info label.state-focus {
-  background-color: #72dff6;
-}
-.ui-boxgroup-button-style-info label:active,
-.ui-boxgroup-button-style-info label.state-active {
-  background-color: #40bdd8;
-}
-.ui-boxgroup-button-style-info .ui-boxgroup-wrapper-checked label {
-  background: #40bdd8;
-}
-.ui-boxgroup-button-style-warning label {
-  color: #ffffff;
-  background-color: #f9ad42;
-}
-.ui-boxgroup-button-style-warning label:hover,
-.ui-boxgroup-button-style-warning label.state-hover {
-  background-color: #fdb652;
-  color: #ffffff;
-}
-.ui-boxgroup-button-style-warning label:focus,
-.ui-boxgroup-button-style-warning label.state-focus {
-  background-color: #fdb652;
-}
-.ui-boxgroup-button-style-warning label:active,
-.ui-boxgroup-button-style-warning label.state-active {
-  background-color: #eb911e;
-}
-.ui-boxgroup-button-style-warning .ui-boxgroup-wrapper-checked label {
-  background: #eb911e;
-}
-.ui-boxgroup-button-style-danger label {
-  color: #ffffff;
-  background-color: #f16c6c;
-}
-.ui-boxgroup-button-style-danger label:hover,
-.ui-boxgroup-button-style-danger label.state-hover {
-  background-color: #f77c7c;
-  color: #ffffff;
-}
-.ui-boxgroup-button-style-danger label:focus,
-.ui-boxgroup-button-style-danger label.state-focus {
-  background-color: #f77c7c;
-}
-.ui-boxgroup-button-style-danger label:active,
-.ui-boxgroup-button-style-danger label.state-active {
-  background-color: #d54648;
-}
-.ui-boxgroup-button-style-danger .ui-boxgroup-wrapper-checked label {
-  background: #d54648;
-}
 .ui-boxgroup {
   display: inline-block;
 }
-.ui-boxgroup-button-style-separated .ui-boxgroup-wrapper:not(:last-child) label {
-  border-right: 1px solid #ffffff;
+.ui-boxgroup .ui-boxgroup-wrapper.ui-button {
+  padding: 0;
+  margin: 0;
+}
+.ui-boxgroup .ui-boxgroup-wrapper.ui-button input {
+  display: none;
+}
+.ui-boxgroup .ui-boxgroup-wrapper.ui-button label {
+  cursor: pointer;
+  line-height: 2.5em;
+  padding: .6em 1em;
 }
 /**
  * ESUI (Enterprise Simple UI)

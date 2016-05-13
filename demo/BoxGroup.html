@@ -25,7 +25,7 @@
             <div class="intro">
                 <p>创建多个单选按钮，在包裹着按钮的<code>div</code>元素中添加属性<code>data-ui-type="BoxGroup" data-ui-box-type="radio"</code>即可创建单选按钮组。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div data-ui-disabled-items="er,esui" data-ui-type="BoxGroup" data-ui-id="box-group-horizontal" data-ui-name="frameworks2" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
                     <div>
                         <input type="radio" id="framework-er1" name="frameworks2" value="er">
@@ -51,7 +51,7 @@
                 <p>如果要禁用某个radio的箭头，在对应input元素添加<code>.ui-boxgroup-arrow-hidden</code>,</p>
                 <p>对应panel需添加class<code>.ui-panel-boxgroup-border</code></p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div class="ui-boxgroup-arrow" data-ui-type="BoxGroup" data-ui-id="box-group-horizontal-arrow" data-ui-name="frameworks-arrow" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom">
                     <div>
                         <input type="radio" id="framework-er-arrow" name="frameworks-arrow" value="er">
@@ -76,7 +76,7 @@
             <div class="intro">
                 <p>创建多个多选框，在包裹着多选框的<code>div</code>元素中添加属性<code>data-ui-type="BoxGroup" data-ui-box-type="checkbox"</code>即可创建多选按钮组。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div data-ui-type="BoxGroup" data-ui-id="box-group-change-horizontal" data-ui-name="frameworks4" data-ui-box-type="checkbox" data-ui-box-class="ui-checkbox-custom">
                     <ul>
                         <li>
@@ -102,7 +102,7 @@
             <div class="intro">
                 <p>默认为水平对齐，通过设置属性<code>data-ui-orientation="vertical"</code>可实现垂直对齐。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div data-ui-type="BoxGroup" data-ui-id="box-group-vertical" data-ui-name="frameworks1" data-ui-box-type="radio" data-ui-box-class="ui-radio-custom" data-ui-orientation="vertical">
                     <div>
                         <input type="radio" id="framework-er" name="frameworks1" value="er">
@@ -123,15 +123,14 @@
                 </div>
             </div>
             <h2>自定义样式</h2>
-            <div class="intro">
-                <p>添加类<code>.ui-boxgroup-button-style</code>可设置为Button，添加类<code>ui-boxgroup-button-style-primary</code>可自定义按钮的样式。</p>
-                <p>添加类<code>.ui-boxgroup-button-style-separated</code>可实现按钮之间的分离。</p>
+            <div>
+                Button 样式
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div class="row">
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-button"
                          data-ui-name="frameworks5" data-ui-box-type="radio"
-                         class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-primary">
+                         data-ui-box-class="ui-button">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er4" name="frameworks5" value="er" checked />
@@ -155,7 +154,7 @@
                 <div class="row">
                     <div data-ui-type="BoxGroup"
                          data-ui-name="frameworks6" data-ui-box-type="radio"
-                         class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-success">
+                         data-ui-box-class="ui-button ui-button-success">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er5" name="frameworks6" value="er" checked />
@@ -179,7 +178,7 @@
                 <div class="row">
                     <div data-ui-type="BoxGroup"
                          data-ui-name="frameworks7" data-ui-box-type="radio"
-                         class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-info">
+                         data-ui-box-class="ui-button ui-button-info">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er6" name="frameworks7" value="er" checked />
@@ -203,7 +202,7 @@
                 <div class="row">
                     <div data-ui-type="BoxGroup"
                          data-ui-name="frameworks8" data-ui-box-type="radio"
-                         class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-warning">
+                         data-ui-box-class="ui-button ui-button-warning">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er7" name="frameworks8" value="er" checked />
@@ -227,7 +226,7 @@
                 <div class="row">
                     <div data-ui-type="BoxGroup"
                          data-ui-name="frameworks9" data-ui-box-type="radio"
-                         class="ui-boxgroup-button-style ui-boxgroup-button-style-separated ui-boxgroup-button-style-danger">
+                         data-ui-box-class="ui-button ui-button-danger">
                         <ul>
                             <li>
                                 <input type="radio" id="framework-er8" name="frameworks9" value="er" checked />
@@ -253,7 +252,7 @@
             <div class="intro">
                 <p>使用<code>change</code>事件监听选中状态的变化。</p>
             </div>
-            <div class="example ui-demo-light-stage">
+            <div class="example">
                 <div class="row">
                     <div data-ui-type="BoxGroup" data-ui-id="box-group-button2"
                          data-ui-name="frameworks11" data-ui-box-type="checkbox"

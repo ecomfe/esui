@@ -341,7 +341,10 @@ define(
 
         function syncCheckedState(element) {
             var $label = $(element.parentNode);
-            var checkedClass = this.helper.getPartClassName('wrapper-checked');
+            var checkedClass
+                = this.helper.getPartClassName('wrapper-checked')
+                + ' '
+                +esui.getConfig('stateClassPrefix') + '-active';
             if (element.checked) {
                 $label.addClass(checkedClass);
             }

@@ -53,73 +53,18 @@
     margin: @esui-boxgroup-vertical-space;
 }
 
-// button style variant
-.@{ui-class-prefix}-boxgroup-button-style {
-    .@{ui-class-prefix}-boxgroup-wrapper {
-        margin: 0;
-        input[type="radio"],
-        input[type="checkbox"] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            .opacity(0);
-            outline: none;
-        }
-        label {
-            &:before,
-            &:after {
-                display: none;
-            }
-        }
-        position: relative;
-        .esui-boxgroup-button-style-border();
-        
-    }
-
-    .esui-boxgroup-button-style-theme();
-}
-
-.@{ui-class-prefix}-boxgroup-button-style-primary {
-    .esui-boxgroup-button-style-primary-theme();
-}
-
-.@{ui-class-prefix}-boxgroup-button-style-success {
-    .esui-boxgroup-button-style-success-theme();
-}
-
-.@{ui-class-prefix}-boxgroup-button-style-info {
-    .esui-boxgroup-button-style-info-theme();
-}
-
-.@{ui-class-prefix}-boxgroup-button-style-warning {
-    .esui-boxgroup-button-style-warning-theme();
-}
-
-.@{ui-class-prefix}-boxgroup-button-style-danger {
-    .esui-boxgroup-button-style-danger-theme();
-}
-
-.esui-boxgroup-button-style-border() when (@esui-button-radius > 0) {
-    &:not(:first-child):not(:last-child) label {
-        .border-radius(0);
-    }
-    &:first-child:not(:last-child) label {
-        .border-right-radius(0);
-    }
-    &:last-child:not(:first-child) label {
-        .border-left-radius(0);
-    }
-}
-
-.esui-boxgroup-button-style-border() {}
-
 .@{ui-class-prefix}-boxgroup {
     display: inline-block;
+    .@{ui-class-prefix}-boxgroup-wrapper.@{ui-class-prefix}-button {
+        padding: 0;
+        input {
+            display: none;
+        }
+        label {
+            cursor: pointer;
+            line-height: 2.5em;
+            padding: .6em 1em;
+        }
+        margin: 0;
+    }
 }
-
-.esui-boxgroup-button-style-theme() {}
-.esui-boxgroup-button-style-primary-theme () {}
-.esui-boxgroup-button-style-success-theme() {}
-.esui-boxgroup-button-style-info-theme() {}
-.esui-boxgroup-button-style-warning-theme() {}
-.esui-boxgroup-button-style-danger-theme() {}
