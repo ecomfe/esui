@@ -6,6 +6,7 @@
  * @file 复选框
  * @author otakustay
  */
+
 define(
     function (require) {
         var u = require('underscore');

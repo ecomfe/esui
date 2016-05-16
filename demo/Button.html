@@ -112,6 +112,9 @@
             </div>
             <div class="example">
                 <div data-ui="type:Button;id:content" class="ui-button-primary" id="setcontent">点击改变按钮的内容</div>
+                <div data-ui="type:Button;id:toggle" class="ui-button-primary" id="toggle">toggle</div>
+                <div data-ui="type:Button;id:toggleOn" class="ui-button-primary" id="toggleOn">toggleOn</div>
+                <div data-ui="type:Button;id:toggleOff" class="ui-button-primary" id="toggleOff">toggleOff</div>
             </div>
             <script type="text/sample">
                 ui.get('content').on('click', function() {
@@ -137,6 +140,15 @@
             ui.init();
             ui.get('content').on('click', function() {
                 this.setContent('Hello');
+            });
+            ui.get('toggle').on('click', function() {
+                ui.get('content').toggle();
+            });
+            ui.get('toggleOn').on('click', function() {
+                ui.get('content').toggle(true);
+            });
+            ui.get('toggleOff').on('click', function() {
+                ui.get('content').toggle(false);
             });
         }
     );

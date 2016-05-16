@@ -70,6 +70,7 @@ define(
 
                     var datasource = properties.datasource;
                     if (!datasource.length) {
+                        // deprecate this
                         extractDatasourceFromDOM(this.main, properties);
                     }
                     if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
