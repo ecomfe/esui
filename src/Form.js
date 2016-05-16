@@ -15,6 +15,7 @@ define(
         var Panel = require('./Panel');
         var eoo = require('eoo');
         var $ = require('jquery');
+        var ControlCollection = require('./ControlCollection');
 
         /**
          * 输入控件集合类
@@ -24,15 +25,17 @@ define(
          * @constructor
          * @param {InputControl[]} inputs 管理的输入控件
          */
-        function InputCollection(inputs) {
-            this.length = inputs.length;
-            for (var i = 0; i < inputs.length; i++) {
-                this[i] = inputs[i];
+        var InputCollection = eoo.create(
+            ControlCollection,
+            {
+                constructor: function (inputs) {
+                    this.length = inputs.length;
+                    for (var i = 0; i < inputs.length; i++) {
+                        this[i] = inputs[i];
+                    }
+                }
             }
-        }
-
-        // 为了让Firebug认为这是个数组
-        InputCollection.prototype.splice = Array.prototype.splice;
+        );
 
         /**
          * 获取表单数据，形成以`name`为键，`fetchValue`指定方法的返回值为值，
