@@ -132,7 +132,8 @@
                 var nameText = form.getChild('amount');
 
                 function submit(e, args) {
-                    // var data = form.getData();
+                    var data = form.getData();
+                    console.log(form.getInputControls());
                 }
 
                 form.on('submit', submit);
