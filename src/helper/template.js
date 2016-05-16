@@ -9,7 +9,6 @@
 define(
     function (require) {
         var u = require('underscore');
-        var etpl = require('etpl');
 
         var FILTERS = {
             'id': function (part) {
@@ -29,8 +28,6 @@ define(
          * @override Helper
          */
         var helper = {};
-        
-        var templateEngine;
 
         /**
          * 获取模板引擎实例
@@ -38,10 +35,11 @@ define(
          * @return {etpl.Engine} engine 模板引擎实例
          */
         helper.getTemplateEngine = function () {
-            if (!templateEngine) {
-                this.setTemplateEngine(new etpl.Engine());
+            if (!this.templateEngine) {
+                var templateEngine = require('../templateEngine').get();
+                this.setTemplateEngine(templateEngine);
             }
-            return templateEngine;
+            return this.templateEngine;
         };
 
         /**
@@ -50,7 +48,7 @@ define(
          * @param {etpl.Engine} engine 模板引擎实例
          */
         helper.setTemplateEngine = function (engine) {
-            templateEngine = engine;
+            this.templateEngine = engine;
 
             if (!engine.esui) {
                 this.initializeTemplateEngineExtension();
@@ -70,7 +68,7 @@ define(
                     filter = u.bind(filter, me.control);
                     this.addFilter(name, filter);
                 },
-                templateEngine
+                this.templateEngine
             );
         };
 
