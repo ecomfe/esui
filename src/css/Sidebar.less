@@ -1,0 +1,98 @@
+ /**
+ * ESUI (Enterprise Simple UI)
+ * Copyright 2013 Baidu Inc. All rights reserved.
+ *
+ * @file sidebar样式
+ * @author miaojian
+ */
+
+@import "Variable.less";
+
+@esui-sidebar-width: 15em;
+@esui-sidebar-background-color: #eaeaea;
+@esui-sidebar-border: 1px solid #ccc;
+
+@esui-sidebar-minibar-background: #eaeaea;
+@esui-sidebar-minibar-width: 1.5em;
+
+@esui-sidebar-head-height: 2.5em;
+@esui-sidebar-head-padding-left: 1em;
+@esui-sidebar-head-background-color: #eaeaea;
+
+@esui-sidebar-fixBtn-background: #eaeaea;
+@esui-sidebar-fixBtn-width: 1.4em;
+
+@esui-sidebar-arrow-height: 1.3em;
+
+.@{ui-class-prefix}-sidebar {
+    width: @esui-sidebar-width;
+    border: @esui-sidebar-border;
+    background: @esui-sidebar-background-color;
+    position: fixed;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.@{ui-class-prefix}-sidebar-minibar {
+    position: fixed;
+    background: @esui-sidebar-minibar-background;
+    width: @esui-sidebar-minibar-width;
+    cursor: pointer;
+    span {
+        position: absolute;
+        top: 50%;
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+        height: @esui-sidebar-arrow-height;
+        margin-top: -(@esui-sidebar-arrow-height/2);
+    }
+}
+
+.@{ui-class-prefix}-sidebar-head {
+    border-bottom: @esui-sidebar-border;
+    line-height: @esui-sidebar-head-height;
+    padding-left: @esui-sidebar-head-padding-left;
+    height: @esui-sidebar-head-height;
+    background: @esui-sidebar-head-background-color;
+}
+
+.@{ui-class-prefix}-sidebar-body-padding {
+    padding-left: @esui-sidebar-fixBtn-width;
+}
+
+.@{ui-class-prefix}-sidebar-body {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    bottom: 0;
+    width: 100%;
+}
+
+.@{ui-class-prefix}-sidebar-bodyWrapper {
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-right: @esui-sidebar-fixBtn-width;
+    max-height: 100%;
+}
+
+.@{ui-class-prefix}-sidebar-fixBtn {
+    position: absolute;
+    display: block;
+    cursor: pointer;
+    height: 100%;
+    width: @esui-sidebar-fixBtn-width;
+    background: @esui-sidebar-fixBtn-background;
+    top: 0;
+    right: 0;
+    span {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        dispaly: inline-block;
+        text-align: center;
+        color: #000;
+        height: @esui-sidebar-arrow-height;
+        margin-top: -(@esui-sidebar-arrow-height/2);
+    }
+}
