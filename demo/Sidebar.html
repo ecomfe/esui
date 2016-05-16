@@ -10,11 +10,6 @@
         <!--[if lt IE 9]>
         <link rel="stylesheet" href="assets/ie8.css" />
         <![endif]-->
-        <style>
-            /*.ui-sidebar, .ui-sidebar-mat, .ui-sidebar-minibar{
-                left: 20% !important;
-            }*/
-        </style>
     </head>
     <body>
     <div class="header">
@@ -30,16 +25,21 @@
             <button id="btn">changeMode</button>
             <button id="btn1">setContent</button>
             <div class="main" style="border-top: 1px solid #666;margin-top:10px">
-                <esui-sidebar data-ui="id:mySide;mode:autohide" data-ui-type="Sidebar" data-ui-margin-left="20%">
-                    <div>我的标题</div>
-                    <div>
+                <esui-sidebar data-ui="id:mySide;mode:autohide;float:left" data-ui-type="Sidebar" data-ui-margin-left="20%" data-ui-margin-bottom="100">
+                    <div data-role="head">我的标题</div>
+                    <div data-role="body">
                         <div data-ui-type="Tree" data-ui-variants='hoverable icon angle' data-ui-id="testTree"></div>
                     </div>
                 </esui-sidebar>
-                <!-- <div id="neighbor" style="height:900px;background:#f7f7f7;border:1px solid #999;padding:10px;margin-top:10px" class="ui-sidebar-neighbor-hide">
-                    <ul id="navigator">
-                    </ul>
-                </div> -->
+                <esui-sidebar data-ui="id:mySide2;mode:autohide;float:right" data-ui-type="Sidebar" data-ui-margin-left="20%" data-ui-margin-bottom="100">
+                    <div data-role="head">我的标题</div>
+                    <div data-role="body">
+                        <p>content</p>
+                        <p>content</p>
+                        <p>content</p>
+                        <p>content</p>
+                    </div>
+                </esui-sidebar>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
                         },
                         {
                             id: '4',
-                            text: '一半吃肉一般吃素部'
+                            text: '一半吃肉一般吃素'
                         }
                     ]
                 };
@@ -99,12 +99,6 @@
                 });
 
                 ui.get('mySide').onmodechange = function (e) {
-                    // if (e.mode == 'fixed') {
-                    //     document.getElementById('neighbor').className = 'ui-nav-neighbor';
-                    // } else {
-                    //     document.getElementById('neighbor').className = 'ui-nav-neighbor-hide';
-                    // }
-                    // console.info('onmodechange');
                 };
 
                 ui.get('mySide').onresize = function () {
