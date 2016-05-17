@@ -146,7 +146,7 @@ define(
                  *
                  * @type {string}
                  */
-                itemTemplate: '<span>${text}</span>',
+                itemTemplate: '${text}',
 
                 /**
                  * 获取每个节点显示的内容
@@ -639,31 +639,20 @@ define(
          * @param {Tree} tree 控件实例
          * @param {meta.TreeItem} node 节点数据
          * @param {string} type 指示器的类型，为`empty`、`expanded`或`collapsed`
-         * @param {number} currentLevel 当前指示器代表的层级
          * @param {number} sourceLevel 节点所在的层级
          * @return {string}
          * @ignore
          */
-        function getIndicatorHTML(tree, node, type, currentLevel, sourceLevel) {
+        function getIndicatorHTML(tree, node, type, sourceLevel) {
             var helper = tree.helper;
-            var diff = sourceLevel - currentLevel;
-            var diffType = diff === 0
-                ? 'current'
-                : (diff === 1 ? 'previous' : 'far-previous');
             var classes = [].concat(
                 helper.getPartClasses('node-indicator'),
                 helper.getPartClasses('node-indicator-' + type),
-                helper.getPartClasses('node-indicator-level-' + currentLevel),
-                helper.getPartClasses('node-indicator-' + diffType)
+                helper.getPartClasses('node-indicator-level-' + sourceLevel)
             );
-            var text = diff === 0
-                ? INDICATOR_TEXT_MAPPING[type || 'collapsed']
-                : '第' + currentLevel + '级';
-            var html = '<span ';
-            if (diff === 0) {
-                html += 'id="' + helper.getId('indicator-' + node.id) + '" ';
-            }
-            html += 'class="' + classes.join(' ') + '">' + text + '</span>';
+            var text = INDICATOR_TEXT_MAPPING[type || 'collapsed'];
+            var html = '<span id="' + helper.getId('indicator-' + node.id) + '" class="'
+                + classes.join(' ') + '">' + text + '</span>';
             return html;
         }
 
@@ -696,9 +685,7 @@ define(
             var indicatorType = tree.strategy.isLeafNode(node)
                 ? 'empty'
                 : (expanded ? 'expanded' : 'collapsed');
-            for (var i = 0; i <= level; i++) {
-                html += getIndicatorHTML(tree, node, indicatorType, i, level);
-            }
+            html += getIndicatorHTML(tree, node, indicatorType, level);
 
             var nodeContent = tree.getItemHTML(node);
             if (tree.checkboxes) {

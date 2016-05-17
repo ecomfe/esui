@@ -19,6 +19,12 @@
         padding: 0;
         margin: 0;
     }
+    li {
+        margin-left: 2.5em;
+        &.@{ui-class-prefix}-tree-node-level-1 {
+            margin-left: 0;
+        }
+    }
     display: block;
     line-height: @esui-tree-line-height;
 }
@@ -33,6 +39,10 @@
     vertical-align: middle;
     width: @esui-tree-node-indent;
     float: left;
+}
+
+.@{ui-class-prefix}-tree-node-indicator-empty {
+    display: none;
 }
 
 // 节点文字
@@ -96,6 +106,7 @@
         .eicons-icon(folder);
     }
     .@{ui-class-prefix}-tree-node-indicator-empty {
+        display: block;
         .eicons-icon(file);
     }
 }
