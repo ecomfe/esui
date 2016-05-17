@@ -550,9 +550,9 @@ define(
              */
             toggle: function (visible) {
                 if (u.isBoolean(visible)) {
-                    this[!visible ? 'hide' : 'show']();
+                    this[visible ? 'show' : 'hide']();
                 } else {
-                    this[!this.isHidden() ? 'hide' : 'show']();
+                    this[this.isHidden() ? 'show' : 'hide']();
                 }
             },
 
