@@ -6,6 +6,7 @@
  * @file Panel控件
  * @author otakustay
  */
+
 define(
     function (require) {
         var u = require('underscore');
@@ -13,6 +14,7 @@ define(
         var eoo = require('eoo');
         var painters = require('./painters');
         var esui = require('./main');
+        var $ = require('jquery');
 
         /**
          * 通用面板
@@ -49,27 +51,7 @@ define(
                 },
 
                 /**
-                 * 创建控件主元素
-                 *
-                 * 如果初始化时提供{@link Panel#tagName}属性，则以此创建元素，
-                 * 默认使用`<div>`元素
-                 *
-                 * @param {Object} options 构造函数传入的参数
-                 * @return {HTMLElement}
-                 * @protected
-                 * @override
-                 */
-                createMain: function (options) {
-                    if (!options.tagName) {
-                        return this.$super([options]);
-                    }
-                    return document.createElement(options.tagName);
-                },
-
-                /**
                  * 初始化参数
-                 *
-                 * 如果初始化时提供了主元素，则使用主元素的标签名作为{@link Panel#tagName}属性
                  *
                  * @param {Object} [options] 构造函数传入的参数
                  * @protected
@@ -78,16 +60,7 @@ define(
                 initOptions: function (options) {
                     var properties = {};
                     u.extend(properties, options);
-                    /**
-                     * @property {string} tagName
-                     *
-                     * 指定主元素标签名
-                     *
-                     * 此属性仅在初始化时生效，运行期不能修改
-                     *
-                     * @readonly
-                     */
-                    properties.tagName = this.main.nodeName.toLowerCase();
+
                     this.setProperties(properties);
                 },
 
@@ -148,32 +121,6 @@ define(
                  */
                 appendContent: function (html) {
                     addContent.call(this, html, false);
-                },
-
-                /**
-                 * 获取样式，仅获取设置的样式，不包含外部CSS给定的
-                 *
-                 * @param {string} name 样式名称
-                 * @return {string}
-                 */
-                getStyle: function (name) {
-                    name = normalizeStyleName(name);
-                    return this.main
-                        ? this.main.style[name]
-                        : '';
-                },
-
-                /**
-                 * 设置样式
-                 *
-                 * @param {string} name 样式名称，如果只有这一个参数，则表示为整串样式
-                 * @param {string} [value=""] 样式值
-                 */
-                setStyle: function (name, value) {
-                    name = normalizeStyleName(name);
-                    if (this.main) {
-                        this.main.style[name] = value || '';
-                    }
                 }
             }
         );
@@ -186,7 +133,7 @@ define(
          * @ignore
          */
         function addContent(html, isPrepend) {
-            var main = this.main;
+            var jqMain = $(this.main);
             var container = document.createElement('div');
             container.innerHTML = html;
 
@@ -195,49 +142,17 @@ define(
                 parent: this
             });
 
-            var childNodes = container.childNodes;
-            var children = [];
-            for (var i = 0; i < childNodes.length; i++) {
-                if (isPrepend) {
-                    children.unshift(childNodes[i]);
-                }
-                else {
-                    children.push(childNodes[i]);
-                }
+            if (isPrepend) {
+                jqMain.prepend(container);
+            }
+            else {
+                jqMain.append(container);
             }
 
-            u.each(children, function (child) {
-                if (isPrepend) {
-                    main.insertBefore(child, main.firstChild);
-                }
-                else {
-                    main.appendChild(child);
-                }
-                esui.init(main, options);
-            });
-
+            esui.init(container, options);
+            $(container).contents().unwrap();
             // 直接追加到content属性，以防setContent时判断oldValue出现问题
             this.content = isPrepend ? html + this.content : this.content + html;
-        }
-
-        /**
-         * 统一化样式名
-         *
-         * @param {string} name 样式名称
-         * @return {string} 统一化后`camelCase`的样式名称
-         * @ignore
-         */
-        function normalizeStyleName(name) {
-            if (name.indexOf('-') >= 0) {
-                name = name.replace(
-                    /-\w/g,
-                    function (word) {
-                        return word.charAt(1).toUpperCase();
-                    }
-                );
-            }
-
-            return name;
         }
 
         esui.register(Panel);

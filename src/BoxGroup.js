@@ -345,7 +345,7 @@ define(
             var checkedClass
                 = this.helper.getPartClassName('wrapper-checked')
                 + ' '
-                +esui.getConfig('stateClassPrefix') + '-active';
+                + esui.getConfig('stateClassPrefix') + '-active';
             if (element.checked) {
                 $label.addClass(checkedClass);
             }
