@@ -160,7 +160,8 @@
 
               function submit(e) {
                     console.log(e.triggerSource.id);
-                var data = form.getData();
+                    var data = form.getData();
+                    console.log(form.getInputControls().isDisabled);
             }
 
               form.on('submit', submit);

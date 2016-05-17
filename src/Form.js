@@ -12,6 +12,7 @@ define(
         var lib = require('./lib');
         var ui = require('./main');
         var Panel = require('./Panel');
+        var ControlCollection = require('./ControlCollection');
 
         /**
          * 输入控件集合类
@@ -27,6 +28,8 @@ define(
                 this[i] = inputs[i];
             }
         }
+
+        lib.inherits(InputCollection, ControlCollection);
 
         // 为了让Firebug认为这是个数组
         InputCollection.prototype.splice = Array.prototype.splice;

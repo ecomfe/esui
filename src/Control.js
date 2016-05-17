@@ -549,9 +549,14 @@ define(
 
             /**
              * 切换控件可见状态
+             * @param {boolean} visible toggle的目标状态
              */
-            toggle: function () {
-                this[this.isHidden() ? 'show' : 'hide']();
+            toggle: function (visible) {
+                if (u.isBoolean(visible)) {
+                    this[visible ? 'show' : 'hide']();
+                } else {
+                    this[this.isHidden() ? 'show' : 'hide']();
+                }
             },
 
             /**
