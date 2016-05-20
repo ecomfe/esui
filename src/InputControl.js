@@ -370,14 +370,22 @@ define(
                             viewContext: this.viewContext
                         };
                         label = new ValidityLabel(options);
-                        if (this.main.nextSibling) {
-                            var nextSibling = this.main.nextSibling;
-                            label.insertBefore(nextSibling);
+
+                        var validityLabelPrev = this.validityLabelPrev;
+                        if (validityLabelPrev) {
+                            if (validityLabelPrev === 'next'
+                                || validityLabelPrev === 'prev') {
+                                validityLabelPrev = $(this.main)[validityLabelPrev]();
+                            }
+                            else {
+                                validityLabelPrev = $(validityLabelPrev);
+                            }    
                         }
-                        else {
-                            label.appendTo(this.main.parentNode);
-                        }
+
+                        var labelRef = validityLabelPrev ? validityLabelPrev[0] : this.main;
+                        label.insertAfter(labelRef);
                         this.validityLabel = label.id;
+                        this.fire('validityLabelCreated', label);
                     }
 
                     // Adjacent sibling selector not working with dynamically added class in IE7/8

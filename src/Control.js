@@ -309,7 +309,25 @@ define(
                     reference = reference.main;
                 }
 
-                reference.parentNode.insertBefore(this.main, reference);
+                $(reference).before(this.main);
+                if (this.helper.isInStage('NEW')
+                    || this.helper.isInStage('INITED')
+                    ) {
+                    this.render();
+                }
+            },
+
+            /**
+             * 将控件添加到页面的某个元素之后
+             *
+             * @param {HTMLElement | Control} reference 控件要添加到之后的目标元素
+             */
+            insertAfter: function (reference) {
+                if (reference instanceof Control) {
+                    reference = reference.main;
+                }
+
+                $(reference).after(this.main);
                 if (this.helper.isInStage('NEW')
                     || this.helper.isInStage('INITED')
                     ) {
