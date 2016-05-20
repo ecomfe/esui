@@ -371,19 +371,19 @@ define(
                         };
                         label = new ValidityLabel(options);
 
-                        var validityLabelPrev = this.validityLabelPrev;
-                        if (validityLabelPrev) {
-                            if (validityLabelPrev === 'next'
-                                || validityLabelPrev === 'prev') {
-                                validityLabelPrev = $(this.main)[validityLabelPrev]();
+                        var validityLabelRef = this.validityLabelRef;
+                        if (validityLabelRef) {
+                            if (validityLabelRef === 'next'
+                                || validityLabelRef === 'prev') {
+                                validityLabelRef = $(this.main)[validityLabelRef]();
                             }
                             else {
-                                validityLabelPrev = $(validityLabelPrev);
+                                validityLabelRef = $(validityLabelRef);
                             }    
                         }
 
-                        var labelRef = validityLabelPrev ? validityLabelPrev[0] : this.main;
-                        label.insertAfter(labelRef);
+                        var ref = validityLabelRef ? validityLabelRef[0] : this.main;
+                        label.insertAfter(ref);
                         this.validityLabel = label.id;
                         this.fire('validityLabelCreated', label);
                     }
