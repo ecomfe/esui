@@ -96,13 +96,19 @@
             <div class="example ui-demo-light-stage">
                 <h3>出错</h3>
                 <div class="row">
-                    <div 
+                    <div
                         placeholder="使用placeholder属性"
                         data-ui-id="text-box-with-invalid"
                         data-ui-type="TextBox"
                         data-ui-mode="text">
                         <input />
                     </div>
+                </div>
+                <h3>错误提示位置自定义</h3>
+                <div class="row">
+                    <esui-text-box data-ui-id="text-box-validity" data-ui-validity-label-ref="next">
+                    </esui-text-box>
+                    <span class="ui-icon-remove ui-text-danger"></span>
                 </div>
                 <h3>不可用</h3>
                 <div class="row">
@@ -195,6 +201,7 @@
             function (ui) {
                 ui.init();
                 ui.get('text-box-with-invalid').showValidationMessage('invalid', '不能为空！');
+                ui.get('text-box-validity').showValidationMessage('invalid', '错误提示位置自定义');
 
                 var maxLength = 40;
                 var textbox = ui.get('text-box-with-input-listener');
