@@ -220,6 +220,9 @@ define(
                 bodyWidth += ( field.width || minColsWidth[i] );
             }
             return bodyWidth;
+
+            // css中设置了table右侧的1px border
+            return bodyWidth + 1;
         }
 
         /**
