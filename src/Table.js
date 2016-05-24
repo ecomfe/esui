@@ -219,10 +219,17 @@ define(
                 var field = fields[i];
                 bodyWidth += ( field.width || minColsWidth[i] );
             }
-            return bodyWidth;
 
-            // css中设置了table右侧的1px border
-            return bodyWidth + 1;
+            var borderWidth = 0;
+            if (table.headPanel) {
+                var headTable = lib.getChildren(table.headPanel.main)[0];
+                if (headTable) {
+                    borderWidth += parseInt(lib.getComputedStyle(headTable, 'borderLeftWidth'), 10) || 0;
+                    borderWidth += parseInt(lib.getComputedStyle(headTable, 'borderRightWidth'), 10) || 0;
+                }
+            }
+
+            return bodyWidth + borderWidth;
         }
 
         /**
