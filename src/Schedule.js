@@ -923,7 +923,6 @@ define(
             }
 
             me.setRawValue(rawValueCopy);
-            me.fire('change', {rawValue: rawValueCopy});
 
         }
 
@@ -955,7 +954,6 @@ define(
             }
 
             this.setRawValue(rawValue);
-            this.fire('change', {rawValue: rawValue});
         }
 
         /**
@@ -1200,7 +1198,6 @@ define(
             }
 
             me.setRawValue(rawValueCopy);
-            me.fire('change', {rawValue: rawValueCopy});
         }
 
         /**
