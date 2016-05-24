@@ -141,6 +141,10 @@ define(
                     var changes
                         = Control.prototype.setProperties.apply(this, arguments);
 
+                    // yankun:真的需要在这里触发change吗？
+                    if (changes.hasOwnProperty('rawValue')) {
+                        this.fire('change');
+                    }
                     return changes;
                 },
 

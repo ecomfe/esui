@@ -454,6 +454,18 @@ define(
 
                 adjustValueProperties(properties);
                 var changes = this.$super(arguments);
+
+                if (changes.hasOwnProperty('selectedIndex')) {
+                    /**
+                     * @event change
+                     *
+                     * 值发生变化时触发
+                     *
+                     * `Select`控件的值变化是以{@link Select#selectedIndex}属性为基准
+                     */
+                    this.fire('change');
+                }
+
                 return changes;
             },
 
@@ -507,14 +519,6 @@ define(
                 var index = target.getAttribute('data-index');
                 this.set('selectedIndex', +index);
                 this.layer.hide();
-                /**
-                 * @event change
-                 *
-                 * 值发生变化时触发
-                 *
-                 * `Select`控件的值变化是以{@link Select#selectedIndex}属性为基准
-                 */
-                this.fire('change');
             }
         }
 

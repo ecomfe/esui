@@ -474,12 +474,6 @@ define(
                     this.repaint(changes, changesIndex);
                 }
 
-                u.each(changesIndex, function (record, key) {
-                    if (!this.helper.isInStage('NEW')) {
-                        this.fire(key.toLowerCase() + 'changed');
-                    }
-                }, this);
-
                 return changesIndex;
 
             },

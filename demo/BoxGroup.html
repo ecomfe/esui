@@ -250,7 +250,7 @@
             </div>
             <h2>监听事件</h2>
             <div class="intro">
-                <p>点击checkbox会触发<code>change</code>事件和<code>rawvaluechanged</code>事件</p>
+                <p>使用<code>change</code>事件监听选中状态的变化。</p>
             </div>
             <div class="example">
                 <div class="row">
@@ -289,50 +289,6 @@
                     );
                 }
             </script>
-            <h2>设定组件值</h2>
-            <div class="intro">
-                <p>手动设置value会触发<code>rawvaluechanged</code>事件</p>
-            </div>
-            <div class="example">
-                <div class="row">
-                    <div data-ui-type="BoxGroup" data-ui-id="box-group-setvalue"
-                         data-ui-name="frameworks12" data-ui-box-type="checkbox"
-                            class="ui-boxgroup-button-style ui-boxgroup-button-style-separated custom">
-                        <ul>
-                            <li>
-                                <input type="checkbox" id="framework-er12" name="frameworks12" value="er"/>
-                                <label for="framework-er12">ER</label>
-                            </li>
-                            <li>
-                                <input type="checkbox" id="framework-esui12" name="frameworks12" value="esui"/>
-                                <label for="framework-esui12">ESUI</label>
-                            </li>
-                            <li>
-                                <input type="checkbox" id="framework-ef12" name="frameworks12" value="ef"/>
-                                <label for="framework-ef12">EF</label>
-                            </li>
-                            <li>
-                                <input type="checkbox" id="framework-tangram12" name="frameworks12" value="tangram"/>
-                                <label for="framework-tangram12">Tangram</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <button id="box-group-set" type="button" class="ui-x-small" data-ui="type:Button;variants:primary">点击设置值</button>
-            </div>
-            <script type="text/sample">
-                function () {
-                    var esui = require('esui');
-                    
-                    esui.get('box-group-setvalue').on('rawvaluechanged', function() {
-                        console.log('触发rawvaluechanged事件');
-                    });
-                    var setBtn = document.getElementById('box-group-set');
-                    setBtn.onclick = function() {
-                        esui.get('box-group-setvalue').setValue('er,ef');
-                    }
-                }
-            </script>
         </div>
     </div>
     <script src="assets/loader/esl.js"></script>
@@ -344,7 +300,6 @@
         [
             'esui',
             'jquery',
-            'esui/Button',
             'esui/BoxGroup',
             'esui/Tab',
             'demo'
@@ -357,13 +312,6 @@
                     $('#box-group-change-log').text('已选值：' + this.getValue());
                 }
             );
-            ui.get('box-group-setvalue').on('rawvaluechanged', function() {
-                console.log('触发rawvaluechanged事件');
-            });
-            var setBtn = document.getElementById('box-group-set');
-            setBtn.onclick = function() {
-                ui.get('box-group-setvalue').setValue('er,ef');
-            }
         }
     );
     </script>
