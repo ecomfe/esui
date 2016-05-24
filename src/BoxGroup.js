@@ -60,6 +60,11 @@ define(
                          * 向后兼容(为true时，boxType为radio时rawValue为数组，setProperties fire change事件)
                          */
                         backwardCompatible: false
+                        /**
+                         * @property {string} [value=""]
+                         *
+                         * `BoxGroup`的字符串形式的值为逗号分隔的多个值
+                         */
                     };
                     u.extend(properties, options);
                     // 使用默认的样式
@@ -73,13 +78,13 @@ define(
                         // deprecate this
                         extractDatasourceFromDOM(this.main, properties);
                     }
-                    if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
+                    if (properties.boxType === 'radio'
+                        && !properties.hasOwnProperty('rawValue')
+                        && !properties.hasOwnProperty('value')) {
                         // 单选框组在没有指定`value`时默认选中第一项
-                        if (properties.boxType === 'radio' && datasource.length) {
-                            properties.rawValue = [datasource[0].value];
-                        }
-                        else {
-                            properties.rawValue = [];
+                        if (datasource.length) {
+                            var firstValue = datasource[0].value;
+                            properties.rawValue = this.backwardCompatible ? [firstValue] : firstValue;
                         }
                     }
 
@@ -97,36 +102,6 @@ define(
                     $(this.main).on('click', '> .' + wrapperClass + ' > input', function (e) {
                         syncValue.call(me);
                     });
-                },
-
-                /**
-                 * 批量更新属性并重绘
-                 *
-                 * @param {Object} properties 需更新的属性
-                 * @override
-                 * @fires change
-                 */
-                setProperties: function (properties) {
-                    // 修改了`datasource`或`boxType`，且没给新的`rawValue`或`value`的时候，
-                    // 要把`rawValue`清空。由于上层`setProperties`是全等判断，
-                    // 如果当前`rawValue`正好也是空的，就不要改值了，以免引起`change`事件
-                    if ((properties.datasource || properties.boxType)
-                        && (!properties.rawValue && !properties.value)
-                        && (!this.rawValue || !this.rawValue.length)
-                    ) {
-                        properties.rawValue = [];
-                    }
-
-                    var changes = this.$super([properties]);
-                    // 需要向后兼容时才fire事件
-                    if (changes.hasOwnProperty('rawValue') && this.backwardCompatible) {
-                        /**
-                         * @event change
-                         *
-                         * 值变化时触发
-                         */
-                        this.fire('change');
-                    }
                 },
 
                 /**
@@ -192,13 +167,11 @@ define(
                          */
                         name: 'rawValue',
                         paint: function (group, rawValue) {
-                            if (group.boxType === 'radio' && rawValue && group.backwardCompatible) {
-                                group.rawValue = rawValue;
-                                rawValue = [rawValue];
+                            if (!rawValue) {
+                                rawValue = [];
                             }
-                            else {
-                                rawValue = rawValue || [];
-                                group.rawValue = rawValue;
+                            if (!u.isArray(rawValue)) {
+                                rawValue = [rawValue];
                             }
                             // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
                             var map = {};
@@ -233,26 +206,18 @@ define(
                 /**
                  * 将字符串类型的值转换成原始格式
                  *
-                 * @param {string} value 字符串值
+                 * @param {string} val 字符串值
                  * @return {string[]}
                  * @protected
                  * @override
                  */
-                parseValue: function (value) {
-                    /**
-                     * @property {string} [value=""]
-                     *
-                     * `BoxGroup`的字符串形式的值为逗号分隔的多个值
-                     */
-                    if (this.boxType === 'radio' && !this.backwardCompatible) {
-                        return value;
+                parseValue: function (val) {
+                    if (this.boxType === 'radio') {
+                        return this.backwardCompatible ? [val] : val;
                     }
-                    if (value) {
-                        return typeof value === 'string'
-                            ? value.split(',')
-                            : [value];
+                    else {
+                        return val ? val.split(',') : [];
                     }
-                    return [];
                 },
 
                 /**
@@ -371,6 +336,7 @@ define(
 
             this.rawValue = result;
             this.fire('change');
+            this.fire('rawvaluechanged');
         }
 
         var itemTemplate = [

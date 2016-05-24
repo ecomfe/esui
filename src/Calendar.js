@@ -391,6 +391,7 @@ define(
              * @member MultiCalendar
              */
             this.fire('change');
+            this.fire('rawvaluechanged');
         }
 
         /**

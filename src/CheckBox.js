@@ -186,26 +186,6 @@ define(
             },
 
             /**
-             * 批量更新属性并重绘
-             *
-             * @param {Object} properties 需更新的属性
-             * @override
-             * @fires change
-             */
-            setProperties: function (properties) {
-                var changes
-                    = this.$super(arguments);
-                if (changes.hasOwnProperty('checked')) {
-                    /**
-                     * @event change
-                     *
-                     * 当值发生变化时触发
-                     */
-                    this.fire('change');
-                }
-            },
-
-            /**
              * 获得应当获取焦点的元素，主要用于验证信息的`<label>`元素的`for`属性设置
              *
              * @return {HTMLElement}
@@ -322,6 +302,12 @@ define(
         function syncChecked(e) {
             var checked = lib.g(this.boxId).checked;
             this.setProperties({checked: checked});
+            /**
+             * @event change
+             * 
+             * 当状态发生变化时触发change
+             */ 
+            this.fire('change');
         }
 
         require('./main').register(CheckBox);

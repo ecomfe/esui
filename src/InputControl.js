@@ -148,10 +148,6 @@ define(
                         properties.rawValue = this.parseValue(value);
                     }
 
-                    if (this.hasOwnProperty('readOnly')) {
-                        this.readOnly = !!this.readOnly;
-                    }
-
                     return this.$super(arguments);
                 },
 

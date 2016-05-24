@@ -234,27 +234,6 @@ define(
                 },
 
                 /**
-                 * 设值
-                 *
-                 * @override
-                 * @protected
-                 */
-                setProperties: function (properties) {
-                    var changes = InputControl.prototype.setProperties.call(
-                        this, properties);
-
-                    var rawValueObj = changes.rawValue;
-
-                    if (rawValueObj
-                        && (this.stringifyValue(rawValueObj.oldValue)
-                        !== this.stringifyValue(rawValueObj.newValue))) {
-
-                        this.fire('change', {rawValue: this.rawValue});
-                    }
-
-                },
-
-                /**
                  * 渲染自身
                  *
                  * @override
@@ -975,7 +954,6 @@ define(
             }
 
             this.setRawValue(rawValue);
-
         }
 
         /**
