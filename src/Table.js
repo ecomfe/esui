@@ -17,6 +17,7 @@ define(
 
         require('./behavior/mouseproxy');
         require('./Tip');
+        require('./Panel');
 
         /**
          * dom表格起始的html模板

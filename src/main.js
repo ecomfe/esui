@@ -11,7 +11,6 @@ define(
     function (require) {
         var lib = require('./lib');
         var u = require('underscore');
-        var $ = require('jquery');
 
         /**
          * 主模块
@@ -342,9 +341,87 @@ define(
         main.init = function (wrap, options) {
             wrap = wrap || document.body;
             options = options || {};
+            var controls = [];
 
-            var valueReplacer = options.valueReplacer
-                || this.defaultValueReplacer;
+            var valueReplacer = options.valueReplacer || function (value) {
+                return value;
+            };
+
+            /**
+             * 将esui-xx声明的组件找出来并返回type
+             *
+             * @param {HTMLElement} element 容器DOM元素
+             * @return {string | null}
+             */
+            function parseTypeFormCustomTag(element) {
+                var customElementPrefix = main.getConfig('customElementPrefix');
+                var nodeName = element.nodeName.toLowerCase();
+                var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
+                if (esuiPrefixIndex === 0) {
+                    var typeFromCustomElement;
+                    /* jshint ignore:start */
+                    typeFromCustomElement = nodeName.replace(
+                            /-(\S)/g,
+                            function (match, ch) {
+                            return ch.toUpperCase();
+                        });
+                    /* jshint ignore:end */
+                    typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
+                    return typeFromCustomElement;
+                }
+                return;
+            }
+
+            /**
+             * 确定该元素是否是esui-xx,data-ui和data-ui-type声明的esui组件
+             *
+             * @param {HTMLElement} element 容器DOM元素
+             * @return {boolean}
+             */
+            function isUIControl(element) {
+                var uiPrefix = main.getConfig('uiPrefix');
+                return element.hasAttribute(uiPrefix + '-type')
+                    || element.hasAttribute(uiPrefix)
+                    || element.nodeName.toLowerCase().indexOf(main.getConfig('customElementPrefix')) === 0;
+            }
+
+            /**
+             * 初始化容器中的所有esui组件
+             *
+             * @param {HTMLElement} ele wrap元素
+             * @param {Object} options 初始化参数
+             */
+            function initControlsFromDom(ele, options) {
+                if (ele.nodeType !== 1) {
+                    return;
+                }
+
+                // 找到esui组件就跳出循环
+                if (isUIControl(ele)
+                    && !ele.hasAttribute(config.instanceAttr)
+                    ) {
+                    initUIControl(ele, options);
+                    return;
+                }
+
+                var eleChildren = ele.children;
+                if (eleChildren) {
+                    // 有些组件会改变当前父元素下的dom结构
+                    // 例如Table会在元素前插入一行div来做宽度占位符
+                    // ActionDialog会将之前dom移除
+                    for (var i = 0, l = eleChildren.length; i < l; i++) {
+                        var childEle = eleChildren[i];
+                        if (isUIControl(childEle)
+                            && (!childEle.hasAttribute(config.instanceAttr) || !main.getControlByDOM(childEle))
+                            ) {
+                            initUIControl(childEle, options);
+                        }
+                        else {
+                            initControlsFromDom(childEle, options);
+                        }
+                    }
+                }
+            }
 
             /**
              * 将字符串数组join成驼峰形式
@@ -392,73 +469,42 @@ define(
                 if (terms.length === 0) {
                     noOverrideExtend(
                         optionObject,
-                        main.parseAttribute(value, valueReplacer)
-                    );
+                        main.parseAttribute(value, valueReplacer));
                 }
                 else {
                     optionObject[joinCamelCase(terms)] = valueReplacer(value);
                 }
             }
 
-            function parseTypeFormCustomTag(element) {
-                var customElementPrefix = main.getConfig('customElementPrefix');
-                var nodeName = element.nodeName.toLowerCase();
-                var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
-                if (esuiPrefixIndex === 0) {
-                    var typeFromCustomElement;
-                    /* jshint ignore:start */
-                    typeFromCustomElement = nodeName.replace(
-                        /-(\S)/g,
-                        function (match, ch) {
-                            return ch.toUpperCase();
-                        }
-                    );
-                    /* jshint ignore:end */
-                    typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
-                    return typeFromCustomElement;
-                }
-                return;
-            }
+            /**
+             * 初始化所有的UI组件
+             *
+             * @param {HTMLElement} [element=document.body] 组件容器DOM元素
+             * @param {Object} [options] init参数
+             * @param {Object} [options.viewContext] 视图环境
+             * @param {Object} [options.properties] 属性集合，通过id映射
+             */
+            function initUIControl(element, options) {
+                var uiPrefix = main.getConfig('uiPrefix');
+                var extPrefix = main.getConfig('extensionPrefix');
 
-            // 把dom元素存储到临时数组中
-            // 控件渲染的过程会导致Collection的改变
-            var uiPrefix = main.getConfig('uiPrefix');
-            var extPrefix = main.getConfig('extensionPrefix');
-            var customElementPrefix = main.getConfig('customElementPrefix');
+                var uiPrefixLen = uiPrefix.length;
+                var extPrefixLen = extPrefix.length;
+                var properties = options.properties || {};
 
-            var uiPrefixLen = uiPrefix.length;
-            var extPrefixLen = extPrefix.length;
-            var properties = options.properties || {};
-            var controls = [];
-
-            // 添加一个:xxx伪类选择符
-            // 选出所有需要通过esui初始化的element
-            var pseudoClassName = customElementPrefix;
-            if (u.isObject($.expr[':']) && !$.expr[':'][pseudoClassName]) {
-                $.expr[':'][pseudoClassName] = function (element) {
-                    return $(element).is(
-                        '[' + uiPrefix + '],[' + uiPrefix + '-type]'
-                    ) || element.tagName.indexOf(customElementPrefix.toUpperCase() + '-') === 0;
-                };
-            }
-
-            $(wrap).find(':' + pseudoClassName).each(function (i, element) {
-                // 有时候，一个控件会自己把`main.innerHTML`生成子控件，比如`Panel`，
-                // 但这边有缓存这些子元素，可能又会再生成一次，所以要去掉
-                if (element.getAttribute(config.instanceAttr)) {
-                    return;
-                }
-
+                var attributes = element.attributes;
                 var controlOptions = {};
                 var extensionOptions = {};
-                u.each(element.attributes, function (attribute, j) {
+
+                // 解析attribute中的参数
+                for (var j = 0, attrLen = attributes.length; j < attrLen; j++) {
+                    var attribute = attributes[j];
                     var name = attribute.name;
                     var value = attribute.value;
-                    var terms;
 
                     if (name.indexOf(extPrefix) === 0) {
                         // 解析extension的key
-                        terms = name.slice(extPrefixLen + 1).split('-');
+                        var terms = name.slice(extPrefixLen + 1).split('-');
                         var extKey = terms[0];
                         terms.shift();
 
@@ -471,66 +517,65 @@ define(
                         extendToOption(extOption, terms, value);
                     }
                     else if (name.indexOf(uiPrefix) === 0) {
-                        terms = name.length === uiPrefixLen
-                            ? []
-                            : name.slice(uiPrefixLen + 1).split('-');
+                        var terms = name.length === uiPrefixLen
+                             ? []
+                             : name.slice(uiPrefixLen + 1).split('-');
                         extendToOption(controlOptions, terms, value);
                     }
-                });
+                }
 
-                // 根据选项创建控件
+                // 从用户传入的properties中merge控件初始化属性选项
+                var controlId = controlOptions.id;
+                var customOptions = controlId
+                     ? properties[controlId]
+                     : {};
+                for (var key in customOptions) {
+                    controlOptions[key] = valueReplacer(customOptions[key]);
+                }
+
+                // 创建控件的插件
+                var extensions = controlOptions.extensions || [];
+                controlOptions.extensions = extensions;
+                for (var key in extensionOptions) {
+                    var extOption = extensionOptions[key];
+                    var extension = main.createExtension(
+                            extOption.type,
+                            extOption);
+                    extension && extensions.push(extension);
+                }
+
+                // 绑定视图环境和控件主元素
+                controlOptions.viewContext = options.viewContext;
+                // 容器类控件会需要渲染自己的`innerHTML`，
+                // 这种渲染使用`initChildren`，再调用`main.init`，
+                // 因此需要把此处`main.init`的参数交给控件，方便再带回来，
+                // 以便`properties`、`valueReplacer`之类的能保留
+                controlOptions.renderOptions = options;
+                controlOptions.main = element;
+
+                // 创建控件
                 var type = controlOptions.type;
                 if (!type) {
                     type = parseTypeFormCustomTag(element);
                     controlOptions.type = type;
                 }
-                if (type) {
-                    // 从用户传入的properties中merge控件初始化属性选项
-                    var controlId = controlOptions.id;
-                    var customOptions = controlId
-                        ? properties[controlId]
-                        : {};
-                    for (var key in customOptions) {
-                        if (customOptions.hasOwnProperty(key)) {
-                            controlOptions[key] = valueReplacer(customOptions[key]);
-                        }
-                    }
+                var control = main.create(type, controlOptions);
 
-                    // 创建控件的插件
-                    var extensions = controlOptions.extensions || [];
-                    controlOptions.extensions = extensions;
-                    for (var key2 in extensionOptions) {
-                        if (extensionOptions.hasOwnProperty(key2)) {
-                            var extOption = extensionOptions[key2];
-                            var extension = main.createExtension(
-                                extOption.type,
-                                extOption
-                            );
-                            extension && extensions.push(extension);
-                        }
-                    }
-
-                    // 绑定视图环境和控件主元素
-                    controlOptions.viewContext = options.viewContext;
-                    // 容器类控件会需要渲染自己的`innerHTML`，
-                    // 这种渲染使用`initChildren`，再调用`main.init`，
-                    // 因此需要把此处`main.init`的参数交给控件，方便再带回来，
-                    // 以便`properties`、`valueReplacer`之类的能保留
-                    controlOptions.renderOptions = options;
-                    controlOptions.main = element;
-
-                    // 创建控件
-                    var control = main.create(type, controlOptions);
-                    if (control) {
-                        controls.push(control);
-                        if (options.parent) {
-                            options.parent.addChild(control);
-                        }
-                        control.render();
+                if (control) {
+                    controls.push(control);
+                    if (options.parent) {
+                        options.parent.addChild(control);
                     }
                 }
-            });
+            }
 
+            initControlsFromDom(wrap, options);
+
+            u.each(controls, function (control) {
+                if (control) {
+                    control.render();
+                }
+            }, this);
             return controls;
         };
 

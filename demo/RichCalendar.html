@@ -76,6 +76,9 @@
             ],
             function (ui) {
                 ui.init()[0];
+                ui.get('test4').on('changed', function() {
+                    console.log('changed');
+                })
             }
         );
         </script>

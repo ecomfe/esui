@@ -77,7 +77,7 @@
                     <div class="demo-container ui-demo-light-stage">
                         <h3>普通</h3>
                         <div class="row">
-                            <div data-ui-type="RangeCalendar" data-ui-name="test"
+                            <div data-ui-type="RangeCalendar" data-ui-name="test" data-ui-id="test"
                                 data-ui-endless-check="false"
                                 data-ui-is-endless="true"
                                 data-ui-showed-short-cut="昨天,最近7天,上周"></div>
@@ -130,6 +130,9 @@
             ],
             function (ui) {
                 ui.init()[0];
+                ui.get('test').on('changed', function() {
+                    console.log('changed')
+                })
             }
         );
         </script>

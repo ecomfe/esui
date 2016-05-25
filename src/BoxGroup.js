@@ -99,7 +99,7 @@ define(
                 initEvents: function () {
                     var me = this;
                     var wrapperClass = this.helper.getPartClasses('wrapper');
-                    $(this.main).on('click', '> .' + wrapperClass + ' > input', function (e) {
+                    this.helper.addDOMEvent(this.main, 'click', '> .' + wrapperClass + ' > input', function (e) {
                         syncValue.call(me);
                     });
                 },

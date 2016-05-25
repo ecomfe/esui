@@ -100,6 +100,9 @@
                     begin: new Date(2015, 6, 3),
                     end: new Date(2015, 6, 7)
                 });
+                ui.get('twoMonths').on('changed', function() {
+                    console.log('changed')
+                })
             }
         );
         </script>
