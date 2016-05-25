@@ -514,12 +514,14 @@ define(
                     var record = {name: 'datasource'};
                     var record2 = {name: 'selectedIndex'};
 
-                    this.repaint([record, record2],
-                        {
-                            datasource: record,
-                            selectedIndex: record2
-                        }
-                    );
+                    if (this.helper.isInStage('RENDERED')) {
+                        this.repaint([record, record2],
+                            {
+                                datasource: record,
+                                selectedIndex: record2
+                            }
+                        );
+                    }
                 },
 
                 /**
@@ -2155,7 +2157,7 @@ define(
             );
         }
 
-        
+
 
         /**
          * base行绘制每行基本参数
