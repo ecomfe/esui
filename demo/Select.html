@@ -275,8 +275,8 @@
             select = ui.get('error-primary');
             select.showValidationMessage('invalid', 'There is an error.');
             var test = ui.get('test');
-            test.on('change', function (e) {
-                alert(e.type);
+            test.on('changed', function (e) {
+                console.log('changed')
             });
         }
     );

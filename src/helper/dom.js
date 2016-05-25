@@ -365,35 +365,20 @@ define(
         helper.replaceMain = function (main) {
             main = main || this.control.createMain();
             var initialMain = this.control.main;
-            var $initialMain = $(initialMain);
 
-            // 欺骗一下`main`模块，让它别再次对原主元素进行控件创建
-            $initialMain.attr(
-                ui.getConfig('instanceAttr'),
-                lib.getGUID()
-            );
-
-            // 把能复制的属性全复制过去
-            var $main = $(main);
             var attributes = initialMain.attributes;
-            for (var i = 0; i < attributes.length; i++) {
+            for (var i = 0, l = attributes.length; i < l; i++) {
                 var attribute = attributes[i];
                 var name = attribute.name;
                 if (lib.hasAttribute(initialMain, name)
-                    && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)
-                ) {
-                    $main.attr(name, attribute.value);
-
-                    // 原主元素的ui属性需要移除，否则若再次init会重复处理
-                    if (name.indexOf(ui.getConfig('uiPrefix')) === 0) {
-                        $initialMain.removeAttr(name);
-                        i--;
-                    }
+                    && !INPUT_SPECIFIED_ATTRIBUTES.hasOwnProperty(name)) {
+                    main.setAttribute(name, attribute.value);
                 }
             }
 
-            $initialMain.before($main);
-            $initialMain.remove();
+            var parentNode = initialMain.parentNode;
+            parentNode.insertBefore(main, initialMain);
+            parentNode.removeChild(initialMain);
             this.control.main = main;
 
             return initialMain;

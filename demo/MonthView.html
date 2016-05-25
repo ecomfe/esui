@@ -272,7 +272,13 @@
         function (ui, TipLayer) {
             ui.init();
             var singleMonthView = ui.get('test1');
+            singleMonthView.on('changed', function() {
+                console.log('test1 changed')
+            })
             var multiMonthView = ui.get('test2');
+            multiMonthView.on('changed', function() {
+                console.log('test2 changed')
+            })
 
             var test1Btn0 = document.getElementById('test1-btn0');
             var test1Ipt0 = document.getElementById('test1-ipt0');

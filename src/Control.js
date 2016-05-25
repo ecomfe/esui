@@ -90,6 +90,12 @@ define(
                 // 初始化扩展
                 helper.initExtensions();
 
+                // 绑定一个实例化标签
+                this.main.setAttribute(
+                    ui.getConfig('instanceAttr'),
+                    this.id
+                );
+
                 // 切换控件所属生命周期阶段
                 helper.changeStage('INITED');
 
@@ -207,11 +213,7 @@ define(
                         this.main.id = this.helper.getId();
                     }
 
-                    // 为控件主元素添加控件实例标识属性
-                    this.main.setAttribute(
-                        ui.getConfig('instanceAttr'),
-                        this.id
-                    );
+                    // 渲染之后就是把控件绑定到上下文里面
                     this.main.setAttribute(
                         ui.getConfig('viewContextAttr'),
                         this.viewContext.id
@@ -309,25 +311,7 @@ define(
                     reference = reference.main;
                 }
 
-                $(reference).before(this.main);
-                if (this.helper.isInStage('NEW')
-                    || this.helper.isInStage('INITED')
-                    ) {
-                    this.render();
-                }
-            },
-
-            /**
-             * 将控件添加到页面的某个元素之后
-             *
-             * @param {HTMLElement | Control} reference 控件要添加到之后的目标元素
-             */
-            insertAfter: function (reference) {
-                if (reference instanceof Control) {
-                    reference = reference.main;
-                }
-
-                $(reference).after(this.main);
+                reference.parentNode.insertBefore(this.main, reference);
                 if (this.helper.isInStage('NEW')
                     || this.helper.isInStage('INITED')
                     ) {

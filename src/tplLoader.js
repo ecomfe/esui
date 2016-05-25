@@ -1,7 +1,7 @@
 /**
- * 标签搜索控件
+ * 模版加载引擎
  * @file tplLoader.js
- * @author chuzhenyang(chuzhenyang@baidu.com)
+ * @author yankun(yankun01@baidu.com)
  */
 
 define(
@@ -9,12 +9,20 @@ define(
         var $ = require('jquery');
         var engine = require('./templateEngine').get();
 
+
+
         return {
             load: function (resourceId, req, load) {
-                $.get(req.toUrl(resourceId), function (data) {
+                function processTemplate(data) {
                     engine.compile(data);
                     load(data);
-                });
+                }
+                if (resourceId.indexOf('.tpl.html') >= 0) {
+                    $.get(req.toUrl(resourceId), processTemplate);
+                }
+                else {
+                    req([resourceId], processTemplate);
+                }
             }
         };
     }

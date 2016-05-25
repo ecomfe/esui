@@ -126,6 +126,9 @@
                 ui.get('mySchedule').onchange  = function (e) {
                     //console.info(this.stringifyValue(e.rawValue));
                 };
+                ui.get('mySchedule').on('changed', function(){
+                    console.log('changed');
+                })
             }
         );
         </script>
