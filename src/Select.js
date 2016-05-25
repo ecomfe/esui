@@ -401,7 +401,10 @@ define(
                 }
                 this.datasource = datasource;
                 var record = {name: 'datasource'};
-                this.repaint([record], {datasource: record});
+
+                if (this.helper.isInStage('RENDERED')) {
+                    this.repaint([record], {datasource: record});
+                }
             },
 
             /**
