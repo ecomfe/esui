@@ -66,6 +66,7 @@ define(
 
                 /**
                  * 放置层
+                 *
                  * @override
                  */
                 position: function () {
@@ -183,12 +184,11 @@ define(
                 if (u.isFunction(this.getCustomItemHTML)) {
                     return this.getCustomItemHTML(item);
                 }
-                else {
-                    var data = {
-                        text: u.escape(item.text)
-                    };
-                    return lib.format(this.itemTemplate, data);
-                }   
+
+                var data = {
+                    text: u.escape(item.text)
+                };
+                return lib.format(this.itemTemplate, data);
             },
 
             initStructure: function () {

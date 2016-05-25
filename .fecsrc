@@ -1,0 +1,11 @@
+{
+    "files": [
+        "src/**/*.js",
+        "!src/behavior/jquery-ui.js"
+    ],
+    "eslint": {
+        "rules": {
+            "fecs-max-statements": false
+        }
+    }
+}

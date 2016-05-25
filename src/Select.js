@@ -222,13 +222,12 @@ define(
                 if (u.isFunction(this.getCustomItemHTML)) {
                     return this.getCustomItemHTML(item);
                 }
-                else {
-                    var data = {
-                        text: u.escape(item.name || item.text),
-                        value: u.escape(item.value)
-                    };
-                    return lib.format(this.itemTemplate, data);
-                }
+
+                var data = {
+                    text: u.escape(item.name || item.text),
+                    value: u.escape(item.value)
+                };
+                return lib.format(this.itemTemplate, data);
             },
 
             /**
@@ -256,13 +255,12 @@ define(
                 if (u.isFunction(this.getCustomDisplayHTML)) {
                     return this.getCustomDisplayHTML(item);
                 }
-                else {
-                    var data = {
-                        text: u.escape(item.name || item.text),
-                        value: u.escape(item.value)
-                    };
-                    return lib.format(this.displayTemplate, data);
-                }
+
+                var data = {
+                    text: u.escape(item.name || item.text),
+                    value: u.escape(item.value)
+                };
+                return lib.format(this.displayTemplate, data);
             },
 
             /**
@@ -604,15 +602,12 @@ define(
         function updateValue(select) {
             // 同步显示的文字
             var textHolder = select.helper.getPart('text');
-            var selectedItem = select.selectedIndex === -1
-                ? null
-                : select.datasource[select.selectedIndex];
+            var selectedItem = select.selectedIndex === -1 ? null : select.datasource[select.selectedIndex];
             var text = select.getDisplayHTML(selectedItem);
 
             textHolder.innerHTML = text;
             // to show hidden text as tool tip.
-            textHolder.title = selectedItem ?
-                (selectedItem.name || selectedItem.text) : select.emptyText;
+            textHolder.title = selectedItem ? (selectedItem.name || selectedItem.text) : select.emptyText;
 
             var layerElement = select.layer.getElement(false);
             if (layerElement) {

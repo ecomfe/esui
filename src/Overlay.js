@@ -176,6 +176,7 @@ define(
 
                 /**
                  * 获取当前Overlay要显示所要的ZIndex
+                 *
                  * @return {number}
                  */
                 getZIndex: function () {
@@ -391,6 +392,7 @@ define(
 
         /**
          * 通过domId或者控件id获取绑定目标的主元素
+         *
          * @param {string} domId DOM元素id
          * @param {string} control 控件或控件id
          * @return {HTMLElement} 控件主元素
@@ -498,6 +500,7 @@ define(
 
         /**
          * 显示遮盖层
+         *
          * @inner
          */
         function showMask() {
@@ -509,6 +512,7 @@ define(
 
         /**
          * 隐藏遮盖层
+         *
          * @inner
          */
         function hideMask() {

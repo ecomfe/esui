@@ -12,8 +12,6 @@ define(
         var u = require('underscore');
         var ui = require('./main');
         var Helper = require('./Helper');
-        var eoo = require('eoo');
-        var EventTarget = require('mini-event/EventTarget');
         var $ = require('jquery');
 
         /**
@@ -24,7 +22,7 @@ define(
          * @param {Object} [options] 初始化参数
          * @fires init
          */
-        var Control = eoo.create(EventTarget, {
+        var Control = require('./inheritEventTarget')({
             constructor: function (options) {
                 options = options || {};
 
@@ -519,6 +517,7 @@ define(
 
             /**
              * 设置控件禁用状态
+             *
              * @param {boolean} disabled 是否禁用
              */
             setDisabled: function (disabled) {
@@ -564,12 +563,14 @@ define(
 
             /**
              * 切换控件可见状态
+             *
              * @param {boolean} visible toggle的目标状态
              */
             toggle: function (visible) {
                 if (u.isBoolean(visible)) {
                     this[visible ? 'show' : 'hide']();
-                } else {
+                }
+                else {
                     this[this.isHidden() ? 'show' : 'hide']();
                 }
             },

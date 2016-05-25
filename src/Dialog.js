@@ -626,6 +626,7 @@ define(
 
         /**
          * 绑定拖动drag事件
+         *
          * @param {ui.Dialog} dialog 控件对象
          * @param {boolean} unbind 是否移除事件
          */
@@ -645,6 +646,7 @@ define(
 
         /**
          * 显示遮盖层
+         *
          * @param {ui.Dialog} dialog 控件对象
          * @param {number} zIndex zIndex值
          */
@@ -666,6 +668,7 @@ define(
 
         /**
          * 隐藏遮盖层
+         *
          * @param {ui.Dialog} dialog 控件对象
          */
         function hideMask(dialog) {
@@ -820,6 +823,7 @@ define(
          * @param {string=} args.rawTitle 提示框标题HTML，覆盖title
          * @param {string=} args.rawContent 提示框内容HTML，覆盖content
          * @param {string=} args.okText 确认按钮文本
+         * @return {Dialog}
          */
         Dialog.alert = function (args) {
             var dialogPrefix = 'dialog-alert';

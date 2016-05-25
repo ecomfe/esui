@@ -391,7 +391,7 @@ define(
         };
 
         var NUMBER_TPL = [
-            '<span class="${textClass}">${num}</span>',
+            '<span class="${textClass}">${num}</span>'
         ].join('');
 
         var SEARCH_ITEM_TPL = [

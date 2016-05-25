@@ -120,6 +120,7 @@ define(
 
                     /**
                      * 打开子行
+                     *
                      * @public
                      * @param {number} index 子行的序号
                      */
@@ -130,6 +131,7 @@ define(
 
                     /**
                      * 关闭子行
+                     *
                      * @public
                      * @param {number} index 子行的序号
                      */
@@ -162,6 +164,7 @@ define(
 
         /**
          * 获取元素Id
+         *
          * @private
          * @param {Object} table Table示例
          * @param {string} name name
@@ -173,6 +176,7 @@ define(
 
         /**
          * 获取dom子部件的css class
+         *
          * @private
          * @param {Object} table Table示例
          * @param {string} name name
@@ -185,6 +189,7 @@ define(
 
         /**
          * 设置元素属性 自动加上data-前缀
+         *
          * @private
          * @param {Object} element dom元素
          * @param {string} key key
@@ -197,6 +202,7 @@ define(
 
         /**
          * 判断值是否为空
+         *
          * @private
          * @param {Object} obj obj
          * @return {bool}
@@ -207,6 +213,7 @@ define(
 
         /**
          * 获取表格子行的元素id
+         *
          * @private
          * @param {Object} table Table示例
          * @param {number} index 行序号
@@ -218,6 +225,7 @@ define(
 
         /**
          * 获取表格子行入口元素的id
+         *
          * @private
          * @param {Object} table Table示例
          * @param {number} index 行序号
@@ -229,6 +237,7 @@ define(
 
         /**
          * subrow行绘制每行基本参数
+         *
          * @param {Object} table Table示例
          * @param {number} rowIndex 行序号
          * @return {Object} 获取到的参数
@@ -242,6 +251,7 @@ define(
 
         /**
          * 处理子行入口元素鼠标移入的行为x
+         *
          * @private
          * @param {Object} element dom元素
          * @param {Object} e 事件对象
@@ -262,6 +272,7 @@ define(
 
         /**
          * 处理子行入口元素鼠标移出的行为x
+         *
          * @private
          * @param {Object} element dom元素
          * @param {Object} e 事件对象
@@ -277,6 +288,7 @@ define(
 
         /**
          * 触发subrow的打开|关闭
+         *
          * @private
          * @param {Object} el 事件元素
          * @param {Object} e 事件对象
@@ -312,6 +324,7 @@ define(
 
         /**
          * 关闭子行
+         *
          * @private
          * @param {Object} table Table示例
          * @param {number} index 子行的序号
@@ -354,6 +367,7 @@ define(
 
         /**
          * 打开子行
+         *
          * @private
          * @param {Object} table Table示例
          * @param {number} index 子行的序号
@@ -410,7 +424,8 @@ define(
                         + '</div>';
 
         /**
-         * 生成子行点击打开区域的Htmlx
+         * 生成子行点击打开区域的Html
+         *
          * @private
          * @param {Object} table Table示例
          * @param {Object} data 某行某列对应的数据
@@ -461,6 +476,7 @@ define(
 
         /**
          * 获取子内容区域的html
+         *
          * @private
          * @param {Control} table table
          * @param {number} index index
@@ -479,6 +495,7 @@ define(
 
         /**
          * 获取子行的容器
+         *
          * @private
          * @param {Object} table Table示例
          * @param {number} index 行序号
@@ -490,6 +507,7 @@ define(
 
         /**
          * 获取子行的Panel
+         *
          * @private
          *
          * @param {Object} table Table示例

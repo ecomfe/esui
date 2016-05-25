@@ -75,6 +75,7 @@ define(
          * (For old IE.) Starts tracking propertychange events on the passed-in element
          * and override the value property so that we can distinguish user events from
          * value changes in JS.
+         *
          * @param {Element} target 要监听的元素
          */
         var startWatching = function (target) {
@@ -113,12 +114,12 @@ define(
                     // exactly what we want so fall through here and trigger the
                     // event...
                     var target = event.target;
-                    if (true || target.nodeName !== 'TEXTAREA') {
+                    // if (true || target.nodeName !== 'TEXTAREA') {
                         // ...unless it's a textarea, in which case we don't fire an
                         // event (so that we have consistency with our old-IE shim).
-                        event.type = 'textchange';
-                        $(target).trigger(event);
-                    }
+                    event.type = 'textchange';
+                    $(target).trigger(event);
+                    // }
                 }
             );
         }

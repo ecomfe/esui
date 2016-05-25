@@ -310,7 +310,7 @@ define(
          *     3. 使用'false' / 'number'这一类不进行类型转换，但是去掉'(trim)
          *
          * @param {string} value 模板上声明的值
-         * @return 转换后的值
+         * @return {*} 转换后的值
          */
         main.defaultValueReplacer = function (value) {
             var coreNumber = /^[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)$/;
