@@ -141,7 +141,6 @@ define(
                     var changes
                         = Control.prototype.setProperties.apply(this, arguments);
 
-                    // yankun:真的需要在这里触发change吗？
                     if (changes.hasOwnProperty('rawValue')) {
                         this.fire('change');
                     }
@@ -750,16 +749,15 @@ define(
             else if (this.mode === 'multi') {
                 if ($tar.hasClass(rowSelectClass)) {
                     selectByTagClick(this, tar);
-                    return;
                 }
                 if ($tar.hasClass(headClass)) {
                     selectByColumn(this, tar);
-                    return;
                 }
                 if ($tar.hasClass(allSelectClass)) {
                     selectAll(this, $tar);
                 }
             }
+            this.fire('changed');
         }
 
         /**

@@ -60,6 +60,11 @@ define(
                          * 向后兼容(为true时，boxType为radio时rawValue为数组，setProperties fire change事件)
                          */
                         backwardCompatible: false
+                        /**
+                         * @property {string} [value=""]
+                         *
+                         * `BoxGroup`的字符串形式的值为逗号分隔的多个值
+                         */
                     };
                     u.extend(properties, options);
                     // 使用默认的样式
@@ -73,13 +78,13 @@ define(
                         // deprecate this
                         extractDatasourceFromDOM(this.main, properties);
                     }
-                    if (!properties.hasOwnProperty('rawValue') && !properties.hasOwnProperty('value')) {
+                    if (properties.boxType === 'radio'
+                        && !properties.hasOwnProperty('rawValue')
+                        && !properties.hasOwnProperty('value')) {
                         // 单选框组在没有指定`value`时默认选中第一项
-                        if (properties.boxType === 'radio' && datasource.length) {
-                            properties.rawValue = [datasource[0].value];
-                        }
-                        else {
-                            properties.rawValue = [];
+                        if (datasource.length) {
+                            var firstValue = datasource[0].value;
+                            properties.rawValue = this.backwardCompatible ? [firstValue] : firstValue;
                         }
                     }
 
@@ -119,7 +124,7 @@ define(
 
                     var changes = this.$super([properties]);
                     // 需要向后兼容时才fire事件
-                    if (changes.hasOwnProperty('rawValue') && this.backwardCompatible) {
+                    if (changes.hasOwnProperty('rawValue')) {
                         /**
                          * @event change
                          *
@@ -192,13 +197,11 @@ define(
                          */
                         name: 'rawValue',
                         paint: function (group, rawValue) {
-                            if (group.boxType === 'radio' && rawValue && group.backwardCompatible) {
-                                group.rawValue = rawValue;
-                                rawValue = [rawValue];
+                            if (!rawValue) {
+                                rawValue = [];
                             }
-                            else {
-                                rawValue = rawValue || [];
-                                group.rawValue = rawValue;
+                            if (!u.isArray(rawValue)) {
+                                rawValue = [rawValue];
                             }
                             // 因为`datasource`更换的时候会把`rawValue`清掉，这里再弄回去
                             var map = {};
@@ -233,26 +236,18 @@ define(
                 /**
                  * 将字符串类型的值转换成原始格式
                  *
-                 * @param {string} value 字符串值
+                 * @param {string} val 字符串值
                  * @return {string[]}
                  * @protected
                  * @override
                  */
-                parseValue: function (value) {
-                    /**
-                     * @property {string} [value=""]
-                     *
-                     * `BoxGroup`的字符串形式的值为逗号分隔的多个值
-                     */
-                    if (this.boxType === 'radio' && !this.backwardCompatible) {
-                        return value;
+                parseValue: function (val) {
+                    if (this.boxType === 'radio') {
+                        return this.backwardCompatible ? [val] : val;
                     }
-                    if (value) {
-                        return typeof value === 'string'
-                            ? value.split(',')
-                            : [value];
+                    else {
+                        return val ? val.split(',') : [];
                     }
-                    return [];
                 },
 
                 /**
@@ -371,6 +366,7 @@ define(
 
             this.rawValue = result;
             this.fire('change');
+            this.fire('changed');
         }
 
         var itemTemplate = [

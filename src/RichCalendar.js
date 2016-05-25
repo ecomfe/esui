@@ -54,7 +54,7 @@ define(
                         || !$(element).is(':visible')
                     ) {
                         // 渲染日历集
-                        paintCals(this.control, true);
+                        paintCals(this.control, false);
                         this.show();
                     }
                     else {
@@ -690,6 +690,7 @@ define(
             // 更新总日期数信息
             updateTotalInfo(calendar, value);
             calendar.fire('change');
+            calendar.fire('changed');
         }
 
         function updateTotalInfo(calendar, rawValue) {
@@ -872,6 +873,7 @@ define(
                 rawValue: getValueText(calendar, calendar.rawValue)
             });
             calendar.fire('change');
+            calendar.fire('changed');
         }
 
         /**

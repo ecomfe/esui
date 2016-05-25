@@ -753,6 +753,7 @@ define(
             if (hit) {
                 optionClick(this, tar);
                 this.fire('change');
+                this.fire('changed');
                 return;
             }
         }
@@ -972,6 +973,7 @@ define(
             var regionId = parseInt(regionSel.getValue(), 10);
             region.rawValue = regionId;
             updateParamValue(region);
+            region.fire('changed');
         }
 
         /**

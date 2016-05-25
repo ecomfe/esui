@@ -322,6 +322,7 @@ define(
         function syncChecked(e) {
             var checked = lib.g(this.boxId).checked;
             this.setProperties({checked: checked});
+            this.fire('changed');
         }
 
         require('./main').register(CheckBox);

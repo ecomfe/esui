@@ -519,6 +519,7 @@ define(
                 var index = target.getAttribute('data-index');
                 this.set('selectedIndex', +index);
                 this.layer.hide();
+                this.fire('changed');
             }
         }
 
