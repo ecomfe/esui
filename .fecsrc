@@ -1,0 +1,6 @@
+{
+    "files": [
+        "src/**/*.js",
+        "!src/behavior/jquery-ui.js"
+    ]
+}

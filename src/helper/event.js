@@ -10,6 +10,7 @@ define(
     function (require) {
         var $ = require('jquery');
         var u = require('underscore');
+
         var miniEvent = require('mini-event');
 
         /**
