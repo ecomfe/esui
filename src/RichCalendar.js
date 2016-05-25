@@ -53,7 +53,7 @@ define(
                     if (!element
                         || !$(element).is(':visible')
                     ) {
-                        // 渲染日历集
+                        // 渲染日历集 render时已经绑定事件，这里不需要重复绑定
                         paintCals(this.control, false);
                         this.show();
                     }
@@ -300,11 +300,15 @@ define(
                                 }
                                 calendar.range = range;
                             }
-                            if (rawValue) {
-                                updateMain(calendar, rawValue);
-                            }
+
+                            // paintCals中会执行updateMain
                             if (calendar.helper.getPart('months')) {
                                 paintCals(calendar);
+                            }
+                            else {
+                                if (rawValue) {
+                                    updateMain(calendar, rawValue);
+                                }
                             }
                         }
                     },
