@@ -7,7 +7,7 @@
  * @author DBear, otakustay
  */
 define(
-    function () {
+    function (require) {
         var eoo = require('eoo');
 
         /**

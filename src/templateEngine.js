@@ -26,7 +26,7 @@ define(
             /**
              * 设置自定义的模板引擎
              *
-             * @param {Object} engine 引擎实例
+             * @param {Object} tplEngine 引擎实例
              */
             set: function (tplEngine) {
                 engine = tplEngine;

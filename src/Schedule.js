@@ -38,6 +38,7 @@ define(
 
                 /**
                  * 创建控件主元素
+                 *
                  * @override
                  * @return {HTMLElement}
                  */
@@ -357,7 +358,8 @@ define(
 
                 /**
                  * 按照坐标选择
-                  * @param {...Array.<number>} coord 当前坐标[星期，小时]
+                 *
+                 * @param {...Array.<number>} coord 当前坐标[星期，小时]
                  */
                 select: function (coord) {
                     dealValueByCoord(this, 1, [].slice.call(arguments));
@@ -365,6 +367,7 @@ define(
 
                 /**
                  * 取消选择按照坐标
+                 *
                  * @param {...Array.<number>} coord 当前坐标[星期，小时]
                  */
                 unselect: function (coord) {
@@ -464,6 +467,7 @@ define(
 
         /**
          * 初始化视图的值
+         *
          * @inner
          * @return {Array}
          */
@@ -1114,6 +1118,7 @@ define(
 
         /**
          * 绘制遮罩
+         *
          * @param {number} day 星期
          * @param {number} time 时间段
          * @param {boolean} all TODO: all是干啥的
@@ -1224,6 +1229,7 @@ define(
 
         /**
          * 获取选择区域的开始和结束配置
+         *
          * @param {Schedule} schedule Schedule实例
          * @param {Object} mousepos 当前的鼠标位置
          * @return {Object} 选择区域的开始和结束配置
@@ -1273,6 +1279,7 @@ define(
 
         /**
          * drag时的鼠标跟随层的渲染方法
+         *
          * @param {Event} e  鼠标事件
          */
         function repaintFollowEle(e) {
@@ -1353,6 +1360,7 @@ define(
 
         /**
          * 设置星期checkbox的状态
+         *
          * @param {Schedule} schedule 当前控件
          * @param {string} state    状态
          * @param {boolean} value    值

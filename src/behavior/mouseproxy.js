@@ -13,20 +13,22 @@ define(
         var $ = require('jquery');
         require('./jquery-ui');
 
+        /* eslint-disable fecs-camelcase */
         $.widget('ui.mouseproxy', $.ui.mouse, {
             options: {},
-            _create: function() {
+            _create: function () {
                 this._mouseInit();
             },
-            _mouseStart: function(event) {
+            _mouseStart: function (event) {
                 this._trigger('start', event);
             },
-            _mouseDrag: function(event) {
+            _mouseDrag: function (event) {
                 this._trigger('drag', event);
             },
-            _mouseStop: function(event) {
+            _mouseStop: function (event) {
                 this._trigger('stop', event);
             }
         });
+        /* eslint-enable fecs-camelcase */
     }
 );

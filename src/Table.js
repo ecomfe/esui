@@ -505,6 +505,7 @@ define(
 
                 /**
                  * 设置Table的datasource，并强制更新
+                 *
                  * @public
                  * @param {Object} datasource 数据源
                  */
@@ -526,6 +527,7 @@ define(
 
                 /**
                  * 重新绘制Table某行
+                 *
                  * @param {number} index 行数
                  * @param {Object} data 该行对应的数据源
                  * @public
@@ -1607,6 +1609,7 @@ define(
         }
 
         /**
+         * 鼠标hover至title时的逻辑
          *
          * @param {ui.Table} table table控件实例
          * @param {Element} element 移出的单元格
@@ -1641,7 +1644,8 @@ define(
         }
 
         /**
-         *表格头单元格鼠标移出响应，主要是样式处理
+         * 表格头单元格鼠标移出响应，主要是样式处理
+         *
          * @param {ui.Table} table table控件实例
          * @param {Element} element 表头单元格元素
          */
@@ -1812,6 +1816,7 @@ define(
         /**
          * 获取拖拽中的事件handler
          * 移动拖拽基准线
+         *
          * @private
          * @param {ui.Table} table table控件实例
          * @param {Event} e 事件对象
@@ -2879,6 +2884,7 @@ define(
 
         /**
          * 单选响应函数
+         *
          * @param {Element} element 目标元素
          */
         function selectSingleHandler(element) {
@@ -2919,6 +2925,7 @@ define(
 
         /**
          * 重置Table主元素的ZIndex
+         *
          * @param {ui.Table} table table控件实例
          *
          * @private
@@ -2929,6 +2936,7 @@ define(
 
         /**
          * 设置元素的disable样式
+         *
          * @param {ui.Table} table table控件实例
          *
          * @private
@@ -3032,6 +3040,7 @@ define(
 
         /**
          * 批量添加handlers
+         *
          * @param {ui.Table} table table控件实例
          * @param {Element} element 元素
          * @param {string} eventType 事件类型
@@ -3062,6 +3071,7 @@ define(
 
         /**
          * 批量删除handlers
+         *
          * @param {ui.Table} table table控件实例
          * @param {Element} element 元素
          * @param {string} eventType 事件类型
@@ -3122,6 +3132,7 @@ define(
 
         /**
          * 添加事件委托
+         *
          * @param {ui.Control} control 控件
          * @param {Element} element 元素
          * @param {string} eventType 事件类型
@@ -3137,6 +3148,7 @@ define(
 
         /**
          * 移除事件委托
+         *
          * @param {ui.Control} control 控件
          * @param {Element} element 元素
          * @param {string} eventType 事件类型
@@ -3147,6 +3159,7 @@ define(
 
         /**
          * 初始化main元素事件处理函数
+         *
          * @param {ui.Table} table table控件实例
          */
         function initMainEventhandler(table) {

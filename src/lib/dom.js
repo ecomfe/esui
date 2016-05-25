@@ -82,6 +82,7 @@ define(
 
         /**
          * 获取子元素
+         *
          * @param {HTMLElement} element 目标元素
          * @return {HTMLElement[]} 目标元素的所有子元素
          */

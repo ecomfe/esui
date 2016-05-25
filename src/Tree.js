@@ -256,7 +256,7 @@ define(
 
                 /**
                  * 触发选中或取消选中节点的策略
-
+                 *
                  * @param {string} id 节点的id
                  */
                 triggerSelectStrategy: function (id) {

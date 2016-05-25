@@ -39,19 +39,19 @@ define(
                 initOptions: function (options) {
                     var properties = {
                         // 离页面顶部的空隙
-                        marginTop: 10,
+                        'marginTop': 10,
                         // 离页面左边的空隙
-                        marginleft: 10,
+                        'marginleft': 10,
                         // 离页面右边的空隙
-                        marginRight: 10,
+                        'marginRight': 10,
                         // 离页面底部的空隙
-                        marginBottom: 10,
+                        'marginBottom': 10,
                         // 自动隐藏和自动显示的延迟
-                        autoDelay: 100,
+                        'autoDelay': 100,
                         // 初始化状态
-                        mode: 'fixed',
+                        'mode': 'fixed',
                         // 默认左浮动
-                        float: 'left'
+                        'float': 'left'
                     };
 
                     u.extend(properties, options);
@@ -287,7 +287,7 @@ define(
                 }
             );
             var $minibar = $(minibar);
-            $('body').append($minibar)
+            $('body').append($minibar);
         }
 
         /**
@@ -312,7 +312,6 @@ define(
                 }
             );
             var fixBtn = $(fixBtnHtml);
-            var fixBtnIcon = fixBtn.find('span');
             $(me.getChild('content').main).append(fixBtn);
 
             // 位于页面的左侧或者右侧
@@ -403,7 +402,7 @@ define(
          * fixBtn的点击事件
          *
          * @param  {ui.Sidebar} sidebar Sidebar实例
-         * @param  {HTMLElement} element 触发事件的元素
+         * @param  {HTMLElement} ele 触发事件的元素
          * @inner
          */
         function fixBtnClickHandler(sidebar, ele) {

@@ -318,6 +318,7 @@ define(
 
                             /**
                              * 绑定浮层展现的默认事件，针对于targetDOM
+                             *
                              * @param {string=} showEvent 事件名称，例如click、mouseup
                              * @param {Function=} callback 回调方法
                              */
@@ -342,6 +343,7 @@ define(
 
                             /**
                              * 绑定于浮层元素上的阻止冒泡的方法
+                             *
                              * @param {Event} e 事件对象
                              */
                             preventPopMethod: function (e) {
@@ -350,6 +352,7 @@ define(
 
                             /**
                              * 绑定于body主体上面的隐藏layer的方法
+                             *
                              * @param {Event} e 事件对象
                              */
                             clickOutsideHideHandler: function (e) {
@@ -474,7 +477,6 @@ define(
                 /**
                  * 获取提示层腿部的控件对象
                  *
-                 *
                  * @return {ui.Panel}
                  */
                 getHead: function () {
@@ -483,7 +485,6 @@ define(
 
                 /**
                  * 获取提示层主体的控件对象
-                 *
                  *
                  * @return {ui.Panel}
                  */
@@ -494,7 +495,6 @@ define(
                 /**
                  * 获取提示层腿部的控件对象
                  *
-                 *
                  * @return {ui.Panel}
                  */
                 getFoot: function () {
@@ -503,6 +503,7 @@ define(
 
                 /**
                  * 显示提示层
+                 *
                  * @param {HTMLElement} targetElement 提示层的捆绑元素
                  * @param {Object} options 参数
                  *
@@ -827,6 +828,7 @@ define(
 
         /**
          * 一次提醒提示
+         *
          * @param {Object=} args 参数 支持如下字段
          * {string} content 提示内容
          * {HTMLElement} attachedNode 绑定提示的节点

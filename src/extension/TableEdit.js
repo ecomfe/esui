@@ -582,6 +582,7 @@ define(
 
         /**
          * 开始某行的编辑逻辑，初始化子控件
+         *
          * @param {number} rowIndex 行序号
          * @param {number} columnIndex 列序号
          * @param {DOMElement} element DOM元素
@@ -622,6 +623,7 @@ define(
 
         /**
          * 取消编辑
+         *
          * @ignore
          */
         function cancelEdit() {
@@ -632,6 +634,7 @@ define(
 
         /**
          * 隐藏编辑浮层
+         *
          * @ignore
          */
         function hideEditLayer() {
@@ -642,6 +645,7 @@ define(
 
         /**
          * 显示编辑浮层
+         *
          * @ignore
          */
         function showEditError() {

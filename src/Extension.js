@@ -131,6 +131,7 @@ define(
 
         /**
          * 激活当前扩展
+         *
          * @abstract
          */
         Extension.prototype.activate = function () {
@@ -139,6 +140,7 @@ define(
 
         /**
          * 禁用当前扩展
+         *
          * @abstract
          */
         Extension.prototype.inactivate = function () {

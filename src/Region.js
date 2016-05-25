@@ -79,6 +79,7 @@ define(
 
                 /**
                  * 初始化DOM结构
+                 *
                  * @protected
                  */
                 initStructure: function () {
@@ -976,6 +977,7 @@ define(
 
         /**
          * 批量
+         *
          * @inner
          * @param {Region} region Region控件实例
          * @param {boolean} disabled 是否不可用
