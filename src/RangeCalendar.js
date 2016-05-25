@@ -875,6 +875,7 @@ define(
             updateMain(me, value);
             me.layer.hide();
             me.fire('change', value);
+            me.fire('changed', value);
         }
 
         /**
