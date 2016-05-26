@@ -60,7 +60,7 @@
             <div id="part" class="example"></div>
 
             <div class="intro">
-                <p>${xxx | part('div')}</p>
+                <p>${<div#xxx> | raw}</p>
             </div>
             <div id="part_" class="example"></div>
         </div>
@@ -104,7 +104,7 @@
             result = control.helper.render("${xxx | part('div')}");
             $('#part').html(lib.encodeHTML(result));
 
-            result = control.helper.render("${<div#xxx> | raw}");
+            result = control.helper.render('${<div#xxx> | raw}');
             $('#part_').html(lib.encodeHTML(result));
         }
     );
