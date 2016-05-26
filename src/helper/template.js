@@ -78,10 +78,9 @@ define(
          * @param {Object} data 数据
          * @return {Object} 处理过的数据
          */
-        function getTemplateData(data) {
+        function getTemplateData(data, helper) {
             var templateData = {
                 get: function (name) {
-
                     if (typeof data.get === 'function') {
                         return data.get(name);
                     }
@@ -183,7 +182,7 @@ define(
         helper.renderTemplate = function (target, data) {
             data = data || {};
             var engine = this.getTemplateEngine();
-            return engine.render(target, getTemplateData(data));
+            return engine.render(target, getTemplateData(data, this));
         };
 
         /*
@@ -197,7 +196,7 @@ define(
             data = data || {};
             var engine = this.getTemplateEngine();
             var renderer = engine.compile(content);
-            return renderer(getTemplateData(data));
+            return renderer(getTemplateData(data, this));
         };
 
         return helper;
