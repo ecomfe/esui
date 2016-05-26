@@ -101,6 +101,8 @@ define(
                     var propertyName = name;
                     var filter = null;
 
+                    // 支持value.id / value.class
+                    // 暂不支持value.part('div')这种形式
                     var indexOfDot = name.lastIndexOf('.');
                     if (indexOfDot > 0) {
                         propertyName = name.substring(0, indexOfDot);
@@ -114,8 +116,7 @@ define(
                         ? data[propertyName]
                         : propertyName;
                     if (filter) {
-                        // FIX: 似乎不应该传`helper.control`
-                        value = filter(value, helper.control);
+                        value = filter.call(helper.control, value);
                     }
 
                     return value;
@@ -130,22 +131,20 @@ define(
          * ESUI为[etpl](https://github.com/ecomfe/etpl')提供了额外的
          * [filter](https://github.com/ecomfe/etpl/#变量替换)：
          *
-         * - `${xxx | id($instance)}`按规则生成以`xxx`为部件名的DOM元素id
-         * - `${xxx | class($instance)}`按规则生成以`xxx`为部件名的DOM元素class
-         * - `${xxx | part('div', $instance)}`生成以`xxx`为部件名的div元素HTML
-         *
-         * 在使用内置过滤器时，必须加上`($instance)`这一段，以将过滤器和当前控件实例关联
+         * - `${xxx | id}`按规则生成以`xxx`为部件名的DOM元素id
+         * - `${xxx | class}`按规则生成以`xxx`为部件名的DOM元素class
+         * - `${xxx | part('div')}`生成以`xxx`为部件名的div元素HTML
          *
          * 同时也可以用简化的方式使用以上的过滤器，如：
          *
-         * - `${xxx.id}`等效于`${xxx | id($instance)}`
-         * - `${xxx.class}`等效于`${xxx | class($instance)}`
+         * - `${xxx.id}`等效于`${xxx | id}`
+         * - `${xxx.class}`等效于`${xxx | class}`
          *
          * 更简化的方法：
          *
-         * - `${#xxx}`等效于`${xxx | id($instance)}`
-         * - `${.xxx}`等效于`${xxx | class($instance)}`
-         * - `${<foo#bar>}`等效于`${bar | node('foo', $instance)}`
+         * - `${#xxx}`等效于`${xxx | id}`
+         * - `${.xxx}`等效于`${xxx | class}`
+         * - `${<foo#bar>}`等效于`${bar | part('foo')}`
          *
          * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，必须使用过滤器的语法实现
          *

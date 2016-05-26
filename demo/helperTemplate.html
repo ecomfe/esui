@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <title>template helper - ESUI Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/google-code-prettify/prettify.css" />
+    <link rel="stylesheet" href="assets/themes/standard.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="assets/ie8.css" />
+    <![endif]-->
+</head>
+<body>
+    <div class="header">
+        <h1 id="branding">template helper</h1>
+    </div>
+    <div class="ui-g main-container">
+        <div id="side-bar" class="ui-u-1-5">
+            <ul id="navigator" class="ui-nav">
+            </ul>
+        </div>
+        <div id="main" class="ui-u-4-5">
+            <h2>ID Filter</h2>
+            <div class="intro">
+                <p>${xxx | id}</p>
+            </div>
+            <div id="id" class="example"></div>
+
+            <div class="intro">
+                <p>${#xxx}</p>
+            </div>
+            <div id="id_" class="example"></div>
+
+            <div class="intro">
+                <p>${xxx.id}</p>
+            </div>
+            <div id="id__" class="example"></div>
+
+            <h2>Class Filter</h2>
+            <div class="intro">
+                <p>${xxx | class}</p>
+            </div>
+            <div id="class" class="example"></div>
+
+            <div class="intro">
+                <p>${.xxx}</p>
+            </div>
+            <div id="class_" class="example"></div>
+
+            <div class="intro">
+                <p>${xxx.class}</p>
+            </div>
+            <div id="class__" class="example"></div>
+
+            <h2>Part Filter</h2>
+            <div class="intro">
+                <p>${xxx | part('div')}</p>
+            </div>
+            <div id="part" class="example"></div>
+
+            <div class="intro">
+                <p>${xxx | part('div')}</p>
+            </div>
+            <div id="part_" class="example"></div>
+        </div>
+    </div>
+    <script src="assets/loader/esl.js"></script>
+    <script src="config.js"></script>
+    <script src="demo.js"></script>
+    <script src="assets/google-code-prettify/prettify.js"></script>
+    <script id="main-js">
+    require(
+        [
+            'esui',
+            'jquery',
+            'esui/Control',
+            'esui/Helper',
+            'esui/lib',
+            'demo'
+        ],
+        function (ui, $, Control, Helper, lib) {
+            var control = new Control();
+            control.type = 'TemplateFilter';
+
+            var result = control.helper.render('${xxx | id}');
+            $('#id').html(result);
+
+            result = control.helper.render('${#xxx}');
+            $('#id_').html(result);
+
+            result = control.helper.render('${xxx.id}');
+            $('#id__').html(result);
+
+            result = control.helper.render('${xxx | class}');
+            $('#class').html(result);
+
+            result = control.helper.render('${.xxx}');
+            $('#class_').html(result);
+
+            result = control.helper.render('${xxx.class}');
+            $('#class__').html(result);
+
+            result = control.helper.render("${xxx | part('div')}");
+            $('#part').html(lib.encodeHTML(result));
+
+            result = control.helper.render("${<div#xxx> | raw}");
+            $('#part_').html(lib.encodeHTML(result));
+        }
+    );
+    </script>
+    <script src="sitemap.js"></script>
+    </body>
+</html>
