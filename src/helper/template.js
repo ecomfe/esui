@@ -9,6 +9,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var PART_REGEX = /<([\w-]+)#([\w-]+)>/;
 
         var FILTERS = {
             'id': function (part) {
@@ -76,11 +77,23 @@ define(
          * 生成模板替换的数据
          *
          * @param {Object} data 数据
+         * @param {Helper} helper 当前的helper对象
          * @return {Object} 处理过的数据
          */
         function getTemplateData(data, helper) {
             var templateData = {
                 get: function (name) {
+                    if (name.indexOf('#') === 0) {
+                        return FILTERS.id.call(helper.control, name.substring(1));
+                    }
+                    if (name.indexOf('.') === 0) {
+                        return FILTERS.class.call(helper.control, name.substring(1));
+                    }
+                    let possiblePart = PART_REGEX.exec(name);
+                    if (possiblePart) {
+                        return FILTERS.part.call(helper.control, possiblePart[2], possiblePart[1]);
+                    }
+
                     if (typeof data.get === 'function') {
                         return data.get(name);
                     }
@@ -101,6 +114,7 @@ define(
                         ? data[propertyName]
                         : propertyName;
                     if (filter) {
+                        // FIX: 似乎不应该传`helper.control`
                         value = filter(value, helper.control);
                     }
 
@@ -127,8 +141,13 @@ define(
          * - `${xxx.id}`等效于`${xxx | id($instance)}`
          * - `${xxx.class}`等效于`${xxx | class($instance)}`
          *
-         * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，
-         * 必须使用过滤器的语法实现
+         * 更简化的方法：
+         *
+         * - `${#xxx}`等效于`${xxx | id($instance)}`
+         * - `${.xxx}`等效于`${xxx | class($instance)}`
+         * - `${<foo#bar>}`等效于`${bar | node('foo', $instance)}`
+         *
+         * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，必须使用过滤器的语法实现
          *
          * 一般来说，如果一个控件需要使用模板，我们会为这个控件类生成一个模板引擎实例：
          *
