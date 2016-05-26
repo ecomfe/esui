@@ -83,10 +83,10 @@ define(
         function getTemplateData(data, helper) {
             var templateData = {
                 get: function (name) {
-                    if (name.indexOf('#') === 0) {
+                    if (name.charAt(0) === '#') {
                         return FILTERS.id.call(helper.control, name.substring(1));
                     }
-                    if (name.indexOf('.') === 0) {
+                    if (name.charAt(0) === '.') {
                         return FILTERS.class.call(helper.control, name.substring(1));
                     }
                     let possiblePart = PART_REGEX.exec(name);
