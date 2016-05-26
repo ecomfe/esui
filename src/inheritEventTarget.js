@@ -8,11 +8,9 @@
  */
 define(
     function (require) {
-        function interopDefault(exports) {
-            return exports.__esModule ? exports.default : exports;
-        }
+        var lib = require('lib');
 
-        var EventTarget = interopDefault(require('mini-event/EventTarget'));
+        var EventTarget = lib.interopDefault(require('mini-event/EventTarget'));
         var oo = require('eoo');
 
         /**

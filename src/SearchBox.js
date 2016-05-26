@@ -15,7 +15,7 @@ define(
         var painters = require('./painters');
         var u = require('underscore');
         var $ = require('jquery');
-        var Event = require('mini-event/Event');
+        var Event = lib.interopDefault(require('mini-event/Event'));
 
         require('./TextBox');
         require('./Button');

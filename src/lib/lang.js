@@ -185,6 +185,21 @@ define(
          */
         lib.encodeHTML = u.escape;
 
+        /**
+         * 返回转化的实际内容
+         *
+         * 本方法主要修正babel5升级到babel6后对export嵌套逻辑变更的问题
+         *
+         * -与babel5相比，babel6转的话，default export会变成exports.default，
+         *  所以require('xxx')就要变成require('xxx').default
+         *
+         * @param {Object} exports babel6编译后的对象
+         * @param {Object} default对象
+        */
+        lib.interopDefault = function (exports) {
+            return exports.__esModule ? exports.default : exports;
+        }
+
         return lib;
     }
 );
