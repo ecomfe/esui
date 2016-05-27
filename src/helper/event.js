@@ -11,7 +11,7 @@ define(
         var $ = require('jquery');
         var u = require('underscore');
 
-        var miniEvent = require('mini-event');
+        var Event = require('../lib').interopDefault(require('mini-event/Event'));
 
         /**
          * @override Helper
@@ -101,6 +101,44 @@ define(
             }
         }
 
+        function fromDOMEvent(domEvent, type, args) {
+            domEvent = domEvent || window.event;
+
+            var event = new Event(type, args);
+
+            event.preventDefault = function () {
+                if (domEvent.preventDefault) {
+                    domEvent.preventDefault();
+                }
+                else {
+                    domEvent.returnValue = false;
+                }
+
+                Event.prototype.preventDefault.call(this);
+            };
+
+            event.stopPropagation = function () {
+                if (domEvent.stopPropagation) {
+                    domEvent.stopPropagation();
+                }
+                else {
+                    domEvent.cancelBubble = true;
+                }
+
+                Event.prototype.stopPropagation.call(this);
+            };
+
+            event.stopImmediatePropagation = function () {
+                if (domEvent.stopImmediatePropagation) {
+                    domEvent.stopImmediatePropagation();
+                }
+
+                Event.prototype.stopImmediatePropagation.call(this);
+            };
+
+            return event;
+        }
+
         /**
          * 为控件管理的DOM元素添加DOM事件
          *
@@ -133,7 +171,7 @@ define(
          */
         helper.delegateDOMEvent = function (element, type, newType) {
             var handler = function (e) {
-                var event = miniEvent.fromDOMEvent(e);
+                var event = fromDOMEvent(e);
                 this.fire(newType || e.type, event);
 
                 if (event.isDefaultPrevented()) {
