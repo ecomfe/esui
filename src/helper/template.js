@@ -89,7 +89,7 @@ define(
                     if (name.charAt(0) === '.') {
                         return FILTERS.class.call(helper.control, name.substring(1));
                     }
-                    let possiblePart = PART_REGEX.exec(name);
+                    var possiblePart = PART_REGEX.exec(name);
                     if (possiblePart) {
                         return FILTERS.part.call(helper.control, possiblePart[2], possiblePart[1]);
                     }
