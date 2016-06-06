@@ -1,0 +1,7 @@
+dep/
+jsduck/
+test/
+demo/
+module.conf
+edp-build-config.js
+edp-webserver-config.js

@@ -23,9 +23,6 @@
 
     li {
         margin-left: 1.5em;
-        &.@{ui-class-prefix}-tree-node-level-1 {
-            margin-left: 0;
-        }
     }
 
     display: block;
@@ -34,6 +31,7 @@
 
 .@{ui-class-prefix}-tree-node {
     cursor: pointer;
+    overflow: hidden;
 }
 
 .@{ui-class-prefix}-tree-node-indicator {
@@ -79,12 +77,18 @@
 
 .@{ui-class-prefix}-tree-hide-root {
     .@{ui-class-prefix}-tree-root {
+
+        .@{ui-class-prefix}-tree-node-level-1 {
+            margin-left: 0;
+        }
+
         .@{ui-class-prefix}-tree-content-wrapper {
             display: none;
             .@{ui-class-prefix}-tree-node-indicator-level-0 {
                 width: 0;
             }
         }
+
         .@{ui-class-prefix}-tree-sub-root {
             .@{ui-class-prefix}-tree-content-wrapper {
                 display: block;

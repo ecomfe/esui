@@ -93,7 +93,7 @@ define(
                     if (name.charAt(0) === '.') {
                         return FILTERS.class(name.substring(1), helper.control);
                     }
-                    let possiblePart = PART_REGEX.exec(name);
+                    var possiblePart = PART_REGEX.exec(name);
                     if (possiblePart) {
                         return FILTERS.part(possiblePart[2], possiblePart[1], helper.control);
                     }
