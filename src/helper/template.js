@@ -12,16 +12,16 @@ define(
         var PART_REGEX = /<([\w-]+)#([\w-]+)>/;
 
         var FILTERS = {
-            'id': function (part) {
-                return this.helper.getId(part);
+            'id': function (part, instance) {
+                return instance.helper.getId(part);
             },
 
-            'class': function (part) {
-                return this.helper.getPartClassName(part);
+            'class': function (part, instance) {
+                return instance.helper.getPartClassName(part);
             },
 
-            'part': function (part, nodeName) {
-                return this.helper.getPartHTML(part, nodeName);
+            'part': function (part, nodeName, instance) {
+                return instance.helper.getPartHTML(part, nodeName);
             }
         };
 
@@ -66,7 +66,6 @@ define(
             u.each(
                 FILTERS,
                 function (filter, name) {
-                    filter = u.bind(filter, me.control);
                     this.addFilter(name, filter);
                 },
                 this.templateEngine
@@ -83,15 +82,20 @@ define(
         function getTemplateData(data, helper) {
             var templateData = {
                 get: function (name) {
+                    // `instance`参数替换为当前控件实例
+                    if (name === 'instance') {
+                        return helper.control;
+                    }
+
                     if (name.charAt(0) === '#') {
-                        return FILTERS.id.call(helper.control, name.substring(1));
+                        return FILTERS.id(name.substring(1), helper.control);
                     }
                     if (name.charAt(0) === '.') {
-                        return FILTERS.class.call(helper.control, name.substring(1));
+                        return FILTERS.class(name.substring(1), helper.control);
                     }
                     let possiblePart = PART_REGEX.exec(name);
                     if (possiblePart) {
-                        return FILTERS.part.call(helper.control, possiblePart[2], possiblePart[1]);
+                        return FILTERS.part(possiblePart[2], possiblePart[1], helper.control);
                     }
 
                     if (typeof data.get === 'function') {
@@ -116,7 +120,7 @@ define(
                         ? data[propertyName]
                         : propertyName;
                     if (filter) {
-                        value = filter.call(helper.control, value);
+                        value = filter(value, helper.control);
                     }
 
                     return value;
@@ -131,14 +135,16 @@ define(
          * ESUI为[etpl](https://github.com/ecomfe/etpl')提供了额外的
          * [filter](https://github.com/ecomfe/etpl/#变量替换)：
          *
-         * - `${xxx | id}`按规则生成以`xxx`为部件名的DOM元素id
-         * - `${xxx | class}`按规则生成以`xxx`为部件名的DOM元素class
-         * - `${xxx | part('div')}`生成以`xxx`为部件名的div元素HTML
+         * - `${xxx | id(${instance})}`按规则生成以`xxx`为部件名的DOM元素id
+         * - `${xxx | class(${instance})}`按规则生成以`xxx`为部件名的DOM元素class
+         * - `${xxx | part('div', ${instance})}`生成以`xxx`为部件名的div元素HTML
+         *
+         * 在使用内置过滤器时，必须加上`(${instance})`这一段，以将过滤器和当前控件实例关联
          *
          * 同时也可以用简化的方式使用以上的过滤器，如：
          *
-         * - `${xxx.id}`等效于`${xxx | id}`
-         * - `${xxx.class}`等效于`${xxx | class}`
+         * - `${xxx.id}`等效于`${xxx | id(${instance})}`
+         * - `${xxx.class}`等效于`${xxx | class(${instance})}`
          *
          * 更简化的方法：
          *
@@ -187,6 +193,7 @@ define(
          * 需要注意，使用此方法时，仅满足以下所有条件时，才可以使用内置的过滤器：
          *
          * - `data`对象仅一层属性，即不能使用`${user.name}`这一形式访问深层的属性
+         * - `data`对象不能包含名为`instance`的属性，此属性会强制失效
          *
          * 另外此方法存在微小的几乎可忽略不计的性能损失，
          * 但如果需要大量使用模板同时又不需要内置的过滤器，可以使用以下代码代替：
