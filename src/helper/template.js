@@ -102,28 +102,13 @@ define(
                         return data.get(name);
                     }
 
-                    var propertyName = name;
-                    var filter = null;
-
-                    // 支持value.id / value.class
-                    // 暂不支持value.part('div')这种形式
-                    var indexOfDot = name.lastIndexOf('.');
-                    if (indexOfDot > 0) {
-                        propertyName = name.substring(0, indexOfDot);
-                        var filterName = name.substring(indexOfDot + 1);
-                        if (filterName && FILTERS.hasOwnProperty(filterName)) {
-                            filter = FILTERS[filterName];
-                        }
-                    }
-
-                    var value = data.hasOwnProperty(propertyName)
-                        ? data[propertyName]
-                        : propertyName;
-                    if (filter) {
-                        value = filter(value, helper.control);
-                    }
-
-                    return value;
+                    return u.reduce(
+                        name.split('.'),
+                        function (value, property) {
+                            return value[property];
+                        },
+                        data
+                    );
                 }
             };
             return templateData;
@@ -141,12 +126,7 @@ define(
          *
          * 在使用内置过滤器时，必须加上`(${instance})`这一段，以将过滤器和当前控件实例关联
          *
-         * 同时也可以用简化的方式使用以上的过滤器，如：
-         *
-         * - `${xxx.id}`等效于`${xxx | id(${instance})}`
-         * - `${xxx.class}`等效于`${xxx | class(${instance})}`
-         *
-         * 更简化的方法：
+         * 简化的方法：
          *
          * - `${#xxx}`等效于`${xxx | id}`
          * - `${.xxx}`等效于`${xxx | class}`
