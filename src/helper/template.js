@@ -62,7 +62,6 @@ define(
          * @protected
          */
         helper.initializeTemplateEngineExtension = function () {
-            var me = this;
             u.each(
                 FILTERS,
                 function (filter, name) {
