@@ -2308,7 +2308,9 @@ define(
             var rowClassName = table.helper.getPartClasses('cell-text')[0];
 
             if (table.selectMode === 'line'
-                && lib.hasClass(e.target, rowClassName)) {
+                && (lib.hasClass(e.target, rowClassName)
+                   || lib.hasClass(e.target.parentNode, rowClassName))
+               ) {
                 if (table.dontSelectLine) {
                     table.dontSelectLine = false;
                     return;
