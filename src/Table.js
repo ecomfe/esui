@@ -2309,8 +2309,7 @@ define(
 
             if (table.selectMode === 'line'
                 && (lib.hasClass(e.target, rowClassName)
-                    || ($(e.target).parents('.' + rowClassName).length)
-                        && /cell-textfield/.test(e.target.id))
+                    || /cell-textfield/.test(e.target.id))
                ) {
                 if (table.dontSelectLine) {
                     table.dontSelectLine = false;
