@@ -452,6 +452,40 @@ define(
             return u.defaults(options || {}, result);
         };
 
+        /**
+         * 翻译选择器至符合控件的形式
+         *
+         * 该方法将`.class`翻译为`getPrimiaryClassName(class)`并将`#id`翻译为`getId(id)`
+         *
+         * @param {string} selector 选择器
+         * @return {string} 翻译后的选择器
+         */
+        helper.buildSelector = function (selector) {
+            var helper = this;
+            return selector.replace(
+                /([\.#])([\w\-]+)/g,
+                function (selector, hint, part) {
+                    if (hint === '.') {
+                        return '.' + helper.getPrimaryClassName(part);
+                    }
+
+                    return '#' + helper.getId(part);
+                }
+            );
+        };
+
+        /**
+         * 在当前控件范围内根据给定的选择器查询元素
+         *
+         * 仅在当前控件的`main`范围内查询，因此对于有`layer`等的控件无效，需要自行使用`buildSelector`方法实现
+         *
+         * @param {string} selector 选择器
+         * @return {jQuery} 返回一个`jQuery`对象
+         */
+        helper.query = function (selector) {
+            return $(this.control.main).find(this.buildSelector(selector));
+        };
+
         return helper;
     }
 );
