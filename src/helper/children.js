@@ -59,6 +59,7 @@ define(
                     );
                     return result;
                 }
+                return value;
             };
             options = u.extend({valueReplacer: valueReplacer}, options);
             return this.initChildren(wrap, options);
