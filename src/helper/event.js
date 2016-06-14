@@ -206,6 +206,35 @@ define(
             $element.off(type, selector, handler);
         };
 
+        /**
+         * 通过选择器添加事件
+         *
+         * 该事件会被添加在`main`元素上，使用选择器判断`event.target`确定是否执行对应的处理函数，
+         * 因此如果需要在`layer`等与`main`元素不关联的元素上添加事件，不可使用此方法
+         *
+         * @protected
+         * @param {string} event 事件名称
+         * @param {string} selector 选择器，会使用`buildSelector`进行翻译
+         * @param {Function} handler 处理函数
+         */
+        helper.addEventForSelector = function (event, selector, handler) {
+            var parsedSelector = this.buildSelector(selector);
+            this.addDOMEvent(this.control.main, event, parsedSelector, handler);
+        };
+
+        /**
+         * 通过选择器移除事件，与`addEventForSelector`方法对应
+         *
+         * @protected
+         * @param {string} event 事件名称
+         * @param {string} selector 选择器，会使用`buildSelector`进行翻译
+         * @param {Function} handler 处理函数
+         */
+        helper.removeEventForSelector = function (event, selector, handler) {
+            var parsedSelector = this.buildSelector(selector);
+            this.removeDOMEvent(this.control.main, event, parsedSelector, handler);
+        };
+
         return helper;
     }
 );
