@@ -23,23 +23,38 @@
 @esui-dialog-footer-panel-padding: 1em;
 @esui-dialog-footer-panel-margin: 0;
 
+body.hasDialog {
+    overflow: hidden;   
+}
+
 .@{ui-class-prefix}-dialog {
-    position: absolute;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: @esui-dialog-zIndex;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
+}
+
+.@{ui-class-prefix}-dialog-inner-wrapper {
+    position: relative;
+    width: @esui-dialog-close-default-width;
+    .esui-dialog-theme();
     .esui-border-radius(
         @esui-dialog-border-radius,
         @esui-dialog-border-radius
     );
-    z-index: @esui-dialog-zIndex;
-    width: @esui-dialog-close-default-width;
-    display: block;
-
-    .esui-dialog-theme();
 }
 
-.@{ui-class-prefix}-dialog-head {
+.@{ui-class-prefix}-dialog-head-panel {
     .user-select(none);
-
     .esui-dialog-head-theme();
+    line-height: @esui-dialog-title-line-height;
+    padding: @esui-dialog-title-padding;
+    .esui-dialog-title-theme();
 }
 
 .@{ui-class-prefix}-dialog-close-icon {
@@ -51,14 +66,7 @@
     .esui-dialog-close-icon-theme();
 }
 
-.@{ui-class-prefix}-dialog-title {
-    line-height: @esui-dialog-title-line-height;
-    padding: @esui-dialog-title-padding;
-
-    .esui-dialog-title-theme();
-}
-
-.@{ui-class-prefix}-dialog-body {
+.@{ui-class-prefix}-dialog-body-panel {
     padding: @esui-dialog-body-padding;
 
     .esui-dialog-body-theme();
@@ -69,9 +77,6 @@
     margin: @esui-dialog-footer-panel-margin;
 
     .esui-dialog-foot-panel-theme();
-}
-
-.@{ui-class-prefix}-dialog-foot {
     .esui-dialog-foot-theme();
 }
 
