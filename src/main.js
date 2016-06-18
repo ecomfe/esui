@@ -336,6 +336,8 @@ define(
          * @param {Object} [options.viewContext] 视图环境
          * @param {Object} [options.properties] 属性集合，通过id映射
          * @param {Function} [options.valueReplacer] 属性值替换函数
+         * @param {Function} [options.onBuildOptions] 初始化一个控件的参数收集完成时调用，接收`options`，返回`options`对象
+         * @param {Function} [options.onCreateControl] 控件创建完毕时调用，接收控件实例和`options`
          * @return {Control[]} 初始化的控件对象集合
          */
         main.init = function (wrap, options) {
@@ -361,10 +363,11 @@ define(
                     var typeFromCustomElement;
                     /* jshint ignore:start */
                     typeFromCustomElement = nodeName.replace(
-                            /-(\S)/g,
-                            function (match, ch) {
+                        /-(\S)/g,
+                        function (match, ch) {
                             return ch.toUpperCase();
-                        });
+                        }
+                    );
                     /* jshint ignore:end */
                     typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
                     return typeFromCustomElement;
@@ -504,9 +507,9 @@ define(
 
                     if (name.indexOf(extPrefix) === 0) {
                         // 解析extension的key
-                        var terms = name.slice(extPrefixLen + 1).split('-');
-                        var extKey = terms[0];
-                        terms.shift();
+                        var extensionTerms = name.slice(extPrefixLen + 1).split('-');
+                        var extKey = extensionTerms[0];
+                        extensionTerms.shift();
 
                         // 初始化该key的option对象
                         var extOption = extensionOptions[extKey];
@@ -526,23 +529,20 @@ define(
 
                 // 从用户传入的properties中merge控件初始化属性选项
                 var controlId = controlOptions.id;
-                var customOptions = controlId
-                     ? properties[controlId]
-                     : {};
+                var customOptions = controlId ? properties[controlId] : {};
                 for (var key in customOptions) {
-                    controlOptions[key] = valueReplacer(customOptions[key]);
+                    if (customOptions.hasOwnProperty(key)) {
+                        controlOptions[key] = valueReplacer(customOptions[key]);
+                    }
                 }
 
-                // 创建控件的插件
+                // 创建控件的扩展
                 var extensions = controlOptions.extensions || [];
-                controlOptions.extensions = extensions;
-                for (var key in extensionOptions) {
-                    var extOption = extensionOptions[key];
-                    var extension = main.createExtension(
-                            extOption.type,
-                            extOption);
-                    extension && extensions.push(extension);
-                }
+                var createExtension = function (options) {
+                    return main.createExtension(options.type, options);
+                };
+                var directiveExtensions = u.chain(extensionOptions).values().map(createExtension).compact().value();
+                controlOptions.extensions = extensions.concat(directiveExtensions);
 
                 // 绑定视图环境和控件主元素
                 controlOptions.viewContext = options.viewContext;
@@ -559,6 +559,9 @@ define(
                     type = parseTypeFormCustomTag(element);
                     controlOptions.type = type;
                 }
+                if (options.onBuildOptions) {
+                    controlOptions = options.onBuildOptions(controlOptions);
+                }
                 var control = main.create(type, controlOptions);
 
                 if (control) {
@@ -567,15 +570,15 @@ define(
                         options.parent.addChild(control);
                     }
                 }
+
+                if (options.onCreateControl) {
+                    control = options.onCreateControl(control, options);
+                }
             }
 
             initControlsFromDom(wrap, options);
 
-            u.each(controls, function (control) {
-                if (control) {
-                    control.render();
-                }
-            }, this);
+            u.chain(controls).compact().invoke('render');
             return controls;
         };
 
