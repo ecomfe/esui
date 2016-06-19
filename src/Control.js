@@ -473,8 +473,20 @@ define(
                     this.repaint(changes, changesIndex);
                 }
 
-                return changesIndex;
+                /**
+                 * @event propertyset
+                 *
+                 * 当属性变化时触发
+                 *
+                 * 这是一个程序事件，当任何代码调用`set`或`setProperties`且属性值有变化时均会触发，
+                 * 该事件的主要设计目的是用于类似绑定等自动化的场景，切勿使用该事件触发业务逻辑，
+                 * 业务逻辑应由用户事件触发，如`changed`、`select`等
+                 *
+                 * @param {Object[]} changes 变化集合，每个对象有`name`、`oldValue`和`newValue`属性
+                 */
+                this.fire('propertyset', {changes: changes});
 
+                return changesIndex;
             },
 
             /**
