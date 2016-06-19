@@ -30,7 +30,9 @@ define(
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
-            return ui.init(wrap, options);
+            var event = this.control.fire('initchildren', {options: options});
+
+            return ui.init(wrap, event.options);
         };
 
         /**
