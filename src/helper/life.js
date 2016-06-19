@@ -98,18 +98,14 @@ define(
          * 销毁控件
          */
         helper.dispose = function () {
-            var me = this;
-            var ctrl = me.control;
+            var ctrl = this.control;
 
             // 移除元素上的组件痕迹
             var jqMain = $(ctrl.main);
-            jqMain.removeAttr(
-                ui.getConfig('instanceAttr')
-            ).removeAttr(
-                ui.getConfig('viewContextAttr')
-            );
+            jqMain.removeAttr(ui.getConfig('instanceAttr'))
+                .removeAttr(ui.getConfig('viewContextAttr'));
 
-            var cls = me.getPartClasses();
+            var cls = this.getPartClasses();
             jqMain.removeClass(cls.join(' '));
 
             // 移除所有扩展
@@ -120,9 +116,13 @@ define(
             ctrl.helper.disposeChildren();
 
             // 移除自身行为
-            u.each(ctrl.domEvents, function ($ele) {
-                me.removeDOMEvent($ele, '.' + ctrl.getUniqueId());
-            });
+            u.each(
+                ctrl.domEvents,
+                function ($ele) {
+                    this.removeDOMEvent($ele, '.' + ctrl.getUniqueId());
+                },
+                this
+            );
             ctrl.domEvents = [];
 
             // 从控件树中移除
@@ -136,6 +136,9 @@ define(
             }
 
             ctrl.renderOptions = null;
+
+            // 断开与`main`元素的关联
+            ctrl.main = null;
         };
 
         /**

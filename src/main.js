@@ -335,6 +335,8 @@ define(
          * @param {Object} [options] init参数
          * @param {Object} [options.viewContext] 视图环境
          * @param {Object} [options.properties] 属性集合，通过id映射
+         * @param {Control} [options.parent] 所有生成的控件的父控件
+         * @param {Control} [options.owner] 所有生成控件的归属控件
          * @param {Function} [options.valueReplacer] 属性值替换函数
          * @param {Function} [options.onBuildOptions] 初始化一个控件的参数收集完成时调用，接收`options`，返回`options`对象
          * @param {Function} [options.onCreateControl] 控件创建完毕时调用，接收控件实例和`options`
@@ -568,6 +570,9 @@ define(
                     controls.push(control);
                     if (options.parent) {
                         options.parent.addChild(control);
+                    }
+                    if (options.owner) {
+                        options.parent.addOwned(control);
                     }
                 }
 

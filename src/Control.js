@@ -360,7 +360,6 @@ define(
                 var main = this.main;
                 this.dispose();
                 $(main).remove();
-                this.main = null;
             },
 
             /**
@@ -691,6 +690,30 @@ define(
                 if (this.viewContext !== control.viewContext) {
                     control.setViewContext(this.viewContext);
                 }
+            },
+
+            /**
+             * 添加归属于自己的控件
+             *
+             * `owner`和`parent`是两个概念：
+             *
+             * 1. 前者主要用作数据源，即使用类似`@foo`进行数据获取时，使用的是`owner.get('foo')`，而后者是树型层级结构
+             * 2. 当控件销毁时，所有子控件会连带销毁，但`owner`关系并不影响这一点，一个作为`owner`的控件销毁后，
+             * 其相关的DOM会移除，随后作为一个纯数据源与归属于它的控件产生关系
+             *
+             * 具体来说，如一个`Calendar`内部初始化了一个`Select`，则`Calendar`既是`Select`的`parent`又是其`owner`，
+             * 因为该`Select`是由`Calendar`直接创建的
+             *
+             * 而如果一个`Panel`内部根据模板初始化了一个`TextBox`，则`Panel`是`TextBox`的`parent`，但不是其`owner`，
+             * 因为`Panel`只是一个容器，并不决定自己内部有什么控件
+             *
+             * `owner`只可在初始化时设置，之后是不会改变的
+             *
+             * @protected
+             * @param {[type]} control [description]
+             */
+            addOwned: function (control) {
+                control.owner = this;
             },
 
             /**

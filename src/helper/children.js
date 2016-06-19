@@ -26,7 +26,7 @@ define(
          */
         helper.initChildren = function (wrap, options) {
             wrap = wrap || this.control.main;
-            options = u.extend({}, this.control.renderOptions, options);
+            options = u.extend({owner: this.control.owner}, this.control.renderOptions, options);
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
@@ -45,7 +45,7 @@ define(
          * @return {Array} 子控件数组
          */
         helper.initConnectedChildren = function (wrap, options) {
-            var control = this.control;
+            var source = this.control.owner || this.control;
             var valueReplacer = function (value) {
                 if (value.charAt(0) === '@') {
                     var path = value.substring(1).split('.');
@@ -55,13 +55,13 @@ define(
                         function (value, property) {
                             return value[property];
                         },
-                        control.get(propertyName)
+                        source.get(propertyName)
                     );
                     return result;
                 }
                 return value;
             };
-            options = u.extend({valueReplacer: valueReplacer}, options);
+            options = u.extend({valueReplacer: valueReplacer, owner: this.control}, options);
             return this.initChildren(wrap, options);
         };
 
