@@ -46,6 +46,7 @@ define(
          */
         helper.initConnectedChildren = function (wrap, options) {
             var control = this.control;
+            var rawValueReplacer = control.renderOptions && control.renderOptions.valueReplacer;
             var valueReplacer = function (value) {
                 if (value.charAt(0) === '@') {
                     var path = value.substring(1).split('.');
@@ -59,7 +60,7 @@ define(
                     );
                     return result;
                 }
-                return value;
+                return rawValueReplacer ? rawValueReplacer(value) : value;
             };
             options = u.extend({valueReplacer: valueReplacer}, options);
             return this.initChildren(wrap, options);
