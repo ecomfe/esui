@@ -5245,6 +5245,7 @@ body.hasDialog {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  float: left;
 }
 .ui-dialog-head-panel {
   -webkit-user-select: none;
