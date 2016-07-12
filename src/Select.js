@@ -557,19 +557,27 @@ define(
                 // 以`rawValue`为优先
                 // 存在rawValue时直接比较对象引用
                 // 否则可能 `datasource` 的每项item的 `value` 与 `value` 的类型不同，所以都转成字符串比较
-                context.selectedIndex = context.rawValue
-                    ? u.findIndex(
-                        context.datasource,
-                        function (item) {
-                            return item.value === context.rawValue;
+                var selectedIndex = -1;
+
+                for (var i = 0, length = context.datasource.length; i < length; i++) {
+                    var item = context.datasource[i];
+
+                    if (context.rawValue) {
+                        if (item.value === context.rawValue) {
+                            selectedIndex = i;
+                            break;
                         }
-                    )
-                    : u.findIndex(
-                        context.datasource,
-                        function (item) {
-                            return item.value + '' === context.value;
+                    }
+                    else {
+                        if (item.value + '' === context.value) {
+                            selectedIndex = i;
+                            break;
                         }
-                    );
+                    }
+                }
+
+                context.selectedIndex = selectedIndex;
+
                 delete context.value;
                 delete context.rawValue;
             }
