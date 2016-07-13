@@ -569,7 +569,7 @@ define(
                         }
                     }
                     else {
-                        if (item.value + '' === context.value) {
+                        if (item.value + '' === context.value + '') {
                             selectedIndex = i;
                             break;
                         }
