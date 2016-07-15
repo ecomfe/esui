@@ -11,7 +11,7 @@ define(
         var u = require('underscore');
         var PART_REGEX = /<([\w-]+)#([\w-]+)>/;
 
-        var FILTERS = {
+        var defaultFilters = {
             'id': function (part, instance) {
                 return instance.helper.getId(part);
             },
@@ -63,7 +63,7 @@ define(
          */
         helper.initializeTemplateEngineExtension = function () {
             u.each(
-                FILTERS,
+                defaultFilters,
                 function (filter, name) {
                     this.addFilter(name, filter);
                 },
@@ -87,14 +87,14 @@ define(
                     }
 
                     if (name.charAt(0) === '#') {
-                        return FILTERS.id(name.substring(1), helper.control);
+                        return defaultFilters.id(name.substring(1), helper.control);
                     }
                     if (name.charAt(0) === '.') {
-                        return FILTERS.class(name.substring(1), helper.control);
+                        return defaultFilters.class(name.substring(1), helper.control);
                     }
                     var possiblePart = PART_REGEX.exec(name);
                     if (possiblePart) {
-                        return FILTERS.part(possiblePart[2], possiblePart[1], helper.control);
+                        return defaultFilters.part(possiblePart[2], possiblePart[1], helper.control);
                     }
 
                     if (typeof data.get === 'function') {
@@ -189,7 +189,7 @@ define(
             return engine.render(target, getTemplateData(data, this));
         };
 
-        /*
+        /**
          * 渲染模板内容
          *
          * @param {string} content 模板内容
