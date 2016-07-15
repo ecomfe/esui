@@ -562,7 +562,7 @@ define(
                 for (var i = 0, length = context.datasource.length; i < length; i++) {
                     var item = context.datasource[i];
 
-                    if (context.rawValue) {
+                    if (context.rawValue != null) {
                         if (item.value === context.rawValue) {
                             selectedIndex = i;
                             break;
