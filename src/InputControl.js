@@ -379,7 +379,7 @@ define(
                             }
                             else {
                                 validityLabelRef = $(validityLabelRef);
-                            }    
+                            }
                         }
 
                         var ref = validityLabelRef ? validityLabelRef[0] : this.main;

@@ -26,11 +26,13 @@ define(
          */
         helper.initChildren = function (wrap, options) {
             wrap = wrap || this.control.main;
-            options = u.extend({}, this.control.renderOptions, options);
+            options = u.extend({owner: this.control.owner}, this.control.renderOptions, options);
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
-            return ui.init(wrap, options);
+            var event = this.control.fire('initchildren', {options: options});
+
+            return ui.init(wrap, event.options);
         };
 
         /**
@@ -47,6 +49,7 @@ define(
         helper.initConnectedChildren = function (wrap, options) {
             var control = this.control;
             var rawValueReplacer = control.renderOptions && control.renderOptions.valueReplacer;
+            var source = control.owner || control;
             var valueReplacer = function (value) {
                 if (value.charAt(0) === '@') {
                     var path = value.substring(1).split('.');
@@ -56,13 +59,13 @@ define(
                         function (value, property) {
                             return value[property];
                         },
-                        control.get(propertyName)
+                        source.get(propertyName)
                     );
                     return result;
                 }
                 return rawValueReplacer ? rawValueReplacer(value) : value;
             };
-            options = u.extend({valueReplacer: valueReplacer}, options);
+            options = u.extend({valueReplacer: valueReplacer, owner: control}, options);
             return this.initChildren(wrap, options);
         };
 
