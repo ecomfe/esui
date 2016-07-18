@@ -91,7 +91,6 @@ define(
                         if (item === 'foot' && !me.needFoot) {
                             return;
                         }
-
                         var panelName = item === 'title' ? 'head' : (item === 'content' ? 'body' : 'foot');
                         // search mainDom
                         var mainDOM = $(me.main).children('[data-role=' + item + ']');
@@ -106,14 +105,21 @@ define(
                             'id': helper.getId(panelName),
                             'class': helper.getPartClassName(panelName + '-panel')
                         });
-                        var properties = {
-                            main: mainDOM,
-                            renderOptions: this.renderOptions
-                        };
-                        var panel = esui.create('Panel', properties);
 
+                        var panel;
+                        if (item === 'title') {
+                            var properties = {
+                                main: mainDOM,
+                                renderOptions: this.renderOptions
+                            };
+                            panel = esui.create('Panel', properties);
+                            me.addChild(panel, panelName);
+                        }
+                        else {
+                            panel = me.createBF(panelName, mainDOM);
+                        }
                         panel.appendTo(me.main);
-                        me.addChild(panel, panelName);
+
                     });
 
                     // close Icon
@@ -134,6 +140,24 @@ define(
                     var dialogInnerWrapper
                         = '<div class="' + this.helper.getPartClassName('inner-wrapper') + '"></div>';
                     $(this.main).wrapInner(dialogInnerWrapper);
+                },
+
+                /**
+                 * 构建对话框主内容和底部内容
+                 *
+                 * @param {string} type foot | body
+                 * @param {HTMLElement} mainDOM body或foot主元素
+                 * @inner
+                 * @return {Panel} Panel
+                 */
+                createBF: function (type, mainDOM) {
+                    var properties = {
+                        main: mainDOM,
+                        renderOptions: this.renderOptions
+                    };
+                    var panel = esui.create('Panel', properties);
+                    this.addChild(panel, type);
+                    return panel;
                 },
 
                 /**
