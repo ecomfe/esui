@@ -91,8 +91,7 @@ define(
                         if (item === 'foot' && !me.needFoot) {
                             return;
                         }
-                        var panel,
-                            panelName = item === 'title' ? 'head' : (item === 'content' ? 'body' : 'foot');
+                        var panelName = item === 'title' ? 'head' : (item === 'content' ? 'body' : 'foot');
                         // search mainDom
                         var mainDOM = $(me.main).children('[data-role=' + item + ']');
                         if (mainDOM.length !== 0) {
@@ -107,6 +106,7 @@ define(
                             'class': helper.getPartClassName(panelName + '-panel')
                         });
 
+                        var panel;
                         if (item === 'title') {
                             var properties = {
                                 main: mainDOM,
