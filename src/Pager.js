@@ -542,9 +542,7 @@ define(
                 }
             }
 
-            /*
-             * 中间页码区
-             */
+            // 中间页码区
             // 前置页码
             var len = page > backCount ? backCount : page - 1;
             for (var i = page - len; i < page; i++) {

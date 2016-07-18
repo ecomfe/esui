@@ -452,14 +452,14 @@ define(
             return esui.getConfig('stateClassPrefix') + '-hidden';
         }
 
-        /*
+        /**
          * 更新城市选择状态，比如'2/30'
          *
          * @inner
          * @param {Region} region Region控件实例
          * @param {Object} selCityIdsLength 选中的选项个数.
          * @param {Object} cLength 全部选项个数
-         * @param {string} dontResetValue 是否重设选中的值.
+         * @param {string} id 对应的城市id
          */
         function updateSelectedTip(region, selCityIdsLength, cLength, id) {
             var $infoTag = $(lib.g(region.helper.getId('info-' + id)));

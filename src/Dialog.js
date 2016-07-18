@@ -103,8 +103,8 @@ define(
                             mainDOM.innerHTML = me[item];
                         }
                         $(mainDOM).attr({
-                            id: helper.getId(panelName),
-                            class: helper.getPartClassName(panelName + '-panel')
+                            'id': helper.getId(panelName),
+                            'class': helper.getPartClassName(panelName + '-panel')
                         });
                         var properties = {
                             main: mainDOM,
@@ -131,7 +131,8 @@ define(
                     }
 
                     // 在dialog里面添加innerWrapper
-                    var dialogInnerWrapper = '<div class="' + this.helper.getPartClassName('inner-wrapper') + '"></div>';
+                    var dialogInnerWrapper
+                        = '<div class="' + this.helper.getPartClassName('inner-wrapper') + '"></div>';
                     $(this.main).wrapInner(dialogInnerWrapper);
                 },
 

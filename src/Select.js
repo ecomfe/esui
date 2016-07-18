@@ -555,14 +555,29 @@ define(
                 && (context.value != null || context.rawValue != null)
             ) {
                 // 以`rawValue`为优先
-                context.selectedIndex = -1;
-                var value = context.rawValue || context.value;
-                for (var i = 0; i < context.datasource.length; i++) {
-                    if (context.datasource[i].value === value) {
-                        context.selectedIndex = i;
-                        break;
+                // 存在rawValue时直接比较对象引用
+                // 否则可能 `datasource` 的每项item的 `value` 与 `value` 的类型不同，所以都转成字符串比较
+                var selectedIndex = -1;
+
+                for (var i = 0, length = context.datasource.length; i < length; i++) {
+                    var item = context.datasource[i];
+
+                    if (context.rawValue != null) {
+                        if (item.value === context.rawValue) {
+                            selectedIndex = i;
+                            break;
+                        }
+                    }
+                    else {
+                        if (item.value + '' === context.value + '') {
+                            selectedIndex = i;
+                            break;
+                        }
                     }
                 }
+
+                context.selectedIndex = selectedIndex;
+
                 delete context.value;
                 delete context.rawValue;
             }

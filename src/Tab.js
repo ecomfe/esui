@@ -490,7 +490,7 @@ define(
             return tabs;
         }
 
-        /*
+        /**
          * 点击某个标签时的切换逻辑
          *
          * @param {Event} e 触发事件的事件对象
@@ -575,11 +575,11 @@ define(
             parentNode.insertBefore(navigator, placeholder);
         }
 
-        /*
+        /**
          * 激活指定位置的标签页
          *
          * @param {Tab} tab Tab控件实例
-         * @parma {number} index 待激活的标签页的下标
+         * @param {number} index 待激活的标签页的下标
          * @ignore
          */
         function activateTab(tab, index) {
