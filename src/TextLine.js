@@ -4,7 +4,7 @@
  *
  * @ignore
  * @file 多行带行码输入框
- * @author dbear, otakustay
+ * @author dddbear, otakustay
  */
 
 define(

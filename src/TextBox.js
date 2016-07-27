@@ -223,7 +223,7 @@ define(
                 },
 
                 /**
-                 * 重渲染
+                 * 重新渲染
                  *
                  * @method
                  * @protected
