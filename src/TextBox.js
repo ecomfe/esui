@@ -180,6 +180,9 @@ define(
                         if (this.name) {
                             html += ' name="' + u.escape(this.name) + '"';
                         }
+                        if (this.nowrap) {
+                            html += ' wrap="off"';
+                        }
                         html += this.mode === 'textarea'
                             ? '></textarea>'
                             : ' />';
@@ -223,7 +226,7 @@ define(
                 },
 
                 /**
-                 * 重新渲染
+                 * 重渲染
                  *
                  * @method
                  * @protected
