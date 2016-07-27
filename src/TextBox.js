@@ -180,6 +180,9 @@ define(
                         if (this.name) {
                             html += ' name="' + u.escape(this.name) + '"';
                         }
+                        if (this.nowrap) {
+                            html += ' wrap="off"';
+                        }
                         html += this.mode === 'textarea'
                             ? '></textarea>'
                             : ' />';

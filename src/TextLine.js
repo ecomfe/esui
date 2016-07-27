@@ -101,6 +101,7 @@ define(
 
                     var textArea = this.getTextArea();
                     this.helper.addDOMEvent(textArea, 'scroll', this.resetScroll);
+                    this.helper.addDOMEvent(textArea, 'enter', this.resetScroll);
                     this.helper.addDOMEvent(textArea, 'focus', inputFocus);
                     var back = this.helper.getPart('search-back');
                     this.helper.addDOMEvent(back, 'click', u.bind(toggleOverlay, this, false));
@@ -279,8 +280,27 @@ define(
                 resetScroll: function () {
                     var textArea = this.getTextArea();
                     var lineNumber = this.helper.getPart('num-line');
-                    // 因为可能产生滚动条，所以要同步一下行码区和文字区的高度
+                    // 第一次同步
                     lineNumber.scrollTop = textArea.scrollTop;
+
+                    // lineNumber的可展示区高度会因为没有横滚而比textarea大
+                    // 此时textarea的scrolltop对于lineNumber来说设置是失效的
+                    // 计算下gap，如果大于0，就给linenumber的可视高度减去一块
+                    // 强制是的同步生效
+                    // 先判断是否有横滚
+                    if (textArea.clientWidth < textArea.scrollWidth) {
+                        // 计算横滚的高度，当纵向高度无需滚动条的时候，不需要修正
+                        var gap = textArea.scrollTop - lineNumber.scrollTop;
+                        // 就windows下的滚动条又粗又丑，滚动延时会造成一些gap，但这个gap忽略不计，大于12的时候才计算
+                        if (gap > 12) {
+                            this.originalLineNumberHeight = lineNumber.clientHeight;
+                            $(lineNumber).css('height', this.originalLineNumberHeight - 13);
+                            lineNumber.scrollTop = textArea.scrollTop;
+                        }
+                    }
+                    else {
+                        this.originalLineNumberHeight && $(lineNumber).css('height', this.originalLineNumberHeight);
+                    }
                 },
 
                 /**
@@ -546,7 +566,7 @@ define(
         function getMainHTML(textLine) {
             var textareaHTML = [
                 '<div style="width:100%;height:100%;" data-ui-child-name="input"',
-                    ' data-ui-type="TextBox" data-ui-mode="textarea"',
+                    ' data-ui-type="TextBox" data-ui-mode="textarea" data-ui-nowrap="true"',
                     ' data-ui-width="100%"',
                     ' data-ui-placeholder="${placeholder}">',
                 '</div>'
