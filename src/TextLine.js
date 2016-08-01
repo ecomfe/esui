@@ -567,6 +567,7 @@ define(
             var textareaHTML = [
                 '<div style="width:100%;height:100%;" data-ui-child-name="input"',
                     ' data-ui-type="TextBox" data-ui-mode="textarea"',
+                    ' data-ui-nowrap="true"',
                     ' data-ui-width="100%"',
                     ' data-ui-placeholder="${placeholder}">',
                 '</div>'
