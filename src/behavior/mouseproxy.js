@@ -14,7 +14,7 @@ define(
         require('./jquery-ui');
 
         /* eslint-disable fecs-camelcase */
-        $.widget('ui.mouseproxy', $.ui.mouse, {
+        $.widget('ui.mouse', $.ui.mouse, {
             options: {},
             _create: function () {
                 this._mouseInit();
