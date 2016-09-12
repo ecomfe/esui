@@ -46,6 +46,8 @@ define(
                  * @protected
                  */
                 initOptions: function (options) {
+                    // 由main解析
+                    parseMain(options);
                     /**
                      * 默认Dialog选项配置
                      */
@@ -56,8 +58,10 @@ define(
                         mask: true,           // 是否具有遮挡层
                         title: '我是标题',    // 标题的显示文字
                         content: '<p>我是内容</p>',   // 内容区域的显示内容
-                        needFoot: true,
-                        foot: '<div '
+                        // TODO: 这两个属性有些不是特别方便。
+                        // 也许可以改进一下用data-role=foot。
+                        defaultFoot: ''
+                            + '<div '
                             + 'class="'
                             + this.helper.getPartClassName('ok-btn')
                             + '" data-ui="type:Button;id:btnFootOk;'
@@ -67,11 +71,21 @@ define(
                             + this.helper.getPartClassName('cancel-btn')
                             + '" data-ui="type:Button;'
                             + 'id:btnFootCancel;childName:btnCancel;variants:link wide">取消</div>',
+                        needFoot: true,
+                        roles: {},
+                        // 是否跟随滚动条
+                        setPositionOnScroll: true,
                         // resize时重新计算位置
                         setPositionOnResize: true
                     };
 
                     u.extend(properties, Dialog.defaultProperties, options);
+
+                    if (properties.needFoot) {
+                        if (!properties.foot) {
+                            properties.foot = properties.defaultFoot;
+                        }
+                    }
                     this.setProperties(properties);
                 },
 
@@ -83,81 +97,13 @@ define(
 
                     // 设置样式
                     this.addState('hidden');
-
-                    var helper = this.helper;
-                    var me = this;
-
-                    u.each(['title', 'content', 'foot'], function (item) {
-                        if (item === 'foot' && !me.needFoot) {
-                            return;
-                        }
-                        var panelName = item === 'title' ? 'head' : (item === 'content' ? 'body' : 'foot');
-                        // search mainDom
-                        var mainDOM = $(me.main).children('[data-role=' + item + ']');
-                        if (mainDOM.length !== 0) {
-                            mainDOM = mainDOM[0];
-                        }
-                        else {
-                            mainDOM = document.createElement('div');
-                            mainDOM.innerHTML = me[item];
-                        }
-                        $(mainDOM).attr({
-                            'id': helper.getId(panelName),
-                            'class': helper.getPartClassName(panelName + '-panel')
-                        });
-
-                        var panel;
-                        if (item === 'title') {
-                            var properties = {
-                                main: mainDOM,
-                                renderOptions: this.renderOptions
-                            };
-                            panel = esui.create('Panel', properties);
-                            me.addChild(panel, panelName);
-                        }
-                        else {
-                            panel = me.createBF(panelName, mainDOM);
-                        }
-                        panel.appendTo(me.main);
-
-                    });
-
-                    // close Icon
-                    if (this.closeButton) {
-                        var cls = helper.getPartClasses('close-icon');
-                        cls.push(helper.getIconClass('close'));
-                        var closeBtn = lib.format(
-                            '<div class="${clsClass}" id="${clsId}"></div>',
-                            {
-                                clsId: helper.getId('close-icon'),
-                                clsClass: cls.join(' ')
-                            }
-                        );
-                        $(this.main).append(closeBtn);
+                    createHead(this, this.roles.title);
+                    this.createBF('body', this.roles.content);
+                    if (this.needFoot) {
+                        this.createBF('foot', this.roles.foot);
                     }
 
-                    // 在dialog里面添加innerWrapper
-                    var dialogInnerWrapper
-                        = '<div class="' + this.helper.getPartClassName('inner-wrapper') + '"></div>';
-                    $(this.main).wrapInner(dialogInnerWrapper);
-                },
-
-                /**
-                 * 构建对话框主内容和底部内容
-                 *
-                 * @param {string} type foot | body
-                 * @param {HTMLElement} mainDOM body或foot主元素
-                 * @inner
-                 * @return {Panel} Panel
-                 */
-                createBF: function (type, mainDOM) {
-                    var properties = {
-                        main: mainDOM,
-                        renderOptions: this.renderOptions
-                    };
-                    var panel = esui.create('Panel', properties);
-                    this.addChild(panel, type);
-                    return panel;
+                    this.helper.initChildren();
                 },
 
                 /**
@@ -180,6 +126,56 @@ define(
                 },
 
                 /**
+                 * 构建对话框主内容和底部内容
+                 *
+                 * @param {string} type foot | body
+                 * @param {HTMLElement} mainDOM body或foot主元素
+                 * @inner
+                 * @return {Panel} Panel
+                 */
+                createBF: function (type, mainDOM) {
+                    if (mainDOM) {
+                        this.content = mainDOM.innerHTML;
+                    }
+                    else {
+                        mainDOM = document.createElement('div');
+
+                        if (type === 'body') {
+                            // 找到head
+                            var head = this.getChild('head');
+                            if (head) {
+                                lib.insertAfter(mainDOM, head.main);
+                            }
+                            // 放到第一个
+                            else if (this.main.firstChild) {
+                                lib.insertBefore(
+                                    mainDOM, head, this.main.firstChild
+                                );
+                            }
+                            else {
+                                this.main.appendChild(mainDOM);
+                            }
+                        }
+                        else {
+                            this.main.appendChild(mainDOM);
+                        }
+                    }
+
+                    $(mainDOM).addClass(
+                        this.helper.getPartClassName(type + '-panel')
+                    );
+                    var properties = {
+                        main: mainDOM,
+                        renderOptions: this.renderOptions
+                    };
+
+                    var panel = esui.create('Panel', properties);
+                    panel.render();
+                    this.addChild(panel, type);
+                    return panel;
+                },
+
+                /**
                  * 重新渲染视图
                  * 仅当生命周期处于RENDER时，该方法才重新渲染
                  *
@@ -191,33 +187,36 @@ define(
                     {
                         name: 'height',
                         paint: function (dialog, value) {
-                            if (value) {
-                                var dialogInnerWrapper = dialog.main.children[0];
-                                $(dialogInnerWrapper).css('height', value);
-                                dialog.resize();
+                            if (value === 'auto') {
+                                dialog.main.style.height = 'auto';
+                            }
+                            else if (value) {
+                                dialog.main.style.height = value + 'px';
+                            }
+                            if (dialog.isShow) {
+                                resizeHandler.apply(dialog);
                             }
                         }
                     },
                     {
                         name: 'width',
                         paint: function (dialog, value) {
-                            if (value) {
-                                var dialogInnerWrapper = dialog.main.children[0];
-                                $(dialogInnerWrapper).css('width', value);
-                                dialog.resize();
+                            if (value === 'auto') {
+                                dialog.main.style.width = 'auto';
+                            }
+                            else if (value) {
+                                dialog.main.style.width = value + 'px';
+                            }
+                            if (dialog.isShow) {
+                                resizeHandler.apply(dialog);
                             }
                         }
                     },
                     {
                         name: 'title',
                         paint: function (dialog, value) {
-                            if (!value) {
-                                return;
-                            }
-                            if (dialog.helper.isInStage('RENDERED')) {
-                                var titleEle = lib.g(dialog.helper.getId('head'));
-                                titleEle.innerHTML = value;
-                            }
+                            var titleId = dialog.helper.getId('title');
+                            lib.g(titleId).innerHTML = value;
                         }
                     },
                     {
@@ -226,24 +225,57 @@ define(
                             if (!value) {
                                 return;
                             }
-                            // initStructure时已经渲染panel, 初始化状态时无需再执行
-                            if (dialog.helper.isInStage('RENDERED')) {
-                                var panel = dialog.getBody();
-                                panel.setContent(value);
-                                dialog.resize();
+                            var bfTpl = ''
+                                + '<div class="${class}" id="${id}">'
+                                + '${content}'
+                                + '</div>';
+                            // 获取body panel
+                            var body = dialog.getBody();
+                            var bodyId = dialog.helper.getId('body');
+                            var bodyClass = dialog.helper.getPartClasses('body');
+                            var data = {
+                                'class': bodyClass.join(' '),
+                                'id': bodyId,
+                                'content': value
+                            };
+                            body.setContent(
+                                lib.format(bfTpl, data)
+                            );
+                            if (dialog.isShow) {
+                                resizeHandler.apply(dialog);
                             }
                         }
                     },
                     {
                         name: 'foot',
                         paint: function (dialog, value) {
-                            if (!value || !dialog.needFoot) {
-                                return;
+                            var bfTpl = ''
+                                + '<div class="${class}" id="${id}">'
+                                + '${content}'
+                                + '</div>';
+                            var footId = dialog.helper.getId('foot');
+                            var footClass = dialog.helper.getPartClasses('foot');
+                            // 取消了foot
+                            var foot = dialog.getFoot();
+                            if (value == null) {
+                                dialog.needFoot = false;
+                                if (foot) {
+                                    dialog.removeChild(foot);
+                                }
                             }
-                            if (dialog.helper.isInStage('RENDERED')) {
-                                var panel = dialog.getFoot();
-                                panel.setContent(value);
-                                dialog.resize();
+                            else {
+                                dialog.needFoot = true;
+                                var data = {
+                                    'class': footClass.join(' '),
+                                    'id': footId,
+                                    'content': value
+                                };
+                                if (!foot) {
+                                    foot = dialog.createBF('foot');
+                                }
+                                foot.setContent(
+                                    lib.format(bfTpl, data)
+                                );
                             }
                         }
                     },
@@ -300,48 +332,57 @@ define(
                  *
                  */
                 show: function () {
-
-                    var helper = this.helper;
-                    if (this.isShow || helper.isInStage('DISPOSED')) {
-                        return;
-                    }
-                    else if (helper.isInStage('INITED')) {
+                    var mask = this.mask;
+                    if (this.helper.isInStage('INITED')) {
                         this.render();
                     }
-                    this.isShow = true;
+                    else if (this.helper.isInStage('DISPOSED')) {
+                        return;
+                    }
+
+                    // 浮动层自动定位功能初始化
+                    if (this.setPositionOnResize) {
+                        this.helper.addDOMEvent(window, 'resize', resizeHandler);
+                    }
+                    if (this.setPositionOnScroll) {
+                        this.helper.addDOMEvent(
+                            window, 'scroll', resizeHandler
+                        );
+                    }
                     this.setWidth(this.width);
                     this.removeState('hidden');
-
-                    // resize事件绑定
-                    if (this.setPositionOnResize) {
-                        helper.addDOMEvent(window, 'resize', resizeHandler);
-                    }
+                    resizeHandler.apply(this);
 
                     // 要把dialog置顶
                     var zIndex = 1203;
+                    // if (this.alwaysTop) {
+                    // 查找当前dialog个数
                     var rawElements = document.body.children;
                     var dialogNum = 0;
                     for (var i = 0, len = rawElements.length; i < len; i++) {
                         if (rawElements[i].nodeType === 1) {
-                            if (lib.hasClass(rawElements[i], helper.getPrimaryClassName())
+                            if (lib.hasClass(rawElements[i], this.helper.getPrimaryClassName())
                                 && !lib.hasClass(
-                                    rawElements[i], helper.getPrimaryClassName('hidden'))
+                                    rawElements[i], this.helper.getPrimaryClassName('hidden'))
                             ) {
                                 dialogNum++;
                             }
                         }
                     }
-                    zIndex += dialogNum * 10;
-                    $(this.main).css('zIndex', zIndex);
 
-                    if (this.mask) {
+                    zIndex += dialogNum * 10;
+                    // }
+                    this.main.style.zIndex = zIndex;
+
+                    if (mask) {
                         showMask(this, zIndex - 1);
                     }
-                    this.resize();
 
-                    // body隐藏导航条
-                    $('body').addClass('hasDialog');
+                    if (this.isShow) {
+                        return;
+                    }
 
+                    this.isShow = true;
                     this.fire('show');
                 },
 
@@ -359,6 +400,11 @@ define(
                     if (this.setPositionOnResize) {
                         this.helper.removeDOMEvent(window, 'resize', resizeHandler);
                     }
+                    if (this.setPositionOnScroll) {
+                        this.helper.removeDOMEvent(
+                            window, 'scroll', resizeHandler
+                        );
+                    }
 
                     this.addState('hidden');
 
@@ -366,10 +412,6 @@ define(
                         hideMask(this);
                     }
 
-                    // body显示导航条
-                    if ($('body').hasClass('hasDialog')) {
-                        $('body').removeClass('hasDialog');
-                    }
                     this.fire('hide');
                 },
 
@@ -448,6 +490,101 @@ define(
         };
 
         /**
+         * 渲染控件前重绘控件
+         *
+         * @param {Object} options 设置项
+         */
+        function parseMain(options) {
+            var main = options.main;
+            // 如果main未定义，则不作解析
+            if (!main) {
+                return;
+            }
+            var $els = $(main).children();
+            var roles = {};
+
+            $els.each(function (idx, ele) {
+                var roleName = $(ele).attr('data-role');
+                if (roleName) {
+                    roles[roleName] = ele;
+                }
+            });
+
+            options.roles = roles;
+        }
+
+        /**
+         * 构建对话框标题栏
+         *
+         * @param {Dialog} control 控件对象
+         * @param {HTMLElement} mainDOM head主元素
+         * @inner
+         * @return {Panel} panel
+         */
+        function createHead(control, mainDOM) {
+            var title = 'title';
+            var close = 'close-icon';
+
+            var closeTpl
+                = '<div class="${clsClass}" id="${clsId}"></div>';
+            var closeIcon = '';
+            var cls = [];
+
+            if (control.closeButton) {
+                cls = control.helper.getPartClasses(close);
+                cls.push(control.helper.getIconClass('close'));
+                closeIcon = lib.format(
+                    closeTpl,
+                    {
+                        clsId: control.helper.getId(close),
+                        clsClass: cls.join(' ')
+                    }
+                );
+            }
+
+            var headTpl = ''
+                + '<div id="${titleId}" class="${titleClass}">'
+                + '</div>'
+                + '${closeIcon}';
+
+            var headClass
+                = control.helper.getPartClassName('head');
+
+            var headData = {
+                titleId: control.helper.getId(title),
+                titleClass: control.helper.getPartClasses(title).join(' '),
+                closeIcon: closeIcon
+            };
+
+            var headHtml = lib.format(headTpl, headData);
+
+            if (mainDOM) {
+                control.title = mainDOM.innerHTML;
+            }
+            else {
+                mainDOM = document.createElement('div');
+                if (control.main.firstChild) {
+                    lib.insertBefore(mainDOM, control.main.firstChild);
+                }
+                else {
+                    control.main.appendChild(mainDOM);
+                }
+            }
+
+            mainDOM.innerHTML = headHtml;
+            $(mainDOM).addClass(headClass);
+            var properties = {
+                main: mainDOM,
+                renderOptions: control.renderOptions
+            };
+
+            var panel = esui.create('Panel', properties);
+            panel.render();
+            control.addChild(panel, 'head');
+            return panel;
+        }
+
+        /**
          * 点击头部关闭按钮时事件处理函数
          *
          * @inner
@@ -471,23 +608,22 @@ define(
         }
 
 
+
         /**
          * 页面resize时事件的处理函数
          *
          * @inner
          */
         function resizeHandler() {
-            if (this.isShow) {
-                var dialogInnerWrapper = this.main.children[0];
-                $(dialogInnerWrapper).position(
-                    {
-                        of: window,
-                        at: 'center',
-                        my: 'center',
-                        collision: 'fit'
-                    }
-                );
-            }
+            var main = this.main;
+            $(main).position(
+                {
+                    of: window,
+                    at: 'center',
+                    my: 'center',
+                    collision: 'fit'
+                }
+            );
         }
 
         /**
@@ -499,7 +635,7 @@ define(
         function initDragHandler(dialog, unbind) {
             var head = dialog.getChild('head').main;
 
-            $(dialog.main.children[0]).draggable(
+            $(dialog.main).draggable(
                 {
                     handle: head,
                     addClasses: false,
@@ -517,18 +653,18 @@ define(
          * @param {number} zIndex zIndex值
          */
         function showMask(dialog, zIndex) {
-            var helper = dialog.helper;
             var mask = getMask(dialog);
-            var maskClass = [
-                helper.getPrefixClass('mask'),
-                helper.getPrefixClass('mask-page'),
-                helper.getPartClasses('mask').join(' ')
+            var clazz = [
+                dialog.helper.getPrefixClass('mask'),
+                dialog.helper.getPrefixClass('mask-page')
             ];
-            $(mask).addClass(maskClass.join(' '));
-            $(mask).css({
-                display: 'block',
-                zIndex: zIndex
-            });
+            var maskClass = dialog.helper.getPartClasses('mask').join(' ');
+
+            clazz.push(maskClass);
+
+            mask.className = clazz.join(' ');
+            mask.style.display = 'block';
+            mask.style.zIndex = zIndex;
         }
 
 
@@ -593,18 +729,43 @@ define(
         Dialog.confirm = function (args) {
             var dialogPrefix = 'dialog-confirm';
 
-            // initOption
+            /**
+             * 获取按钮点击的处理函数
+             *
+             * @private
+             * @param {ui.Dialog} dialog 控件对象
+             * @param {string} type 事件类型
+             */
+            function btnClickHandler(dialog, type) {
+                // 如果在参数里设置了处理函数，会在fire时执行
+                dialog.fire(type);
+                dialog.dispose();
+            }
+
+            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
+            var content = args.rawContent || lib.encodeHTML(args.content) || '';
+            var okText = u.escape(args.okText) || Dialog.OK_TEXT;
+            var cancelText = u.escape(args.cancelText) || Dialog.CANCEL_TEXT;
+
             var properties = {
                 type: 'confirm',
                 variants: 'confirm',
-                title: '',
-                closeButton: false,
-                mask: true,
-                alwaysTop: true
+                title: ''
             };
+
             u.extend(properties, args);
 
+            var tpl = [
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
+                '<div class="${prefix}-text">${content}</div>'
+            ].join('');
+
+
             properties.id = lib.getGUID(dialogPrefix);
+            properties.closeButton = false;
+            properties.mask = true;
+            properties.alwaysTop = true;
+
             var type = properties.type;
             properties.type = null;
 
@@ -612,16 +773,11 @@ define(
             dialog.appendTo(document.body);
             dialog.show();
 
-            // initStructure
-            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
-            var content = args.rawContent || lib.encodeHTML(args.content) || '';
-            var okText = u.escape(args.okText) || Dialog.OK_TEXT;
-            var cancelText = u.escape(args.cancelText) || Dialog.CANCEL_TEXT;
-
-            var tpl = [
-                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
-                '<div class="${prefix}-text">${content}</div>'
-            ].join('');
+            // 使用默认foot，改变显示文字
+            var okBtn = dialog.getFoot().getChild('btnOk');
+            var cancelBtn = dialog.getFoot().getChild('btnCancel');
+            okBtn.setContent(okText);
+            cancelBtn.setContent(cancelText);
 
             dialog.setTitle(title);
             dialog.setContent(
@@ -636,34 +792,6 @@ define(
                 )
             );
 
-            // 使用默认foot，改变显示文字
-            var okBtn = dialog.getFoot().getChild('btnOk');
-            var cancelBtn = dialog.getFoot().getChild('btnCancel');
-            okBtn.setContent(okText);
-            cancelBtn.setContent(cancelText);
-
-            /**
-             * 获取按钮点击的处理函数
-             *
-             * @private
-             * @param {ui.Dialog} dialog 控件对象
-             * @param {string} type 事件类型
-             */
-            function btnClickHandler(dialog, type) {
-                // 如果在参数里设置了处理函数，会在fire时执行
-                dialog.fire(type);
-                dialog.dispose();
-            }
-
-            okBtn.on(
-                'click',
-                u.partial(btnClickHandler, dialog, 'ok')
-            );
-            cancelBtn.on(
-                'click',
-                u.partial(btnClickHandler, dialog, 'cancel')
-            );
-
             // 也可以改宽高
             // DEPRECATED: 以后移除`btnHeight`和`btnWidth`支持
             if (properties.btnHeight) {
@@ -674,6 +802,15 @@ define(
                 okBtn.set('width', properties.btnWidth);
                 cancelBtn.set('width', properties.btnWidth);
             }
+
+            okBtn.on(
+                'click',
+                u.partial(btnClickHandler, dialog, 'ok')
+            );
+            cancelBtn.on(
+                'click',
+                u.partial(btnClickHandler, dialog, 'cancel')
+            );
 
             return dialog;
 
@@ -694,59 +831,6 @@ define(
             var dialogPrefix = 'dialog-alert';
             var okPrefix = 'dialog-alert-ok';
 
-            // initOptions
-            var properties = {
-                type: 'warning',
-                variants: 'alert',
-                title: '',
-                closeButton: false,
-                mask: true,
-                alwaysTop: true
-            };
-            u.extend(properties, args);
-
-            var dialogId = lib.getGUID(dialogPrefix);
-            properties.id = dialogId;
-            var type = properties.type;
-            properties.type = null;
-
-            var dialog = esui.create('Dialog', properties);
-            dialog.appendTo(document.body);
-
-            // initStructure
-            var tpl = [
-                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
-                '<div class="${prefix}-text">${content}</div>'
-            ].join('');
-
-            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
-            var content = args.rawContent || lib.encodeHTML(args.content) || '';
-            var okText = u.escape(args.okText) || Dialog.OK_TEXT;
-
-            dialog.setTitle(title);
-            dialog.setContent(
-                lib.format(
-                    tpl,
-                    {
-                        type: type,
-                        content: content,
-                        prefix: dialog.helper.getPrimaryClassName(),
-                        icon: dialog.helper.getIconClass('exclamation-circle')
-                    }
-                )
-            );
-            dialog.setFoot(''
-                + '<div '
-                + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
-                + ' data-ui="type:Button;childName:okBtn;id:'
-                + dialogId + '-' + okPrefix + ';variants:primary;">'
-                + okText
-                + '</div>'
-            );
-
-            dialog.show();
-
-
             /**
              * 获取按钮点击的处理函数
              *
@@ -761,6 +845,58 @@ define(
                 dialog.dispose();
             }
 
+            var title = args.rawTitle || lib.encodeHTML(args.title) || '';
+            var content = args.rawContent || lib.encodeHTML(args.content) || '';
+            var okText = u.escape(args.okText) || Dialog.OK_TEXT;
+
+            var properties = {
+                type: 'warning',
+                variants: 'alert',
+                title: ''
+            };
+
+            u.extend(properties, args);
+
+            var tpl = [
+                '<div class="${prefix}-icon ${prefix}-icon-${type}"><span class="${icon}"></span></div>',
+                '<div class="${prefix}-text">${content}</div>'
+            ].join('');
+
+            var dialogId = lib.getGUID(dialogPrefix);
+            properties.id = dialogId;
+            properties.closeButton = false;
+            properties.mask = true;
+            properties.alwaysTop = true;
+
+            var type = properties.type;
+            properties.type = null;
+
+            var dialog = esui.create('Dialog', properties);
+            dialog.appendTo(document.body);
+
+            dialog.setTitle(title);
+            dialog.setContent(
+                lib.format(
+                    tpl,
+                    {
+                        type: type,
+                        content: content,
+                        prefix: dialog.helper.getPrimaryClassName(),
+                        icon: dialog.helper.getIconClass('exclamation-circle')
+                    }
+                )
+            );
+
+            dialog.setFoot(''
+                + '<div '
+                + 'class="' + dialog.helper.getPartClassName('ok-btn') + '"'
+                + ' data-ui="type:Button;childName:okBtn;id:'
+                + dialogId + '-' + okPrefix + ';variants:primary;">'
+                + okText
+                + '</div>'
+            );
+
+            dialog.show();
             var okBtn = dialog.getFoot().getChild('okBtn');
             okBtn.on(
                 'click',

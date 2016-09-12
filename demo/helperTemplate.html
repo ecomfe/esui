@@ -55,12 +55,12 @@
 
             <h2>Part Filter</h2>
             <div class="intro">
-                <p>${xxx | part('div', ${instance})}</p>
+                <p>${xxx | part('div')}</p>
             </div>
             <div id="part" class="example"></div>
 
             <div class="intro">
-                <p>${&lt;div#xxx&gt; | raw}</p>
+                <p>${<div#xxx> | raw}</p>
             </div>
             <div id="part_" class="example"></div>
         </div>
@@ -83,7 +83,7 @@
             var control = new Control();
             control.type = 'TemplateFilter';
 
-            var result = control.helper.render('${xxx | id(${instance})}');
+            var result = control.helper.render('${xxx | id}');
             $('#id').html(result);
 
             result = control.helper.render('${#xxx}');
@@ -92,7 +92,7 @@
             result = control.helper.render('${xxx.id}');
             $('#id__').html(result);
 
-            result = control.helper.render('${xxx | class(${instance})}');
+            result = control.helper.render('${xxx | class}');
             $('#class').html(result);
 
             result = control.helper.render('${.xxx}');
@@ -101,10 +101,10 @@
             result = control.helper.render('${xxx.class}');
             $('#class__').html(result);
 
-            result = control.helper.render("${xxx | part('div', ${instance})}");
+            result = control.helper.render("${xxx | part('div')}");
             $('#part').html(lib.encodeHTML(result));
 
-            result = control.helper.render('${<a#xxx> | raw}');
+            result = control.helper.render('${<div#xxx> | raw}');
             $('#part_').html(lib.encodeHTML(result));
         }
     );
