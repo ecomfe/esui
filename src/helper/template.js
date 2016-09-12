@@ -9,6 +9,7 @@
 define(
     function (require) {
         var u = require('underscore');
+        var PART_REGEX = /<([\w-]+)#([\w-]+)>/;
 
         var FILTERS = {
             'id': function (part) {
@@ -76,11 +77,22 @@ define(
          * 生成模板替换的数据
          *
          * @param {Object} data 数据
+         * @param {Helper} helper 当前的helper对象
          * @return {Object} 处理过的数据
          */
-        function getTemplateData(data) {
+        function getTemplateData(data, helper) {
             var templateData = {
                 get: function (name) {
+                    if (name.charAt(0) === '#') {
+                        return FILTERS.id.call(helper.control, name.substring(1));
+                    }
+                    if (name.charAt(0) === '.') {
+                        return FILTERS.class.call(helper.control, name.substring(1));
+                    }
+                    var possiblePart = PART_REGEX.exec(name);
+                    if (possiblePart) {
+                        return FILTERS.part.call(helper.control, possiblePart[2], possiblePart[1]);
+                    }
 
                     if (typeof data.get === 'function') {
                         return data.get(name);
@@ -89,6 +101,8 @@ define(
                     var propertyName = name;
                     var filter = null;
 
+                    // 支持value.id / value.class
+                    // 暂不支持value.part('div')这种形式
                     var indexOfDot = name.lastIndexOf('.');
                     if (indexOfDot > 0) {
                         propertyName = name.substring(0, indexOfDot);
@@ -102,7 +116,7 @@ define(
                         ? data[propertyName]
                         : propertyName;
                     if (filter) {
-                        value = filter(value, helper.control);
+                        value = filter.call(helper.control, value);
                     }
 
                     return value;
@@ -117,19 +131,22 @@ define(
          * ESUI为[etpl](https://github.com/ecomfe/etpl')提供了额外的
          * [filter](https://github.com/ecomfe/etpl/#变量替换)：
          *
-         * - `${xxx | id($instance)}`按规则生成以`xxx`为部件名的DOM元素id
-         * - `${xxx | class($instance)}`按规则生成以`xxx`为部件名的DOM元素class
-         * - `${xxx | part('div', $instance)}`生成以`xxx`为部件名的div元素HTML
-         *
-         * 在使用内置过滤器时，必须加上`($instance)`这一段，以将过滤器和当前控件实例关联
+         * - `${xxx | id}`按规则生成以`xxx`为部件名的DOM元素id
+         * - `${xxx | class}`按规则生成以`xxx`为部件名的DOM元素class
+         * - `${xxx | part('div')}`生成以`xxx`为部件名的div元素HTML
          *
          * 同时也可以用简化的方式使用以上的过滤器，如：
          *
-         * - `${xxx.id}`等效于`${xxx | id($instance)}`
-         * - `${xxx.class}`等效于`${xxx | class($instance)}`
+         * - `${xxx.id}`等效于`${xxx | id}`
+         * - `${xxx.class}`等效于`${xxx | class}`
          *
-         * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，
-         * 必须使用过滤器的语法实现
+         * 更简化的方法：
+         *
+         * - `${#xxx}`等效于`${xxx | id}`
+         * - `${.xxx}`等效于`${xxx | class}`
+         * - `${<foo#bar>}`等效于`${bar | part('foo')}`
+         *
+         * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，必须使用过滤器的语法实现
          *
          * 一般来说，如果一个控件需要使用模板，我们会为这个控件类生成一个模板引擎实例：
          *
@@ -183,7 +200,7 @@ define(
         helper.renderTemplate = function (target, data) {
             data = data || {};
             var engine = this.getTemplateEngine();
-            return engine.render(target, getTemplateData(data));
+            return engine.render(target, getTemplateData(data, this));
         };
 
         /*
@@ -197,7 +214,7 @@ define(
             data = data || {};
             var engine = this.getTemplateEngine();
             var renderer = engine.compile(content);
-            return renderer(getTemplateData(data));
+            return renderer(getTemplateData(data, this));
         };
 
         return helper;

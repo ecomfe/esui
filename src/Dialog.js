@@ -102,6 +102,8 @@ define(
                     if (this.needFoot) {
                         this.createBF('foot', this.roles.foot);
                     }
+
+                    this.helper.initChildren();
                 },
 
                 /**

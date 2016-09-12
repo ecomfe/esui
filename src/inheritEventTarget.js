@@ -8,7 +8,7 @@
  */
 define(
     function (require) {
-        var lib = require('lib');
+        var lib = require('./lib');
 
         var EventTarget = lib.interopDefault(require('mini-event/EventTarget'));
         var oo = require('eoo');

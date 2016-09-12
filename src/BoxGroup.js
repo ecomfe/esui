@@ -245,9 +245,7 @@ define(
                     if (this.boxType === 'radio') {
                         return this.backwardCompatible ? [val] : val;
                     }
-                    else {
-                        return val ? val.split(',') : [];
-                    }
+                    return val ? val.split(',') : [];
                 },
 
                 /**
@@ -364,7 +362,9 @@ define(
                 .pluck('value')
                 .value();
 
-            this.rawValue = result;
+            this.rawValue = (!this.backwardCompatible && this.boxType === 'radio')
+                ? result[0]
+                : result;
             this.fire('change');
             this.fire('changed');
         }

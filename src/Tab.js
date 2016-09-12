@@ -201,7 +201,7 @@ define(
                             // 如果仅改变`tabs`，则由于标签页的数量变化，
                             // 确认现在激活的标签页是不是还在新的`tabs`中，
                             // 如果不在了，则激活第1个标签
-                            var currentActiveTab = this.tabs[this.activeIndex];
+                            var currentActiveTab = properties.tabs[this.activeIndex];
                             var activeIndex = -1;
                             for (var i = 0; i < properties.tabs.length; i++) {
                                 if (properties.tabs[i] === currentActiveTab) {
