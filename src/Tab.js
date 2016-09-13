@@ -579,7 +579,7 @@ define(
          * 激活指定位置的标签页
          *
          * @param {Tab} tab Tab控件实例
-         * @parma {number} index 待激活的标签页的下标
+         * @param {number} index 待激活的标签页的下标
          * @ignore
          */
         function activateTab(tab, index) {
