@@ -201,7 +201,7 @@ define(
                             // 如果仅改变`tabs`，则由于标签页的数量变化，
                             // 确认现在激活的标签页是不是还在新的`tabs`中，
                             // 如果不在了，则激活第1个标签
-                            var currentActiveTab = this.tabs[this.activeIndex];
+                            var currentActiveTab = properties.tabs[this.activeIndex];
                             var activeIndex = -1;
                             for (var i = 0; i < properties.tabs.length; i++) {
                                 if (properties.tabs[i] === currentActiveTab) {
@@ -490,7 +490,7 @@ define(
             return tabs;
         }
 
-        /**
+        /*
          * 点击某个标签时的切换逻辑
          *
          * @param {Event} e 触发事件的事件对象
@@ -575,11 +575,11 @@ define(
             parentNode.insertBefore(navigator, placeholder);
         }
 
-        /**
+        /*
          * 激活指定位置的标签页
          *
          * @param {Tab} tab Tab控件实例
-         * @param {number} index 待激活的标签页的下标
+         * @parma {number} index 待激活的标签页的下标
          * @ignore
          */
         function activateTab(tab, index) {
