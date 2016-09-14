@@ -46,7 +46,7 @@ define(
                 }
                 return rawValueReplacer ? rawValueReplacer(value) : value;
             };
-            options = u.extend({valueReplacer: source ? valueReplacer : rawValueReplacer, owner: source}, options);
+            options = u.extend({valueReplacer: valueReplacer: rawValueReplacer, owner: control}, options);
             options.viewContext = this.control.viewContext;
             options.parent = this.control;
 
