@@ -1350,7 +1350,7 @@ define(
                         headMoveHandler
                     );
 
-                    $(head).mouse(
+                    $(head).mouseproxy(
                         {
                             start: u.partial(dragStartHandler, table),
                             drag: u.partial(dragingHandler, table),
