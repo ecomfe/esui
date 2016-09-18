@@ -572,7 +572,7 @@ define(
                         options.parent.addChild(control);
                     }
                     if (options.owner) {
-                        options.parent.addOwned(control);
+                        options.owner.addOwned(control);
                     }
                 }
 
