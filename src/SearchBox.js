@@ -10,7 +10,7 @@ define(
     function (require) {
         var lib = require('./lib');
         var ui = require('esui');
-        var Control = require('./Control');
+        var InputControl = require('./InputControl');
 
         require('./TextBox');
         require('./Button');
@@ -18,12 +18,12 @@ define(
         /**
          * 搜索框控件，由一个文本框和一个搜索按钮组成
          *
-         * @extends Control
+         * @extends InputControl
          * @param {Object} [options] 初始化参数
          * @constructor
          */
         function SearchBox(options) {
-            Control.apply(this, arguments);
+            InputControl.apply(this, arguments);
         }
 
         /**
@@ -71,7 +71,7 @@ define(
                 properties.title = this.main.title;
             }
 
-            Control.prototype.initOptions.call(this, properties);
+            InputControl.prototype.initOptions.call(this, properties);
         };
 
         /**
@@ -170,7 +170,7 @@ define(
          * @override
          */
         SearchBox.prototype.repaint = paint.createRepaint(
-            Control.prototype.repaint,
+            InputControl.prototype.repaint,
             paint.attribute('title'),
             {
                 name: [
@@ -246,7 +246,7 @@ define(
             return textbox ? textbox.getValue() : this.text;
         };
 
-        lib.inherits(SearchBox, Control);
+        lib.inherits(SearchBox, InputControl);
         ui.register(SearchBox);
         return SearchBox;
     }
