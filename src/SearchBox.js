@@ -151,14 +151,42 @@ define(
         }
 
         /**
+         * 获取输入原始值
+         *
+         * @return {string}
+         * @override
+         */
+        SearchBox.prototype.getRawValue = function () {
+            var text = this.getChild('text');
+            return text.getValue();
+        };
+
+        /**
          * 获取输入值
          *
          * @return {string}
          * @override
          */
         SearchBox.prototype.getValue = function () {
-            var text = this.getChild('text');
-            return text.getValue();
+            return this.getRawValue();
+        };
+
+        /**
+         * 设置输入控件的原始值
+         *
+         * @param {string} rawValue 输入控件的原始值
+         */
+        SearchBox.prototype.setRawValue = function (rawValue) {
+            this.set('text', rawValue);
+        };
+
+        /**
+         * 设置输入控件的值
+         *
+         * @param {string} value 输入控件的值
+         */
+        SearchBox.prototype.setValue = function (value) {
+            this.setRawValue(value);
         };
 
         var paint = require('./painters');
