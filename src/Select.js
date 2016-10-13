@@ -297,6 +297,7 @@ define(
             initEvents: function () {
                 this.helper.addDOMEvent(this.main, 'click', toggle);
                 this.layer.on('rendered', u.bind(addLayerClass, this));
+                this.layer.on('hide', u.bind(layerHide, this));
             },
 
             /**
@@ -602,6 +603,10 @@ define(
                     }
                 }
             }
+        }
+
+        function layerHide() {
+            this.fire('layerhide');
         }
 
         function addLayerClass() {
