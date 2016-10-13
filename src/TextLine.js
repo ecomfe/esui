@@ -62,6 +62,8 @@ define(
          * @ignore
          */
         function focus(e) {
+            this.addState('focus');
+
             togglePlaceholder(this, true);
 
             /**
@@ -81,6 +83,8 @@ define(
          * @ignore
          */
         function blur(e) {
+            this.removeState('focus');
+
             togglePlaceholder(this, false);
 
             /**
