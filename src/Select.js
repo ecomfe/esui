@@ -353,7 +353,12 @@ define(
         Select.prototype.initEvents = function () {
             this.helper.addDOMEvent(this.main, 'click', u.bind(this.layer.toggle, this.layer));
             this.layer.on('rendered', u.bind(addLayerClass, this));
+            this.layer.on('hide', u.bind(layerHide, this));
         };
+
+        function layerHide() {
+            this.fire('layerhide');
+        }
 
         function addLayerClass() {
             this.fire('layerrendered', { layer: this.layer });
