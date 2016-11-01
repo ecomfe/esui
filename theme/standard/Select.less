@@ -6,6 +6,8 @@
 @esui-select-hover-background: @esui-palette-neutral-highlight-color;
 @esui-select-active-background: @esui-palette-neutral-shadow-color;
 
+@esui-select-layer-border: 1px solid @esui-select-active-background;
+
 @esui-select-invalid-border: 1px solid @esui-palette-danger-color;
 
 @esui-select-primary-color: @esui-palette-contrast-color;
@@ -40,6 +42,7 @@
         @esui-select-color,
         @esui-select-active-background
     );
+    
 }
 
 .esui-select-primary-theme() {
@@ -108,6 +111,10 @@
             .opacity(100);
         }
     }
+}
+
+.esui-select-layer-theme() {
+    border: @esui-select-layer-border;
 }
 
 .esui-select-layer-bordered-theme() {
