@@ -5165,6 +5165,10 @@ hr.ui-divider-dashed {
  */
 .ui-commandmenu-layer {
   position: absolute;
+  border: 1px solid #e8e8e8;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 /**
   * ESUI (Enterprise Simple UI)
@@ -5897,6 +5901,10 @@ body.hasDialog {
   overflow-x: hidden;
   overflow-y: auto;
   position: absolute;
+  border: 1px solid #e8e8e8;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .ui-select-item-disabled {
   opacity: 0.5;
@@ -5991,7 +5999,6 @@ body.hasDialog {
   filter: alpha(opacity=100);
 }
 .ui-select-layer-bordered {
-  border: 1px solid #ddd;
   background: #fff;
 }
 /**
@@ -6770,6 +6777,7 @@ body.hasDialog {
   outline: none;
   resize: none;
   color: inherit;
+  overflow-x: auto;
 }
 .ui-textline.state-disabled textarea {
   cursor: not-allowed;
