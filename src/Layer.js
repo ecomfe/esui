@@ -14,6 +14,8 @@ define(
         var esui = require('./main');
         var $ = require('jquery');
         require('./behavior/jquery-ui');
+        var layerCls = esui.getConfig('uiClassPrefix') + '-layer';
+        var layerHiddenCls = layerCls + '-hidden';
 
         /**
          * 浮层基类
@@ -73,7 +75,7 @@ define(
             },
 
             prepareLayer: function (element) {
-                $(element).addClass(esui.getConfig('uiClassPrefix') + '-layer');
+                $(element).addClass([layerCls, layerHiddenCls].join(' '));
 
                 // 给layer一个初始的TOP/LEFT值
                 // 否则在定位时，jquery的offset首次计算存在问题
@@ -95,7 +97,6 @@ define(
                     });
                     $(element).addClass(variantsCls.join(' '));
                 }
-                $(element).hide();
             },
 
             /**
@@ -179,7 +180,7 @@ define(
              */
             hide: function (silent) {
                 var element = this.getElement();
-                $(element).hide();
+                $(element).addClass(layerHiddenCls);
                 if (this.docClickHandler) {
                     $(document).off('mousedown', this.docClickHandler);
                     this.docClickHandler = null;
@@ -201,7 +202,7 @@ define(
                     // 点击文档自动关闭
                     setDocClickHandler(me);
                 }
-                $(element).show();
+                $(element).removeClass(layerHiddenCls);
                 me.position();
                 me.fire('show');
                 me.control.addState('active');
@@ -213,7 +214,7 @@ define(
             toggle: function () {
                 var element = this.getElement();
                 if (!element
-                    || !$(element).is(':visible')
+                    || !$(element).hasClass(layerHiddenCls)
                 ) {
                     this.show();
                 }
