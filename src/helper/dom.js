@@ -418,35 +418,32 @@ define(
          */
         helper.extractOptionsFromInput = function (input, options) {
             var result = {};
-            var $input = $(input);
 
             u.each(
                 INPUT_PROPERTY_MAPPING,
                 function (config, attributeName) {
-                    var specified = lib.hasAttribute(input, attributeName);
+                    var specified = input.getAttribute(attributeName);
                     if (specified) {
-                        var value = $input.attr(attributeName);
-
                         switch (config.type) {
                             case 'boolean':
-                                value = specified;
+                                if (specified === 'true') {
+                                    specified = true;
+                                }
+                                else if (specified === 'false') {
+                                    specified = false;
+                                }
                                 break;
                             case 'number':
-                                value = parseInt(value, 10);
+                                specified = +specified;
                                 break;
                         }
-                        result[config.name] = value;
+                        result[config.name] = specified;
                     }
                 }
             );
-
-            // value要特殊处理一下，可能是通过innerHTML设置的，但是`<select>`元素在没有`value`属性时会自动选中第1个，
-            // 这会影响诸如`selectedIndex`属性的效果，因此对`<select>`要特别地排除
-            if (lib.hasAttribute(input, 'value')
-                || (!$input.is('select') && input.value)
-                || $input.is('textarea')
-            ) {
-                result.value = $input.val();
+            var val = $(input).val();
+            if (val) {
+                result.value = val;
             }
 
             return u.defaults(options || {}, result);

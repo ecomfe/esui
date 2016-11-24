@@ -294,7 +294,21 @@ define(
                         // 从索引中删除，为了后续构建`unpainted`数组
                         delete index[name2];
                     }
-                    painter.paint.apply(painter, properties);
+                    if (painter.delayed) {
+                        setTimeout(
+                            u.partial(
+                                function (p, props) {
+                                    p.paint.apply(p, props);
+                                },
+                                painter,
+                                properties
+                            ),
+                            painter.priority || 0
+                        );
+                    }
+                    else {
+                        painter.paint.apply(painter, properties);
+                    }
                 }
 
                 // 构建出未渲染的属性集合

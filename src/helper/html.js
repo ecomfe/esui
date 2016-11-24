@@ -28,9 +28,13 @@ define(
          * @param {string} nodeName 部件使用的元素类型
          * @return {string}
          */
-        helper.getPartBeginTag = function (part, nodeName) {
+        helper.getPartBeginTag = function (part, nodeName, css) {
+            var cls = [this.getPartClassName(part)];
+            if (css) {
+                cls.push(css);
+            }
             var html = '<' + nodeName + ' id="' + this.getId(part) + '" '
-                + 'class="' + this.getPartClassName(part) + '">';
+                + 'class="' + cls.join(' ') + '">';
             return html;
         };
 
@@ -53,10 +57,11 @@ define(
          *
          * @param {string} part 部件名称
          * @param {string} nodeName 部件使用的元素类型
+         * @param {string} css 额外的css class
          * @return {string}
          */
-        helper.getPartHTML = function (part, nodeName) {
-            return this.getPartBeginTag(part, nodeName)
+        helper.getPartHTML = function (part, nodeName, css) {
+            return this.getPartBeginTag(part, nodeName, css)
                 + this.getPartEndTag(part, nodeName);
         };
 

@@ -283,9 +283,8 @@ define(
 
                 this.layer.autoCloseExcludeElements = [mainElement];
                 mainElement.tabIndex = this.tabIndex;
-                mainElement.innerHTML = helper.getPartHTML('text', span) + helper.getPartHTML(arrow, span);
-
-                $(helper.getPart(arrow)).addClass(helper.getIconClass());
+                mainElement.innerHTML = helper.getPartHTML('text', span)
+                    + helper.getPartHTML(arrow, span, helper.getIconClass());
             },
 
             /**
@@ -377,7 +376,8 @@ define(
                      * 控件处于未选中任何项的状态，此时将显示此属性的内容
                      */
                     name: ['selectedIndex', 'emptyText', 'datasource'],
-                    paint: updateValue
+                    paint: updateValue,
+                    delayed: true
                 },
                 {
                     name: ['disabled', 'hidden', 'readOnly'],
@@ -385,7 +385,8 @@ define(
                         if (disabled || hidden || readOnly) {
                             select.layer.hide();
                         }
-                    }
+                    },
+                    delayed: true
                 }
             ),
 

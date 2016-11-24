@@ -213,9 +213,7 @@ define(
              */
             toggle: function () {
                 var element = this.getElement();
-                if (!element
-                    || !$(element).hasClass(layerHiddenCls)
-                ) {
+                if ($(element).hasClass(layerHiddenCls)) {
                     this.show();
                 }
                 else {
