@@ -139,6 +139,9 @@ define(
 
             // 断开与`main`元素的关联
             ctrl.main = null;
+            if (ctrl.needCreateMainElement) {
+                jqMain.remove();
+            }
         };
 
         /**

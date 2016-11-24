@@ -97,8 +97,9 @@ define(
                             if (!value) {
                                 if (head) {
                                     tipLayer.removeChild(head);
+                                    var headMain = head.main;
                                     head.dispose();
-                                    $(head.main).remove();
+                                    $(headMain).remove();
                                 }
                             }
                             else {

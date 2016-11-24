@@ -26,6 +26,7 @@ define(
          *
          * @param {string} part 部件名称
          * @param {string} nodeName 部件使用的元素类型
+         * @param {string} css 额外的css class
          * @return {string}
          */
         helper.getPartBeginTag = function (part, nodeName, css) {

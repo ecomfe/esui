@@ -49,6 +49,8 @@ define(
                 this.currentStates = {};
                 this.domEvents = [];
 
+                this.needCreateMainElement = !options.main;
+
                 /**
                  * 控件的主元素
                  *

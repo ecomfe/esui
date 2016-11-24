@@ -5324,6 +5324,9 @@ body.hasDialog {
   position: absolute;
   margin: 0;
 }
+.ui-layer-hidden {
+  display: none;
+}
 /**
  * ESUI (Enterprise Simple UI)
  * Copyright 2013 Baidu Inc. All rights reserved.
