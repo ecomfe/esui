@@ -206,8 +206,17 @@ define(
                     this.domIDPrefix = this.viewContext.id;
 
                     this.initStructure();
-                    this.initEvents();
 
+                    // 把initEvent放到后面执行，加快ui.init的速度
+                    setTimeout(
+                        u.partial(
+                            function (self) {
+                                self.initEvents();
+                            },
+                            this
+                        ),
+                        0
+                    );
                     // 为控件主元素添加id
                     if (!this.main.id) {
                         this.main.id = this.helper.getId();

@@ -329,6 +329,242 @@ define(
         };
 
         /**
+         * 将esui-xx声明的组件找出来并返回type
+         *
+         * @param {HTMLElement} element 容器DOM元素
+         * @return {string | null}
+         */
+        function parseTypeFormCustomTag(element) {
+            var customElementPrefix = main.getConfig('customElementPrefix');
+            var nodeName = element.nodeName.toLowerCase();
+            var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
+            if (esuiPrefixIndex === 0) {
+                var typeFromCustomElement;
+                /* jshint ignore:start */
+                typeFromCustomElement = nodeName.replace(
+                    /-(\S)/g,
+                    function (match, ch) {
+                        return ch.toUpperCase();
+                    }
+                );
+                /* jshint ignore:end */
+                typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
+                return typeFromCustomElement;
+            }
+            return;
+        }
+
+        /**
+         * 确定该元素是否是esui-xx,data-ui和data-ui-type声明的esui组件
+         *
+         * @param {HTMLElement} element 容器DOM元素
+         * @return {boolean}
+         */
+        function isUIControl(element) {
+            var uiPrefix = main.getConfig('uiPrefix');
+            return element.hasAttribute(uiPrefix + '-type')
+                || element.hasAttribute(uiPrefix)
+                || element.nodeName.toLowerCase().indexOf(main.getConfig('customElementPrefix')) === 0;
+        }
+
+        /**
+         * 初始化容器中的所有esui组件
+         *
+         * @param {HTMLElement} ele wrap元素
+         * @param {Object} options 初始化参数
+         * @param {Object} controls 初始化的组件集合
+         */
+        function initControlsFromDom(ele, options, controls) {
+            if (ele.nodeType !== 1) {
+                return;
+            }
+
+            // 找到esui组件就跳出循环
+            if (isUIControl(ele)
+                && !ele.hasAttribute(config.instanceAttr)
+                ) {
+                initUIControl(ele, options, controls);
+                return;
+            }
+
+            var eleChildren = ele.children;
+            if (eleChildren) {
+                // 有些组件会改变当前父元素下的dom结构
+                // 例如Table会在元素前插入一行div来做宽度占位符
+                // ActionDialog会将之前dom移除
+                for (var i = 0, l = eleChildren.length; i < l; i++) {
+                    var childEle = eleChildren[i];
+                    if (isUIControl(childEle)
+                        && (!childEle.hasAttribute(config.instanceAttr) || !main.getControlByDOM(childEle))
+                        ) {
+                        initUIControl(childEle, options, controls);
+                    }
+                    else {
+                        initControlsFromDom(childEle, options, controls);
+                    }
+                }
+            }
+        }
+
+        /**
+         * 将字符串数组join成驼峰形式
+         *
+         * @param {string[]} source 源字符串数组
+         * @return {string}
+         * @ignore
+         */
+        function joinCamelCase(source) {
+            function replacer(c) {
+                return c.toUpperCase();
+            }
+
+            for (var i = 1, len = source.length; i < len; i++) {
+                source[i] = source[i].replace(/^[a-z]/, replacer);
+            }
+
+            return source.join('');
+        }
+
+        /**
+         * 不覆盖目标对象成员的extend
+         *
+         * @param {Object} target 目标对象
+         * @param {Object} source 源对象
+         * @ignore
+         */
+        function noOverrideExtend(target, source) {
+            for (var key in source) {
+                if (!(key in target)) {
+                    target[key] = source[key];
+                }
+            }
+        }
+
+        /**
+         * 将标签解析的值附加到option对象上
+         *
+         * @param {Object} optionObject option对象
+         * @param {string[]} terms 经过切分的标签名解析结果
+         * @param {string} value 属性值
+         * @param {Object} valueReplacer valueReplacer
+         * @ignore
+         */
+        function extendToOption(optionObject, terms, value, valueReplacer) {
+            if (terms.length === 0) {
+                noOverrideExtend(
+                    optionObject,
+                    main.parseAttribute(value, valueReplacer));
+            }
+            else {
+                optionObject[joinCamelCase(terms)] = valueReplacer(value);
+            }
+        }
+
+        /**
+         * 初始化所有的UI组件
+         *
+         * @param {HTMLElement} [element=document.body] 组件容器DOM元素
+         * @param {Object} [options] init参数
+         * @param {Object} [options.viewContext] 视图环境
+         * @param {Object} [options.properties] 属性集合，通过id映射
+         * @param {Object} [controls] 组件集合
+         */
+        function initUIControl(element, options, controls) {
+            var valueReplacer = options.valueReplacer || function (value) {
+                return value;
+            };
+            var uiPrefix = main.getConfig('uiPrefix');
+            var extPrefix = main.getConfig('extensionPrefix');
+
+            var uiPrefixLen = uiPrefix.length;
+            var extPrefixLen = extPrefix.length;
+            var properties = options.properties || {};
+
+            var attributes = element.attributes;
+            var controlOptions = {};
+            var extensionOptions = {};
+
+            // 解析attribute中的参数
+            for (var j = 0, attrLen = attributes.length; j < attrLen; j++) {
+                var attribute = attributes[j];
+                var name = attribute.name;
+                var value = attribute.value;
+
+                if (name.indexOf(extPrefix) === 0) {
+                    // 解析extension的key
+                    var extensionTerms = name.slice(extPrefixLen + 1).split('-');
+                    var extKey = extensionTerms[0];
+                    extensionTerms.shift();
+
+                    // 初始化该key的option对象
+                    var extOption = extensionOptions[extKey];
+                    if (!extOption) {
+                        extOption = extensionOptions[extKey] = {};
+                    }
+
+                    extendToOption(extOption, extensionTerms, value, valueReplacer);
+                }
+                else if (name.indexOf(uiPrefix) === 0) {
+                    var terms = name.length === uiPrefixLen
+                         ? []
+                         : name.slice(uiPrefixLen + 1).split('-');
+                    extendToOption(controlOptions, terms, value, valueReplacer);
+                }
+            }
+
+            // 从用户传入的properties中merge控件初始化属性选项
+            var controlId = controlOptions.id;
+            var customOptions = controlId ? properties[controlId] : {};
+            for (var key in customOptions) {
+                if (customOptions.hasOwnProperty(key)) {
+                    controlOptions[key] = valueReplacer(customOptions[key]);
+                }
+            }
+
+            // 创建控件的扩展
+            var extensions = controlOptions.extensions || [];
+            var createExtension = function (options) {
+                return main.createExtension(options.type, options);
+            };
+            var directiveExtensions = u.chain(extensionOptions).values().map(createExtension).compact().value();
+            controlOptions.extensions = extensions.concat(directiveExtensions);
+
+            // 绑定视图环境和控件主元素
+            controlOptions.viewContext = options.viewContext;
+            // 容器类控件会需要渲染自己的`innerHTML`，
+            // 这种渲染使用`initChildren`，再调用`main.init`，
+            // 因此需要把此处`main.init`的参数交给控件，方便再带回来，
+            // 以便`properties`、`valueReplacer`之类的能保留
+            controlOptions.renderOptions = options;
+            controlOptions.main = element;
+
+            // 创建控件
+            var type = controlOptions.type;
+            if (!type) {
+                type = parseTypeFormCustomTag(element);
+                controlOptions.type = type;
+            }
+            if (options.onBuildOptions) {
+                controlOptions = options.onBuildOptions(controlOptions);
+            }
+            var control = main.create(type, controlOptions);
+
+            if (control) {
+                controls.push(control);
+                if (options.parent) {
+                    options.parent.addChild(control);
+                }
+                if (options.owner) {
+                    options.owner.addOwned(control);
+                }
+            }
+
+            if (options.onCreateControl) {
+                control = options.onCreateControl(control, options);
+            }
+        }
+
+        /**
          * 从容器DOM元素批量初始化内部的控件渲染
          *
          * @param {HTMLElement} [wrap=document.body] 容器DOM元素，默认
@@ -346,242 +582,7 @@ define(
             wrap = wrap || document.body;
             options = options || {};
             var controls = [];
-
-            var valueReplacer = options.valueReplacer || function (value) {
-                return value;
-            };
-
-            /**
-             * 将esui-xx声明的组件找出来并返回type
-             *
-             * @param {HTMLElement} element 容器DOM元素
-             * @return {string | null}
-             */
-            function parseTypeFormCustomTag(element) {
-                var customElementPrefix = main.getConfig('customElementPrefix');
-                var nodeName = element.nodeName.toLowerCase();
-                var esuiPrefixIndex = nodeName.indexOf(customElementPrefix);
-                if (esuiPrefixIndex === 0) {
-                    var typeFromCustomElement;
-                    /* jshint ignore:start */
-                    typeFromCustomElement = nodeName.replace(
-                        /-(\S)/g,
-                        function (match, ch) {
-                            return ch.toUpperCase();
-                        }
-                    );
-                    /* jshint ignore:end */
-                    typeFromCustomElement = typeFromCustomElement.slice(customElementPrefix.length);
-                    return typeFromCustomElement;
-                }
-                return;
-            }
-
-            /**
-             * 确定该元素是否是esui-xx,data-ui和data-ui-type声明的esui组件
-             *
-             * @param {HTMLElement} element 容器DOM元素
-             * @return {boolean}
-             */
-            function isUIControl(element) {
-                var uiPrefix = main.getConfig('uiPrefix');
-                return element.hasAttribute(uiPrefix + '-type')
-                    || element.hasAttribute(uiPrefix)
-                    || element.nodeName.toLowerCase().indexOf(main.getConfig('customElementPrefix')) === 0;
-            }
-
-            /**
-             * 初始化容器中的所有esui组件
-             *
-             * @param {HTMLElement} ele wrap元素
-             * @param {Object} options 初始化参数
-             */
-            function initControlsFromDom(ele, options) {
-                if (ele.nodeType !== 1) {
-                    return;
-                }
-
-                // 找到esui组件就跳出循环
-                if (isUIControl(ele)
-                    && !ele.hasAttribute(config.instanceAttr)
-                    ) {
-                    initUIControl(ele, options);
-                    return;
-                }
-
-                var eleChildren = ele.children;
-                if (eleChildren) {
-                    // 有些组件会改变当前父元素下的dom结构
-                    // 例如Table会在元素前插入一行div来做宽度占位符
-                    // ActionDialog会将之前dom移除
-                    for (var i = 0, l = eleChildren.length; i < l; i++) {
-                        var childEle = eleChildren[i];
-                        if (isUIControl(childEle)
-                            && (!childEle.hasAttribute(config.instanceAttr) || !main.getControlByDOM(childEle))
-                            ) {
-                            initUIControl(childEle, options);
-                        }
-                        else {
-                            initControlsFromDom(childEle, options);
-                        }
-                    }
-                }
-            }
-
-            /**
-             * 将字符串数组join成驼峰形式
-             *
-             * @param {string[]} source 源字符串数组
-             * @return {string}
-             * @ignore
-             */
-            function joinCamelCase(source) {
-                function replacer(c) {
-                    return c.toUpperCase();
-                }
-
-                for (var i = 1, len = source.length; i < len; i++) {
-                    source[i] = source[i].replace(/^[a-z]/, replacer);
-                }
-
-                return source.join('');
-            }
-
-            /**
-             * 不覆盖目标对象成员的extend
-             *
-             * @param {Object} target 目标对象
-             * @param {Object} source 源对象
-             * @ignore
-             */
-            function noOverrideExtend(target, source) {
-                for (var key in source) {
-                    if (!(key in target)) {
-                        target[key] = source[key];
-                    }
-                }
-            }
-
-            /**
-             * 将标签解析的值附加到option对象上
-             *
-             * @param {Object} optionObject option对象
-             * @param {string[]} terms 经过切分的标签名解析结果
-             * @param {string} value 属性值
-             * @ignore
-             */
-            function extendToOption(optionObject, terms, value) {
-                if (terms.length === 0) {
-                    noOverrideExtend(
-                        optionObject,
-                        main.parseAttribute(value, valueReplacer));
-                }
-                else {
-                    optionObject[joinCamelCase(terms)] = valueReplacer(value);
-                }
-            }
-
-            /**
-             * 初始化所有的UI组件
-             *
-             * @param {HTMLElement} [element=document.body] 组件容器DOM元素
-             * @param {Object} [options] init参数
-             * @param {Object} [options.viewContext] 视图环境
-             * @param {Object} [options.properties] 属性集合，通过id映射
-             */
-            function initUIControl(element, options) {
-                var uiPrefix = main.getConfig('uiPrefix');
-                var extPrefix = main.getConfig('extensionPrefix');
-
-                var uiPrefixLen = uiPrefix.length;
-                var extPrefixLen = extPrefix.length;
-                var properties = options.properties || {};
-
-                var attributes = element.attributes;
-                var controlOptions = {};
-                var extensionOptions = {};
-
-                // 解析attribute中的参数
-                for (var j = 0, attrLen = attributes.length; j < attrLen; j++) {
-                    var attribute = attributes[j];
-                    var name = attribute.name;
-                    var value = attribute.value;
-
-                    if (name.indexOf(extPrefix) === 0) {
-                        // 解析extension的key
-                        var extensionTerms = name.slice(extPrefixLen + 1).split('-');
-                        var extKey = extensionTerms[0];
-                        extensionTerms.shift();
-
-                        // 初始化该key的option对象
-                        var extOption = extensionOptions[extKey];
-                        if (!extOption) {
-                            extOption = extensionOptions[extKey] = {};
-                        }
-
-                        extendToOption(extOption, extensionTerms, value);
-                    }
-                    else if (name.indexOf(uiPrefix) === 0) {
-                        var terms = name.length === uiPrefixLen
-                             ? []
-                             : name.slice(uiPrefixLen + 1).split('-');
-                        extendToOption(controlOptions, terms, value);
-                    }
-                }
-
-                // 从用户传入的properties中merge控件初始化属性选项
-                var controlId = controlOptions.id;
-                var customOptions = controlId ? properties[controlId] : {};
-                for (var key in customOptions) {
-                    if (customOptions.hasOwnProperty(key)) {
-                        controlOptions[key] = valueReplacer(customOptions[key]);
-                    }
-                }
-
-                // 创建控件的扩展
-                var extensions = controlOptions.extensions || [];
-                var createExtension = function (options) {
-                    return main.createExtension(options.type, options);
-                };
-                var directiveExtensions = u.chain(extensionOptions).values().map(createExtension).compact().value();
-                controlOptions.extensions = extensions.concat(directiveExtensions);
-
-                // 绑定视图环境和控件主元素
-                controlOptions.viewContext = options.viewContext;
-                // 容器类控件会需要渲染自己的`innerHTML`，
-                // 这种渲染使用`initChildren`，再调用`main.init`，
-                // 因此需要把此处`main.init`的参数交给控件，方便再带回来，
-                // 以便`properties`、`valueReplacer`之类的能保留
-                controlOptions.renderOptions = options;
-                controlOptions.main = element;
-
-                // 创建控件
-                var type = controlOptions.type;
-                if (!type) {
-                    type = parseTypeFormCustomTag(element);
-                    controlOptions.type = type;
-                }
-                if (options.onBuildOptions) {
-                    controlOptions = options.onBuildOptions(controlOptions);
-                }
-                var control = main.create(type, controlOptions);
-
-                if (control) {
-                    controls.push(control);
-                    if (options.parent) {
-                        options.parent.addChild(control);
-                    }
-                    if (options.owner) {
-                        options.owner.addOwned(control);
-                    }
-                }
-
-                if (options.onCreateControl) {
-                    control = options.onCreateControl(control, options);
-                }
-            }
-
-            initControlsFromDom(wrap, options);
+            initControlsFromDom(wrap, options, controls);
 
             u.chain(controls).compact().invoke('render');
             return controls;

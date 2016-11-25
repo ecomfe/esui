@@ -170,7 +170,6 @@ define(
                         name: 'rawValue',
                         paint: function (textLine, value) {
                             // 输入区
-
                             if (value) {
                                 if (u.isArray(value)) {
                                     textLine.value = u.unescape(value.join('\n'));
@@ -633,14 +632,17 @@ define(
          * @ignore
          */
         function refreshLineNum() {
-            var textbox = this.getTextBox();
+            var self = this;
+            var textbox = self.getTextBox();
             var num = textbox.getValue().split('\n').length;
-            if (num !== this.number) {
-                this.number = num;
-                var numLine = this.helper.getPart('num-line');
+            if (num !== self.number) {
+                self.number = num;
+                var numLine = self.helper.getPart('num-line');
                 numLine.innerHTML = u.range(1, num + 1).join('<br />');
             }
-            this.resetScroll();
+            setTimeout(function () {
+                self.resetScroll();
+            }, 0);
             /**
              * @event change
              *

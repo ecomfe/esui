@@ -6,6 +6,7 @@
  * @file 文本框输入控件
  * @author otakustay
  */
+
 define(
     function (require) {
         var eoo = require('eoo');
@@ -119,7 +120,7 @@ define(
                         properties.title = this.main.title;
                     }
 
-                    this.setProperties(properties);
+                    this.$super([properties]);
                 },
 
                 /**
