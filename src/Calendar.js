@@ -6,6 +6,7 @@
  * @file 日历
  * @author dbear, otakustay
  */
+
 define(
     function (require) {
         require('./MonthView');
@@ -64,27 +65,14 @@ define(
                             u.bind(calendar.layer.toggle, calendar.layer)
                         );
                     }
-                },
-
-                toggle: function () {
-                    var element = this.getElement();
-                    if (!element
-                        || !$(element).is(':visible')
-                    ) {
-                        // 展示之前先跟main同步
-                        var calendar = this.control;
-                        var prevMonthView = calendar.getChild('prevMonthView');
+                    this.on('show', function () {
                         prevMonthView.setProperties(
                             {
                                 rawValue: calendar.rawValue,
                                 range: calendar.range
                             }
                         );
-                        this.show();
-                    }
-                    else {
-                        this.hide();
-                    }
+                    });
                 }
             }
         );
