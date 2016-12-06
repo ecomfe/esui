@@ -864,7 +864,7 @@ define(
                  * 默认选项配置
                  */
                 var properties = {
-                    regionData: lib.clone(Region.REGION_LIST),
+                    regionData: Region.REGION_LIST,
                     mode: 'multi',
                     pureSelect: false,
                     rawValue: []
@@ -873,6 +873,7 @@ define(
                 helper.extractValueFromInput(this, options);
 
                 lib.extend(properties, options);
+                properties.regionData = lib.clone(properties.regionData);
 
                 if (options.value) {
                     properties.rawValue = properties.value.split(',');
