@@ -9,19 +9,18 @@
 define(
     function (require) {
         var u = require('underscore');
-        var PART_REGEX = /<([\w-]+)#([\w-]+)>/;
 
-        var defaultFilters = {
-            'id': function (part, instance) {
-                return instance.helper.getId(part);
+        var FILTERS = {
+            'id': function (part) {
+                return this.helper.getId(part);
             },
 
-            'class': function (part, instance) {
-                return instance.helper.getPartClassName(part);
+            'class': function (part) {
+                return this.helper.getPartClassName(part);
             },
 
-            'part': function (part, nodeName, instance) {
-                return instance.helper.getPartHTML(part, nodeName);
+            'part': function (part, nodeName) {
+                return this.helper.getPartHTML(part, nodeName);
             }
         };
 
@@ -62,9 +61,11 @@ define(
          * @protected
          */
         helper.initializeTemplateEngineExtension = function () {
+            var me = this;
             u.each(
-                defaultFilters,
+                FILTERS,
                 function (filter, name) {
+                    filter = u.bind(filter, me.control);
                     this.addFilter(name, filter);
                 },
                 this.templateEngine
@@ -75,39 +76,36 @@ define(
          * 生成模板替换的数据
          *
          * @param {Object} data 数据
-         * @param {Helper} helper 当前的helper对象
          * @return {Object} 处理过的数据
          */
-        function getTemplateData(data, helper) {
+        function getTemplateData(data) {
             var templateData = {
                 get: function (name) {
-                    // `instance`参数替换为当前控件实例
-                    if (name === 'instance') {
-                        return helper.control;
-                    }
-
-                    if (name.charAt(0) === '#') {
-                        return defaultFilters.id(name.substring(1), helper.control);
-                    }
-                    if (name.charAt(0) === '.') {
-                        return defaultFilters.class(name.substring(1), helper.control);
-                    }
-                    var possiblePart = PART_REGEX.exec(name);
-                    if (possiblePart) {
-                        return defaultFilters.part(possiblePart[2], possiblePart[1], helper.control);
-                    }
 
                     if (typeof data.get === 'function') {
                         return data.get(name);
                     }
 
-                    return u.reduce(
-                        name.split('.'),
-                        function (value, property) {
-                            return value[property];
-                        },
-                        data
-                    );
+                    var propertyName = name;
+                    var filter = null;
+
+                    var indexOfDot = name.lastIndexOf('.');
+                    if (indexOfDot > 0) {
+                        propertyName = name.substring(0, indexOfDot);
+                        var filterName = name.substring(indexOfDot + 1);
+                        if (filterName && FILTERS.hasOwnProperty(filterName)) {
+                            filter = FILTERS[filterName];
+                        }
+                    }
+
+                    var value = data.hasOwnProperty(propertyName)
+                        ? data[propertyName]
+                        : propertyName;
+                    if (filter) {
+                        value = filter(value, helper.control);
+                    }
+
+                    return value;
                 }
             };
             return templateData;
@@ -119,19 +117,19 @@ define(
          * ESUI为[etpl](https://github.com/ecomfe/etpl')提供了额外的
          * [filter](https://github.com/ecomfe/etpl/#变量替换)：
          *
-         * - `${xxx | id(${instance})}`按规则生成以`xxx`为部件名的DOM元素id
-         * - `${xxx | class(${instance})}`按规则生成以`xxx`为部件名的DOM元素class
-         * - `${xxx | part('div', ${instance})}`生成以`xxx`为部件名的div元素HTML
+         * - `${xxx | id($instance)}`按规则生成以`xxx`为部件名的DOM元素id
+         * - `${xxx | class($instance)}`按规则生成以`xxx`为部件名的DOM元素class
+         * - `${xxx | part('div', $instance)}`生成以`xxx`为部件名的div元素HTML
          *
-         * 在使用内置过滤器时，必须加上`(${instance})`这一段，以将过滤器和当前控件实例关联
+         * 在使用内置过滤器时，必须加上`($instance)`这一段，以将过滤器和当前控件实例关联
          *
-         * 简化的方法：
+         * 同时也可以用简化的方式使用以上的过滤器，如：
          *
-         * - `${#xxx}`等效于`${xxx | id}`
-         * - `${.xxx}`等效于`${xxx | class}`
-         * - `${<foo#bar>}`等效于`${bar | part('foo')}`
+         * - `${xxx.id}`等效于`${xxx | id($instance)}`
+         * - `${xxx.class}`等效于`${xxx | class($instance)}`
          *
-         * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，必须使用过滤器的语法实现
+         * 需要注意`part`过滤器需要指定`nodeName`，因此不能使用以上方法简写，
+         * 必须使用过滤器的语法实现
          *
          * 一般来说，如果一个控件需要使用模板，我们会为这个控件类生成一个模板引擎实例：
          *
@@ -172,7 +170,6 @@ define(
          * 需要注意，使用此方法时，仅满足以下所有条件时，才可以使用内置的过滤器：
          *
          * - `data`对象仅一层属性，即不能使用`${user.name}`这一形式访问深层的属性
-         * - `data`对象不能包含名为`instance`的属性，此属性会强制失效
          *
          * 另外此方法存在微小的几乎可忽略不计的性能损失，
          * 但如果需要大量使用模板同时又不需要内置的过滤器，可以使用以下代码代替：
@@ -186,10 +183,10 @@ define(
         helper.renderTemplate = function (target, data) {
             data = data || {};
             var engine = this.getTemplateEngine();
-            return engine.render(target, getTemplateData(data, this));
+            return engine.render(target, getTemplateData(data));
         };
 
-        /**
+        /*
          * 渲染模板内容
          *
          * @param {string} content 模板内容
@@ -200,7 +197,7 @@ define(
             data = data || {};
             var engine = this.getTemplateEngine();
             var renderer = engine.compile(content);
-            return renderer(getTemplateData(data, this));
+            return renderer(getTemplateData(data));
         };
 
         return helper;
